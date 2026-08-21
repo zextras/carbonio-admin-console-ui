@@ -15,7 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DONE_ROUTE_ID, LOG_AND_QUEUES, OPERATIONS_ROUTE_ID, QUEUED_ROUTE_ID } from '../../../constants';
-import OperationsListPanel from '../operations-list-panel';
+import { OperationsListPanel } from '../operations-list-panel';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 

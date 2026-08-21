@@ -16,6 +16,8 @@ import {
 
 import { loadAllApps } from '../apps/loader';
 
+const ACCOUNT_SETTINGS_QUERY_KEY = ['account', 'settings'] as const;
+
 type InitError = {
   error: string;
 };
@@ -44,7 +46,7 @@ async function initLocale(i18nFactory: I18nFactory): Promise<void> {
     const settings = await fetchAccountSettings();
 
     // Cache settings in query client for later use
-    queryClient.setQueryData(['account', 'settings'], settings);
+    queryClient.setQueryData(ACCOUNT_SETTINGS_QUERY_KEY, settings);
 
     const locale = getLocaleFromSettings(settings);
 

@@ -10,7 +10,13 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { INDEX_TYPE_VALUE, PRIMARY_TYPE_VALUE, S3 } from '../../../../../constants';
+import {
+  AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+  AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+  INDEX_TYPE_VALUE,
+  PRIMARY_TYPE_VALUE,
+  S3,
+} from '../../../../../constants';
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
 import { AdvancedMailstoresConfig } from '../advanced-mailstores-config';
@@ -196,6 +202,35 @@ describe('AdvancedMailstoresConfig (browser)', () => {
 
     await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Use intelligent tiering', { exact: true })).toBeVisible();
+  });
+
+  it('should open the Amazon documentation links when tiering doc buttons are clicked', async () => {
+    const openSpy = vi.spyOn(window, 'open').mockReturnValue(null);
+    await renderHarness({
+      initialAdvanced: {
+        unusedBucketType: S3,
+        tieringSupported: true,
+        volumeAllocation: 'Object Storage',
+      },
+    }).render();
+
+    await page
+      .getByRole('button', { name: 'Open Amazon Storage Class Documentation' })
+      .click();
+    await page.getByRole('button', { name: 'Open Amazon Tiering Documentation' }).click();
+
+    expect(openSpy).toHaveBeenCalledTimes(2);
+    expect(openSpy).toHaveBeenCalledWith(
+      AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+      '_blank',
+      'noopener,noreferrer',
+    );
+    expect(openSpy).toHaveBeenCalledWith(
+      AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
+      '_blank',
+      'noopener,noreferrer',
+    );
+    openSpy.mockRestore();
   });
 
   it('should hide Storage centralized switch for Local Block Device allocation', async () => {

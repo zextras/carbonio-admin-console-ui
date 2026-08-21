@@ -15,7 +15,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type Operation } from '../../../types/operations';
-import DoneDetailPanel from '../done-detail-panel';
+import { DoneDetailPanel } from '../done-detail-panel';
 
 const MOCK_DONE_OPERATIONS: Array<Operation> = [
     {
@@ -188,7 +188,7 @@ describe('DoneDetailPanel', () => {
         await expect.element(page.getByText('doBackup')).toBeVisible();
         await page.getByText('doBackup').click();
         await expect.element(page.getByText('Details')).toBeVisible();
-        await page.getByTestId('icon: CloseOutline').click();
+        await page.getByRole('button', { name: /close/i }).click();
         await expect.poll(() => page.getByText('Operation Type').elements()).toHaveLength(0);
     });
 

@@ -5,13 +5,13 @@
  */
 import { Container,PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
-import { FC, Suspense } from 'react';
+import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 
-import NotificationsDetailPanel from './notifications/notifications-detail-panel';
-import NotificationsListPanel from './notifications/notifications-list-panel';
+import { NotificationsDetailPanel } from './notifications/notifications-detail-panel';
+import { NotificationsListPanel } from './notifications/notifications-list-panel';
 
-export const AppView: FC = () => {
+export const AppView = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
     <Container height={'fit'}>

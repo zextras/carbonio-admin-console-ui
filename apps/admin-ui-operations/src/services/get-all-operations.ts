@@ -6,7 +6,9 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-export const getAllOperations = async (): Promise<any> =>
+import { type SoapContentResponse } from '../types/operations';
+
+export const getAllOperations = async (): Promise<SoapContentResponse> =>
 	postSoapFetchRequest(
 		`/service/admin/soap/zextras`,
 		{

@@ -138,9 +138,7 @@ const appModules: Record<string, ComponentType<object>> = {
  * Load all apps from the registry and register them in the store.
  * All apps are statically imported and bundled at build time - no async loading.
  */
-export function loadAllAppsFromRegistry(
-  useAppStore: UseBoundStore<StoreApi<AppState>>,
-): void {
+export function loadAllAppsFromRegistry(useAppStore: UseBoundStore<StoreApi<AppState>>): void {
   // Initialize app state
   const appsObject = APP_REGISTRY.reduce<Record<string, object>>(
     (acc, app) => ({

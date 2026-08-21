@@ -5,222 +5,232 @@
  */
 
 import {
-	getQueryClient,
-	grantUserConfigRights,
-	resetMockWorker,
-	setupBrowserTest,
+  createBrowserAPIInterceptor,
+  getQueryClient,
+  grantUserConfigRights,
+  resetMockWorker,
+  setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { backupQueryKeys } from '../../../../services/backup-query-keys';
-import BackupAdvanced from '../backup-advanced';
+import { BackupAdvanced } from '../backup-advanced';
 
 const GLOBAL_CONFIG = {
-	backupLatencyHighThreshold: '100',
-	backupLatencyLowThreshold: '50',
-	ldapDumpEnabled: false,
-	ZxBackup_BackupCustomizations: false,
-	ZxBackup_PurgeCustomizations: false,
-	backupSaveIndex: false,
-	ZxBackup_MaxMetadataSize: '1024',
-	ZxBackup_MaxWaitingTime: '5000',
-	ZxBackup_MaxOperationPerAccount: '10',
-	backupCompressionLevel: '2',
-	backupNumberThreadsForAccounts: '4',
-	backupOnTheFlyMetadata: false,
-	scheduledMetadataArchivingEnabled: false,
-	privateKeyAlgorithm: 'RSA',
+  backupLatencyHighThreshold: '100',
+  backupLatencyLowThreshold: '50',
+  ldapDumpEnabled: false,
+  ZxBackup_BackupCustomizations: false,
+  ZxBackup_PurgeCustomizations: false,
+  backupSaveIndex: false,
+  ZxBackup_MaxMetadataSize: '1024',
+  ZxBackup_MaxOperationPerAccount: '10',
+  backupCompressionLevel: '2',
+  backupNumberThreadsForAccounts: '4',
+  backupOnTheFlyMetadata: false,
+  scheduledMetadataArchivingEnabled: false,
+  privateKeyAlgorithm: 'RSA',
 };
 
 describe('BackupAdvanced', () => {
-	let queryClient: ReturnType<typeof getQueryClient>;
+  let queryClient: ReturnType<typeof getQueryClient>;
 
-	beforeEach(async () => {
-		queryClient = getQueryClient();
-		await grantUserConfigRights(queryClient);
-		queryClient.setQueryData(backupQueryKeys.globalConfig(), { ...GLOBAL_CONFIG });
-	});
+  beforeEach(async () => {
+    queryClient = getQueryClient();
+    await grantUserConfigRights(queryClient);
+    queryClient.setQueryData(['global-config'], { ...GLOBAL_CONFIG });
+  });
 
-	afterEach(() => {
-		resetMockWorker();
-		queryClient.removeQueries({ queryKey: backupQueryKeys.all });
-	});
+  afterEach(() => {
+    resetMockWorker();
+    queryClient.removeQueries({ queryKey: backupQueryKeys.all });
+  });
 
-	describe('Rendering', () => {
-		it('should render the "Advanced" title', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+  describe('Rendering', () => {
+    it('should render the "Advanced" title', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect.element(page.getByText('Advanced')).toBeVisible();
-		});
+      await expect.element(page.getByText('Advanced')).toBeVisible();
+    });
 
-		it('should render all input fields', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+    it('should render all input fields', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect
-				.element(page.getByText(/Latency High Threshold/))
-				.toBeVisible();
-			await expect
-				.element(page.getByText(/Latency Low Threshold/))
-				.toBeVisible();
-			await expect
-				.element(page.getByText('Metadata Size'))
-				.toBeVisible();
-			await expect
-				.element(page.getByText(/Max Waiting Time/))
-				.toBeVisible();
-			await expect
-				.element(page.getByText('Max Operations / Account'))
-				.toBeVisible();
-			await expect
-				.element(page.getByText('Threads For Items'))
-				.toBeVisible();
-			await expect
-				.element(page.getByText('Threads For Account'))
-				.toBeVisible();
-		});
+      await expect.element(page.getByText(/Latency High Threshold/)).toBeVisible();
+      await expect.element(page.getByText(/Latency Low Threshold/)).toBeVisible();
+      await expect.element(page.getByText('Metadata Size')).toBeVisible();
+      await expect.element(page.getByText('Max Operations / Account')).toBeVisible();
+      await expect.element(page.getByText('Threads For Items')).toBeVisible();
+      await expect.element(page.getByText('Threads For Account')).toBeVisible();
+    });
 
-		it('should render all switch options', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+    it('should render all switch options', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect.element(page.getByText('LDAP Dump')).toBeVisible();
-			await expect
-				.element(page.getByText('Store Server Configuration in the backup'))
-				.toBeVisible();
-			await expect
-				.element(page.getByText('Purge Old Configurations'))
-				.toBeVisible();
-			await expect.element(page.getByText('Save Index')).toBeVisible();
-			await expect
-				.element(page.getByText('Flash metadata in the disk at every save'))
-				.toBeVisible();
-			await expect
-				.element(page.getByText('Archive user metadata folder in the remote backup'))
-				.toBeVisible();
-		});
+      await expect.element(page.getByText('LDAP Dump')).toBeVisible();
+      await expect
+        .element(page.getByText('Store Server Configuration in the backup'))
+        .toBeVisible();
+      await expect.element(page.getByText('Purge Old Configurations')).toBeVisible();
+      await expect.element(page.getByText('Save Index')).toBeVisible();
+      await expect
+        .element(page.getByText('Flash metadata in the disk at every save'))
+        .toBeVisible();
+      await expect
+        .element(page.getByText('Archive user metadata folder in the remote backup'))
+        .toBeVisible();
+    });
 
-		it('should render the Compression Level select', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+    it('should render the Compression Level select', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect
-				.element(page.getByText('Compression Level'))
-				.toBeVisible();
-		});
-	});
+      await expect.element(page.getByText('Compression Level')).toBeVisible();
+    });
+  });
 
-	describe('Dirty state', () => {
-		it('should not show Save and Cancel buttons initially', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+  describe('Dirty state', () => {
+    it('should not show Save and Cancel buttons initially', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect.element(page.getByText('Advanced')).toBeVisible();
+      await expect.element(page.getByText('Advanced')).toBeVisible();
 
-			expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-			expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-		});
+      expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
+      expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    });
 
-		it('should show Save and Cancel buttons when a switch is toggled', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+    it('should show Save and Cancel buttons when a switch is toggled', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect.element(page.getByText('LDAP Dump')).toBeVisible();
-			await page.getByText('LDAP Dump').click();
+      await expect.element(page.getByText('LDAP Dump')).toBeVisible();
+      await page.getByText('LDAP Dump').click();
 
-			await expect
-				.element(page.getByRole('button', { name: 'Save' }))
-				.toBeVisible();
-			await expect
-				.element(page.getByRole('button', { name: 'Cancel' }))
-				.toBeVisible();
-		});
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+    });
 
-		it('should hide Save and Cancel buttons when Cancel is clicked', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+    it('should hide Save and Cancel buttons when Cancel is clicked', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await page.getByText('LDAP Dump').click();
-			await expect
-				.element(page.getByRole('button', { name: 'Cancel' }))
-				.toBeVisible();
+      await page.getByText('LDAP Dump').click();
+      await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
 
-			await page.getByRole('button', { name: 'Cancel' }).click();
+      await page.getByRole('button', { name: 'Cancel' }).click();
 
-			expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-			expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
-		});
-	});
+      expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
+      expect(page.getByRole('button', { name: 'Cancel' }).elements()).toHaveLength(0);
+    });
 
-	describe('Switch toggles', () => {
-		it('should toggle "Store Server Configuration in the backup" switch', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+    it('should hide Save and Cancel buttons after a successful save', async () => {
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/extension/zextras_admin/core/attribute/set',
+        () => HttpResponse.json({}),
+      );
+      createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/zextras',
+        () =>
+          HttpResponse.json({
+            Body: {
+              response: {
+                content: JSON.stringify({
+                  response: { ...GLOBAL_CONFIG, ldapDumpEnabled: true },
+                }),
+              },
+            },
+          }),
+      );
 
-			await expect
-				.element(page.getByText('Store Server Configuration in the backup'))
-				.toBeVisible();
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await page.getByText('Store Server Configuration in the backup').click();
+      await expect.element(page.getByText('LDAP Dump')).toBeVisible();
 
-			await expect
-				.element(page.getByRole('button', { name: 'Save' }))
-				.toBeVisible();
-		});
+      await page.getByText('LDAP Dump').click();
 
-		it('should toggle "Save Index" switch', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 
-			await page.getByText('Save Index').click();
+      await page.getByRole('button', { name: 'Save' }).click();
 
-			await expect
-				.element(page.getByRole('button', { name: 'Save' }))
-				.toBeVisible();
-		});
+      await expect
+        .element(page.getByRole('button', { name: 'Save' }))
+        .not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('button', { name: 'Cancel' }))
+        .not.toBeInTheDocument();
 
-		it('should toggle "Purge Old Configurations" switch', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+      await expect
+        .element(page.getByRole('switch', { name: 'LDAP Dump' }))
+        .toBeChecked();
+    });
+  });
 
-			await page.getByText('Purge Old Configurations').click();
+  describe('Switch toggles', () => {
+    it('should toggle "Store Server Configuration in the backup" switch', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await expect
-				.element(page.getByRole('button', { name: 'Save' }))
-				.toBeVisible();
-		});
+      await expect
+        .element(page.getByText('Store Server Configuration in the backup'))
+        .toBeVisible();
 
-		it('should toggle "Flash metadata in the disk at every save" switch', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+      await page.getByText('Store Server Configuration in the backup').click();
 
-			await page.getByText('Flash metadata in the disk at every save').click();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
 
-			await expect
-				.element(page.getByRole('button', { name: 'Save' }))
-				.toBeVisible();
-		});
+    it('should toggle "Save Index" switch', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-		it('should toggle "Archive user metadata folder in the remote backup" switch', async () => {
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+      await page.getByText('Save Index').click();
 
-			await page
-				.getByText('Archive user metadata folder in the remote backup')
-				.click();
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
 
-			await expect
-				.element(page.getByRole('button', { name: 'Save' }))
-				.toBeVisible();
-		});
-	});
+    it('should toggle "Purge Old Configurations" switch', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-	describe('Permissions', () => {
-		it('should disable inputs when user lacks config rights', async () => {
-			queryClient.setQueryData(['effective-rights', 'test@example.com'], [
-				{
-					type: 'config',
-					all: [{ getAttrs: [{ all: true }] }],
-				},
-			]);
+      await page.getByText('Purge Old Configurations').click();
 
-			await setupBrowserTest(<BackupAdvanced />, { queryClient });
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
 
-			await expect.element(page.getByText('LDAP Dump')).toBeVisible();
+    it('should toggle "Flash metadata in the disk at every save" switch', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-			await page.getByText('LDAP Dump').click();
+      await page.getByText('Flash metadata in the disk at every save').click();
 
-			expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
-		});
-	});
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+
+    it('should toggle "Archive user metadata folder in the remote backup" switch', async () => {
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
+
+      await page.getByText('Archive user metadata folder in the remote backup').click();
+
+      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    });
+  });
+
+  describe('Permissions', () => {
+    it('should disable inputs when user lacks config rights', async () => {
+      queryClient.setQueryData(
+        ['effective-rights', 'test@example.com'],
+        [
+          {
+            type: 'config',
+            all: [{ getAttrs: [{ all: true }] }],
+          },
+        ],
+      );
+
+      await setupBrowserTest(<BackupAdvanced />, { queryClient });
+
+      await expect.element(page.getByText('LDAP Dump')).toBeVisible();
+
+      await page.getByText('LDAP Dump').click();
+
+      expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
+    });
+  });
 });

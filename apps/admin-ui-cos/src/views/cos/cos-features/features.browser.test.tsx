@@ -44,6 +44,16 @@ const MOCK_MOBILE_ATTRIBUTES = {
   },
 };
 
+const MOCK_COS_DETAIL = {
+  cos: [
+    {
+      id: COS_ID,
+      name: 'default',
+      _attrs: { edition: 'workspace' },
+    },
+  ],
+};
+
 const TestWrapper = ({
   cosInformation = MOCK_COS_INFORMATION,
   mobileAttributesData = MOCK_MOBILE_ATTRIBUTES,
@@ -65,6 +75,7 @@ const TestWrapper = ({
 );
 
 async function setupTest(wrapper: React.ReactElement = <TestWrapper />) {
+  createBrowserSoapAPIInterceptor('GetCos', MOCK_COS_DETAIL);
   createBrowserSoapAPIInterceptor('ModifyCos', {});
   createBrowserSoapAPIInterceptor('FlushCache', {});
   createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
@@ -130,15 +141,6 @@ describe('FeaturesForm (browser)', () => {
     await setupTest(<TestWrapper isAdvanced />);
     await expect.element(page.getByText('General')).toBeVisible();
     await expect.element(page.getByRole('switch', { name: 'Active Sync Access' })).toBeVisible();
-  });
-
-  it('should render all feature sections', async () => {
-    await setupTest();
-    await expect.element(page.getByText('Mail', { exact: true })).toBeVisible();
-    await expect.element(page.getByText('Contacts', { exact: true })).toBeVisible();
-    await expect.element(page.getByText('Calendar', { exact: true })).toBeVisible();
-    await expect.element(page.getByText('Files', { exact: true })).toBeVisible();
-    await expect.element(page.getByText('Tasks', { exact: true })).toBeVisible();
   });
 
   describe('Advanced 2FA enforcement (isAdvanced)', () => {

@@ -92,10 +92,16 @@ import { useCosList } from './react-query/use-cos-list';
 import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useDomainSearch } from './react-query/use-domain-search';
-import { useGlobalCarbonioSendAnalytics } from './react-query/use-global-settings';
+import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
+import {
+	type Notification,
+	notificationsQueryKeys,
+	useAllNotifications,
+	useReadUnreadNotification,
+} from './react-query/use-notifications';
 import {
   getAllRights,
   getRights,
@@ -246,6 +252,7 @@ export {
   loginConfig,
   logout,
   normalizeRoute,
+  notificationsQueryKeys,
   OPEN_TICKET_URL,
   postSoapFetchRequest,
   queryClient,
@@ -268,6 +275,7 @@ export {
   useActions,
   useActivateLicense,
   useAllConfig,
+  useAllNotifications,
   useAllServers,
   useAppList,
   useAppRoutes,
@@ -286,6 +294,7 @@ export {
   useDomainInformation,
   useDomainSearch,
   useGlobalCarbonioSendAnalytics,
+  useGlobalSettings,
   useHasAllRights,
   useI18nStore,
   useIntegrationsStore,
@@ -300,6 +309,7 @@ export {
   useModuleLicenseInfo,
   useMtaServers,
   usePrimaryBarState,
+  useReadUnreadNotification,
   useRelativePathname,
   useRemoveLicense,
   useServerVersion,
@@ -336,3 +346,4 @@ export type {
   MaintenanceStatus,
   ModuleLicenseInfo,
 };
+export type { Notification };

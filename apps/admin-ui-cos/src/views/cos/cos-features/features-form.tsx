@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
+import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout } from '@zextras/ui-components';
 import { type GetCoreAttributesResponse } from '@zextras/ui-shared';
@@ -17,6 +18,7 @@ import {
   MOBILE_CONTACT_FEATURE_SYNC,
   ZIMBRA_ADMIN_URN,
 } from '../../../constants';
+import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { useSetCoreAttributes } from '../../../services/use-set-core-attributes';
@@ -88,6 +90,7 @@ export const FeaturesForm = ({
 }: CosFeaturesFormProps) => {
   const { cosId } = useParams();
   const [t] = useTranslation();
+  const queryClient = useQueryClient();
   const modifyCosMutation = useModifyCos(cosId);
   const setCoreAttributesMutation = useSetCoreAttributes();
 
@@ -118,6 +121,15 @@ export const FeaturesForm = ({
             objectName: cosName,
             configType: COS,
           },
+        });
+        queryClient.invalidateQueries({
+          queryKey: cosQueryKeys.coreAttributes([
+            {
+              configType: COS,
+              configName: [cosName ?? ''],
+              attrName: [MOBILE_CONTACT_FEATURE_SYNC, MOBILE_CALENDAR_FEATURE_SYNC],
+            },
+          ]),
         });
       }
 

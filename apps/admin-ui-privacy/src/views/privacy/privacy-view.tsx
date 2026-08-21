@@ -1,13 +1,12 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { useForm } from '@tanstack/react-form';
-import { useSnackbar } from '@zextras/ui-components';
-import { soapFetch, useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
-import { FC, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -15,25 +14,12 @@ import {
   CARBONIO_SEND_ANALYTICS,
   CARBONIO_SEND_FULL_ERROR_STACK,
   CONFIG,
-  FALSE,
   TRUE,
 } from '../../constants';
+import { useModifyPrivacyConfig } from '../../services/use-modify-privacy-config';
 import { FormButtons } from './parts/form-buttons';
 import { FormSwitch } from './parts/form-switch';
-import { SwitchDescription } from './parts/form-title';
-
-type ModifyConfigAPI = { allowFeedback: boolean; sendAnalytics: boolean; sendFullError: boolean };
-
-async function modifyConfigApi(value: ModifyConfigAPI) {
-  return soapFetch('Batch', {
-    ModifyConfigRequest: [
-      { n: CARBONIO_ALLOW_FEEDBACK, _content: value.allowFeedback ? TRUE : FALSE },
-      { n: CARBONIO_SEND_FULL_ERROR_STACK, _content: value.sendFullError ? TRUE : FALSE },
-      { n: CARBONIO_SEND_ANALYTICS, _content: value.sendAnalytics ? TRUE : FALSE },
-    ],
-    _jsns: 'urn:zimbra',
-  });
-}
+import { SwitchDescription } from './parts/switch-description';
 
 const styles = {
   root: 'flex flex-col justify-start items-center bg-gray6-regular h-full w-full',
@@ -42,16 +28,16 @@ const styles = {
     'flex flex-col items-center items-start justify-start w-full h-[calc(100vh-200px)] pt-xl overflow-auto bg-gray6-regular px-sm box-border',
 };
 
-const PrivacyView: FC = () => {
+const titleStyle = { flexBasis: '30%' };
+
+export function PrivacyView() {
   const [t] = useTranslation();
   const { data: config = [] } = useAllConfig();
-  const createSnackbar = useSnackbar();
   const { data: rights } = useCurrentUserRights();
+  const { mutateAsync } = useModifyPrivacyConfig();
 
-  const allowSetPrivacy = useMemo(() => {
-    const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
-    return !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
-  }, [rights]);
+  const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
+  const allowSetPrivacy = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
   const privacyFeedbackInitialValue = !!(
     config.find((item: { n: string }) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE
@@ -71,23 +57,14 @@ const PrivacyView: FC = () => {
       sendFullError: privacyErrorInitialValue,
     },
     onSubmit: async ({ value, formApi }) => {
-      const response = await modifyConfigApi(value);
-      if (response) {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+      try {
+        await mutateAsync(value);
         formApi.reset(value);
+      } catch {
+        // Error snackbar is handled by useModifyPrivacyConfig.onError
       }
     },
   });
-
-  const onCancel = useCallback(() => form.reset(), [form]);
-  const onSave = useCallback(() => form.handleSubmit(), [form]);
 
   const privacyAnalyticsDescription = t(
     'privacy.analytics_sub_1',
@@ -108,18 +85,12 @@ const PrivacyView: FC = () => {
         {(isDirty) => (
           <>
             <header className={styles.header}>
-              <ds-text
-                as="h2"
-                size="medium"
-                weight="bold"
-                color="gray0"
-                style={{ flexBasis: '30%' } as React.CSSProperties}
-              >
+              <ds-text as="h2" size="medium" weight="bold" color="gray0" style={titleStyle}>
                 {t('label.privacy', 'Privacy')}
               </ds-text>
               {isDirty && (
                 <div className="flex flex-row w-[70%] justify-end items-end">
-                  <FormButtons onCancel={onCancel} onSave={onSave} />
+                  <FormButtons onCancel={() => form.reset()} onSave={() => form.handleSubmit()} />
                 </div>
               )}
             </header>
@@ -164,6 +135,4 @@ const PrivacyView: FC = () => {
       </form.Subscribe>
     </div>
   );
-};
-
-export default PrivacyView;
+}

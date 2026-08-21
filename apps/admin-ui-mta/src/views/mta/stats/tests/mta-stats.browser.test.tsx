@@ -12,7 +12,7 @@ import {
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import MTAStats from '../mta-stats';
+import { MTAStats } from '../mta-stats';
 
 function getAllServersWithMtaResponse() {
   return {

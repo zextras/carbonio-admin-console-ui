@@ -10,6 +10,7 @@ import React, { HTMLAttributes, useCallback, useMemo } from 'react';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getKeyboardPreset, useKeyboard } from '../../hooks/useKeyboard';
 import { AnyColor } from '../../types/utils';
+import type { IconName } from '../../web-components/icon-registry';
 import { Container, ContainerProps } from '../layout/Container';
 import styles from './TabBar.module.css';
 
@@ -28,6 +29,8 @@ interface Item {
   label: string | React.ReactElement;
   CustomComponent?: React.ComponentType<DefaultTabBarItemProps & HTMLAttributes<HTMLDivElement>>;
   disabled?: boolean;
+  icon?: IconName;
+  count?: number;
 }
 
 type TabBarProps = Omit<ContainerProps, 'onChange'> & {
@@ -187,4 +190,4 @@ const TabBar = ({
 };
 
 export { DefaultTabBarItem, TabBar };
-export type { DefaultTabBarItemProps, TabBarProps };
+export type { DefaultTabBarItemProps, Item, TabBarProps };

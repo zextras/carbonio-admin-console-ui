@@ -15,14 +15,14 @@ import { init } from './init';
 const i18nFactory = new I18nFactory();
 const initPromise = init(i18nFactory);
 
-const TBridge = () => {
+function TBridge() {
   useBridge({
     functions: {},
   });
   return null;
-};
+}
 
-export const Bootstrapper = () => {
+export function Bootstrapper() {
   const initResult = use(initPromise);
 
   if (initResult && 'error' in initResult) {
@@ -41,4 +41,4 @@ export const Bootstrapper = () => {
       </ShellI18nextProvider>
     </ReactQueryProvider>
   );
-};
+}

@@ -11,6 +11,8 @@ import {
   LabeledValue,
   ListRow,
   Row,
+  Select,
+  type SelectItem,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -20,7 +22,19 @@ export type GeneralInfoFormValues = {
   cn: string;
   description: string;
   zimbraNotes: string;
+  edition: string;
 };
+
+const EDITION_ITEMS_FULL: Array<SelectItem<string>> = [
+  { label: 'Not assigned', value: '' },
+  { label: 'Email', value: 'mail' },
+  { label: 'Workspace', value: 'workspace' },
+];
+
+const EDITION_ITEMS_ASSIGNED: Array<SelectItem<string>> = [
+  { label: 'Email', value: 'mail' },
+  { label: 'Workspace', value: 'workspace' },
+];
 
 type CosInfoFormApi = ReactFormExtendedApi<
   GeneralInfoFormValues,
@@ -45,7 +59,6 @@ type CosInfoFieldsProps = {
   totalDomain: number;
   canDeleteCOS: boolean;
   readonlyCOS: boolean;
-  associatedEdition: string;
 };
 
 export const CosInfoFields = ({
@@ -56,7 +69,6 @@ export const CosInfoFields = ({
   totalDomain,
   canDeleteCOS,
   readonlyCOS,
-  associatedEdition,
 }: CosInfoFieldsProps) => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
@@ -124,11 +136,24 @@ export const CosInfoFields = ({
         {isAdvanced && (
           <ListRow>
             <Container padding={{ all: 'small' }}>
-              <LabeledValue
-                label={t('label.associated_edition', 'Associated edition')}
-                backgroundColor="gray6"
-                value={associatedEdition}
-              />
+              <form.Field name="edition">
+                {(field) => {
+                  const items = field.state.value ? EDITION_ITEMS_ASSIGNED : EDITION_ITEMS_FULL;
+                  return (
+                    <Select
+                      items={items}
+                      label={t('label.associated_edition', 'Associated edition')}
+                      background="gray5"
+                      showCheckbox={false}
+                      selection={items.find((item) => item.value === field.state.value) ?? items[0]}
+                      onChange={(value): void => {
+                        field.handleChange(value ?? '');
+                      }}
+                      disabled={readonlyCOS}
+                    />
+                  );
+                }}
+              </form.Field>
             </Container>
           </ListRow>
         )}

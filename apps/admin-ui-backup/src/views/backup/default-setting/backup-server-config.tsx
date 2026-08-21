@@ -3,289 +3,351 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Padding, RouteLeavingGuard, Row, Switch } from '@zextras/ui-components';
-import { useModuleLicenseInfo } from '@zextras/ui-shared';
-import { FC, useEffect, useState } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import {
+  Container,
+  Input,
+  ListRow,
+  Padding,
+  RouteLeavingGuard,
+  Row,
+  Switch,
+} from '@zextras/ui-components';
+import { useCurrentUserRights, useGlobalSettings, useModuleLicenseInfo } from '@zextras/ui-shared';
+import type { ChangeEvent } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import type { GlobalConfig } from '../../../../types';
 import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
-import { useBackupConfig } from '../../../hooks/useBackupConfig';
-import BackupConfigHeader from '../components/backup/BackupConfigHeader';
+import { useModifyBackupConfig } from '../../../services/use-modify-backup-config';
+import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
+import { BackupConfigHeader } from '../components/backup/backup-config-header';
+import { defaultSettingsSchema } from './schema';
+import { getDirtyPayload, mapGlobalConfigToFormValues } from './utils';
 
-const BackupServerConfig: FC = () => {
-  const {
-    isDirty,
-    backupDetail,
-    allowSetBackup,
-    onCancel,
-    onSave,
-    changeSwitchOption,
-    changeBackupDetail,
-    changeBackupSchedulerInput,
-    changeBackupSchedulerSwitch,
-    t,
-  } = useBackupConfig();
+function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: GlobalConfig }) {
+  const [t] = useTranslation();
+  const modifyMutation = useModifyBackupConfig();
+  const { data: rights } = useCurrentUserRights();
+  const allowSetBackup = checkAllowSetBackup(rights);
 
   const { moduleLicenseInfo } = useModuleLicenseInfo();
-  const [isBackupModuleLicensed, setIsBackupModuleLicensed] = useState<boolean>(false);
-  const [isBackupRealTimeFeatureLicensed, setBackupRealTimeFeatureLicensed] =
-    useState<boolean>(false);
-  useEffect(() => {
-    if (moduleLicenseInfo?.features && moduleLicenseInfo.features.length > 0) {
-      const backupModule = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_BASIC,
-      );
-      if (backupModule && backupModule[0] && backupModule[0]?.enabled) {
-        setIsBackupModuleLicensed(true);
-      }
+  const licenseFeatures = moduleLicenseInfo?.features ?? [];
+  const isBackupModuleLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
+  );
+  const isBackupRealTimeFeatureLicensed = licenseFeatures.some(
+    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
+  );
 
-      const realTime = moduleLicenseInfo.features.filter(
-        (item: Record<string, string | number | boolean>) => item?.name === BACKUP_REALTIME,
+  const form = useForm({
+    defaultValues: mapGlobalConfigToFormValues(globalConfig),
+    validators: { onChange: defaultSettingsSchema, onSubmit: defaultSettingsSchema },
+    onSubmit: async ({ value }) => {
+      modifyMutation.mutate(
+        getDirtyPayload(value, mapGlobalConfigToFormValues(globalConfig)) as never,
+        {
+          onSuccess: () => form.reset(value, { keepDefaultValues: true }),
+        },
       );
-      if (realTime && realTime[0] && realTime[0]?.enabled) {
-        setBackupRealTimeFeatureLicensed(true);
-      }
-    }
-  }, [moduleLicenseInfo]);
+    },
+  });
+
+  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+
+  if (!isBackupModuleLicensed) {
+    return <RouteLeavingGuard when={false} onSave={() => {}} />;
+  }
 
   return (
     <>
-      {isBackupModuleLicensed && (
-        <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-          <BackupConfigHeader
-            title={t('label.server_config', 'Server Config')}
-            isDirty={isDirty}
-            onCancel={onCancel}
-            onSave={onSave}
-            t={t}
-          />
-          <Row orientation="horizontal" width="100%" background="gray6">
-            <ds-divider></ds-divider>
-          </Row>
-          <Container
-            orientation="column"
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-            style={{ overflow: 'auto' }}
-            width="100%"
-            height="calc(100vh - 200px)"
-            padding={{ all: 'large' }}
-          >
-            <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}></Row>
-            {isBackupRealTimeFeatureLicensed && (
-              <ListRow>
-                <Switch
-                  label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
-                  value={backupDetail.ZxBackup_RealTimeScanner}
-                  onClick={(): void => changeSwitchOption('ZxBackup_RealTimeScanner')}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              </ListRow>
-            )}
+      <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
+        <BackupConfigHeader
+          title={t('label.server_config', 'Server Config')}
+          isDirty={isDirty}
+          onCancel={() => form.reset()}
+          onSave={() => form.handleSubmit()}
+        />
+        <Container
+          orientation="column"
+          crossAlignment="flex-start"
+          mainAlignment="flex-start"
+          style={{ overflow: 'auto' }}
+          width="100%"
+          height="calc(100vh - 200px)"
+          padding={{ all: 'large' }}
+        >
+          <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }} />
+          {isBackupRealTimeFeatureLicensed && (
             <ListRow>
-              <Switch
-                value={backupDetail.ZxBackup_ModuleEnabledAtStartup}
-                label={t(
-                  'backup.backup_is_enable_at_the_startup',
-                  'Backup is enabled at the startup',
+              <form.Field name="enableRealtimeScanner">
+                {(field) => (
+                  <Switch
+                    label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+                    value={field.state.value}
+                    onClick={() => field.handleChange(!field.state.value)}
+                    iconColor="primary"
+                    disabled={!allowSetBackup}
+                  />
                 )}
-                onClick={(): void => changeSwitchOption('ZxBackup_ModuleEnabledAtStartup')}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
+              </form.Field>
             </ListRow>
-            <ListRow>
-              <Switch
-                value={backupDetail.ZxBackup_DoSmartScanOnStartup}
-                label={t(
-                  'backup.run_the_smart_scan_at_the_startup',
-                  'Run the Smartscan at the startup',
-                )}
-                onClick={(): void => changeSwitchOption('ZxBackup_DoSmartScanOnStartup')}
-                iconColor="primary"
-                disabled={!allowSetBackup}
-              />
-            </ListRow>
-            <ListRow>
-              <Container padding={{ top: 'large', bottom: 'large' }}>
-                <ds-divider></ds-divider>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ bottom: 'large' }}>
-                <Input
-                  label={t('backup.backup_path', 'Backup Path')}
-                  isRequired
-                  value={backupDetail.ZxBackup_DestPath}
-                  defaultValue={backupDetail.ZxBackup_DestPath}
-                  onChange={changeBackupDetail}
-                  inputName="ZxBackup_DestPath"
-                  backgroundColor="gray5"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ bottom: 'large' }}>
-                <Input
-                  isRequired
-                  label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
-                    'label.mb',
-                    'MB',
-                  )})`}
-                  value={backupDetail.ZxBackup_SpaceThreshold}
-                  defaultValue={backupDetail.ZxBackup_SpaceThreshold}
-                  onChange={changeBackupDetail}
-                  inputName="ZxBackup_SpaceThreshold"
-                  backgroundColor="gray5"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ bottom: 'medium' }}>
-                <Input
-                  isRequired
-                  label={`${t('backup.local_metadata_threshold', 'Local Metadata Threshold')} (${t(
-                    'label.mb',
-                    'MB',
-                  )})`}
-                  value={backupDetail.backupLocalMetadataThreshold}
-                  defaultValue={backupDetail.backupLocalMetadataThreshold}
-                  onChange={changeBackupDetail}
-                  inputName="backupLocalMetadataThreshold"
-                  backgroundColor="gray5"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ top: 'small', bottom: 'large' }}>
-                <ds-divider></ds-divider>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Padding bottom="large">
+          )}
+          <ListRow>
+            <form.Field name="moduleEnabledAtStartup">
+              {(field) => (
                 <Switch
-                  value={backupDetail.backupSmartScanScheduler?.['cron-enabled']}
-                  onClick={(): void => changeBackupSchedulerSwitch('backupSmartScanScheduler')}
-                  label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                  data-testid={'smart-scan-toggle'}
-                />
-              </Padding>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ bottom: 'medium' }}>
-                <Input
-                  isRequired
-                  label={t('backup.schedule', 'Schedule')}
-                  value={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
-                  defaultValue={backupDetail.backupSmartScanScheduler?.['cron-pattern']}
-                  onChange={changeBackupSchedulerInput}
-                  inputName="backupSmartScanScheduler"
-                  backgroundColor="gray5"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <ds-divider></ds-divider>
-              </Container>
-            </ListRow>
-
-            <ListRow>
-              <Padding bottom="large">
-                <Switch
-                  value={backupDetail.backupPurgeScheduler?.['cron-enabled']}
-                  onClick={(): void => changeBackupSchedulerSwitch('backupPurgeScheduler')}
-                  label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                  data-testid={'backup-purge-toggle'}
-                />
-              </Padding>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ bottom: 'large' }}>
-                <Input
-                  isRequired
-                  label={t('backup.schedule', 'Schedule')}
-                  value={backupDetail.backupPurgeScheduler?.['cron-pattern']}
-                  defaultValue={backupDetail.backupPurgeScheduler?.['cron-pattern']}
-                  onChange={changeBackupSchedulerInput}
-                  inputName="backupPurgeScheduler"
-                  backgroundColor="gray5"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ top: 'small', bottom: 'extralarge' }}>
-                <ds-divider></ds-divider>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container padding={{ bottom: 'small' }}>
-                <Input
-                  isRequired
-                  label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
-                  value={backupDetail.ZxBackup_DataRetentionDays}
-                  defaultValue={backupDetail.ZxBackup_DataRetentionDays}
-                  onChange={changeBackupDetail}
-                  inputName="ZxBackup_DataRetentionDays"
-                  backgroundColor="gray5"
-                  disabled={!allowSetBackup}
-                />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Padding bottom="large">
-                <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                  {t(
-                    'backup.set_backup_forever_msg',
-                    'If you set 0, your data will be kept in backup forever',
-                  )}
-                </ds-text>
-              </Padding>
-            </ListRow>
-
-            <ListRow>
-              <Container padding={{ bottom: 'small' }}>
-                <Input
-                  isRequired
+                  value={field.state.value}
                   label={t(
-                    'backup.keep_delete_accounts_in_backup',
-                    'Keep deleted accounts in the backup',
+                    'backup.backup_is_enable_at_the_startup',
+                    'Backup is enabled at the startup',
                   )}
-                  value={backupDetail.backupAccountsRetentionDays}
-                  defaultValue={backupDetail.backupAccountsRetentionDays}
-                  onChange={changeBackupDetail}
-                  inputName="backupAccountsRetentionDays"
-                  backgroundColor="gray5"
+                  onClick={() => field.handleChange(!field.state.value)}
+                  iconColor="primary"
                   disabled={!allowSetBackup}
                 />
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Padding bottom="large">
-                <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                  {t(
-                    'backup.set_backup_forever_msg',
-                    'If you set 0, your data will be kept in backup forever',
+              )}
+            </form.Field>
+          </ListRow>
+          <ListRow>
+            <form.Field name="runSmartScanOnStartup">
+              {(field) => (
+                <Switch
+                  value={field.state.value}
+                  label={t(
+                    'backup.run_the_smart_scan_at_the_startup',
+                    'Run the Smartscan at the startup',
                   )}
-                </ds-text>
-              </Padding>
-            </ListRow>
-          </Container>
+                  onClick={() => field.handleChange(!field.state.value)}
+                  iconColor="primary"
+                  disabled={!allowSetBackup}
+                />
+              )}
+            </form.Field>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ top: 'large', bottom: 'large' }}>
+              <ds-divider></ds-divider>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'large' }}>
+              <form.Field name="backupDestPath">
+                {(field) => (
+                  <Input
+                    label={t('backup.backup_path', 'Backup Path')}
+                    isRequired
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'large' }}>
+              <form.Field name="spaceThreshold">
+                {(field) => (
+                  <Input
+                    isRequired
+                    label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
+                      'label.mb',
+                      'MB',
+                    )})`}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'medium' }}>
+              <form.Field name="backupLocalMetadataThreshold">
+                {(field) => (
+                  <Input
+                    isRequired
+                    label={`${t(
+                      'backup.local_metadata_threshold',
+                      'Local Metadata Threshold',
+                    )} (${t('label.mb', 'MB')})`}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ top: 'small', bottom: 'large' }}>
+              <ds-divider></ds-divider>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Padding bottom="large">
+              <form.Field name="smartScanScheduleEnabled">
+                {(field) => (
+                  <Switch
+                    value={field.state.value}
+                    onClick={() => field.handleChange(!field.state.value)}
+                    label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
+                    iconColor="primary"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Padding>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'medium' }}>
+              <form.Field name="smartScanSchedulePattern">
+                {(field) => (
+                  <Input
+                    isRequired
+                    label={t('backup.schedule', 'Schedule')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ top: 'small', bottom: 'extralarge' }}>
+              <ds-divider></ds-divider>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Padding bottom="large">
+              <form.Field name="purgeScheduleEnabled">
+                {(field) => (
+                  <Switch
+                    value={field.state.value}
+                    onClick={() => field.handleChange(!field.state.value)}
+                    label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
+                    iconColor="primary"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Padding>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'large' }}>
+              <form.Field name="purgeSchedulePattern">
+                {(field) => (
+                  <Input
+                    isRequired
+                    label={t('backup.schedule', 'Schedule')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ top: 'small', bottom: 'extralarge' }}>
+              <ds-divider></ds-divider>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'small' }}>
+              <form.Field name="keepDeletedItemsDays">
+                {(field) => (
+                  <Input
+                    isRequired
+                    label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Padding bottom="large">
+              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
+                {t(
+                  'backup.set_backup_forever_msg',
+                  'If you set 0, your data will be kept in backup forever',
+                )}
+              </ds-text>
+            </Padding>
+          </ListRow>
+          <ListRow>
+            <Container padding={{ bottom: 'small' }}>
+              <form.Field name="keepDeletedAccountsDays">
+                {(field) => (
+                  <Input
+                    isRequired
+                    label={t(
+                      'backup.keep_delete_accounts_in_backup',
+                      'Keep deleted accounts in the backup',
+                    )}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    backgroundColor="gray5"
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Padding bottom="large">
+              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
+                {t(
+                  'backup.set_backup_forever_msg',
+                  'If you set 0, your data will be kept in backup forever',
+                )}
+              </ds-text>
+            </Padding>
+          </ListRow>
         </Container>
-      )}
-
-      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+      </Container>
+      <RouteLeavingGuard when={isDirty} onSave={() => form.handleSubmit()} />
     </>
   );
+}
+
+export const BackupServerConfig = () => {
+  const { data: globalConfig, isPending } = useGlobalSettings();
+
+  if (isPending || !globalConfig) {
+    return (
+      <Container padding={{ all: 'large' }} mainAlignment="center" background="gray6">
+        <ds-spinner />
+      </Container>
+    );
+  }
+
+  return <BackupServerConfigForm globalConfig={globalConfig} />;
 };
-export default BackupServerConfig;

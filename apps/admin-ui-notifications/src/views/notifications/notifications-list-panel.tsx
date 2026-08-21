@@ -6,14 +6,14 @@
 
 import { Container, ListItems, ListPanelItem } from '@zextras/ui-components';
 import { replaceHistory, useRelativePathname } from '@zextras/ui-shared';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
 import { LIST } from '../../constants';
 import { type ManageOption } from '../../types/notifications';
 
-const NotificationsListPanel: FC = () => {
+export const NotificationsListPanel = () => {
   const [t] = useTranslation();
   const [isManageOptionsExpanded, setIsManageOptionsExpanded] = useState<boolean>(true);
 
@@ -60,5 +60,3 @@ const NotificationsListPanel: FC = () => {
     </Container>
   );
 };
-
-export default NotificationsListPanel;

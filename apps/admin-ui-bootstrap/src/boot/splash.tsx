@@ -7,12 +7,13 @@ import '../splash.css';
 
 import Helmet from '../svg/carbonio-head.svg';
 
-const LoadingView = () => (
-  <div className="splash">
-    <Helmet fill="#A3AEBC" />
-    <div className="loader">
-      <div className="bar"></div>
+export function LoadingView() {
+  return (
+    <div className="splash">
+      <Helmet fill="#A3AEBC" />
+      <div className="loader">
+        <div className="bar"></div>
+      </div>
     </div>
-  </div>
-);
-export default LoadingView;
+  );
+}
