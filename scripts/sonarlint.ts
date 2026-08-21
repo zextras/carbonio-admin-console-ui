@@ -6,7 +6,7 @@
 /* eslint-disable no-console */
 import { execSync } from 'child_process';
 
-import { colorLog } from './utils';
+import { colorLog, type ColorName } from './utils';
 
 const SONAR_URL = 'https://sonar.zextras.tools';
 const PROJECT_KEY = 'carbonio-admin-console-ui';
@@ -14,7 +14,7 @@ const PAGE_SIZE = 500;
 
 type Severity = 'BLOCKER' | 'CRITICAL' | 'MAJOR' | 'MINOR' | 'INFO';
 
-const SEVERITY_COLORS: Record<Severity, string> = {
+const SEVERITY_COLORS: Record<Severity, ColorName> = {
 	BLOCKER: 'red',
 	CRITICAL: 'red',
 	MAJOR: 'orange',
@@ -106,7 +106,7 @@ Examples:
   pnpm sonarlint --file cos-list-panel.tsx
   pnpm sonarlint --severity BLOCKER,CRITICAL
   pnpm sonarlint --rule S7735
-  pnpm sonarlint --branch devel --app admin-ui-cos
+  pnpm sonarlint --branch main --app admin-ui-cos
 `);
 }
 
@@ -114,8 +114,8 @@ function getGitBranch(): string {
 	try {
 		return execSync('git branch --show-current', { encoding: 'utf-8' }).trim();
 	} catch {
-		colorLog('Warning: Could not detect git branch, using "devel"', 'orange');
-		return 'devel';
+		colorLog('Warning: Could not detect git branch, using "main"', 'orange');
+		return 'main';
 	}
 }
 
