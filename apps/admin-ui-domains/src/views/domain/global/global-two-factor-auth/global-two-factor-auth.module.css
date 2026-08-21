@@ -4,9 +4,73 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* Faithful port of the extracted Container/Row/Padding layout of the legacy
-   2fa-config view (Container defaults: box-sizing border-box, flex, 100% size;
-   Row defaults: flex, wrap). */
+.container {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--color-gray6-regular);
+  padding: var(--padding-size-large);
+}
+
+.contentColumn {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 100%;
+  flex: 1;
+  min-height: 0;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 100%;
+  height: 3.5rem;
+}
+
+.headerInner {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.titleSide {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  width: 50%;
+  padding: var(--padding-size-large);
+}
+
+.actionsSide {
+  box-sizing: border-box;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: flex-end;
+  width: 50%;
+  padding: var(--padding-size-large);
+}
+
+.cancelWrapper {
+  padding-right: var(--padding-size-small);
+}
 
 .form {
   box-sizing: border-box;
@@ -43,7 +107,9 @@
 
 .applyAllRow {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  align-items: flex-start;
   width: 100%;
   padding-top: var(--padding-size-large);
 }
@@ -66,7 +132,8 @@
 
 .serviceRow {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
+  justify-content: space-between;
   align-items: center;
   width: 100%;
   padding-top: var(--padding-size-large);

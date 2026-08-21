@@ -1,53 +1,71 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Padding,
-  RouteLeavingGuard,
-  Row,
-  useSnackbar,
-} from '@zextras/ui-components';
-import { differenceWith, isEqual, map, some } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import { Button, RouteLeavingGuard, useSnackbar } from '@zextras/ui-components';
+import { isEqual } from 'lodash-es';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { TwoFactorAuthPolicyValues } from '../../../../../types';
+import type { TwoFactorAuthPolicyValues, TwoFactorPolicy } from '../../../../../types';
 import { OK } from '../../../../constants';
 import { use2faPolicies } from '../../../../services/use-2fa-policies';
 import { useSet2faPolicies } from '../../../../services/use-set-2fa-policies';
-import { isValidIpRange, TwoFactorPolicyArray } from '../../../utility/utils';
-import { TwoFactorAuthencationConfig } from '../../two-factor-authentication/2fa-config';
+import { TwoFactorPolicyArray } from '../../../utility/utils';
+import styles from './global-two-factor-auth.module.css';
+import { TwoFactorPoliciesForm } from './two-factor-policies-form';
+import {
+  type TwoFactorPoliciesFormValues,
+  twoFactorPoliciesSchema,
+} from './two-factor-policies-schema';
 
+/** Builds the form values record (keyed by service name) from the server policies array. */
+function buildPoliciesFormValues(
+  policies: Array<TwoFactorAuthPolicyValues>,
+  services: Array<TwoFactorPolicy>,
+): TwoFactorPoliciesFormValues {
+  const values: TwoFactorPoliciesFormValues = {};
+  services.forEach((service) => {
+    const entry = policies.find((policy) => Object.hasOwn(policy, service.keyToGet))?.[
+      service.keyToGet
+    ];
+    values[service.keyToGet] = {
+      trustedDevice: entry?.trustedDevice,
+      trustedIpRange: entry?.trustedIpRange ?? [],
+    };
+  });
+  return values;
+}
+
+/** Services whose form values differ from the saved defaults (deep compare). */
+function getChangedServices(
+  values: TwoFactorPoliciesFormValues,
+  defaultValues: TwoFactorPoliciesFormValues,
+): Array<string> {
+  return Object.keys(values).filter((service) => !isEqual(values[service], defaultValues[service]));
+}
+
+/**
+ * Global 2-Factor Authentication view: per-service 2FA policies (trusted
+ * device / trusted IP ranges), read via use2faPolicies and saved via
+ * useSet2faPolicies.
+ */
 export const GlobalTwoFactorAuth = () => {
   const [t] = useTranslation();
-  const [isDirty, setIsDirty] = useState<boolean>(false);
   const createSnackbar = useSnackbar();
-  const [arrPoliciesToModify, setArrPoliciesToModify] = useState<Array<TwoFactorAuthPolicyValues>>(
-    [],
-  );
-  const setPolicyMutation = useSet2faPolicies('');
-  const { data: arrPolicies = [], error: policiesError } = use2faPolicies('');
-  const twoFactorPolicyArray = TwoFactorPolicyArray(t);
-
-  const [syncedPolicies, setSyncedPolicies] =
-    useState<Array<TwoFactorAuthPolicyValues>>(arrPolicies);
-  if (syncedPolicies !== arrPolicies) {
-    setSyncedPolicies(arrPolicies);
-    setArrPoliciesToModify(arrPolicies);
-  }
+  const { data: policies = [], error: policiesError, isPending } = use2faPolicies('');
 
   useEffect(() => {
     if (policiesError) {
       createSnackbar({
         key: 'error',
         severity: 'error',
-        label: policiesError?.message
-          ? policiesError?.message
-          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+        label:
+          policiesError.message ??
+          t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
@@ -55,132 +73,130 @@ export const GlobalTwoFactorAuth = () => {
     }
   }, [policiesError, createSnackbar, t]);
 
-  const modifyPolicies = (newPolicies: Array<TwoFactorAuthPolicyValues>): void => {
-    setArrPoliciesToModify(newPolicies);
-    setIsDirty(true);
-  };
+  if (isPending) {
+    return <ds-spinner></ds-spinner>;
+  }
 
-  const handleOnSave = (): void => {
-    const dif = differenceWith(arrPoliciesToModify, arrPolicies, isEqual);
+  return <GlobalTwoFactorAuthContent policies={policies} />;
+};
 
-    map(dif, (policy: TwoFactorAuthPolicyValues) => {
-      setPolicyMutation.mutate(
-        {
-          service: Object.keys(policy)[0],
-          trustedDevice: policy[Object.keys(policy)[0]]?.trustedDevice,
-          trustedIpRange:
-            policy[Object.keys(policy)[0]]?.trustedIpRange?.length !== 0
-              ? policy[Object.keys(policy)[0]]?.trustedIpRange?.toString()
-              : 'empty',
-        },
-        {
-          onSuccess: ({ message }): void => {
-            createSnackbar({
-              key: 'policy-success',
-              severity: message && message !== OK ? 'warning' : 'success',
-              label:
-                message && message !== OK
-                  ? message
-                  : t(
-                      'label.2fa-policy-updated-successfully',
-                      'The settings have been applied to all services',
-                    ),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            setIsDirty(false);
-          },
-          onError: (error: Error): void => {
-            createSnackbar({
-              key: 'policy-error',
-              severity: 'error',
-              label: error?.message
-                ? error?.message
-                : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          },
-        },
+type GlobalTwoFactorAuthContentProps = {
+  policies: Array<TwoFactorAuthPolicyValues>;
+};
+
+const GlobalTwoFactorAuthContent = ({ policies }: GlobalTwoFactorAuthContentProps) => {
+  const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
+  const setPolicyMutation = useSet2faPolicies('');
+  const twoFactorPolicyArray = TwoFactorPolicyArray(t);
+
+  const defaultValues = buildPoliciesFormValues(policies, twoFactorPolicyArray);
+
+  const form = useForm({
+    defaultValues,
+    validators: { onChange: twoFactorPoliciesSchema, onSubmit: twoFactorPoliciesSchema },
+    onSubmit: async ({ value }) => {
+      const results = await Promise.allSettled(
+        getChangedServices(value, defaultValues).map((service) =>
+          setPolicyMutation.mutateAsync({
+            service,
+            trustedDevice: value[service]?.trustedDevice,
+            trustedIpRange:
+              (value[service]?.trustedIpRange?.length ?? 0) > 0
+                ? value[service]?.trustedIpRange?.join(',')
+                : 'empty',
+          }),
+        ),
       );
-    });
+
+      const failures = results.filter(
+        (result): result is PromiseRejectedResult => result.status === 'rejected',
+      );
+      if (failures.length > 0) {
+        const failureReason = failures[0]?.reason;
+        createSnackbar({
+          key: 'policy-error',
+          severity: 'error',
+          label:
+            failureReason instanceof Error
+              ? failureReason.message
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        return;
+      }
+
+      const warningMessages = results
+        .map((result) => (result.status === 'fulfilled' ? result.value.message : undefined))
+        .filter((message): message is string => Boolean(message) && message !== OK);
+      createSnackbar({
+        key: 'policy-success',
+        severity: warningMessages.length > 0 ? 'warning' : 'success',
+        label:
+          warningMessages[0] ??
+          t(
+            'label.2fa-policy-updated-successfully',
+            'The settings have been applied to all services',
+          ),
+        autoHideTimeout: 3000,
+        hideButton: true,
+        replace: true,
+      });
+
+      form.reset(value, { keepDefaultValues: true });
+    },
+  });
+
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const canSubmit = useSelector(form.store, (s) => s.canSubmit);
+
+  const onSave = (): void => {
+    void form.handleSubmit();
   };
 
-  const handleOnCancel = (): void => {
-    setArrPoliciesToModify(arrPolicies);
+  const onCancel = (): void => {
+    form.reset();
   };
 
   return (
-    <Container padding={{ all: 'large' }} mainAlignment="flex-start" background="gray6">
-      <Container
-        orientation="column"
-        background="gray6"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-      >
-        <Row mainAlignment="flex-start" width="100%">
-          <Container orientation="vertical" mainAlignment="space-around" height="3.5rem">
-            <Row orientation="horizontal" width="100%">
-              <Row
-                padding={{ all: 'large' }}
-                mainAlignment="flex-start"
-                width="50%"
-                crossAlignment="flex-start"
-              >
+    <div className={styles.container}>
+      <div className={styles.contentColumn}>
+        <div className={styles.headerRow}>
+          <div className={styles.header}>
+            <div className={styles.headerInner}>
+              <div className={styles.titleSide}>
                 <ds-text as="h1" size="medium" weight="bold" color="gray0">
                   {t('label.2-factor-authentication', '2-Factor-Authentication')}
                 </ds-text>
-              </Row>
-              <Row
-                padding={{ all: 'large' }}
-                width="50%"
-                mainAlignment="flex-end"
-                crossAlignment="flex-end"
-              >
-                <Padding right="small">
+              </div>
+              <div className={styles.actionsSide}>
+                <div className={styles.cancelWrapper}>
                   {isDirty && (
                     <Button
                       label={t('label.cancel', 'Cancel')}
                       color="secondary"
-                      onClick={handleOnCancel}
+                      onClick={onCancel}
                     />
                   )}
-                </Padding>
+                </div>
                 {isDirty && (
                   <Button
                     label={t('label.save', 'Save')}
                     color="primary"
-                    onClick={handleOnSave}
-                    disabled={
-                      twoFactorPolicyArray.filter((e: { label?: string; keyToGet: string }) =>
-                        some(
-                          map(
-                            arrPoliciesToModify.find((obj: any) =>
-                              Object.prototype.hasOwnProperty.call(obj, e.keyToGet),
-                            )?.[e.keyToGet].trustedIpRange,
-                            (ip: string) => ({ label: ip, error: !isValidIpRange(ip) }),
-                          ) || [],
-                          { error: true },
-                        ),
-                      ).length > 0
-                    }
+                    onClick={onSave}
+                    disabled={!canSubmit}
                   />
                 )}
-              </Row>
-            </Row>
-          </Container>
+              </div>
+            </div>
+          </div>
           <ds-divider></ds-divider>
-        </Row>
-        <TwoFactorAuthencationConfig
-          policies={arrPolicies}
-          modifyPolicies={modifyPolicies}
-          arrPoliciesToModify={arrPoliciesToModify}
-          twoFactorPolicyArray={twoFactorPolicyArray}
-        />
-      </Container>
-      <RouteLeavingGuard when={isDirty} onSave={handleOnSave} />
-    </Container>
+        </div>
+        <TwoFactorPoliciesForm form={form} services={twoFactorPolicyArray} />
+      </div>
+      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+    </div>
   );
 };
