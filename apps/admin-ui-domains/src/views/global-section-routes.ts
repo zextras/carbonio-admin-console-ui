@@ -20,7 +20,7 @@ import GlobalActiveSync from './domain/global/global-active-sync';
 import { GlobalAddressBook } from './domain/global/global-address-book';
 import { GlobalAdministrators } from './domain/global/global-administrators/global-administrators';
 import { GlobalDetailPanel } from './domain/global/global-detail-panel';
-import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
+import { GlobalTwoFactorAuth } from './domain/global/global-two-factor-auth/global-two-factor-auth';
 import { GlobalWhiteLabel } from './domain/global/global-white-label/global-white-label';
 import QuarantineList from './quarantine/quarantine-list';
 
@@ -76,7 +76,7 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     id: TWO_FACTOR_AUTHENTICATION,
     labelKey: 'label.two_factor_authentication',
     labelDefault: '2-Factor Authentication',
-    Component: GlobalTwoFactorAuthentcation,
+    Component: GlobalTwoFactorAuth,
   },
   {
     id: ACTIVE_SYNC,

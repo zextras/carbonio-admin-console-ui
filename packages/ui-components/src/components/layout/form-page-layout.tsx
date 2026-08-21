@@ -46,11 +46,21 @@ export const FormPageLayout = ({
                 <Button
                   label={t('label.cancel', 'Cancel')}
                   color="secondary"
-                  onClick={onCancel}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onCancel();
+                  }}
                 />
               )}
               {onSave && (
-                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+                <Button
+                  label={t('label.save', 'Save')}
+                  color="primary"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSave();
+                  }}
+                />
               )}
             </div>
           )}
