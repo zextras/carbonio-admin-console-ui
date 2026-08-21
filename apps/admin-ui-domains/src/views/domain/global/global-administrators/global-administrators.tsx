@@ -41,7 +41,7 @@ export const GlobalAdministrators = () => {
 	} | null>(null);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 
-	const { data, isFetching } = useAdminAccountList(offset, limit);
+	const { data, isLoading } = useAdminAccountList(offset, limit);
 	const accounts = data?.accounts ?? [];
 	const totalAccount = data?.total ?? 0;
 
@@ -104,19 +104,19 @@ export const GlobalAdministrators = () => {
 				</div>
 				<div className={styles.tableArea}>
 					<Table
-						rows={isFetching ? [] : accountList}
+						rows={isLoading ? [] : accountList}
 						headers={headers}
 						showCheckbox={false}
 						multiSelect={false}
 						RowFactory={HoverableRowFactory}
 						HeaderFactory={CustomHeaderFactory}
 					/>
-					{isFetching && (
+					{isLoading && (
 						<div className={styles.spinner}>
 							<ds-spinner></ds-spinner>
 						</div>
 					)}
-					{accountList.length === 0 && !isFetching && <AdministratorsEmptyState />}
+					{accountList.length === 0 && !isLoading && <AdministratorsEmptyState />}
 					{accountList.length !== 0 && (
 						<div className={styles.footer}>
 							<div className={styles.paging}>
