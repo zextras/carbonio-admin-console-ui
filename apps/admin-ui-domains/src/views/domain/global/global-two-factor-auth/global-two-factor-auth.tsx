@@ -162,40 +162,24 @@ const GlobalTwoFactorAuthContent = ({ policies }: GlobalTwoFactorAuthContentProp
 
   return (
     <div className={styles.container}>
-      <div className={styles.contentColumn}>
-        <div className={styles.headerRow}>
-          <div className={styles.header}>
-            <div className={styles.headerInner}>
-              <div className={styles.titleSide}>
-                <ds-text as="h1" size="medium" weight="bold" color="gray0">
-                  {t('label.2-factor-authentication', '2-Factor-Authentication')}
-                </ds-text>
-              </div>
-              <div className={styles.actionsSide}>
-                <div className={styles.cancelWrapper}>
-                  {isDirty && (
-                    <Button
-                      label={t('label.cancel', 'Cancel')}
-                      color="secondary"
-                      onClick={onCancel}
-                    />
-                  )}
-                </div>
-                {isDirty && (
-                  <Button
-                    label={t('label.save', 'Save')}
-                    color="primary"
-                    onClick={onSave}
-                    disabled={!canSubmit}
-                  />
-                )}
-              </div>
-            </div>
+      <div className={styles.header}>
+        <ds-text as="h1" size="medium" weight="bold" color="gray0">
+          {t('label.2-factor-authentication', '2-Factor-Authentication')}
+        </ds-text>
+        {isDirty && (
+          <div className={styles.actions}>
+            <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
+            <Button
+              label={t('label.save', 'Save')}
+              color="primary"
+              onClick={onSave}
+              disabled={!canSubmit}
+            />
           </div>
-          <ds-divider></ds-divider>
-        </div>
-        <TwoFactorPoliciesForm form={form} services={twoFactorPolicyArray} />
+        )}
       </div>
+      <ds-divider></ds-divider>
+      <TwoFactorPoliciesForm form={form} services={twoFactorPolicyArray} />
       <RouteLeavingGuard when={isDirty} onSave={onSave} />
     </div>
   );

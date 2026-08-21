@@ -9,67 +9,25 @@
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
   width: 100%;
   height: 100%;
   background: var(--color-gray6-regular);
   padding: var(--padding-size-large);
 }
 
-.contentColumn {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  width: 100%;
-  flex: 1;
-  min-height: 0;
-}
-
-.headerRow {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  width: 100%;
-}
-
 .header {
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: center;
   width: 100%;
-  height: 3.5rem;
+  min-height: 3.5rem;
 }
 
-.headerInner {
+.actions {
   display: flex;
-  flex-wrap: wrap;
-  width: 100%;
-}
-
-.titleSide {
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  width: 50%;
-  padding: var(--padding-size-large);
-}
-
-.actionsSide {
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-  align-items: flex-end;
-  width: 50%;
-  padding: var(--padding-size-large);
-}
-
-.cancelWrapper {
-  padding-right: var(--padding-size-small);
+  align-items: center;
+  gap: var(--padding-size-small);
 }
 
 .form {
