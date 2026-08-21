@@ -48,14 +48,22 @@ describe('MailSection', () => {
 
   it('reflects the initial form values on each switch', () => {
     renderMailSection();
-    expect(screen.getByRole('switch', { name: 'Mail Signatures' })).toBeChecked();
-    expect(screen.getByRole('switch', { name: 'Out of Office Reply' })).not.toBeChecked();
     expect(
-      screen.getByRole('switch', { name: 'Allow user to import external mailbox' }),
-    ).not.toBeChecked();
+      screen.getByRole('switch', { name: 'Mail Signatures' }).getAttribute('aria-checked'),
+    ).toBe('true');
     expect(
-      screen.getByRole('switch', { name: 'Allow user to export their mailbox' }),
-    ).toBeChecked();
+      screen.getByRole('switch', { name: 'Out of Office Reply' }).getAttribute('aria-checked'),
+    ).toBe('false');
+    expect(
+      screen
+        .getByRole('switch', { name: 'Allow user to import external mailbox' })
+        .getAttribute('aria-checked'),
+    ).toBe('false');
+    expect(
+      screen
+        .getByRole('switch', { name: 'Allow user to export their mailbox' })
+        .getAttribute('aria-checked'),
+    ).toBe('true');
   });
 
   it('toggles a switch independently from the others', () => {
@@ -64,23 +72,31 @@ describe('MailSection', () => {
     const signatures = screen.getByRole('switch', { name: 'Mail Signatures' });
     const outOfOffice = screen.getByRole('switch', { name: 'Out of Office Reply' });
 
-    expect(signatures).toBeChecked();
+    expect(signatures.getAttribute('aria-checked')).toBe('true');
     fireEvent.click(signatures);
-    expect(signatures).not.toBeChecked();
+    expect(signatures.getAttribute('aria-checked')).toBe('false');
 
     // Unrelated switch must not be affected.
-    expect(outOfOffice).not.toBeChecked();
+    expect(outOfOffice.getAttribute('aria-checked')).toBe('false');
   });
 
   it('disables all switches when readonlyCOS is true', () => {
     renderMailSection(true);
-    expect(screen.getByRole('switch', { name: 'Mail Signatures' })).toBeDisabled();
-    expect(screen.getByRole('switch', { name: 'Out of Office Reply' })).toBeDisabled();
     expect(
-      screen.getByRole('switch', { name: 'Allow user to import external mailbox' }),
-    ).toBeDisabled();
+      screen.getByRole('switch', { name: 'Mail Signatures' }).getAttribute('aria-disabled'),
+    ).toBe('true');
     expect(
-      screen.getByRole('switch', { name: 'Allow user to export their mailbox' }),
-    ).toBeDisabled();
+      screen.getByRole('switch', { name: 'Out of Office Reply' }).getAttribute('aria-disabled'),
+    ).toBe('true');
+    expect(
+      screen
+        .getByRole('switch', { name: 'Allow user to import external mailbox' })
+        .getAttribute('aria-disabled'),
+    ).toBe('true');
+    expect(
+      screen
+        .getByRole('switch', { name: 'Allow user to export their mailbox' })
+        .getAttribute('aria-disabled'),
+    ).toBe('true');
   });
 });
