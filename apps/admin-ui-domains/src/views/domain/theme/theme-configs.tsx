@@ -161,6 +161,8 @@ export const ThemeConfigs = ({
                 'Clicking on the Logo will redirect the users to...',
               )}
               globalTheme={globalTheme}
+              isGlobalTheme={isGlobalTheme}
+              hasModifyRights={hasModifyRights}
             />
           </ListRow>
           <ListRow>
@@ -215,6 +217,8 @@ export const ThemeConfigs = ({
                 name="carbonioWebUiPrimaryColor"
                 label={PRIMARY_COLOR_CODE_EX}
                 globalTheme={globalTheme}
+                isGlobalTheme={isGlobalTheme}
+                hasModifyRights={hasModifyRights}
                 errorLabel={LIGHT_PRIMARY_COLOR_ERROR_LABEL}
                 errorLabelDefault="Primary Color for Light Mode is not valid"
               />
@@ -225,6 +229,8 @@ export const ThemeConfigs = ({
                 name="carbonioWebUiDarkPrimaryColor"
                 label={PRIMARY_COLOR_CODE_EX}
                 globalTheme={globalTheme}
+                isGlobalTheme={isGlobalTheme}
+                hasModifyRights={hasModifyRights}
                 errorLabel={DARK_PRIMARY_COLOR_ERROR_LABEL}
                 errorLabelDefault="Primary Color for Dark Mode is not valid"
               />

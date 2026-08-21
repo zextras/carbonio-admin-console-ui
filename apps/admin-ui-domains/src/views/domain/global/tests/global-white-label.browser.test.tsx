@@ -7,6 +7,7 @@
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
+  setupAccount,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { describe, expect, it } from 'vitest';
@@ -25,15 +26,20 @@ const CONFIG_DATA: Array<ConfigItem> = [
   { n: 'carbonioWebUiDescription', _content: 'Example Description' },
 ];
 
-async function setup(configData: Array<ConfigItem> = CONFIG_DATA): Promise<
-  ReturnType<typeof getQueryClient>
-> {
+async function setup(
+  configData: Array<ConfigItem> = CONFIG_DATA,
+  restrictedRights = false,
+): Promise<ReturnType<typeof getQueryClient>> {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['all-config'], configData);
   createBrowserSoapAPIInterceptor('GetAllConfig', { a: configData });
+  if (restrictedRights) {
+    await setupAccount(queryClient);
+    queryClient.setQueryData(['effective-rights', 'test@example.com'], []);
+  }
   await setupBrowserTest(<GlobalWhiteLabel />, {
     queryClient,
-    grantRights: 'config',
+    grantRights: restrictedRights ? undefined : 'config',
   });
   return queryClient;
 }
@@ -70,10 +76,27 @@ describe('GlobalWhiteLabel', () => {
 
     it('should load the primary color value from config', async () => {
       await setup();
-      const input = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const input = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await expect.element(input).toHaveValue('#225CA8');
+    });
+  });
+
+  describe('Restricted admin', () => {
+    it('should disable theme fields when the admin lacks global config modify rights', async () => {
+      await setup(CONFIG_DATA, true);
+
+      await expect
+        .element(page.getByRole('textbox', { name: /clicking on the logo will redirect/i }))
+        .toBeDisabled();
+      await expect
+        .element(page.getByRole('textbox', { name: 'ex. #225CA8' }).first())
+        .toBeDisabled();
+      await expect
+        .element(page.getByRole('textbox', { name: 'ex. #225CA8' }).last())
+        .toBeDisabled();
+      await expect
+        .element(page.getByRole('button', { name: /empty all fields/i }))
+        .toBeDisabled();
     });
   });
 
@@ -82,9 +105,7 @@ describe('GlobalWhiteLabel', () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#FF0000');
 
@@ -104,9 +125,7 @@ describe('GlobalWhiteLabel', () => {
       createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 
@@ -134,9 +153,7 @@ describe('GlobalWhiteLabel', () => {
       });
       await setup(serverConfig);
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 
@@ -156,9 +173,7 @@ describe('GlobalWhiteLabel', () => {
     it('should revert changes and hide Save/Cancel when Cancel is clicked', async () => {
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 
@@ -219,9 +234,7 @@ describe('GlobalWhiteLabel', () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, 'INVALID');
 
@@ -241,9 +254,7 @@ describe('GlobalWhiteLabel', () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
-      const darkColorInput = page
-        .getByTestId('inherited-carbonioWebUiDarkPrimaryColor')
-        .getByRole('textbox');
+      const darkColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).last();
       await userEvent.clear(darkColorInput);
       await userEvent.type(darkColorInput, 'NOTHEX');
 
