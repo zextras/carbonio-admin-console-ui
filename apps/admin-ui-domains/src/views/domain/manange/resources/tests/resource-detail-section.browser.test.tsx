@@ -5,12 +5,13 @@
  */
 import { domainByIdKey } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import { type FC, type ReactElement, useState } from 'react';
+import { type ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
-import { ResourceContext } from '../resource-context';
-import ResourceDetailSection from '../resource-detail-section';
+import { ResourceDetailSection } from '../resource-detail-section';
+import { ResourceFormContext } from '../resource-form-context';
+import { useCreateResourceForm } from '../use-create-resource-form';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
@@ -19,18 +20,6 @@ const COS_LIST = [
 	{ id: 'cos-1', name: 'Default', a: [] },
 	{ id: 'cos-2', name: 'Premium', a: [] },
 ];
-
-const INITIAL_RESOURCE = {
-	displayName: '',
-	name: '',
-	domain: '',
-	zimbraCOSId: undefined,
-	zimbraAccountStatus: undefined,
-	zimbraCalResType: undefined,
-	zimbraCalResAutoDeclineRecurring: undefined,
-	schedulePolicyType: undefined,
-	changeNameBool: false,
-};
 
 function setup(ui: ReactElement) {
 	const queryClient = getQueryClient();
@@ -51,12 +40,12 @@ function setup(ui: ReactElement) {
 	});
 }
 
-const TestApp: FC = () => {
-	const [resourceDetail, setResourceDetail] = useState<any>(INITIAL_RESOURCE);
+const TestApp = () => {
+	const form = useCreateResourceForm();
 	return (
-		<ResourceContext.Provider value={{ resourceDetail, setResourceDetail }}>
+		<ResourceFormContext.Provider value={{ form }}>
 			<ResourceDetailSection />
-		</ResourceContext.Provider>
+		</ResourceFormContext.Provider>
 	);
 };
 
@@ -130,6 +119,27 @@ describe('ResourceDetailSection (browser)', () => {
 			setup(<TestApp />);
 
 			await expect.element(page.getByText('Class of Service', { exact: true })).toBeVisible();
+		});
+	});
+
+	describe('Name auto-generation', () => {
+		it('auto-fills the Name field from the ResourceName when the user types a display name', async () => {
+			setup(<TestApp />);
+
+			const resourceNameInput = page.getByLabelText('ResourceName');
+			await userEvent.type(resourceNameInput, 'Conference Room');
+
+			const nameInput = page.getByLabelText('Name', { exact: true });
+			await expect.element(nameInput).not.toHaveValue('');
+		});
+
+		it('allows manual override of the auto-generated Name field', async () => {
+			setup(<TestApp />);
+
+			const nameInput = page.getByLabelText('Name', { exact: true });
+			await userEvent.type(nameInput, 'myroom');
+
+			await expect.element(nameInput).toHaveValue('myroom');
 		});
 	});
 });

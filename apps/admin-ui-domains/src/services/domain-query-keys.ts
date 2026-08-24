@@ -22,6 +22,15 @@ export const domainQueryKeys = {
   addressBookService: () => [...domainQueryKeys.all, 'address-book-service'] as const,
   antiDosConfig: () => [...domainQueryKeys.all, 'anti-dos-config'] as const,
   samlConfig: (domain: string) => [...domainQueryKeys.all, 'saml-config', domain] as const,
+  calResource: (resourceId: string) => [...domainQueryKeys.all, 'cal-resource', resourceId] as const,
+  calResourceList: (
+    domain: string,
+    query: string,
+    sortBy: string,
+    sortOrder: string,
+    offset: number,
+    limit: number,
+  ) => [...domainQueryKeys.all, 'cal-resource-list', domain, query, sortBy, sortOrder, offset, limit] as const,
   accountDetail: (accountId: string) =>
     [...domainQueryKeys.all, 'account-detail', accountId] as const,
   accountCoreAttributes: (accountId: string) =>

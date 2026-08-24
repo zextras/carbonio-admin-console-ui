@@ -1,21 +1,36 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, CustomTextArea, Displayer, Input, LabeledValue, ListRow, Modal, Padding, RouteLeavingGuard, Row, Select, useSnackbar, } from '@zextras/ui-components';
+
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import {
+  Button,
+  Container,
+  CustomTextArea,
+  Displayer,
+  Input,
+  LabeledValue,
+  ListRow,
+  Padding,
+  RouteLeavingGuard,
+  Row,
+  Select,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { useCosList, useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
-import { isEqual } from 'lodash-es';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { type ChangeEvent, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { deleteCalendarResource } from '../../../../services/delete-cal-resource-service';
-import { getCalenderResource } from '../../../../services/get-cal-resource-service';
-import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
-import { modifyCalendarResource } from '../../../../services/modify-cal-resource-service';
-import { renameCalendarResource } from '../../../../services/rename-cal-resource-service';
-import { setPasswordRequest } from '../../../../services/set-password';
+import {
+  useCalResource,
+  useDelegateAuth,
+  useSaveCalResource,
+} from '../../../../services/use-cal-resource';
+import { ResourceDeleteDialog } from './resource-delete-dialog';
 import { SendInviteAccounts } from './send-invite-accounts';
 
 export const RESOURCE_TYPE = {
@@ -33,705 +48,356 @@ export const STATUS = {
   CLOSED: 'closed',
 } as const;
 
-export const SCHEDULE_POLITY_TYPE = {
+export const SCHEDULE_POLICY_TYPE = {
   AUTO_ACCEPT: 1,
   MANUAL_ACCEPT: 2,
   AUTO_ACCEPT_ALWAYS: 3,
   NO_AUTO_ACCEPT: 4,
 } as const;
 
-const ResourceEditDetailView: FC<any> = ({
-  selectedResourceList,
-  setShowResourceEditDetailView,
-  setIsUpdateRecord,
-}) => {
+type ResourceAttribute = { n: string; _content: string };
+
+type ResourceEntry = {
+  id: string;
+  name: string;
+  a?: Array<ResourceAttribute>;
+};
+
+type SendInviteItem = { id: string; n: string; _content: string };
+
+type ResourceEditDetailViewProps = {
+  selectedResource: ResourceEntry;
+  onClose: () => void;
+};
+
+function attributeMap(attrs: Array<ResourceAttribute> | undefined): Record<string, string> {
+  if (!attrs) return {};
+  const obj: Record<string, string> = {};
+  attrs.forEach((a) => {
+    obj[a.n] = a._content;
+  });
+  return obj;
+}
+
+function resolveSchedulePolicy(
+  autoAccept: string | undefined,
+  autoDeclineIfBusy: string | undefined,
+): number {
+  if (autoAccept === 'TRUE' && autoDeclineIfBusy === 'TRUE') return SCHEDULE_POLICY_TYPE.AUTO_ACCEPT;
+  if (autoAccept === 'FALSE' && autoDeclineIfBusy === 'TRUE') return SCHEDULE_POLICY_TYPE.MANUAL_ACCEPT;
+  if (autoAccept === 'TRUE' && autoDeclineIfBusy === 'FALSE')
+    return SCHEDULE_POLICY_TYPE.AUTO_ACCEPT_ALWAYS;
+  return SCHEDULE_POLICY_TYPE.NO_AUTO_ACCEPT;
+}
+
+type ResourceFormValues = {
+  displayName: string;
+  mail: string;
+  zimbraCalResType: string;
+  zimbraAccountStatus: string;
+  zimbraCalResAutoDeclineRecurring: string;
+  zimbraCOSId: string;
+  zimbraCalResMaxNumConflictsAllowed: string;
+  zimbraCalResMaxPercentConflictsAllowed: string;
+  zimbraNotes: string;
+  schedulePolicyType: number;
+  password: string;
+  repeatPassword: string;
+};
+
+function buildFormDefaults(
+  attrs: Record<string, string>,
+  fallbackMail: string,
+): ResourceFormValues {
+  return {
+    displayName: attrs.displayName ?? '',
+    mail: attrs.mail ?? fallbackMail,
+    zimbraCalResType: attrs.zimbraCalResType ?? RESOURCE_TYPE.LOCATION,
+    zimbraAccountStatus: attrs.zimbraAccountStatus ?? STATUS.ACTIVE,
+    zimbraCalResAutoDeclineRecurring: attrs.zimbraCalResAutoDeclineRecurring ?? TRUE_FALSE.FALSE,
+    zimbraCOSId: attrs.zimbraCOSId ?? '',
+    zimbraCalResMaxNumConflictsAllowed: attrs.zimbraCalResMaxNumConflictsAllowed ?? '',
+    zimbraCalResMaxPercentConflictsAllowed: attrs.zimbraCalResMaxPercentConflictsAllowed ?? '',
+    zimbraNotes: attrs.zimbraNotes ?? '',
+    schedulePolicyType: resolveSchedulePolicy(
+      attrs.zimbraCalResAutoAcceptDecline,
+      attrs.zimbraCalResAutoDeclineIfBusy,
+    ),
+    password: '',
+    repeatPassword: '',
+  };
+}
+
+function extractInviteItems(attrs: Array<ResourceAttribute> | undefined): Array<SendInviteItem> {
+  return (attrs ?? [])
+    .filter((a) => a.n === 'zimbraPrefCalendarForwardInvitesTo')
+    .map((a, idx) => ({
+      id: idx.toString(),
+      n: a.n,
+      _content: a._content,
+    }));
+}
+
+export const ResourceEditDetailView = ({
+  selectedResource,
+  onClose,
+}: ResourceEditDetailViewProps) => {
+  const { data: rawResource, isLoading } = useCalResource(selectedResource.id);
+
+  if (isLoading || !rawResource) {
+    return (
+      <Container
+        background="gray5"
+        mainAlignment="flex-start"
+        style={{
+          position: 'absolute',
+          top: '43px',
+          right: '0px',
+          bottom: '0px',
+          left: 'max(calc(100% - 680px), 12px)',
+          transition: 'left 0.2s ease-in-out',
+          height: 'auto',
+          width: 'auto',
+          maxHeight: '100%',
+          overflow: 'hidden',
+          boxShadow: '-6px 4px 5px 0px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <Container crossAlignment="center" mainAlignment="center" height="100%">
+          <ds-spinner></ds-spinner>
+        </Container>
+      </Container>
+    );
+  }
+
+  return (
+    <ResourceEditForm
+      key={rawResource.id}
+      selectedResource={selectedResource}
+      rawResource={rawResource}
+      onClose={onClose}
+    />
+  );
+};
+
+type ResourceEditFormProps = {
+  selectedResource: ResourceEntry;
+  rawResource: ResourceEntry;
+  onClose: () => void;
+};
+
+const ResourceEditForm = ({
+  selectedResource,
+  rawResource,
+  onClose,
+}: ResourceEditFormProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const { isSticky, setIsSticky } = useStickyBarStore();
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const cosList = cosData?.cos ?? [];
-  const [resourceInformation, setResourceInformation]: any = useState([]);
-  const [resourceDetailData, setResourceDetailData]: any = useState({});
-  const [sendInviteList, setSendInviteList] = useState<any[]>([]);
-  const [sendInviteData, setSendInviteData]: any = useState([]);
-  const [zimbraCOSId, setZimbraCOSId] = useState<any>('');
-  const [cosItems, setCosItems] = useState<any[]>([]);
-  const [resourceName, setResourceName] = useState<string>('');
-  const [resourceMail, setResourceMail] = useState<string>('');
-  const [zimbraCalResMaxNumConflictsAllowed, setZimbraCalResMaxNumConflictsAllowed] =
-    useState<string>('');
-  const [zimbraCalResMaxPercentConflictsAllowed, setZimbraCalResMaxPercentConflictsAllowed] =
-    useState<string>('');
-  const [zimbraNotes, setZimbraNotes] = useState<string>('');
-  const [isDirty, setIsDirty] = useState<boolean>(false);
-  const { isSticky, setIsSticky } = useStickyBarStore();
-  const errorMessage = useMemo(
-    () => t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-    [t],
+
+  const saveResource = useSaveCalResource(selectedResource.id);
+  const delegateAuth = useDelegateAuth();
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  const [defaultValues, setDefaultValues] = useState(() =>
+    buildFormDefaults(attributeMap(rawResource.a), selectedResource.name ?? ''),
+  );
+  const [sendInviteList, setSendInviteList] = useState(() => extractInviteItems(rawResource.a));
+  const [originalSendInviteList, setOriginalSendInviteList] = useState(() =>
+    extractInviteItems(rawResource.a),
   );
 
-  const resourceTypeOptions: any[] = useMemo(
-    () => [
-      {
-        label: t('label.meeting_room', 'Meeting Room'),
-        value: RESOURCE_TYPE.LOCATION,
-      },
-      {
-        label: t('label.equipment', 'Equipment'),
-        value: RESOURCE_TYPE.EQUIPMENT,
-      },
-    ],
-    [t],
-  );
+  const attrs = attributeMap(rawResource.a);
+  const cosItems = [
+    { label: t('label.auto', 'Auto'), value: '' },
+    ...cosList.map((c: { id: string; name: string }) => ({ label: c.name, value: c.id })),
+  ];
 
-  const accountStatusOptions: any[] = useMemo(
-    () => [
-      {
-        label: t('label.active', 'Active'),
-        value: STATUS.ACTIVE,
-      },
-      {
-        label: t('label.closed', 'Closed'),
-        value: STATUS.CLOSED,
-      },
-    ],
-    [t],
-  );
+  const resourceTypeOptions = [
+    { label: t('label.meeting_room', 'Meeting Room'), value: RESOURCE_TYPE.LOCATION },
+    { label: t('label.equipment', 'Equipment'), value: RESOURCE_TYPE.EQUIPMENT },
+  ];
 
-  const autoRefuseOption: any[] = useMemo(
-    () => [
-      {
-        label: t('label.yes', 'Yes'),
-        value: TRUE_FALSE.TRUE,
-      },
-      {
-        label: t('label.no', 'No'),
-        value: TRUE_FALSE.FALSE,
-      },
-    ],
-    [t],
-  );
+  const accountStatusOptions = [
+    { label: t('label.active', 'Active'), value: STATUS.ACTIVE },
+    { label: t('label.closed', 'Closed'), value: STATUS.CLOSED },
+  ];
 
-  const schedulePolicyItems: any[] = useMemo(
-    () => [
-      {
-        label: t(
-          'label.auto_accept_auto_decline_on_conflict',
-          'Automatic acceptance if available, automatic rejection in case of conflict',
-        ),
-        value: SCHEDULE_POLITY_TYPE.AUTO_ACCEPT,
-      },
-      {
-        label: t(
-          'label.manual_accept_auto_decline_on_conflict',
-          'Handle acceptance, automatic rejection in case of conflict',
-        ),
-        value: SCHEDULE_POLITY_TYPE.MANUAL_ACCEPT,
-      },
-      {
-        label: t('label.auto_accept_always', 'Automatic acceptance if available always'),
-        value: SCHEDULE_POLITY_TYPE.AUTO_ACCEPT_ALWAYS,
-      },
-      {
-        label: t('label.no_auto_accept_or_decline', 'No automatic acceptance if available always'),
-        value: SCHEDULE_POLITY_TYPE.NO_AUTO_ACCEPT,
-      },
-    ],
-    [t],
-  );
+  const autoRefuseOptions = [
+    { label: t('label.yes', 'Yes'), value: TRUE_FALSE.TRUE },
+    { label: t('label.no', 'No'), value: TRUE_FALSE.FALSE },
+  ];
 
-  const [zimbraCalResType, setZimbraCalResType]: any = useState(resourceTypeOptions[0]);
-  const [zimbraAccountStatus, setZimbraAccountStatus]: any = useState(accountStatusOptions[0]);
-  const [zimbraCalResAutoDeclineRecurring, setZimbraCalResAutoDeclineRecurring]: any = useState(
-    autoRefuseOption[0],
-  );
-  const [defaultSchedulePolicyType, setDefaultSchedulePolicyType]: any = useState();
-  const [schedulePolicyType, setSchedulePolicyType]: any = useState();
-
-  const [password, setPassword]: any = useState('');
-  const [repeatPassword, setRepeatPassword]: any = useState('');
-
-  const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-
-  useEffect(() => {
-    const arrayItem: any[] = [
-      {
-        label: t('label.auto', 'Auto'),
-        value: '',
-      },
-    ];
-    cosList.forEach((item: any) => {
-      arrayItem.push({
-        label: item.name,
-        value: item.id,
-      });
-    });
-    setCosItems(arrayItem);
-  }, [cosList, t]);
-
-  const generateSendInviteList = (sendInviteTo: any): void => {
-    if (sendInviteTo && Array.isArray(sendInviteTo)) {
-      setSendInviteList(sendInviteTo);
-    }
-  };
-
-  const getResourceDetail = useCallback((): void => {
-    getCalenderResource(selectedResourceList?.id).then((data) => {
-      const resourceDetailResponse = data?.calresource[0] || {};
-      const sendInviteTo = resourceDetailResponse?.a
-        ?.filter((value: any) => value?.n === 'zimbraPrefCalendarForwardInvitesTo')
-        .map((item: any, index: any): any => {
-          const id = index?.toString();
-          return { ...item, id };
-        });
-      generateSendInviteList(sendInviteTo);
-      setSendInviteData(sendInviteTo);
-      setResourceInformation(resourceDetailResponse?.a);
-    });
-  }, [selectedResourceList?.id]);
-
-  useEffect(() => {
-    getResourceDetail();
-  }, [getResourceDetail]);
-
-  useEffect(() => {
-    if (!!resourceInformation && resourceInformation.length > 0) {
-      const obj: any = {};
-      resourceInformation.map((item: any) => {
-        obj[item?.n] = item._content;
-        return '';
-      });
-      setResourceName(obj?.displayName);
-      setResourceMail(obj?.mail);
-      setZimbraCalResType(
-        resourceTypeOptions.find((item: any) => item.value === obj.zimbraCalResType),
-      );
-      setZimbraAccountStatus(
-        accountStatusOptions.find((item: any) => item.value === obj.zimbraAccountStatus),
-      );
-      if (obj.zimbraCalResAutoDeclineRecurring) {
-        setZimbraCalResAutoDeclineRecurring(
-          autoRefuseOption.find((item: any) => item.value === obj.zimbraCalResAutoDeclineRecurring),
-        );
-      } else {
-        setZimbraCalResAutoDeclineRecurring(autoRefuseOption[1]);
-      }
-      if (obj.zimbraCOSId) {
-        const getItem = cosItems.find((item: any) => item.value === obj.zimbraCOSId);
-        if (getItem) {
-          setZimbraCOSId(getItem);
-        } else {
-          obj.zimbraCOSId = '';
-          setZimbraCOSId(cosItems[0]);
-        }
-      } else {
-        obj.zimbraCOSId = '';
-        setZimbraCOSId(cosItems[0]);
-      }
-      if (obj.zimbraCalResMaxNumConflictsAllowed) {
-        setZimbraCalResMaxNumConflictsAllowed(obj.zimbraCalResMaxNumConflictsAllowed);
-      } else {
-        obj.zimbraCalResMaxNumConflictsAllowed = '';
-        setZimbraCalResMaxNumConflictsAllowed('');
-      }
-      if (obj.zimbraCalResMaxPercentConflictsAllowed) {
-        setZimbraCalResMaxPercentConflictsAllowed(obj.zimbraCalResMaxPercentConflictsAllowed);
-      } else {
-        obj.zimbraCalResMaxPercentConflictsAllowed = '';
-        setZimbraCalResMaxPercentConflictsAllowed('');
-      }
-      if (obj.zimbraNotes) {
-        setZimbraNotes(obj.zimbraNotes);
-      } else {
-        obj.zimbraNotes = '';
-        setZimbraNotes('');
-      }
-      setResourceDetailData(obj);
-    }
-  }, [resourceInformation, resourceTypeOptions, accountStatusOptions, autoRefuseOption, cosItems]);
-
-  const setSchedulePolicyItem = useCallback(
-    (zimbraCalResAutoAcceptDecline: any, zimbraCalResAutoDeclineIfBusy: any): any => {
-      if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
-        setDefaultSchedulePolicyType(schedulePolicyItems[0]);
-        setSchedulePolicyType(schedulePolicyItems[0]);
-      }
-      if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'TRUE') {
-        setDefaultSchedulePolicyType(schedulePolicyItems[1]);
-        setSchedulePolicyType(schedulePolicyItems[1]);
-      }
-      if (zimbraCalResAutoAcceptDecline === 'TRUE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
-        setDefaultSchedulePolicyType(schedulePolicyItems[2]);
-        setSchedulePolicyType(schedulePolicyItems[2]);
-      }
-      if (zimbraCalResAutoAcceptDecline === 'FALSE' && zimbraCalResAutoDeclineIfBusy === 'FALSE') {
-        setDefaultSchedulePolicyType(schedulePolicyItems[3]);
-        setSchedulePolicyType(schedulePolicyItems[3]);
-      }
-    },
-    [schedulePolicyItems],
-  );
-
-  useEffect(() => {
-    setSchedulePolicyItem(
-      resourceDetailData?.zimbraCalResAutoAcceptDecline,
-      resourceDetailData?.zimbraCalResAutoDeclineIfBusy,
-    );
-  }, [
-    resourceDetailData.zimbraCalResAutoAcceptDecline,
-    resourceDetailData.zimbraCalResAutoDeclineIfBusy,
-    setSchedulePolicyItem,
-  ]);
-
-  const onResouseTypeChange = useCallback(
-    (v: any): any => {
-      const objItem = resourceTypeOptions.find((item: any) => item.value === v);
-      if (objItem !== zimbraCalResType) {
-        setZimbraCalResType(objItem);
-      }
-    },
-    [resourceTypeOptions, zimbraCalResType],
-  );
-
-  const onAccountStatusChange = useCallback(
-    (v: any): any => {
-      const objItem = accountStatusOptions.find((item: any) => item.value === v);
-      if (objItem !== zimbraAccountStatus) {
-        setZimbraAccountStatus(objItem);
-      }
-    },
-    [accountStatusOptions, zimbraAccountStatus],
-  );
-
-  const onAutoRefuseChange = useCallback(
-    (v: any): any => {
-      const objItem = autoRefuseOption.find((item: any) => item.value === v);
-      if (objItem !== zimbraCalResAutoDeclineRecurring) {
-        setZimbraCalResAutoDeclineRecurring(objItem);
-      }
-    },
-    [autoRefuseOption, zimbraCalResAutoDeclineRecurring],
-  );
-
-  const onCosChange = useCallback(
-    (v: any): any => {
-      const objItem = cosItems.find((item: any) => item.value === v);
-      if (objItem !== zimbraCOSId) {
-        setZimbraCOSId(objItem);
-      }
-    },
-    [cosItems, zimbraCOSId],
-  );
-
-  const onSchedulePolicyChange = useCallback(
-    (v: any): any => {
-      const objItem = schedulePolicyItems.find((item: any) => item.value === v);
-      if (objItem !== schedulePolicyType) {
-        setSchedulePolicyType(objItem);
-      }
-    },
-    [schedulePolicyItems, schedulePolicyType],
-  );
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.displayName !== undefined &&
-      resourceDetailData?.displayName !== resourceName
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.displayName, resourceName]);
-
-  useEffect(() => {
-    if (resourceDetailData?.mail !== undefined && resourceDetailData?.mail !== resourceMail) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.mail, resourceMail]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraNotes !== undefined &&
-      resourceDetailData?.zimbraNotes !== zimbraNotes
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.zimbraNotes, zimbraNotes]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed !== undefined &&
-      resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed !==
-        zimbraCalResMaxPercentConflictsAllowed
-    ) {
-      setIsDirty(true);
-    }
-  }, [
-    resourceDetailData.zimbraCalResMaxPercentConflictsAllowed,
-    zimbraCalResMaxPercentConflictsAllowed,
-  ]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraCalResMaxNumConflictsAllowed !== undefined &&
-      resourceDetailData?.zimbraCalResMaxNumConflictsAllowed !== zimbraCalResMaxNumConflictsAllowed
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.zimbraCalResMaxNumConflictsAllowed, zimbraCalResMaxNumConflictsAllowed]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraCOSId !== undefined &&
-      resourceDetailData?.zimbraCOSId !== zimbraCOSId?.value
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.zimbraCOSId, zimbraCOSId]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraCalResType !== undefined &&
-      resourceDetailData?.zimbraCalResType !== zimbraCalResType?.value
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.zimbraCalResType, zimbraCalResType]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraAccountStatus !== undefined &&
-      resourceDetailData?.zimbraAccountStatus !== zimbraAccountStatus?.value
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.zimbraAccountStatus, zimbraAccountStatus]);
-
-  useEffect(() => {
-    if (
-      resourceDetailData?.zimbraCalResAutoDeclineRecurring !== undefined &&
-      resourceDetailData?.zimbraCalResAutoDeclineRecurring !==
-        zimbraCalResAutoDeclineRecurring?.value
-    ) {
-      setIsDirty(true);
-    }
-  }, [resourceDetailData.zimbraCalResAutoDeclineRecurring, zimbraCalResAutoDeclineRecurring]);
-
-  useEffect(() => {
-    if (
-      defaultSchedulePolicyType?.value !== undefined &&
-      defaultSchedulePolicyType?.value !== schedulePolicyType?.value
-    ) {
-      setIsDirty(true);
-    }
-  }, [defaultSchedulePolicyType, schedulePolicyType]);
-
-  useEffect(() => {
-    if (!isEqual(sendInviteData, sendInviteList)) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [sendInviteData, sendInviteList]);
-
-  const onCancel = (): void => {
-    setResourceName(resourceDetailData?.displayName);
-    setResourceMail(resourceDetailData?.mail);
-    setZimbraNotes(resourceDetailData?.zimbraNotes);
-    setZimbraCalResMaxNumConflictsAllowed(resourceDetailData?.zimbraCalResMaxNumConflictsAllowed);
-    setZimbraCalResMaxPercentConflictsAllowed(
-      resourceDetailData?.zimbraCalResMaxPercentConflictsAllowed,
-    );
-    setZimbraCOSId(cosItems.find((item: any) => item.value === resourceDetailData?.zimbraCOSId));
-    setZimbraCalResType(
-      resourceTypeOptions.find((item: any) => item.value === resourceDetailData?.zimbraCalResType),
-    );
-    setZimbraAccountStatus(
-      accountStatusOptions.find(
-        (item: any) => item.value === resourceDetailData?.zimbraAccountStatus,
+  const schedulePolicyOptions = [
+    {
+      label: t(
+        'label.auto_accept_auto_decline_on_conflict',
+        'Automatic acceptance if available, automatic rejection in case of conflict',
       ),
-    );
-    setZimbraCalResAutoDeclineRecurring(
-      autoRefuseOption.find(
-        (item: any) => item.value === resourceDetailData.zimbraCalResAutoDeclineRecurring,
+      value: SCHEDULE_POLICY_TYPE.AUTO_ACCEPT,
+    },
+    {
+      label: t(
+        'label.manual_accept_auto_decline_on_conflict',
+        'Handle acceptance, automatic rejection in case of conflict',
       ),
-    );
-    setSchedulePolicyItem(
-      resourceDetailData?.zimbraCalResAutoAcceptDecline,
-      resourceDetailData?.zimbraCalResAutoDeclineIfBusy,
-    );
-    setSendInviteList(sendInviteData);
-    setPassword('');
-    setRepeatPassword('');
-    setIsDirty(false);
-  };
+      value: SCHEDULE_POLICY_TYPE.MANUAL_ACCEPT,
+    },
+    {
+      label: t('label.auto_accept_always', 'Automatic acceptance if available always'),
+      value: SCHEDULE_POLICY_TYPE.AUTO_ACCEPT_ALWAYS,
+    },
+    {
+      label: t('label.no_auto_accept_or_decline', 'No automatic acceptance if available always'),
+      value: SCHEDULE_POLICY_TYPE.NO_AUTO_ACCEPT,
+    },
+  ];
 
-  const callAllRequest = (requests: any): void => {
-    Promise.all(requests).then(() => {
-      createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: t('label.changes_have_been_saved', 'The changes have been saved'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-      setIsDirty(false);
-      setIsUpdateRecord(true);
-    });
-  };
+  const form = useForm({
+    defaultValues,
+    onSubmit: async () => {},
+  });
 
-  const createErrorSnackbar = useCallback(
-    (label: string): void => {
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const currentValues = useSelector(form.store, (s) => s.values);
+  const sendInviteDirty =
+    JSON.stringify(sendInviteList) !== JSON.stringify(originalSendInviteList);
+  const isFormDirty = isDirty || sendInviteDirty;
+
+  function handleSave(): void {
+    if (currentValues.password && currentValues.password.length < 6) {
       createSnackbar({
-        key: 'error',
+        key: 'pw-short',
         severity: 'error',
-        label,
+        label: t('label.password_length_msg', 'Password should be more than 5 characters'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
-    },
-    [createSnackbar],
-  );
-
-  const validatePassword = (): boolean => {
-    if (password !== '' && password?.length < 6) {
-      createErrorSnackbar(
-        t('label.password_length_msg', 'Password should be more than 5 characters'),
-      );
-      return false;
+      return;
     }
-    if (password !== repeatPassword) {
-      createErrorSnackbar(
-        t('label.password_and_repeat_password_not_match', 'Passwords do not match'),
-      );
-      return false;
-    }
-    return true;
-  };
-
-  const onSave = (): void => {
-    if (!validatePassword()) return;
-    const attributes: any[] = [];
-    const requests: any[] = [];
-    if (password !== '' && password === repeatPassword) {
-      requests.push(setPasswordRequest(selectedResourceList.id, password));
-    }
-    if (resourceDetailData?.mail !== resourceMail) {
-      requests.push(renameCalendarResource(selectedResourceList.id, resourceMail));
-    }
-
-    attributes.push({
-      n: 'displayName',
-      _content: resourceName,
-    });
-    attributes.push({
-      n: 'zimbraNotes',
-      _content: zimbraNotes,
-    });
-    attributes.push({
-      n: 'zimbraCalResMaxNumConflictsAllowed',
-      _content: zimbraCalResMaxNumConflictsAllowed,
-    });
-    attributes.push({
-      n: 'zimbraCalResMaxPercentConflictsAllowed',
-      _content: zimbraCalResMaxPercentConflictsAllowed,
-    });
-    attributes.push({
-      n: 'zimbraCOSId',
-      _content: zimbraCOSId?.value,
-    });
-    attributes.push({
-      n: 'zimbraCalResType',
-      _content: zimbraCalResType?.value,
-    });
-    attributes.push({
-      n: 'zimbraAccountStatus',
-      _content: zimbraAccountStatus?.value,
-    });
-    attributes.push({
-      n: 'zimbraCalResAutoDeclineRecurring',
-      _content: zimbraCalResAutoDeclineRecurring?.value,
-    });
-    attributes.push({
-      n: 'zimbraCalResAutoAcceptDecline',
-      _content:
-        schedulePolicyType?.value === 1 || schedulePolicyType?.value === 3 ? 'TRUE' : 'FALSE',
-    });
-    attributes.push({
-      n: 'zimbraCalResAutoDeclineIfBusy',
-      _content:
-        schedulePolicyType?.value === 1 || schedulePolicyType?.value === 2 ? 'TRUE' : 'FALSE',
-    });
-    sendInviteList.forEach((item: any) => {
-      attributes.push({
-        n: 'zimbraPrefCalendarForwardInvitesTo',
-        _content: item?._content,
-      });
-    });
-    requests.push(modifyCalendarResource(selectedResourceList?.id, attributes));
-    if (requests.length > 0) {
-      callAllRequest(requests);
-    }
-  };
-
-  const onDeleteResource = useCallback(() => {
-    setIsOpenDeleteDialog(true);
-  }, []);
-
-  const closeHandler = useCallback(() => {
-    setIsOpenDeleteDialog(false);
-  }, []);
-
-  const onSuccess = useCallback(
-    (message: string) => {
+    if (currentValues.password !== currentValues.repeatPassword) {
       createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: message,
+        key: 'pw-mismatch',
+        severity: 'error',
+        label: t('label.password_and_repeat_password_not_match', 'Passwords do not match'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
-      setIsRequestInProgress(false);
-      closeHandler();
-      setShowResourceEditDetailView(false);
-      setIsUpdateRecord(true);
-    },
-    [closeHandler, createSnackbar, setIsUpdateRecord, setShowResourceEditDetailView],
-  );
+      return;
+    }
 
-  const onDeleteHandler = useCallback(() => {
-    setIsRequestInProgress(true);
-    deleteCalendarResource(selectedResourceList?.id)
-      .then(() => {
-        onSuccess(
-          t(
-            'label.resource_deleted_successfully',
-            'The {{resource_name}} has been deleted successfully',
-            {
-              resource_name: selectedResourceList?.name,
-            },
-          ),
-        );
-      })
-      .then((error: any) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error.message ? error.message : errorMessage,
+    const schedulePolicyValue = currentValues.schedulePolicyType;
+    const attributes: Array<{ n: string; _content: string }> = [
+      { n: 'displayName', _content: currentValues.displayName },
+      { n: 'zimbraNotes', _content: currentValues.zimbraNotes },
+      {
+        n: 'zimbraCalResMaxNumConflictsAllowed',
+        _content: currentValues.zimbraCalResMaxNumConflictsAllowed,
+      },
+      {
+        n: 'zimbraCalResMaxPercentConflictsAllowed',
+        _content: currentValues.zimbraCalResMaxPercentConflictsAllowed,
+      },
+      { n: 'zimbraCOSId', _content: currentValues.zimbraCOSId },
+      { n: 'zimbraCalResType', _content: currentValues.zimbraCalResType },
+      { n: 'zimbraAccountStatus', _content: currentValues.zimbraAccountStatus },
+      {
+        n: 'zimbraCalResAutoDeclineRecurring',
+        _content: currentValues.zimbraCalResAutoDeclineRecurring,
+      },
+      {
+        n: 'zimbraCalResAutoAcceptDecline',
+        _content:
+          schedulePolicyValue === SCHEDULE_POLICY_TYPE.AUTO_ACCEPT ||
+          schedulePolicyValue === SCHEDULE_POLICY_TYPE.AUTO_ACCEPT_ALWAYS
+            ? 'TRUE'
+            : 'FALSE',
+      },
+      {
+        n: 'zimbraCalResAutoDeclineIfBusy',
+        _content:
+          schedulePolicyValue === SCHEDULE_POLICY_TYPE.AUTO_ACCEPT ||
+          schedulePolicyValue === SCHEDULE_POLICY_TYPE.MANUAL_ACCEPT
+            ? 'TRUE'
+            : 'FALSE',
+      },
+      ...sendInviteList.map((item) => ({
+        n: 'zimbraPrefCalendarForwardInvitesTo',
+        _content: item._content,
+      })),
+    ];
 
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [
-    selectedResourceList?.id,
-    selectedResourceList?.name,
-    onSuccess,
-    t,
-    createSnackbar,
-    errorMessage,
-  ]);
+    saveResource.mutate(
+      {
+        resourceId: selectedResource.id,
+        currentMail: attrs.mail ?? selectedResource.name,
+        newMail: currentValues.mail,
+        password: currentValues.password,
+        attributes,
+      },
+      {
+        onSuccess: () => {
+          const savedValues = {
+            ...currentValues,
+            password: '',
+            repeatPassword: '',
+          };
+          setDefaultValues(savedValues);
+          form.reset(savedValues);
+          setOriginalSendInviteList([...sendInviteList]);
+        },
+      },
+    );
+  }
 
-  const onDisableResource = useCallback(() => {
-    setIsRequestInProgress(true);
-    const attributes: any[] = [];
-    attributes.push({
-      n: 'zimbraAccountStatus',
-      _content: STATUS.CLOSED,
-    });
-    modifyCalendarResource(selectedResourceList?.id, attributes)
-      .then((data) => {
-        if (data?.calresource && Array.isArray(data?.calresource)) {
-          onSuccess(
-            t(
-              'label.resource_disable_successfully',
-              'The {{resource_name}} has been disabled successfully.',
-              {
-                resource_name: selectedResourceList?.name,
-              },
-            ),
-          );
-        }
-      })
-      .catch((error) => {
-        setIsRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message ? error?.message : errorMessage,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [
-    selectedResourceList?.id,
-    selectedResourceList?.name,
-    onSuccess,
-    t,
-    createSnackbar,
-    errorMessage,
-  ]);
+  function handleCancel(): void {
+    form.reset();
+    setSendInviteList([...originalSendInviteList]);
+  }
 
-  const onViewMail = useCallback(() => {
-    getDelegateAuthRequest(selectedResourceList?.id)
-      .then((data: any) => {
-        if (data?.authToken?.[0]) {
-          window.open(
-            `https://${window.location.hostname}/service/preauth?authtoken=${data?.authToken?.[0]._content}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
-            'blank',
-          );
-        } else {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-
-            label: errorMessage,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        }
-      })
-
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message ? error?.message : errorMessage,
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [createSnackbar, errorMessage, selectedResourceList?.id]);
+  const currentStatus =
+    currentValues.zimbraAccountStatus ?? attrs.zimbraAccountStatus ?? STATUS.ACTIVE;
 
   const buttons = [
     {
       align: 'right' as const,
       label: t('label.view_mail', 'VIEW MAIL'),
       color: 'primary',
-      onClick: onViewMail,
+      onClick: () => delegateAuth.mutate(selectedResource.id),
     },
     {
       align: 'right' as const,
       type: 'outlined' as const,
       color: 'error',
-      onClick: onDeleteResource,
+      onClick: () => setShowDeleteDialog(true),
       label: t('label.delete', 'delete'),
     },
     {
       align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-      onClick: (): void => {
-        setIsSticky(!isSticky);
-      },
+      onClick: () => setIsSticky(!isSticky),
     },
   ];
+
+  const selectedCosItem =
+    cosItems.find((c) => c.value === currentValues.zimbraCOSId) ?? cosItems[0];
+  const selectedResourceType =
+    resourceTypeOptions.find((o) => o.value === currentValues.zimbraCalResType) ??
+    resourceTypeOptions[0];
+  const selectedStatus =
+    accountStatusOptions.find((o) => o.value === currentValues.zimbraAccountStatus) ??
+    accountStatusOptions[0];
+  const selectedAutoRefuse =
+    autoRefuseOptions.find((o) => o.value === currentValues.zimbraCalResAutoDeclineRecurring) ??
+    autoRefuseOptions[1];
+  const selectedSchedulePolicy =
+    schedulePolicyOptions.find((o) => o.value === currentValues.schedulePolicyType) ??
+    schedulePolicyOptions[0];
 
   return (
     <Container
@@ -742,7 +408,7 @@ const ResourceEditDetailView: FC<any> = ({
         top: '43px',
         right: '0px',
         bottom: '0px',
-        left: `${'max(calc(100% - 680px), 12px)'}`,
+        left: 'max(calc(100% - 680px), 12px)',
         transition: 'left 0.2s ease-in-out',
         height: 'auto',
         width: 'auto',
@@ -762,11 +428,11 @@ const ResourceEditDetailView: FC<any> = ({
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
           <ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
-            {selectedResourceList?.name}
+            {selectedResource.name}
           </ds-text>
         </Row>
         <Row>
-          {isDirty && (
+          {isFormDirty && (
             <Container
               orientation="horizontal"
               mainAlignment="flex-end"
@@ -774,21 +440,29 @@ const ResourceEditDetailView: FC<any> = ({
               background="gray6"
             >
               <Padding right="large">
-                <Button label={t('label.cancel', 'Cancel')} color="secondary" onClick={onCancel} />
+                <Button
+                  label={t('label.cancel', 'Cancel')}
+                  color="secondary"
+                  onClick={handleCancel}
+                />
               </Padding>
-              <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+              <Button
+                label={t('label.save', 'Save')}
+                color="primary"
+                onClick={handleSave}
+                disabled={saveResource.isPending}
+              />
             </Container>
           )}
         </Row>
         <Row padding={{ right: 'extrasmall', left: 'small' }}>
           <Button
             type="ghost"
-            color={'text'}
+            color="text"
             size="medium"
             icon="CloseOutline"
-            onClick={(): void => {
-              setShowResourceEditDetailView(false);
-            }}
+            aria-label={t('label.close', 'Close')}
+            onClick={onClose}
           />
         </Row>
       </Row>
@@ -804,386 +478,378 @@ const ResourceEditDetailView: FC<any> = ({
         background="white"
         style={{ overflow: 'auto' }}
       >
-        <Displayer buttons={buttons} pinIcon={isSticky} />
-        <Row>
-          <ds-text as="h3" size="small" weight="bold">
-            {t('label.resource', 'Resource')}
-          </ds-text>
-        </Row>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ right: 'small' }}>
-              <Input
-                isRequired
-                label={t('label.name', 'Name')}
-                backgroundColor="gray5"
-                value={resourceName}
-                onChange={(e: any): any => {
-                  setResourceName(e.target.value);
-                }}
-              />
+          <>
+            <Displayer buttons={buttons} pinIcon={isSticky} />
+            <Row>
+              <ds-text as="h3" size="small" weight="bold">
+                {t('label.resource', 'Resource')}
+              </ds-text>
             </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ left: 'small' }}>
-              <Input
-                isRequired
-                label={t('label.email', 'Email')}
-                backgroundColor="gray5"
-                value={resourceMail}
-                onChange={(e: any): any => {
-                  setResourceMail(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ right: 'small' }}>
-              <LabeledValue
-                label={t('label.server', 'Server')}
-                backgroundColor="gray6"
-                value={resourceDetailData?.zimbraMailHost}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ left: 'small' }}>
-              <Select
-                items={resourceTypeOptions}
-                background="gray5"
-                label={t('label.type', 'Type')}
-                showCheckbox={false}
-                onChange={onResouseTypeChange}
-                selection={zimbraCalResType}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ right: 'small' }}>
-              <Select
-                items={accountStatusOptions}
-                background="gray5"
-                label={t('label.status', 'Status')}
-                showCheckbox={false}
-                onChange={onAccountStatusChange}
-                selection={zimbraAccountStatus}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ left: 'small' }}>
-              <Select
-                items={cosItems}
-                background="gray5"
-                label={t('label.class_of_service', 'Class of Service')}
-                showCheckbox={false}
-                onChange={onCosChange}
-                selection={zimbraCOSId}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%">
-              <Select
-                items={autoRefuseOption}
-                background="gray5"
-                label={t('label.auto_refuse', 'Auto-Refuse')}
-                showCheckbox={false}
-                onChange={onAutoRefuseChange}
-                selection={zimbraCalResAutoDeclineRecurring}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%">
-              <Select
-                items={schedulePolicyItems}
-                background="gray5"
-                label={t('label.schedule_policy', 'Set Policy')}
-                showCheckbox={false}
-                onChange={onSchedulePolicyChange}
-                selection={schedulePolicyType}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ right: 'small' }}>
-              <Input
-                label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
-                backgroundColor="gray5"
-                value={zimbraCalResMaxNumConflictsAllowed}
-                onChange={(e: any): any => {
-                  setZimbraCalResMaxNumConflictsAllowed(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ left: 'small' }}>
-              <Input
-                label={t('label.percentage_maximum_conflict_allowed', '% Maximum Conflict Allowed')}
-                backgroundColor="gray5"
-                value={zimbraCalResMaxPercentConflictsAllowed}
-                onChange={(e: any): any => {
-                  setZimbraCalResMaxPercentConflictsAllowed(e.target.value);
-                }}
-              />
-            </Row>
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ right: 'small' }}>
-              <LabeledValue
-                label={t('label.id_lbl', 'ID')}
-                backgroundColor="gray6"
-                value={selectedResourceList?.id}
-              />
-            </Row>
-          </Container>
-          <Container
-            mainAlignment="flex-end"
-            crossAlignment="center"
-            orientation="horizontal"
-            padding={{ top: 'large' }}
-          >
-            <Row width="100%" padding={{ left: 'small' }}>
-              <LabeledValue
-                label={t('label.creation_date', 'Creation Date')}
-                backgroundColor="gray6"
-                value={
-                  resourceDetailData?.zimbraCreateTimestamp
-                    ? format(
-                        parse(
-                          resourceDetailData?.zimbraCreateTimestamp,
-                          'yyyyMMddHHmmss.SSSX',
-                          new Date(),
-                        ),
-                        'dd MMM yyyy | hh:mm:ss a',
-                      )
-                    : '--'
-                }
-              />
-            </Row>
-          </Container>
-        </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ right: 'small' }}>
+                  <form.Field name="displayName">
+                    {(field) => (
+                      <Input
+                        isRequired
+                        label={t('label.name', 'Name')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+              <Container
+                mainAlignment="flex-end"
+                crossAlignment="center"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ left: 'small' }}>
+                  <form.Field name="mail">
+                    {(field) => (
+                      <Input
+                        isRequired
+                        label={t('label.email', 'Email')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ right: 'small' }}>
+                  <LabeledValue
+                    label={t('label.server', 'Server')}
+                    backgroundColor="gray6"
+                    value={attrs.zimbraMailHost}
+                  />
+                </Row>
+              </Container>
+              <Container
+                mainAlignment="flex-end"
+                crossAlignment="center"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ left: 'small' }}>
+                  <form.Field name="zimbraCalResType">
+                    {(field) => (
+                      <Select
+                        items={resourceTypeOptions}
+                        background="gray5"
+                        label={t('label.type', 'Type')}
+                        showCheckbox={false}
+                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        selection={selectedResourceType}
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ right: 'small' }}>
+                  <form.Field name="zimbraAccountStatus">
+                    {(field) => (
+                      <Select
+                        items={accountStatusOptions}
+                        background="gray5"
+                        label={t('label.status', 'Status')}
+                        showCheckbox={false}
+                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        selection={selectedStatus}
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+              <Container
+                mainAlignment="flex-end"
+                crossAlignment="center"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ left: 'small' }}>
+                  <form.Field name="zimbraCOSId">
+                    {(field) => (
+                      <Select
+                        items={cosItems}
+                        background="gray5"
+                        label={t('label.class_of_service', 'Class of Service')}
+                        showCheckbox={false}
+                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        selection={selectedCosItem}
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%">
+                  <form.Field name="zimbraCalResAutoDeclineRecurring">
+                    {(field) => (
+                      <Select
+                        items={autoRefuseOptions}
+                        background="gray5"
+                        label={t('label.auto_refuse', 'Auto-Refuse')}
+                        showCheckbox={false}
+                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        selection={selectedAutoRefuse}
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%">
+                  <form.Field name="schedulePolicyType">
+                    {(field) => (
+                      <Select
+                        items={schedulePolicyOptions}
+                        background="gray5"
+                        label={t('label.schedule_policy', 'Set Policy')}
+                        showCheckbox={false}
+                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        selection={selectedSchedulePolicy}
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ right: 'small' }}>
+                  <form.Field name="zimbraCalResMaxNumConflictsAllowed">
+                    {(field) => (
+                      <Input
+                        label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+              <Container
+                mainAlignment="flex-end"
+                crossAlignment="center"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ left: 'small' }}>
+                  <form.Field name="zimbraCalResMaxPercentConflictsAllowed">
+                    {(field) => (
+                      <Input
+                        label={t(
+                          'label.percentage_maximum_conflict_allowed',
+                          '% Maximum Conflict Allowed',
+                        )}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ right: 'small' }}>
+                  <LabeledValue
+                    label={t('label.id_lbl', 'ID')}
+                    backgroundColor="gray6"
+                    value={selectedResource.id}
+                  />
+                </Row>
+              </Container>
+              <Container
+                mainAlignment="flex-end"
+                crossAlignment="center"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%" padding={{ left: 'small' }}>
+                  <LabeledValue
+                    label={t('label.creation_date', 'Creation Date')}
+                    backgroundColor="gray6"
+                    value={
+                      attrs.zimbraCreateTimestamp
+                        ? format(
+                            parse(
+                              attrs.zimbraCreateTimestamp,
+                              'yyyyMMddHHmmss.SSSX',
+                              new Date(),
+                            ),
+                            'dd MMM yyyy | hh:mm:ss a',
+                          )
+                        : '--'
+                    }
+                  />
+                </Row>
+              </Container>
+            </ListRow>
 
-        <>
-          <Row width="100%" padding={{ top: 'medium' }}>
-            <ds-divider color="gray3"></ds-divider>
-          </Row>
-          <Row padding={{ top: 'extralarge' }}>
-            <ds-text as="h3" size="small" weight="bold">
-              {t('label.password', 'Password')}
-            </ds-text>
-          </Row>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large' }}
-            >
-              <Row width="100%">
-                <Input
-                  isRequired
-                  label={t('label.password', 'Password')}
-                  backgroundColor="gray5"
-                  value={password}
-                  inputName="password"
-                  type="password"
-                  onChange={(e: any): any => {
-                    setPassword(e.target.value);
-                    setIsDirty(true);
-                  }}
-                />
-              </Row>
-            </Container>
-          </ListRow>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              orientation="horizontal"
-              padding={{ top: 'large' }}
-            >
-              <Row width="100%">
-                <Input
-                  isRequired
-                  label={t('label.repeat_password', 'Repeat Password')}
-                  backgroundColor="gray5"
-                  value={repeatPassword}
-                  inputName="repeatPassword"
-                  type="password"
-                  onChange={(e: any): any => {
-                    setRepeatPassword(e.target.value);
-                    setIsDirty(true);
-                  }}
-                />
-              </Row>
-            </Container>
-          </ListRow>
-        </>
+            <Row width="100%" padding={{ top: 'medium' }}>
+              <ds-divider color="gray3"></ds-divider>
+            </Row>
+            <Row padding={{ top: 'extralarge' }}>
+              <ds-text as="h3" size="small" weight="bold">
+                {t('label.password', 'Password')}
+              </ds-text>
+            </Row>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%">
+                  <form.Field name="password">
+                    {(field) => (
+                      <Input
+                        isRequired
+                        label={t('label.password', 'Password')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        inputName="password"
+                        type="password"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                orientation="horizontal"
+                padding={{ top: 'large' }}
+              >
+                <Row width="100%">
+                  <form.Field name="repeatPassword">
+                    {(field) => (
+                      <Input
+                        isRequired
+                        label={t('label.repeat_password', 'Repeat Password')}
+                        backgroundColor="gray5"
+                        value={field.state.value}
+                        inputName="repeatPassword"
+                        type="password"
+                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    )}
+                  </form.Field>
+                </Row>
+              </Container>
+            </ListRow>
 
-        <Row width="100%" padding={{ top: 'medium' }}>
-          <ds-divider color="gray3"></ds-divider>
-        </Row>
-        <SendInviteAccounts
-          isEditable
-          sendInviteList={sendInviteList}
-          setSendInviteList={setSendInviteList}
-        />
-        <Row width="100%" padding={{ top: 'medium' }}>
-          <ds-divider color="gray3"></ds-divider>
-        </Row>
+            <Row width="100%" padding={{ top: 'medium' }}>
+              <ds-divider color="gray3"></ds-divider>
+            </Row>
+            <SendInviteAccounts
+              isEditable
+              sendInviteList={sendInviteList}
+              setSendInviteList={setSendInviteList}
+            />
+            <Row width="100%" padding={{ top: 'medium' }}>
+              <ds-divider color="gray3"></ds-divider>
+            </Row>
 
-        <Row padding={{ top: 'extralarge' }} width="100%">
-          <CustomTextArea
-            label={t('label.description', 'Description')}
-            backgroundColor="gray5"
-            value={zimbraNotes}
-            onChange={(e: any): any => {
-              setZimbraNotes(e.target.value);
-            }}
-          />
-        </Row>
+            <Row padding={{ top: 'extralarge' }} width="100%">
+              <form.Field name="zimbraNotes">
+                {(field) => (
+                  <CustomTextArea
+                    label={t('label.description', 'Description')}
+                    backgroundColor="gray5"
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                  />
+                )}
+              </form.Field>
+            </Row>
+          </>
       </Container>
-      {isOpenDeleteDialog && (
-        <Modal
-          size="medium"
-          title={t('label.deleting_resource_name', 'You are deleting {{name}}', {
-            name: selectedResourceList?.name,
-          })}
-          open={isOpenDeleteDialog}
-          customFooter={
-            <Container orientation="horizontal" mainAlignment="flex-end">
-              <Row style={{ gap: '1rem' }}>
-                <Button
-                  label={t('label.delete_it_instead', 'Delete it instead')}
-                  color="error"
-                  type="outlined"
-                  onClick={onDeleteHandler}
-                  disabled={isRequestInProgress}
-                />
-                <Button
-                  label={t('label.close_the_resource', 'Close the resource')}
-                  color="primary"
-                  onClick={onDisableResource}
-                  disabled={isRequestInProgress || zimbraAccountStatus?.value === STATUS.CLOSED}
-                />
-              </Row>
-            </Container>
-          }
-          showCloseIcon
-          onClose={closeHandler}
-        >
-          <Container>
-            <Padding bottom="medium" top="medium">
-              <ds-text as="p" size={'extralarge'} overflow="break-word">
-                <Trans
-                  i18nKey="label.deleting_account_content_1"
-                  defaults="Are you sure you want to delete <bold>{{name}}</bod> ?"
-                  components={{
-                    bold: <strong />,
-                    name: selectedResourceList?.name,
-                  }}
-                />
-              </ds-text>
-            </Padding>
-            <Padding bottom="medium">
-              <ds-text as="p" overflow="break-word">
-                <Trans
-                  i18nKey="label.deleting_account_content_2"
-                  defaults="Deleting the account <bold>will PERMANENTLY delete</bold> all the data."
-                  components={{ bold: <strong /> }}
-                />
-              </ds-text>
-            </Padding>
-            <Padding bottom="medium">
-              <ds-text as="p" overflow="break-word">
-                <Trans
-                  i18nKey="label.deleting_account_content_3"
-                  defaults="You can <bold>Disable it to preserve</bold> the data, instead."
-                  components={{ bold: <strong /> }}
-                />
-              </ds-text>
-            </Padding>
-            <Row padding={{ bottom: 'large' }}>
-              <ds-icon
-                icon="AlertTriangleOutline"
-                size="large"
-                style={{ height: '48px', width: '48px' }}
-              ></ds-icon>
-            </Row>
-          </Container>
-        </Modal>
+
+      {showDeleteDialog && (
+        <ResourceDeleteDialog
+          resourceId={selectedResource.id}
+          resourceName={selectedResource.name}
+          isAccountClosed={currentStatus === STATUS.CLOSED}
+          onClose={() => setShowDeleteDialog(false)}
+          onDeleted={() => {
+            setShowDeleteDialog(false);
+            onClose();
+          }}
+        />
       )}
-      <RouteLeavingGuard when={isDirty} onSave={onSave} />
+      <RouteLeavingGuard when={isFormDirty} onSave={handleSave} />
     </Container>
   );
 };
