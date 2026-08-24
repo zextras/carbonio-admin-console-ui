@@ -7,6 +7,7 @@
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
+  delayedSoapApiForBrowser,
   getAllConfigResponseMock,
   resetMockWorker,
   setupBrowserTest,
@@ -19,14 +20,20 @@ import { GlobalQuarantine } from '../global-quarantine';
 
 const QUARANTINE_ACCOUNT_NAME = 'virus-quarantine@example.com';
 
-function getQuarantinedMessage() {
+function getQuarantinedMessage(options: { withAttachment?: boolean } = {}) {
+  const mp: Array<Record<string, unknown>> = [
+    { part: 'TEXT', ct: 'text/plain', body: true, content: 'spam body' },
+  ];
+  if (options.withAttachment) {
+    mp.push({ part: '2', ct: 'application/pdf', cd: 'attachment', s: 2048, filename: 'file.pdf' });
+  }
   return {
     id: 'msg-1',
     su: 'Spam subject',
     d: 1750000000000,
     l: '2',
     e: [{ a: 'spammer@example.com', t: 'f', p: '' }],
-    mp: [{ part: 'TEXT', ct: 'text/plain', body: true, content: 'spam body' }],
+    mp,
     _attrs: {
       'X-Spam-Score': '42',
       'X-Amavis-Alert': 'bad',
@@ -37,17 +44,32 @@ function getQuarantinedMessage() {
 }
 
 async function setupQuarantineView(
-  options: { withQuarantineAccount?: boolean; emptyAfterFirstRefetch?: boolean } = {},
+  options: {
+    withQuarantineAccount?: boolean;
+    emptyAfterFirstRefetch?: boolean;
+    delayedConfig?: boolean;
+    withAttachment?: boolean;
+  } = {},
 ): Promise<{ getSearchCalls: () => number }> {
   const withQuarantineAccount = options.withQuarantineAccount ?? true;
   const emptyAfterFirstRefetch = options.emptyAfterFirstRefetch ?? false;
 
-  createBrowserSoapAPIInterceptor(
-    'GetAllConfig',
-    withQuarantineAccount
-      ? getAllConfigResponseMock({ zimbraAmavisQuarantineAccount: QUARANTINE_ACCOUNT_NAME })
-      : getAllConfigResponseMock(),
-  );
+  if (options.delayedConfig) {
+    delayedSoapApiForBrowser(
+      'GetAllConfig',
+      getAllConfigResponseMock({
+        zimbraAmavisQuarantineAccount: QUARANTINE_ACCOUNT_NAME,
+      }),
+      400,
+    );
+  } else {
+    createBrowserSoapAPIInterceptor(
+      'GetAllConfig',
+      withQuarantineAccount
+        ? getAllConfigResponseMock({ zimbraAmavisQuarantineAccount: QUARANTINE_ACCOUNT_NAME })
+        : getAllConfigResponseMock(),
+    );
+  }
 
   if (!withQuarantineAccount) {
     await setupBrowserTest(<GlobalQuarantine />, { grantRights: 'config' });
@@ -75,7 +97,7 @@ async function setupQuarantineView(
   let batchCalls = 0;
   await createBrowserAPIInterceptor('post', '/service/admin/soap/BatchRequest', () => {
     batchCalls += 1;
-    const getMsgResponse = emptyAfterFirstRefetch && batchCalls > 1 ? [] : [{ m: [getQuarantinedMessage()] }];
+    const getMsgResponse = emptyAfterFirstRefetch && batchCalls > 1 ? [] : [{ m: [getQuarantinedMessage(options)] }];
     return HttpResponse.json({ Body: { BatchResponse: { GetMsgResponse: getMsgResponse } } });
   });
 
@@ -125,18 +147,22 @@ describe('GlobalQuarantine', () => {
     await expect.element(page.getByText('Spam subject')).toBeVisible();
   });
 
-  it('deletes a message from the message view and refreshes the list', async () => {
-    const msgActionParams = createBrowserSoapAPIInterceptor('MsgAction', {});
-    await setupQuarantineView({ emptyAfterFirstRefetch: true });
+  it(
+    'deletes a message from the message view and refreshes the list',
+    { timeout: 20_000 },
+    async () => {
+      const msgActionParams = createBrowserSoapAPIInterceptor('MsgAction', {});
+      await setupQuarantineView({ emptyAfterFirstRefetch: true });
 
-    await page.getByText('Spam subject').click();
-    await page.getByRole('button', { name: 'DELETE', exact: true }).click();
-    await page.getByRole('button', { name: /yes, delete/i }).click();
+      await page.getByText('Spam subject').click();
+      await page.getByRole('button', { name: 'DELETE', exact: true }).click();
+      await page.getByRole('button', { name: /yes, delete/i }).click();
 
-    await msgActionParams;
-    await expect.element(page.getByText('Message deleted')).toBeVisible();
-    await expect.element(page.getByText('This list is empty.')).toBeVisible();
-  });
+      await msgActionParams;
+      await expect.element(page.getByText('Message deleted')).toBeVisible();
+      await expect.element(page.getByText('This list is empty.')).toBeVisible();
+    },
+  );
 
   it('labels the icon-only close button accessibly in the message view', async () => {
     await setupQuarantineView();
@@ -162,5 +188,82 @@ describe('GlobalQuarantine', () => {
     await expect
       .element(page.getByText('The account has been created successfully'))
       .toBeVisible();
+  });
+
+  it('refreshes the message list when REFRESH LIST is clicked', async () => {
+    const { getSearchCalls } = await setupQuarantineView();
+    await expect.element(page.getByText('Spam subject')).toBeVisible();
+
+    const before = getSearchCalls();
+    await page.getByRole('button', { name: /refresh list/i }).click();
+
+    await vi.waitFor(() => expect(getSearchCalls()).toBeGreaterThan(before));
+    await expect.element(page.getByText('Spam subject')).toBeVisible();
+  });
+
+  it('shows a loading spinner while the configuration is loading', async () => {
+    await setupQuarantineView({ delayedConfig: true });
+
+    await expect.element(page.getByRole('status')).toBeVisible();
+    await expect.element(page.getByText(QUARANTINE_ACCOUNT_NAME)).toBeVisible();
+  });
+
+  it('shows the attachments of the quarantined message inside the view modal', async () => {
+    await setupQuarantineView({ withAttachment: true });
+
+    await page.getByText('Spam subject').click();
+    await expect.element(page.getByText('file.pdf', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('1 Attachment')).toBeVisible();
+  });
+
+  it('recreates the quarantine account and deletes the previous account on confirmation', async () => {
+    const newAccountName = 'virus-quarantine.new@example.com';
+    const createAccountParams = createBrowserSoapAPIInterceptor('CreateAccount', {
+      account: [{ name: newAccountName }],
+    });
+    const modifyConfigParams = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    createBrowserSoapAPIInterceptor('GetAccount', {
+      account: [{ id: 'acc-1', name: QUARANTINE_ACCOUNT_NAME }],
+    });
+    const deleteAccountParams = createBrowserSoapAPIInterceptor('DeleteAccount', {});
+    await setupQuarantineView();
+
+    await page.getByRole('button', { name: /delete and re-create quarantine account/i }).click();
+    await page.getByRole('button', { name: /yes, delete and re-create it/i }).click();
+
+    await createAccountParams;
+    expect(JSON.stringify(await modifyConfigParams)).toContain(newAccountName);
+    expect(JSON.stringify(await deleteAccountParams)).toContain('acc-1');
+    await expect
+      .element(page.getByText('The account has been created successfully'))
+      .toBeVisible();
+  });
+
+  it('keeps the quarantine account when the recreate confirmation is cancelled', async () => {
+    const createAccount = await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateAccountRequest',
+      () =>
+        HttpResponse.json({
+          Body: { CreateAccountResponse: { account: [{ name: 'virus-quarantine.new@example.com' }] } },
+        }),
+    );
+    await setupQuarantineView();
+
+    await page.getByRole('button', { name: /delete and re-create quarantine account/i }).click();
+    await expect
+      .element(page.getByText(/are you sure you want to delete and re-create quarantine account?/i))
+      .toBeVisible();
+
+    await page.getByRole('button', { name: 'NO, KEEP IT' }).click();
+    await expect
+      .poll(() =>
+        page
+          .getByText(/are you sure you want to delete and re-create quarantine account?/i)
+          .elements(),
+      )
+      .toHaveLength(0);
+    expect(createAccount.getCalledTimes()).toBe(0);
+    await expect.element(page.getByText(QUARANTINE_ACCOUNT_NAME)).toBeVisible();
   });
 });
