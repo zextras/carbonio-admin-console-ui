@@ -100,6 +100,7 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/domain/global/global-two-factor-auth/**',
       'apps/admin-ui-domains/src/views/domain/global/global-administrators/**',
       'apps/admin-ui-domains/src/views/domain/global/global-white-label/**',
+      'apps/admin-ui-domains/src/views/domain/global/global-quarantine/**',
       'apps/admin-ui-domains/src/views/domain/edit-account/**',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',

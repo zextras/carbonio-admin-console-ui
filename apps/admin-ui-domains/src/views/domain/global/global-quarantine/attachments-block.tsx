@@ -11,25 +11,20 @@ import {
   Padding,
   Row,
   Tooltip,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
 import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { removeAttachmentsRequest } from '../../services/remove-attachments';
+import { useRemoveQuarantineAttachment } from '../../../../services/use-quarantine-message-actions';
 import styles from './attachments-block.module.css';
-import { AttachmentPart, EditorAttachmentFiles, MailMessage } from './mail-message-renderer';
+import { AttachmentPart, EditorAttachmentFiles, IncompleteMessage } from './quarantine-types';
 
 type OpenEmlPreviewType = (
   parentMessageId: string,
   attachmentName: string,
-  emlMessage: MailMessage,
+  emlMessage: IncompleteMessage,
 ) => void;
-
-type GetQuarantineMsgData = () => void;
-type SetShowMessageView = (v: boolean) => void;
-type SetMessageViewLoading = (v: boolean) => void;
 
 type IconColors = Array<{
   color: string;
@@ -41,15 +36,13 @@ type AttachmentType = {
   size: number;
   link: string;
   downloadlink: string;
-  message: MailMessage;
+  message: IncompleteMessage;
   isExternalMessage?: boolean;
   part: string;
   iconColors: IconColors;
   att: EditorAttachmentFiles;
   openEmlPreview?: OpenEmlPreviewType;
-  getQuarantineMsgData: GetQuarantineMsgData;
-  setShowMessageView: SetShowMessageView;
-  setMessageViewLoading: SetMessageViewLoading;
+  onClose: () => void;
 };
 
 type GetAttachmentsDownloadLinkProps = {
@@ -306,17 +299,15 @@ const Attachment: FC<AttachmentType> = ({
   part,
   iconColors,
   att,
-  getQuarantineMsgData,
-  setShowMessageView,
-  setMessageViewLoading,
+  onClose,
 }) => {
   const extension = getFileExtension(att).value;
 
   const sizeLabel = useMemo(() => humanFileSize(size), [size]);
   const inputRef = useRef<HTMLAnchorElement>(null);
   const inputRef2 = useRef<HTMLAnchorElement>(null);
-  const createSnackbar = useSnackbar();
   const [t] = useTranslation();
+  const removeAttachmentMutation = useRemoveQuarantineAttachment();
 
   const downloadAttachment = useCallback(() => {
     if (inputRef.current) {
@@ -332,43 +323,16 @@ const Attachment: FC<AttachmentType> = ({
     ? t('action.click_open', 'Click to open')
     : t('action.click_preview', 'Click to preview');
 
-  const onDeleteAttachment = useCallback(() => {
-    setMessageViewLoading(true);
-    removeAttachmentsRequest(message.id, part)
+  const onDeleteAttachment = () => {
+    void removeAttachmentMutation
+      .mutateAsync({ id: message.id, part })
       .then(() => {
-        createSnackbar({
-          key: 'info',
-          severity: 'info',
-          label: t('quarantine.attachment_deleted', 'Attachment deleted'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        getQuarantineMsgData();
-        setShowMessageView(false);
+        onClose();
       })
-      .catch((error) => {
-        setMessageViewLoading(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+      .catch(() => {
+        // snackbar already reported by the hook
       });
-  }, [
-    createSnackbar,
-    getQuarantineMsgData,
-    message.id,
-    part,
-    setShowMessageView,
-    setMessageViewLoading,
-    t,
-  ]);
+  };
 
   return (
     <Container
@@ -410,35 +374,45 @@ const Attachment: FC<AttachmentType> = ({
       </Tooltip>
       <Row orientation="horizontal" crossAlignment="center">
         <Container className={styles.attachmentHoverBarContainer} orientation="horizontal">
-          <Padding right="small">
-            <Tooltip
-              key={`${message.id}-DownloadOutline`}
-              label={t('label.download_one', 'Download')}
-            >
-              <Button
-                type="ghost"
-                color={'text'}
-                size="medium"
-                icon="DownloadOutline"
-                onClick={downloadAttachment}
-              />
-            </Tooltip>
-          </Padding>
-          {!isExternalMessage && (
+          {removeAttachmentMutation.isPending ? (
             <Padding right="small">
-              <Tooltip
-                key={`${message.id}-DeletePermanentlyOutline`}
-                label={t('label.delete', 'Delete')}
-              >
-                <Button
-                  type="ghost"
-                  color={'text'}
-                  size="medium"
-                  icon="DeletePermanentlyOutline"
-                  onClick={onDeleteAttachment}
-                />
-              </Tooltip>
+              <ds-spinner></ds-spinner>
             </Padding>
+          ) : (
+            <>
+              <Padding right="small">
+                <Tooltip
+                  key={`${message.id}-DownloadOutline`}
+                  label={t('label.download_one', 'Download')}
+                >
+                  <Button
+                    type="ghost"
+                    color={'text'}
+                    size="medium"
+                    icon="DownloadOutline"
+                    onClick={downloadAttachment}
+                    aria-label={t('label.download_one', 'Download')}
+                  />
+                </Tooltip>
+              </Padding>
+              {!isExternalMessage && (
+                <Padding right="small">
+                  <Tooltip
+                    key={`${message.id}-DeletePermanentlyOutline`}
+                    label={t('label.delete', 'Delete')}
+                  >
+                    <Button
+                      type="ghost"
+                      color={'text'}
+                      size="medium"
+                      icon="DeletePermanentlyOutline"
+                      onClick={onDeleteAttachment}
+                      aria-label={t('label.delete', 'Delete')}
+                    />
+                  </Tooltip>
+                </Padding>
+              )}
+            </>
           )}
         </Container>
       </Row>
@@ -466,18 +440,14 @@ const Attachment: FC<AttachmentType> = ({
 };
 
 const AttachmentsBlock: FC<{
-  message: MailMessage;
+  message: IncompleteMessage;
   isExternalMessage?: boolean;
   openEmlPreview?: OpenEmlPreviewType;
-  getQuarantineMsgData: GetQuarantineMsgData;
-  setShowMessageView: SetShowMessageView;
-  setMessageViewLoading: SetMessageViewLoading;
+  onClose: () => void;
 }> = ({
   message,
   isExternalMessage = false /* openEmlPreview */,
-  getQuarantineMsgData,
-  setShowMessageView,
-  setMessageViewLoading,
+  onClose,
 }): ReactElement => {
   const [t] = useTranslation();
   const [expanded, setExpanded] = useState(false);
@@ -523,9 +493,7 @@ const AttachmentsBlock: FC<{
             iconColors={getAttachmentIconColors({ attachments })}
             // @ts-expect-error - needs a fix
             att={att}
-            getQuarantineMsgData={getQuarantineMsgData}
-            setShowMessageView={setShowMessageView}
-            setMessageViewLoading={setMessageViewLoading}
+            onClose={onClose}
           />
         ))}
       </Container>

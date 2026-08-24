@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useUserSettings } from '@zextras/ui-shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -304,6 +304,38 @@ describe('MailMessageRenderer', () => {
       });
       render(<MailMessageRenderer mailMsg={msg} />);
       expect(screen.queryByText(/This message has no text content/)).toBeNull();
+    });
+  });
+
+  describe('banner interactions', () => {
+    it('hides the banner and shows images when Show Images is clicked', () => {
+      const msg = createMailMessage({
+        body: { contentType: 'text/html', content: HTML_WITH_EXTERNAL_IMAGES },
+        participants: [{ type: 'f', address: 'sender@evil.com' }],
+      });
+      render(<MailMessageRenderer mailMsg={msg} />);
+      expect(screen.getByText(/External images have been blocked/)).toBeTruthy();
+
+      fireEvent.click(screen.getByRole('button', { name: /show images/i }));
+
+      expect(screen.queryByText(/External images have been blocked/)).toBeNull();
+    });
+
+    it('hides the banner when the close icon is clicked', () => {
+      const msg = createMailMessage({
+        body: { contentType: 'text/html', content: HTML_WITH_EXTERNAL_IMAGES },
+        participants: [{ type: 'f', address: 'sender@evil.com' }],
+      });
+      const { container } = render(<MailMessageRenderer mailMsg={msg} />);
+      expect(screen.getByText(/External images have been blocked/)).toBeTruthy();
+
+      const closeButton = Array.from(container.querySelectorAll<HTMLButtonElement>('button')).find(
+        (button) => button.textContent === '' && button.querySelector('ds-icon'),
+      );
+      expect(closeButton).toBeTruthy();
+      fireEvent.click(closeButton as HTMLButtonElement);
+
+      expect(screen.queryByText(/External images have been blocked/)).toBeNull();
     });
   });
 });
