@@ -49,14 +49,14 @@ export type SoapMailParticipant = {
 
 export type SoapMailMessagePart = {
   part: string;
-  ct: 'multipart/alternative' | string;
+  ct: string;
   s?: number;
   ci?: string;
   cd?: 'inline' | 'attachment';
   mp?: Array<SoapMailMessagePart>;
   body?: true;
   filename?: string;
-  // FIXME see IRIS-4029 content may be a string or { _content: string } depending on compose settings
+  // IRIS-4029: content may be a string or { _content: string } depending on compose settings
   content?: string;
 };
 
@@ -115,8 +115,6 @@ export type IncompleteMessage = {
   envelopeFrom?: string;
   envelopeTo?: string;
 };
-
-export type MailMessage = IncompleteMessage;
 
 export type EditorAttachmentFiles = {
   contentType: string;
