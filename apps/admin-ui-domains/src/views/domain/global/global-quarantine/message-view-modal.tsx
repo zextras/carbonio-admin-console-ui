@@ -27,6 +27,7 @@ import {
 } from '../../../../services/use-quarantine-message-actions';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
+import { getScoreColor } from './quarantine-message-normalizer';
 import type { IncompleteMessage } from './quarantine-types';
 
 type MessageViewModalProps = {
@@ -186,8 +187,7 @@ export const MessageViewModal = ({ message, accountId, onClose }: MessageViewMod
                 as="strong"
                 size="large"
                 weight="bold"
-                // @ts-expect-error - needs a fix
-                color={message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'}
+                color={getScoreColor(message.score)}
                 style={{ display: 'flex', paddingLeft: '0.25rem' }}
               >
                 {message.score}
@@ -195,10 +195,7 @@ export const MessageViewModal = ({ message, accountId, onClose }: MessageViewMod
               <Tooltip placement="top" label={message.reason}>
                 <ds-text as="span" style={{ paddingLeft: '0.25rem' }}>
                   <ds-icon
-                    color={
-                      // @ts-expect-error - needs a fix
-                      message.score > 50 ? 'secondry' : message.score > 35 ? 'warning' : 'error'
-                    }
+                    color={getScoreColor(message.score)}
                     size="large"
                     icon={'QuestionMarkCircleOutline'}
                   ></ds-icon>
