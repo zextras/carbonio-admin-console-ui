@@ -19,8 +19,8 @@ import {
 	ADDRESS_BOOK_SERVICE_ENABLED,
 	ZX_CONFIG,
 	ZX_CONFIG_GLOBAL_ACTION,
-} from '../../../../constants';
-import { GlobalAddressBook } from '../global-address-book';
+} from '../../../../../constants';
+import { GlobalServices } from '../global-services';
 
 type ZextrasRequestBody = {
 	Body: {
@@ -60,7 +60,7 @@ function seedGlobalAdminSettings(): ReturnType<typeof getQueryClient> {
 	return queryClient;
 }
 
-function renderGlobalAddressBook(ui: ReactElement = <GlobalAddressBook />): Promise<RenderResult> {
+function renderGlobalServices(ui: ReactElement = <GlobalServices />): Promise<RenderResult> {
 	return setupBrowserTest(ui, { queryClient: seedGlobalAdminSettings() });
 }
 
@@ -154,21 +154,21 @@ function setupAddressBookInterceptor(state: ServiceState = DEFAULT_RUNNING): {
 	return { capturedActions };
 }
 
-describe('GlobalAddressBook (browser)', () => {
+describe('GlobalServices (browser)', () => {
 	beforeEach(() => {
 		setupAddressBookInterceptor();
 	});
 
 	describe('Rendering', () => {
 		it('should render the Services title', async () => {
-			await renderGlobalAddressBook();
+			await renderGlobalServices();
 			await expect
 				.element(page.getByText('Services', { exact: true }))
 				.toBeInTheDocument();
 		});
 
 		it('should render the status card description and global scope note when running', async () => {
-			await renderGlobalAddressBook();
+			await renderGlobalServices();
 			await expect
 				.element(
 					page.getByText(
@@ -187,7 +187,7 @@ describe('GlobalAddressBook (browser)', () => {
 		});
 
 		it('should show running status and Stop service button when service is running', async () => {
-			await renderGlobalAddressBook();
+			await renderGlobalServices();
 			await expect.element(page.getByText('running', { exact: true })).toBeInTheDocument();
 			await expect
 				.element(page.getByRole('button', { name: /stop service/i }))
@@ -196,7 +196,7 @@ describe('GlobalAddressBook (browser)', () => {
 
 		it('should show stopped status and Start service button when service is stopped', async () => {
 			setupAddressBookInterceptor(DEFAULT_STOPPED);
-			await renderGlobalAddressBook();
+			await renderGlobalServices();
 			await expect.element(page.getByText('stopped', { exact: true })).toBeInTheDocument();
 			await expect
 				.element(
@@ -214,7 +214,7 @@ describe('GlobalAddressBook (browser)', () => {
 	describe('Actions', () => {
 		it('should set addressBookServiceEnabled false when Stop service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_RUNNING);
-			await renderGlobalAddressBook();
+			await renderGlobalServices();
 
 			const button = page.getByRole('button', { name: /stop service/i });
 			await expect.element(button).toBeEnabled();
@@ -233,7 +233,7 @@ describe('GlobalAddressBook (browser)', () => {
 
 		it('should set addressBookServiceEnabled true when Start service is clicked', async () => {
 			const { capturedActions } = setupAddressBookInterceptor(DEFAULT_STOPPED);
-			await renderGlobalAddressBook();
+			await renderGlobalServices();
 
 			const button = page.getByRole('button', { name: /start service/i });
 			await expect.element(button).toBeEnabled();

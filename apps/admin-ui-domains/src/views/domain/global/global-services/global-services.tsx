@@ -9,10 +9,10 @@ import { useUserSettings } from '@zextras/ui-shared';
 import { type CSSProperties, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { AddressBookServiceStatus } from '../../../../types';
-import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
-import { useAddressBookServiceStatus } from '../../../services/use-address-book-service';
-import { useSetAddressBookServiceEnabled } from '../../../services/use-set-address-book-service-enabled';
+import type { AddressBookServiceStatus } from '../../../../../types';
+import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../../constants';
+import { useAddressBookServiceStatus } from '../../../../services/use-address-book-service';
+import { useSetAddressBookServiceEnabled } from '../../../../services/use-set-address-book-service-enabled';
 
 const DEFAULT_STATUS: AddressBookServiceStatus = {
   running: false,
@@ -62,7 +62,7 @@ function getErrorLabel(error: Error, fallback: string): string {
   return error?.message ? error.message : fallback;
 }
 
-export function GlobalAddressBook() {
+export function GlobalServices() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const userSetting = useUserSettings();

@@ -17,10 +17,10 @@ import {
 } from '../constants';
 import { DomainList } from './domain/domain-list/domain-list';
 import GlobalActiveSync from './domain/global/global-active-sync';
-import { GlobalAddressBook } from './domain/global/global-address-book';
 import { GlobalAdministrators } from './domain/global/global-administrators/global-administrators';
 import { GlobalDetailPanel } from './domain/global/global-detail-panel';
 import { GlobalQuarantine } from './domain/global/global-quarantine/global-quarantine';
+import { GlobalServices } from './domain/global/global-services/global-services';
 import { GlobalTwoFactorAuth } from './domain/global/global-two-factor-auth/global-two-factor-auth';
 import { GlobalWhiteLabel } from './domain/global/global-white-label/global-white-label';
 
@@ -88,6 +88,6 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     id: ADDRESS_BOOK,
     labelKey: 'label.services',
     labelDefault: 'Services',
-    Component: GlobalAddressBook,
+    Component: GlobalServices,
   },
 ];
