@@ -18,10 +18,10 @@ import { useMailstoreServers } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { doPurgeActiveSync } from '../../../services/do-purge-mobile-state';
-import { doStratStopJail } from '../../../services/do-start-stop-jail';
-import { useAntiDosConfig } from '../../../services/use-anti-dos-config';
-import { useSaveAntiDosSetting } from '../../../services/use-save-anti-dos-setting';
+import { doPurgeActiveSync } from '../../../../services/do-purge-mobile-state';
+import { doStratStopJail } from '../../../../services/do-start-stop-jail';
+import { useAntiDosConfig } from '../../../../services/use-anti-dos-config';
+import { useSaveAntiDosSetting } from '../../../../services/use-save-anti-dos-setting';
 
 const GlobalActiveSync: FC = () => {
   const [t] = useTranslation();

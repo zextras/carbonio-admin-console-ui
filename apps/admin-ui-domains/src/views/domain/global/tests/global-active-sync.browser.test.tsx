@@ -13,7 +13,7 @@ import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import GlobalActiveSync from '../global-active-sync';
+import GlobalActiveSync from '../global-active-sync/global-active-sync';
 
 type ZextrasRequestBody = {
     Body: {
