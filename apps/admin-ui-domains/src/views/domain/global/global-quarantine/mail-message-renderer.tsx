@@ -7,8 +7,24 @@
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
-import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import {
+  EditorAttachmentFiles,
+  IncompleteMessage,
+  MailMessagePart,
+  Participant,
+  ParticipantRole,
+} from './quarantine-types';
+
+export type {
+  AttachmentPart,
+  EditorAttachmentFiles,
+  IncompleteMessage,
+  MailMessagePart,
+  Participant,
+} from './quarantine-types';
 
 const bannerContainerStyle: React.CSSProperties = {
   borderBottom: '0.0625rem solid #f7a538',
@@ -31,104 +47,6 @@ const plainTextToHTML = (str: string): string => {
     return str.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll(LINE_BREAK_REGEX, '<br />');
   }
   return '';
-};
-
-type MailMessagePart = {
-  contentType: string;
-  size: number;
-  content?: string;
-  name: string;
-  filename?: string;
-  parts?: Array<MailMessagePart>;
-  ci?: string;
-  cd?: string;
-  disposition?: 'inline' | 'attachment';
-};
-export type EditorAttachmentFiles = {
-  contentType: string;
-  disposition?: string;
-  fileName?: string;
-  filename: string;
-  name: string;
-  size: number;
-};
-type Participant = {
-  type: any;
-  address: string;
-  name?: string;
-  fullName?: string;
-};
-
-type IncompleteMessage = {
-  id: string;
-  did?: string;
-  parent: string;
-  conversation: string;
-  read: boolean | string;
-  size: number;
-  hasAttachment: boolean;
-  flagged: boolean;
-  urgent: boolean;
-  isDeleted: boolean;
-  isSentByMe: boolean;
-  isForwarded: boolean;
-  isInvite: boolean;
-  isDraft: boolean;
-  isScheduled: boolean;
-  autoSendTime?: number;
-  attachments?: Array<AttachmentPart>;
-  participants?: Array<Participant>;
-  date: number;
-  subject: string;
-  fragment?: string;
-  tags: string[];
-  parts: Array<MailMessagePart>;
-  body: {
-    contentType: string;
-    content: string;
-  };
-  invite?: any;
-  shr?: any;
-  isComplete: boolean;
-  isReplied: boolean;
-  isReadReceiptRequested?: boolean;
-};
-export type MailMessage = IncompleteMessage & {
-  parts: Array<MailMessagePart>;
-  body: {
-    contentType: string;
-    content: string;
-  };
-  parent: string;
-  isReadReceiptRequested?: boolean;
-};
-
-export type AttachmentPart = {
-  part?: string;
-  ct?: string;
-  s?: number;
-  size?: number;
-  filename?: string;
-  body?: boolean;
-  contentType?: string;
-  content?: string;
-  name?: string;
-  parts?: Array<AttachmentPart>;
-  ci?: string;
-  disposition?: 'inline' | 'attachment';
-  cd?: 'inline' | 'attachment';
-  mp?: Array<AttachmentPart>;
-};
-
-const ParticipantRole = {
-  FROM: 'f',
-  TO: 't',
-  CARBON_COPY: 'c',
-  BLIND_CARBON_COPY: 'b',
-  REPLY_TO: 'r',
-  SENDER: 's',
-  READ_RECEIPT_NOTIFICATION: 'n',
-  RESENT_FROM: 'rf',
 };
 
 const replaceLinkToAnchor = (content: string): string => {
@@ -189,7 +107,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 
   const settingsPref = useUserSettings()?.prefs;
   const from = filter(participants, { type: ParticipantRole.FROM })[0]?.address;
-  const [showExternalImage, setShowExternalImage] = useState(false);
+  const [imagesShownManually, setImagesShownManually] = useState(false);
   const [displayBanner, setDisplayBanner] = useState(true);
 
   const orignalText = body.content; // getOriginalContent(body.content, false);
@@ -231,10 +149,11 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
       displayBanner,
     [from, hasExternalImages, settingsPref.zimbraPrefMailTrustedSenderList, displayBanner],
   );
-  useEffect(() => {
-    if (isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from))
-      setShowExternalImage(true);
-  }, [from, settingsPref.zimbraPrefMailTrustedSenderList]);
+  const isTrustedSender = isAvailableInTrusteeList(
+    settingsPref.zimbraPrefMailTrustedSenderList ?? '',
+    from,
+  );
+  const showExternalImage = isTrustedSender || imagesShownManually;
 
   const calculateHeight = (): void => {
     if (!isNull(iframeRef.current)) {
@@ -378,7 +297,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
               label={t('quarantine.show_images', 'Show Images')}
               color="warning"
               onClick={(): void => {
-                setShowExternalImage(true);
+                setImagesShownManually(true);
               }}
             />
             <Button
@@ -431,7 +350,7 @@ const findAttachments = (
     },
     acc,
   );
-const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
+const MailMessageRenderer: FC<{ mailMsg: IncompleteMessage }> = ({ mailMsg }) => {
   const parts = findAttachments(mailMsg.parts ?? [], []);
 
   if (!mailMsg.body?.content?.length && !mailMsg.fragment) {
