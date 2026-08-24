@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/ninja_robo.svg';
 import { MessageTableHeaders } from '../../../utility/utils';
-import { getDateTime } from './quarantine-message-normalizer';
+import { getDateTime, getScoreColor } from './quarantine-message-normalizer';
 import type { IncompleteMessage } from './quarantine-types';
 
 type MessageListTableProps = {
@@ -44,7 +44,7 @@ export const MessageListTable = ({ messages, isFetching, onOpenMessage }: Messag
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`from-${v.id}`}
         style={{ textAlign: 'left', justifyContent: 'flex-start' }}
         onClick={(): void => {
           onOpenMessage(v);
@@ -55,7 +55,7 @@ export const MessageListTable = ({ messages, isFetching, onOpenMessage }: Messag
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`subject-${v.id}`}
         style={{ textAlign: 'left', justifyContent: 'flex-start' }}
         onClick={(): void => {
           onOpenMessage(v);
@@ -66,23 +66,18 @@ export const MessageListTable = ({ messages, isFetching, onOpenMessage }: Messag
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`score-${v.id}`}
         style={{ textAlign: 'left', justifyContent: 'flex-start' }}
         onClick={(): void => {
           onOpenMessage(v);
         }}
       >
-        <ds-text
-          as="span"
-          size="small"
-          weight="bold"
-          color={Number(v.score) > 50 ? 'secondry' : Number(v.score) > 35 ? 'warning' : 'error'}
-        >
+        <ds-text as="span" size="small" weight="bold" color={getScoreColor(v.score)}>
           {v.score}
         </ds-text>
       </Row>,
       <Row
-        key={i}
+        key={`reason-${v.id}`}
         style={{ textAlign: 'left', justifyContent: 'flex-start' }}
         onClick={(): void => {
           onOpenMessage(v);
