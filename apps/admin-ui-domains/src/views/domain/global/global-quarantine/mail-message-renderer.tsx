@@ -7,7 +7,7 @@
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
-import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -110,7 +110,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 
   const settingsPref = useUserSettings()?.prefs;
   const from = filter(participants, { type: ParticipantRole.FROM })[0]?.address;
-  const [showExternalImage, setShowExternalImage] = useState(false);
+  const [imagesShownManually, setImagesShownManually] = useState(false);
   const [displayBanner, setDisplayBanner] = useState(true);
 
   const orignalText = body.content; // getOriginalContent(body.content, false);
@@ -152,10 +152,11 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
       displayBanner,
     [from, hasExternalImages, settingsPref.zimbraPrefMailTrustedSenderList, displayBanner],
   );
-  useEffect(() => {
-    if (isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from))
-      setShowExternalImage(true);
-  }, [from, settingsPref.zimbraPrefMailTrustedSenderList]);
+  const isTrustedSender = isAvailableInTrusteeList(
+    settingsPref.zimbraPrefMailTrustedSenderList ?? '',
+    from,
+  );
+  const showExternalImage = isTrustedSender || imagesShownManually;
 
   const calculateHeight = (): void => {
     if (!isNull(iframeRef.current)) {
@@ -299,7 +300,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
               label={t('quarantine.show_images', 'Show Images')}
               color="warning"
               onClick={(): void => {
-                setShowExternalImage(true);
+                setImagesShownManually(true);
               }}
             />
             <Button
