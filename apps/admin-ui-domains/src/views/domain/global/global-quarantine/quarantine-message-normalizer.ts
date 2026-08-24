@@ -5,7 +5,7 @@
  */
 
 import { format } from 'date-fns';
-import { cloneDeep, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
+import { cloneDeep, forEach, isArray, map, reduce, replace } from 'lodash-es';
 
 import {
   type AttachmentPart,
@@ -73,6 +73,13 @@ const normalizeMailPartMapFn = (v: SoapMailMessagePart): MailMessagePart => {
   return ret;
 };
 
+const isInlineImagePart = (part: SoapMailMessagePart): boolean =>
+  !!part.part &&
+  !part.part.includes('.') &&
+  part.cd === 'inline' &&
+  !part.ci &&
+  part.ct !== 'text/plain';
+
 export const findBodyPart = (
   mp: Array<SoapMailMessagePart>,
   acc: { contentType: string; content: string },
@@ -82,18 +89,11 @@ export const findBodyPart = (
     mp,
     (found, part) => {
       if (part.mp) return findBodyPart(part.mp, found, id);
-      if (part && part.body) {
+      if (part?.body) {
         if (!found.contentType.length) {
           return { contentType: part.ct, content: part.content ?? '' };
         }
-        if (
-          part.part &&
-          part.part.indexOf('.') === -1 &&
-          part.cd &&
-          part.cd === 'inline' &&
-          !part.ci &&
-          !(part.ct && part.ct === 'text/plain')
-        ) {
+        if (isInlineImagePart(part)) {
           return {
             ...found,
             content: found.content.concat(
@@ -114,7 +114,7 @@ export const generateBody = (
 ): BodyContent => findBodyPart(mp, { contentType: '', content: '' }, id);
 
 const extractAttachmentIdsFromHtmlContent = (content: string): Array<string> => {
-  const matches = content.match(/cid:(.*?)(?="|&)/g);
+  const matches = content.match(/cid:(.*?)(?=[&"])/g);
   return matches ? map(matches, (match) => match.replace('cid:', '')) : [];
 };
 
@@ -143,7 +143,7 @@ const getAttachmentsAnchoredOnHtmlBody = (
 const cleanUpCi = (id: string): string => id.slice(1, id.indexOf('@'));
 
 const isIgnoreAttachment = (item: AttachmentPart): boolean => {
-  if ((item && item.ct === 'multipart/appledouble') || item.ct === 'application/applefile') {
+  if (item?.ct === 'multipart/appledouble' || item.ct === 'application/applefile') {
     return true;
   }
   if (item.body && (item.ct === 'text/html' || item.ct === 'text/plain')) {
@@ -162,6 +162,37 @@ const isIgnoreAttachment = (item: AttachmentPart): boolean => {
   return false;
 };
 
+const isAttachmentCandidate = (item: AttachmentPart): boolean =>
+  item.cd === 'attachment' ||
+  item.ct === 'message/rfc822' ||
+  item.ct === 'text/calendar' ||
+  !!item.filename ||
+  !!item.ci;
+
+const resolveDisposition = (
+  item: AttachmentPart,
+  relatedContentType: string | undefined,
+  anchoredAttachmentsList: Array<string>,
+): 'inline' | 'attachment' => {
+  const isAnchored = !!item.ci && anchoredAttachmentsList.includes(cleanUpCi(item.ci));
+  if (item.cd === 'inline' && isAnchored) {
+    return 'inline';
+  }
+  if (relatedContentType === 'multipart/related' && item.cd === 'attachment' && isAnchored) {
+    return 'inline';
+  }
+  return 'attachment';
+};
+
+const applyFallbackFilename = (item: AttachmentPart): void => {
+  if (item.ct === 'message/rfc822' && !item.filename) {
+    item.filename = 'Unknown <message/rfc822>';
+  }
+  if (item.ct === 'text/html' && !item.filename) {
+    item.filename = 'Unknown <text/html>';
+  }
+};
+
 export const getAttachmentsFromParts = (
   mailParts: Array<AttachmentPart> | AttachmentPart,
 ): Array<AttachmentPart> => {
@@ -172,78 +203,34 @@ export const getAttachmentsFromParts = (
       forEach(mailParts, (part) => {
         const attachmentParts = getAttachmentsFromParts(part);
         forEach(attachmentParts, (attachmentPart: AttachmentPart) => {
-          if (!isIgnoreAttachment(attachmentPart)) {
-            const item = {
-              ...attachmentPart,
-              contentType: attachmentPart.ct,
-              name: attachmentPart?.part,
-              size: attachmentPart?.s,
-            };
-            if (
-              (item.cd && item.cd === 'attachment') ||
-              (item.ct && (item.ct === 'message/rfc822' || item.ct === 'text/calendar')) ||
-              item.filename ||
-              item.ci
-            ) {
-              if (
-                item.cd &&
-                item.cd === 'inline' &&
-                item.ci &&
-                anchoredAttachmentsList.includes(cleanUpCi(item.ci))
-              ) {
-                item.cd = 'inline';
-              } else if (
-                part.ct === 'multipart/related' &&
-                item.ci &&
-                item.cd &&
-                item.cd === 'attachment' &&
-                anchoredAttachmentsList.includes(cleanUpCi(item.ci))
-              ) {
-                item.cd = 'inline';
-              } else {
-                item.cd = 'attachment';
-              }
-              if (item.ct === 'message/rfc822' && !item.filename) {
-                item.filename = 'Unknown <message/rfc822>';
-              }
-              if (item.ct === 'text/html' && !item.filename) {
-                item.filename = 'Unknown <text/html>';
-              }
-              if (item.ct && item.ct !== 'application/pkcs7-signature') {
-                results.push(item);
-              }
-            }
+          if (isIgnoreAttachment(attachmentPart)) {
+            return;
+          }
+          const item: AttachmentPart = {
+            ...attachmentPart,
+            contentType: attachmentPart.ct,
+            name: attachmentPart?.part,
+            size: attachmentPart?.s,
+          };
+          if (!isAttachmentCandidate(item)) {
+            return;
+          }
+          item.cd = resolveDisposition(item, part.ct, anchoredAttachmentsList);
+          applyFallbackFilename(item);
+          if (item.ct && item.ct !== 'application/pkcs7-signature') {
+            results.push(item);
           }
         });
       });
-    } else if (
-      (mailParts && mailParts.cd && mailParts.cd === 'attachment') ||
-      (mailParts.ct &&
-        (mailParts.ct === 'message/rfc822' || mailParts.ct === 'text/calendar')) ||
-      mailParts.filename ||
-      mailParts.ci
-    ) {
+    } else if (isAttachmentCandidate(mailParts)) {
       const updatedMailPart: AttachmentPart = { ...mailParts };
       if (isIgnoreAttachment(mailParts)) {
         extractAttachmentIdsFromHtmlContent(updatedMailPart.content || '');
-        if (
-          updatedMailPart.cd &&
-          updatedMailPart.cd === 'inline' &&
-          updatedMailPart.ci &&
-          anchoredAttachmentsList.includes(cleanUpCi(updatedMailPart.ci))
-        ) {
-          updatedMailPart.cd = 'inline';
-        } else if (
-          updatedMailPart.ct === 'multipart/related' &&
-          updatedMailPart.ci &&
-          updatedMailPart.cd &&
-          updatedMailPart.cd === 'attachment' &&
-          anchoredAttachmentsList.includes(cleanUpCi(updatedMailPart.ci))
-        ) {
-          updatedMailPart.cd = 'inline';
-        } else {
-          updatedMailPart.cd = 'attachment';
-        }
+        updatedMailPart.cd = resolveDisposition(
+          updatedMailPart,
+          updatedMailPart.ct,
+          anchoredAttachmentsList,
+        );
       }
       results.push(updatedMailPart);
     } else if (mailParts.mp) {
@@ -330,19 +317,32 @@ const normalizeMailParts = (
 const getAttachments = (parts: Array<AttachmentPart> | undefined): Array<AttachmentPart> =>
   parts ? getAttachmentsFromParts(parts) : [];
 
-export const parseFlags = (flags: string | undefined): ParsedFlags => ({
-  read: !isNil(flags) ? !/u/.test(flags) : true,
-  hasAttachment: !isNil(flags) ? /a/.test(flags) : false,
-  flagged: !isNil(flags) ? /f/.test(flags) : false,
-  urgent: !isNil(flags) ? /!/.test(flags) : false,
-  isDeleted: !isNil(flags) ? /x/.test(flags) : false,
-  isDraft: !isNil(flags) ? /d/.test(flags) : false,
-  isForwarded: !isNil(flags) ? /w/.test(flags) : false,
-  isSentByMe: !isNil(flags) ? /s/.test(flags) : false,
-  isInvite: !isNil(flags) ? /v/.test(flags) : false,
-  isReplied: !isNil(flags) ? /r/.test(flags) : false,
-  isReadReceiptRequested: !isNil(flags) ? !/n/.test(flags) : true,
-});
+export const getScoreColor = (score: string | undefined): string => {
+  if (Number(score) > 50) {
+    return 'secondry';
+  }
+  if (Number(score) > 35) {
+    return 'warning';
+  }
+  return 'error';
+};
+
+export const parseFlags = (flags: string | undefined): ParsedFlags => {
+  const f = flags ?? '';
+  return {
+    read: !/u/.test(f),
+    hasAttachment: /a/.test(f),
+    flagged: /f/.test(f),
+    urgent: /!/.test(f),
+    isDeleted: /x/.test(f),
+    isDraft: /d/.test(f),
+    isForwarded: /w/.test(f),
+    isSentByMe: /s/.test(f),
+    isInvite: /v/.test(f),
+    isReplied: /r/.test(f),
+    isReadReceiptRequested: !/n/.test(f),
+  };
+};
 
 export const sanitizeEmail = (email: string | undefined): string =>
   replace(email ?? '', /[<>]/g, '');
