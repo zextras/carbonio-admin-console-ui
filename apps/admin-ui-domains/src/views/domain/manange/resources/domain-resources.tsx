@@ -50,7 +50,7 @@ type ResourceTableCellProps = {
 };
 
 /** Module-level cell so table rows do not define components inside DomainResources (S6478). */
-function ResourceTableCell({ onActivate, children }: ResourceTableCellProps) {
+function ResourceTableCell({ onActivate, children }: Readonly<ResourceTableCellProps>) {
   return (
     <Container
       crossAlignment="flex-start"

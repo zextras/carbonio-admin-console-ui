@@ -29,7 +29,6 @@ import { useResourceForm } from './resource-form-context';
 
 type SelectOption = { label: string; value: string | number };
 
-/** Shared Select onChange value type (Sonar S4323). */
 type SelectChangeValue = string | number | null;
 
 function resolveGeneratedName(

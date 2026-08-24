@@ -275,4 +275,44 @@ describe('DomainResources (browser)', () => {
             expect((params as { query: string }).query).toContain('!(zimbraIsSystemAccount=TRUE)');
         });
     });
+
+    describe('Create and edit navigation', () => {
+        it('should open the create wizard from the add button', async () => {
+            setupSearchDirectoryInterceptor();
+            await setupBrowserTest(<DomainResources />);
+            await expect.element(page.getByText('Conference Room A')).toBeInTheDocument();
+
+            await userEvent.click(page.getByRole('button', { name: 'Create resource' }));
+
+            await expect.element(page.getByText('Create Resource')).toBeVisible();
+        });
+
+        it('should open the edit panel when a resource row is clicked', async () => {
+            setupSearchDirectoryInterceptor();
+            createBrowserSoapAPIInterceptor('GetCalendarResource', {
+                calresource: [
+                    {
+                        id: 'res-1',
+                        name: 'room1@example.com',
+                        a: [
+                            { n: 'displayName', _content: 'Conference Room A' },
+                            { n: 'mail', _content: 'room1@example.com' },
+                        ],
+                    },
+                ],
+            });
+            await setupBrowserTest(<DomainResources />);
+
+            await userEvent.click(page.getByText('Conference Room A'));
+
+            await expect.element(page.getByText('room1@example.com').first()).toBeVisible();
+        });
+
+        it('should display a formatted last access timestamp', async () => {
+            setupSearchDirectoryInterceptor();
+            await setupBrowserTest(<DomainResources />);
+
+            await expect.element(page.getByText(/26\/02\/15/)).toBeVisible();
+        });
+    });
 });

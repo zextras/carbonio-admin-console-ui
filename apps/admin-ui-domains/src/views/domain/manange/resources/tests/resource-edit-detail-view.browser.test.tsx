@@ -246,5 +246,51 @@ describe('ResourceEditDetailView (browser)', () => {
 
       await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
     });
+
+    it('hides Save/Cancel after Cancel is clicked', async () => {
+      setup(
+        <ResourceEditDetailView
+          selectedResource={{ id: RESOURCE_ID, name: RESOURCE_NAME }}
+          onClose={vi.fn()}
+        />,
+      );
+
+      const nameInput = page.getByLabelText('Name', { exact: true });
+      await userEvent.type(nameInput, ' Updated');
+      await expect.element(page.getByRole('button', { name: /cancel/i })).toBeVisible();
+
+      await userEvent.click(page.getByRole('button', { name: /cancel/i }));
+
+      await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
+    });
+  });
+
+  describe('VIEW MAIL and password validation', () => {
+    it('renders the VIEW MAIL action', async () => {
+      setup(
+        <ResourceEditDetailView
+          selectedResource={{ id: RESOURCE_ID, name: RESOURCE_NAME }}
+          onClose={vi.fn()}
+        />,
+      );
+
+      await expect.element(page.getByRole('button', { name: /view mail/i })).toBeVisible();
+    });
+
+    it('shows a password length error when a short password is saved', async () => {
+      setup(
+        <ResourceEditDetailView
+          selectedResource={{ id: RESOURCE_ID, name: RESOURCE_NAME }}
+          onClose={vi.fn()}
+        />,
+      );
+
+      await userEvent.type(page.getByLabelText('Password', { exact: true }), '123');
+      await userEvent.click(page.getByRole('button', { name: /save/i }));
+
+      await expect
+        .element(page.getByText('Password should be more than 5 characters'))
+        .toBeVisible();
+    });
   });
 });
