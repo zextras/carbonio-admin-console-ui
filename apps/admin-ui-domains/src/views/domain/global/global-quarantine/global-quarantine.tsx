@@ -39,123 +39,19 @@ import { modifyConfig } from '../../../../services/modify-config';
 import { generateRandomString, MessageTableHeaders } from '../../../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
-
-type AttachmentPart = {
-  part?: string;
-  ct?: string;
-  s?: number;
-  size?: number;
-  filename?: string;
-  body?: boolean;
-  contentType?: string;
-  content?: string;
-  name?: string;
-  parts?: Array<AttachmentPart>;
-  ci?: string;
-  disposition?: 'inline' | 'attachment';
-  cd?: 'inline' | 'attachment';
-  mp?: Array<AttachmentPart>;
-};
-
-type IncompleteMessage = {
-  id: string;
-  did?: string;
-  parent: string;
-  conversation: string;
-  read: boolean | string;
-  size: number;
-  hasAttachment: boolean;
-  flagged: boolean;
-  urgent: boolean;
-  isDeleted: boolean;
-  isSentByMe: boolean;
-  isForwarded: boolean;
-  isInvite: boolean;
-  isDraft: boolean;
-  isScheduled: boolean;
-  autoSendTime?: number;
-  attachments?: Array<AttachmentPart>;
-  participants?: Array<Participant>;
-  date: number;
-  subject: string;
-  fragment?: string;
-  tags: any;
-  parts: Array<MailMessagePart>;
-  body: {
-    contentType: string;
-    content: string;
-  };
-  invite?: any;
-  shr?: any;
-  isComplete: boolean;
-  isReplied: boolean;
-  isReadReceiptRequested?: boolean;
-  score?: string;
-  reason?: string;
-  envelopeFrom?: string;
-  envelopeTo?: string;
-};
-
-type SoapEmailParticipantRole = 'f' | 't' | 'c' | 'b' | 'r' | 's' | 'n' | 'rf';
-type SoapMailParticipant = {
-  /** Address */
-  a: string;
-  /** Display name */
-  d?: string;
-  /** Type:
-   * (f)rom,
-   * (t)o,
-   * (c)c,
-   * (b)cc,
-   * (r)eply-to,
-   * (s)ender,
-   * read-receipt (n)otification,
-   * (rf) resent-from
-   */
-  p: string;
-  t: SoapEmailParticipantRole;
-  isGroup?: 0 | 1;
-};
-type SoapMailMessagePart = {
-  part: string;
-  /**	Content Type  */ ct: 'multipart/alternative' | string;
-  /**	Size  */ s?: number;
-  /**	Content id (for inline images)  */ ci?: string;
-  /** Content disposition */ cd?: 'inline' | 'attachment';
-  /**	Parts  */ mp?: Array<SoapMailMessagePart>;
-  /**	Set if is the body of the message  */ body?: true;
-  filename?: string;
-  // FIXME see IRIS-4029 Based on the compose settings the content could be a string or an object of type { _content: string }
-  content?: string;
-};
-type MailMessagePart = {
-  contentType: string;
-  size: number;
-  content?: string;
-  name: string;
-  filename?: string;
-  parts?: Array<MailMessagePart>;
-  ci?: string;
-  cd?: string;
-  disposition?: 'inline' | 'attachment';
-};
-const ParticipantRole = {
-  FROM: 'f',
-  TO: 't',
-  CARBON_COPY: 'c',
-  BLIND_CARBON_COPY: 'b',
-  REPLY_TO: 'r',
-  SENDER: 's',
-  READ_RECEIPT_NOTIFICATION: 'n',
-  RESENT_FROM: 'rf',
-};
-type ParticipantRoleType = (typeof ParticipantRole)[keyof typeof ParticipantRole];
-type Participant = {
-  type: ParticipantRoleType;
-  address: string;
-  name?: string;
-  fullName?: string;
-};
+import {
+  type AttachmentPart,
+  type BodyContent,
+  type IncompleteMessage,
+  type MailMessagePart,
+  type ParsedFlags,
+  type Participant,
+  ParticipantRole,
+  type ParticipantRoleType,
+  type SoapEmailParticipantRole,
+  type SoapMailMessagePart,
+  type SoapMailParticipant,
+} from './quarantine-types';
 
 const getDateTime = (d: number): string => {
   const date = new Date(d);
@@ -683,13 +579,6 @@ export const GlobalQuarantine = () => {
     return scoreValueArr.length > 1 ? scoreValueArr[1]?.split(' ')?.[0] || '' : '';
   };
 
-  type Flags = string | undefined;
-
-  interface BodyContent {
-    contentType: string;
-    content: string;
-  }
-
   const normalizeParticipants = useCallback(
     (participants: Participant[]): any =>
       participants ? map(participants, normalizeParticipantsFromSoap) : [],
@@ -712,22 +601,8 @@ export const GlobalQuarantine = () => {
     [generateBody],
   );
 
-  interface ParsedFlags {
-    read: boolean;
-    hasAttachment: boolean;
-    flagged: boolean;
-    urgent: boolean;
-    isDeleted: boolean;
-    isDraft: boolean;
-    isForwarded: boolean;
-    isSentByMe: boolean;
-    isInvite: boolean;
-    isReplied: boolean;
-    isReadReceiptRequested: boolean;
-  }
-
   const parseFlags = useCallback(
-    (flags: Flags): ParsedFlags => ({
+    (flags: string | undefined): ParsedFlags => ({
       read: !isNil(flags) ? !/u/.test(flags) : true,
       hasAttachment: !isNil(flags) ? /a/.test(flags) : false,
       flagged: !isNil(flags) ? /f/.test(flags) : false,

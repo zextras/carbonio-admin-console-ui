@@ -10,6 +10,25 @@ import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import {
+  AttachmentPart,
+  EditorAttachmentFiles,
+  IncompleteMessage,
+  type MailMessage,
+  MailMessagePart,
+  Participant,
+  ParticipantRole,
+} from './quarantine-types';
+
+export type {
+  AttachmentPart,
+  EditorAttachmentFiles,
+  IncompleteMessage,
+  MailMessage,
+  MailMessagePart,
+  Participant,
+};
+
 const bannerContainerStyle: React.CSSProperties = {
   borderBottom: '0.0625rem solid #f7a538',
   padding: '0.5rem 1rem',
@@ -31,104 +50,6 @@ const plainTextToHTML = (str: string): string => {
     return str.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll(LINE_BREAK_REGEX, '<br />');
   }
   return '';
-};
-
-type MailMessagePart = {
-  contentType: string;
-  size: number;
-  content?: string;
-  name: string;
-  filename?: string;
-  parts?: Array<MailMessagePart>;
-  ci?: string;
-  cd?: string;
-  disposition?: 'inline' | 'attachment';
-};
-export type EditorAttachmentFiles = {
-  contentType: string;
-  disposition?: string;
-  fileName?: string;
-  filename: string;
-  name: string;
-  size: number;
-};
-type Participant = {
-  type: any;
-  address: string;
-  name?: string;
-  fullName?: string;
-};
-
-type IncompleteMessage = {
-  id: string;
-  did?: string;
-  parent: string;
-  conversation: string;
-  read: boolean | string;
-  size: number;
-  hasAttachment: boolean;
-  flagged: boolean;
-  urgent: boolean;
-  isDeleted: boolean;
-  isSentByMe: boolean;
-  isForwarded: boolean;
-  isInvite: boolean;
-  isDraft: boolean;
-  isScheduled: boolean;
-  autoSendTime?: number;
-  attachments?: Array<AttachmentPart>;
-  participants?: Array<Participant>;
-  date: number;
-  subject: string;
-  fragment?: string;
-  tags: string[];
-  parts: Array<MailMessagePart>;
-  body: {
-    contentType: string;
-    content: string;
-  };
-  invite?: any;
-  shr?: any;
-  isComplete: boolean;
-  isReplied: boolean;
-  isReadReceiptRequested?: boolean;
-};
-export type MailMessage = IncompleteMessage & {
-  parts: Array<MailMessagePart>;
-  body: {
-    contentType: string;
-    content: string;
-  };
-  parent: string;
-  isReadReceiptRequested?: boolean;
-};
-
-export type AttachmentPart = {
-  part?: string;
-  ct?: string;
-  s?: number;
-  size?: number;
-  filename?: string;
-  body?: boolean;
-  contentType?: string;
-  content?: string;
-  name?: string;
-  parts?: Array<AttachmentPart>;
-  ci?: string;
-  disposition?: 'inline' | 'attachment';
-  cd?: 'inline' | 'attachment';
-  mp?: Array<AttachmentPart>;
-};
-
-const ParticipantRole = {
-  FROM: 'f',
-  TO: 't',
-  CARBON_COPY: 'c',
-  BLIND_CARBON_COPY: 'b',
-  REPLY_TO: 'r',
-  SENDER: 's',
-  READ_RECEIPT_NOTIFICATION: 'n',
-  RESENT_FROM: 'rf',
 };
 
 const replaceLinkToAnchor = (content: string): string => {
