@@ -11,10 +11,8 @@ import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  AttachmentPart,
   EditorAttachmentFiles,
   IncompleteMessage,
-  type MailMessage,
   MailMessagePart,
   Participant,
   ParticipantRole,
@@ -24,10 +22,9 @@ export type {
   AttachmentPart,
   EditorAttachmentFiles,
   IncompleteMessage,
-  MailMessage,
   MailMessagePart,
   Participant,
-};
+} from './quarantine-types';
 
 const bannerContainerStyle: React.CSSProperties = {
   borderBottom: '0.0625rem solid #f7a538',
@@ -353,7 +350,7 @@ const findAttachments = (
     },
     acc,
   );
-const MailMessageRenderer: FC<{ mailMsg: MailMessage }> = ({ mailMsg }) => {
+const MailMessageRenderer: FC<{ mailMsg: IncompleteMessage }> = ({ mailMsg }) => {
   const parts = findAttachments(mailMsg.parts ?? [], []);
 
   if (!mailMsg.body?.content?.length && !mailMsg.fragment) {

@@ -18,12 +18,12 @@ import { useTranslation } from 'react-i18next';
 
 import { useRemoveQuarantineAttachment } from '../../../../services/use-quarantine-message-actions';
 import styles from './attachments-block.module.css';
-import { AttachmentPart, EditorAttachmentFiles, MailMessage } from './mail-message-renderer';
+import { AttachmentPart, EditorAttachmentFiles, IncompleteMessage } from './quarantine-types';
 
 type OpenEmlPreviewType = (
   parentMessageId: string,
   attachmentName: string,
-  emlMessage: MailMessage,
+  emlMessage: IncompleteMessage,
 ) => void;
 
 type IconColors = Array<{
@@ -36,7 +36,7 @@ type AttachmentType = {
   size: number;
   link: string;
   downloadlink: string;
-  message: MailMessage;
+  message: IncompleteMessage;
   isExternalMessage?: boolean;
   part: string;
   iconColors: IconColors;
@@ -440,7 +440,7 @@ const Attachment: FC<AttachmentType> = ({
 };
 
 const AttachmentsBlock: FC<{
-  message: MailMessage;
+  message: IncompleteMessage;
   isExternalMessage?: boolean;
   openEmlPreview?: OpenEmlPreviewType;
   onClose: () => void;
