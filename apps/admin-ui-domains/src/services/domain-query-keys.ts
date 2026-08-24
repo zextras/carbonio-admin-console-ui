@@ -58,4 +58,6 @@ export const domainQueryKeys = {
       params.sortBy ?? '',
       params.sortAscending ?? '',
     ] as const,
+  quarantineAccount: () => [...domainQueryKeys.all, 'quarantine-account'] as const,
+  quarantineMessages: () => [...domainQueryKeys.all, 'quarantine-messages'] as const,
 } as const;
