@@ -4,14 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { noop } from 'lodash-es';
-import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type themeConfigStore } from '../../../../../types/domain';
 import { ThemeConfigs } from '../theme-configs';
+import { whiteLabelSchema } from '../white-label-schema';
 
 const EMPTY_THEME: themeConfigStore = {
 	carbonioWebUiDarkMode: undefined,
@@ -56,17 +57,17 @@ function ThemeConfigsWrapper({
 	globalTheme?: themeConfigStore;
 	isGlobalTheme?: boolean;
 }) {
-	const [themeConfig, setThemeConfig] = useState<themeConfigStore>(initialTheme);
-	const [, setIsValidated] = useState(true);
+	const form = useForm({
+		defaultValues: initialTheme,
+		validators: { onChange: whiteLabelSchema, onSubmit: whiteLabelSchema },
+	});
 
 	return (
 		<ThemeConfigs
-			themeConfig={themeConfig}
+			form={form}
 			globalTheme={globalTheme}
-			setThemeConfig={setThemeConfig}
-			setIsValidated={setIsValidated}
-			onResetTheme={noop}
 			isGlobalTheme={isGlobalTheme}
+			onResetTheme={noop}
 		/>
 	);
 }

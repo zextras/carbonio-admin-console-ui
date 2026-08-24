@@ -6,14 +6,13 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, ListRow } from '@zextras/ui-components';
-import { useAllConfig, useCurrentUserRights } from '@zextras/ui-shared';
+import { useAllConfig, useCurrentUserRights, useModifyConfig } from '@zextras/ui-shared';
 import { find, uniq } from 'lodash-es';
 import { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { MtaInboundSecurity } from '../../../../types';
 import { CONFIG, ZIMBRA_MTA_BLOCKED_EXTENSION } from '../../../constants';
-import { useModifyConfig } from '../../../services/use-modify-config';
 import { ProtocolChecksSection } from './sections/protocol-checks-section';
 import { RejectionSection } from './sections/rejection-section';
 import { SettingsSection } from './sections/settings-section';

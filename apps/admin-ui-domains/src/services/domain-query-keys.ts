@@ -26,4 +26,49 @@ export const domainQueryKeys = {
   galAccount: (accountId: string) => [...domainQueryKeys.gal(), 'account', accountId] as const,
   galDataSources: (accountId: string) =>
     [...domainQueryKeys.gal(), 'dataSources', accountId] as const,
+  calResource: (resourceId: string) => [...domainQueryKeys.all, 'cal-resource', resourceId] as const,
+  calResourceList: (
+    domain: string,
+    query: string,
+    sortBy: string,
+    sortOrder: string,
+    offset: number,
+    limit: number,
+  ) => [...domainQueryKeys.all, 'cal-resource-list', domain, query, sortBy, sortOrder, offset, limit] as const,
+  accountDetail: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-detail', accountId] as const,
+  accountCoreAttributes: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-core-attributes', accountId] as const,
+  accountSpecificDetail: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-specific-detail', accountId] as const,
+  cosDetail: (cosId: string) => [...domainQueryKeys.all, 'cos-detail', cosId] as const,
+  otpList: (accountName: string) => [...domainQueryKeys.all, 'otp-list', accountName] as const,
+  credentialList: (accountName: string) =>
+    [...domainQueryKeys.all, 'credential-list', accountName] as const,
+  accountGrants: (accountId: string) =>
+    [...domainQueryKeys.all, 'account-grants', accountId] as const,
+  initializedDomains: (search: string) =>
+    [...domainQueryKeys.all, 'initialized-domains', search] as const,
+  accountListDirectory: (params: {
+    attr: string;
+    type: string;
+    domainName?: string;
+    query: string;
+    offset: number;
+    limit: number;
+    sortBy?: string;
+    sortAscending?: string;
+  }) =>
+    [
+      ...domainQueryKeys.all,
+      'account-list-directory',
+      params.attr,
+      params.type,
+      params.domainName ?? '',
+      params.query,
+      params.offset,
+      params.limit,
+      params.sortBy ?? '',
+      params.sortAscending ?? '',
+    ] as const,
 } as const;

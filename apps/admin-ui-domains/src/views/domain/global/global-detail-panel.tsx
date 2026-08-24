@@ -73,25 +73,25 @@ function mapConfigToFormValues(configInformation: Array<Attribute>): GlobalSetti
 }
 
 function mapFormValuesToAttributes(values: GlobalSettingsFormValues): Array<Attribute> {
-  const attributes: Array<Attribute> = [
+  return [
     { n: 'carbonioNotificationFrom', _content: values.carbonioNotificationFrom },
+    ...values.carbonioNotificationRecipients.map((item: { label?: string }) => ({
+      n: 'carbonioNotificationRecipients',
+      _content: item?.label ?? '',
+    })),
+    {
+      n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
+      _content: values.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE,
+    },
+    {
+      n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
+      _content: values.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE,
+    },
+    {
+      n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+      _content: values.carbonioSearchAllDomainsByFeature ? TRUE : FALSE,
+    },
   ];
-  values.carbonioNotificationRecipients.forEach((item: { label?: string }): void => {
-    attributes.push({ n: 'carbonioNotificationRecipients', _content: item?.label ?? '' });
-  });
-  attributes.push({
-    n: ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-    _content: values.zimbraDomainMandatoryMailSignatureEnabled ? TRUE : FALSE,
-  });
-  attributes.push({
-    n: ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
-    _content: values.zimbraAmavisOutboundDisclaimersOnly ? TRUE : FALSE,
-  });
-  attributes.push({
-    n: CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-    _content: values.carbonioSearchAllDomainsByFeature ? TRUE : FALSE,
-  });
-  return attributes;
 }
 
 const GlobalDetailPanelContent = ({

@@ -24,8 +24,8 @@ function MockCreateNewDomain() {
 function MockGlobalDetailPanel() {
   return <div>VIEW:global-detail-panel</div>;
 }
-function MockGlobalTheme() {
-  return <div>VIEW:global-theme</div>;
+function MockGlobalWhiteLabel() {
+  return <div>VIEW:global-white-label</div>;
 }
 function MockGlobalTwoFactorAuth() {
   return <div>VIEW:global-two-factor-auth</div>;
@@ -36,8 +36,8 @@ function MockGlobalActiveSync() {
 function MockGlobalAddressBook() {
   return <div>VIEW:global-address-book</div>;
 }
-function MockGlobalDelegates() {
-  return <div>VIEW:global-delegates</div>;
+function MockGlobalAdministrators() {
+  return <div>VIEW:global-administrators</div>;
 }
 function MockDomainList() {
   return <div>VIEW:domain-list</div>;
@@ -96,13 +96,19 @@ vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }))
 vi.mock('../domain/global/global-detail-panel', () => ({
   GlobalDetailPanel: MockGlobalDetailPanel,
 }));
-vi.mock('../domain/global/global-theme', () => ({ default: MockGlobalTheme }));
-vi.mock('../domain/global/global-two-factor-auth', () => ({ default: MockGlobalTwoFactorAuth }));
+vi.mock('../domain/global/global-white-label/global-white-label', () => ({
+  GlobalWhiteLabel: MockGlobalWhiteLabel,
+}));
+vi.mock('../domain/global/global-two-factor-auth/global-two-factor-auth', () => ({
+  GlobalTwoFactorAuth: MockGlobalTwoFactorAuth,
+}));
 vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
 vi.mock('../domain/global/global-address-book', () => ({
   GlobalAddressBook: MockGlobalAddressBook,
 }));
-vi.mock('../domain/global-delegates', () => ({ default: MockGlobalDelegates }));
+vi.mock('../domain/global/global-administrators/global-administrators', () => ({
+    GlobalAdministrators: MockGlobalAdministrators,
+  }));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
 vi.mock('../quarantine/quarantine-list', () => ({ default: MockQuarantineList }));
 vi.mock('../domain/details/domain-general-settings', () => ({
@@ -138,11 +144,11 @@ const DOMAIN_ID = 'dom-1';
 const globalRoutes: Array<[string, string]> = [
   ['/global', 'VIEW:global-detail-panel'],
   ['/global/settings', 'VIEW:global-detail-panel'],
-  ['/global/whitelabel_settings', 'VIEW:global-theme'],
+  ['/global/whitelabel_settings', 'VIEW:global-white-label'],
   ['/global/2-factor-authentication', 'VIEW:global-two-factor-auth'],
   ['/global/quarantine', 'VIEW:quarantine-list'],
   ['/global/domains', 'VIEW:domain-list'],
-  ['/global/administrators', 'VIEW:global-delegates'],
+  ['/global/administrators', 'VIEW:global-administrators'],
   ['/global/active_sync', 'VIEW:global-active-sync'],
   ['/global/address_book', 'VIEW:global-address-book'],
 ];

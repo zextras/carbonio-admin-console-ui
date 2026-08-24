@@ -11,15 +11,15 @@ import { page } from 'vitest/browser';
 import { AppView } from '../app-view';
 
 describe('Operations AppView', () => {
-	it('redirects the index route to the running tab and renders the layout', async () => {
-		setupBrowserTest(<AppView />, { initialRouterEntry: '/' });
+  it('redirects the index route to the running tab and renders the layout', async () => {
+    setupBrowserTest(<AppView />, { initialRouterEntry: '/' });
 
-		// Breadcrumb renders
-		await expect.element(page.getByText('Home')).toBeVisible();
+    // Breadcrumb renders
+    await expect.element(page.getByText('Home')).toBeVisible();
 
-		// Index redirect lands on the operations list (Running/Queued/Done tabs)
-		await expect.element(page.getByText('Running')).toBeVisible();
-		await expect.element(page.getByText('Queued')).toBeVisible();
-		await expect.element(page.getByText('Done')).toBeVisible();
-	});
+    // Index redirect lands on the operations list (Running/Queued/Done tabs).
+    await expect.element(page.getByText('Running', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('Queued')).toBeVisible();
+    await expect.element(page.getByText('Done')).toBeVisible();
+  });
 });

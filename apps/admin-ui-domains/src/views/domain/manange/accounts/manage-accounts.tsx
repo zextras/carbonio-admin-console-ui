@@ -3,56 +3,25 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQueryClient } from '@tanstack/react-query';
 import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, Tooltip, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
-import { type CosAttribute, getCoreAttributes, getCosGeneralInformation, type GetCosResponse, postSoapFetchRequest, useIsAdvanced, useUserAccount } from '@zextras/ui-shared';
-import { format } from 'date-fns';
-import { debounce, filter, flatMapDeep } from 'lodash-es';
+import { debounce } from 'lodash-es';
 import { ChangeEvent, FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
 import {
-  ABQ_MODE,
-  ACCOUNT,
   ASC,
-  BACKUP_ENABLED,
-  BACKUP_SELF_UNDELETE_ALLOWED,
   DESC,
-  MAILBOX_QUOTA_USED,
   RECORD_DISPLAY_LIMIT,
-  TOTAL_COMPUTED_QUOTA_LIMIT,
-  TOTAL_QUOTA_SOURCE,
-  TOTAL_QUOTA_STATUS,
-  TOTAL_QUOTA_USED,
-  TOTAL_QUOTA_USED_BY_MODULE,
-  ZIMBRA_ADMIN_URN,
 } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import {
-  accountListDirectory,
-  getMailboxQuota,
-} from '../../../../services/account-list-directory-service';
-import { checkRightRequest } from '../../../../services/check-right';
+import { accountListDirectory } from '../../../../services/account-list-directory-service';
 import { countAccount } from '../../../../services/count-account-service';
-import { domainQueryKeys } from '../../../../services/domain-query-keys';
-import { getAccountRequest } from '../../../../services/get-account';
-import { fetchSoap } from '../../../../services/listOTP-service';
-import { useAccountMembership } from '../../../../services/use-account-membership';
-import { useAccountQuota } from '../../../../services/use-account-quota';
-import { useCosQuota } from '../../../../services/use-cos-quota';
-import { useSignatures } from '../../../../services/use-signatures';
-import { type UserSession, useUserSessions } from '../../../../services/use-user-sessions';
 import ScrollContainer from '../../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { AccountContext, AccountDetail } from './account-context';
+import { getAccountStatusColors } from '../../constants/account-status-colors';
+import { EditAccount } from '../../edit-account/edit-account';
 import CreateAccount from './create-account/create-account';
-import EditAccount from './edit-account/edit-account';
-
-type CheckRightResponse = {
-  allow: true;
-  _jsns: string;
-};
 
 type Timer = ReturnType<typeof setTimeout>;
 const ManageAccounts: FC = () => {
@@ -61,51 +30,16 @@ const ManageAccounts: FC = () => {
   const timer = useRef<Timer | undefined>(undefined);
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
-  const domainId = domain?.id;
-  const queryClient = useQueryClient();
-  const [accountDetail, setAccountDetail] = useState<AccountDetail>({});
-  const [initAccountDetail, setInitAccountDetail] = useState<AccountDetail>({});
-  const [selectedDetailAccount, setSelectedDetailAccount] = useState<any>(undefined);
-  const [cosDetail, setCosDetail] = useState<any>({});
-  const [accSpecificDetail, setAccSpecificDetail] = useState<any>({});
   const [defaultTab, setDefaultTab] = useState('general');
-  const [directMemberList, setDirectMemberList] = useState<any>([]);
-  const [inDirectMemberList, setInDirectMemberList] = useState<any>([]);
-  const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
-  const [otpList, setOtpList] = useState<any[]>([]);
-  const [credentialList, setCredentialList] = useState<any[]>([]);
-  const [identitiesList, setIdentitiesList] = useState<any[]>([]);
-  const [folderList, setFolderList] = useState<any[]>([]);
-  const [deligateDetail, setDeligateDetail] = useState<any>({});
-  const [deleteAdministrationRights, setDeleteAdministrationRights] = useState([]);
-  const [allUserSessionList, setAllUserSessionList] = useState<Array<UserSession>>([]);
-  const [userSessionList, setUserSessionList] = useState<Array<UserSession>>([]);
-  const flatten: any = useCallback((item: any) => [item, flatMapDeep(item.folder, flatten)], []);
-  const isAdvanced = useIsAdvanced();
   const tableRef = useRef<HTMLTableElement>(null);
   const [typeFilter, setTypeFilter] = useState<string>('');
   const [statusFilter, setStatusFilter] = useState<string>('');
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [hasError, setHasError] = useState<boolean>(false);
-  const [showModal, setShowModal] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>('name');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
   const [isTableTooTall, setIsTableTooTall] = useState(false);
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
-  const [allowedDeletePassword, setAllowedDeletePassword] = useState<boolean>(false);
-  const account = useUserAccount();
-  const isAdvancedAccountSelected = isAdvanced && !!accountDetail?.zimbraId;
-  const { data: accountQuota, error: accountQuotaError } = useAccountQuota(
-    isAdvancedAccountSelected ? (accountDetail?.zimbraId as string) : undefined,
-  );
-  const { data: cosQuota } = useCosQuota(
-    isAdvancedAccountSelected ? (accountDetail?.zimbraCOSId as string | undefined) : undefined,
-  );
-  const { data: signatureData } = useSignatures(selectedDetailAccount?.id);
-  const { data: membershipData, error: membershipError } = useAccountMembership(
-    selectedDetailAccount?.id,
-  );
-  const { data: sessionsData } = useUserSessions(selectedDetailAccount?.name);
   const [accountSearchCurrentPage, setAccountSearchCurrentPage] = useState(1);
 
   const accountTypeFilter: any = useMemo(
@@ -276,94 +210,10 @@ const ManageAccounts: FC = () => {
   const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
   const [isAccountDeleted, setIsAccountDeleted] = useState<boolean>(false);
   const [isAccountCreated, setIsAccountCreated] = useState<boolean>(false);
-  const [initialGlobalRights, setinitialGlobalRights] = useState({
-    setGlobalConfig: false,
-    getGlobalConfig: false,
-  });
-  const [globalRights, setGlobalRights] = useState({
-    setGlobalConfig: false,
-    getGlobalConfig: false,
-  });
 
-  const [signatureList, setSignatureList] = useState<any[]>([]);
-  const [signatureItems, setSignatureItems] = useState<any[]>([]);
-  const [isDirty, setIsDirty] = useState<boolean>(false);
 
-  useEffect(() => {
-    setSignatureList(signatureData ?? []);
-  }, [signatureData]);
 
-  useEffect(() => {
-    if (!membershipData) {
-      return;
-    }
-    const directMemArr: any[] = [];
-    const inDirectMemArr: any[] = [];
-    membershipData.forEach((ele: any) => {
-      //remove zimbraIsAdminGroup
-      const re = /^__(monitoring|helpdesk|groups|users|delegated|domain)_admins.*/;
-      if (re.test(ele?.name)) return;
-      if (ele?.via) inDirectMemArr.push({ label: ele?.name, closable: false, disabled: true });
-      else directMemArr.push({ label: ele?.name, closable: false, disabled: true });
-    });
-    setDirectMemberList(directMemArr);
-    setInDirectMemberList(inDirectMemArr);
-  }, [membershipData]);
-
-  useEffect(() => {
-    if (membershipError) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: membershipError?.message
-          ? membershipError?.message
-          : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    }
-  }, [membershipError, createSnackbar, t]);
-
-  useEffect(() => {
-    if (!sessionsData) {
-      setUserSessionList([]);
-      setAllUserSessionList([]);
-      return;
-    }
-    setUserSessionList(sessionsData);
-    setAllUserSessionList(sessionsData);
-  }, [sessionsData]);
-
-  const STATUS_COLOR: any = useMemo(
-    () => ({
-      active: {
-        color: '#8BC34A',
-        label: t('label.active', 'Active'),
-      },
-      maintenance: {
-        color: '#2196D3',
-        label: t('label.in_maintenance', 'In maintenance'),
-      },
-      locked: {
-        color: '#D74942',
-        label: t('label.locked', 'Locked'),
-      },
-      closed: {
-        color: '#828282',
-        label: t('label.closed', 'Closed'),
-      },
-      pending: {
-        color: '#828282',
-        label: t('label.pending', 'Pending'),
-      },
-      lockout: {
-        color: '#D74942',
-        label: t('label.lockout', 'Lockout'),
-      },
-    }),
-    [t],
-  );
+  const STATUS_COLOR = getAccountStatusColors(t);
 
   const accountUserType = useCallback((item: any): string => {
     if (item.zimbraIsAdminAccount === 'TRUE') return 'Admin';
@@ -372,376 +222,11 @@ const ManageAccounts: FC = () => {
     if (item.zimbraIsSystemAccount === 'TRUE') return 'System';
     return 'Normal';
   }, []);
-  const getAccountSpecificDetail = useCallback((id: string): void => {
-    getAccountRequest(id, '', 0).then((res: any) => {
-      const accountObj: any = {};
 
-      res?.account?.[0]?.a?.forEach((ele: any) => {
-        if (accountObj[ele.n]) {
-          accountObj[ele.n] = `${accountObj[ele.n]}, ${ele._content}`;
-        } else {
-          accountObj[ele.n] = ele._content;
-        }
-      });
-      if (accountObj.zimbraIsAdminAccount === undefined) {
-        accountObj.zimbraIsAdminAccount = 'FALSE';
-      }
-      if (accountObj.zimbraIsDelegatedAdminAccount === undefined) {
-        accountObj.zimbraIsDelegatedAdminAccount = 'FALSE';
-      }
-      setAccSpecificDetail({ ...accountObj });
-    });
+  const openDetailView = useCallback((acc: any): void => {
+    setSelectedAccount(acc);
+    setShowEditAccountView(true);
   }, []);
-  const getCosDetail = useCallback((id: string): void => {
-    getCosGeneralInformation(id).then((data: GetCosResponse) => {
-      const obj: any = {};
-      data?.cos?.[0]?.a?.forEach((ele: CosAttribute) => {
-        if (obj[ele.n]) {
-          obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-        } else {
-          obj[ele.n] = ele._content;
-        }
-      });
-      obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-        ? obj.zimbraPrefMailForwardingAddress
-        : '';
-      obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-        ? obj.zimbraPrefCalendarForwardInvitesTo
-        : '';
-
-      setCosDetail({ ...obj });
-    });
-  }, []);
-  const getListOtp = useCallback(
-    (id: string): void => {
-      fetchSoap('zextras', {
-        _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxAuth',
-        action: 'list_totp_command',
-        account: `${id}`,
-      }).then((res: any) => {
-        if (res?.ok) {
-          const otpListResponse = res.response?.list;
-          if (otpListResponse && Array.isArray(otpListResponse)) {
-            const otpListArr: any = [];
-            otpListResponse.forEach((item: any): any => {
-              otpListArr.push({
-                id: item?.id,
-                columns: [
-                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
-                    {item?.label || ' '}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
-                    {item?.enabled
-                      ? t('label.enabled', 'Enabled')
-                      : t('label.disabled', 'Disabled')}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id}>
-                    {item?.failed_attempts}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id}>
-                    {format(new Date(item?.created), 'dd/MMM/yyyy')}
-                  </ds-text>,
-                  <ds-text as="span" size="medium" key={item?.id} color="gray0">
-                    {item?.description || <>&nbsp;</>}
-                  </ds-text>,
-                ],
-                item,
-                clickable: true,
-              });
-            });
-            setOtpList(otpListArr);
-          }
-        }
-      });
-    },
-    [t],
-  );
-  const getCredentialList = useCallback((id: string): void => {
-    fetchSoap('zextras', {
-      _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxAuth',
-      action: 'credential',
-      request: 'list',
-      account: `${id}`,
-    }).then((res: any) => {
-      if (res.response?.values) {
-        setCredentialList(res.response?.values);
-      } else {
-        setCredentialList([]);
-      }
-    });
-  }, []);
-  const getABQStatus = useCallback((acc: any) => {
-    const body = [
-      {
-        configType: ACCOUNT,
-        configName: [acc],
-        attrName: [ABQ_MODE],
-      },
-      {
-        configType: ACCOUNT,
-        configName: [acc],
-        attrName: [BACKUP_ENABLED],
-      },
-      {
-        configType: ACCOUNT,
-        configName: [acc],
-        attrName: [BACKUP_SELF_UNDELETE_ALLOWED],
-      },
-    ];
-    getCoreAttributes(body).then((data) => {
-      if (data?.attributes) {
-        setAccountDetail((prev) => ({
-          ...prev,
-          abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-          backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
-          backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value,
-        }));
-        setInitAccountDetail((prev) => ({
-          ...prev,
-          abqMode: data?.attributes?.abqMode?.[0]?.value || '',
-          backupEnabled: data?.attributes?.backupEnabled?.[0]?.value,
-          backupSelfUndeleteAllowed: !!data?.attributes?.backupSelfUndeleteAllowed?.[0]?.value,
-        }));
-      }
-    });
-  }, []);
-
-  const setAccDetailValue = useCallback(
-    (key: string, value: unknown): void => {
-      setAccountDetail((prev: Record<string, unknown>) => ({ ...prev, [key]: value }));
-      setInitAccountDetail((prev: Record<string, unknown>) => ({ ...prev, [key]: value }));
-    },
-    [setAccountDetail, setInitAccountDetail],
-  );
-
-  const getMailboxQuotaUsed = useCallback(
-    (accId: string): Promise<void> =>
-      getMailboxQuota(accId).then((data) => {
-        setAccDetailValue(MAILBOX_QUOTA_USED, data?.mbox?.[0]?.s || 0);
-      }),
-    [setAccDetailValue],
-  );
-  const getDeletePasswordRight = useCallback(
-    (target: string): void => {
-      checkRightRequest(target, account?.name ?? '', 'set.account.userPassword').then(
-        (data: CheckRightResponse) => {
-          setAllowedDeletePassword(data?.allow);
-        },
-      );
-    },
-    [account?.name],
-  );
-
-  useEffect(() => {
-    if (!accountQuota) {
-      return;
-    }
-    setAccDetailValue(TOTAL_COMPUTED_QUOTA_LIMIT, accountQuota.totalComputedLimit);
-    setAccDetailValue(TOTAL_QUOTA_USED, accountQuota.totalUsed);
-    setAccDetailValue(TOTAL_QUOTA_USED_BY_MODULE, accountQuota.usedByModules);
-    setAccDetailValue(TOTAL_QUOTA_SOURCE, accountQuota.totalLimitSource);
-    setAccDetailValue(TOTAL_QUOTA_STATUS, accountQuota.totalStatus);
-  }, [accountQuota, setAccDetailValue]);
-
-  useEffect(() => {
-    if (!cosQuota) {
-      return;
-    }
-    setCosDetail((prev: any) => ({
-      ...prev,
-      [TOTAL_COMPUTED_QUOTA_LIMIT]: cosQuota.totalComputedLimit,
-    }));
-  }, [cosQuota]);
-
-  useEffect(() => {
-    if (accountQuotaError) {
-      createSnackbar({
-        key: 'retrieveAccountQuotaError',
-        severity: 'error',
-        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    }
-  }, [accountQuotaError, createSnackbar, t]);
-
-  useEffect(() => {
-    if (accountQuota && domainId) {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
-    }
-  }, [accountQuota, domainId, queryClient]);
-
-  const getAccountDetail = useCallback(
-    (id: string): void => {
-      getAccountRequest(id, '', 1)
-        .then((data: any) => {
-          const obj: any = {};
-
-          data?.account?.[0]?.a?.forEach((ele: any) => {
-            if (obj[ele.n]) {
-              obj[ele.n] = `${obj[ele.n]}, ${ele._content}`;
-            } else {
-              obj[ele.n] = ele._content;
-            }
-          });
-          if (obj.userPassword) {
-            obj.password = '******';
-            obj.repeatPassword = '******';
-          } else {
-            obj.password = '';
-            obj.repeatPassword = '';
-          }
-          obj.zimbraPrefMailForwardingAddress = obj.zimbraPrefMailForwardingAddress
-            ? obj.zimbraPrefMailForwardingAddress
-            : '';
-          obj.zimbraPrefCalendarForwardInvitesTo = obj.zimbraPrefCalendarForwardInvitesTo
-            ? obj.zimbraPrefCalendarForwardInvitesTo
-            : '';
-
-          obj.name = data?.account?.[0]?.name;
-          obj.domainName = data?.account?.[0]?.name.split('@')[1];
-          if (obj.zimbraIsAdminAccount === undefined) {
-            obj.zimbraIsAdminAccount = 'FALSE';
-          }
-          if (obj.zimbraIsDelegatedAdminAccount === undefined) {
-            obj.zimbraIsDelegatedAdminAccount = 'FALSE';
-          }
-          if (!obj.zimbraId) {
-            obj.zimbraId = id;
-          }
-          setInitAccountDetail({ ...obj });
-          setSelectedAccount({ ...obj, id });
-          setAccountDetail({ ...obj });
-          getCosDetail(obj.zimbraCOSId);
-          getAccountSpecificDetail(id);
-          setDefaultCOS(!obj.zimbraCOSId);
-          getMailboxQuotaUsed(id);
-          if (isAdvanced) {
-            getListOtp(data?.account?.[0]?.name);
-            getCredentialList(data?.account?.[0]?.name);
-            getABQStatus(id);
-          }
-        })
-
-        .catch((error) => {
-          setShowEditAccountView(false);
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error?.message
-              ? error?.message
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
-    },
-    [
-      getAccountSpecificDetail,
-      getCosDetail,
-      getMailboxQuotaUsed,
-      isAdvanced,
-      getListOtp,
-      getCredentialList,
-      getABQStatus,
-      createSnackbar,
-      t,
-    ],
-  );
-  const getFolderList = useCallback(
-    (acc: any, delegateList: any): void => {
-      postSoapFetchRequest(
-        `/service/admin/soap/GetFolderRequest`,
-        {
-          _jsns: 'urn:zimbraMail',
-        },
-        'GetFolderRequest',
-        acc.id,
-      ).then((res: any) => {
-        const allFolder =
-          res?.Body?.GetFolderResponse?.folder ||
-          flatMapDeep(res?.Body?.GetFolderResponse?.folder, flatten) ||
-          [];
-        allFolder.forEach((ele: any) => {
-          ele.id = ele.id.split(':')[1];
-          return ele;
-        });
-        const filteredFolders = filter(allFolder, (ele: any) =>
-          ['1', '2', '7', '10', '4', '5', '6', '3'].includes(ele.id),
-        );
-        const userDelegate: any[] = [];
-        filteredFolders.forEach((ele: any) => {
-          ele?.acl?.grant &&
-            ele?.acl?.grant.forEach((el: any) => {
-              userDelegate.push({ ...el, id: ele.id, name: ele.name });
-            });
-        });
-        setFolderList(filteredFolders);
-        userDelegate.forEach((ele: any) => {
-          let found = false;
-          delegateList.forEach((el: any) => {
-            // const folder: any[] = filter(userDelegate, { d: ele?.grantee?.[0]?.name });
-            if (el?.grantee?.[0]?.name === ele?.d) {
-              found = true;
-              if (el?.folder?.length) {
-                el?.folder.push(ele);
-              } else {
-                el.folder = [ele];
-              }
-            }
-          });
-          if (!found) {
-            delegateList.push({
-              grantee: [{ id: ele.zid, name: ele.d, type: ele.gt }],
-              folder: [ele],
-            });
-          }
-        });
-
-        setIdentitiesList(delegateList);
-      });
-    },
-    [flatten],
-  );
-  const getIdentitiesList = useCallback(
-    (acc: any): void => {
-      const request: any = {
-        _jsns: ZIMBRA_ADMIN_URN,
-        target: {
-          _content: acc.name,
-          type: 'account',
-          by: 'name',
-        },
-      };
-      postSoapFetchRequest(
-        `/service/admin/soap/GetGrantsRequest`,
-        {
-          ...request,
-        },
-        'GetGrantsRequest',
-        acc.id,
-      ).then((res: any) => {
-        getFolderList(acc, res?.Body?.GetGrantsResponse?.grant || []);
-      });
-    },
-    [getFolderList],
-  );
-
-  const openDetailView = useCallback(
-    (acc: any): void => {
-      setAccountDetail({});
-      setShowEditAccountView(true);
-      setSelectedDetailAccount(acc);
-      getAccountDetail(acc?.id);
-      getIdentitiesList(acc);
-      getDeletePasswordRight(acc?.name);
-    },
-    [getAccountDetail, getIdentitiesList, getDeletePasswordRight],
-  );
 
   const handleClickTableRow = (item: any): void => {
     openDetailView(item);
@@ -1045,71 +530,6 @@ const ManageAccounts: FC = () => {
     };
   }, []);
 
-  const accountContextValue = useMemo(
-    () => ({
-      accountDetail,
-      cosDetail,
-      setAccountDetail,
-      accSpecificDetail,
-      setAccSpecificDetail,
-      directMemberList,
-      inDirectMemberList,
-      setDirectMemberList,
-      setInDirectMemberList,
-      initAccountDetail,
-      setInitAccountDetail,
-      setSignatureItems,
-      setSignatureList,
-      otpList,
-      getListOtp,
-      identitiesList,
-      deligateDetail,
-      setDeligateDetail,
-      getIdentitiesList,
-      folderList,
-      setFolderList,
-      credentialList,
-      getCredentialList,
-      initialGlobalRights,
-      setinitialGlobalRights,
-      globalRights,
-      setGlobalRights,
-      deleteAdministrationRights,
-      setDeleteAdministrationRights,
-      userSessionList,
-      setAllUserSessionList,
-      allUserSessionList,
-      setUserSessionList,
-      defaultCOS,
-      setDefaultCOS,
-      allowedDeletePassword,
-      setAllowedDeletePassword,
-    }),
-    [
-      accountDetail,
-      cosDetail,
-      accSpecificDetail,
-      directMemberList,
-      inDirectMemberList,
-      initAccountDetail,
-      otpList,
-      getListOtp,
-      identitiesList,
-      deligateDetail,
-      getIdentitiesList,
-      folderList,
-      credentialList,
-      getCredentialList,
-      initialGlobalRights,
-      globalRights,
-      deleteAdministrationRights,
-      userSessionList,
-      allUserSessionList,
-      defaultCOS,
-      allowedDeletePassword,
-    ],
-  );
-
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
     if (timer.current) {
@@ -1312,28 +732,24 @@ const ManageAccounts: FC = () => {
                   </Container>
                 </Container>
               )}
-              <AccountContext.Provider value={accountContextValue}>
-                {showEditAccountView && (
-                  <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
-                    <EditAccount
-                      setShowEditAccountView={setShowEditAccountView}
-                      setIsAccountDeleted={setIsAccountDeleted}
-                      selectedAccount={selectedAccount}
-                      getAccountList={getAccountList}
-                      signatureList={signatureList}
-                      signatureItems={signatureItems}
-                      getAccountDetail={getAccountDetail}
-                      defaultTab={defaultTab}
-                      setDefaultTab={setDefaultTab}
-                      showModal={showModal}
-                      setShowModal={setShowModal}
-                      isDirty={isDirty}
-                      setIsDirty={setIsDirty}
-                      STATUS_COLOR={STATUS_COLOR}
-                    />
-                  </ModalOverlay>
-                )}
-              </AccountContext.Provider>
+              {showEditAccountView && (
+                <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
+                  <EditAccount
+                    account={selectedAccount}
+                    onClose={(): void => {
+                      setShowEditAccountView(false);
+                      setDefaultTab('general');
+                    }}
+                    onSaved={(): void => {
+                      getAccountList();
+                    }}
+                    onDeleted={(): void => {
+                      setIsAccountDeleted(true);
+                    }}
+                    defaultTab={defaultTab}
+                  />
+                </ModalOverlay>
+              )}
             </Row>
           </Container>
         </Row>

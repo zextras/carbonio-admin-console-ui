@@ -62,7 +62,7 @@ export interface DomainDataType {
 }
 
 export type themeConfigStore = {
-	carbonioWebUiDarkMode?: boolean;
+	carbonioWebUiDarkMode?: string;
 	carbonioWebUiLoginLogo?: string;
 	carbonioWebUiDarkLoginLogo?: string;
 	carbonioWebUiLoginBackground?: string;
