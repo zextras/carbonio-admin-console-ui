@@ -216,7 +216,7 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
           mainAlignment="flex-start"
           width="100%"
         >
-          <Row mainAlignment="flex-end" width="100%" padding={{ top: 'large' }}>
+          <Row mainAlignment="flex-end" width="100%">
             <Padding right="large">
               <Button
                 type="outlined"
@@ -227,23 +227,16 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
                 loading={restartJailMutation.isPending}
               />
             </Padding>
-            <Padding right="large">
-              <Button
-                type="outlined"
-                label={t('label.purge_active_sync', 'Purge ActiveSync')}
-                color="primary"
-                size="large"
-                onClick={purgeActiveSync}
-                loading={purgeActiveSyncMutation.isPending}
-              />
-            </Padding>
+            <Button
+              type="outlined"
+              label={t('label.purge_active_sync', 'Purge ActiveSync')}
+              color="primary"
+              size="large"
+              onClick={purgeActiveSync}
+              loading={purgeActiveSyncMutation.isPending}
+            />
           </Row>
-          <Row
-            mainAlignment="flex-start"
-            width="100%"
-            background="gray6"
-            padding={{ left: 'large' }}
-          >
+          <Row mainAlignment="flex-start" width="100%" background="gray6">
             <ds-text as="h2" size="small" weight="bold">
               {t('label.mobile_dos_protection', 'Mobile DOS Protection')}
             </ds-text>
@@ -252,10 +245,7 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
             <Container
               crossAlignment="flex-start"
               mainAlignment="flex-start"
-              padding={{
-                left: 'large',
-                top: 'extralarge',
-              }}
+              padding={{ top: 'extralarge' }}
             >
               <Switch
                 label={t(
