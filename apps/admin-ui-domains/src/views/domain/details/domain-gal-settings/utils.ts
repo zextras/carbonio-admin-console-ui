@@ -46,11 +46,13 @@ export function buildDomainAttrMap(
   return obj;
 }
 
+const POLLING_INTERVAL_RE = /^(\d+)([dhms]|ms)?$/;
+
 export function parsePollingInterval(val: string): { digits: string; unit: string } {
   if (!val) {
     return { digits: '1', unit: 'd' };
   }
-  const match = val.match(/^(\d+)([dhms]|ms)?$/);
+  const match = POLLING_INTERVAL_RE.exec(val);
   if (match) {
     return { digits: match[1], unit: match[2] ?? 'd' };
   }

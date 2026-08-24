@@ -5,11 +5,11 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, ListRow, Row, Switch, Tooltip } from '@zextras/ui-components';
+import { Container, Input, ListRow, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { LDAP_BIND_DN_LABLE } from '../../../../../constants';
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
+import { GalBindDnInfoIcon } from './gal-info-tooltip-icon';
 
 type GalAuthSectionProps = {
   form: DomainGalSettingsFormApi;
@@ -80,28 +80,7 @@ export const GalAuthSection = ({ form }: GalAuthSectionProps) => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
                   }}
-                  CustomIcon={({
-                    hasFocus,
-                  }: {
-                    hasError: boolean;
-                    hasFocus: boolean;
-                    disabled: boolean;
-                  }): React.ReactElement => (
-                    <Tooltip
-                      placement="top"
-                      overflow="break-word"
-                      maxWidth="40rem"
-                      label={LDAP_BIND_DN_LABLE}
-                    >
-                      <ds-text as="span">
-                        <ds-icon
-                          icon="InfoOutline"
-                          size="large"
-                          color={hasFocus ? 'primary' : 'text'}
-                        ></ds-icon>
-                      </ds-text>
-                    </Tooltip>
-                  )}
+                  CustomIcon={GalBindDnInfoIcon}
                 />
               )}
             </form.Field>

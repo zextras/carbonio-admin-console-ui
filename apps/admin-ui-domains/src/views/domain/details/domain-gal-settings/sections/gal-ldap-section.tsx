@@ -5,17 +5,16 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, Row, Switch, Tooltip } from '@zextras/ui-components';
+import { Container, Input, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import {
-  EXTERNAL_SERVER_EXAMPLE,
-  FALSE,
-  LDAP_FILTER_LABEL,
-  LDAP_SEARCH_BASE_LABEL,
-  TRUE,
-} from '../../../../../constants';
+import { FALSE, TRUE } from '../../../../../constants';
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
+import {
+  GalExternalServerInfoIcon,
+  GalLdapFilterInfoIcon,
+  GalLdapSearchBaseInfoIcon,
+} from './gal-info-tooltip-icon';
 
 type GalLdapSectionProps = {
   form: DomainGalSettingsFormApi;
@@ -64,28 +63,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
-                CustomIcon={({
-                  hasFocus,
-                }: {
-                  hasError: boolean;
-                  hasFocus: boolean;
-                  disabled: boolean;
-                }): React.ReactElement => (
-                  <Tooltip
-                    placement="top"
-                    overflow="break-word"
-                    maxWidth="40rem"
-                    label={EXTERNAL_SERVER_EXAMPLE}
-                  >
-                    <ds-text as="span">
-                      <ds-icon
-                        icon="InfoOutline"
-                        size="large"
-                        color={hasFocus ? 'primary' : 'text'}
-                      ></ds-icon>
-                    </ds-text>
-                  </Tooltip>
-                )}
+                CustomIcon={GalExternalServerInfoIcon}
               />
             )}
           </form.Field>
@@ -122,28 +100,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 field.handleChange(e.target.value);
               }}
-              CustomIcon={({
-                hasFocus,
-              }: {
-                hasError: boolean;
-                hasFocus: boolean;
-                disabled: boolean;
-              }): React.ReactElement => (
-                <Tooltip
-                  placement="top"
-                  overflow="break-word"
-                  maxWidth="40rem"
-                  label={LDAP_FILTER_LABEL}
-                >
-                  <ds-text as="span">
-                    <ds-icon
-                      icon="InfoOutline"
-                      size="large"
-                      color={hasFocus ? 'primary' : 'text'}
-                    ></ds-icon>
-                  </ds-text>
-                </Tooltip>
-              )}
+              CustomIcon={GalLdapFilterInfoIcon}
             />
           )}
         </form.Field>
@@ -159,28 +116,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 field.handleChange(e.target.value);
               }}
-              CustomIcon={({
-                hasFocus,
-              }: {
-                hasError: boolean;
-                hasFocus: boolean;
-                disabled: boolean;
-              }): React.ReactElement => (
-                <Tooltip
-                  placement="top"
-                  overflow="break-word"
-                  maxWidth="40rem"
-                  label={LDAP_SEARCH_BASE_LABEL}
-                >
-                  <ds-text as="span">
-                    <ds-icon
-                      icon="InfoOutline"
-                      size="large"
-                      color={hasFocus ? 'primary' : 'text'}
-                    ></ds-icon>
-                  </ds-text>
-                </Tooltip>
-              )}
+              CustomIcon={GalLdapSearchBaseInfoIcon}
             />
           )}
         </form.Field>
