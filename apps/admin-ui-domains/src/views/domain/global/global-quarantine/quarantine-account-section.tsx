@@ -48,29 +48,7 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
 
   return (
     <>
-      {!account?.name ? (
-        <>
-          <Row>
-            <ds-text as="p" size="small">
-              {t(
-                'quarantine.not_quarantine_account',
-                'There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?',
-              )}
-            </ds-text>
-          </Row>
-          <Row width="100%" padding={{ top: 'large' }}>
-            <Button
-              type="outlined"
-              label={t('quarantine.create_quarantine', 'CREATE A QUARANTINE ACCOUNT')}
-              color="primary"
-              width="fill"
-              onClick={(): void => {
-                onRecreateAccount();
-              }}
-            />
-          </Row>
-        </>
-      ) : (
+      {account?.name ? (
         <>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
             <Row width="100%" mainAlignment="space-between">
@@ -145,6 +123,28 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
               />
             </Container>
           </ListRow>
+        </>
+      ) : (
+        <>
+          <Row>
+            <ds-text as="p" size="small">
+              {t(
+                'quarantine.not_quarantine_account',
+                'There is not quarantine account in any of the domains, yet. Do you want to create a system quarantine account?',
+              )}
+            </ds-text>
+          </Row>
+          <Row width="100%" padding={{ top: 'large' }}>
+            <Button
+              type="outlined"
+              label={t('quarantine.create_quarantine', 'CREATE A QUARANTINE ACCOUNT')}
+              color="primary"
+              width="fill"
+              onClick={(): void => {
+                onRecreateAccount();
+              }}
+            />
+          </Row>
         </>
       )}
       <Modal
