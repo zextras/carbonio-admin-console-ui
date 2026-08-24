@@ -43,7 +43,7 @@ export function useCreateGalSyncAccount(domainId: string | undefined) {
         vars.a,
         vars.folder
       ),
-    onSuccess: (_data, vars) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       if (domainId) {
         queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });

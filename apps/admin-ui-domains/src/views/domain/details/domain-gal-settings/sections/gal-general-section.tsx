@@ -6,6 +6,7 @@
 
 import { useSelector } from '@tanstack/react-store';
 import {
+  Button,
   Container,
   Dropdown,
   DropdownItem,
@@ -15,7 +16,6 @@ import {
   ListRow,
   Padding,
   Row,
-  Button,
 } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
