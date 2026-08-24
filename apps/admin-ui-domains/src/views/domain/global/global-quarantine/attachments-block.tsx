@@ -17,7 +17,7 @@ import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
 import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { removeAttachmentsRequest } from '../../services/remove-attachments';
+import { removeAttachmentsRequest } from '../../../../services/remove-attachments';
 import styles from './attachments-block.module.css';
 import { AttachmentPart, EditorAttachmentFiles, MailMessage } from './mail-message-renderer';
 

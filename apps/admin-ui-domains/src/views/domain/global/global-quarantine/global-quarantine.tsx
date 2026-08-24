@@ -26,17 +26,17 @@ import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace 
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import logo from '../../assets/ninja_robo.svg';
-import { batchService } from '../../services/batch-service';
-import { bounceMsgRequest } from '../../services/bounce-message';
-import { createAccountRequest } from '../../services/create-account';
-import { deleteAccount } from '../../services/delete-account-service';
-import { getAccountRequest } from '../../services/get-account';
-import { getDelegateAuthRequest } from '../../services/get-delegate-auth-request';
-import { getQuarantineMessages } from '../../services/get-quarantine-messages-service';
-import { msgActionRequest } from '../../services/message-action';
-import { modifyConfig } from '../../services/modify-config';
-import { generateRandomString, MessageTableHeaders } from '../utility/utils';
+import logo from '../../../../assets/ninja_robo.svg';
+import { batchService } from '../../../../services/batch-service';
+import { bounceMsgRequest } from '../../../../services/bounce-message';
+import { createAccountRequest } from '../../../../services/create-account';
+import { deleteAccount } from '../../../../services/delete-account-service';
+import { getAccountRequest } from '../../../../services/get-account';
+import { getDelegateAuthRequest } from '../../../../services/get-delegate-auth-request';
+import { getQuarantineMessages } from '../../../../services/get-quarantine-messages-service';
+import { msgActionRequest } from '../../../../services/message-action';
+import { modifyConfig } from '../../../../services/modify-config';
+import { generateRandomString, MessageTableHeaders } from '../../../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
 
@@ -306,7 +306,11 @@ const MessageListTable: FC<{
   );
 };
 
-const QuarantineList: FC = () => {
+/**
+ * Global quarantine view: quarantine account management and quarantined
+ * messages list.
+ */
+export const GlobalQuarantine = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const [quarantineAccountName, setQuarantineAccountName] = useState<string>('');
@@ -1596,5 +1600,3 @@ const QuarantineList: FC = () => {
     </Container>
   );
 };
-
-export default QuarantineList;
