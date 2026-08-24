@@ -22,4 +22,8 @@ export const domainQueryKeys = {
   addressBookService: () => [...domainQueryKeys.all, 'address-book-service'] as const,
   antiDosConfig: () => [...domainQueryKeys.all, 'anti-dos-config'] as const,
   samlConfig: (domain: string) => [...domainQueryKeys.all, 'saml-config', domain] as const,
+  gal: () => [...domainQueryKeys.all, 'gal'] as const,
+  galAccount: (accountId: string) => [...domainQueryKeys.gal(), 'account', accountId] as const,
+  galDataSources: (accountId: string) =>
+    [...domainQueryKeys.gal(), 'dataSources', accountId] as const,
 } as const;
