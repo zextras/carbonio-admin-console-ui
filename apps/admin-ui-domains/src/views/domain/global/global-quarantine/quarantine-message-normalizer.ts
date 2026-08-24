@@ -327,22 +327,19 @@ export const getScoreColor = (score: string | undefined): string => {
   return 'error';
 };
 
-export const parseFlags = (flags: string | undefined): ParsedFlags => {
-  const f = flags ?? '';
-  return {
-    read: !/u/.test(f),
-    hasAttachment: /a/.test(f),
-    flagged: /f/.test(f),
-    urgent: /!/.test(f),
-    isDeleted: /x/.test(f),
-    isDraft: /d/.test(f),
-    isForwarded: /w/.test(f),
-    isSentByMe: /s/.test(f),
-    isInvite: /v/.test(f),
-    isReplied: /r/.test(f),
-    isReadReceiptRequested: !/n/.test(f),
-  };
-};
+export const parseFlags = (flags = ''): ParsedFlags => ({
+  read: !/u/.test(flags),
+  hasAttachment: /a/.test(flags),
+  flagged: /f/.test(flags),
+  urgent: /!/.test(flags),
+  isDeleted: /x/.test(flags),
+  isDraft: /d/.test(flags),
+  isForwarded: /w/.test(flags),
+  isSentByMe: /s/.test(flags),
+  isInvite: /v/.test(flags),
+  isReplied: /r/.test(flags),
+  isReadReceiptRequested: !/n/.test(flags),
+});
 
 export const sanitizeEmail = (email: string | undefined): string =>
   replace(email ?? '', /[<>]/g, '');
