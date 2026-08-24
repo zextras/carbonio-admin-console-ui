@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { domainQueryKeys } from './domain-query-keys';
 import { getMobileAntiDosService } from './get-mobile-anti-dos-service';
@@ -51,6 +51,7 @@ export const useAntiDosConfig = () =>
 			};
 		},
 		staleTime: 30_000,
+		placeholderData: keepPreviousData,
 		retry: 1,
 		refetchOnWindowFocus: false,
 	});
