@@ -4,15 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
+import { Button, useSnackbar } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
-import { type CSSProperties, useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../../types';
 import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../../constants';
 import { useAddressBookServiceStatus } from '../../../../services/use-address-book-service';
 import { useSetAddressBookServiceEnabled } from '../../../../services/use-set-address-book-service-enabled';
+import styles from './global-services.module.css';
 
 const DEFAULT_STATUS: AddressBookServiceStatus = {
   running: false,
@@ -20,53 +21,10 @@ const DEFAULT_STATUS: AddressBookServiceStatus = {
   couldStop: false,
 };
 
-type StatusPresentation = {
-  statusColor: 'success' | 'error';
-  statusAccentBorder: string;
-  statusDotStyle: CSSProperties;
-};
-
-function getStatusPresentation(running: boolean): StatusPresentation {
-  if (running) {
-    return {
-      statusColor: 'success',
-      statusAccentBorder: '0.25rem solid var(--color-success-regular)',
-      statusDotStyle: {
-        width: '0.6875rem',
-        height: '0.6875rem',
-        borderRadius: '50%',
-        background: 'var(--color-success-regular)',
-        flexShrink: 0,
-        marginTop: '0.375rem',
-        boxShadow: '0 0 0 4px rgba(139, 195, 74, 0.15)',
-      },
-    };
-  }
-
-  return {
-    statusColor: 'error',
-    statusAccentBorder: '0.25rem solid var(--color-error-regular)',
-    statusDotStyle: {
-      width: '0.6875rem',
-      height: '0.6875rem',
-      borderRadius: '50%',
-      background: 'var(--color-error-regular)',
-      flexShrink: 0,
-      marginTop: '0.375rem',
-      boxShadow: '0 0 0 4px rgba(215, 73, 66, 0.12)',
-    },
-  };
-}
-
-function getErrorLabel(error: Error, fallback: string): string {
-  return error?.message ? error.message : fallback;
-}
-
-export function GlobalServices() {
+export const GlobalServices = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const userSetting = useUserSettings();
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState(false);
   const { data, isPending, error: statusError } = useAddressBookServiceStatus();
   const setServiceEnabledMutation = useSetAddressBookServiceEnabled();
   const serviceStatus = data ?? DEFAULT_STATUS;
@@ -76,18 +34,14 @@ export function GlobalServices() {
     'Something went wrong. Please try again.',
   );
 
-  useEffect(() => {
-    if (userSetting?.attrs?.zimbraIsAdminAccount === TRUE) {
-      setIsGlobalAdmin(true);
-    }
-  }, [userSetting?.attrs]);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
   useEffect(() => {
     if (statusError) {
       createSnackbar({
         key: 'error',
         severity: 'error',
-        label: getErrorLabel(statusError, fallbackError),
+        label: statusError.message ?? fallbackError,
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
@@ -119,7 +73,7 @@ export function GlobalServices() {
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: getErrorLabel(error, fallbackError),
+          label: error.message ?? fallbackError,
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -134,93 +88,37 @@ export function GlobalServices() {
     !setServiceEnabledMutation.isPending &&
     (serviceStatus.running ? serviceStatus.couldStop : serviceStatus.couldStart);
 
-  const { statusColor, statusAccentBorder, statusDotStyle } = getStatusPresentation(
-    serviceStatus.running,
-  );
+  const statusColor = serviceStatus.running ? 'success' : 'error';
+  const cardClass = serviceStatus.running ? styles.cardRunning : styles.cardStopped;
+  const statusDotClass = serviceStatus.running ? styles.statusDotRunning : styles.statusDotStopped;
 
   return (
-    <Container mainAlignment="flex-start" background="gray6">
-      <Row mainAlignment="flex-start" width="100%">
-        <Container orientation="vertical" mainAlignment="space-around" height="56px">
-          <Row orientation="horizontal" width="100%">
-            <Row
-              padding={{ all: 'large' }}
-              mainAlignment="flex-start"
-              width="100%"
-              crossAlignment="flex-start"
-            >
-              <ds-text as="h1" size="medium" weight="bold" color="gray0">
-                {t('label.services', 'Services')}
-              </ds-text>
-            </Row>
-          </Row>
-        </Container>
-        <ds-divider></ds-divider>
-      </Row>
-      <Container
-        orientation="column"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-        style={{ overflow: 'auto' }}
-        width="100%"
-        height="calc(100vh - 9.375rem)"
-        padding={{ vertical: 'large' }}
-        gap="1rem"
-      >
+    <div className={styles.root}>
+      <div className={styles.titleRow}>
+        <div className={styles.header}>
+          <div className={styles.title}>
+            <ds-text as="h1" size="medium" weight="bold" color="gray0">
+              {t('label.services', 'Services')}
+            </ds-text>
+          </div>
+        </div>
+        <div className={styles.dividerRow}>
+          <ds-divider></ds-divider>
+        </div>
+      </div>
+      <div className={styles.content}>
         {isPending ? (
-          <Padding all="small">
+          <div className={styles.spinner}>
             <ds-spinner />
-          </Padding>
+          </div>
         ) : (
           !statusError && (
-            <Container
-              orientation="vertical"
-              width="100%"
-              height="fit"
-              background="gray6"
-              mainAlignment="flex-start"
-              crossAlignment="stretch"
-              borderColor={{ top: 'gray2', right: 'gray2', bottom: 'gray2' }}
-              borderRadius="half"
-              style={{ borderLeft: statusAccentBorder }}
-            >
-              <Container
-                orientation="horizontal"
-                width="100%"
-                height="fit"
-                mainAlignment="space-between"
-                crossAlignment="flex-start"
-                padding={{ all: 'large' }}
-                gap="1.5rem"
-              >
-                <Container
-                  orientation="horizontal"
-                  width="fill"
-                  height="fit"
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  gap="0.875rem"
-                  minWidth="0"
-                  flexGrow={1}
-                >
-                  <div style={statusDotStyle} aria-hidden />
-                  <Container
-                    orientation="vertical"
-                    width="fill"
-                    height="fit"
-                    mainAlignment="flex-start"
-                    crossAlignment="flex-start"
-                    gap="0.3125rem"
-                    minWidth="0"
-                  >
-                    <Container
-                      orientation="horizontal"
-                      width="fit"
-                      height="fit"
-                      mainAlignment="flex-start"
-                      crossAlignment="center"
-                      gap="0.35rem"
-                    >
+            <div className={`${styles.card} ${cardClass}`}>
+              <div className={styles.cardBody}>
+                <div className={styles.statusArea}>
+                  <div className={statusDotClass} aria-hidden />
+                  <div className={styles.statusText}>
+                    <div className={styles.statusLine}>
                       <ds-text as="span" size="medium" weight="medium">
                         {`${LDAP_ADDRESS_BOOK_SERVICE} ${t('label.is', 'is')}`}
                       </ds-text>
@@ -229,7 +127,7 @@ export function GlobalServices() {
                           ? t('label.running', 'running')
                           : t('label.stopped', 'stopped')}
                       </ds-text>
-                    </Container>
+                    </div>
                     <ds-text as="p" size="small" color="gray1" overflow="break-word">
                       {serviceStatus.running
                         ? t(
@@ -246,44 +144,19 @@ export function GlobalServices() {
                         port: LDAP_ADDRESS_BOOK_PORT,
                       })}
                     </ds-text>
-                  </Container>
-                </Container>
-              </Container>
-              <Container
-                orientation="horizontal"
-                width="100%"
-                height="fit"
-                background="gray5"
-                mainAlignment="space-between"
-                crossAlignment="center"
-                padding={{ all: 'large' }}
-                gap="1rem"
-                borderColor={{ top: 'gray3' }}
-              >
-                <Container
-                  width="fill"
-                  height="fit"
-                  mainAlignment="flex-start"
-                  crossAlignment="flex-start"
-                  minWidth="0"
-                  flexGrow={1}
-                  flexShrink={1}
-                >
+                  </div>
+                </div>
+              </div>
+              <div className={styles.cardFooter}>
+                <div className={styles.footerText}>
                   <ds-text as="p" size="small" color="gray1" overflow="break-word">
                     {t(
                       'label.ldap_address_book_global_description',
                       'Applies globally, to every domain on this infrastructure.',
                     )}
                   </ds-text>
-                </Container>
-                <Container
-                  width="fit"
-                  height="fit"
-                  flexGrow={0}
-                  flexShrink={0}
-                  mainAlignment="center"
-                  crossAlignment="center"
-                >
+                </div>
+                <div className={styles.footerActions}>
                   <Button
                     type="outlined"
                     label={
@@ -299,12 +172,12 @@ export function GlobalServices() {
                     loading={setServiceEnabledMutation.isPending}
                     size="large"
                   />
-                </Container>
-              </Container>
-            </Container>
+                </div>
+              </div>
+            </div>
           )
         )}
-      </Container>
-    </Container>
+      </div>
+    </div>
   );
-}
+};
