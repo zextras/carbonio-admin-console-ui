@@ -13,14 +13,13 @@ import {
   Padding,
   Row,
   Tooltip,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { format } from 'date-fns';
 import { find } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { getDelegateAuthRequest } from '../../../services/get-delegate-auth-request';
+import { useDelegateAuth } from '../../../services/use-delegate-auth';
 import {
   useDeleteQuarantineMessage,
   useDeliverQuarantineMessage,
@@ -39,12 +38,12 @@ type MessageViewModalProps = {
 
 export const MessageViewModal = ({ message, accountId, onClose }: MessageViewModalProps) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [isDeliverDialogOpen, setIsDeliverDialogOpen] = useState(false);
   const [showSource, setShowSource] = useState(false);
   const deleteMutation = useDeleteQuarantineMessage();
   const deliverMutation = useDeliverQuarantineMessage();
+  const delegateAuthMutation = useDelegateAuth();
 
   const onDeleteMessage = (): void => {
     setIsDeleteModalOpen(false);
@@ -70,34 +69,21 @@ export const MessageViewModal = ({ message, accountId, onClose }: MessageViewMod
       });
   };
 
-  const downloadMail = async (): Promise<void> => {
-    try {
-      const data = await getDelegateAuthRequest(accountId);
-      const token = data?.authToken?.[0]?._content;
-      if (!token) {
-        throw new Error(
-          t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+  const onDownloadMail = (): void => {
+    void delegateAuthMutation
+      .mutateAsync(accountId)
+      .then((token) => {
+        globalThis.open(
+          `https://${globalThis.location.hostname}/service/preauth?authtoken=${token}` +
+            `&isredirect=1&adminPreAuth=1&redirectURL=${encodeURIComponent(
+              '/service/home/~/?auth=co&view=text&id=',
+            )}${message.id.split(':')[1]}`,
+          'blank',
         );
-      }
-      globalThis.open(
-        `https://${globalThis.location.hostname}/service/preauth?authtoken=${token}` +
-          `&isredirect=1&adminPreAuth=1&redirectURL=${encodeURIComponent(
-            '/service/home/~/?auth=co&view=text&id=',
-          )}${message.id.split(':')[1]}`,
-        'blank',
-      );
-    } catch (error) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label:
-          (error as Error)?.message ||
-          t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
+      })
+      .catch(() => {
+        // snackbar already reported by the hook
       });
-    }
   };
 
   return (
@@ -205,9 +191,7 @@ export const MessageViewModal = ({ message, accountId, onClose }: MessageViewMod
             <Button
               label={t('quarantine.download', 'DOWNLOAD')}
               type="outlined"
-              onClick={(): void => {
-                void downloadMail();
-              }}
+              onClick={onDownloadMail}
             />
             <Padding left="small">
               <Button
