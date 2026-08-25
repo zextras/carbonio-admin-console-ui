@@ -41,6 +41,11 @@ type ButtonSecondaryAction = {
 type ButtonPropsInternal = {
   forceActive?: boolean;
   disabled?: boolean;
+  /**
+   * Native HTML button type. Defaults to 'button' so that Buttons rendered
+   * inside a <form> never submit it unless explicitly opted in.
+   */
+  htmlType?: 'button' | 'submit' | 'reset';
   icon?: IconName;
   iconPlacement?: ButtonIconPlacement;
   label?: string;
@@ -193,6 +198,7 @@ function getColors(
 const Button = ({
   type = 'default',
   disabled = false,
+  htmlType = 'button',
   label,
   size = 'medium',
   icon,
@@ -275,6 +281,7 @@ const Button = ({
     <div className={styles.grid} style={gridStyle}>
       <button
         {...rest}
+        type={htmlType}
         className={buttonClassName}
         style={{ ...buttonStyle, ...rest.style }}
         disabled={disabled}
@@ -338,6 +345,7 @@ const Button = ({
       </button>
       {hasSecondaryAction && secondaryButtonStyle && secondarySizeConfig && (
         <button
+          type="button"
           className={clsx(styles.button, styles.secondaryAction)}
           style={secondaryButtonStyle}
           disabled={!!secondaryAction.disabled}

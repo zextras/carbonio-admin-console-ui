@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { DomainsByFeature } from '../../../../../types';
 import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../constants';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { ZimbraDomainResponse } from '../../domain-list/domain-list';
+import { ZimbraDomainResponse } from '../../../global/global-domain-list/global-domain-list';
 
 type DomainListChipInputProps = {
   domainName: string;

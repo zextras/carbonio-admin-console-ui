@@ -29,14 +29,14 @@ import { useParams } from 'react-router';
 import { TRUE, ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { modifyDomain } from '../../../services/modify-domain-service';
-import { ThemeConfigs } from '../theme/theme-configs';
-import { ResetTheme } from '../theme/theme-reset';
+import { ThemeConfigs } from '../../theme/theme-configs';
+import { ResetTheme } from '../../theme/theme-reset';
 import {
   buildDomainResetValues,
   buildDomainWhiteLabelResetAttributes,
   pickThemeValues,
-} from '../theme/white-label-defaults';
-import { whiteLabelSchema } from '../theme/white-label-schema';
+} from '../../theme/white-label-defaults';
+import { whiteLabelSchema } from '../../theme/white-label-schema';
 
 const DomainTheme = () => {
   const [t] = useTranslation();

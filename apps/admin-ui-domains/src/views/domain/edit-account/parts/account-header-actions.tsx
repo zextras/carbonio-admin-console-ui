@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, useSnackbar } from '@zextras/ui-components';
+import { Button } from '@zextras/ui-components';
 import { useCurrentUserRights } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
@@ -35,37 +35,18 @@ function hasAdminLoginAsRight(
 
 export const AccountHeaderActions = ({ accountId, zimbraId, onDelete }: AccountHeaderActionsProps) => {
   const { t } = useTranslation();
-  const createSnackbar = useSnackbar();
   const { data: rights = [] } = useCurrentUserRights();
   const viewMailMutation = useDelegateAuth();
 
   const allowSetPrivacy = hasAdminLoginAsRight(rights);
 
-  const showErrorMessage = (message?: string): void => {
-    createSnackbar({
-      key: 'error',
-      severity: 'error',
-      label: message ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-      autoHideTimeout: 3000,
-      hideButton: true,
-      replace: true,
-    });
-  };
-
   const onViewMail = (): void => {
     viewMailMutation.mutate(accountId, {
       onSuccess: (authToken) => {
-        if (authToken) {
-          window.open(
-            `https://${globalThis.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
-            'blank',
-          );
-        } else {
-          showErrorMessage();
-        }
-      },
-      onError: (error) => {
-        showErrorMessage(error?.message);
+        window.open(
+          `https://${globalThis.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+          'blank',
+        );
       },
     });
   };

@@ -15,14 +15,14 @@ import {
   TWO_FACTOR_AUTHENTICATION,
   WHITELABEL_SETTINGS,
 } from '../constants';
-import { DomainList } from './domain/domain-list/domain-list';
-import { GlobalActiveSync } from './domain/global/global-active-sync/global-active-sync';
-import { GlobalAddressBook } from './domain/global/global-address-book';
-import { GlobalAdministrators } from './domain/global/global-administrators/global-administrators';
-import { GlobalDetailPanel } from './domain/global/global-detail-panel';
-import { GlobalQuarantine } from './domain/global/global-quarantine/global-quarantine';
-import { GlobalTwoFactorAuth } from './domain/global/global-two-factor-auth/global-two-factor-auth';
-import { GlobalWhiteLabel } from './domain/global/global-white-label/global-white-label';
+import { GlobalActiveSync } from './global/global-active-sync/global-active-sync';
+import { GlobalAdministrators } from './global/global-administrators/global-administrators';
+import { GlobalDetailPanel } from './global/global-detail-panel/global-detail-panel';
+import { GlobalDomainList } from './global/global-domain-list/global-domain-list';
+import { GlobalQuarantine } from './global/global-quarantine/global-quarantine';
+import { GlobalServices } from './global/global-services/global-services';
+import { GlobalTwoFactorAuth } from './global/global-two-factor-auth/global-two-factor-auth';
+import { GlobalWhiteLabel } from './global/global-white-label/global-white-label';
 
 export type GlobalSectionRoute = {
   /** Sub-path segment under the global route; empty string for the bare global route. */
@@ -46,7 +46,7 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     id: DOMAINS,
     labelKey: 'label.domains',
     labelDefault: 'Domains',
-    Component: DomainList,
+    Component: GlobalDomainList,
   },
   {
     id: SETTINGS,
@@ -88,6 +88,6 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     id: ADDRESS_BOOK,
     labelKey: 'label.services',
     labelDefault: 'Services',
-    Component: GlobalAddressBook,
+    Component: GlobalServices,
   },
 ];

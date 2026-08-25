@@ -8,7 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import type { IncompleteMessage } from '../views/domain/global/global-quarantine/quarantine-types';
+import type { IncompleteMessage } from '../views/global/global-quarantine/quarantine-types';
 import { generateRandomString } from '../views/utility/utils';
 import { bounceMsgRequest } from './bounce-message';
 import { createAccountRequest } from './create-account';

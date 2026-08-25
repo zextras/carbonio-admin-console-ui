@@ -56,6 +56,7 @@ export const FormPageLayout = ({
                 <Button
                   label={t('label.save', 'Save')}
                   color="primary"
+                  htmlType="submit"
                   onClick={(e) => {
                     e.preventDefault();
                     onSave();
