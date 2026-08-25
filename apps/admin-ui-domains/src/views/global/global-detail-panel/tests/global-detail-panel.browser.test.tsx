@@ -193,7 +193,7 @@ describe('GlobalDetailPanel', { timeout: 20_000 }, () => {
 		await page.getByRole('button', { name: 'Save' }).click();
 
 		await expect
-			.element(page.getByText('Something went wrong. Please try again.'))
+			.element(page.getByText('unknown document: ModifyConfigRequest'))
 			.toBeVisible();
 		await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
 	});
