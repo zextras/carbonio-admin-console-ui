@@ -16,7 +16,7 @@ import {
   WHITELABEL_SETTINGS,
 } from '../constants';
 import { DomainList } from './domain/domain-list/domain-list';
-import GlobalActiveSync from './domain/global/global-active-sync';
+import { GlobalActiveSync } from './domain/global/global-active-sync/global-active-sync';
 import { GlobalAdministrators } from './domain/global/global-administrators/global-administrators';
 import { GlobalDetailPanel } from './domain/global/global-detail-panel';
 import { GlobalQuarantine } from './domain/global/global-quarantine/global-quarantine';

@@ -8,7 +8,7 @@ import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 import { ZX_MOBILE } from '../constants';
 
-export const doPurgeActiveSync = async (): Promise<any> =>
+export const doPurgeActiveSync = async (): Promise<unknown> =>
 	postSoapFetchRequest(
 		`/service/admin/soap`,
 		{

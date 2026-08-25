@@ -106,9 +106,12 @@ vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiv
 vi.mock('../domain/global/global-services/global-services', () => ({
   GlobalServices: MockGlobalServices,
 }));
+vi.mock('../domain/global/global-active-sync/global-active-sync', () => ({
+  GlobalActiveSync: MockGlobalActiveSync,
+}));
 vi.mock('../domain/global/global-administrators/global-administrators', () => ({
-    GlobalAdministrators: MockGlobalAdministrators,
-  }));
+  GlobalAdministrators: MockGlobalAdministrators,
+}));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
 vi.mock('../domain/global/global-quarantine/global-quarantine', () => ({
   GlobalQuarantine: MockGlobalQuarantine,

@@ -8,7 +8,7 @@ import { postSoapFetchRequest } from '@zextras/ui-shared';
 
 import { ZX_MOBILE } from '../constants';
 
-export const doStratStopJail = async (action: string, targetServers: string): Promise<any> =>
+export const doStratStopJail = async (action: string, targetServers: string): Promise<unknown> =>
 	postSoapFetchRequest(
 		`/service/admin/soap`,
 		{

@@ -6,6 +6,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { assertNoFault } from './assert-no-fault';
 import { domainQueryKeys } from './domain-query-keys';
 import { setAntiDosServiceEnabled } from './set-mobile-anti-dos-service';
 import { setAntiDosServiceJailDuration } from './set-mobile-anti-dos-service-jail-duration';
@@ -18,28 +19,34 @@ export type SaveAntiDosSettingInput =
 	| { field: 'maxRequests'; value: number }
 	| { field: 'timeWindow'; value: number };
 
-function assertNoFault(res: any): void {
-	if (res?.Body?.Fault) {
-		throw new Error(res.Body.Fault?.Reason?.Text ?? 'anti-dos setting save failed');
-	}
-}
-
 export const useSaveAntiDosSetting = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async (input: SaveAntiDosSettingInput): Promise<void> => {
 			switch (input.field) {
 				case 'enabled':
-					assertNoFault(await setAntiDosServiceEnabled(input.value));
+					assertNoFault(
+						await setAntiDosServiceEnabled(input.value),
+						'anti-dos setting save failed',
+					);
 					return;
 				case 'jailDuration':
-					assertNoFault(await setAntiDosServiceJailDuration(input.value));
+					assertNoFault(
+						await setAntiDosServiceJailDuration(input.value),
+						'anti-dos setting save failed',
+					);
 					return;
 				case 'maxRequests':
-					assertNoFault(await setAntiDosServiceMaxRequests(input.value));
+					assertNoFault(
+						await setAntiDosServiceMaxRequests(input.value),
+						'anti-dos setting save failed',
+					);
 					return;
 				case 'timeWindow':
-					assertNoFault(await setAntiDosServiceTimeWindow(input.value));
+					assertNoFault(
+						await setAntiDosServiceTimeWindow(input.value),
+						'anti-dos setting save failed',
+					);
 					return;
 			}
 		},
