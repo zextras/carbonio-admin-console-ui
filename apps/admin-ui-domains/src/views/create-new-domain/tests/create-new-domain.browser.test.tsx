@@ -16,7 +16,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import CreateDomain from '../create-new-domain';
+import { CreateDomain } from '../create-new-domain';
 
 vi.mock('@zextras/ui-shared', async (importOriginal) => {
   const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
@@ -58,14 +58,9 @@ type MountApiOverrides = {
   cos?: { cos: Array<{ id: string; name: string }> };
 };
 
-function setupMountApis(overrides?: MountApiOverrides): void {
+async function setupCreateDomainTest(overrides?: MountApiOverrides): Promise<void> {
   createBrowserSoapAPIInterceptor('GetAllServers', overrides?.servers ?? { server: [] });
   createBrowserSoapAPIInterceptor('SearchDirectory', overrides?.cos ?? { cos: [] });
-  createBrowserSoapAPIInterceptor('GetCreateObjectAttrs', { setAttrs: [{ a: [] }] });
-}
-
-async function setupCreateDomainTest(overrides?: MountApiOverrides): Promise<void> {
-  setupMountApis(overrides);
   await setupBrowserTest(
     <Routes>
       <Route path="/create-new-domain" element={<CreateDomain />} />
@@ -73,7 +68,7 @@ async function setupCreateDomainTest(overrides?: MountApiOverrides): Promise<voi
     </Routes>,
     { initialRouterEntry: '/create-new-domain' },
   );
-  await expect.element(page.getByText('New Domain')).toBeVisible();
+  await expect.element(page.getByText('New Domain', { exact: true })).toBeVisible();
 }
 
 async function fillDomainName(name: string): Promise<void> {
@@ -83,12 +78,23 @@ async function fillDomainName(name: string): Promise<void> {
   );
 }
 
+async function goToNextStep(): Promise<void> {
+  await page.getByRole('button', { name: 'Next' }).click();
+  await expect.element(page.getByRole('button', { name: 'BACK' }).first()).toBeVisible();
+}
+
+async function advanceToFinalStep(): Promise<void> {
+  await goToNextStep();
+  await goToNextStep();
+  await expect.element(page.getByRole('button', { name: 'Create' }).first()).toBeVisible();
+}
+
 async function waitForDefaultMailServer(): Promise<void> {
   await expect.element(page.getByText('mail1.example.com').first()).toBeVisible();
 }
 
 async function clickCreate(): Promise<void> {
-  await page.getByRole('button', { name: 'Create' }).click();
+  await page.getByRole('button', { name: 'Create' }).first().click();
 }
 
 describe('CreateDomain (characterization)', () => {
@@ -108,6 +114,7 @@ describe('CreateDomain (characterization)', () => {
     await setupCreateDomainTest();
 
     await fillDomainName('example.com');
+    await advanceToFinalStep();
     await clickCreate();
 
     const requestParams = (await createDomainInterceptor) as {
@@ -146,6 +153,7 @@ describe('CreateDomain (characterization)', () => {
       'Corporate domain for company',
     );
     await userEvent.fill(page.getByRole('textbox', { name: /Notes/i }), 'Main production domain');
+    await advanceToFinalStep();
     await clickCreate();
 
     const requestParams = (await createDomainInterceptor) as {
@@ -173,6 +181,7 @@ describe('CreateDomain (characterization)', () => {
       page.getByRole('textbox', { name: /Max mailbox quota for the domain/i }),
       '2',
     );
+    await advanceToFinalStep();
     await clickCreate();
 
     const requestParams = (await createDomainInterceptor) as { a: Array<SoapAttribute> };
@@ -187,10 +196,11 @@ describe('CreateDomain (characterization)', () => {
     );
     await setupCreateDomainTest({ cos: COS_LIST });
 
-    await page.getByText('Default Class of Service').click();
-    await page.getByText('Premium COS').click();
-
     await fillDomainName('example.com');
+    await advanceToFinalStep();
+
+    await page.getByText('Default Class of Service', { exact: true }).click();
+    await page.getByText('Premium COS').click();
     await clickCreate();
 
     const requestParams = (await createDomainInterceptor) as { a: Array<SoapAttribute> };
@@ -205,8 +215,10 @@ describe('CreateDomain (characterization)', () => {
     const galSyncInterceptor = createBrowserSoapAPIInterceptor('CreateGalSyncAccount', {});
     await setupCreateDomainTest({ servers: MAIL_SERVERS });
 
-    await waitForDefaultMailServer();
     await fillDomainName('example.com');
+    await goToNextStep();
+    await waitForDefaultMailServer();
+    await goToNextStep();
     await clickCreate();
 
     const galSyncParams = (await galSyncInterceptor) as {
@@ -236,13 +248,14 @@ describe('CreateDomain (characterization)', () => {
 
   it('uses the custom GAL folder name and datasource name in the GAL sync request', async () => {
     const galSyncInterceptor = createBrowserSoapAPIInterceptor('CreateGalSyncAccount', {});
-    createBrowserSoapAPIInterceptor('CreateDomain', mockCreateDomainResponse);
     await setupCreateDomainTest({ servers: MAIL_SERVERS });
 
-    await waitForDefaultMailServer();
     await fillDomainName('example.com');
+    await goToNextStep();
+    await waitForDefaultMailServer();
     await userEvent.fill(page.getByRole('textbox', { name: /GAL folder name/i }), 'galsync2');
     await userEvent.fill(page.getByRole('textbox', { name: /Datasource name/i }), 'ExternalGal');
+    await goToNextStep();
     await clickCreate();
 
     const galSyncParams = (await galSyncInterceptor) as {
@@ -265,12 +278,14 @@ describe('CreateDomain (characterization)', () => {
     createBrowserSoapAPIInterceptor('CreateGalSyncAccount', {});
     await setupCreateDomainTest({ servers: MAIL_SERVERS });
 
+    await fillDomainName('example.com');
+    await goToNextStep();
     await waitForDefaultMailServer();
+    await goToNextStep();
+
     await page
       .getByRole('switch', { name: 'This domain supports delegated administration' })
       .click();
-
-    await fillDomainName('example.com');
     await clickCreate();
 
     await vi.waitFor(() => expect(delegationInterceptor.getCalledTimes()).toBe(1));
@@ -291,13 +306,14 @@ describe('CreateDomain (characterization)', () => {
     await setupCreateDomainTest();
 
     await fillDomainName('example.com');
+    await advanceToFinalStep();
     await userEvent.fill(
       page.getByRole('textbox', { name: /Notification Sender/i }),
       'not-an-email',
     );
-    await clickCreate();
 
     await expect.element(page.getByText('Enter a valid email address.')).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Create' }).first()).toBeDisabled();
     expect(createDomainCounter.getCalledTimes()).toBe(0);
   }, 20_000);
 
@@ -309,6 +325,7 @@ describe('CreateDomain (characterization)', () => {
     await setupCreateDomainTest();
 
     await fillDomainName('example.com');
+    await advanceToFinalStep();
     const recipientsInput = page.getByPlaceholder('Send notifications to...');
     await userEvent.type(recipientsInput, 'alice@example.com{Enter}');
     await userEvent.type(recipientsInput, 'bob@example.com{Enter}');
@@ -341,6 +358,7 @@ describe('CreateDomain (characterization)', () => {
     await setupCreateDomainTest();
 
     await fillDomainName('example.com');
+    await advanceToFinalStep();
     await clickCreate();
 
     await expect.element(page.getByText('Server error occurred')).toBeVisible();
