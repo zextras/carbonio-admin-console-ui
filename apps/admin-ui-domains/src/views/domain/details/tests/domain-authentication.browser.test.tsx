@@ -4,9 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { domainByIdKey } from '@zextras/ui-shared';
 import {
     advancedSupportedApiForBrowser,
     createBrowserSoapAPIInterceptor,
+    getQueryClient,
     setupBrowserTest,
     worker,
 } from 'admin-ui-test-utils';
@@ -14,10 +16,12 @@ import { http, HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import DomainAuthentication from '../domain-authentication';
+import { DomainAuthentication } from '../domain-authentication';
 
 const DOMAIN_ID = 'test-domain-id-auth';
 const DOMAIN_NAME = 'auth.example.com';
+
+let queryClient: ReturnType<typeof getQueryClient>;
 
 function buildDomainAttributes(
     overrides: Array<{ n: string; _content: string }> = [],
@@ -44,7 +48,7 @@ function buildDomainAttributes(
 
 function setupDomainStore(
     attributeOverrides: Array<{ n: string; _content: string }> = [],
-): void {
+): ReturnType<typeof getQueryClient> {
     const domainAttributes = buildDomainAttributes(attributeOverrides);
     createBrowserSoapAPIInterceptor('GetDomain', {
         domain: [
@@ -55,82 +59,89 @@ function setupDomainStore(
             },
         ],
     });
+    queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+        id: DOMAIN_ID,
+        name: DOMAIN_NAME,
+        a: domainAttributes,
+    });
+    return queryClient;
 }
 
 describe('DomainAuthentication (browser)', () => {
     beforeEach(() => {
+        queryClient = getQueryClient();
         setupDomainStore();
     });
 
     describe('Rendering', () => {
         it('should render the Authentication header', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Authentication')).toBeVisible();
         });
 
         it('should render the Auth Method section header', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Auth Method', { exact: true })).toBeVisible();
         });
 
         it('should render the auth method select with Carbonio as default', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Carbonio')).toBeVisible();
         });
 
         it('should render the URL input', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('URL')).toBeVisible();
         });
 
         it('should render the Filter input', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Filter')).toBeVisible();
         });
 
         it('should render the Basic Search input', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Basic Search')).toBeVisible();
         });
 
         it('should render the Search Bind User input', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Search Bind User')).toBeVisible();
         });
 
         it('should render the Search Bind Password input', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Search Bind Password')).toBeVisible();
         });
 
         it('should render the Verify Auth section header', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Verify Auth')).toBeVisible();
         });
 
         it('should render the User Name input in verify section', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('User Name')).toBeVisible();
         });
 
         it('should render the Password input in verify section', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Password', { exact: true })).toBeVisible();
         });
 
         it('should render the LOGIN AND VERIFY button disabled by default', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const loginBtn = page.getByRole('button', { name: /login and verify/i });
             await expect.element(loginBtn).toBeVisible();
@@ -138,7 +149,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should render the Enforce External Auth switch', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Enforce External Auth (LDAP/AD)'))
@@ -146,7 +157,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should render the Enable Secure Connection switch', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Enable Secure Connection (StartTLS/SSL)'))
@@ -154,7 +165,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should render the Endpoint for password change input', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('Endpoint to be used for password change'))
@@ -162,7 +173,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should not show Save and Cancel buttons when no changes are made', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Authentication')).toBeVisible();
             await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
@@ -174,7 +185,7 @@ describe('DomainAuthentication (browser)', () => {
 
     describe('Auth method info text', () => {
         it('should show CE info text for Carbonio method when not advanced', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByText('This method allows usage of Local LDAP'))
@@ -183,7 +194,7 @@ describe('DomainAuthentication (browser)', () => {
 
         it('should show advanced info text for Carbonio method when advanced', async () => {
             await advancedSupportedApiForBrowser.withAdvancedSupported();
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(
@@ -197,7 +208,7 @@ describe('DomainAuthentication (browser)', () => {
 
     describe('Editing fields', () => {
         it('should show Save and Cancel buttons when URL is changed', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'ldap://ldap.example.com');
@@ -207,7 +218,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should show Save and Cancel when Filter is changed', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const filterInput = page.getByLabelText('Filter');
             await userEvent.type(filterInput, '(ou=people)');
@@ -217,7 +228,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should show Save and Cancel when Basic Search is changed', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const searchBase = page.getByLabelText('Basic Search');
             await userEvent.type(searchBase, 'dc=example,dc=com');
@@ -226,7 +237,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should show Save and Cancel when password change endpoint is changed', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const endpointInput = page.getByLabelText('Endpoint to be used for password change');
             await userEvent.type(endpointInput, 'https://password.example.com');
@@ -235,7 +246,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should revert changes when Cancel is clicked', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'ldap://ldap.example.com');
@@ -250,7 +261,7 @@ describe('DomainAuthentication (browser)', () => {
 
     describe('Switches', () => {
         it('should toggle Enable Secure Connection switch and show dirty state', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const secureSwitch = page.getByTestId('enable-secure-connection');
             await secureSwitch.click();
@@ -259,7 +270,7 @@ describe('DomainAuthentication (browser)', () => {
         });
 
         it('should not show Forget Password switch when not advanced', async () => {
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Authentication')).toBeVisible();
             await expect
@@ -269,7 +280,7 @@ describe('DomainAuthentication (browser)', () => {
 
         it('should show Forget Password switch when advanced', async () => {
             await advancedSupportedApiForBrowser.withAdvancedSupported();
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByTestId('reset-password-switch')).toBeVisible();
         });
@@ -278,7 +289,7 @@ describe('DomainAuthentication (browser)', () => {
     describe('LDAP URL validation', () => {
         it('should show error when LDAP URL is invalid', async () => {
             setupDomainStore([{ n: 'zimbraAuthMech', _content: 'ldap' }]);
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'not-a-valid-url');
@@ -291,7 +302,7 @@ describe('DomainAuthentication (browser)', () => {
                 { n: 'zimbraAuthMech', _content: 'ldap' },
                 { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
             ]);
-            await setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            await setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const urlInput = page.getByLabelText('URL');
             await expect.element(urlInput).toHaveValue('ldap://ldap.example.com');
@@ -309,21 +320,21 @@ describe('DomainAuthentication (browser)', () => {
                 { n: 'zimbraAuthLdapSearchFilter', _content: '(uid=%u)' },
                 { n: 'zimbraAuthLdapSearchBase', _content: 'dc=example,dc=com' },
             ]);
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('External LDAP only')).toBeVisible();
         });
 
         it('should render with External AD auth method', async () => {
             setupDomainStore([{ n: 'zimbraAuthMech', _content: 'ad' }]);
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('External AD only')).toBeVisible();
         });
 
         it('should render with Local LDAP only auth method', async () => {
             setupDomainStore([{ n: 'zimbraAuthMech', _content: 'zimbra' }]);
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Local LDAP only')).toBeVisible();
         });
@@ -332,7 +343,7 @@ describe('DomainAuthentication (browser)', () => {
             setupDomainStore([
                 { n: 'zimbraAuthLdapStartTlsEnabled', _content: 'TRUE' },
             ]);
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByText('Enable Secure Connection (StartTLS/SSL)')).toBeVisible();
         });
@@ -350,7 +361,7 @@ describe('DomainAuthentication (browser)', () => {
                 ],
             });
 
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'ldap://ldap.test.com');
@@ -377,7 +388,7 @@ describe('DomainAuthentication (browser)', () => {
                 ],
             });
 
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const endpointInput = page.getByLabelText('Endpoint to be used for password change');
             await userEvent.type(endpointInput, 'https://pwd.example.com');
@@ -400,7 +411,7 @@ describe('DomainAuthentication (browser)', () => {
                 ),
             );
 
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const urlInput = page.getByLabelText('URL');
             await userEvent.type(urlInput, 'ldap://ldap.fail.com');
@@ -411,6 +422,66 @@ describe('DomainAuthentication (browser)', () => {
             await expect
                 .element(page.getByText('Server error'))
                 .toBeVisible();
+        });
+
+        it('should hide Save and Cancel after a successful save', async () => {
+            createBrowserSoapAPIInterceptor('ModifyDomain', {
+                domain: [
+                    {
+                        name: DOMAIN_NAME,
+                        id: DOMAIN_ID,
+                        a: buildDomainAttributes([
+                            { n: 'zimbraPasswordChangeListener', _content: 'https://pwd.example.com' },
+                        ]),
+                    },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('FlushCache', {});
+            createBrowserSoapAPIInterceptor('GetDomain', {
+                domain: [
+                    {
+                        name: DOMAIN_NAME,
+                        id: DOMAIN_ID,
+                        a: buildDomainAttributes([
+                            { n: 'zimbraPasswordChangeListener', _content: 'https://pwd.example.com' },
+                        ]),
+                    },
+                ],
+            });
+
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            const endpointInput = page.getByLabelText('Endpoint to be used for password change');
+            await userEvent.type(endpointInput, 'https://pwd.example.com');
+
+            await page.getByRole('button', { name: /save/i }).click();
+
+            await expect
+                .element(page.getByText('The change has been saved successfully'))
+                .toBeVisible();
+            await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
+            await expect.element(page.getByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
+        });
+
+        it('should keep Save visible when ModifyDomain fails', async () => {
+            worker.use(
+                http.post('/service/admin/soap/ModifyDomainRequest', () =>
+                    HttpResponse.json(
+                        { Body: { Fault: { Reason: { Text: 'ModifyDomain failed' } } } },
+                        { status: 500 },
+                    ),
+                ),
+            );
+
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            const endpointInput = page.getByLabelText('Endpoint to be used for password change');
+            await userEvent.type(endpointInput, 'https://pwd.fail.com');
+
+            await page.getByRole('button', { name: /save/i }).click();
+
+            await expect.element(page.getByText('ModifyDomain failed')).toBeVisible();
+            await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
         });
 
         it('should include zimbraFeatureResetPasswordStatus when advanced', async () => {
@@ -426,7 +497,7 @@ describe('DomainAuthentication (browser)', () => {
                 ],
             });
 
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect.element(page.getByTestId('reset-password-switch')).toBeVisible();
             const resetSwitch = page.getByTestId('reset-password-switch');
@@ -452,7 +523,7 @@ describe('DomainAuthentication (browser)', () => {
                 { n: 'zimbraAuthLdapSearchBindDn', _content: 'cn=admin,dc=example,dc=com' },
                 { n: 'zimbraAuthLdapSearchBindPassword', _content: 'secret123' },
             ]);
-            await setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            await setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             await expect
                 .element(page.getByRole('button', { name: /login and verify/i }))
@@ -469,7 +540,7 @@ describe('DomainAuthentication (browser)', () => {
                 code: [{ _content: 'check.OK' }],
             });
 
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const bindUserInput = page.getByLabelText('Search Bind User');
             await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
@@ -495,7 +566,7 @@ describe('DomainAuthentication (browser)', () => {
                 code: [{ _content: 'check.OK' }],
             });
 
-            setupBrowserTest(<DomainAuthentication />, { initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
             const bindUserInput = page.getByLabelText('Search Bind User');
             await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
@@ -509,6 +580,38 @@ describe('DomainAuthentication (browser)', () => {
             await expect
                 .element(page.getByRole('button', { name: /login verified/i }))
                 .toBeVisible();
+        });
+
+        it('should show an error snackbar and keep LOGIN AND VERIFY when CheckAuthConfig fails', async () => {
+            setupDomainStore([
+                { n: 'zimbraAuthMech', _content: 'ldap' },
+                { n: 'zimbraAuthLdapURL', _content: 'ldap://ldap.example.com' },
+            ]);
+
+            createBrowserSoapAPIInterceptor('CheckAuthConfig', {
+                code: [{ _content: 'check.FAILED' }],
+            });
+
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            const bindUserInput = page.getByLabelText('Search Bind User');
+            await userEvent.type(bindUserInput, 'cn=admin,dc=example,dc=com');
+
+            const bindPasswordInput = page.getByLabelText('Search Bind Password');
+            await userEvent.type(bindPasswordInput, 'secret123');
+
+            const loginBtn = page.getByRole('button', { name: /login and verify/i });
+            await loginBtn.click();
+
+            await expect
+                .element(page.getByText('Something went wrong. Please try again.'))
+                .toBeVisible();
+            await expect
+                .element(page.getByRole('button', { name: /login and verify/i }))
+                .toBeVisible();
+            await expect
+                .element(page.getByRole('button', { name: /login verified/i }))
+                .not.toBeInTheDocument();
         });
     });
 });
