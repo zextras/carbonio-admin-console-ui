@@ -93,10 +93,9 @@ export default tseslint.config(
   // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
     files: [
-      'apps/admin-ui-domains/src/views/domain/domain-list/**',
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
       'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
-      'apps/admin-ui-domains/src/views/domain/global/**',
+      'apps/admin-ui-domains/src/views/global/**',
       'apps/admin-ui-domains/src/views/domain/edit-account/**',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
