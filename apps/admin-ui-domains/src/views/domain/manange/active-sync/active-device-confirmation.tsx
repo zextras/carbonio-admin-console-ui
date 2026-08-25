@@ -1,58 +1,54 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { Button, Checkbox, Container, Modal, Padding } from '@zextras/ui-components';
-import { FC, useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RESET_DEVICE, WIPE_DEVICE } from '../../../../constants';
+import type { MobileDeviceDetail } from '../../../../services/parse-active-sync';
 
-const ActiveDeviceConfirmation: FC<{
+type ActiveDeviceConfirmationProps = {
   operationType: string;
-  setIsShowConfirmBox: any;
-  isShowConfirmBox: boolean;
-  mobileDeviceDetail: any;
-  isOperationRequestInProgress: boolean;
-  doDeviceOperation: any;
-  setWipeDeviceConfirmation: any;
-}> = ({
-  operationType,
-  setIsShowConfirmBox,
-  isShowConfirmBox,
-  mobileDeviceDetail,
-  isOperationRequestInProgress,
-  doDeviceOperation,
-  setWipeDeviceConfirmation,
-}) => {
-  const [t] = useTranslation();
-  const [title, setTitle] = useState<string>('title');
-  const [yesOperationTitle, setYesOperationTitle] = useState<string>('operation');
-  const [noOperationTitle, setNoOperationTitle] = useState<string>('operation');
-  const [awareResetSetting, setAwareResetSetting] = useState<boolean>(false);
+  device: MobileDeviceDetail;
+  isPending: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  onWipeAcknowledged: (confirmed: boolean) => void;
+};
 
-  useEffect(() => {
-    if (operationType === WIPE_DEVICE) {
-      setTitle(t('label.you_are_trying_wipe_device', 'You are trying to wipe a device'));
-      setYesOperationTitle(t('label.yes_wipe_the_device', 'Yes, wipe the device'));
-      setNoOperationTitle(t('label.no_donot_wipe_device', 'No, don`t wipe'));
-    } else if (operationType === RESET_DEVICE) {
-      setTitle(t('label.you_are_trying_reset_device', 'You are trying to reset a device'));
-      setYesOperationTitle(t('label.yes_reset_the_device', 'Yes, reset the device'));
-      setNoOperationTitle(t('label.no_donot_reset_device', 'No, don`t reset'));
-    }
-  }, [operationType, t]);
+export const ActiveDeviceConfirmation = ({
+  operationType,
+  device,
+  isPending,
+  onClose,
+  onConfirm,
+  onWipeAcknowledged,
+}: Readonly<ActiveDeviceConfirmationProps>) => {
+  const [t] = useTranslation();
+  const [awareResetSetting, setAwareResetSetting] = useState(false);
+  const isWipe = operationType === WIPE_DEVICE;
+  const isReset = operationType === RESET_DEVICE;
+
+  const title = isWipe
+    ? t('label.you_are_trying_wipe_device', 'You are trying to wipe a device')
+    : t('label.you_are_trying_reset_device', 'You are trying to reset a device');
+  const yesLabel = isWipe
+    ? t('label.yes_wipe_the_device', 'Yes, wipe the device')
+    : t('label.yes_reset_the_device', 'Yes, reset the device');
+  const noLabel = isWipe
+    ? t('label.no_donot_wipe_device', 'No, don`t wipe')
+    : t('label.no_donot_reset_device', 'No, don`t reset');
 
   return (
     <Modal
       title={title}
-      open={isShowConfirmBox}
+      open
       showCloseIcon
-      onClose={(): void => {
-        setIsShowConfirmBox(false);
-      }}
+      onClose={onClose}
       size="medium"
       customFooter={
         <Container orientation="horizontal" mainAlignment="space-between">
@@ -60,42 +56,32 @@ const ActiveDeviceConfirmation: FC<{
             label={t('label.help', 'Help')}
             type="outlined"
             color="primary"
-            onClick={(): void => {
-              setIsShowConfirmBox(false);
-            }}
+            onClick={onClose}
           />
           <Container orientation="horizontal" mainAlignment="flex-end">
             <Padding all="small">
               <Button
-                label={yesOperationTitle}
+                label={yesLabel}
                 color="error"
-                loading={isOperationRequestInProgress}
-                disabled={isOperationRequestInProgress}
+                loading={isPending}
+                disabled={isPending}
                 type="outlined"
-                onClick={(): void => {
-                  doDeviceOperation();
-                }}
+                onClick={onConfirm}
               />
             </Padding>
-            <Button
-              label={noOperationTitle}
-              color="primary"
-              onClick={(): void => {
-                setIsShowConfirmBox(false);
-              }}
-            />
+            <Button label={noLabel} color="primary" onClick={onClose} />
           </Container>
         </Container>
       }
     >
       <Padding all="medium">
         <ds-text as="p" overflow="break-word" weight="regular">
-          {operationType === WIPE_DEVICE &&
+          {isWipe &&
             t(
               'label.wiping_device_warning_msg_1',
               'Wiping a device will restore it to the factory settings. Are you sure you want to continue?',
             )}
-          {operationType === RESET_DEVICE &&
+          {isReset &&
             t(
               'label.rest_device_warning_msg_1',
               'Wiping a device will restore it to the factory settings. Are you sure you want to continue? ',
@@ -104,15 +90,15 @@ const ActiveDeviceConfirmation: FC<{
       </Padding>
       <Padding all="medium">
         <ds-text as="p" overflow="break-word" weight="regular">
-          {t('label.account', 'Account')}: {mobileDeviceDetail?.accountEmail}
+          {t('label.account', 'Account')}: {device.accountEmail}
         </ds-text>
       </Padding>
       <Padding left="medium" bottom="medium">
         <ds-text as="p" overflow="break-word" weight="regular">
-          {t('label.device_id', 'Device ID')}: {mobileDeviceDetail?.deviceId}
+          {t('label.device_id', 'Device ID')}: {device.deviceId}
         </ds-text>
       </Padding>
-      {operationType === WIPE_DEVICE && (
+      {isWipe && (
         <Padding top="medium" left="medium" bottom="large">
           <Checkbox
             iconColor="primary"
@@ -123,8 +109,9 @@ const ActiveDeviceConfirmation: FC<{
             )}
             value={awareResetSetting}
             onClick={(): void => {
-              setAwareResetSetting(!awareResetSetting);
-              setWipeDeviceConfirmation(!awareResetSetting);
+              const next = !awareResetSetting;
+              setAwareResetSetting(next);
+              onWipeAcknowledged(next);
             }}
           />
         </Padding>

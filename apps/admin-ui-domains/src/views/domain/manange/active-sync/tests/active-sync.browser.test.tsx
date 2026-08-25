@@ -151,6 +151,21 @@ function setupZextrasInterceptor(
                 });
             }
 
+            if (action === 'getDeviceStatistics') {
+                const device = devices[0] ?? buildDevice();
+                return HttpResponse.json({
+                    Body: {
+                        response: {
+                            content: JSON.stringify({
+                                response: {
+                                    [device.accountServer]: { response: device },
+                                },
+                            }),
+                        },
+                    },
+                });
+            }
+
             if (action === 'doRemoveDevice') {
                 return HttpResponse.json({
                     Body: {
@@ -332,6 +347,42 @@ describe('ActiveSync (browser)', () => {
                 .toBeInTheDocument();
             const filterInput = page.getByLabelText('Filter by device type, account, status');
             await expect.element(filterInput).toHaveAttribute('disabled');
+        });
+    });
+
+    describe('Remove action', () => {
+        it('enables Remove after a device is selected', async () => {
+            setupZextrasInterceptor();
+            await setupBrowserTest(<ActiveSync />);
+            await expect.element(page.getByText('DEV-001')).toBeInTheDocument();
+
+            await userEvent.click(page.getByText('DEV-001'));
+
+            await expect.element(page.getByRole('button', { name: 'Remove' })).not.toHaveAttribute('disabled');
+        });
+
+        it('shows a success snackbar after removing a device', async () => {
+            setupZextrasInterceptor(DEVICES, true);
+            await setupBrowserTest(<ActiveSync />);
+            await expect.element(page.getByText('DEV-001')).toBeInTheDocument();
+
+            await userEvent.click(page.getByText('DEV-001'));
+            await userEvent.click(page.getByRole('button', { name: 'Close' }));
+            await userEvent.click(page.getByRole('button', { name: 'Remove' }));
+
+            await expect.element(page.getByText('Device remove successfully')).toBeVisible();
+        });
+
+        it('shows an error snackbar when remove fails', async () => {
+            setupZextrasInterceptor(DEVICES, false);
+            await setupBrowserTest(<ActiveSync />);
+            await expect.element(page.getByText('DEV-001')).toBeInTheDocument();
+
+            await userEvent.click(page.getByText('DEV-001'));
+            await userEvent.click(page.getByRole('button', { name: 'Close' }));
+            await userEvent.click(page.getByRole('button', { name: 'Remove' }));
+
+            await expect.element(page.getByText('Remove failed')).toBeVisible();
         });
     });
 });
