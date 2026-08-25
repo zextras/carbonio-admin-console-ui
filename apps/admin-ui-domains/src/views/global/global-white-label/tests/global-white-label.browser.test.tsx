@@ -230,7 +230,7 @@ describe('GlobalWhiteLabel', () => {
   });
 
   describe('Validation', () => {
-    it('should show inline error and disable save when light primary color is invalid hex', async () => {
+    it('should show inline error and block save when light primary color is invalid hex', async () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
@@ -241,7 +241,12 @@ describe('GlobalWhiteLabel', () => {
       await expect
         .element(page.getByText('Primary Color for Light Mode is not valid'))
         .toBeVisible();
-      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeDisabled();
+
+      await page.getByRole('button', { name: /^save$/i }).click();
+
+      await expect
+        .element(page.getByText('Primary Color for Light Mode is not valid'))
+        .toBeVisible();
 
       const settled = await Promise.race([
         modifyConfigInterceptor.then(() => true),
@@ -250,7 +255,7 @@ describe('GlobalWhiteLabel', () => {
       expect(settled).toBe(false);
     });
 
-    it('should show inline error and disable save when dark primary color is invalid hex', async () => {
+    it('should show inline error and block save when dark primary color is invalid hex', async () => {
       const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
       await setup();
 
@@ -261,7 +266,12 @@ describe('GlobalWhiteLabel', () => {
       await expect
         .element(page.getByText('Primary Color for Dark Mode is not valid'))
         .toBeVisible();
-      await expect.element(page.getByRole('button', { name: /^save$/i })).toBeDisabled();
+
+      await page.getByRole('button', { name: /^save$/i }).click();
+
+      await expect
+        .element(page.getByText('Primary Color for Dark Mode is not valid'))
+        .toBeVisible();
 
       const settled = await Promise.race([
         modifyConfigInterceptor.then(() => true),
