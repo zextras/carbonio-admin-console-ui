@@ -20,9 +20,9 @@ import GlobalActiveSync from './domain/global/global-active-sync';
 import { GlobalAddressBook } from './domain/global/global-address-book';
 import { GlobalAdministrators } from './domain/global/global-administrators/global-administrators';
 import { GlobalDetailPanel } from './domain/global/global-detail-panel';
+import { GlobalQuarantine } from './domain/global/global-quarantine/global-quarantine';
 import { GlobalTwoFactorAuth } from './domain/global/global-two-factor-auth/global-two-factor-auth';
 import { GlobalWhiteLabel } from './domain/global/global-white-label/global-white-label';
-import QuarantineList from './quarantine/quarantine-list';
 
 export type GlobalSectionRoute = {
   /** Sub-path segment under the global route; empty string for the bare global route. */
@@ -64,7 +64,7 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     id: QUARANTINE,
     labelKey: 'label.quarantine',
     labelDefault: 'Quarantine',
-    Component: QuarantineList,
+    Component: GlobalQuarantine,
   },
   {
     id: WHITELABEL_SETTINGS,

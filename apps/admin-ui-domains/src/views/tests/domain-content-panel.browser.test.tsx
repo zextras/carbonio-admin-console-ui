@@ -42,8 +42,8 @@ function MockGlobalAdministrators() {
 function MockDomainList() {
   return <div>VIEW:domain-list</div>;
 }
-function MockQuarantineList() {
-  return <div>VIEW:quarantine-list</div>;
+function MockGlobalQuarantine() {
+  return <div>VIEW:global-quarantine</div>;
 }
 function MockDomainGeneralSettings() {
   return <div>VIEW:general_settings</div>;
@@ -110,7 +110,9 @@ vi.mock('../domain/global/global-administrators/global-administrators', () => ({
     GlobalAdministrators: MockGlobalAdministrators,
   }));
 vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
-vi.mock('../quarantine/quarantine-list', () => ({ default: MockQuarantineList }));
+vi.mock('../domain/global/global-quarantine/global-quarantine', () => ({
+  GlobalQuarantine: MockGlobalQuarantine,
+}));
 vi.mock('../domain/details/domain-general-settings', () => ({
   DomainGeneralSettings: MockDomainGeneralSettings,
 }));
@@ -146,7 +148,7 @@ const globalRoutes: Array<[string, string]> = [
   ['/global/settings', 'VIEW:global-detail-panel'],
   ['/global/whitelabel_settings', 'VIEW:global-white-label'],
   ['/global/2-factor-authentication', 'VIEW:global-two-factor-auth'],
-  ['/global/quarantine', 'VIEW:quarantine-list'],
+  ['/global/quarantine', 'VIEW:global-quarantine'],
   ['/global/domains', 'VIEW:domain-list'],
   ['/global/administrators', 'VIEW:global-administrators'],
   ['/global/active_sync', 'VIEW:global-active-sync'],
