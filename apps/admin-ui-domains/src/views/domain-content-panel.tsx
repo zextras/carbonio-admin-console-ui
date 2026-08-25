@@ -29,7 +29,7 @@ import {
   VIRTUAL_HOSTS,
   WHITELABEL_SETTINGS,
 } from '../constants';
-import CreateDomain from './create-new-domain/create-new-domain';
+import { CreateDomain } from './create-new-domain/create-new-domain';
 import DomainTwoFactorAuthentication from './domain/details/domain-2fa';
 import { DomainAuthentication } from './domain/details/domain-authentication';
 import DomainDisclaimer from './domain/details/domain-disclaimer';
