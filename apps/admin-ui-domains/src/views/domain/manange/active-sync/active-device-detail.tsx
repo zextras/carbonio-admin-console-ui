@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
@@ -12,279 +12,95 @@ import {
   ListRow,
   Row,
   Select,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE, ZX_MOBILE } from '../../../../constants';
-import { getMobileDeviceDetail } from '../../../../services/get-mobile-device-detail';
-import { resetDevice } from '../../../../services/reset-device';
-import { suspendDevice } from '../../../../services/suspend-device';
-import { wipeDevice } from '../../../../services/wipe-device';
-import ActiveDeviceConfirmation from './active-device-confirmation';
+import { RESET_DEVICE, WIPE_DEVICE } from '../../../../constants';
+import type { MobileDevice } from '../../../../services/parse-active-sync';
+import {
+  useActiveSyncDeviceStats,
+  useResetDevice,
+  useSuspendDevice,
+  useWipeDevice,
+} from '../../../../services/use-active-sync';
+import { ActiveDeviceConfirmation } from './active-device-confirmation';
 
-type MobileDeviceDetail = {
-  accountEmail: string;
-  accountName: string;
-  accountServer: string;
-  deviceId: string;
-  deviceType: string;
-  firstSeen: number;
-  friendlyName: string;
-  hasMobilePassword: boolean;
-  imei: string;
-  isOnline: boolean;
-  lastPingTimeout: number;
-  lastSeen: number;
-  model: string;
-  numBadItems: number;
-  numContacts: number;
-  numEmails: number;
-  numEvents: number;
-  numRemoteFolders: number;
-  numTasks: number;
-  os: string;
-  osLanguage: string;
-  phoneNumber: string;
-  protocolVersion: string;
-  status: number;
-  userAgent: string;
+type SelectOption = { label: string; value: number };
+
+type ActiveDeviceDetailProps = {
+  selectedDevice: MobileDevice;
+  onClose: () => void;
 };
 
-const ActiveDeviceDetail: FC<{
-  setIsShowDeviceDetail: any;
-  selectedMobileDeviceDetail: any;
-  setRefreshDeviceList: any;
-}> = ({ setIsShowDeviceDetail, selectedMobileDeviceDetail, setRefreshDeviceList }) => {
+export const ActiveDeviceDetail = ({
+  selectedDevice,
+  onClose,
+}: Readonly<ActiveDeviceDetailProps>) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [mobileDeviceDetail, setMobileDeviceDetail] = useState<MobileDeviceDetail>();
-  const [isShowConfirmBox, setIsShowConfirmBox] = useState<boolean>(false);
-  const [operationType, setOperationType] = useState<string>('');
-  const [isDetailRequestInProgess, setIsDetailRequestInProgess] = useState<boolean>(false);
-  const [isOperationRequestInProgress, setIsOperationRequestInProgress] = useState<boolean>(false);
-  const [wipeDeviceConfirmation, setWipeDeviceConfirmation] = useState<boolean>(false);
   const { isSticky, setIsSticky } = useStickyBarStore();
+  const [operationType, setOperationType] = useState<string>('');
+  const [wipeConfirmed, setWipeConfirmed] = useState(false);
 
-  const abqStatusOptions: any[] = useMemo(
-    () => [
-      {
-        label: t('label.allowed', 'Allowed'),
-        value: 1,
-      },
-      {
-        label: t('label.blocked', 'Blocked'),
-        value: 2,
-      },
-      {
-        label: t('label.quarantined', 'Quarantined'),
-        value: 3,
-      },
-    ],
-    [t],
-  );
+  const { data: mobileDeviceDetail, isFetching } = useActiveSyncDeviceStats({
+    accountEmail: selectedDevice.accountEmail,
+    deviceId: selectedDevice.deviceId,
+    accountServer: selectedDevice.accountServer,
+  });
 
-  const statusOptions: any[] = useMemo(
-    () => [
-      {
-        label: t('label.can_receive', 'Can receive'),
-        value: 1,
-      },
-      {
-        label: t('label.can_not_receiver', 'Can`t receiver'),
-        value: 0,
-      },
-    ],
-    [t],
-  );
+  const wipeDevice = useWipeDevice();
+  const resetDevice = useResetDevice();
+  const suspendDevice = useSuspendDevice();
+  const isOperationPending = wipeDevice.isPending || resetDevice.isPending || suspendDevice.isPending;
 
-  const [abqStatus, setAbqStatus] = useState<any>(abqStatusOptions[0]);
-  const [status, setStatus] = useState<any>(statusOptions[0]);
+  const abqStatusOptions: Array<SelectOption> = [
+    { label: t('label.allowed', 'Allowed'), value: 1 },
+    { label: t('label.blocked', 'Blocked'), value: 2 },
+    { label: t('label.quarantined', 'Quarantined'), value: 3 },
+  ];
+  const statusOptions: Array<SelectOption> = [
+    { label: t('label.can_receive', 'Can receive'), value: 1 },
+    { label: t('label.can_not_receiver', 'Can`t receiver'), value: 0 },
+  ];
+
+  const [abqStatus, setAbqStatus] = useState<SelectOption>(abqStatusOptions[0]);
+  const [status, setStatus] = useState<SelectOption>(statusOptions[0]);
 
   useEffect(() => {
-    if (selectedMobileDeviceDetail) {
-      setIsDetailRequestInProgess(true);
-      getMobileDeviceDetail(
-        ZX_MOBILE,
-        selectedMobileDeviceDetail?.accountEmail,
-        selectedMobileDeviceDetail?.deviceId,
-        selectedMobileDeviceDetail?.accountServer,
-      )
-        .then((res: any) => {
-          setIsDetailRequestInProgess(false);
-          if (res?.Body?.response?.content) {
-            const content: any = JSON.parse(res?.Body?.response?.content);
-            const keys = Object.keys(content?.response);
-            if (keys && keys.length > 0) {
-              const deviceItem = content?.response[keys[0]]?.response;
-              if (deviceItem) {
-                setMobileDeviceDetail(deviceItem);
-              }
-            }
-          }
-        })
-        .catch((error: any) => {
-          setIsDetailRequestInProgess(false);
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: error
-              ? error?.error
-              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-        });
+    if (mobileDeviceDetail?.status === 1) {
+      setStatus(statusOptions[0]);
+    } else if (mobileDeviceDetail) {
+      setStatus(statusOptions[1]);
     }
-  }, [selectedMobileDeviceDetail, createSnackbar, t]);
+  }, [mobileDeviceDetail]);
 
-  useEffect(() => {
-    if (!!mobileDeviceDetail && mobileDeviceDetail?.status) {
-      if (mobileDeviceDetail?.status === 1) {
-        setStatus(statusOptions[0]);
-      } else {
-        setStatus(statusOptions[1]);
-      }
-    }
-  }, [mobileDeviceDetail, statusOptions]);
+  function closeConfirm(): void {
+    setOperationType('');
+    setWipeConfirmed(false);
+  }
 
-  const resetUI = useCallback(() => {
-    setRefreshDeviceList(true);
-  }, [setRefreshDeviceList]);
-
-  const resetDeviceOperation = useCallback(() => {
-    resetDevice(
-      ZX_MOBILE,
-      mobileDeviceDetail?.accountName || '',
-      mobileDeviceDetail?.deviceId || '',
-    )
-      .then((res: any) => {
-        setIsOperationRequestInProgress(false);
-        setIsShowConfirmBox(false);
-        if (res?.Body?.response?.content) {
-          const content: any = JSON.parse(res?.Body?.response?.content);
-          if (content?.response && content?.ok) {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-
-              label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            resetUI();
-          }
-        }
-      })
-      .catch((error: any) => {
-        setIsOperationRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error
-            ? error?.error
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [mobileDeviceDetail, t, createSnackbar, resetUI]);
-
-  const suspendDeviceOperation = useCallback(() => {
-    suspendDevice(
-      ZX_MOBILE,
-      mobileDeviceDetail?.accountName || '',
-      mobileDeviceDetail?.deviceId || '',
-    )
-      .then((res: any) => {
-        setIsOperationRequestInProgress(false);
-        setIsShowConfirmBox(false);
-        if (res?.Body?.response?.content) {
-          const content: any = JSON.parse(res?.Body?.response?.content);
-          if (content?.ok) {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            resetUI();
-          }
-        }
-      })
-      .catch((error: any) => {
-        setIsOperationRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error
-            ? error?.error
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [mobileDeviceDetail, t, createSnackbar, resetUI]);
-
-  const wipeDeviceOperation = useCallback(() => {
-    wipeDevice(
-      ZX_MOBILE,
-      mobileDeviceDetail?.accountName || '',
-      mobileDeviceDetail?.deviceId || '',
-      wipeDeviceConfirmation,
-    )
-      .then((res: any) => {
-        setIsOperationRequestInProgress(false);
-        setIsShowConfirmBox(false);
-        if (res?.Body?.response?.content) {
-          const content: any = JSON.parse(res?.Body?.response?.content);
-          if (content?.ok) {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-            resetUI();
-          }
-        }
-      })
-      .catch((error: any) => {
-        setIsOperationRequestInProgress(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error
-            ? error?.error
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [mobileDeviceDetail, t, createSnackbar, wipeDeviceConfirmation, resetUI]);
-
-  const doDeviceOperation = useCallback(() => {
-    setIsOperationRequestInProgress(true);
+  function runConfirmedAction(): void {
+    const accountName = mobileDeviceDetail?.accountName ?? selectedDevice.accountName;
+    const deviceId = mobileDeviceDetail?.deviceId ?? selectedDevice.deviceId;
     if (operationType === RESET_DEVICE) {
-      resetDeviceOperation();
-    } else if (operationType === SUSPEND_DEVICE) {
-      suspendDeviceOperation();
-    } else if (operationType === WIPE_DEVICE) {
-      wipeDeviceOperation();
+      resetDevice.mutate({ accountName, deviceId }, { onSuccess: () => { closeConfirm(); onClose(); } });
+      return;
     }
-  }, [operationType, resetDeviceOperation, suspendDeviceOperation, wipeDeviceOperation]);
+    if (operationType === WIPE_DEVICE) {
+      wipeDevice.mutate(
+        { accountName, deviceId, confirm: wipeConfirmed },
+        { onSuccess: () => { closeConfirm(); onClose(); } },
+      );
+    }
+  }
+
+  function suspendNow(): void {
+    const accountName = mobileDeviceDetail?.accountName ?? selectedDevice.accountName;
+    const deviceId = mobileDeviceDetail?.deviceId ?? selectedDevice.deviceId;
+    suspendDevice.mutate({ accountName, deviceId }, { onSuccess: onClose });
+  }
 
   const buttons = [
     {
@@ -294,44 +110,32 @@ const ActiveDeviceDetail: FC<{
         'label.wipe_device_factory_settings',
         'Wipe the device to the factory settings',
       ),
-      loading: isDetailRequestInProgess,
-      disable: isDetailRequestInProgess,
-      onClick: (): void => {
-        setOperationType(WIPE_DEVICE);
-        setIsShowConfirmBox(true);
-      },
+      loading: isFetching,
+      disable: isFetching,
+      onClick: (): void => setOperationType(WIPE_DEVICE),
     },
     {
       align: 'right' as const,
       label: t('label.reset_device', 'Reset Device'),
       tooltiplabel: t('label.logoff_from_every_device', 'Log off from every device'),
       color: 'primary',
-      onClick: (): void => {
-        setOperationType(RESET_DEVICE);
-        setIsShowConfirmBox(true);
-      },
-      loading: isDetailRequestInProgess,
-      disable: isDetailRequestInProgess,
+      onClick: (): void => setOperationType(RESET_DEVICE),
+      loading: isFetching,
+      disable: isFetching,
     },
     {
       align: 'right' as const,
       color: 'primary',
       label: t('label.suspend', 'Suspend'),
       tooltiplabel: t('label.active_sync_active_paused', 'The activesync is active / paused'),
-      onClick: (): void => {
-        setIsOperationRequestInProgress(true);
-        setOperationType(SUSPEND_DEVICE);
-        suspendDeviceOperation();
-      },
-      loading: isDetailRequestInProgess || isOperationRequestInProgress,
-      disable: isDetailRequestInProgess || isOperationRequestInProgress,
+      onClick: suspendNow,
+      loading: isFetching || isOperationPending,
+      disable: isFetching || isOperationPending,
     },
     {
       align: 'left' as const,
       icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
-      onClick: (): void => {
-        setIsSticky(!isSticky);
-      },
+      onClick: (): void => setIsSticky(!isSticky),
     },
   ];
 
@@ -345,7 +149,7 @@ const ActiveDeviceDetail: FC<{
         top: '2.688rem',
         right: '0',
         bottom: '0',
-        left: `${'max(calc(100% - 42.5rem), 0.75rem)'}`,
+        left: 'max(calc(100% - 42.5rem), 0.75rem)',
         transition: 'left 0.2s ease-in-out',
         height: 'auto',
         width: 'auto',
@@ -364,15 +168,16 @@ const ActiveDeviceDetail: FC<{
       >
         <Row padding={{ horizontal: 'small' }}></Row>
         <Row takeAvailableSpace mainAlignment="flex-start">
-          {selectedMobileDeviceDetail?.accountName}
+          {selectedDevice.accountName}
         </Row>
         <Row padding={{ right: 'extrasmall' }}>
           <Button
             type="ghost"
-            color={'text'}
+            color="text"
             size="medium"
             icon="CloseOutline"
-            onClick={(): void => setIsShowDeviceDetail(false)}
+            aria-label={t('label.close', 'Close')}
+            onClick={onClose}
           />
         </Row>
       </Row>
@@ -388,7 +193,6 @@ const ActiveDeviceDetail: FC<{
             </ds-text>
           </Row>
         </ListRow>
-
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <Select
@@ -397,16 +201,13 @@ const ActiveDeviceDetail: FC<{
               label={t('label.abq_status', 'ABQ Status')}
               showCheckbox={false}
               selection={abqStatus}
-              onChange={(ev: any): void => {
-                const dataItem = abqStatusOptions.find((item) => item?.value === ev);
-                if (dataItem) {
-                  setAbqStatus(dataItem);
-                }
+              onChange={(ev: string | number | null): void => {
+                const dataItem = abqStatusOptions.find((item) => item.value === ev);
+                if (dataItem) setAbqStatus(dataItem);
               }}
             />
           </Container>
         </ListRow>
-
         <ListRow>
           <Row padding={{ top: 'large' }}>
             <ds-text as="h3" size="medium" weight="bold" color="gray0">
@@ -414,7 +215,6 @@ const ActiveDeviceDetail: FC<{
             </ds-text>
           </Row>
         </ListRow>
-
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <LabeledValue
@@ -431,7 +231,6 @@ const ActiveDeviceDetail: FC<{
             />
           </Container>
         </ListRow>
-
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <Select
@@ -440,11 +239,9 @@ const ActiveDeviceDetail: FC<{
               label={t('label.status_lbl', 'Status')}
               showCheckbox={false}
               selection={status}
-              onChange={(ev: any): void => {
-                const dataItem = statusOptions.find((item) => item?.value === ev);
-                if (dataItem) {
-                  setStatus(dataItem);
-                }
+              onChange={(ev: string | number | null): void => {
+                const dataItem = statusOptions.find((item) => item.value === ev);
+                if (dataItem) setStatus(dataItem);
               }}
             />
           </Container>
@@ -460,7 +257,6 @@ const ActiveDeviceDetail: FC<{
             />
           </Container>
         </ListRow>
-
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <LabeledValue
@@ -477,7 +273,6 @@ const ActiveDeviceDetail: FC<{
             />
           </Container>
         </ListRow>
-
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <LabeledValue
@@ -490,7 +285,6 @@ const ActiveDeviceDetail: FC<{
             <LabeledValue label={t('label.eas', 'EAS')} backgroundColor="gray5" value={''} />
           </Container>
         </ListRow>
-
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <LabeledValue
@@ -505,21 +299,20 @@ const ActiveDeviceDetail: FC<{
               backgroundColor="gray5"
               value={
                 mobileDeviceDetail?.lastSeen
-                  ? format(new Date(mobileDeviceDetail?.lastSeen), 'yy/MM/dd | hh:mm:ss a')
+                  ? format(new Date(mobileDeviceDetail.lastSeen), 'yy/MM/dd | hh:mm:ss a')
                   : ''
               }
             />
           </Container>
         </ListRow>
-        {isShowConfirmBox && (
+        {operationType !== '' && mobileDeviceDetail && (
           <ActiveDeviceConfirmation
             operationType={operationType}
-            setIsShowConfirmBox={setIsShowConfirmBox}
-            isShowConfirmBox={isShowConfirmBox}
-            mobileDeviceDetail={mobileDeviceDetail}
-            isOperationRequestInProgress={isOperationRequestInProgress}
-            doDeviceOperation={doDeviceOperation}
-            setWipeDeviceConfirmation={setWipeDeviceConfirmation}
+            device={mobileDeviceDetail}
+            isPending={isOperationPending}
+            onClose={closeConfirm}
+            onConfirm={runConfirmedAction}
+            onWipeAcknowledged={setWipeConfirmed}
           />
         )}
       </Container>
