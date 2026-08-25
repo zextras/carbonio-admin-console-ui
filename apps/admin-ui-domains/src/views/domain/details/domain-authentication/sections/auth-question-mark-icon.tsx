@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 import { ZIMBRA_AUTH_METHOD } from '../schema';
 import { filterTooltipItems, ldapUrlTooltipItems } from '../utils';
 
-function AuthHelpIcon({ label }: { label: string }) {
+function AuthHelpIcon({ label }: Readonly<{ label: string }>) {
   return (
     <Tooltip placement="top" overflow="break-word" maxWidth="40rem" label={label}>
       <ds-text as="span">

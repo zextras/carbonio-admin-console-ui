@@ -122,7 +122,7 @@ export function buildAuthDomainAttributes(
 }
 
 export function ldapUrlTooltipItems(t: TFunction, authMech: string): Array<{ label: string }> {
-  const portHint = authMech !== ZIMBRA_AUTH_METHOD.EXTERNAL ? '[:389]' : '[:3268]';
+  const portHint = authMech === ZIMBRA_AUTH_METHOD.EXTERNAL ? '[:3268]' : '[:389]';
   return [
     {
       label: `${t('label.ex', 'ex.')} ldap[s]://${t(
