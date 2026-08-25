@@ -46,8 +46,8 @@ vi.mock('../suspend-device', () => ({
 
 import { domainQueryKeys } from '../domain-query-keys';
 import {
-  useActiveSyncDeviceStats,
   useActiveSyncDevices,
+  useActiveSyncDeviceStats,
   useRemoveDevice,
   useResetDevice,
   useSuspendDevice,

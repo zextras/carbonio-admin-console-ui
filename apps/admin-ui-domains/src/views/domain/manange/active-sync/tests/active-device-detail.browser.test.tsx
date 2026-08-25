@@ -9,9 +9,8 @@ import { http, HttpResponse } from 'msw';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { ActiveDeviceDetail } from '../active-device-detail';
-
 import type { MobileDevice } from '../../../../../services/parse-active-sync';
+import { ActiveDeviceDetail } from '../active-device-detail';
 
 type ZextrasRequestBody = {
   Body: {

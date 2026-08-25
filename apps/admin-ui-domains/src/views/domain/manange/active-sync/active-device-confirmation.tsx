@@ -51,26 +51,18 @@ export const ActiveDeviceConfirmation = ({
       onClose={onClose}
       size="medium"
       customFooter={
-        <Container orientation="horizontal" mainAlignment="space-between">
-          <Button
-            label={t('label.help', 'Help')}
-            type="outlined"
-            color="primary"
-            onClick={onClose}
-          />
-          <Container orientation="horizontal" mainAlignment="flex-end">
-            <Padding all="small">
-              <Button
-                label={yesLabel}
-                color="error"
-                loading={isPending}
-                disabled={isPending}
-                type="outlined"
-                onClick={onConfirm}
-              />
-            </Padding>
-            <Button label={noLabel} color="primary" onClick={onClose} />
-          </Container>
+        <Container orientation="horizontal" mainAlignment="flex-end">
+          <Padding all="small">
+            <Button
+              label={yesLabel}
+              color="error"
+              loading={isPending}
+              disabled={isPending}
+              type="outlined"
+              onClick={onConfirm}
+            />
+          </Padding>
+          <Button label={noLabel} color="primary" onClick={onClose} />
         </Container>
       }
     >

@@ -18,8 +18,8 @@ import { format } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RESET_DEVICE, SUSPEND_DEVICE, WIPE_DEVICE } from '../../../../constants';
-import type { MobileDevice, MobileDeviceDetail } from '../../../../services/parse-active-sync';
+import { RESET_DEVICE, WIPE_DEVICE } from '../../../../constants';
+import type { MobileDevice } from '../../../../services/parse-active-sync';
 import {
   useActiveSyncDeviceStats,
   useResetDevice,

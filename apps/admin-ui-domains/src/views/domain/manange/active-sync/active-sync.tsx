@@ -15,7 +15,7 @@ import {
   Table,
 } from '@zextras/ui-components';
 import { format } from 'date-fns';
-import { useEffect, useState, type ChangeEvent, type ReactElement, type ReactNode } from 'react';
+import { type ChangeEvent, type ReactElement, type ReactNode, useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
@@ -107,7 +107,7 @@ export const ActiveSync = () => {
       setDetailDevice(item);
     };
     return {
-      id: item.firstSeen,
+      id: String(item.firstSeen),
       columns: [
         <DeviceTableCell key={`name-${item.deviceId}`} onActivate={onActivate}>
           {item.accountName}
@@ -131,7 +131,8 @@ export const ActiveSync = () => {
     };
   });
 
-  const selectedRows = checkedFirstSeen === null ? [] : [checkedFirstSeen];
+  const selectedRows: [] | [string] =
+    checkedFirstSeen === null ? [] : [String(checkedFirstSeen)];
 
   function onRemoveDevice(): void {
     if (!checkedDevice) return;
@@ -223,8 +224,8 @@ export const ActiveSync = () => {
               showCheckbox
               multiSelect={false}
               selectedRows={selectedRows}
-              onSelectionChange={(selected: Array<number>): void => {
-                setCheckedFirstSeen(selected[0] ?? null);
+              onSelectionChange={(selected: Array<string>): void => {
+                setCheckedFirstSeen(selected[0] === undefined ? null : Number(selected[0]));
               }}
               RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
