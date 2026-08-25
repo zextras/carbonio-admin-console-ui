@@ -13,7 +13,7 @@ import {
   Tooltip,
 } from '@zextras/ui-components';
 import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
-import { FC, ReactElement, useCallback, useMemo, useRef, useState } from 'react';
+import { FC, ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useRemoveQuarantineAttachment } from '../../../services/use-quarantine-message-actions';
@@ -303,19 +303,19 @@ const Attachment: FC<AttachmentType> = ({
 }) => {
   const extension = getFileExtension(att).value;
 
-  const sizeLabel = useMemo(() => humanFileSize(size), [size]);
+  const sizeLabel = humanFileSize(size);
   const inputRef = useRef<HTMLAnchorElement>(null);
   const inputRef2 = useRef<HTMLAnchorElement>(null);
   const [t] = useTranslation();
   const removeAttachmentMutation = useRemoveQuarantineAttachment();
 
-  const downloadAttachment = useCallback(() => {
+  const downloadAttachment = () => {
     if (inputRef.current) {
       // @ts-expect-error - needs a fix
       inputRef2.current.value = null;
       inputRef.current.click();
     }
-  }, [inputRef]);
+  };
 
   const isEML = extension === 'EML';
 
@@ -451,22 +451,15 @@ const AttachmentsBlock: FC<{
 }): ReactElement => {
   const [t] = useTranslation();
   const [expanded, setExpanded] = useState(false);
-  const attachments = useMemo(
-    () => filter(message?.attachments, { cd: 'attachment' }),
-    [message?.attachments],
-  );
+  const attachments = filter(message?.attachments, { cd: 'attachment' });
 
-  const attachmentsCount = useMemo(() => attachments?.length || 0, [attachments]);
-  const attachmentsParts = useMemo(() => map(attachments, 'name'), [attachments]);
-  const actionsDownloadLink = useMemo(
-    () =>
-      getAttachmentsDownloadLink({
-        messageId: message.id,
-        messageSubject: message.subject,
-        attachments: attachmentsParts,
-      }),
-    [message, attachmentsParts],
-  );
+  const attachmentsCount = attachments?.length || 0;
+  const attachmentsParts = map(attachments, 'name');
+  const actionsDownloadLink = getAttachmentsDownloadLink({
+    messageId: message.id,
+    messageSubject: message.subject,
+    attachments: attachmentsParts,
+  });
 
   return attachmentsCount > 0 ? (
     <Container crossAlignment="flex-start">

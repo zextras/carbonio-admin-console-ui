@@ -7,7 +7,7 @@
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
-import { FC, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { FC, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -68,13 +68,18 @@ const replaceLinkToAnchor = (content: string): string => {
   });
 };
 
+const hasExternalImagesIn = (htmlContent: string): boolean => {
+  const parser = new DOMParser();
+  const htmlDoc = parser.parseFromString(htmlContent, 'text/html');
+  const images = htmlDoc.body.getElementsByTagName('img');
+
+  return some(images, (i) => i.hasAttribute('dfsrc'));
+};
+
 const TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
   const orignalText = body.content; // getOriginalContent(body.content, false);
 
-  const convertedHTML = useMemo(
-    () => replaceLinkToAnchor(plainTextToHTML(orignalText)),
-    [orignalText],
-  );
+  const convertedHTML = replaceLinkToAnchor(plainTextToHTML(orignalText));
   return (
     <>
       <ds-text
@@ -112,13 +117,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 
   const orignalText = body.content; // getOriginalContent(body.content, false);
 
-  const hasExternalImages = useMemo(() => {
-    const parser = new DOMParser();
-    const htmlDoc = parser.parseFromString(orignalText, 'text/html');
-    const images = htmlDoc.body.getElementsByTagName('img');
-
-    return some(images, (i) => i.hasAttribute('dfsrc'));
-  }, [orignalText]);
+  const hasExternalImages = hasExternalImagesIn(orignalText);
   const isAvailableInTrusteeList = (
     trusteeList: string | number | Array<number | string>,
     address: string,
@@ -142,13 +141,10 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
     }
     return availableInTrusteeList;
   };
-  const showBanner = useMemo(
-    () =>
-      hasExternalImages &&
-      !isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from) &&
-      displayBanner,
-    [from, hasExternalImages, settingsPref.zimbraPrefMailTrustedSenderList, displayBanner],
-  );
+  const showBanner =
+    hasExternalImages &&
+    !isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from) &&
+    displayBanner;
   const isTrustedSender = isAvailableInTrusteeList(
     settingsPref.zimbraPrefMailTrustedSenderList ?? '',
     from,
@@ -164,10 +160,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
     }
   };
 
-  const showImage = useMemo(
-    () => showExternalImage && displayBanner,
-    [displayBanner, showExternalImage],
-  );
+  const showImage = showExternalImage && displayBanner;
 
   useLayoutEffect(() => {
     if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
