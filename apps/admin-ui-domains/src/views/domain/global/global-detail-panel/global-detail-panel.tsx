@@ -21,16 +21,16 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
-import { Attribute } from '../../../../types';
+import { Attribute } from '../../../../../types';
 import {
   CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
   FALSE,
   TRUE,
   ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-} from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
-import { isValidEmail } from '../../utility/utils';
+} from '../../../../constants';
+import { modifyConfig } from '../../../../services/modify-config';
+import { isValidEmail } from '../../../utility/utils';
 
 type GlobalSettingsFormValues = {
   carbonioNotificationFrom: string;

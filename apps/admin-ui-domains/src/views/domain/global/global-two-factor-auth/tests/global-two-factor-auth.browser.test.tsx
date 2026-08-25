@@ -9,7 +9,7 @@ import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { GlobalTwoFactorAuth } from '../global-two-factor-auth/global-two-factor-auth';
+import { GlobalTwoFactorAuth } from '../global-two-factor-auth';
 
 type ZextrasRequestBody = {
   Body: {

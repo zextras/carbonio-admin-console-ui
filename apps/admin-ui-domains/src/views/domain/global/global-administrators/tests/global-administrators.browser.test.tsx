@@ -8,7 +8,7 @@ import { createBrowserSoapAPIInterceptor, setupBrowserTest } from 'admin-ui-test
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { GlobalAdministrators } from '../global-administrators/global-administrators';
+import { GlobalAdministrators } from '../global-administrators';
 
 type AccountEntry = {
 	name: string;

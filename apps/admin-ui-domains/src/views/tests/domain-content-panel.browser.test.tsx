@@ -93,7 +93,7 @@ function MockDomainAddressBook() {
 
 vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
-vi.mock('../domain/global/global-detail-panel', () => ({
+vi.mock('../domain/global/global-detail-panel/global-detail-panel', () => ({
   GlobalDetailPanel: MockGlobalDetailPanel,
 }));
 vi.mock('../domain/global/global-white-label/global-white-label', () => ({
@@ -112,7 +112,9 @@ vi.mock('../domain/global/global-active-sync/global-active-sync', () => ({
 vi.mock('../domain/global/global-administrators/global-administrators', () => ({
   GlobalAdministrators: MockGlobalAdministrators,
 }));
-vi.mock('../domain/domain-list/domain-list', () => ({ DomainList: MockDomainList }));
+vi.mock('../domain/global/global-domain-list/global-domain-list', () => ({
+  GlobalDomainList: MockDomainList,
+}));
 vi.mock('../domain/global/global-quarantine/global-quarantine', () => ({
   GlobalQuarantine: MockGlobalQuarantine,
 }));

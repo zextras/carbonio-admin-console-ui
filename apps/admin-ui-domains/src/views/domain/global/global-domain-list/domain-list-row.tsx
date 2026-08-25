@@ -5,10 +5,10 @@
  */
 import type { ReactElement } from 'react';
 
-import type { Attribute } from '../../../../types';
-import { SoapEntity } from '../../../services/search-domain-service';
-import { parseDomainAttributes } from '../../../utils/attributes';
-import { getStatusDisplay } from '../../../utils/status';
+import type { Attribute } from '../../../../../types';
+import { SoapEntity } from '../../../../services/search-domain-service';
+import { parseDomainAttributes } from '../../../../utils/attributes';
+import { getStatusDisplay } from '../../../../utils/status';
 
 type TFunc = (key: string, defaultValue: string) => string;
 

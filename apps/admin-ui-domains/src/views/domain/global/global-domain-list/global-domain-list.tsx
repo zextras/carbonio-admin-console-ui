@@ -18,11 +18,11 @@ import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
 import React, { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import logo from '../../../assets/gardian.svg';
-import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { SoapEntity } from '../../../services/search-domain-service';
-import { useDomainSearch } from '../../../services/use-domain-search';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import logo from '../../../../assets/gardian.svg';
+import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { SoapEntity } from '../../../../services/search-domain-service';
+import { useDomainSearch } from '../../../../services/use-domain-search';
+import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
 
 export type ZimbraDomainResponse = {
@@ -49,7 +49,7 @@ const DOMAIN_LIST_HEADERS = [
   },
 ] as const;
 
-export const DomainList = () => {
+export const GlobalDomainList = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 

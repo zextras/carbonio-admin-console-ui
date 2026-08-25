@@ -20,7 +20,7 @@ import { type ReactElement } from 'react';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DomainList } from '../domain-list';
+import { GlobalDomainList } from '../global-domain-list';
 
 const mockedReplaceHistory = vi.mocked(replaceHistory);
 
@@ -85,7 +85,7 @@ function setup(ui: ReactElement) {
   return setupBrowserTest(ui);
 }
 
-describe('DomainList (browser)', () => {
+describe('GlobalDomainList (browser)', () => {
   afterEach(() => {
     resetMockWorker();
     mockedReplaceHistory.mockClear();
@@ -94,14 +94,14 @@ describe('DomainList (browser)', () => {
   describe('Rendering', () => {
     it('renders the Domains List header', async () => {
       interceptDomains([]);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('Domains List')).toBeVisible();
     });
 
     it('renders the table column headers', async () => {
       interceptDomains([]);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('Domain Name', { exact: true })).toBeVisible();
       await expect.element(page.getByText('Status', { exact: true })).toBeVisible();
@@ -109,7 +109,7 @@ describe('DomainList (browser)', () => {
 
     it('renders the search input', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByLabelText(`I'm looking for this domain…`)).toBeVisible();
     });
@@ -118,7 +118,7 @@ describe('DomainList (browser)', () => {
   describe('With data', () => {
     it('displays domain names in the table', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
       await expect.element(page.getByText('test.org')).toBeVisible();
@@ -126,7 +126,7 @@ describe('DomainList (browser)', () => {
 
     it('displays domain status labels', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
       await expect.element(page.getByText('Closed', { exact: true })).toBeVisible();
@@ -142,21 +142,21 @@ describe('DomainList (browser)', () => {
       ['suspended', 'Suspended'],
     ])('displays %s status as "%s"', async (status, expectedLabel) => {
       interceptDomains([buildDomain('status-test.com', 'domain-st', status)]);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText(expectedLabel, { exact: true })).toBeVisible();
     });
 
     it('defaults to Active when domain has no zimbraDomainStatus attribute', async () => {
       interceptDomains([{ name: 'fallback.com', id: 'domain-fb', a: [] }]);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
     });
 
     it('falls back to Active for an unknown status without crashing', async () => {
       interceptDomains([buildDomain('weird.com', 'domain-x', 'totally-unknown-status')]);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('weird.com')).toBeVisible();
       await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
@@ -166,7 +166,7 @@ describe('DomainList (browser)', () => {
   describe('Empty state', () => {
     it('shows the empty state message when no domains exist', async () => {
       interceptDomains([], 0);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('This list is empty.')).toBeVisible();
     });
@@ -182,7 +182,7 @@ describe('DomainList (browser)', () => {
           ),
         ),
       );
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('Server error')).toBeVisible();
     });
@@ -201,7 +201,7 @@ describe('DomainList (browser)', () => {
         }
         return { domain: SAMPLE_DOMAINS, searchTotal: 2, more: false };
       });
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
       await expect.element(page.getByText('test.org')).toBeVisible();
@@ -223,7 +223,7 @@ describe('DomainList (browser)', () => {
         }
         return { domain: SAMPLE_DOMAINS, searchTotal: 2, more: false };
       });
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
 
@@ -237,7 +237,7 @@ describe('DomainList (browser)', () => {
   describe('Navigation', () => {
     it('navigates to domain details when clicking a domain row', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
 
@@ -250,7 +250,7 @@ describe('DomainList (browser)', () => {
   describe('Pagination', () => {
     it('shows pagination footer when domains exist', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
       await expect.element(page.getByText(/of \d+/)).toBeVisible();
@@ -271,7 +271,7 @@ describe('DomainList (browser)', () => {
         }
         return { domain: page2Domains, searchTotal: 25, more: false };
       });
-      setup(<DomainList />);
+      setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('alpha-1.com')).toBeVisible();
 

@@ -13,7 +13,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { GlobalWhiteLabel } from '../global-white-label/global-white-label';
+import { GlobalWhiteLabel } from '../global-white-label';
 
 type ConfigItem = { n: string; _content: string };
 
