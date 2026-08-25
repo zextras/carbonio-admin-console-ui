@@ -102,7 +102,9 @@ vi.mock('../domain/global/global-white-label/global-white-label', () => ({
 vi.mock('../domain/global/global-two-factor-auth/global-two-factor-auth', () => ({
   GlobalTwoFactorAuth: MockGlobalTwoFactorAuth,
 }));
-vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
+  vi.mock('../domain/global/global-active-sync/global-active-sync', () => ({
+    GlobalActiveSync: MockGlobalActiveSync,
+  }));
 vi.mock('../domain/global/global-address-book', () => ({
   GlobalAddressBook: MockGlobalAddressBook,
 }));
