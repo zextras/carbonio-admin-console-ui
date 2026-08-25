@@ -7,7 +7,9 @@
 /* Faithful port of the extracted Container/Row/Padding layout (Container
    defaults: box-sizing border-box, flex, 100% size, column, center/center;
    Row defaults: flex, wrap; Container borderRadius "half" rounds the top
-   corners only; borderColor sides compile to 0.0625rem solid). */
+   corners only; borderColor sides compile to 0.0625rem solid). Redundant
+   single-child/pass-through wrappers were collapsed (header, statusArea,
+   footer Button) — layout is visually identical. */
 
 .root {
   box-sizing: border-box;
@@ -20,28 +22,13 @@
   background: var(--color-gray6-regular);
 }
 
-.titleRow {
+.header {
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
-  justify-content: flex-start;
-  width: 100%;
-}
-
-.header {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
   align-items: center;
   width: 100%;
-  height: 56px;
-}
-
-.title {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  width: 100%;
+  height: 3.5rem;
   padding: var(--padding-size-large);
 }
 
@@ -103,18 +90,6 @@
   border-left-color: var(--color-error-regular);
 }
 
-.cardBody {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  width: 100%;
-  height: fit-content;
-  padding: var(--padding-size-large);
-  gap: 1.5rem;
-}
-
 .statusArea {
   box-sizing: border-box;
   display: flex;
@@ -126,6 +101,7 @@
   min-width: 0;
   flex-grow: 1;
   gap: 0.875rem;
+  padding: var(--padding-size-large);
 }
 
 .statusDotRunning,
@@ -194,15 +170,4 @@
   min-width: 0;
   flex-grow: 1;
   flex-shrink: 1;
-}
-
-.footerActions {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: fit-content;
-  height: fit-content;
-  flex-grow: 0;
-  flex-shrink: 0;
 }

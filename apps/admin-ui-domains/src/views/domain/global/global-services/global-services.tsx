@@ -94,17 +94,13 @@ export const GlobalServices = () => {
 
   return (
     <div className={styles.root}>
-      <div className={styles.titleRow}>
-        <div className={styles.header}>
-          <div className={styles.title}>
-            <ds-text as="h1" size="medium" weight="bold" color="gray0">
-              {t('label.services', 'Services')}
-            </ds-text>
-          </div>
-        </div>
-        <div className={styles.dividerRow}>
-          <ds-divider></ds-divider>
-        </div>
+      <div className={styles.header}>
+        <ds-text as="h1" size="medium" weight="bold" color="gray0">
+          {t('label.services', 'Services')}
+        </ds-text>
+      </div>
+      <div className={styles.dividerRow}>
+        <ds-divider></ds-divider>
       </div>
       <div className={styles.content}>
         {isPending ? (
@@ -114,37 +110,35 @@ export const GlobalServices = () => {
         ) : (
           !statusError && (
             <div className={`${styles.card} ${cardClass}`}>
-              <div className={styles.cardBody}>
-                <div className={styles.statusArea}>
-                  <div className={statusDotClass} aria-hidden />
-                  <div className={styles.statusText}>
-                    <div className={styles.statusLine}>
-                      <ds-text as="span" size="medium" weight="medium">
-                        {`${LDAP_ADDRESS_BOOK_SERVICE} ${t('label.is', 'is')}`}
-                      </ds-text>
-                      <ds-text as="span" size="medium" weight="bold" color={statusColor}>
-                        {serviceStatus.running
-                          ? t('label.running', 'running')
-                          : t('label.stopped', 'stopped')}
-                      </ds-text>
-                    </div>
-                    <ds-text as="p" size="small" color="gray1" overflow="break-word">
-                      {serviceStatus.running
-                        ? t(
-                            'label.ldap_address_book_running_description',
-                            'Exposed address book folders are reachable by LDAP clients on every domain.',
-                          )
-                        : t(
-                            'label.ldap_address_book_stopped_description',
-                            'LDAP clients can’t query exposed address books while the service is stopped.',
-                          )}
+              <div className={styles.statusArea}>
+                <div className={statusDotClass} aria-hidden />
+                <div className={styles.statusText}>
+                  <div className={styles.statusLine}>
+                    <ds-text as="span" size="medium" weight="medium">
+                      {`${LDAP_ADDRESS_BOOK_SERVICE} ${t('label.is', 'is')}`}
                     </ds-text>
-                    <ds-text as="p" size="small" color="gray1" overflow="break-word">
-                      {t('label.ldap_address_book_port', 'Listening on port {{port}}.', {
-                        port: LDAP_ADDRESS_BOOK_PORT,
-                      })}
+                    <ds-text as="span" size="medium" weight="bold" color={statusColor}>
+                      {serviceStatus.running
+                        ? t('label.running', 'running')
+                        : t('label.stopped', 'stopped')}
                     </ds-text>
                   </div>
+                  <ds-text as="p" size="small" color="gray1" overflow="break-word">
+                    {serviceStatus.running
+                      ? t(
+                          'label.ldap_address_book_running_description',
+                          'Exposed address book folders are reachable by LDAP clients on every domain.',
+                        )
+                      : t(
+                          'label.ldap_address_book_stopped_description',
+                          'LDAP clients can’t query exposed address books while the service is stopped.',
+                        )}
+                  </ds-text>
+                  <ds-text as="p" size="small" color="gray1" overflow="break-word">
+                    {t('label.ldap_address_book_port', 'Listening on port {{port}}.', {
+                      port: LDAP_ADDRESS_BOOK_PORT,
+                    })}
+                  </ds-text>
                 </div>
               </div>
               <div className={styles.cardFooter}>
@@ -156,23 +150,21 @@ export const GlobalServices = () => {
                     )}
                   </ds-text>
                 </div>
-                <div className={styles.footerActions}>
-                  <Button
-                    type="outlined"
-                    label={
-                      serviceStatus.running
-                        ? t('label.stop_service', 'Stop service')
-                        : t('label.start_service', 'Start service')
-                    }
-                    color={serviceStatus.running ? 'error' : 'primary'}
-                    width="fit"
-                    minWidth="11.25rem"
-                    onClick={serviceStartStop}
-                    disabled={!canToggle}
-                    loading={setServiceEnabledMutation.isPending}
-                    size="large"
-                  />
-                </div>
+                <Button
+                  type="outlined"
+                  label={
+                    serviceStatus.running
+                      ? t('label.stop_service', 'Stop service')
+                      : t('label.start_service', 'Start service')
+                  }
+                  color={serviceStatus.running ? 'error' : 'primary'}
+                  width="fit"
+                  minWidth="11.25rem"
+                  onClick={serviceStartStop}
+                  disabled={!canToggle}
+                  loading={setServiceEnabledMutation.isPending}
+                  size="large"
+                />
               </div>
             </div>
           )
