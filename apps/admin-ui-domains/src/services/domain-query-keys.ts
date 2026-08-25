@@ -22,6 +22,10 @@ export const domainQueryKeys = {
   addressBookService: () => [...domainQueryKeys.all, 'address-book-service'] as const,
   antiDosConfig: () => [...domainQueryKeys.all, 'anti-dos-config'] as const,
   samlConfig: (domain: string) => [...domainQueryKeys.all, 'saml-config', domain] as const,
+  gal: () => [...domainQueryKeys.all, 'gal'] as const,
+  galAccount: (accountId: string) => [...domainQueryKeys.gal(), 'account', accountId] as const,
+  galDataSources: (accountId: string) =>
+    [...domainQueryKeys.gal(), 'dataSources', accountId] as const,
   calResource: (resourceId: string) => [...domainQueryKeys.all, 'cal-resource', resourceId] as const,
   calResourceList: (
     domain: string,
@@ -45,6 +49,10 @@ export const domainQueryKeys = {
     [...domainQueryKeys.all, 'account-grants', accountId] as const,
   initializedDomains: (search: string) =>
     [...domainQueryKeys.all, 'initialized-domains', search] as const,
+  activeSyncDevices: (domainName: string) =>
+    [...domainQueryKeys.all, 'active-sync-devices', domainName] as const,
+  activeSyncDeviceStats: (accountEmail: string, deviceId: string) =>
+    [...domainQueryKeys.all, 'active-sync-device-stats', accountEmail, deviceId] as const,
   accountListDirectory: (params: {
     attr: string;
     type: string;
