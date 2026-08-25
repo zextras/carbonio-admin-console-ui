@@ -99,9 +99,7 @@ export const GlobalServices = () => {
           {t('label.services', 'Services')}
         </ds-text>
       </div>
-      <div className={styles.dividerRow}>
-        <ds-divider></ds-divider>
-      </div>
+      <ds-divider></ds-divider>
       <div className={styles.content}>
         {isPending ? (
           <div className={styles.spinner}>
