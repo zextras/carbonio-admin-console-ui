@@ -9,8 +9,8 @@ import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import {
   buildGetMsgBatch,
   normalizeMessage,
-} from '../views/domain/global/global-quarantine/quarantine-message-normalizer';
-import type { IncompleteMessage } from '../views/domain/global/global-quarantine/quarantine-types';
+} from '../views/global/global-quarantine/quarantine-message-normalizer';
+import type { IncompleteMessage } from '../views/global/global-quarantine/quarantine-types';
 import { batchService } from './batch-service';
 import { domainQueryKeys } from './domain-query-keys';
 import { getQuarantineMessages } from './get-quarantine-messages-service';

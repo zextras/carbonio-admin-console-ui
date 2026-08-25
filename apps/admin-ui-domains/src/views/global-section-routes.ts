@@ -15,14 +15,14 @@ import {
   TWO_FACTOR_AUTHENTICATION,
   WHITELABEL_SETTINGS,
 } from '../constants';
-import { GlobalActiveSync } from './domain/global/global-active-sync/global-active-sync';
-import { GlobalAdministrators } from './domain/global/global-administrators/global-administrators';
-import { GlobalDetailPanel } from './domain/global/global-detail-panel/global-detail-panel';
-import { GlobalDomainList } from './domain/global/global-domain-list/global-domain-list';
-import { GlobalQuarantine } from './domain/global/global-quarantine/global-quarantine';
-import { GlobalServices } from './domain/global/global-services/global-services';
-import { GlobalTwoFactorAuth } from './domain/global/global-two-factor-auth/global-two-factor-auth';
-import { GlobalWhiteLabel } from './domain/global/global-white-label/global-white-label';
+import { GlobalActiveSync } from './global/global-active-sync/global-active-sync';
+import { GlobalAdministrators } from './global/global-administrators/global-administrators';
+import { GlobalDetailPanel } from './global/global-detail-panel/global-detail-panel';
+import { GlobalDomainList } from './global/global-domain-list/global-domain-list';
+import { GlobalQuarantine } from './global/global-quarantine/global-quarantine';
+import { GlobalServices } from './global/global-services/global-services';
+import { GlobalTwoFactorAuth } from './global/global-two-factor-auth/global-two-factor-auth';
+import { GlobalWhiteLabel } from './global/global-white-label/global-white-label';
 
 export type GlobalSectionRoute = {
   /** Sub-path segment under the global route; empty string for the bare global route. */

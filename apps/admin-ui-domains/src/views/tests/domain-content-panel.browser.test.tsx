@@ -93,29 +93,29 @@ function MockDomainAddressBook() {
 
 vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
-vi.mock('../domain/global/global-detail-panel/global-detail-panel', () => ({
+vi.mock('../global/global-detail-panel/global-detail-panel', () => ({
   GlobalDetailPanel: MockGlobalDetailPanel,
 }));
-vi.mock('../domain/global/global-white-label/global-white-label', () => ({
+vi.mock('../global/global-white-label/global-white-label', () => ({
   GlobalWhiteLabel: MockGlobalWhiteLabel,
 }));
-vi.mock('../domain/global/global-two-factor-auth/global-two-factor-auth', () => ({
+vi.mock('../global/global-two-factor-auth/global-two-factor-auth', () => ({
   GlobalTwoFactorAuth: MockGlobalTwoFactorAuth,
 }));
-vi.mock('../domain/global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
-vi.mock('../domain/global/global-services/global-services', () => ({
+vi.mock('../global/global-active-sync', () => ({ default: MockGlobalActiveSync }));
+vi.mock('../global/global-services/global-services', () => ({
   GlobalServices: MockGlobalServices,
 }));
-vi.mock('../domain/global/global-active-sync/global-active-sync', () => ({
+vi.mock('../global/global-active-sync/global-active-sync', () => ({
   GlobalActiveSync: MockGlobalActiveSync,
 }));
-vi.mock('../domain/global/global-administrators/global-administrators', () => ({
+vi.mock('../global/global-administrators/global-administrators', () => ({
   GlobalAdministrators: MockGlobalAdministrators,
 }));
-vi.mock('../domain/global/global-domain-list/global-domain-list', () => ({
+vi.mock('../global/global-domain-list/global-domain-list', () => ({
   GlobalDomainList: MockDomainList,
 }));
-vi.mock('../domain/global/global-quarantine/global-quarantine', () => ({
+vi.mock('../global/global-quarantine/global-quarantine', () => ({
   GlobalQuarantine: MockGlobalQuarantine,
 }));
 vi.mock('../domain/details/domain-general-settings', () => ({
