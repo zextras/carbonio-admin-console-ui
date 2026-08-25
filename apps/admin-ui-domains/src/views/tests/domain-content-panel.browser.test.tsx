@@ -119,7 +119,9 @@ vi.mock('../domain/global/global-quarantine/global-quarantine', () => ({
 vi.mock('../domain/details/domain-general-settings', () => ({
   DomainGeneralSettings: MockDomainGeneralSettings,
 }));
-vi.mock('../domain/details/domain-gal-settings', () => ({ default: MockDomainGalSettings }));
+vi.mock('../domain/details/domain-gal-settings', () => ({
+  DomainGalSettings: MockDomainGalSettings,
+}));
 vi.mock('../domain/details/domain-authentication', () => ({ default: MockDomainAuthentication }));
 vi.mock('../domain/details/domain-2fa', () => ({ default: MockDomainTwoFactor }));
 vi.mock('../domain/details/domain-theme', () => ({ default: MockDomainTheme }));

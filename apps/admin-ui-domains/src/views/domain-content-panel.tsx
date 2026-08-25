@@ -33,7 +33,7 @@ import CreateDomain from './domain/create-new-domain';
 import DomainTwoFactorAuthentication from './domain/details/domain-2fa';
 import DomainAuthentication from './domain/details/domain-authentication';
 import DomainDisclaimer from './domain/details/domain-disclaimer';
-import DomainGalSettings from './domain/details/domain-gal-settings';
+import { DomainGalSettings } from './domain/details/domain-gal-settings';
 import { DomainGeneralSettings } from './domain/details/domain-general-settings';
 import DomainSaml from './domain/details/domain-saml';
 import DomainTheme from './domain/details/domain-theme';

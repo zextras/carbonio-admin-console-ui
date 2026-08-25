@@ -5,18 +5,22 @@
  */
 import { domainByIdKey } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import { type FC, type ReactElement, useState } from 'react';
+import { type ReactElement, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import CreateGalsyncAccountModel from '../create-galsync-account-model';
+import { CreateGalsyncAccountModel } from '../create-galsync-account-model';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 const ACCOUNT_DATA = { id: 'acct-1', name: 'galsync', galAccount: null };
 
 type SaveHandler = (
-	accountData: { id?: string; name: string; galAccount?: null },
+	accountData: {
+		id?: string;
+		name: string;
+		galAccount?: { id: string; name: string; server: string } | null;
+	},
 	galDomainName: string
 ) => void;
 
@@ -34,10 +38,12 @@ function setup(ui: ReactElement) {
 	});
 }
 
-const TestApp: FC<{
+type TestAppProps = {
 	saveHandler: SaveHandler;
 	initialOpen?: boolean;
-}> = ({ saveHandler, initialOpen = true }) => {
+};
+
+const TestApp = ({ saveHandler, initialOpen = true }: TestAppProps) => {
 	const [open, setOpen] = useState(initialOpen);
 	return (
 		<>
