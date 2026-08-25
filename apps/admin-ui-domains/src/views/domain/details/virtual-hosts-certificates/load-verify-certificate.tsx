@@ -1,292 +1,118 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, CustomTextArea, Padding, Tooltip, useSnackbar, } from '@zextras/ui-components';
-import { flushCache, soapFetch, useUserSettings } from '@zextras/ui-shared';
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
+import { Button, Container, CustomTextArea, Padding, Tooltip, useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { ICertificateContent } from '../../../../../types';
-import {
-  DOMAIN_CERTIFICATE,
-  DOMAIN_CERTIFICATE_CA_CHAIN,
-  DOMAIN_CERTIFICATE_PRIVATE_KEY,
-  INVALID,
-  TRUE,
-  ZIMBRA_ADMIN_URN,
-  ZIMBRA_ID,
-} from '../../../../constants';
-import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { modifyDomain } from '../../../../services/modify-domain-service';
-import { CertificateContext } from './certificate-context';
+import { INVALID } from '../../../../constants';
+import { useSaveDomainCertificate } from '../../../../services/use-save-domain-certificate';
+import { useVerifyCertKey } from '../../../../services/use-verify-cert-key';
+import { useCertificateContext } from './certificate-context';
+import { certificateUploadSchema } from './schema';
 
-export const LoadAndVerifyCert: FC<{
-  setToggleWizardSection: any;
-  externalData: any;
-}> = ({ setToggleWizardSection, externalData }) => {
-  let fileReader: FileReader;
-  const { t } = useTranslation();
-  const { data: domain } = useSelectedDomain();
-  const domainInformation = domain?.a;
-  const [verifyBtnLoading, setVerifyBtnLoading] = useState(false);
-  const [uploadBtnTgl, setUploadBtnTgl] = useState(false);
-  const createSnackbar = useSnackbar();
-  const [domainCertiErr, setDomainCertiErr] = useState(true);
-  const [domainCertiCaChainErr, setDomainCertiCaChainErr] = useState(true);
-  const [privateKeyErr, setPrivateKeyErr] = useState(true);
-  const { isCertificateAvailable: isCertificateAvailbale } = useContext(CertificateContext);
-  const [objDomainCertificate, setObjDomainCertificate] = useState<ICertificateContent>({
-    fileName: '',
-    content: '',
-  });
-  const [objDomainCertificateCaChain, setObjDomainCertificateCaChain] =
-    useState<ICertificateContent>({
-      fileName: '',
-      content: '',
-    });
+type LoadAndVerifyCertProps = {
+  setToggleWizardSection: (open: boolean) => void;
+  externalData: (showAlert: boolean) => void;
+};
 
-  const [objDomainCertificatePrivateKey, setObjDomainCertificatePrivateKey] =
-    useState<ICertificateContent>({
-      fileName: '',
-      content: '',
-    });
-
-  const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-  const userSetting = useUserSettings();
-  useEffect(() => {
-    if (userSetting?.attrs) {
-      const account = userSetting?.attrs?.zimbraIsAdminAccount;
-      if (account && account === TRUE) {
-        setIsGlobalAdmin(true);
-      }
-    }
-  }, [userSetting?.attrs]);
-
-  const setStatesForFileContent = (fieldName: string, fileName: string, content: any): void => {
-    switch (fieldName) {
-      case DOMAIN_CERTIFICATE:
-        setObjDomainCertificate({
-          content,
-          fileName,
-        });
-
-        break;
-      case DOMAIN_CERTIFICATE_CA_CHAIN:
-        setObjDomainCertificateCaChain({
-          content,
-          fileName,
-        });
-
-        break;
-      case DOMAIN_CERTIFICATE_PRIVATE_KEY:
-        setObjDomainCertificatePrivateKey({
-          content,
-          fileName,
-        });
-
-        break;
-
-      default:
-        break;
-    }
-  };
-
-  const readFileContentHandler = (file: File, fieldName: string): any => {
-    fileReader = new FileReader();
-    fileReader.onload = (evt): any => {
-      setStatesForFileContent(fieldName, file.name, evt.target?.result);
+function pickFile(onContent: (fileName: string, content: string) => void): void {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.onchange = (e: Event): void => {
+    const file = (e.target as HTMLInputElement)?.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (evt): void => {
+      onContent(file.name, String(evt.target?.result ?? ''));
     };
-    fileReader.readAsText(file);
-    setUploadBtnTgl(false);
+    reader.readAsText(file);
   };
+  input.click();
+}
 
-  const uploadClickHandler = useCallback((): any => {
-    const zimbraId = domainInformation?.find((item: any) => item.n === ZIMBRA_ID)?._content;
-    const concatedCertiFile = objDomainCertificate?.content
-      ? objDomainCertificate?.content.concat('\n', objDomainCertificateCaChain.content)
-      : objDomainCertificateCaChain.content;
-    const body: any = {};
-    const attributes: any[] = [];
-    body.id = zimbraId;
-    body._jsns = ZIMBRA_ADMIN_URN;
-    attributes.push({
-      n: 'zimbraSSLCertificate',
-      _content: concatedCertiFile,
-    });
-    attributes.push({
-      n: 'zimbraSSLPrivateKey',
-      _content: objDomainCertificatePrivateKey?.content,
-    });
-    body.a = attributes;
-    modifyDomain(body)
-      .then(() => {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('domain.certificate_saved', `The certificates have been saved`),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        if (isGlobalAdmin) {
-          flushCache('domain', 'id', zimbraId);
-        }
-        externalData(true);
-        setToggleWizardSection(false);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  }, [
-    createSnackbar,
-    domainInformation,
-    externalData,
-    isGlobalAdmin,
-    objDomainCertificate?.content,
-    objDomainCertificateCaChain.content,
-    objDomainCertificatePrivateKey?.content,
-    setToggleWizardSection,
-    t,
-  ]);
+export const LoadAndVerifyCert = ({
+  setToggleWizardSection,
+  externalData,
+}: LoadAndVerifyCertProps) => {
+  const [t] = useTranslation();
+  const { isCertificateAvailable, domainId, domainName } = useCertificateContext();
+  const createSnackbar = useSnackbar();
+  const verifyMutation = useVerifyCertKey();
+  const saveCertMutation = useSaveDomainCertificate({ domainId, domainName });
 
-  const verifyCertificateHandler = useCallback((): void => {
-    if (objDomainCertificate.content === '') {
-      setDomainCertiErr(false);
-    }
+  const form = useForm({
+    defaultValues: {
+      certificate: '',
+      caChain: '',
+      privateKey: '',
+      isCertificateAvailable,
+    },
+    validators: {
+      onChange: certificateUploadSchema,
+      onSubmit: certificateUploadSchema,
+    },
+  });
 
-    if (!isCertificateAvailbale) {
-      if (objDomainCertificateCaChain.content === '') {
-        setDomainCertiCaChainErr(false);
-      }
-    }
-    if (objDomainCertificatePrivateKey.content === '') {
-      setPrivateKeyErr(false);
-    }
-    setVerifyBtnLoading(true);
-    if (
-      (objDomainCertificate.content === '' || objDomainCertificatePrivateKey.content === '') &&
-      isCertificateAvailbale
-    ) {
+  const certificate = useSelector(form.store, (s) => s.values.certificate);
+  const caChain = useSelector(form.store, (s) => s.values.caChain);
+  const privateKey = useSelector(form.store, (s) => s.values.privateKey);
+  const certError = useSelector(form.store, (s) => s.fieldMeta.certificate?.errors?.[0]);
+  const caError = useSelector(form.store, (s) => s.fieldMeta.caChain?.errors?.[0]);
+  const keyError = useSelector(form.store, (s) => s.fieldMeta.privateKey?.errors?.[0]);
+
+  const canVerify =
+    certificate !== '' &&
+    privateKey !== '' &&
+    (isCertificateAvailable || caChain !== '');
+
+  function handleVerify(): void {
+    void form.validate('change');
+    if (!canVerify) {
       createSnackbar({
         key: 'error',
         severity: 'error',
-        label: t(
-          'domain.certificate_content_error_without_ca_chain',
-          'Domain certificate , Private key is invalid',
-        ),
+        label: isCertificateAvailable
+          ? t(
+              'domain.certificate_content_error_without_ca_chain',
+              'Domain certificate , Private key is invalid',
+            )
+          : t(
+              'domain.certificate_content_error',
+              'Domain certificate , CA Chain or Private key is invalid',
+            ),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
-      setVerifyBtnLoading(false);
-    } else if (
-      (!isCertificateAvailbale && objDomainCertificateCaChain.content === '') ||
-      objDomainCertificate.content === '' ||
-      objDomainCertificatePrivateKey.content === ''
-    ) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: t(
-          'domain.certificate_content_error',
-          'Domain certificate , CA Chain or Private key is invalid',
-        ),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-      setVerifyBtnLoading(false);
-    } else {
-      soapFetch(`VerifyCertKey`, {
-        _jsns: ZIMBRA_ADMIN_URN,
-        ca: objDomainCertificateCaChain.content.replaceAll('\r', ''),
-        cert: objDomainCertificate.content.replaceAll('\r', ''),
-        privkey: objDomainCertificatePrivateKey.content.replaceAll('\r', ''),
-      }).then((data: any) => {
-        if (data?.verifyResult) {
-          createSnackbar({
-            key: 'success',
-            severity: 'success',
-            label: t('domain.certificate_valid', `The certificate is valid`),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          setVerifyBtnLoading(false);
-          setUploadBtnTgl(true);
-          // Upload the certificate after successful verification
-          uploadClickHandler();
-        } else if (!data?.verifyResult) {
-          createSnackbar({
-            key: 'warning',
-            severity: 'warning',
-            label: t(
-              'domain.certificate_valid_but_either_expired_or_exists_non_trusted_CA',
-              `The certificate is valid but it's either expired or exists a non trusted CA`,
-            ),
-            autoHideTimeout: 6000,
-            hideButton: true,
-            replace: true,
-          });
+      return;
+    }
 
-          setVerifyBtnLoading(false);
-        } else if (data?.verifyResult === INVALID) {
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label: t(
-              'domain.certificate_invalid_error',
-              `The certificate is invalid , please try with other certificate`,
-            ),
-            autoHideTimeout: 6000,
-            hideButton: true,
-            replace: true,
-          });
-          setVerifyBtnLoading(false);
-        }
-      });
-    }
-  }, [
-    createSnackbar,
-    isCertificateAvailbale,
-    objDomainCertificate.content,
-    objDomainCertificateCaChain.content,
-    objDomainCertificatePrivateKey.content,
-    t,
-    uploadClickHandler,
-  ]);
-
-  useEffect(() => {
-    if (objDomainCertificate.content !== '') {
-      setDomainCertiErr(true);
-    }
-    if (!isCertificateAvailbale) {
-      if (objDomainCertificateCaChain.content !== '') {
-        setDomainCertiCaChainErr(true);
-      }
-    } else {
-      setDomainCertiCaChainErr(true);
-    }
-    if (objDomainCertificatePrivateKey.content !== '') {
-      setPrivateKeyErr(true);
-    }
-  }, [
-    isCertificateAvailbale,
-    objDomainCertificate.content,
-    objDomainCertificateCaChain.content,
-    objDomainCertificatePrivateKey.content,
-  ]);
+    verifyMutation.mutate(
+      { ca: caChain, cert: certificate, privkey: privateKey },
+      {
+        onSuccess: (data) => {
+          if (!data?.verifyResult || data.verifyResult === INVALID) return;
+          const concatedCertiFile = certificate
+            ? `${certificate}\n${caChain}`
+            : caChain;
+          saveCertMutation.mutate(
+            { certificate: concatedCertiFile, privateKey },
+            {
+              onSuccess: () => {
+                externalData(true);
+                setToggleWizardSection(false);
+              },
+            },
+          );
+        },
+      },
+    );
+  }
 
   return (
     <Container
@@ -317,38 +143,30 @@ export const LoadAndVerifyCert: FC<{
       </Container>
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
-        <ds-text as="label" weight="bold">{t('label.domain_certificate', 'Domain Certificate')}</ds-text>
+        <ds-text as="label" weight="bold">
+          {t('label.domain_certificate', 'Domain Certificate')}
+        </ds-text>
         <Padding bottom="small" />
         <CustomTextArea
           isRequired
           label={t('label.upload_paste_certificate', 'Upload or paste your Certificate')}
           backgroundColor="gray5"
-          value={objDomainCertificate.content || ''}
+          value={certificate}
           inputName="domainCertificate"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-            setStatesForFileContent(
-              DOMAIN_CERTIFICATE,
-              objDomainCertificate.fileName,
-              e.target.value,
-            );
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+            form.setFieldValue('certificate', e.target.value);
           }}
-          hasError={!domainCertiErr}
+          hasError={Boolean(certError)}
         />
         <Padding bottom="large" />
         <Button
           type="outlined"
           label={t('label.upload', 'UPLOAD')}
           color="primary"
-          onClick={(): void => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.onchange = (e: any): void => {
-              if (e?.target?.files) {
-                readFileContentHandler(e?.target?.files[0], DOMAIN_CERTIFICATE);
-              }
-            };
-            input.click();
-          }}
+          aria-label={t('label.upload_domain_certificate', 'Upload domain certificate')}
+          onClick={() =>
+            pickFile((_name, content) => form.setFieldValue('certificate', content))
+          }
         />
       </Container>
 
@@ -365,75 +183,55 @@ export const LoadAndVerifyCert: FC<{
             'Upload or paste your Certificate CA Chain',
           )}
           backgroundColor="gray5"
-          value={objDomainCertificateCaChain.content || ''}
+          value={caChain}
           inputName="domainCertificateCaChain"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-            setStatesForFileContent(
-              DOMAIN_CERTIFICATE_CA_CHAIN,
-              objDomainCertificateCaChain.fileName,
-              e.target.value,
-            );
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+            form.setFieldValue('caChain', e.target.value);
           }}
-          hasError={!domainCertiCaChainErr}
+          hasError={Boolean(caError)}
         />
         <Padding bottom="large" />
         <Button
           type="outlined"
           label={t('label.upload', 'UPLOAD')}
           color="primary"
-          onClick={(): void => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.onchange = (e: any): void => {
-              if (e?.target?.files) {
-                readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_CA_CHAIN);
-              }
-            };
-            input.click();
-          }}
+          aria-label={t('label.upload_ca_chain', 'Upload certificate CA chain')}
+          onClick={() => pickFile((_name, content) => form.setFieldValue('caChain', content))}
         />
       </Container>
 
       <Container width="fill" mainAlignment="flex-start" crossAlignment="flex-start">
         <Padding bottom="small" />
-        <ds-text as="label" weight="bold">{t('label.domain_certificate_private_key', 'Domain Private Key')}</ds-text>
+        <ds-text as="label" weight="bold">
+          {t('label.domain_certificate_private_key', 'Domain Private Key')}
+        </ds-text>
         <Padding bottom="small" />
         <CustomTextArea
           isRequired
           label={t('label.upload_paste_private_key', 'Upload or paste your Private Key')}
           backgroundColor="gray5"
-          value={objDomainCertificatePrivateKey.content || ''}
+          value={privateKey}
           inputName="domainPrivateKey"
-          onChange={(e: React.ChangeEvent<HTMLSelectElement>): void => {
-            setStatesForFileContent(
-              DOMAIN_CERTIFICATE_PRIVATE_KEY,
-              objDomainCertificatePrivateKey.fileName,
-              e.target.value,
-            );
+          onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+            form.setFieldValue('privateKey', e.target.value);
           }}
-          hasError={!privateKeyErr}
+          hasError={Boolean(keyError)}
         />
         <Padding bottom="large" />
         <Button
           type="outlined"
           label={t('label.upload', 'UPLOAD')}
           color="primary"
-          onClick={(): void => {
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.onchange = (e: any): void => {
-              if (e?.target?.files) {
-                readFileContentHandler(e.target.files[0], DOMAIN_CERTIFICATE_PRIVATE_KEY);
-              }
-            };
-            input.click();
-          }}
+          aria-label={t('label.upload_private_key', 'Upload private key')}
+          onClick={() =>
+            pickFile((_name, content) => form.setFieldValue('privateKey', content))
+          }
         />
       </Container>
 
       <Container padding={{ top: 'medium' }} width="fill">
         <Tooltip
-          disabled={!uploadBtnTgl}
+          disabled={canVerify}
           label={t(
             'label.fill_all_required_fields',
             'Please fill in all required fields correctly',
@@ -443,13 +241,9 @@ export const LoadAndVerifyCert: FC<{
             width="fill"
             size="large"
             label={t('label.verify', 'VERIFY')}
-            onClick={verifyCertificateHandler}
-            loading={verifyBtnLoading}
-            disabled={
-              !objDomainCertificate.content ||
-              !objDomainCertificateCaChain.content ||
-              !objDomainCertificatePrivateKey.content
-            }
+            onClick={handleVerify}
+            loading={verifyMutation.isPending || saveCertMutation.isPending}
+            disabled={!canVerify}
           />
         </Tooltip>
       </Container>

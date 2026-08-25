@@ -1,8 +1,10 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -13,78 +15,67 @@ import {
   Row,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { useCallback, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/helmet_logo.svg';
-import { isValidVirtualHostname } from '../../../utility/utils';
+import { isDraftHostnameValid, type VirtualHostItem } from './schema';
+import type { VirtualHostsFormApi } from './use-virtual-hosts-form';
 
-interface VirtualHostSectionProps {
-  items: any[];
-  setItems: (items: any[]) => void;
-}
+type VirtualHostSectionProps = {
+  form: VirtualHostsFormApi;
+};
 
-export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, setItems }) => {
+export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
   const [t] = useTranslation();
+  const hosts = useSelector(form.store, (s) => s.values.hosts);
   const [virtualHostValue, setVirtualHostValue] = useState('');
-  const [addButtonDisabled, setAddButtonDisabled] = useState(true);
-  const [errVirtualHostName, setErrVirtualHostName] = useState(true);
-  const [removeVirtualBtnDisabled, setRemoveVirtualBtnDisabled] = useState(true);
-  const [selectedRows, setSelectedRows] = useState<any[]>([]);
+  const [selectedRows, setSelectedRows] = useState<Array<string>>([]);
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
-  //  Handles the selection/deselection of a row
-  const handleRowSelect = (id: string) => {
+  const isDraftValid = isDraftHostnameValid(virtualHostValue);
+  const addButtonDisabled = !isDraftValid;
+  const hasSelection = selectedRows.length > 0;
+
+  function setHosts(next: Array<VirtualHostItem>): void {
+    form.setFieldValue('hosts', next);
+  }
+
+  function handleRowSelect(id: string): void {
     setSelectedRows((prevSelected) =>
       prevSelected.includes(id)
         ? prevSelected.filter((rowId) => rowId !== id)
         : [...prevSelected, id],
     );
-    setRemoveVirtualBtnDisabled(false);
-  };
+  }
 
-  const handleSelectAll = () => {
-    if (selectedRows.length === items.length) {
+  function handleSelectAll(): void {
+    if (selectedRows.length === hosts.length) {
       setSelectedRows([]);
-      setRemoveVirtualBtnDisabled(true);
     } else {
-      setSelectedRows(items.map((item: any) => item.id));
-      setRemoveVirtualBtnDisabled(false);
+      setSelectedRows(hosts.map((item) => item.id));
     }
-  };
+  }
 
-  const removeVirtualHost = () => {
-    if (selectedRows && selectedRows.length > 0 && items.length > 0) {
-      const filterItems = items.filter((item: any) => !selectedRows.includes(item.id));
-      setItems(filterItems);
-      setRemoveVirtualBtnDisabled(true);
-      setSelectedRows([]);
-    }
-  };
+  function removeVirtualHost(): void {
+    if (selectedRows.length === 0 || hosts.length === 0) return;
+    setHosts(hosts.filter((item) => !selectedRows.includes(item.id)));
+    setSelectedRows([]);
+  }
 
-  const removeSingleItem = (id: string) => {
-    const filterItems = items.filter((item: any) => item.id !== id);
-    setItems(filterItems);
+  function removeSingleItem(id: string): void {
+    setHosts(hosts.filter((item) => item.id !== id));
     setSelectedRows((prev) => prev.filter((rowId) => rowId !== id));
-    if (filterItems.length === 0 || selectedRows.length === 1) {
-      setRemoveVirtualBtnDisabled(true);
-    }
-  };
+  }
 
-  const addVirtualHost = useCallback(() => {
-    if (virtualHostValue && isValidVirtualHostname(virtualHostValue)) {
-      const lastId = items.length > 0 ? items.at(-1)?.id : '0';
-      const newId = Number.parseInt(lastId, 10) + 1;
-      const item = {
-        id: newId?.toString(),
-        columns: [virtualHostValue],
-        clickable: true,
-      };
-      setItems([...items, item]);
-      setAddButtonDisabled(true);
-      setVirtualHostValue('');
-    }
-  }, [virtualHostValue, items, setItems]);
+  function addVirtualHost(): void {
+    if (!isDraftValid) return;
+    const lastId = hosts.length > 0 ? hosts.at(-1)?.id : '0';
+    const newId = String(Number.parseInt(lastId ?? '0', 10) + 1);
+    setHosts([...hosts, { id: newId, hostname: virtualHostValue }]);
+    setVirtualHostValue('');
+  }
+
   return (
     <Container width="100%">
       <Container
@@ -103,19 +94,12 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
             )}
             backgroundColor="gray5"
             value={virtualHostValue}
-            onChange={(e: any): any => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setVirtualHostValue(e.target.value);
-              if (e.target.value && isValidVirtualHostname(e.target.value)) {
-                setAddButtonDisabled(false);
-                setErrVirtualHostName(true);
-              } else {
-                setAddButtonDisabled(true);
-                setErrVirtualHostName(false);
-              }
             }}
-            hasError={!errVirtualHostName}
+            hasError={virtualHostValue !== '' && !isDraftValid}
           />
-          {!errVirtualHostName && (
+          {virtualHostValue !== '' && !isDraftValid && (
             <Container
               mainAlignment="flex-start"
               crossAlignment="flex-start"
@@ -156,10 +140,10 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
         onMouseLeave={() => setHoveredRow(null)}
       >
         <Row mainAlignment="flex-start" takeAvailableSpace>
-          {hoveredRow === 'header' || selectedRows.length > 0 ? (
+          {hoveredRow === 'header' || hasSelection ? (
             <ds-icon
               icon={
-                selectedRows.length === items.length && items.length > 0
+                selectedRows.length === hosts.length && hosts.length > 0
                   ? 'CheckmarkSquareOutline'
                   : 'SquareOutline'
               }
@@ -173,7 +157,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
             </ds-text>
           </Padding>
         </Row>
-        {!removeVirtualBtnDisabled && selectedRows.length > 1 && (
+        {selectedRows.length > 1 && (
           <Row width="fit" mainAlignment="flex-end" padding={{ right: '1rem' }}>
             <Button
               type="ghost"
@@ -187,7 +171,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
       </Container>
       <Container maxHeight="10.94rem" style={{ overflowY: 'auto' }}>
         <List>
-          {items.map((item, id) => (
+          {hosts.map((item, id) => (
             <ListItem key={item.id} selected={selectedRows.includes(item.id)}>
               {(visible: boolean) =>
                 visible ? (
@@ -225,10 +209,10 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
                     </Row>
                     <Row mainAlignment="flex-start">
                       <Padding left="small">
-                        <ds-text as="span">{item.columns[0]}</ds-text>
+                        <ds-text as="span">{item.hostname}</ds-text>
                       </Padding>
                     </Row>
-                    {!removeVirtualBtnDisabled &&
+                    {hasSelection &&
                       (hoveredRow === item.id || selectedRows.includes(item.id)) && (
                         <Row
                           takeAvailableSpace
@@ -253,7 +237,7 @@ export const VirtualHostSection: React.FC<VirtualHostSectionProps> = ({ items, s
           ))}
         </List>
       </Container>
-      {items.length === 0 && (
+      {hosts.length === 0 && (
         <Container
           background="gray6"
           height="fit-content"

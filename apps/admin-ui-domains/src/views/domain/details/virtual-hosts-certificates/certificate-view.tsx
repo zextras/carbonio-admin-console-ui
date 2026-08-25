@@ -11,32 +11,32 @@ import {
   ListRow,
   Row,
   Tooltip,
-  useSnackbar,
 } from '@zextras/ui-components';
-import { FC, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { objectType } from '../../../../../types';
 import { SHORT } from '../../../../constants';
-import { IssueCertiRequest } from '../../../../services/virtual-host-service';
+import type { DomainCertDetails } from '../../../../services/get-domain-cert-service';
+import type { DomainSslMaterial } from '../../../../services/get-domain-ssl-material-service';
+import { useIssueCert } from '../../../../services/use-issue-cert';
 import { GenerateCertificateModal } from './generate-certificate-modal';
 
-interface CertificateViewProps {
-  domainCertiDetails?: objectType;
-  toggleCertiBtn: boolean;
-  domainCertificate: any;
+type CertificateViewProps = {
+  domainCertiDetails?: DomainCertDetails | null;
+  hasCertificate: boolean;
+  domainCertificate: DomainSslMaterial | null | undefined;
   domainName: string;
   domainId: string;
   hasVirtualHosts: boolean;
-  virtualHosts: string[];
+  virtualHosts: Array<string>;
   onVerifyCertificate: () => void;
   onRemove: () => void;
   onCertificateGenerated: () => void;
-}
+};
 
-export const CertificateView: FC<CertificateViewProps> = ({
+export const CertificateView = ({
   domainCertiDetails,
-  toggleCertiBtn,
+  hasCertificate,
   domainCertificate,
   domainName,
   domainId,
@@ -45,11 +45,10 @@ export const CertificateView: FC<CertificateViewProps> = ({
   onVerifyCertificate,
   onRemove,
   onCertificateGenerated,
-}) => {
+}: CertificateViewProps) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const [modalOpen, setModalOpen] = useState(false);
-  const [generateLoading, setGenerateLoading] = useState(false);
+  const issueCertMutation = useIssueCert({ domainId, domainName });
 
   const noCertificateLabel = t(
     'label.no_certificate_to_remove',
@@ -63,49 +62,23 @@ export const CertificateView: FC<CertificateViewProps> = ({
     'label.no_virtual_hosts',
     'You need to add at least one Virtual Host.',
   );
-  const requestSuccessLabel = t(
-    'label.certificate_request_success',
-    'Processing. Results will be notified to global and domain recipients',
-  );
 
-  const handleModalClose = (): void => {
+  function handleModalClose(): void {
     setModalOpen(false);
-  };
+  }
 
-  const requestCertiClickHandler = (): void => {
-    setGenerateLoading(true);
-    IssueCertiRequest(domainId, SHORT)
-      .then(() => {
-        setGenerateLoading(false);
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: requestSuccessLabel,
-          autoHideTimeout: 7000,
-          hideButton: true,
-          replace: true,
-        });
+  function requestCertiClickHandler(): void {
+    issueCertMutation.mutate(SHORT, {
+      onSuccess: () => {
         setModalOpen(false);
         onCertificateGenerated();
-      })
-      .catch((error) => {
-        setGenerateLoading(false);
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-  };
+      },
+    });
+  }
 
-  const handleDownload = (): void => {
+  function handleDownload(): void {
     const elementCerti = document.createElement('a');
-    const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate], {
+    const fileCerti = new Blob([domainCertificate?.zimbraSSLCertificate ?? ''], {
       type: 'application/x-pem-file',
     });
     elementCerti.href = URL.createObjectURL(fileCerti);
@@ -114,14 +87,14 @@ export const CertificateView: FC<CertificateViewProps> = ({
     elementCerti.click();
 
     const elementPrivateKey = document.createElement('a');
-    const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey], {
+    const fileKey = new Blob([domainCertificate?.zimbraSSLPrivateKey ?? ''], {
       type: 'application/x-pem-file',
     });
     elementPrivateKey.href = URL.createObjectURL(fileKey);
     elementPrivateKey.download = `private-key-${domainName}.pem`;
     document.body.appendChild(elementPrivateKey);
     elementPrivateKey.click();
-  };
+  }
 
   return (
     <Container
@@ -137,9 +110,7 @@ export const CertificateView: FC<CertificateViewProps> = ({
         crossAlignment="flex-start"
       >
         <Row>
-          <ds-text as="h2">
-            {t('label.certificate', 'Certificate')}
-          </ds-text>
+          <ds-text as="h2">{t('label.certificate', 'Certificate')}</ds-text>
         </Row>
         <Row padding={{ left: 'large' }}>
           <Button
@@ -154,26 +125,24 @@ export const CertificateView: FC<CertificateViewProps> = ({
               label={t('label.generate_certificate', 'GENERATE CERTIFICATE')}
               color="primary"
               disabled={!hasVirtualHosts}
-              onClick={(): void => {
-                setModalOpen(true);
-              }}
+              onClick={() => setModalOpen(true)}
             />
           </Tooltip>
-          <Tooltip label={noCertificateDownloadLabel} disabled={!toggleCertiBtn}>
+          <Tooltip label={noCertificateDownloadLabel} disabled={hasCertificate}>
             <Button
               type="ghost"
               label={t('label.download_uppercase', 'DOWNLOAD')}
               color="primary"
-              disabled={toggleCertiBtn}
+              disabled={!hasCertificate}
               onClick={handleDownload}
             />
           </Tooltip>
-          <Tooltip label={noCertificateLabel} disabled={!toggleCertiBtn}>
+          <Tooltip label={noCertificateLabel} disabled={hasCertificate}>
             <Button
               type="ghost"
               label={t('label.remove', 'Remove')}
               color="error"
-              disabled={toggleCertiBtn}
+              disabled={!hasCertificate}
               onClick={onRemove}
             />
           </Tooltip>
@@ -228,7 +197,7 @@ export const CertificateView: FC<CertificateViewProps> = ({
         open={modalOpen}
         domainName={domainName}
         virtualHosts={virtualHosts}
-        loading={generateLoading}
+        loading={issueCertMutation.isPending}
         onClose={handleModalClose}
         onGenerate={requestCertiClickHandler}
       />

@@ -1,36 +1,50 @@
 /*
- * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
 import { HorizontalWizard, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LoadAndVerifyCert } from './load-verify-certificate';
 
-const WizardInSection: FC<any> = ({ wizard, setToggleWizardSection }) => {
-	const { t } = useTranslation();
-	return (
-		<Section
-			title={t('virtual_hosts.load_and_verify_certificate', 'Load and Verify Certificate')}
-			padding={{ all: '0' }}
-			divider
-			showClose
-			onClose={(): void => {
-				setToggleWizardSection(false);
-			}}
-		>
-			{wizard}
-		</Section>
-	);
+function WizardNoopButton() {
+  return <></>;
+}
+
+function WizardInSection({
+  wizard,
+  setToggleWizardSection,
+}: {
+  wizard: React.ReactNode;
+  setToggleWizardSection: (open: boolean) => void;
+}) {
+  const { t } = useTranslation();
+  return (
+    <Section
+      title={t('virtual_hosts.load_and_verify_certificate', 'Load and Verify Certificate')}
+      padding={{ all: '0' }}
+      divider
+      showClose
+      onClose={(): void => {
+        setToggleWizardSection(false);
+      }}
+    >
+      {wizard}
+    </Section>
+  );
+}
+
+type LoadVerifyCertificateWizardProps = {
+  setToggleWizard: (open: boolean) => void;
+  setAlertToggle: (open: boolean) => void;
 };
 
-export const LoadVerifyCertificateWizard: FC<{
-  setToggleWizard: any;
-  setAlertToggle: any;
-}> = ({ setToggleWizard, setAlertToggle }) => {
+export const LoadVerifyCertificateWizard = ({
+  setToggleWizard,
+  setAlertToggle,
+}: LoadVerifyCertificateWizardProps) => {
   const { t } = useTranslation();
 
   const wizardSteps = [
@@ -40,9 +54,9 @@ export const LoadVerifyCertificateWizard: FC<{
       icon: 'CubeOutline',
       view: LoadAndVerifyCert,
       canGoNext: () => true,
-      CancelButton: (): ReactElement => <></>,
-      PrevButton: (): ReactElement => <></>,
-      NextButton: (): ReactElement => <></>,
+      CancelButton: WizardNoopButton,
+      PrevButton: WizardNoopButton,
+      NextButton: WizardNoopButton,
     },
   ];
 
