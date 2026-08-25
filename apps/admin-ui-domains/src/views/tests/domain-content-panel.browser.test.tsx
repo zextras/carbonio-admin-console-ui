@@ -121,7 +121,9 @@ vi.mock('../domain/details/domain-general-settings', () => ({
 vi.mock('../domain/details/domain-gal-settings', () => ({
   DomainGalSettings: MockDomainGalSettings,
 }));
-vi.mock('../domain/details/domain-authentication', () => ({ default: MockDomainAuthentication }));
+vi.mock('../domain/details/domain-authentication', () => ({
+  DomainAuthentication: MockDomainAuthentication,
+}));
 vi.mock('../domain/details/domain-2fa', () => ({ default: MockDomainTwoFactor }));
 vi.mock('../domain/details/domain-theme', () => ({ default: MockDomainTheme }));
 vi.mock('../domain/details/domain-saml', () => ({ default: MockDomainSaml }));
