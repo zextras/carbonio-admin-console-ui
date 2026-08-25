@@ -15,7 +15,7 @@ import {
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';
-import { useAllConfig } from '@zextras/ui-shared';
+import { useAllConfig, useModifyConfig } from '@zextras/ui-shared';
 import { filter } from 'lodash-es';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,7 +29,6 @@ import {
   ZIMBRA_AMAVIS_OUTBOUND_DISCLAIMERS_ONLY,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
 } from '../../../constants';
-import { modifyConfig } from '../../../services/modify-config';
 import { isValidEmail } from '../../utility/utils';
 
 type GlobalSettingsFormValues = {
@@ -96,13 +95,12 @@ function mapFormValuesToAttributes(values: GlobalSettingsFormValues): Array<Attr
 
 const GlobalDetailPanelContent = ({
   configInformation,
-  invalidate,
 }: {
   configInformation: Array<Attribute>;
-  invalidate: () => void;
 }) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const modifyConfigMutation = useModifyConfig();
 
   const initialDefaults = mapConfigToFormValues(configInformation);
 
@@ -110,69 +108,48 @@ const GlobalDetailPanelContent = ({
     defaultValues: initialDefaults,
     validators: { onChange: globalSettingsSchema, onSubmit: globalSettingsSchema },
     onSubmit: async ({ value }) => {
-      try {
-        await modifyConfig(mapFormValuesToAttributes(value));
+      await modifyConfigMutation.mutateAsync(mapFormValuesToAttributes(value));
 
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.change_save_success_msg', 'The change has been saved successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-
-        if (
-          value.zimbraDomainMandatoryMailSignatureEnabled &&
-          value.zimbraDomainMandatoryMailSignatureEnabled !==
-            initialDefaults.zimbraDomainMandatoryMailSignatureEnabled
-        ) {
-          setTimeout(() => {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t(
-                'label.mandatory_disclaimer_are_enable_for_all_domain',
-                'The mandatory disclaimers are enabled for all domains',
-              ),
-              autoHideTimeout: 2000,
-              hideButton: true,
-              replace: true,
-            });
-          }, 2000);
-        }
-        if (
-          value.zimbraAmavisOutboundDisclaimersOnly &&
-          value.zimbraAmavisOutboundDisclaimersOnly !==
-            initialDefaults.zimbraAmavisOutboundDisclaimersOnly
-        ) {
-          setTimeout(() => {
-            createSnackbar({
-              key: 'success',
-              severity: 'success',
-              label: t(
-                'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
-                'The mandatory disclaimers are enabled only for outbound deliveries',
-              ),
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          }, 4000);
-        }
-
-        form.reset(value, { keepDefaultValues: true });
-        invalidate();
-      } catch {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
+      if (
+        value.zimbraDomainMandatoryMailSignatureEnabled &&
+        value.zimbraDomainMandatoryMailSignatureEnabled !==
+          initialDefaults.zimbraDomainMandatoryMailSignatureEnabled
+      ) {
+        setTimeout(() => {
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t(
+              'label.mandatory_disclaimer_are_enable_for_all_domain',
+              'The mandatory disclaimers are enabled for all domains',
+            ),
+            autoHideTimeout: 2000,
+            hideButton: true,
+            replace: true,
+          });
+        }, 2000);
       }
+      if (
+        value.zimbraAmavisOutboundDisclaimersOnly &&
+        value.zimbraAmavisOutboundDisclaimersOnly !==
+          initialDefaults.zimbraAmavisOutboundDisclaimersOnly
+      ) {
+        setTimeout(() => {
+          createSnackbar({
+            key: 'success',
+            severity: 'success',
+            label: t(
+              'label.mandatory_disclaimer_are_enable_only_for_outbound_deliveries',
+              'The mandatory disclaimers are enabled only for outbound deliveries',
+            ),
+            autoHideTimeout: 3000,
+            hideButton: true,
+            replace: true,
+          });
+        }, 4000);
+      }
+
+      form.reset(value, { keepDefaultValues: true });
     },
   });
 
@@ -190,7 +167,11 @@ const GlobalDetailPanelContent = ({
         title={t('label.settings', 'Settings')}
         unsavedChanges={isDirty}
         onCancel={() => form.reset()}
-        onSave={() => form.handleSubmit()}
+        onSave={(): void => {
+          void form.handleSubmit().catch(() => {
+            // snackbar already reported by the mutation hook; keep the form dirty
+          });
+        }}
       >
         <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'small' }}>
           <ds-text as="h2" size="small" weight="bold" color="gray0">
@@ -327,7 +308,7 @@ const GlobalDetailPanelContent = ({
 };
 
 export const GlobalDetailPanel = () => {
-  const { data: configInformation = [], isPending, invalidate } = useAllConfig();
+  const { data: configInformation = [], isPending } = useAllConfig();
 
   if (isPending) {
     return (
@@ -339,5 +320,5 @@ export const GlobalDetailPanel = () => {
     );
   }
 
-  return <GlobalDetailPanelContent configInformation={configInformation} invalidate={invalidate} />;
+  return <GlobalDetailPanelContent configInformation={configInformation} />;
 };
