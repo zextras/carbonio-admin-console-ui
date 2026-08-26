@@ -11,8 +11,8 @@ import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import EditAccountSecuritySection from './security-section';
-import { AccountFormTestProvider } from './tests/account-form-test-provider';
+import EditAccountSecuritySection from '../security-section';
+import { AccountFormTestProvider } from './account-form-test-provider';
 
 const mockAccountDetail = {
   zimbraPasswordLocked: 'FALSE',

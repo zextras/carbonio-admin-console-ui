@@ -67,4 +67,24 @@ describe('otp-service', () => {
 			id: 'otp-1',
 		});
 	});
+
+	it('restoreTotp parses a JSON string nested in response.content', async () => {
+		vi.mocked(fetchSoap).mockResolvedValue({
+			response: { content: JSON.stringify({ ok: true }) },
+		});
+
+		await expect(restoreTotp('user@example.com', 'otp-1')).resolves.toEqual({ ok: true });
+	});
+
+	it('restoreTotp returns the raw response when nested content is malformed', async () => {
+		vi.mocked(fetchSoap).mockResolvedValue({
+			ok: 'ok',
+			response: { content: 'not-valid-json' },
+		});
+
+		await expect(restoreTotp('user@example.com', 'otp-1')).resolves.toEqual({
+			ok: 'ok',
+			response: { content: 'not-valid-json' },
+		});
+	});
 });
