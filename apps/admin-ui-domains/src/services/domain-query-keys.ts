@@ -26,6 +26,9 @@ export const domainQueryKeys = {
   galAccount: (accountId: string) => [...domainQueryKeys.gal(), 'account', accountId] as const,
   galDataSources: (accountId: string) =>
     [...domainQueryKeys.gal(), 'dataSources', accountId] as const,
+  domainCert: (domainId: string) => [...domainQueryKeys.all, 'cert', domainId] as const,
+  domainSslMaterial: (domainName: string) =>
+    [...domainQueryKeys.all, 'ssl-material', domainName] as const,
   calResource: (resourceId: string) => [...domainQueryKeys.all, 'cal-resource', resourceId] as const,
   calResourceList: (
     domain: string,
