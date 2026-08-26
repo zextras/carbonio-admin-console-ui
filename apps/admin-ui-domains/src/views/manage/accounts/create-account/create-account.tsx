@@ -9,6 +9,7 @@ import {
   WizardInSection,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
+import type { TFunction } from 'i18next';
 import { ComponentProps, ComponentType, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,6 +33,90 @@ type WizardStep = {
   NextButton: (buttonProps?: WizardStepButtonProps) => ReactElement;
 };
 
+type WizardStepsFactoryDeps = {
+  t: TFunction;
+  onCancel: () => void;
+  onCreateClick: () => void;
+  onNextClick: () => void;
+  onCreateAnotherClick: () => void;
+  isAdminRightsEnabled: boolean;
+};
+
+function createWizardSteps({
+  t,
+  onCancel,
+  onCreateClick,
+  onNextClick,
+  onCreateAnotherClick,
+  isAdminRightsEnabled,
+}: WizardStepsFactoryDeps): Array<WizardStep> {
+  const DetailsCancelButton = (buttonProps?: WizardStepButtonProps): ReactElement => (
+    <Button
+      {...buttonProps}
+      type="outlined"
+      key="wizard-cancel"
+      label={'CANCEL'}
+      color="secondary"
+      icon="CloseOutline"
+      iconPlacement="right"
+      onClick={onCancel}
+    />
+  );
+
+  const EmptyButton = (): ReactElement => <></>;
+
+  const DetailsNextButton = (): ReactElement => (
+    <Button
+      label={t('commons.create_with_there_data', 'CREATE WITH THESE DATA')}
+      icon="PersonOutline"
+      iconPlacement="right"
+      onClick={onCreateClick}
+    />
+  );
+
+  const OtpPrevButton = (): ReactElement => (
+    <div className="pr-sm">
+      <Button
+        type="outlined"
+        disabled={isAdminRightsEnabled}
+        label={t('label.create_another_account', 'CREATE ANOTHER ACCOUNT')}
+        onClick={onCreateAnotherClick}
+      />
+    </div>
+  );
+
+  const OtpNextButton = (buttonProps?: WizardStepButtonProps): ReactElement => (
+    <Button
+      label={
+        buttonProps?.toggleNextBtn ? t('commons.next', 'NEXT') : t('commons.close', 'CLOSE')
+      }
+      onClick={onNextClick}
+    />
+  );
+
+  return [
+    {
+      name: 'details',
+      label: t('label.details', 'DETAILS'),
+      icon: 'Edit2Outline',
+      view: CreateAccountDetailSection,
+      CancelButton: DetailsCancelButton,
+      PrevButton: EmptyButton,
+      NextButton: DetailsNextButton,
+    },
+    {
+      name: 'otp',
+      label: t('label.otp', 'OTP'),
+      icon: 'KeyOutline',
+      view: CreateOtpSectionView,
+      clickDisabled: true,
+      CancelButton: EmptyButton,
+      PrevButton: OtpPrevButton,
+      NextButton: OtpNextButton,
+    },
+  ];
+}
+
 const CreateAccount = (props: CreateAccountProps) => {
   const { t } = useTranslation();
   const isAdvanced = useIsAdvanced();
@@ -45,68 +130,16 @@ const CreateAccount = (props: CreateAccountProps) => {
     handleCreateAnotherAccount,
   } = useCreateAccountForm(props);
 
-  const wizardSteps: Array<WizardStep> = [
-    {
-      name: 'details',
-      label: t('label.details', 'DETAILS'),
-      icon: 'Edit2Outline',
-      view: CreateAccountDetailSection,
-      CancelButton: (buttonProps): ReactElement => (
-        <Button
-          {...buttonProps}
-          type="outlined"
-          key="wizard-cancel"
-          label={'CANCEL'}
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={(): void => {
-            props.setShowCreateAccountView(false);
-          }}
-        />
-      ),
-      PrevButton: (): ReactElement => <></>,
-      NextButton: (): ReactElement => (
-        <Button
-          label={t('commons.create_with_there_data', 'CREATE WITH THESE DATA')}
-          icon="PersonOutline"
-          iconPlacement="right"
-          onClick={(): void => {
-            handleCreateClick();
-          }}
-        />
-      ),
+  const wizardSteps = createWizardSteps({
+    t,
+    onCancel: (): void => {
+      props.setShowCreateAccountView(false);
     },
-
-    {
-      name: 'otp',
-      label: t('label.otp', 'OTP'),
-      icon: 'KeyOutline',
-      view: CreateOtpSectionView,
-      clickDisabled: true,
-      CancelButton: (): ReactElement => <></>,
-      PrevButton: (): ReactElement => (
-        <div className="pr-sm">
-          <Button
-            type="outlined"
-            disabled={form.state.values.administrationRigths}
-            label={t('label.create_another_account', 'CREATE ANOTHER ACCOUNT')}
-            onClick={(): void => handleCreateAnotherAccount()}
-          />
-        </div>
-      ),
-      NextButton: (buttonProps): ReactElement => (
-        <Button
-          label={
-            buttonProps?.toggleNextBtn ? t('commons.next', 'NEXT') : t('commons.close', 'CLOSE')
-          }
-          onClick={(): void => {
-            handleNextClick();
-          }}
-        />
-      ),
-    },
-  ];
+    onCreateClick: handleCreateClick,
+    onNextClick: handleNextClick,
+    onCreateAnotherClick: handleCreateAnotherAccount,
+    isAdminRightsEnabled: form.state.values.administrationRigths,
+  });
 
   const onComplete = (): void => {
     props.setShowCreateAccountView(false);
