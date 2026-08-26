@@ -66,6 +66,7 @@ export const AccountInfoFields = (): ReactElement => {
     (!!autoFillDisplayName || !!form.state.values.displayName);
 
   const domainStatusClosed = find(domain?.a, { n: 'zimbraDomainStatus' })?._content === 'closed';
+  const closedStatusLabel = domainStatusClosed ? `(${t('label.closed', 'Closed')})` : '';
 
   return (
     <div className="flex w-full flex-wrap justify-start pl-sm">
@@ -135,7 +136,7 @@ export const AccountInfoFields = (): ReactElement => {
             <LabeledValue
               label={t('label.domain_name', 'Domain Name')}
               backgroundColor="gray6"
-              value={`${domainName} ${domainStatusClosed ? `(${t('label.closed', 'Closed')})` : ''}`}
+              value={`${domainName} ${closedStatusLabel}`}
             />
           </div>
         </div>
