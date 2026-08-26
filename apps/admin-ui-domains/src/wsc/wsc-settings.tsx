@@ -19,7 +19,7 @@ import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 
 import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
-import { AccountDetail } from '../views/domain/manange/accounts/account-detail-types';
+import { AccountDetail } from '../views/manage/accounts/account-detail-types';
 
 export const WscSettings: FC<{
   featuresDetail: AccountDetail;

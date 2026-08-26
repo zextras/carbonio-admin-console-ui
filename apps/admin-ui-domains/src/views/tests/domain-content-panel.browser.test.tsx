@@ -134,7 +134,7 @@ vi.mock('../domain/details/domain-disclaimer', () => ({ default: MockDomainDiscl
 vi.mock('../domain/details/virtual-hosts-certificates/domain-virtual-hosts', () => ({
   DomainVirtualHosts: MockDomainVirtualHosts,
 }));
-vi.mock('../domain/manange/accounts/manage-accounts', () => ({ default: MockManageAccounts }));
+vi.mock('../manage/accounts/manage-accounts', () => ({ default: MockManageAccounts }));
 vi.mock('../domain/manange/active-sync/active-sync', () => ({ default: MockActiveSync }));
 vi.mock('../domain/manange/delegates/manage-delegates', () => ({ default: MockManageDelegates }));
 vi.mock('../domain/manange/mailing-list/domain-mailing-list', () => ({

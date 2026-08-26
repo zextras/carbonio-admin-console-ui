@@ -25,8 +25,8 @@ import { getAccountMembershipRequest } from '../../../../services/get-account-me
 import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
 import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
 import ScrollContainer from '../../../components/scrollComponent';
+import { EditAccount } from '../../../edit-account/edit-account';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { EditAccount } from '../../edit-account/edit-account';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
 const ManageDelegates: FC = () => {
