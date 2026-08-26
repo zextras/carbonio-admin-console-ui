@@ -114,8 +114,7 @@ const AccountOtpSection: FC<{
           </Container>
         </>
       ) : (
-        <>
-          <Container mainAlignment="flex-start">
+        <Container mainAlignment="flex-start">
             <Row
               padding={{ top: 'large', left: 'large' }}
               width="100%"
@@ -290,8 +289,7 @@ const AccountOtpSection: FC<{
                 ></Button>
               </Row>
             </Row>
-          </Container>
-        </>
+        </Container>
       )}
     </Container>
   );
