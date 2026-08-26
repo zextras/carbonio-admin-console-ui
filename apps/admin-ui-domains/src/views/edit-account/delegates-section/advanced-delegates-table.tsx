@@ -25,7 +25,7 @@ import {
 	SEND_READ_MAILS,
 	SEND_READ_MANAGE_MAILS,
 } from '../../../constants';
-import { batchService } from '../../../services/batch-service';
+import { useBatchDelegates } from '../../../services/use-batch-delegates';
 import { useAccountForm } from '../account-form-context';
 import { AddDelegateWizard } from './add-delegate-wizard';
 import {
@@ -54,6 +54,7 @@ export const AdvancedDelegatesTable = ({
 	const createSnackbar = useSnackbar();
 	const { form, folderList, deligateDetail, setDeligateDetail } = useAccountForm();
 	const accountDetail = useSelector(form.store, (s) => s.values as Record<string, any>);
+	const batchDelegates = useBatchDelegates(accountDetail?.zimbraId);
 
 	const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
 	const [editMode, setEditMode] = useState<boolean>(false);
@@ -121,14 +122,14 @@ export const AdvancedDelegatesTable = ({
 			}
 
 			if (revokeUsrRigths.length > 0 || folderUsrRights.length > 0) {
-				batchService(
-					{
+				batchDelegates.mutate({
+					reqObject: {
 						RevokeRightRequest: revokeUsrRigths,
 						FolderActionRequest: folderUsrRights,
 						_jsns: 'urn:zimbra',
 					},
-					accountDetail?.zimbraMailDeliveryAddress,
-				);
+					otherAccount: accountDetail?.zimbraMailDeliveryAddress,
+				});
 
 				if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
 
@@ -199,28 +200,33 @@ export const AdvancedDelegatesTable = ({
 		}
 
 		if (folderUsrRights.length > 0 || grantUsrRigths.length > 0) {
-			batchService(
+			batchDelegates.mutate(
 				{
-					GrantRightRequest: grantUsrRigths,
-					FolderActionRequest: folderUsrRights,
-					_jsns: 'urn:zimbra',
+					reqObject: {
+						GrantRightRequest: grantUsrRigths,
+						FolderActionRequest: folderUsrRights,
+						_jsns: 'urn:zimbra',
+					},
+				otherAccount: accountDetail?.zimbraMailDeliveryAddress,
 				},
-				accountDetail?.zimbraMailDeliveryAddress,
-			).then(() => {
-				refetchGrants();
-				setShowCreateIdentity(false);
+				{
+					onSuccess: (): void => {
+						refetchGrants();
+						setShowCreateIdentity(false);
 
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: editMode
-						? t('account_details.delegate_updated_successfully', 'Delegate`s rights updated successfully')
-						: t('account_details.delegate_created_successfully', 'Delegate`s rights created successfully'),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true,
-				});
-			});
+						createSnackbar({
+							key: 'success',
+							severity: 'success',
+							label: editMode
+								? t('account_details.delegate_updated_successfully', 'Delegate`s rights updated successfully')
+								: t('account_details.delegate_created_successfully', 'Delegate`s rights created successfully'),
+							autoHideTimeout: 3000,
+							hideButton: true,
+							replace: true,
+						});
+					},
+				},
+			);
 		}
 	};
 
