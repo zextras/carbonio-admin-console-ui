@@ -265,6 +265,7 @@ placeholderData: keepPreviousData,
 - **No component definitions inside components** (S6478): define subcomponents at module level. When they must capture parent data (handlers, values), use a module-level *factory* (`function createXButtons(dep) { return function XButton() {...} }`) or pass data as props. This applies to `CustomIcon`-style render props too.
 - **No array-index keys** (S6479): key by a stable id (`item.id ?? item.label`), never `` `list${index}` ``.
 - **`.find(…)` over `.filter(…)[0]`** (S7750).
+- **Combine consecutive multi-argument calls** (S7778): `Array#push`/`unshift`, `classList.add`/`remove`, and `importScripts` accept multiple args — merge consecutive calls on the same target (`arr.push(1); arr.push(2)` → `arr.push(1, 2)`; `el.classList.add('a'); el.classList.add('b')` → `el.classList.add('a', 'b')`).
 - **`??` over undefined-check ternaries** (S6606).
 - **`replaceAll()` / regex literals** over `new RegExp(...)` + `replace` (S6325/S7781).
 - **Real `<button type="button">`** instead of `div role="button"` + manual `onKeyDown` (S6819) — native buttons get keyboard activation for free (add button-reset CSS).
