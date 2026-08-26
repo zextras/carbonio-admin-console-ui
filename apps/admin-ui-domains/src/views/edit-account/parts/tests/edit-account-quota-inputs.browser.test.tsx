@@ -9,7 +9,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
-import { EditAccountQuotaInputsNew } from '../edit-account-quota-inputs-new';
+import { QuotaLimitInput } from '../edit-account-quota-inputs';
 
 const defaultQuotaLimit = 10737418240;
 
@@ -35,10 +35,10 @@ function setupNotAdvancedTest(component: React.ReactElement) {
   return setupBrowserTest(component, { queryClient });
 }
 
-describe('EditAccountQuotaInputsNew', () => {
+describe('QuotaLimitInput', () => {
   it('should render the total quota input when advanced is supported', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
       />,
@@ -49,7 +49,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render nothing when advanced is not supported', async () => {
     const { container } = await setupNotAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
       />,
@@ -60,7 +60,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should allow numeric input', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
       />,
@@ -73,7 +73,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render an empty input when a zero value is passed as prop', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={0}
         onChange={vi.fn()}
       />,
@@ -85,7 +85,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should render an empty input when an undefined value is passed as prop', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={undefined}
         onChange={vi.fn()}
       />,
@@ -97,7 +97,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should strip non-numeric characters from input', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={0}
         onChange={vi.fn()}
       />,
@@ -110,7 +110,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should strip a zero value from input', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={20000}
         onChange={vi.fn()}
       />,
@@ -124,7 +124,7 @@ describe('EditAccountQuotaInputsNew', () => {
   it('should call onChange with the value in bytes when input changes', async () => {
     const onChangeMock = vi.fn();
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
       />,
@@ -142,7 +142,7 @@ describe('EditAccountQuotaInputsNew', () => {
   it('should call onChange with undefined when input is cleared', async () => {
     const onChangeMock = vi.fn();
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
       />,
@@ -156,7 +156,7 @@ describe('EditAccountQuotaInputsNew', () => {
   it('should call onChange with undefined when user inputs zero ', async () => {
     const onChangeMock = vi.fn();
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
       />,
@@ -170,7 +170,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should disable the unlimited switch when domainQuotaConstraint is defined', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
       />,
@@ -186,7 +186,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
   it('should enable the unlimited switch when domainQuotaConstraint is not-set', async () => {
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={vi.fn()}
       />,
@@ -202,7 +202,7 @@ describe('EditAccountQuotaInputsNew', () => {
   it('should render the reset icon when source is account and call onClick handler when clicked', async () => {
     const onChangeMock = vi.fn();
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         totalQuotaSource="account"
         onChange={onChangeMock}
@@ -221,7 +221,7 @@ describe('EditAccountQuotaInputsNew', () => {
     async (source) => {
       const onChangeMock = vi.fn();
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource={source}
           onChange={onChangeMock}
@@ -238,7 +238,7 @@ describe('EditAccountQuotaInputsNew', () => {
   it('should not render the reset icon when source is undefined', async () => {
     const onChangeMock = vi.fn();
     await setupAdvancedTest(
-      <EditAccountQuotaInputsNew
+      <QuotaLimitInput
         totalComputedQuotaLimit={defaultQuotaLimit}
         onChange={onChangeMock}
       />,
@@ -256,7 +256,7 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should show proper description under the input when a domain constraint is set', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
         />,
@@ -272,7 +272,7 @@ describe('EditAccountQuotaInputsNew', () => {
 
     it('should not show description under the input when a domain constraint is not set', async () => {
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
         />,
@@ -285,7 +285,7 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should show a proper error description when user tries to exceed the constraint value', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           onChange={vi.fn()}
         />,
@@ -312,7 +312,7 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should show tooltip with inherited value (10 GB) from domain when source is account', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource="account"
           onChange={vi.fn()}
@@ -331,7 +331,7 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should show tooltip with inherited value (5 GB) from COS when source is account', async () => {
       const cosLimit = 5368709120; // 5 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
@@ -350,7 +350,7 @@ describe('EditAccountQuotaInputsNew', () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
       const cosLimit = 5368709120; // 5 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
@@ -370,7 +370,7 @@ describe('EditAccountQuotaInputsNew', () => {
       const domainConstraint = 5368709120; // 10 GB in bytes
       const cosLimit = 10737418240; // 5 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           cosComputedLimit={cosLimit}
           totalQuotaSource="account"
@@ -389,7 +389,7 @@ describe('EditAccountQuotaInputsNew', () => {
     it('should not show tooltip when source is not account', async () => {
       const domainConstraint = 10737418240; // 10 GB in bytes
       await setupAdvancedTest(
-        <EditAccountQuotaInputsNew
+        <QuotaLimitInput
           totalComputedQuotaLimit={defaultQuotaLimit}
           totalQuotaSource="domain"
           onChange={vi.fn()}
