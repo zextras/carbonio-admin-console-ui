@@ -12,7 +12,7 @@ import { useEffect, useRef } from 'react';
 
 import { ZIMBRA_ADMIN_URN } from '../../../../constants';
 import { useModifyDomain } from '../../../../services/use-modify-domain';
-import type { themeConfigStore } from '../../../../types/domain';
+import type { themeConfigStore } from '../../../../../types/domain';
 import {
   buildDomainResetValues,
   buildDomainWhiteLabelResetAttributes,
