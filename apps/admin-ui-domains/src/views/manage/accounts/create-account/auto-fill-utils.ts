@@ -23,9 +23,17 @@ export function computeAutoFillUserName(values: CreateAccountFormValues): string
 }
 
 export function computeAutoFillDisplayName(values: CreateAccountFormValues): string {
-  return `${values.givenName ? `${values.givenName} ` : ''}${
-    values.initials ? `${values.initials} ` : ''
-  }${values.sn ? `${values.sn} ` : ''}`.trim();
+  const parts: Array<string> = [];
+  if (values.givenName) {
+    parts.push(`${values.givenName} `);
+  }
+  if (values.initials) {
+    parts.push(`${values.initials} `);
+  }
+  if (values.sn) {
+    parts.push(`${values.sn} `);
+  }
+  return parts.join('').trim();
 }
 
 export function getEffectiveUserName(values: CreateAccountFormValues): string {
