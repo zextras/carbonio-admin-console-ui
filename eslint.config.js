@@ -11,7 +11,7 @@ import typescriptParser from '@typescript-eslint/parser';
 
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -96,8 +96,9 @@ export default tseslint.config(
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
       'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
       'apps/admin-ui-domains/src/views/global/**',
+      'apps/admin-ui-domains/src/views/manage/**',
       'apps/admin-ui-domains/src/views/create-new-domain/**',
-      'apps/admin-ui-domains/src/views/domain/edit-account/**',
+      'apps/admin-ui-domains/src/views/edit-account/**',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
       'apps/admin-ui-bootstrap/**',

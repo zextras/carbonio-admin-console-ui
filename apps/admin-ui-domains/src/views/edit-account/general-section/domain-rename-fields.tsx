@@ -26,7 +26,6 @@ export const DomainRenameFields = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
 
-  const [domainList, setDomainList] = useState<Array<{ id: string; name: string }>>([]);
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState<string | undefined>(
     values?.domainName,
@@ -46,14 +45,11 @@ export const DomainRenameFields = () => {
     offset: 0,
   });
 
-  useEffect(() => {
-    const searchResponse = domainSearchData as DomainSearchResponse | undefined;
-    if (!!searchResponse && (searchResponse?.searchTotal ?? 0) > 0) {
-      setDomainList(searchResponse?.domain ?? []);
-    } else {
-      setDomainList([]);
-    }
-  }, [domainSearchData]);
+  const searchResponse = domainSearchData as DomainSearchResponse | undefined;
+  const domainList =
+    !!searchResponse && (searchResponse?.searchTotal ?? 0) > 0
+      ? (searchResponse?.domain ?? [])
+      : [];
 
   useEffect(() => {
     if (isError) {

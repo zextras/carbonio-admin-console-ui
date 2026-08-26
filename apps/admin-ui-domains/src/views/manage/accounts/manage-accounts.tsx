@@ -17,7 +17,7 @@ import {
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { ChangeEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -69,7 +69,7 @@ type AccountListData = {
   total: number;
 };
 
-function selectAccountListWithTotal(res: any): AccountListData {
+function selectAccountListWithTotal(res: { searchTotal?: number }): AccountListData {
   return {
     accounts: parseAccountListDirectory(res),
     total: res?.searchTotal ?? 0,
@@ -349,7 +349,7 @@ export const ManageAccounts = () => {
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={handleInputChange}
-                  CustomIcon={(): any => (
+                  CustomIcon={(): ReactElement => (
                     <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
                   )}
                 />
