@@ -245,4 +245,25 @@ describe('DomainVirtualHosts (browser)', () => {
     await expect.element(page.getByRole('button', { name: /download/i })).toBeDisabled();
     await expect.element(page.getByRole('button', { name: /^remove$/i })).toBeDisabled();
   });
+
+  it('should open the upload wizard without calling ModifyDomain', async () => {
+    let modifyDomainCalled = false;
+    worker.use(
+      http.post('/service/admin/soap/ModifyDomainRequest', () => {
+        modifyDomainCalled = true;
+        return HttpResponse.json({ Body: { ModifyDomainResponse: { domain: [] } } });
+      }),
+    );
+
+    await setupBrowserTest(<DomainVirtualHosts />, {
+      queryClient,
+      initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+      withDomainIdRoute: true,
+    });
+
+    await page.getByRole('button', { name: /upload certificate/i }).click();
+
+    await expect.element(page.getByText('Upload and Verify Certificate')).toBeVisible();
+    expect(modifyDomainCalled).toBe(false);
+  });
 });

@@ -117,7 +117,10 @@ export const CertificateView = ({
             type="ghost"
             label={t('label.upload_certificate', 'UPLOAD CERTIFICATE')}
             color="primary"
-            onClick={onVerifyCertificate}
+            onClick={(e) => {
+              e.preventDefault();
+              onVerifyCertificate();
+            }}
           />
           <Tooltip label={noVirtualHostLabel} disabled={hasVirtualHosts}>
             <Button
@@ -125,7 +128,10 @@ export const CertificateView = ({
               label={t('label.generate_certificate', 'GENERATE CERTIFICATE')}
               color="primary"
               disabled={!hasVirtualHosts}
-              onClick={() => setModalOpen(true)}
+              onClick={(e) => {
+                e.preventDefault();
+                setModalOpen(true);
+              }}
             />
           </Tooltip>
           <Tooltip label={noCertificateDownloadLabel} disabled={hasCertificate}>
@@ -134,7 +140,10 @@ export const CertificateView = ({
               label={t('label.download_uppercase', 'DOWNLOAD')}
               color="primary"
               disabled={!hasCertificate}
-              onClick={handleDownload}
+              onClick={(e) => {
+                e.preventDefault();
+                handleDownload();
+              }}
             />
           </Tooltip>
           <Tooltip label={noCertificateLabel} disabled={hasCertificate}>
@@ -143,7 +152,10 @@ export const CertificateView = ({
               label={t('label.remove', 'Remove')}
               color="error"
               disabled={!hasCertificate}
-              onClick={onRemove}
+              onClick={(e) => {
+                e.preventDefault();
+                onRemove();
+              }}
             />
           </Tooltip>
         </Row>

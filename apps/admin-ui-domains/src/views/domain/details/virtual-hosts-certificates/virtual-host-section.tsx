@@ -122,7 +122,10 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
               label={t('label.add', 'Add')}
               color="primary"
               disabled={addButtonDisabled}
-              onClick={addVirtualHost}
+              onClick={(e) => {
+                e.preventDefault();
+                addVirtualHost();
+              }}
             />
           </Tooltip>
         </Row>
@@ -164,7 +167,10 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
               color="error"
               label={t('button.remove_selected_items', 'Remove selected items')}
               size="small"
-              onClick={removeVirtualHost}
+              onClick={(e) => {
+                e.preventDefault();
+                removeVirtualHost();
+              }}
             />
           </Row>
         )}
@@ -224,7 +230,10 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
                             color="error"
                             label="Remove"
                             size="small"
-                            onClick={() => removeSingleItem(item.id)}
+                            onClick={(e) => {
+                              e.preventDefault();
+                              removeSingleItem(item.id);
+                            }}
                           />
                         </Row>
                       )}
