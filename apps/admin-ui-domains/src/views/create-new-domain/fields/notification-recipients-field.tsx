@@ -8,9 +8,10 @@ import { useField } from '@tanstack/react-form';
 import { ChipInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { isValidEmail } from '../../utility/utils';
 import styles from '../parts/steps.module.css';
+import { CREATE_DOMAIN_VALIDATION_MESSAGES } from '../schema';
 import type { CreateDomainFormApi } from '../types';
+import { getImmediateFieldErrorProps } from './field-error';
 
 type NotificationRecipientsFieldProps = {
 	form: CreateDomainFormApi;
@@ -20,23 +21,19 @@ export const NotificationRecipientsField = ({ form }: NotificationRecipientsFiel
 	const [t] = useTranslation();
 	const field = useField({ form, name: 'carbonioNotificationRecipients' });
 
+	const error = getImmediateFieldErrorProps(field, t, CREATE_DOMAIN_VALIDATION_MESSAGES);
+
 	return (
 		<div className={styles.fieldStart}>
 			<ChipInput
 				placeholder={t('label.send_notifications_to', 'Send notifications to...')}
 				background="gray5"
-				defaultValue={field.state.value}
 				value={field.state.value}
-				onChange={(emails: Array<{ label?: string }>): void => {
-					field.handleChange(
-						emails.filter((email) => isValidEmail(email.label ?? '')) as Array<{
-							label: string;
-						}>,
-					);
+				onChange={(emails): void => {
+					field.handleChange(emails.map((email) => ({ label: email.label ?? '' })));
 				}}
-				hasError={(field.state.value ?? []).some(
-					(item) => (item as { error?: boolean }).error === true,
-				)}
+				hasError={error.hasError}
+				description={error.description}
 				maxChips={null}
 			/>
 		</div>

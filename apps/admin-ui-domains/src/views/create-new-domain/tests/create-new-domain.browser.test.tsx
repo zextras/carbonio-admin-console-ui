@@ -338,6 +338,25 @@ describe('CreateDomain (characterization)', () => {
     expect(recipients).toEqual(['alice@example.com', 'bob@example.com']);
   }, 20_000);
 
+  it('keeps an invalid recipient chip visible with a validation error and blocks creation', async () => {
+    const createDomainCounter = await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateDomainRequest',
+      () => HttpResponse.json({ Body: { CreateDomainResponse: {} } }),
+    );
+    await setupCreateDomainTest();
+
+    await fillDomainName('example.com');
+    await advanceToFinalStep();
+    const recipientsInput = page.getByPlaceholder('Send notifications to...');
+    await userEvent.type(recipientsInput, 'not-an-email{Enter}');
+
+    await expect.element(page.getByText('not-an-email')).toBeVisible();
+    await expect.element(page.getByText('Enter a valid email address.')).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Create' }).first()).toBeDisabled();
+    expect(createDomainCounter.getCalledTimes()).toBe(0);
+  }, 20_000);
+
   it('navigates to the domains list when Cancel is clicked', async () => {
     await setupCreateDomainTest();
 
