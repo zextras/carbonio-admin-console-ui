@@ -110,10 +110,12 @@ function buildGetExposedResponse(entry: AddressBookEntry): object {
 function setupAddressBookZextrasInterceptor(
 	folders: Array<ContactFolder> = DEFAULT_FOLDERS,
 	entry: AddressBookEntry = ALL_SHARED_ENTRY,
+	options: { addError?: string; removeError?: string } = {},
 ): {
 	capturedActions: Array<ZextrasBody>;
 } {
 	const capturedActions: Array<ZextrasBody> = [];
+	const removedFolderKeys = new Set<string>();
 
 	worker.use(
 		http.post('/service/admin/soap/zextras', async ({ request }) => {
@@ -137,6 +139,11 @@ function setupAddressBookZextrasInterceptor(
 							: ALL_SHARED_ENTRY.account === requestAccount
 								? ALL_SHARED_ENTRY
 								: PARTIAL_SHARED_ENTRY;
+
+				const remainingFolders = (matchedEntry.folders ?? []).filter(
+					(folder) =>
+						!removedFolderKeys.has(`${matchedEntry.account}:${String(folder.id)}`),
+				);
 
 				if (zextrasBody.exposed === false) {
 					return HttpResponse.json(
@@ -164,7 +171,12 @@ function setupAddressBookZextrasInterceptor(
 					);
 				}
 
-				return HttpResponse.json(buildGetExposedResponse(matchedEntry));
+				return HttpResponse.json(
+					buildGetExposedResponse({
+						...matchedEntry,
+						folders: remainingFolders,
+					}),
+				);
 			}
 
 			if (action === 'GetMailboxContactFoldersCommand') {
@@ -181,7 +193,24 @@ function setupAddressBookZextrasInterceptor(
 				);
 			}
 
-			if (action === 'AddAddressBookCommand' || action === 'RemoveAddressBookCommand') {
+			if (action === 'AddAddressBookCommand') {
+				if (options.addError) {
+					return HttpResponse.json(
+						buildZextrasResponse({ ok: false, message: options.addError }),
+					);
+				}
+				return HttpResponse.json(buildNestedOkResponse());
+			}
+
+			if (action === 'RemoveAddressBookCommand') {
+				if (options.removeError) {
+					return HttpResponse.json(
+						buildZextrasResponse({ ok: false, message: options.removeError }),
+					);
+				}
+				removedFolderKeys.add(
+					`${zextrasBody.account ?? ''}:${String(zextrasBody.folder ?? '')}`,
+				);
 				return HttpResponse.json(buildNestedOkResponse());
 			}
 
@@ -204,7 +233,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				entry={ALL_SHARED_ENTRY}
 				onClose={vi.fn()}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -238,7 +266,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				entry={PARTIAL_SHARED_ENTRY}
 				onClose={vi.fn()}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -258,7 +285,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				entry={mountedEntry}
 				onClose={vi.fn()}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -275,7 +301,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				entry={ALL_SHARED_ENTRY}
 				onClose={onClose}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -294,7 +319,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				entry={PARTIAL_SHARED_ENTRY}
 				onClose={vi.fn()}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -310,13 +334,11 @@ describe('AddressBookDetailPanel (browser)', () => {
 
 	it('should expose all address books from the inline add form', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
-		const onChanged = vi.fn();
 		await renderPanel(
 			<AddressBookDetailPanel
 				domainName={DOMAIN_NAME}
 				entry={PARTIAL_SHARED_ENTRY}
 				onClose={vi.fn()}
-				onChanged={onChanged}
 			/>,
 		);
 
@@ -329,7 +351,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
 		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
-		expect(onChanged).toHaveBeenCalledOnce();
 		await expect
 			.poll(() =>
 				capturedActions.some((action) => action.action === 'AddAddressBookCommand'),
@@ -350,13 +371,11 @@ describe('AddressBookDetailPanel (browser)', () => {
 
 	it('should remove an exposed folder after confirmation', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
-		const onChanged = vi.fn();
 		await renderPanel(
 			<AddressBookDetailPanel
 				domainName={DOMAIN_NAME}
 				entry={ALL_SHARED_ENTRY}
 				onClose={vi.fn()}
-				onChanged={onChanged}
 			/>,
 		);
 
@@ -371,7 +390,10 @@ describe('AddressBookDetailPanel (browser)', () => {
 		await expect
 			.element(page.getByText('Folder removed successfully'))
 			.toBeInTheDocument();
-		expect(onChanged).toHaveBeenCalledOnce();
+		await expect
+			.element(page.getByText('No address book is exposed for this account.'))
+			.toBeInTheDocument();
+		await expect.element(page.getByText('All folders')).not.toBeInTheDocument();
 		await expect
 			.poll(() =>
 				capturedActions.some((action) => action.action === 'RemoveAddressBookCommand'),
@@ -440,7 +462,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 					folders: [],
 				}}
 				onClose={vi.fn()}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -465,7 +486,6 @@ describe('AddressBookDetailPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				entry={PARTIAL_SHARED_ENTRY}
 				onClose={vi.fn()}
-				onChanged={vi.fn()}
 			/>,
 		);
 
@@ -482,5 +502,46 @@ describe('AddressBookDetailPanel (browser)', () => {
 		await expect
 			.element(page.getByRole('button', { name: 'Add address book' }))
 			.toBeInTheDocument();
+	});
+
+	it('should show an error snackbar when inline add fails', async () => {
+		setupAddressBookZextrasInterceptor(DEFAULT_FOLDERS, PARTIAL_SHARED_ENTRY, {
+			addError: 'Add failed',
+		});
+		await renderPanel(
+			<AddressBookDetailPanel
+				domainName={DOMAIN_NAME}
+				entry={PARTIAL_SHARED_ENTRY}
+				onClose={vi.fn()}
+			/>,
+		);
+
+		await expect.element(page.getByText('Work')).toBeInTheDocument();
+		await userEvent.click(page.getByRole('button', { name: 'Add address book' }));
+		await userEvent.click(page.getByRole('button', { name: 'Add' }));
+
+		await expect.element(page.getByText('Add failed')).toBeInTheDocument();
+		await expect
+			.element(page.getByText('Add address books', { exact: true }))
+			.toBeInTheDocument();
+	});
+
+	it('should show an error snackbar when remove fails', async () => {
+		setupAddressBookZextrasInterceptor(DEFAULT_FOLDERS, ALL_SHARED_ENTRY, {
+			removeError: 'Remove failed',
+		});
+		await renderPanel(
+			<AddressBookDetailPanel
+				domainName={DOMAIN_NAME}
+				entry={ALL_SHARED_ENTRY}
+				onClose={vi.fn()}
+			/>,
+		);
+
+		await expect.element(page.getByText('All folders')).toBeInTheDocument();
+		await userEvent.click(page.getByRole('button', { name: 'Remove exposed folder' }));
+		await userEvent.click(page.getByRole('button', { name: 'Remove', exact: true }));
+
+		await expect.element(page.getByText('Remove failed')).toBeInTheDocument();
 	});
 });

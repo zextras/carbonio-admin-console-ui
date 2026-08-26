@@ -4,14 +4,22 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { createContext, type Dispatch, type SetStateAction } from 'react';
+import { createContext, useContext } from 'react';
 
 type CertificateContextValue = {
   isCertificateAvailable: boolean;
-  setIsCertificateAvailable: Dispatch<SetStateAction<boolean>>;
+  domainId: string;
+  domainName: string;
 };
 
-export const CertificateContext = createContext<CertificateContextValue>({
-  isCertificateAvailable: false,
-  setIsCertificateAvailable: () => {},
-});
+const CertificateContext = createContext<CertificateContextValue | null>(null);
+
+export const CertificateContextProvider = CertificateContext.Provider;
+
+export function useCertificateContext(): CertificateContextValue {
+  const ctx = useContext(CertificateContext);
+  if (!ctx) {
+    throw new Error('useCertificateContext must be used within CertificateContextProvider');
+  }
+  return ctx;
+}

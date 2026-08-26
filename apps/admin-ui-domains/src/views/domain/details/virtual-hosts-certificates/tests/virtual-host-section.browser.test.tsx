@@ -4,26 +4,38 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
-import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { type VirtualHostItem, virtualHostsFormSchema } from '../schema';
 import { VirtualHostSection } from '../virtual-host-section';
 
-function VirtualHostSectionWrapper() {
-	const [items, setItems] = useState([
-		{ id: '1', columns: ['virtual1.test-domain.com'], clickable: true },
-		{ id: '2', columns: ['virtual2.test-domain.com'], clickable: true }
-	]);
+function HostsForm({ initialHosts }: { initialHosts: Array<VirtualHostItem> }) {
+  const form = useForm({
+    defaultValues: { hosts: initialHosts },
+    validators: {
+      onChange: virtualHostsFormSchema,
+      onSubmit: virtualHostsFormSchema,
+    },
+  });
+  return <VirtualHostSection form={form} />;
+}
 
-	return <VirtualHostSection items={items} setItems={setItems} />;
+function VirtualHostSectionWrapper() {
+  return (
+    <HostsForm
+      initialHosts={[
+        { id: '1', hostname: 'virtual1.test-domain.com' },
+        { id: '2', hostname: 'virtual2.test-domain.com' },
+      ]}
+    />
+  );
 }
 
 function EmptyVirtualHostSectionWrapper() {
-	const [items, setItems] = useState<any[]>([]);
-
-	return <VirtualHostSection items={items} setItems={setItems} />;
+  return <HostsForm initialHosts={[]} />;
 }
 
 describe('VirtualHostSection (browser)', () => {
