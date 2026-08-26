@@ -53,28 +53,32 @@ export const domainQueryKeys = {
     [...domainQueryKeys.all, 'active-sync-devices', domainName] as const,
   activeSyncDeviceStats: (accountEmail: string, deviceId: string) =>
     [...domainQueryKeys.all, 'active-sync-device-stats', accountEmail, deviceId] as const,
-  accountListDirectory: (params: {
-    attr: string;
-    type: string;
-    domainName?: string;
-    query: string;
-    offset: number;
-    limit: number;
-    sortBy?: string;
-    sortAscending?: string;
-  }) =>
-    [
-      ...domainQueryKeys.all,
-      'account-list-directory',
-      params.attr,
-      params.type,
-      params.domainName ?? '',
-      params.query,
-      params.offset,
-      params.limit,
-      params.sortBy ?? '',
-      params.sortAscending ?? '',
-    ] as const,
+  accountListDirectory: {
+    base: () => [...domainQueryKeys.all, 'account-list-directory'] as const,
+    search: (params: {
+      attr: string;
+      type: string;
+      domainName?: string;
+      query: string;
+      offset: number;
+      limit: number;
+      sortBy?: string;
+      sortAscending?: string;
+    }) =>
+      [
+        ...domainQueryKeys.accountListDirectory.base(),
+        params.attr,
+        params.type,
+        params.domainName ?? '',
+        params.query,
+        params.offset,
+        params.limit,
+        params.sortBy ?? '',
+        params.sortAscending ?? '',
+      ] as const,
+  },
+  accountCount: (domainName: string) =>
+    [...domainQueryKeys.all, 'account-count', domainName] as const,
   quarantineAccount: () => [...domainQueryKeys.all, 'quarantine-account'] as const,
   quarantineMessages: () => [...domainQueryKeys.all, 'quarantine-messages'] as const,
 } as const;
