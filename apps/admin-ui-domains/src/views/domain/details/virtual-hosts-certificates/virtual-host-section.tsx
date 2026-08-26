@@ -77,7 +77,7 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
   }
 
   return (
-    <Container width="100%">
+    <Container width="100%" height="fit">
       <Container
         orientation="horizontal"
         mainAlignment="flex-start"
