@@ -16,10 +16,10 @@ function WizardNoopButton() {
 function WizardInSection({
   wizard,
   setToggleWizardSection,
-}: {
+}: Readonly<{
   wizard: React.ReactNode;
   setToggleWizardSection: (open: boolean) => void;
-}) {
+}>) {
   const { t } = useTranslation();
   return (
     <Section

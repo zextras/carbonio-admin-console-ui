@@ -26,11 +26,14 @@ function pickFile(onContent: (fileName: string, content: string) => void): void 
   input.onchange = (e: Event): void => {
     const file = (e.target as HTMLInputElement)?.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (evt): void => {
-      onContent(file.name, String(evt.target?.result ?? ''));
-    };
-    reader.readAsText(file);
+    file
+      .text()
+      .then((content) => {
+        onContent(file.name, content);
+      })
+      .catch(() => {
+        onContent(file.name, '');
+      });
   };
   input.click();
 }
@@ -70,8 +73,8 @@ export const LoadAndVerifyCert = ({
     privateKey !== '' &&
     (isCertificateAvailable || caChain !== '');
 
-  function handleVerify(): void {
-    void form.validate('change');
+  async function handleVerify(): Promise<void> {
+    await form.validate('change');
     if (!canVerify) {
       createSnackbar({
         key: 'error',
