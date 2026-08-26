@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { CLOSED } from '../../../constants';
-import { deleteAccount } from '../../../services/delete-account-service';
-import { modifyAccountRequest } from '../../../services/modify-account';
+import { useDeleteAccount } from '../../../services/use-delete-account';
+import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
 import { getAccountStatusColors } from '../../domain/constants/account-status-colors';
 import { getUserTypeFromAttrs } from '../user-type-utils';
 
@@ -32,6 +32,9 @@ export const DeleteAccountDialog = ({
   const userSetting = useUserSettings();
   const STATUS_COLOR = getAccountStatusColors(t);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+
+  const modifyAccount = useModifyAccountAttributes();
+  const deleteAccountMutation = useDeleteAccount();
 
   const userType = getUserTypeFromAttrs(userSetting?.attrs);
 
@@ -72,29 +75,39 @@ export const DeleteAccountDialog = ({
 
   const onDisableAccount = (): void => {
     setIsRequestInProgress(true);
-    modifyAccountRequest(zimbraId ?? account.id, { zimbraAccountStatus: CLOSED })
-      .then((data) => {
-        if (data?.account && Array.isArray(data?.account)) {
-          onSuccess(
-            t('label.account_disable_correctly', 'The account has been correctly disabled.'),
-          );
-        }
-      })
-      .catch((error) => {
-        onError(error);
-      });
+    modifyAccount.mutate(
+      { id: zimbraId ?? account.id, modifiedData: { zimbraAccountStatus: CLOSED } },
+      {
+        onSuccess: (data) => {
+          if (data?.account && Array.isArray(data?.account)) {
+            onSuccess(
+              t('label.account_disable_correctly', 'The account has been correctly disabled.'),
+            );
+          }
+        },
+        onError: (error) => {
+          onError(error);
+        },
+      },
+    );
   };
 
   const onDeleteHandler = (): void => {
     setIsRequestInProgress(true);
-    deleteAccount(account?.id)
-      .then(() => {
-        onSuccess(t('label.account_remove_correctly', 'The account has been correctly removed.'));
-        onDeleted();
-      })
-      .catch((error) => {
-        onError(error);
-      });
+    deleteAccountMutation.mutate(
+      { accountId: account?.id },
+      {
+        onSuccess: () => {
+          onSuccess(
+            t('label.account_remove_correctly', 'The account has been correctly removed.'),
+          );
+          onDeleted();
+        },
+        onError: (error) => {
+          onError(error);
+        },
+      },
+    );
   };
 
   return (
