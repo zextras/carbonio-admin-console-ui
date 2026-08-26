@@ -19,11 +19,17 @@ import styles from './steps.module.css';
 
 type Step1GeneralInformationProps = {
 	form: CreateDomainFormApi;
+	isSubmitting: boolean;
 	onCancel: () => void;
 	onBack: () => void;
 };
 
-export const Step1GeneralInformation = ({ form, onCancel, onBack }: Step1GeneralInformationProps) => {
+export const Step1GeneralInformation = ({
+	form,
+	isSubmitting,
+	onCancel,
+	onBack,
+}: Step1GeneralInformationProps) => {
 	const [t] = useTranslation();
 
 	return (
@@ -67,6 +73,7 @@ export const Step1GeneralInformation = ({ form, onCancel, onBack }: Step1General
 				{(canProceed) => (
 					<StepFooter
 						isFirstStep
+						isSubmitting={isSubmitting}
 						onCancel={onCancel}
 						onBack={onBack}
 						onPrimary={() => form.handleSubmit()}

@@ -12,6 +12,7 @@ import styles from './steps.module.css';
 type StepFooterProps = {
 	isFirstStep?: boolean;
 	isLastStep?: boolean;
+	isSubmitting?: boolean;
 	primaryDisabled?: boolean;
 	onBack?: () => void;
 	onCancel: () => void;
@@ -21,6 +22,7 @@ type StepFooterProps = {
 export const StepFooter = ({
 	isFirstStep = false,
 	isLastStep = false,
+	isSubmitting = false,
 	primaryDisabled = false,
 	onBack,
 	onCancel,
@@ -43,7 +45,7 @@ export const StepFooter = ({
 					label={isLastStep ? t('label.create', 'Create') : t('label.next', 'Next')}
 					icon={isLastStep ? 'CheckmarkCircle' : 'ArrowForwardOutline'}
 					color="primary"
-					disabled={primaryDisabled}
+					disabled={primaryDisabled || isSubmitting}
 					onClick={onPrimary}
 				/>
 			</div>

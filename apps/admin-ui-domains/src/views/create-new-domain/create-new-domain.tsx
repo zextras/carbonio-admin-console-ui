@@ -57,27 +57,34 @@ export const CreateDomain = () => {
         <div className={styles.stepperColumn}>
           <ds-stepper steps={stepperSteps} current={currentStep}></ds-stepper>
         </div>
-        <div className={styles.contentColumn}>
-          {currentStep === 0 && (
-            <Step1GeneralInformation form={form} onCancel={handleCancel} onBack={handleBack} />
-          )}
-          {currentStep === 1 && (
-            <Step2Gal
-              form={form}
-              mailServerItems={mailServerItems}
-              onCancel={handleCancel}
-              onBack={handleBack}
-            />
-          )}
-          {currentStep === 2 && (
-            <Step3Advanced
-              form={form}
-              cosItems={cosItems}
-              onCancel={handleCancel}
-              onBack={handleBack}
-            />
-          )}
-        </div>
+				<div className={styles.contentColumn}>
+					{currentStep === 0 && (
+						<Step1GeneralInformation
+							form={form}
+							isSubmitting={isSubmitting}
+							onCancel={handleCancel}
+							onBack={handleBack}
+						/>
+					)}
+					{currentStep === 1 && (
+						<Step2Gal
+							form={form}
+							isSubmitting={isSubmitting}
+							mailServerItems={mailServerItems}
+							onCancel={handleCancel}
+							onBack={handleBack}
+						/>
+					)}
+					{currentStep === 2 && (
+						<Step3Advanced
+							form={form}
+							isSubmitting={isSubmitting}
+							cosItems={cosItems}
+							onCancel={handleCancel}
+							onBack={handleBack}
+						/>
+					)}
+				</div>
       </div>
     </>
   );

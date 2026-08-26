@@ -18,12 +18,19 @@ import styles from './steps.module.css';
 
 type Step3AdvancedProps = {
 	form: CreateDomainFormApi;
+	isSubmitting: boolean;
 	cosItems: Array<SelectItem>;
 	onCancel: () => void;
 	onBack: () => void;
 };
 
-export const Step3Advanced = ({ form, cosItems, onCancel, onBack }: Step3AdvancedProps) => {
+export const Step3Advanced = ({
+	form,
+	isSubmitting,
+	cosItems,
+	onCancel,
+	onBack,
+}: Step3AdvancedProps) => {
 	const [t] = useTranslation();
 
 	return (
@@ -74,6 +81,7 @@ export const Step3Advanced = ({ form, cosItems, onCancel, onBack }: Step3Advance
 				{(canCreate) => (
 					<StepFooter
 						isLastStep
+						isSubmitting={isSubmitting}
 						onCancel={onCancel}
 						onBack={onBack}
 						onPrimary={() => form.handleSubmit()}

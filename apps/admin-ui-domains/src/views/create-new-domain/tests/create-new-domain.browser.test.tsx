@@ -382,4 +382,34 @@ describe('CreateDomain (characterization)', () => {
 
     await expect.element(page.getByText('Server error occurred')).toBeVisible();
   }, 20_000);
+
+  it('disables Create while submitting and prevents duplicate requests', async () => {
+    let resolveCreateDomain: (value: unknown) => void = () => undefined;
+    let requestCount = 0;
+    worker.use(
+      http.post('/service/admin/soap/CreateDomainRequest', async () => {
+        requestCount += 1;
+        await new Promise((resolve) => {
+          resolveCreateDomain = resolve;
+        });
+        return HttpResponse.json({ Body: { CreateDomainResponse: mockCreateDomainResponse } });
+      }),
+    );
+    await setupCreateDomainTest();
+
+    await fillDomainName('example.com');
+    await advanceToFinalStep();
+    await clickCreate();
+
+    const createButton = page.getByRole('button', { name: 'Create' }).first();
+    await expect.element(createButton).toBeDisabled();
+    await vi.waitFor(() => expect(requestCount).toBe(1));
+
+    resolveCreateDomain(mockCreateDomainResponse);
+    await expect
+      .element(page.getByText('example.com has been created successfully'))
+      .toBeVisible();
+
+    expect(requestCount).toBe(1);
+  }, 20_000);
 });

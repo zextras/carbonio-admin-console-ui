@@ -17,12 +17,19 @@ import styles from './steps.module.css';
 
 type Step2GalProps = {
 	form: CreateDomainFormApi;
+	isSubmitting: boolean;
 	mailServerItems: Array<SelectItem>;
 	onCancel: () => void;
 	onBack: () => void;
 };
 
-export const Step2Gal = ({ form, mailServerItems, onCancel, onBack }: Step2GalProps) => {
+export const Step2Gal = ({
+	form,
+	isSubmitting,
+	mailServerItems,
+	onCancel,
+	onBack,
+}: Step2GalProps) => {
 	const [t] = useTranslation();
 
 	return (
@@ -75,6 +82,7 @@ export const Step2Gal = ({ form, mailServerItems, onCancel, onBack }: Step2GalPr
 			<form.Subscribe selector={() => true}>
 				{() => (
 					<StepFooter
+						isSubmitting={isSubmitting}
 						onCancel={onCancel}
 						onBack={onBack}
 						onPrimary={() => form.handleSubmit()}
