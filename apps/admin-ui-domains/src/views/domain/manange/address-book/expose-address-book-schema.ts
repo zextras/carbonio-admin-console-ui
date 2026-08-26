@@ -38,13 +38,13 @@ export function exposeAddressBookSchema(hasAllShared: boolean, t: TranslateFn) {
       const trimmed = values.account.trim();
       if (trimmed === '') {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['account'],
           message: t('label.account_is_required', 'Account is required'),
         });
       } else if (!isValidEmail(trimmed)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['account'],
           message: t('label.enter_a_valid_email_address', 'Enter a valid email address'),
         });
@@ -52,7 +52,7 @@ export function exposeAddressBookSchema(hasAllShared: boolean, t: TranslateFn) {
 
       if (values.selectedAccount === '' || !isValidEmail(values.selectedAccount)) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['selectedAccount'],
           message: t('label.select_a_valid_account_first', 'Select a valid account first'),
         });
@@ -60,7 +60,7 @@ export function exposeAddressBookSchema(hasAllShared: boolean, t: TranslateFn) {
 
       if (values.folderMode === 'all' && hasAllShared) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['folderMode'],
           message: t(
             'label.all_address_books_already_exposed',
@@ -71,7 +71,7 @@ export function exposeAddressBookSchema(hasAllShared: boolean, t: TranslateFn) {
 
       if (values.folderMode === 'specific' && values.folderId === '') {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['folderId'],
           message: t('label.select_an_address_book', 'Select an address book'),
         });

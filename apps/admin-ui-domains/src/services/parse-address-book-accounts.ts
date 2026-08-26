@@ -19,5 +19,5 @@ export function parseDirectoryAccounts(data: SearchDomainDirectories): Array<Dir
 }
 
 export function errorMessage(err: Error, fallback: string): string {
-  return err.message !== '' ? err.message : fallback;
+  return err.message === '' ? fallback : err.message;
 }

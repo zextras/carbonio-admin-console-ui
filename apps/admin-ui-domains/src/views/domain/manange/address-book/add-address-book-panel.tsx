@@ -44,6 +44,19 @@ type FolderSelectItem = {
   value: string;
 };
 
+type TranslateFn = (key: string, defaultValue: string) => string;
+
+function getAccountError(account: string, t: TranslateFn): string | null {
+  const trimmed = account.trim();
+  if (trimmed === '') {
+    return t('label.account_is_required', 'Account is required');
+  }
+  if (isValidEmail(account)) {
+    return null;
+  }
+  return t('label.enter_a_valid_email_address', 'Enter a valid email address');
+}
+
 export const AddAddressBookPanel = ({
   domainName,
   existingEntries,
@@ -67,12 +80,7 @@ export const AddAddressBookPanel = ({
   const linkedFolderIds = getLinkedFolderIds(existingEntry);
   const hasAllShared = entryHasAllShared(existingEntry);
   const hasValidSelectedAccount = selectedAccount !== '' && isValidEmail(selectedAccount);
-  const accountError =
-    account.trim() === ''
-      ? t('label.account_is_required', 'Account is required')
-      : isValidEmail(account)
-        ? null
-        : t('label.enter_a_valid_email_address', 'Enter a valid email address');
+  const accountError = getAccountError(account, t);
   const folderError =
     folderMode === 'specific' && folderId === ''
       ? t('label.select_an_address_book', 'Select an address book')
