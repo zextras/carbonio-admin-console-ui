@@ -14,9 +14,10 @@ import {
   useSnackbar,
   WizardInSection,
 } from '@zextras/ui-components';
+import type { TFunction } from 'i18next';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
-import { ReactElement, useState } from 'react';
+import { ComponentProps, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
@@ -34,11 +35,28 @@ type OtpWizardProps = {
   onClose: () => void;
 };
 
-export const OtpWizard = ({ qrData, secrateCode, pinCodes, onClose }: OtpWizardProps) => {
-  const { form } = useAccountForm();
-  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
-  const { data: domain } = useSelectedDomain();
-  const domainName = domain?.name;
+type OtpStepViewProps = {
+  qrData: string;
+  secrateCode: string;
+  pinCodes: Array<{ code: string }>;
+  accountAddress: string;
+  accountName: string;
+};
+
+type WizardStepButtonProps = ComponentProps<typeof Button>;
+
+type OtpWizardStepFactoryDeps = OtpStepViewProps & {
+  t: TFunction;
+  onClose: () => void;
+};
+
+const OtpWizardStepView = ({
+  qrData,
+  secrateCode,
+  pinCodes,
+  accountAddress,
+  accountName,
+}: OtpStepViewProps): ReactElement => {
   const [sendEmailTo, setSendEmailTo] = useState<any[]>([]);
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -65,8 +83,8 @@ export const OtpWizard = ({ qrData, secrateCode, pinCodes, onClose }: OtpWizardP
           e: [
             {
               t: 'f',
-              a: `${values?.name}@${domainName}`,
-              d: values?.name,
+              a: accountAddress,
+              d: accountName,
             },
             ...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' })),
           ],
@@ -110,167 +128,190 @@ export const OtpWizard = ({ qrData, secrateCode, pinCodes, onClose }: OtpWizardP
     );
   };
 
+  return (
+    <Container mainAlignment="flex-start">
+      <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+        <Row width="40%" mainAlignment="flex-start">
+          <QRCodeSVG data-testid="qrcode-password" size={179} value={qrData} />
+        </Row>
+        <Row width="60%" mainAlignment="flex-start">
+          <Container>
+            <Padding top="large">
+              <Row mainAlignment="center">
+                <Row background="gray5" style={{ maxWidth: '350px' }}>
+                  <div className={styles.staticCodesWrapper}>
+                    {map(pinCodes, (singleCode: any) => (
+                      <label key={singleCode.code} className={styles.staticCode}>
+                        {singleCode.code}
+                      </label>
+                    ))}
+                  </div>
+                </Row>
+              </Row>
+            </Padding>
+          </Container>
+          <Container
+            orientation="horizontal"
+            width="99%"
+            crossAlignment="center"
+            mainAlignment="space-between"
+          >
+            <Row
+              mainAlignment="center"
+              width="100%"
+              padding={{
+                top: 'small',
+                bottom: 'small',
+              }}
+            >
+              <ds-text as="h3">{t('account_details.secret_code', 'Secret Code')}</ds-text>
+            </Row>
+          </Container>
+          <Container
+            orientation="horizontal"
+            width="99%"
+            crossAlignment="center"
+            mainAlignment="space-between"
+          >
+            <Row
+              mainAlignment="center"
+              width="100%"
+              padding={{
+                top: 'small',
+                bottom: 'small',
+              }}
+            >
+              <ds-text as="strong">{secrateCode}</ds-text>
+            </Row>
+          </Container>
+        </Row>
+      </Row>
+      <Container
+        orientation="horizontal"
+        width="99%"
+        crossAlignment="center"
+        mainAlignment="space-between"
+      >
+        <Row
+          mainAlignment="center"
+          width="100%"
+          padding={{
+            top: 'small',
+            bottom: 'small',
+          }}
+        >
+          <ds-text as="p">
+            {t(
+              'account_details.please_note_code',
+              `Please note: you'll be able to see these codes just once.`,
+            )}
+          </ds-text>
+        </Row>
+      </Container>
+      <Container
+        orientation="horizontal"
+        width="99%"
+        crossAlignment="center"
+        mainAlignment="space-between"
+      >
+        <Row
+          mainAlignment="center"
+          width="100%"
+          padding={{
+            top: 'small',
+            bottom: 'small',
+          }}
+        >
+          <ds-text as="p">
+            {t(
+              'account_details.select_email_otp',
+              `Select an email address to send the OTP to or copy the code above`,
+            )}
+          </ds-text>
+        </Row>
+      </Container>
+      <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
+        <Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
+          <ChipInput
+            placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
+            onChange={handleEmailChange}
+            value={sendEmailTo}
+            background="gray5"
+            ChipComponent={CustomChip}
+            maxChips={null}
+            hasError={hasEmailError}
+            data-testid="otp-email-input"
+          />
+          <ds-text as="strong" color="error" size="small">
+            {hasEmailError &&
+              t(
+                'domain.editAccount.invalidaEmailError',
+                'One or more email addresses are invalid.',
+              )}
+          </ds-text>
+        </Row>
+        <Row width="20%" mainAlignment="space-between">
+          <Button
+            label={t('account_details.send', 'SEND')}
+            icon="PaperPlaneOutline"
+            size="large"
+            iconPlacement="right"
+            disabled={isSendDisabled}
+            onClick={handleSendOTPEmail}
+          />
+        </Row>
+      </Row>
+    </Container>
+  );
+};
+
+function createOtpWizardStep({
+  t,
+  onClose,
+  ...viewProps
+}: OtpWizardStepFactoryDeps): Record<string, unknown> {
+  const OtpStepView = (): ReactElement => <OtpWizardStepView {...viewProps} />;
+
+  const EmptyButton = (): ReactElement => <></>;
+
+  const NextButton = (buttonProps?: WizardStepButtonProps): ReactElement => (
+    <Button
+      {...buttonProps}
+      label={t('commons.data_already_sent_to_the_user', 'DATA ALREADY SENT TO THE USER')}
+      icon="PersonOutline"
+      iconPlacement="right"
+      onClick={onClose}
+    />
+  );
+
+  return {
+    name: 'otp',
+    label: t('label.create_otp', 'CREATE OTP'),
+    icon: 'KeyOutline',
+    view: OtpStepView,
+    clickDisabled: true,
+    CancelButton: EmptyButton,
+    PrevButton: EmptyButton,
+    NextButton,
+  };
+}
+
+export const OtpWizard = ({ qrData, secrateCode, pinCodes, onClose }: OtpWizardProps) => {
+  const { form } = useAccountForm();
+  const values = useSelector(form.store, (s) => s.values as Record<string, any>);
+  const { data: domain } = useSelectedDomain();
+  const [t] = useTranslation();
+
   const wizardSteps = [
-    {
-      name: 'otp',
-      label: t('label.create_otp', 'CREATE OTP'),
-      icon: 'KeyOutline',
-      view: (): ReactElement => (
-        <Container mainAlignment="flex-start">
-          <Row
-            padding={{ top: 'large', left: 'large' }}
-            width="100%"
-            mainAlignment="space-between"
-          >
-            <Row width="40%" mainAlignment="flex-start">
-              <QRCodeSVG data-testid="qrcode-password" size={179} value={qrData} />
-            </Row>
-            <Row width="60%" mainAlignment="flex-start">
-              <Container>
-                <Padding top="large">
-                  <Row mainAlignment="center">
-                    <Row background="gray5" style={{ maxWidth: '350px' }}>
-                      <div className={styles.staticCodesWrapper}>
-                        {map(pinCodes, (singleCode: any) => (
-                          <label key={singleCode.code} className={styles.staticCode}>
-                            {singleCode.code}
-                          </label>
-                        ))}
-                      </div>
-                    </Row>
-                  </Row>
-                </Padding>
-              </Container>
-              <Container
-                orientation="horizontal"
-                width="99%"
-                crossAlignment="center"
-                mainAlignment="space-between"
-              >
-                <Row
-                  mainAlignment="center"
-                  width="100%"
-                  padding={{
-                    top: 'small',
-                    bottom: 'small',
-                  }}
-                >
-                  <ds-text as="h3">{t('account_details.secret_code', 'Secret Code')}</ds-text>
-                </Row>
-              </Container>
-              <Container
-                orientation="horizontal"
-                width="99%"
-                crossAlignment="center"
-                mainAlignment="space-between"
-              >
-                <Row
-                  mainAlignment="center"
-                  width="100%"
-                  padding={{
-                    top: 'small',
-                    bottom: 'small',
-                  }}
-                >
-                  <ds-text as="strong">{secrateCode}</ds-text>
-                </Row>
-              </Container>
-            </Row>
-          </Row>
-          <Container
-            orientation="horizontal"
-            width="99%"
-            crossAlignment="center"
-            mainAlignment="space-between"
-          >
-            <Row
-              mainAlignment="center"
-              width="100%"
-              padding={{
-                top: 'small',
-                bottom: 'small',
-              }}
-            >
-              <ds-text as="p">
-                {t(
-                  'account_details.please_note_code',
-                  `Please note: you'll be able to see these codes just once.`,
-                )}
-              </ds-text>
-            </Row>
-          </Container>
-          <Container
-            orientation="horizontal"
-            width="99%"
-            crossAlignment="center"
-            mainAlignment="space-between"
-          >
-            <Row
-              mainAlignment="center"
-              width="100%"
-              padding={{
-                top: 'small',
-                bottom: 'small',
-              }}
-            >
-              <ds-text as="p">
-                {t(
-                  'account_details.select_email_otp',
-                  `Select an email address to send the OTP to or copy the code above`,
-                )}
-              </ds-text>
-            </Row>
-          </Container>
-          <Row
-            padding={{ top: 'large', left: 'large' }}
-            width="100%"
-            mainAlignment="space-between"
-          >
-            <Row width="80%" mainAlignment="space-between" padding={{ right: 'large' }}>
-              <ChipInput
-                placeholder={t('account_details.send_the_otp_to', 'Send the OTP to')}
-                onChange={handleEmailChange}
-                value={sendEmailTo}
-                background="gray5"
-                ChipComponent={CustomChip}
-                maxChips={null}
-                hasError={hasEmailError}
-                data-testid="otp-email-input"
-              />
-              <ds-text as="strong" color="error" size="small">
-                {hasEmailError &&
-                  t(
-                    'domain.editAccount.invalidaEmailError',
-                    'One or more email addresses are invalid.',
-                  )}
-              </ds-text>
-            </Row>
-            <Row width="20%" mainAlignment="space-between">
-              <Button
-                label={t('account_details.send', 'SEND')}
-                icon="PaperPlaneOutline"
-                size="large"
-                iconPlacement="right"
-                disabled={isSendDisabled}
-                onClick={handleSendOTPEmail}
-              />
-            </Row>
-          </Row>
-        </Container>
-      ),
-      clickDisabled: true,
-      CancelButton: () => <></>,
-      PrevButton: (): ReactElement => <></>,
-      NextButton: (props: any) => (
-        <Button
-          {...props}
-          label={t('commons.data_already_sent_to_the_user', 'DATA ALREADY SENT TO THE USER')}
-          icon="PersonOutline"
-          iconPlacement="right"
-          onClick={(): void => onClose()}
-        />
-      ),
-    },
+    createOtpWizardStep({
+      t,
+      onClose,
+      qrData,
+      secrateCode,
+      pinCodes,
+      accountAddress: `${values?.name}@${domain?.name}`,
+      accountName: values?.name,
+    }),
   ];
 
   return (
