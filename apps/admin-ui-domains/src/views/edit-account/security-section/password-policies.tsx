@@ -31,7 +31,6 @@ type InheritedInputFieldProps = {
   setEmptyValue: (keyName: string) => void;
 };
 
-/** Module-level InheritedInput wrapper so the repeated policy fields share one definition. */
 function InheritedPolicyInput({
   label,
   inputName,
@@ -56,7 +55,6 @@ function InheritedPolicyInput({
   );
 }
 
-/** Password policy block: banner, composition/age/history requirements. */
 export const PasswordPolicies = () => {
   const { form, accSpecificDetail, cosDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

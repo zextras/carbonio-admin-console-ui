@@ -20,7 +20,6 @@ type AccountInfoFieldsProps = {
   onNavigateToAdministration: () => void;
 };
 
-/** Account identity block: quota bar, name parts, user@domain row, aliases, type badge, display name. */
 export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFieldsProps) => {
   const { form, otpList } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
@@ -37,7 +36,6 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
     }));
   };
 
-  // adjust during render: reseed the editable alias list when server data changes
   if (values?.mail !== prevMail) {
     setPrevMail(values?.mail);
     setAccountAliases(

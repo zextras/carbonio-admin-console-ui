@@ -13,11 +13,6 @@ import type { useRenameAccount } from '../../../services/use-rename-account';
 import type { useSetAccountQuota } from '../../../services/use-set-account-quota';
 import type { useSetPassword } from '../../../services/use-set-password';
 
-/**
- * Mutation hooks the save handlers orchestrate. Hooks own transport and their
- * own cache invalidation only; every user-facing snackbar is emitted through
- * the {@link SaveContext}.
- */
 export type SaveDeps = {
   setPassword: ReturnType<typeof useSetPassword>;
   renameAccount: ReturnType<typeof useRenameAccount>;
@@ -29,13 +24,12 @@ export type SaveDeps = {
   setCoreAttributes: (body: Record<string, unknown>) => Promise<unknown>;
 };
 
-/** User-facing side effects shared by every save handler. */
 export type SaveContext = {
   t: TFunction;
   successSnackbar: (label: string) => void;
   errorSnackbar: (label: string) => void;
   notifySaveError: (error?: { message?: string }) => void;
-  /** Flushes the admin-side account cache; resolves immediately for non-global admins. */
+
   flushAccountCache: () => Promise<void>;
   onSaved: () => void;
   onDomainRenamed: () => void;

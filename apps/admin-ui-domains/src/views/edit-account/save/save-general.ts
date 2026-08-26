@@ -13,13 +13,8 @@ import {
 } from '../../../constants';
 import type { SaveContext, SaveDeps } from './types';
 
-/** Sentinel stored on the form so the password field renders blocked after a set. */
 export const VALUE_BLOCKED = 'VALUE-BLOCKED';
 
-/**
- * Removes the distribution-list memberships backing revoked administration
- * rights. Fire-and-forget, matching the legacy flow.
- */
 export function saveAdministrationRights(
   values: Record<string, any>,
   modifiedKeys: Array<string>,
@@ -50,10 +45,6 @@ export function saveAdministrationRights(
   }
 }
 
-/**
- * Applies the core-attributes section (ABQ mode, backup flags), which goes
- * through the dedicated core-attributes endpoint instead of ModifyAccount.
- */
 export async function saveCoreAttributes(
   values: Record<string, any>,
   modifiedKeys: Array<string>,
@@ -101,12 +92,6 @@ export async function saveCoreAttributes(
   remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
 }
 
-/**
- * Applies every remaining modified attribute through ModifyAccount and then
- * finalizes the save (form reset to the saved baseline + query invalidation,
- * provided by the caller). When nothing remains — e.g. a password-only save —
- * it finalizes directly and masks the password field.
- */
 export async function saveRemainingAttributes(
   values: Record<string, any>,
   saved: Record<string, any>,

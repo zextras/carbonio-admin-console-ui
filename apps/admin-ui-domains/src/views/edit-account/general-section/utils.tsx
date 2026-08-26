@@ -71,12 +71,10 @@ export function filterSessions(list: Array<UserSession>, filter: string): Array<
   );
 }
 
-/** Formats a zimbra timestamp, falling back to the given label when missing. */
 export function formatZimbraDateOr(timestamp: string | undefined | null, fallback: string): string {
   return timestamp ? formatZimbraDate(timestamp) : fallback;
 }
 
-/** Snackbar config factory for the shared "something went wrong" error, preferring the error message. */
 export function somethingWrongSnackbarConfig(
   error: { message?: string },
   t: TFunction,
@@ -92,7 +90,6 @@ export function somethingWrongSnackbarConfig(
   };
 }
 
-/** Dropdown items for the domain picker; collapses to a filter hint past the display limit. */
 export function buildDomainDropdownItems(
   domainList: Array<objectType>,
   onSelectedDomain: (domain: string) => void,

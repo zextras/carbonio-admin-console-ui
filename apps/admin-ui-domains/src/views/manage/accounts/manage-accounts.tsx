@@ -69,7 +69,6 @@ type AccountListData = {
   total: number;
 };
 
-/** Projects the raw SearchDirectory response onto list + total for paging. */
 function selectAccountListWithTotal(res: any): AccountListData {
   return {
     accounts: parseAccountListDirectory(res),
@@ -77,7 +76,6 @@ function selectAccountListWithTotal(res: any): AccountListData {
   };
 }
 
-/** Combines the debounced free-text search with the active type/status filters into one LDAP query. */
 function buildSearchFilterQuery(searchStr: string, statusFilter: string, typeFilter: string): string {
   let filterQuery = '';
   if (typeFilter) {
@@ -95,7 +93,6 @@ function buildSearchFilterQuery(searchStr: string, statusFilter: string, typeFil
   return filterQuery;
 }
 
-/** Joins the selected filter values into a single (possibly alternated) LDAP query. */
 function joinFilterSelection(selection: Array<{ value: string }>): string {
   if (selection.length === 0) {
     return '';
@@ -294,7 +291,6 @@ export const ManageAccounts = () => {
     });
   };
 
-  // CreateAccount still reports through callbacks; refresh the cached count when it does.
   const handleAccountCreated = (created: boolean): void => {
     if (created) {
       void queryClient.invalidateQueries({ queryKey: domainQueryKeys.accountCount.base() });

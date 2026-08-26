@@ -25,10 +25,6 @@ type SimplifiedRightsListProps = {
 	refetchGrants: () => void;
 };
 
-/**
- * Revoke side of the simplified delegates view: the three rights tables
- * (read/write, read only, send) with per-row and bulk removal.
- */
 export const SimplifiedRightsList = ({
 	identitiesList,
 	identityRows,

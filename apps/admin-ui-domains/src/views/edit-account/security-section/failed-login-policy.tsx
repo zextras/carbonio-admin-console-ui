@@ -21,7 +21,6 @@ import {
   useToggleAccountValue,
 } from '../account-form-context';
 
-/** Failed login policy block: lockout switch, max failures, lockout duration and failure window. */
 export const FailedLoginPolicy = () => {
   const { form, accSpecificDetail, cosDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

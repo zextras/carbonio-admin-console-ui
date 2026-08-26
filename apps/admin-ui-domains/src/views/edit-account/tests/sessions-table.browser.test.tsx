@@ -107,7 +107,7 @@ describe('SessionsTable (browser)', () => {
     await page.getByRole('button', { name: /end session/i }).click();
 
     await expect.element(page.getByText('Session end successfully')).toBeVisible();
-    // the ended session disappears from the list
+
     await expect.element(page.getByText('session-1')).not.toBeInTheDocument();
     await expect.element(page.getByText('session-2')).toBeVisible();
 
@@ -151,7 +151,7 @@ describe('SessionsTable (browser)', () => {
     await page.getByRole('button', { name: /end session/i }).click();
 
     await expect.element(page.getByText('Session end failed')).toBeVisible();
-    // the session is still listed because the call failed
+
     await expect.element(page.getByText('session-1')).toBeVisible();
   });
 });

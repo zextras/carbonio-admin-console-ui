@@ -8,12 +8,6 @@ import { remove } from 'lodash-es';
 import { TOTAL_COMPUTED_QUOTA_LIMIT } from '../../../constants';
 import type { SaveContext, SaveDeps } from './types';
 
-/**
- * Applies the quota section of the account save (advanced builds only):
- * a `limited` value sets the account quota, an `unlimited`/cleared value
- * unsets it so the account inherits the COS/domain limit. The hook owns the
- * accountQuota/accountDetail invalidation; this handler owns the snackbars.
- */
 export function saveQuota(
   values: Record<string, any>,
   modifiedKeys: Array<string>,

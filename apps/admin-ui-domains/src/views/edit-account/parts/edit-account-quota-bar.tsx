@@ -28,7 +28,6 @@ type QuotaBarBreakdownProps = {
   status: QuotaStatus;
 };
 
-/** Storage-usage breakdown: title, size description, source icon, warnings and the segmented quota bar. */
 export const QuotaBarBreakdown = ({
   used,
   limit,
@@ -102,7 +101,6 @@ export const QuotaBarBreakdown = ({
   );
 };
 
-/** Container reading quota values from the account form; renders nothing outside advanced mode or without data. */
 export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   const isAdvanced = useIsAdvanced();
 

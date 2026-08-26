@@ -12,11 +12,6 @@ type FieldErrorProps = {
   description?: string;
 };
 
-/**
- * Error props for a create-account field. Field errors become visible when
- * the field was touched/blurred, or — for submit-level rules like the
- * required surname — as soon as the user attempted to submit the form.
- */
 export function getCreateAccountFieldErrorProps(
   field: AnyFieldApi,
   t: TFunction,

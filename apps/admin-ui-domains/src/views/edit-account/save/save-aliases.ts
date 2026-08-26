@@ -7,12 +7,6 @@ import { differenceBy, remove } from 'lodash-es';
 
 import type { SaveContext, SaveDeps } from './types';
 
-/**
- * Applies the alias section of the account save: aliases present in the saved
- * value but missing from the current one are removed, new ones are added.
- * Fire-and-forget, matching the legacy flow (each alias reports its own
- * error; the generic ModifyAccount call is not gated on alias results).
- */
 export function saveAliases(
   values: Record<string, any>,
   saved: Record<string, any>,

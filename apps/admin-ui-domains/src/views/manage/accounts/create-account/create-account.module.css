@@ -4,11 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/*
- * Replicates the panel styles previously produced by the deprecated
- * Container layout component wrapping the wizard.
- */
-
 .wizardPanel {
   display: flex;
   flex-direction: column;

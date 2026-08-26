@@ -55,7 +55,6 @@ type TextFieldLike = {
   handleChange: (value: string) => void;
 };
 
-/** Plain-text Input wired to a form field (module-level factory, props-driven). */
 function textField(field: TextFieldLike, label: string): ReactElement {
   return (
     <Input

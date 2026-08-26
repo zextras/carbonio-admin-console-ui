@@ -35,10 +35,6 @@ type SimplifiedRightsActionsProps = {
 	refetchGrants: () => void;
 };
 
-/**
- * Grant side of the simplified delegates view: directory chip search, the
- * read/send right checkboxes and the ADD button that submits the grant batch.
- */
 export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActionsProps) => {
 	const [t] = useTranslation();
 	const { form } = useAccountForm();

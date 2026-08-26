@@ -21,10 +21,6 @@ type CreateAccountFormTestProviderProps = {
   children: ReactElement;
 };
 
-/**
- * Browser-test harness that provides the CreateAccountFormContext backed by a
- * real TanStack form instance, so sections can be rendered in isolation.
- */
 export const CreateAccountFormTestProvider = ({
   values,
   submitAttempted = false,

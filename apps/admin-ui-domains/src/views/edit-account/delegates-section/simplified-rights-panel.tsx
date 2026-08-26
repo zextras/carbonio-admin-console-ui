@@ -16,10 +16,6 @@ type SimplifiedRightsPanelProps = {
 	refetchGrants: () => void;
 };
 
-/**
- * Simplified delegates view: chip search over the directory, right checkboxes
- * and the three rights tables (read/write, read only, send) with revoke.
- */
 export const SimplifiedRightsPanel = ({
 	identitiesList,
 	identityRows,

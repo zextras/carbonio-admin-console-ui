@@ -15,7 +15,6 @@ import {
 } from '../account-form-context';
 import { GracePeriodDatePicker } from './grace-period';
 
-/** Two-Factor setup enforcement: untrusted-network setup, grace-period deferral and its expiry date. */
 export const TwoFactorSettings = () => {
   const { form, accSpecificDetail, cosDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

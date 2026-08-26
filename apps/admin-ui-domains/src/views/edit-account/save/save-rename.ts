@@ -8,12 +8,6 @@ import { remove } from 'lodash-es';
 import { DOMAIN_NAME, UID } from '../../../constants';
 import type { SaveContext, SaveDeps } from './types';
 
-/**
- * Applies the rename section of the account save: when uid or domain changed,
- * submits `uid@domain` through `useRenameAccount` and reports back through
- * `onSaved` / `onDomainRenamed` (both fire exactly as in the legacy flow,
- * even when the rename request fails).
- */
 export async function saveRename(
   values: Record<string, any>,
   saved: Record<string, any>,

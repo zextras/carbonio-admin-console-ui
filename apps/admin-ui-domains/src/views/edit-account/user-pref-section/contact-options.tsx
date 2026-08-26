@@ -14,7 +14,6 @@ import {
   useToggleAccountValue,
 } from '../account-form-context';
 
-/** Contact Options block: auto-add contacts and GAL auto-fill switches. */
 export const ContactOptions = () => {
   const [t] = useTranslation();
   const { form, cosDetail, accSpecificDetail } = useAccountForm();

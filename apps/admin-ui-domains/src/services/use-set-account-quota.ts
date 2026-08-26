@@ -13,10 +13,7 @@ import { unsetAccountQuota } from './unset-account-quota';
 
 type SetAccountQuotaVars = {
   accountId: string;
-  /**
-   * Quota limit to set. An `unlimited` (or missing) limit unsets the stored
-   * quota so the account inherits the COS/domain value.
-   */
+
   limit?: ComputedLimit;
 };
 

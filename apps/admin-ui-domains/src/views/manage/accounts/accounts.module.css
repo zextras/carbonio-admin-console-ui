@@ -4,13 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/*
- * These classes replicate the runtime styles previously produced by the
- * deprecated Container/Row/Padding layout components (display:flex with the
- * same flex-direction/alignment/wrap/width/height/padding values), so the
- * rendered output is unchanged.
- */
-
 .page {
   display: flex;
   flex-direction: column;
@@ -101,7 +94,6 @@
   box-sizing: border-box;
 }
 
-/* keep the previous Container scrollbar styling for this scrollable area */
 .scrollArea::-webkit-scrollbar {
   width: 0.5rem;
 }

@@ -34,7 +34,6 @@ type OtpWizardProps = {
   onClose: () => void;
 };
 
-/** Create-OTP wizard shown after a TOTP is generated: QR, static codes, secret and email send. */
 export const OtpWizard = ({ qrData, secrateCode, pinCodes, onClose }: OtpWizardProps) => {
   const { form } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

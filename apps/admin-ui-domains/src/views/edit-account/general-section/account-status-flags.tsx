@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useAccountForm, useToggleAccountValue } from '../account-form-context';
 
-/** GAL visibility + forced password change row. */
 export const AccountStatusFlags = () => {
   const { form } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

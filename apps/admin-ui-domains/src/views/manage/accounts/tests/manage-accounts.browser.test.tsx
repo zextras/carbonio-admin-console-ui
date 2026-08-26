@@ -337,8 +337,6 @@ describe('ManageAccounts (browser)', () => {
             const searchInput = page.getByLabelText("I'm looking for this account…");
             await searchInput.fill('filtered');
 
-            // while the debounced request is still within its window the old
-            // rows are served from cache instead of an empty/loading state
             await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
         });
     });

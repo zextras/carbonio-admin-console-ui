@@ -26,7 +26,6 @@ type PasswordFieldRowProps = {
   tooltipLabel?: string;
 };
 
-/** Password input, optionally wrapped in the LDAP-management tooltip. */
 function PasswordFieldRow({
   label,
   inputName,
@@ -58,7 +57,6 @@ function PasswordFieldRow({
   );
 }
 
-/** Password block: password/repeat inputs (LDAP-aware), delete-from-LDAP button and confirmation modal. */
 export const PasswordFields = ({
   isHidePassword,
   allowedDeletePassword,

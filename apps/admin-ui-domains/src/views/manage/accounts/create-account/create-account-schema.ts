@@ -24,7 +24,7 @@ const phoneFieldSchema = (messageKey: string) =>
 
 export const createAccountSchema = z
   .object({
-    // Account
+
     name: z.string(),
     givenName: z.string(),
     initials: z.string(),
@@ -39,40 +39,33 @@ export const createAccountSchema = z
     zimbraPasswordMustChange: z.boolean(),
     zimbraAuthLdapExternalDn: z.string(),
 
-    // Settings
     defaultCOS: z.boolean(),
     zimbraAccountStatus: z.string(),
     zimbraCOSId: z.string(),
     zimbraPrefLocale: z.string(),
     zimbraPrefTimeZoneId: z.string(),
 
-    // Description & Notes
     description: z.string(),
     zimbraNotes: z.string(),
 
-    // Phone
     telephoneNumber: phoneFieldSchema('domain.accounts.phoneNumber.tooltip'),
     homePhone: phoneFieldSchema('domain.accounts.phoneNumber.tooltip'),
     mobile: phoneFieldSchema('domain.accounts.phoneNumber.tooltip'),
     pager: phoneFieldSchema('domain.accounts.phoneNumber.tooltip'),
     facsimileTelephoneNumber: phoneFieldSchema('domain.accounts.phoneNumber.tooltip'),
 
-    // Company
     company: z.string(),
     title: z.string(),
 
-    // Address
     co: z.string(),
     l: z.string(),
     st: z.string(),
     postalCode: z.string(),
     street: z.string(),
 
-    // Internal auto-fill flags
     changeNameBool: z.boolean(),
     changeDisplayNameBool: z.boolean(),
 
-    // OTP step
     generateOTP: z.boolean(),
     administrationRigths: z.boolean(),
     qrData: z.string(),
@@ -80,7 +73,6 @@ export const createAccountSchema = z
     pinCodes: z.array(z.object({ code: z.string() })),
     showOtpOptionSection: z.boolean(),
 
-    // Created account (filled after CreateAccount succeeds)
     id: z.string(),
   })
   .refine((data) => data.password === data.repeatPassword, {

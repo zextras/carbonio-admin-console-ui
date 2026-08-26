@@ -247,7 +247,6 @@ export function useAccountFormProvider({
     );
   };
 
-  // save-flow mutations: hooks own transport + cache invalidation only
   const saveDeps: SaveDeps = {
     setPassword: useSetPassword(),
     renameAccount: useRenameAccount(),
@@ -258,7 +257,6 @@ export function useAccountFormProvider({
     removeDistributionListMember: useRemoveDistributionListMember(account.id),
     setCoreAttributes,
   };
-
 
   const form = useForm({
     defaultValues: {
@@ -356,7 +354,6 @@ export function useAccountFormProvider({
     setBaseline(nextBaseline);
   }
 
-  // sync form with server data while the user has not touched it yet
   useEffect(() => {
     if (!accountDetailData) {
       return;
@@ -367,7 +364,6 @@ export function useAccountFormProvider({
     form.reset(buildAccountFormValues(accountDetailData), { keepDefaultValues: false });
   }, [accountDetailData, form]);
 
-  // merge quota data once it lands (while untouched)
   useEffect(() => {
     if (!accountQuota) {
       return;

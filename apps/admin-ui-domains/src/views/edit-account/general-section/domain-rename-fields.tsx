@@ -19,7 +19,6 @@ type DomainSearchResponse = {
   domain?: Array<{ id: string; name: string }>;
 };
 
-/** Account uid + domain picker row: typing filters domains (debounced), picking renames the account domain. */
 export const DomainRenameFields = () => {
   const { form } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
@@ -62,8 +61,6 @@ export const DomainRenameFields = () => {
     }
   }, [isError, error, createSnackbar, t]);
 
-  // adjust during render: mirror the account's domain into the dropdown label
-  // when server data changes (picking from the dropdown is handled by selectedDomain)
   const [prevFormDomainName, setPrevFormDomainName] = useState<string | undefined>(undefined);
   if (values?.domainName !== prevFormDomainName) {
     setPrevFormDomainName(values?.domainName);

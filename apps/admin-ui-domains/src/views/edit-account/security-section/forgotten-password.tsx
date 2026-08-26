@@ -16,7 +16,6 @@ import {
   useToggleAccountValue,
 } from '../account-form-context';
 
-/** Forgotten password block: reset-password token switch, recovery email and its status. */
 export const ForgottenPassword = () => {
   const { form } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

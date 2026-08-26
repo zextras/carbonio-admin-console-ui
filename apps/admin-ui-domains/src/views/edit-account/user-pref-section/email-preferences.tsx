@@ -24,7 +24,6 @@ import {
   useToggleAccountValue,
 } from '../account-form-context';
 
-/** Mail Options + Receiving Mails blocks: view/grouping/charset switches, polling, out-of-office and read receipts. */
 export const EmailPreferences = () => {
   const [t] = useTranslation();
   const { form, cosDetail, accSpecificDetail } = useAccountForm();

@@ -23,7 +23,6 @@ import { useEndSession } from '../../../services/use-end-session';
 import { useAccountForm } from '../account-form-context';
 import { filterSessions, somethingWrongSnackbarConfig, UserSession } from './utils';
 
-/** Active sessions block: filter, table and End Session (delegate-auth token + endSession call). */
 export const SessionsTable = () => {
   const { form, sessions } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

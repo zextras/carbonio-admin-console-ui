@@ -41,11 +41,6 @@ export const deleteTotp = (account: string, id: string): Promise<TotpMutationRes
     id,
   });
 
-/**
- * Restores a deleted TOTP. `fetchSoap` already unwraps and JSON-parses
- * `Body.response.content`; the nested `response.content` shape is parsed here
- * so every wrapping seen in the wild resolves to a plain `{ ok }` object.
- */
 export const restoreTotp = async (account: string, id: string): Promise<TotpMutationResponse> => {
   const res = await fetchSoap('zextras', {
     _jsns: ZIMBRA_ADMIN_URN,

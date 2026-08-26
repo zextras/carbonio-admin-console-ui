@@ -9,12 +9,6 @@ import type { SaveContext, SaveDeps } from './types';
 
 export type PasswordChangeResult = 'skipped' | 'changed' | 'invalid';
 
-/**
- * Applies the password section of the account save:
- * validates length and match, submits through `useSetPassword` and removes
- * the password keys from `modifiedKeys` so they are not sent again with the
- * generic ModifyAccount call.
- */
 export async function savePassword(
   values: Record<string, any>,
   saved: Record<string, any>,

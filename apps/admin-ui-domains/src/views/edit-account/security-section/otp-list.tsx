@@ -37,7 +37,6 @@ type OtpListProps = {
   onGenerate: () => void;
 };
 
-/** OTP management block: 2FA switch, NEW OTP/DELETE actions, devices table and restore dialog. */
 export const OtpList = ({ onGenerate }: OtpListProps) => {
   const { form, otpList, accSpecificDetail, cosDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

@@ -29,7 +29,6 @@ type CreateAccountSoapResponse = {
   account?: Array<{ id?: string; name?: string }>;
 };
 
-/** Mirrors the attribute payload of the legacy create flow, key for key. */
 function buildCreateAccountAttributes(value: CreateAccountFormValues): Record<string, string> {
   return {
     givenName: value.givenName,

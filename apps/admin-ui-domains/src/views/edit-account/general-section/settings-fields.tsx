@@ -16,7 +16,6 @@ import {
   useSetAccountValues,
 } from '../account-form-context';
 
-/** Settings block: account status, language (inherited from COS) and default-COS selection. */
 export const SettingsFields = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
@@ -34,8 +33,6 @@ export const SettingsFields = () => {
   }));
   const defaultCosId = cosItems.find((item: any) => item.label === DEFAULT)?.value;
 
-  // adjust during render: hydrate the Default COS toggle once account and
-  // COS list data are both available
   if (!cosDefaultStateSet && values?.zimbraCOSId && values.zimbraCOSId === defaultCosId) {
     setCosDefaultStateSet(true);
     setDefaultCOS(true);

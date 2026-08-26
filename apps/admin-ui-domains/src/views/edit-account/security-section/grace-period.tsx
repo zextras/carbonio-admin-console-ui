@@ -13,7 +13,6 @@ import {
   useSetAccountValues,
 } from '../account-form-context';
 
-/** Default grace-period date: the stored ending time when parseable, else one month out when enabled. */
 export function computeGracePeriodDefaultDate(
   gentimeValue: string | undefined,
   enabled: string | undefined,
@@ -41,7 +40,6 @@ export function computeGracePeriodDefaultDate(
   return null;
 }
 
-/** Grace-period expiration date picker; writes the Zimbra gentime string back to the form. */
 export const GracePeriodDatePicker = () => {
   const { form, accSpecificDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
@@ -57,8 +55,7 @@ export const GracePeriodDatePicker = () => {
   const [fromDate, setFromDate] = useState<Date | null>(() =>
     computeGracePeriodDefaultDate(graceGentime, graceEnabled),
   );
-  // adjust during render: reseed the picked date when the default inputs change
-  // (keyed on the inputs: Date objects have unstable identity across renders)
+
   const [prevGraceGentime, setPrevGraceGentime] = useState(graceGentime);
   const [prevGraceEnabled, setPrevGraceEnabled] = useState(graceEnabled);
   if (prevGraceGentime !== graceGentime || prevGraceEnabled !== graceEnabled) {

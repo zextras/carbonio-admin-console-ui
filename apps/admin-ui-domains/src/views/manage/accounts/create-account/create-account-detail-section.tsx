@@ -54,7 +54,6 @@ export const ExternalLdapField = (): ReactElement => {
   );
 };
 
-/** Details step of the create-account wizard: composition of the field sections. */
 const CreateAccountDetailSection = (): ReactElement => {
   const { data: domain } = useSelectedDomain();
   const extLdapAuth = hasExternalLdapUrl(domain?.a);

@@ -9,12 +9,6 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { domainQueryKeys } from './domain-query-keys';
 import { deleteTotp, generateTotp, restoreTotp } from './otp-service';
 
-/**
- * TOTP mutations for an account. Hooks own invalidation only; snackbars are
- * shown at the call site via `mutate(vars, { onSuccess, onError })`
- * (recorded repo convention).
- */
-
 export const useGenerateTotp = () => {
   const queryClient = useQueryClient();
   return useMutation({

@@ -21,7 +21,6 @@ export type AccountRow = {
 
 type AccountAttribute = { n?: string; _content?: string; pd?: boolean };
 
-/** LDAP flags used to derive the account type, in priority order. */
 const ACCOUNT_TYPE_FLAGS: Array<[key: string, label: string]> = [
   ['zimbraIsAdminAccount', 'Admin'],
   ['zimbraIsDelegatedAdminAccount', 'DelegatedAdmin'],
@@ -34,13 +33,6 @@ export function getAccountUserType(item: AccountRowItem): string {
   return matchedType ? matchedType[1] : 'Normal';
 }
 
-/**
- * Flattens the SearchDirectory attribute list onto the raw entry:
- * `mail` values are collected into an array (primary first, aliases after),
- * a provisioned-delegated admin flag coerces to `TRUE`, every other
- * attribute is stored by name. The flattened item is what the account
- * editor receives as `account`.
- */
 export function flattenAccountAttributes(item: AccountListEntry): AccountRowItem {
   const flattened: Record<string, unknown> = { ...item };
   const attributes = (item.a as Array<AccountAttribute> | undefined) ?? [];

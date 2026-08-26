@@ -11,7 +11,7 @@ import type { CreateAccountFormApi } from './create-account-types';
 export type CreateAccountFormContextValue = {
   form: CreateAccountFormApi;
   setShowCreateAccountView: (value: boolean) => void;
-  /** True once the user pressed CREATE; makes field errors visible on untouched fields. */
+
   submitAttempted: boolean;
 };
 

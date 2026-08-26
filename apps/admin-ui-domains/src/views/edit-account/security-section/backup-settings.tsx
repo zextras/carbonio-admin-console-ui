@@ -9,7 +9,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useAccountForm, useToggleAccountValue } from '../account-form-context';
 
-/** Backup section: allow the user to restore their own messages. */
 export const BackupSettings = () => {
   const { form } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

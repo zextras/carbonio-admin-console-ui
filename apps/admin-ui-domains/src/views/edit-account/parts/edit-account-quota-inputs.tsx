@@ -94,7 +94,6 @@ function createRevertIcon(
   };
 }
 
-/** Editable total-quota limit: GB input with unlimited switch, domain constraint validation and revert-to-inherited. */
 export const QuotaLimitInput = ({
   totalComputedQuotaLimit,
   initialTotalComputedQuotaLimit,
@@ -226,7 +225,6 @@ type EditAccountQuotaInputsProps = {
   setAccountDetail: Dispatch<SetStateAction<AccountDetail>>;
 };
 
-/** Adapter mapping the account form values onto {@link QuotaLimitInput}. */
 export const EditAccountQuotaInputs = ({
   accountDetail,
   cosDetail,

@@ -13,7 +13,6 @@ import { useAccountForm, useSetAccountValues } from '../account-form-context';
 import { EditAccountQuotaInputs } from '../parts/edit-account-quota-inputs';
 import { formatZimbraDateOr } from './utils';
 
-/** Advanced quota/backup block: ABQ + backup selects, quota inputs, server/ID and account dates. */
 export const QuotaDisplay = () => {
   const { form, cosDetail, savedValues } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);

@@ -19,7 +19,6 @@ import {
 import { SignatureDetail } from '../signature-detail/signature-detail';
 import { chipsToValue, useChipList } from '../use-chip-list';
 
-/** Sending Mails + Composing Mails blocks: save-to-sent, allowed sending addresses, read-receipt switch and signature. */
 export const SendingOptions = () => {
   const [t] = useTranslation();
   const { form, cosDetail, accSpecificDetail, signatureList } = useAccountForm();

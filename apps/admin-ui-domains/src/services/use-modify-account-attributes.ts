@@ -13,11 +13,6 @@ type ModifyAccountAttributesVars = {
   modifiedData: Record<string, any>;
 };
 
-/**
- * Generic account attribute modification for the edit-account save flow.
- * The hook is transport-only: cache invalidation and snackbars are owned by
- * the save handler that orchestrates it (`views/edit-account/save/`).
- */
 export function useModifyAccountAttributes() {
   return useMutation({
     mutationFn: (vars: ModifyAccountAttributesVars) =>
