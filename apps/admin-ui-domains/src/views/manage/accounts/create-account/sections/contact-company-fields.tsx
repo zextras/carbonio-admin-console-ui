@@ -19,10 +19,10 @@ function PhoneInputField({
   label,
   tooltipLabel,
 }: {
-  form: AnyFormApi;
-  name: 'telephoneNumber' | 'homePhone' | 'mobile' | 'pager' | 'facsimileTelephoneNumber';
-  label: string;
-  tooltipLabel: string;
+  readonly form: AnyFormApi;
+  readonly name: 'telephoneNumber' | 'homePhone' | 'mobile' | 'pager' | 'facsimileTelephoneNumber';
+  readonly label: string;
+  readonly tooltipLabel: string;
 }): ReactElement {
   const [t] = useTranslation();
   const field = useField({ form, name });
