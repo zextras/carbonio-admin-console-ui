@@ -7,7 +7,7 @@ import { useSelector } from '@tanstack/react-store';
 import { Input, LabeledValue, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import ManageAliases from '../../components/manageAliases';
@@ -19,6 +19,20 @@ import { getAccountUserType } from './utils';
 type AccountInfoFieldsProps = {
   onNavigateToAdministration: () => void;
 };
+
+function createNavigateToAdministrationIcon(onNavigate: () => void): () => ReactElement {
+  return function NavigateToAdministrationIcon() {
+    return (
+      <ds-icon
+        icon="DiagonalArrowRightUp"
+        onClick={onNavigate}
+        style={{ cursor: 'pointer' }}
+        size="large"
+        onChange={(): null => null}
+      ></ds-icon>
+    );
+  };
+}
 
 export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFieldsProps) => {
   const { form, otpList } = useAccountForm();
@@ -115,20 +129,12 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
           <LabeledValue
             label={t('label.type', 'Type')}
             value={accountUserType}
-            CustomIcon={(): any => (
-              <ds-icon
-                icon="DiagonalArrowRightUp"
-                onClick={(): void => onNavigateToAdministration()}
-                style={{ cursor: 'pointer' }}
-                size="large"
-                onChange={(): null => null}
-              ></ds-icon>
-            )}
+            CustomIcon={createNavigateToAdministrationIcon(onNavigateToAdministration)}
           />
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
-        <Row width={!isAdvanced ? '100%' : '49%'} mainAlignment="flex-start">
+        <Row width={isAdvanced ? '49%' : '100%'} mainAlignment="flex-start">
           <Input
             label={t('label.advance_edit_display_name', 'Display Name')}
             backgroundColor="gray5"
