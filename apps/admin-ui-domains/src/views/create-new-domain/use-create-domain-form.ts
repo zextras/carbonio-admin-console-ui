@@ -44,7 +44,7 @@ function buildCreateDomainAttributes(value: CreateDomainFormValues): Array<Attri
     { n: 'zimbraDomainStatus', _content: ACTIVE },
     { n: 'zimbraPublicServiceProtocol', _content: HTTPS },
     { n: 'carbonioNotificationFrom', _content: value.carbonioNotificationFrom },
-    ...(value.zimbraDomainDefaultCOSId !== ''
+    ...(value.zimbraDomainDefaultCOSId
       ? [{ n: 'zimbraDomainDefaultCOSId', _content: value.zimbraDomainDefaultCOSId }]
       : []),
     ...value.carbonioNotificationRecipients.map((recipient) => ({
