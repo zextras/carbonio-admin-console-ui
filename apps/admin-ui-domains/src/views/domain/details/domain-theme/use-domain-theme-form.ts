@@ -10,9 +10,9 @@ import { domainByIdKey } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import { useEffect, useRef } from 'react';
 
+import type { themeConfigStore } from '../../../../../types/domain';
 import { ZIMBRA_ADMIN_URN } from '../../../../constants';
 import { useModifyDomain } from '../../../../services/use-modify-domain';
-import type { themeConfigStore } from '../../../../../types/domain';
 import {
   buildDomainResetValues,
   buildDomainWhiteLabelResetAttributes,
