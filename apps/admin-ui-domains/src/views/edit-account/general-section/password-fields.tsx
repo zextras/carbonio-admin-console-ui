@@ -18,12 +18,12 @@ import {
 import { somethingWrongSnackbarConfig } from './utils';
 
 type PasswordFieldRowProps = {
-  label: string;
-  inputName: string;
-  value: string | undefined;
-  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  disabled: boolean;
-  tooltipLabel?: string;
+  readonly label: string;
+  readonly inputName: string;
+  readonly value: string | undefined;
+  readonly onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  readonly disabled: boolean;
+  readonly tooltipLabel?: string;
 };
 
 function PasswordFieldRow({
