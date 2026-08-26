@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -13,25 +14,29 @@ import {
   RadioGroup,
   Row,
   Select,
-  useSnackbar,
 } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
 import { type ChangeEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
-import { addAddressBook } from '../../../../services/add-address-book';
-import { getMailboxContactFolders } from '../../../../services/get-mailbox-contact-folders';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import type { AddressBookEntry } from '../../../../../types';
+import {
+  useAddAddressBook,
+  useAddressBookAccountSearch,
+  useMailboxContactFolders,
+} from '../../../../services/use-domain-address-book';
 import { isValidEmail } from '../../../utility/utils';
+import { entryHasAllShared, getFolderSelectLabel, getLinkedFolderIds } from './address-book-folder-utils';
+import {
+  EXPOSE_ADDRESS_BOOK_DEFAULT_VALUES,
+  type FolderMode,
+} from './expose-address-book-schema';
+import { useExposeAddressBookForm } from './use-expose-address-book-form';
 
 type AddAddressBookPanelProps = {
   domainName: string;
   existingEntries: Array<AddressBookEntry>;
   onClose: () => void;
-  onAdded: () => void;
 };
 
 type FolderSelectItem = {
@@ -39,67 +44,39 @@ type FolderSelectItem = {
   value: string;
 };
 
-type FolderMode = 'all' | 'specific';
-
-type TranslateFn = (key: string, defaultValue: string) => string;
-
-function getLinkedFolderIds(entry: AddressBookEntry | undefined): Array<string> {
-  if (!entry) {
-    return [];
-  }
-  return (entry.folders ?? []).map((folder) => String(folder.id));
-}
-
-function getFolderSelectLabel(name: string, isShared: boolean, sharedLabel: string): string {
-  if (isShared) {
-    return `${name} (${sharedLabel})`;
-  }
-  return name;
-}
-
-function getAccountError(account: string, t: TranslateFn): string | null {
-  const trimmed = account.trim();
-  if (trimmed === '') {
-    return t('label.account_is_required', 'Account is required');
-  }
-  if (isValidEmail(trimmed)) {
-    return null;
-  }
-  return t('label.enter_a_valid_email_address', 'Enter a valid email address');
-}
-
-export function AddAddressBookPanel({
+export const AddAddressBookPanel = ({
   domainName,
   existingEntries,
   onClose,
-  onAdded,
-}: Readonly<AddAddressBookPanelProps>) {
+}: Readonly<AddAddressBookPanelProps>) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-
-  const [account, setAccount] = useState('');
-  const [selectedAccount, setSelectedAccount] = useState('');
-  const [searchResults, setSearchResults] = useState<Array<{ id: string; name: string }>>([]);
-  const [folderMode, setFolderMode] = useState<FolderMode>('all');
-  const [folderItems, setFolderItems] = useState<Array<FolderSelectItem>>([]);
-  const [selectedFolder, setSelectedFolder] = useState<FolderSelectItem | undefined>(undefined);
-  const [isLoadingFolders, setIsLoadingFolders] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const addAddressBookMutation = useAddAddressBook();
+  const [searchKeyword, setSearchKeyword] = useState('');
   const [accountTouched, setAccountTouched] = useState(false);
   const [folderTouched, setFolderTouched] = useState(false);
+
+  const form = useExposeAddressBookForm(false, EXPOSE_ADDRESS_BOOK_DEFAULT_VALUES);
+  const account = useSelector(form.store, (state) => state.values.account);
+  const selectedAccount = useSelector(form.store, (state) => state.values.selectedAccount);
+  const folderMode = useSelector(form.store, (state) => state.values.folderMode);
+  const folderId = useSelector(form.store, (state) => state.values.folderId);
 
   const existingEntry = existingEntries.find(
     (entry) => entry.account === selectedAccount || entry.account === account.trim(),
   );
   const linkedFolderIds = getLinkedFolderIds(existingEntry);
-  const hasAllShared = linkedFolderIds.includes('all');
-
-  const accountError = getAccountError(account, t);
+  const hasAllShared = entryHasAllShared(existingEntry);
+  const hasValidSelectedAccount = selectedAccount !== '' && isValidEmail(selectedAccount);
+  const accountError =
+    account.trim() === ''
+      ? t('label.account_is_required', 'Account is required')
+      : isValidEmail(account)
+        ? null
+        : t('label.enter_a_valid_email_address', 'Enter a valid email address');
   const folderError =
-    folderMode === 'specific' && !selectedFolder?.value
+    folderMode === 'specific' && folderId === ''
       ? t('label.select_an_address_book', 'Select an address book')
       : null;
-  const hasValidSelectedAccount = selectedAccount !== '' && isValidEmail(selectedAccount);
   const allAlreadySharedError =
     hasValidSelectedAccount && folderMode === 'all' && hasAllShared
       ? t(
@@ -107,52 +84,32 @@ export function AddAddressBookPanel({
           'All address books of this account are already exposed.',
         )
       : null;
+  const mailboxQuery = useMailboxContactFolders(selectedAccount, hasValidSelectedAccount);
+  const isLoadingFolders = mailboxQuery.isFetching;
+  const sharedLabel = t('label.shared', 'Shared');
+  const folderItems: Array<FolderSelectItem> = (mailboxQuery.data ?? [])
+    .filter((folder) => !linkedFolderIds.includes(String(folder.id)))
+    .map((folder) => ({
+      label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
+      value: String(folder.id),
+    }));
+  const selectedFolder = folderItems.find((item) => item.value === folderId);
   const canSubmit =
     !accountError &&
     !folderError &&
     !allAlreadySharedError &&
     hasValidSelectedAccount &&
     !isLoadingFolders;
-  const sharedLabel = t('label.shared', 'Shared');
+  const searchQuery = useAddressBookAccountSearch(
+    domainName,
+    account !== '' && account !== selectedAccount ? searchKeyword : '',
+  );
 
-  function getSearchAccountList(searchKeyword: string): void {
-    const attrs =
-      'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-    const types = 'accounts';
-    const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${searchKeyword}*)(cn=*${searchKeyword}*)(sn=*${searchKeyword}*)(gn=*${searchKeyword}*)(displayName=*${searchKeyword}*)(zimbraMailDeliveryAddress=*${searchKeyword}*)(zimbraMailAlias=*${searchKeyword}*)(uid=*${searchKeyword}*)))`;
-
-    searchDirectory({
-      attr: attrs,
-      type: types,
-      domainName,
-      query,
-      offset: 0,
-      limit: RECORD_DISPLAY_LIMIT,
-      sortBy: 'name',
-    })
-      .then((data) => {
-        const accounts = data?.account ?? [];
-        setSearchResults(
-          (Array.isArray(accounts) ? accounts : [accounts]).map(
-            (item: { id: string; name: string }) => ({
-              id: item.id,
-              name: item.name,
-            }),
-          ),
-        );
-      })
-      .catch((error: Error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-      });
-  }
-
-  const getSearchAccountListRef = useRef(getSearchAccountList);
-  getSearchAccountListRef.current = getSearchAccountList;
-
+  const setSearchKeywordRef = useRef(setSearchKeyword);
+  setSearchKeywordRef.current = setSearchKeyword;
   const searchAccountCallRef = useRef(
-    debounce((searchKeyword: string) => {
-      getSearchAccountListRef.current(searchKeyword);
+    debounce((searchValue: string) => {
+      setSearchKeywordRef.current(searchValue);
     }, 700),
   );
 
@@ -166,90 +123,29 @@ export function AddAddressBookPanel({
   useEffect(() => {
     if (account !== '' && account !== selectedAccount) {
       searchAccountCallRef.current(account);
-    } else if (account === '') {
+    } else {
       searchAccountCallRef.current.cancel();
-      setSearchResults([]);
+      setSearchKeyword('');
     }
   }, [account, selectedAccount]);
 
-  useEffect(() => {
-    if (!hasValidSelectedAccount) {
-      setFolderItems([]);
-      setSelectedFolder(undefined);
-      setIsLoadingFolders(false);
-      return;
-    }
-
-    let cancelled = false;
-    setIsLoadingFolders(true);
-    setFolderItems([]);
-    setSelectedFolder(undefined);
-
-    getMailboxContactFolders({ account: selectedAccount })
-      .then((folders: Array<AddressBookFolder>) => {
-        if (cancelled) {
-          return;
-        }
-        const linkedIds = new Set(
-          getLinkedFolderIds(
-            existingEntries.find(
-              (entry) =>
-                entry.account === selectedAccount || entry.accountId === selectedAccount,
-            ),
-          ),
-        );
-        const items = folders
-          .filter((folder) => !linkedIds.has(String(folder.id)))
-          .map((folder) => ({
-            label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
-            value: String(folder.id),
-          }));
-        setFolderItems(items);
-      })
-      .catch((error: Error) => {
-        if (cancelled) {
-          return;
-        }
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        if (!cancelled) {
-          setIsLoadingFolders(false);
-        }
-      });
-
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- fetch folders when selected account changes
-  }, [hasValidSelectedAccount, selectedAccount, existingEntries]);
-
   function selectAccount(accountName: string): void {
-    setAccount(accountName);
-    setSelectedAccount(accountName);
+    form.setFieldValue('account', accountName);
+    form.setFieldValue('selectedAccount', accountName);
+    form.setFieldValue('folderMode', 'all');
+    form.setFieldValue('folderId', '');
     setAccountTouched(true);
-    setFolderMode('all');
     setFolderTouched(false);
-    setSearchResults([]);
+    setSearchKeyword('');
   }
 
   function onAccountInputChange(value: string): void {
-    setAccount(value);
+    form.setFieldValue('account', value);
     setAccountTouched(true);
     if (value.trim() !== selectedAccount) {
-      setSelectedAccount('');
-      setFolderItems([]);
-      setSelectedFolder(undefined);
-      setFolderMode('all');
+      form.setFieldValue('selectedAccount', '');
+      form.setFieldValue('folderId', '');
+      form.setFieldValue('folderMode', 'all');
     }
   }
 
@@ -259,41 +155,14 @@ export function AddAddressBookPanel({
     if (!canSubmit || allAlreadySharedError) {
       return;
     }
-
-    const folder = folderMode === 'all' ? 'all' : String(selectedFolder?.value);
-    setIsSubmitting(true);
-    addAddressBook({
-      domain: domainName,
-      account: selectedAccount,
-      folder,
-    })
-      .then(() => {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.address_book_exposed', 'Address book exposed'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        onAdded();
-        onClose();
-      })
-      .catch((error: Error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        setIsSubmitting(false);
-      });
+    addAddressBookMutation.mutate(
+      {
+        domain: domainName,
+        account: selectedAccount,
+        folder: folderMode === 'all' ? 'all' : folderId,
+      },
+      { onSuccess: onClose },
+    );
   }
 
   function renderSpecificFolderSection(): ReactNode {
@@ -317,8 +186,7 @@ export function AddAddressBookPanel({
             defaultSelection={selectedFolder}
             onChange={(value: string | null): void => {
               setFolderTouched(true);
-              const next = folderItems.find((item) => item.value === value);
-              setSelectedFolder(next);
+              form.setFieldValue('folderId', value ?? '');
             }}
           />
           {folderTouched && folderError && (
@@ -337,7 +205,7 @@ export function AddAddressBookPanel({
     );
   }
 
-  const dropdownItems = searchResults.map((item) => ({
+  const dropdownItems = (searchQuery.data ?? []).map((item) => ({
     id: item.id,
     label: item.name,
     customComponent: (
@@ -375,7 +243,13 @@ export function AddAddressBookPanel({
         <ds-text as="h2" size="medium" weight="bold" color="gray0">
           {t('label.expose_a_new_address_book', 'Expose a new address book')}
         </ds-text>
-        <Button type="ghost" color="secondary" icon="CloseOutline" onClick={onClose} />
+        <Button
+          type="ghost"
+          color="secondary"
+          icon="CloseOutline"
+          aria-label={t('label.close', 'Close')}
+          onClick={onClose}
+        />
       </Row>
       <Row width="100%">
         <ds-divider color="gray3"></ds-divider>
@@ -397,10 +271,7 @@ export function AddAddressBookPanel({
           <DropDownInput
             width="100%"
             items={dropdownItems}
-            inputLabel={t(
-              'label.start_typing_an_account_email',
-              'Start typing an account e-mail',
-            )}
+            inputLabel={t('label.start_typing_an_account_email', 'Start typing an account e-mail')}
             size="medium"
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               onAccountInputChange(e.target.value);
@@ -426,7 +297,7 @@ export function AddAddressBookPanel({
           value={folderMode}
           onChange={(value: string | undefined): void => {
             if (value === 'all' || value === 'specific') {
-              setFolderMode(value);
+              form.setFieldValue('folderMode', value satisfies FolderMode);
             }
           }}
         >
@@ -476,16 +347,16 @@ export function AddAddressBookPanel({
           color="secondary"
           type="outlined"
           onClick={onClose}
-          disabled={isSubmitting}
+          disabled={addAddressBookMutation.isPending}
         />
         <Button
           label={t('label.add', 'Add')}
           color="primary"
           onClick={onSubmit}
-          loading={isSubmitting}
-          disabled={isSubmitting || !canSubmit}
+          loading={addAddressBookMutation.isPending}
+          disabled={addAddressBookMutation.isPending || !canSubmit}
         />
       </Row>
     </Container>
   );
-}
+};
