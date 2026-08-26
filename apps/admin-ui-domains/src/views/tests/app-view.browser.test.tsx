@@ -88,7 +88,7 @@ describe('AppView', () => {
       grantRights: 'config',
     });
 
-    await expect.element(page.getByText('New Domain')).toBeVisible();
+    await expect.element(page.getByText('New Domain', { exact: true })).toBeVisible();
   });
 
   it('renders the global settings panel on /global/settings', async () => {

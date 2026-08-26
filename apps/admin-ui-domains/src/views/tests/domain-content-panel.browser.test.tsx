@@ -92,7 +92,7 @@ function MockDomainAddressBook() {
 }
 
 vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
-vi.mock('../domain/create-new-domain', () => ({ default: MockCreateNewDomain }));
+vi.mock('../create-new-domain/create-new-domain', () => ({ CreateDomain: MockCreateNewDomain }));
 vi.mock('../global/global-detail-panel/global-detail-panel', () => ({
   GlobalDetailPanel: MockGlobalDetailPanel,
 }));
