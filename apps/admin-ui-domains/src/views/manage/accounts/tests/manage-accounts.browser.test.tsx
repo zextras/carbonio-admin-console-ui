@@ -16,7 +16,7 @@ import { beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import ManageAccounts from '../manage-accounts';
+import { ManageAccounts } from '../manage-accounts';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
@@ -95,8 +95,11 @@ const ACCOUNTS: Array<AccountEntry> = [
 
 function setupSearchDirectoryInterceptor(
     accounts: Array<AccountEntry> = ACCOUNTS,
-): Promise<unknown> {
-    return createBrowserSoapAPIInterceptor('SearchDirectory', {
+): Promise<{ query?: string; offset?: number } & Record<string, unknown>> {
+    return createBrowserSoapAPIInterceptor<
+        { query?: string; offset?: number } & Record<string, unknown>,
+        Record<string, unknown>
+    >('SearchDirectory', {
         account: accounts,
         searchTotal: accounts.length,
         more: false,
@@ -275,6 +278,68 @@ describe('ManageAccounts (browser)', () => {
             await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
             await userEvent.type(searchInput, 'admin');
             await expect.element(searchInput).toHaveValue('admin');
+        });
+
+        it('should not refetch while the debounce window is still running', async () => {
+            setupCountAccountInterceptor();
+            const initialRequest = setupSearchDirectoryInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await initialRequest;
+            await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+
+            const nextRequest = setupSearchDirectoryInterceptor([
+                buildAccount('filtered@example.com', 'acc-filtered'),
+            ]);
+            const searchInput = page.getByLabelText("I'm looking for this account…");
+            await searchInput.fill('filtered');
+
+            let requestFired = false;
+            void nextRequest.then(() => {
+                requestFired = true;
+            });
+            await new Promise((resolve) => {
+                setTimeout(resolve, 300);
+            });
+            expect(requestFired).toBe(false);
+        });
+
+        it('should send the debounced search filter and reset pagination', async () => {
+            setupCountAccountInterceptor();
+            const initialRequest = setupSearchDirectoryInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await initialRequest;
+            await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+
+            const nextRequest = setupSearchDirectoryInterceptor([
+                buildAccount('filtered@example.com', 'acc-filtered'),
+            ]);
+            const searchInput = page.getByLabelText("I'm looking for this account…");
+            await searchInput.fill('filtered');
+
+            const params = await nextRequest;
+            expect(String(params.query)).toContain('filtered');
+            expect(params.offset).toBe(0);
+            await expect
+                .element(page.getByText('filtered@example.com'))
+                .toBeInTheDocument();
+        });
+
+        it('should keep the previous rows visible until the next search resolves', async () => {
+            setupCountAccountInterceptor();
+            const initialRequest = setupSearchDirectoryInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+            await initialRequest;
+            await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+
+            setupSearchDirectoryInterceptor([
+                buildAccount('filtered@example.com', 'acc-filtered'),
+            ]);
+            const searchInput = page.getByLabelText("I'm looking for this account…");
+            await searchInput.fill('filtered');
+
+            // while the debounced request is still within its window the old
+            // rows are served from cache instead of an empty/loading state
+            await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
         });
     });
 

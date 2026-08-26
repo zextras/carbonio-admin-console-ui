@@ -77,8 +77,11 @@ export const domainQueryKeys = {
         params.sortAscending ?? '',
       ] as const,
   },
-  accountCount: (domainName: string) =>
-    [...domainQueryKeys.all, 'account-count', domainName] as const,
+  accountCount: {
+    base: () => [...domainQueryKeys.all, 'account-count'] as const,
+    detail: (domainName: string) =>
+      [...domainQueryKeys.accountCount.base(), domainName] as const,
+  },
   quarantineAccount: () => [...domainQueryKeys.all, 'quarantine-account'] as const,
   quarantineMessages: () => [...domainQueryKeys.all, 'quarantine-messages'] as const,
 } as const;

@@ -25,7 +25,7 @@ export function parseAccountCount(res: unknown): number {
 
 export const useCountAccount = (domainName: string | undefined) =>
   useQuery({
-    queryKey: domainQueryKeys.accountCount(domainName ?? ''),
+    queryKey: domainQueryKeys.accountCount.detail(domainName ?? ''),
     queryFn: () => countAccount(domainName!),
     select: parseAccountCount,
     enabled: !!domainName,

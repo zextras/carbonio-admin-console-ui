@@ -23,6 +23,9 @@ export const useCreateAccount = () => {
       queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
+      queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.accountCount.base(),
+      });
     },
   });
 };

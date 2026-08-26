@@ -47,7 +47,7 @@ import DomainMailingList from './domain/manange/mailing-list/domain-mailing-list
 import DomainResources from './domain/manange/resources/domain-resources';
 import RestoreAccount from './domain/manange/restore-delete-account/restore-delete-account';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
-import ManageAccounts from './manage/accounts/manage-accounts';
+import { ManageAccounts } from './manage/accounts/manage-accounts';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();

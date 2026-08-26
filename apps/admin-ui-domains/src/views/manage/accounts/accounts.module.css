@@ -1,0 +1,245 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
+ * These classes replicate the runtime styles previously produced by the
+ * deprecated Container/Row/Padding layout components (display:flex with the
+ * same flex-direction/alignment/wrap/width/height/padding values), so the
+ * rendered output is unchanged.
+ */
+
+.page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  padding: var(--padding-size-large) var(--padding-size-large) 0 var(--padding-size-large);
+  background: var(--color-gray6-regular);
+  height: 100%;
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.headerOuterRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  max-width: 100%;
+}
+
+.headerBar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  flex-wrap: nowrap;
+  background: var(--color-gray6-regular);
+  height: 3.625rem;
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.headerRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: var(--padding-size-large);
+}
+
+.headerSide {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 40%;
+}
+
+.headerActions {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  width: 20%;
+}
+
+.dividerRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  width: 100%;
+  background: var(--color-gray6-regular);
+}
+
+.scrollArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+  position: relative;
+  overflow: auto;
+  min-height: 10rem;
+  padding: var(--padding-size-small) var(--padding-size-small) 0 var(--padding-size-small);
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+/* keep the previous Container scrollbar styling for this scrollable area */
+.scrollArea::-webkit-scrollbar {
+  width: 0.5rem;
+}
+
+.scrollArea::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+.scrollArea::-webkit-scrollbar-thumb {
+  background-color: var(--color-gray3-regular);
+  border-radius: 0.25rem;
+}
+
+.contentRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: var(--padding-size-large) 0 0 0;
+}
+
+.tablePanel {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: nowrap;
+  background: var(--color-gray6-regular);
+  height: fit-content;
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.searchRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  padding: 0 0 var(--padding-size-large) 0;
+}
+
+.searchBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+}
+
+.tableRow {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  width: 100%;
+  position: relative;
+}
+
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+}
+
+.emptyImageRow {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.emptyTitleRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--padding-size-extralarge) 0 0 0;
+  text-align: center;
+}
+
+.emptyHelpRow {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  padding: var(--padding-size-small) 0 0 0;
+  width: 53%;
+  text-align: center;
+}
+
+.pagingSticky {
+  position: sticky;
+}
+
+.pagingBar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  background: var(--color-gray6-regular);
+  width: 100%;
+  height: auto;
+  padding: 0 var(--padding-size-extralarge) 0 0;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.pagingSide {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  flex-wrap: nowrap;
+  height: 100%;
+  width: 100%;
+}
+
+.pagingTrack {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: flex-end;
+  flex-wrap: nowrap;
+  padding: var(--padding-size-small) 0 0 0;
+}
