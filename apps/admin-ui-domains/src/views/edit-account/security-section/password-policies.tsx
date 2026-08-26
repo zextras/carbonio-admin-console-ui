@@ -22,13 +22,13 @@ import {
 } from '../account-form-context';
 
 type InheritedInputFieldProps = {
-  label: string;
-  inputName: string;
-  values: Record<string, any>;
-  cosDetail: Record<string, any>;
-  accSpecificDetail: Record<string, any>;
-  changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
-  setEmptyValue: (keyName: string) => void;
+  readonly label: string;
+  readonly inputName: string;
+  readonly values: Record<string, any>;
+  readonly cosDetail: Record<string, any>;
+  readonly accSpecificDetail: Record<string, any>;
+  readonly changeValue: (e: ChangeEvent<HTMLInputElement>) => void;
+  readonly setEmptyValue: (keyName: string) => void;
 };
 
 function InheritedPolicyInput({
