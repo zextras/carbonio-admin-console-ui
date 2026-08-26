@@ -37,6 +37,10 @@ import { AccountRowItem, buildAccountRow } from './account-row';
 import styles from './accounts.module.css';
 import CreateAccount from './create-account/create-account';
 
+const SearchFilterIcon = (): ReactElement => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 const ACCOUNT_LIST_ATTRS =
   'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraCreateTimestamp,zimbraMailQuota,zimbraNotes,mail';
 
@@ -349,9 +353,7 @@ export const ManageAccounts = () => {
                   value={searchString}
                   backgroundColor="gray5"
                   onChange={handleInputChange}
-                  CustomIcon={(): ReactElement => (
-                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                  )}
+                  CustomIcon={SearchFilterIcon}
                 />
               </div>
             </div>
