@@ -31,33 +31,27 @@ type CreateDomainSoapResponse = {
 };
 
 function buildCreateDomainAttributes(value: CreateDomainFormValues): Array<Attribute> {
-  const attributes: Array<Attribute> = [
+  return [
     { n: 'zimbraNotes', _content: value.zimbraNotes },
     { n: 'description', _content: value.description },
     { n: 'zimbraGalMode', _content: GAL_MODE_INTERNAL },
     { n: 'zimbraGalMaxResults', _content: '' },
     { n: 'zimbraAuthMech', _content: '' },
     { n: 'zimbraDomainMaxAccounts', _content: value.zimbraDomainMaxAccounts },
+    ...(value.domainQuotaGB
+      ? [{ n: 'zimbraMailDomainQuota', _content: GbToBytes(value.domainQuotaGB).toString() }]
+      : []),
+    { n: 'zimbraDomainStatus', _content: ACTIVE },
+    { n: 'zimbraPublicServiceProtocol', _content: HTTPS },
+    { n: 'carbonioNotificationFrom', _content: value.carbonioNotificationFrom },
+    ...(value.zimbraDomainDefaultCOSId !== ''
+      ? [{ n: 'zimbraDomainDefaultCOSId', _content: value.zimbraDomainDefaultCOSId }]
+      : []),
+    ...value.carbonioNotificationRecipients.map((recipient) => ({
+      n: 'carbonioNotificationRecipients',
+      _content: recipient.label,
+    })),
   ];
-  if (value.domainQuotaGB) {
-    attributes.push({
-      n: 'zimbraMailDomainQuota',
-      _content: GbToBytes(value.domainQuotaGB).toString(),
-    });
-  }
-  attributes.push({ n: 'zimbraDomainStatus', _content: ACTIVE });
-  attributes.push({ n: 'zimbraPublicServiceProtocol', _content: HTTPS });
-  attributes.push({ n: 'carbonioNotificationFrom', _content: value.carbonioNotificationFrom });
-  if (value.zimbraDomainDefaultCOSId !== '') {
-    attributes.push({
-      n: 'zimbraDomainDefaultCOSId',
-      _content: value.zimbraDomainDefaultCOSId,
-    });
-  }
-  value.carbonioNotificationRecipients.forEach((recipient) => {
-    attributes.push({ n: 'carbonioNotificationRecipients', _content: recipient.label });
-  });
-  return attributes;
 }
 
 export function useCreateDomainForm() {
