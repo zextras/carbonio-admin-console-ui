@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
@@ -14,25 +15,28 @@ import {
   Row,
   Select,
   Tooltip,
-  useSnackbar,
 } from '@zextras/ui-components';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
-import { addAddressBook } from '../../../../services/add-address-book';
 import {
-  getExposedAddressBookFolders,
-  getUnexposedAddressBookFolders,
-} from '../../../../services/get-exposed-address-book-folders';
-import { getMailboxContactFolders } from '../../../../services/get-mailbox-contact-folders';
-import { removeAddressBook } from '../../../../services/remove-address-book';
+  useAddAddressBook,
+  useAddressBookPickerFolders,
+  useRemoveAddressBook,
+} from '../../../../services/use-domain-address-book';
+import {
+  foldersHaveAllShared,
+  getFolderDisplayName,
+  getFolderSelectLabel,
+} from './address-book-folder-utils';
+import { type FolderMode } from './expose-address-book-schema';
+import { useExposeAddressBookForm } from './use-expose-address-book-form';
 
 type AddressBookDetailPanelProps = {
   domainName: string;
   entry: AddressBookEntry;
   onClose: () => void;
-  onChanged: () => void;
 };
 
 type FolderSelectItem = {
@@ -40,233 +44,220 @@ type FolderSelectItem = {
   value: string;
 };
 
-type FolderMode = 'all' | 'specific';
+type ExposedFolderRowProps = {
+  folder: AddressBookFolder;
+  showTopBorder: boolean;
+  sharedLabel: string;
+  onRemove: (folder: AddressBookFolder) => void;
+};
 
-function getFolderDisplayName(name: string): string {
-  if (name === 'all') {
-    return 'All folders';
-  }
-  if (!name.includes('/')) {
-    return name;
-  }
-  const segments = name.split('/').filter(Boolean);
-  return segments.at(-1) ?? name;
-}
-
-function getFolderSelectLabel(name: string, isShared: boolean, sharedLabel: string): string {
-  if (isShared) {
-    return `${name} (${sharedLabel})`;
-  }
-  return name;
-}
-
-export function AddressBookDetailPanel({
-  domainName,
-  entry,
-  onClose,
-  onChanged,
-}: Readonly<AddressBookDetailPanelProps>) {
+const ExposedFolderRow = ({
+  folder,
+  showTopBorder,
+  sharedLabel,
+  onRemove,
+}: Readonly<ExposedFolderRowProps>) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
+  return (
+    <Container
+      orientation="horizontal"
+      width="100%"
+      height="fit"
+      mainAlignment="flex-start"
+      crossAlignment="center"
+      padding={{ all: 'medium' }}
+      gap="0.625rem"
+      background="gray6"
+      borderColor={showTopBorder ? { top: 'gray3' } : undefined}
+    >
+      <ds-icon icon="FolderOutline" size="large" color="secondary"></ds-icon>
+      <Container
+        width="fill"
+        height="fit"
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        minWidth="0"
+        flexGrow={1}
+      >
+        <ds-text as="span" size="small" overflow="ellipsis">
+          {String(folder.id) === 'all' ? (
+            <em>{t('label.all_folders', 'All folders')}</em>
+          ) : (
+            getFolderSelectLabel(
+              getFolderDisplayName(folder.name),
+              folder.isShared === true,
+              sharedLabel,
+            )
+          )}
+        </ds-text>
+      </Container>
+      <Tooltip label={t('label.remove_exposed_folder', 'Remove exposed folder')}>
+        <Button
+          type="ghost"
+          color="error"
+          size="medium"
+          icon="Trash2Outline"
+          aria-label={t('label.remove_exposed_folder', 'Remove exposed folder')}
+          onClick={(): void => {
+            onRemove(folder);
+          }}
+        />
+      </Tooltip>
+    </Container>
+  );
+};
 
-  const [folders, setFolders] = useState<Array<AddressBookFolder>>(entry.folders ?? []);
-  const [unexposedFolders, setUnexposedFolders] = useState<Array<AddressBookFolder>>([]);
-  const [isResolvingFolders, setIsResolvingFolders] = useState(false);
-  const [folderToRemove, setFolderToRemove] = useState<AddressBookFolder | null>(null);
-  const [isRemoving, setIsRemoving] = useState(false);
+type InlineExposeFormProps = {
+  domainName: string;
+  account: string;
+  availableFolderItems: Array<FolderSelectItem>;
+  hasAllShared: boolean;
+  onCancel: () => void;
+};
 
-  const [isAdding, setIsAdding] = useState(false);
-  const [addMode, setAddMode] = useState<FolderMode>('all');
-  const [selectedFolder, setSelectedFolder] = useState<FolderSelectItem | undefined>(undefined);
-  const [isSubmittingAdd, setIsSubmittingAdd] = useState(false);
-
-  const hasAllShared = folders.some((folder) => String(folder.id) === 'all');
-  const sharedLabel = t('label.shared', 'Shared');
-  const availableFolderItems: Array<FolderSelectItem> = hasAllShared
-    ? []
-    : unexposedFolders.map((folder) => ({
-        label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
-        value: String(folder.id),
-      }));
-  const canOpenInlineAdd = !hasAllShared && availableFolderItems.length > 0;
+const InlineExposeForm = ({
+  domainName,
+  account,
+  availableFolderItems,
+  hasAllShared,
+  onCancel,
+}: Readonly<InlineExposeFormProps>) => {
+  const [t] = useTranslation();
+  const addAddressBookMutation = useAddAddressBook();
+  const form = useExposeAddressBookForm(hasAllShared, {
+    account,
+    selectedAccount: account,
+    folderMode: 'all',
+    folderId: '',
+  });
+  const folderMode = useSelector(form.store, (state) => state.values.folderMode);
+  const folderId = useSelector(form.store, (state) => state.values.folderId);
+  const selectedFolder = availableFolderItems.find((item) => item.value === folderId);
   const canSubmitAdd =
-    addMode === 'all' ? !hasAllShared : Boolean(selectedFolder?.value) && !isSubmittingAdd;
-
-  async function resolvePickerFolders(
-    exposedFolders: Array<AddressBookFolder>,
-  ): Promise<Array<AddressBookFolder>> {
-    if (exposedFolders.length === 0) {
-      return getMailboxContactFolders({ account: entry.account });
-    }
-    return getUnexposedAddressBookFolders({
-      domain: domainName,
-      account: entry.account,
-    });
-  }
-
-  async function loadFolderLists(): Promise<void> {
-    let exposedFolders = folders;
-    try {
-      exposedFolders = await getExposedAddressBookFolders({
-        domain: domainName,
-        account: entry.account,
-      });
-      setFolders(exposedFolders);
-    } catch {
-      // Keep current exposed folders on refetch failure.
-    }
-
-    try {
-      setUnexposedFolders(await resolvePickerFolders(exposedFolders));
-    } catch {
-      setUnexposedFolders([]);
-    }
-  }
-
-  useEffect(() => {
-    setFolderToRemove(null);
-    setIsRemoving(false);
-    setIsAdding(false);
-    setAddMode('all');
-    setSelectedFolder(undefined);
-    setFolders(entry.folders ?? []);
-
-    let cancelled = false;
-    setIsResolvingFolders(true);
-
-    void (async (): Promise<void> => {
-      let exposedFolders = entry.folders ?? [];
-      try {
-        exposedFolders = await getExposedAddressBookFolders({
-          domain: domainName,
-          account: entry.account,
-        });
-        if (!cancelled) {
-          setFolders(exposedFolders);
-        }
-      } catch {
-        if (!cancelled) {
-          setFolders(entry.folders ?? []);
-        }
-        exposedFolders = entry.folders ?? [];
-      }
-
-      if (cancelled) {
-        return;
-      }
-
-      try {
-        const pickerFolders = await resolvePickerFolders(exposedFolders);
-        if (!cancelled) {
-          setUnexposedFolders(pickerFolders);
-        }
-      } catch {
-        if (!cancelled) {
-          setUnexposedFolders([]);
-        }
-      }
-
-      if (!cancelled) {
-        setIsResolvingFolders(false);
-      }
-    })();
-
-    return (): void => {
-      cancelled = true;
-    };
-  }, [domainName, entry.accountId, entry.account, entry.folders]);
-
-  function confirmRemoveFolder(): void {
-    if (!folderToRemove) {
-      return;
-    }
-
-    setIsRemoving(true);
-    removeAddressBook({
-      domain: domainName,
-      account: entry.account,
-      folder: String(folderToRemove.id),
-    })
-      .then(async () => {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.folder_removed_successfully', 'Folder removed successfully'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        setFolderToRemove(null);
-        onChanged();
-        try {
-          await loadFolderLists();
-        } catch {
-          // List refresh already requested; keep current folders on refetch failure.
-        }
-      })
-      .catch((error: Error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        setIsRemoving(false);
-      });
-  }
+    folderMode === 'all' ? !hasAllShared : Boolean(folderId) && !addAddressBookMutation.isPending;
 
   function submitInlineAdd(): void {
     if (!canSubmitAdd) {
       return;
     }
+    addAddressBookMutation.mutate(
+      {
+        domain: domainName,
+        account,
+        folder: folderMode === 'all' ? 'all' : folderId,
+      },
+      { onSuccess: onCancel },
+    );
+  }
 
-    const folder = addMode === 'all' ? 'all' : String(selectedFolder?.value);
-    setIsSubmittingAdd(true);
-    addAddressBook({
-      domain: domainName,
-      account: entry.account,
-      folder,
-    })
-      .then(async () => {
-        createSnackbar({
-          key: 'success',
-          severity: 'success',
-          label: t('label.address_book_exposed', 'Address book exposed'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-        setIsAdding(false);
-        setAddMode('all');
-        setSelectedFolder(undefined);
-        onChanged();
-        try {
-          await loadFolderLists();
-        } catch {
-          // List refresh already requested; keep current folders on refetch failure.
-        }
-      })
-      .catch((error: Error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        setIsSubmittingAdd(false);
-      });
+  return (
+    <Container
+      width="100%"
+      height="fit"
+      mainAlignment="flex-start"
+      crossAlignment="flex-start"
+      gap="0.75rem"
+    >
+      <ds-text as="span" size="small" weight="bold">
+        {t('label.add_address_books', 'Add address books')}
+      </ds-text>
+      <RadioGroup
+        value={folderMode}
+        onChange={(value: string | undefined): void => {
+          if (value === 'all' || value === 'specific') {
+            form.setFieldValue('folderMode', value satisfies FolderMode);
+            if (value === 'all') {
+              form.setFieldValue('folderId', '');
+            }
+          }
+        }}
+      >
+        <Radio
+          value="all"
+          label={t('label.all_address_books', 'All address books')}
+          iconColor="primary"
+        />
+        <Radio
+          value="specific"
+          label={t('label.a_specific_address_book', 'A specific address book')}
+          iconColor="primary"
+        />
+      </RadioGroup>
+      {folderMode === 'specific' && (
+        <Select
+          key={selectedFolder?.value ?? 'folder-unselected'}
+          items={availableFolderItems}
+          background="gray5"
+          label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
+          showCheckbox={false}
+          defaultSelection={selectedFolder}
+          onChange={(value: string | null): void => {
+            form.setFieldValue('folderId', value ?? '');
+          }}
+        />
+      )}
+      <Row width="100%" mainAlignment="flex-end" style={{ gap: '0.625rem' }}>
+        <Button
+          label={t('label.cancel', 'Cancel')}
+          color="secondary"
+          type="outlined"
+          onClick={onCancel}
+          disabled={addAddressBookMutation.isPending}
+        />
+        <Button
+          label={t('label.add', 'Add')}
+          color="primary"
+          onClick={submitInlineAdd}
+          loading={addAddressBookMutation.isPending}
+          disabled={!canSubmitAdd || addAddressBookMutation.isPending}
+        />
+      </Row>
+    </Container>
+  );
+};
+
+export const AddressBookDetailPanel = ({
+  domainName,
+  entry,
+  onClose,
+}: Readonly<AddressBookDetailPanelProps>) => {
+  const [t] = useTranslation();
+  const removeAddressBookMutation = useRemoveAddressBook();
+  const [folderToRemove, setFolderToRemove] = useState<AddressBookFolder | null>(null);
+  const [isAdding, setIsAdding] = useState(false);
+
+  const { exposedFolders, pickerFolders, isResolving } = useAddressBookPickerFolders({
+    domain: domainName,
+    account: entry.account,
+    fallbackExposed: entry.folders ?? [],
+  });
+  const folders = exposedFolders;
+  const hasAllShared = foldersHaveAllShared(folders);
+  const sharedLabel = t('label.shared', 'Shared');
+  const availableFolderItems: Array<FolderSelectItem> = hasAllShared
+    ? []
+    : pickerFolders.map((folder) => ({
+        label: getFolderSelectLabel(folder.name, folder.isShared === true, sharedLabel),
+        value: String(folder.id),
+      }));
+  const canOpenInlineAdd = !hasAllShared && availableFolderItems.length > 0;
+
+  function confirmRemoveFolder(): void {
+    if (!folderToRemove) {
+      return;
+    }
+    removeAddressBookMutation.mutate(
+      {
+        domain: domainName,
+        account: entry.account,
+        folder: String(folderToRemove.id),
+      },
+      {
+        onSuccess: () => {
+          setFolderToRemove(null);
+        },
+      },
+    );
   }
 
   return (
@@ -287,7 +278,13 @@ export function AddressBookDetailPanel({
           <ds-text as="h2" size="medium" weight="bold" color="gray0" overflow="ellipsis">
             {entry.account}
           </ds-text>
-          <Button type="ghost" color="secondary" icon="CloseOutline" onClick={onClose} />
+          <Button
+            type="ghost"
+            color="secondary"
+            icon="CloseOutline"
+            aria-label={t('label.close', 'Close')}
+            onClick={onClose}
+          />
         </Row>
         <Row width="100%">
           <ds-divider color="gray3"></ds-divider>
@@ -306,7 +303,7 @@ export function AddressBookDetailPanel({
             {t('label.exposed_address_books', 'Exposed address books')}
           </ds-text>
 
-          {isResolvingFolders ? (
+          {isResolving ? (
             <Padding all="small">
               <ds-spinner />
             </Padding>
@@ -331,125 +328,26 @@ export function AddressBookDetailPanel({
                 </Container>
               ) : (
                 folders.map((folder, index) => (
-                  <Container
+                  <ExposedFolderRow
                     key={String(folder.id)}
-                    orientation="horizontal"
-                    width="100%"
-                    height="fit"
-                    mainAlignment="flex-start"
-                    crossAlignment="center"
-                    padding={{ all: 'medium' }}
-                    gap="0.625rem"
-                    background="gray6"
-                    borderColor={index > 0 ? { top: 'gray3' } : undefined}
-                  >
-                    <ds-icon icon="FolderOutline" size="large" color="secondary"></ds-icon>
-                    <Container
-                      width="fill"
-                      height="fit"
-                      mainAlignment="flex-start"
-                      crossAlignment="flex-start"
-                      minWidth="0"
-                      flexGrow={1}
-                    >
-                      <ds-text as="span" size="small" overflow="ellipsis">
-                        {String(folder.id) === 'all' ? (
-                          <em>{t('label.all_folders', 'All folders')}</em>
-                        ) : (
-                          getFolderSelectLabel(
-                            getFolderDisplayName(folder.name),
-                            folder.isShared === true,
-                            sharedLabel,
-                          )
-                        )}
-                      </ds-text>
-                    </Container>
-                    <Tooltip label={t('label.remove_exposed_folder', 'Remove exposed folder')}>
-                      <Button
-                        type="ghost"
-                        color="error"
-                        size="medium"
-                        icon="Trash2Outline"
-                        aria-label={t('label.remove_exposed_folder', 'Remove exposed folder')}
-                        onClick={(): void => {
-                          setFolderToRemove(folder);
-                        }}
-                      />
-                    </Tooltip>
-                  </Container>
+                    folder={folder}
+                    showTopBorder={index > 0}
+                    sharedLabel={sharedLabel}
+                    onRemove={setFolderToRemove}
+                  />
                 ))
               )}
             </Container>
           )}
 
           {isAdding ? (
-            <Container
-              width="100%"
-              height="fit"
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              gap="0.75rem"
-            >
-              <ds-text as="span" size="small" weight="bold">
-                {t('label.add_address_books', 'Add address books')}
-              </ds-text>
-              <RadioGroup
-                value={addMode}
-                onChange={(value: string | undefined): void => {
-                  if (value === 'all' || value === 'specific') {
-                    setAddMode(value);
-                    if (value === 'all') {
-                      setSelectedFolder(undefined);
-                    }
-                  }
-                }}
-              >
-                <Radio
-                  value="all"
-                  label={t('label.all_address_books', 'All address books')}
-                  iconColor="primary"
-                />
-                <Radio
-                  value="specific"
-                  label={t('label.a_specific_address_book', 'A specific address book')}
-                  iconColor="primary"
-                />
-              </RadioGroup>
-              {addMode === 'specific' && (
-                <Select
-                  key={selectedFolder?.value ?? 'folder-unselected'}
-                  items={availableFolderItems}
-                  background="gray5"
-                  label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
-                  showCheckbox={false}
-                  defaultSelection={selectedFolder}
-                  onChange={(value: string | null): void => {
-                    const next = availableFolderItems.find((item) => item.value === value);
-                    setSelectedFolder(next);
-                  }}
-                />
-              )}
-              <Row width="100%" mainAlignment="flex-end" style={{ gap: '0.625rem' }}>
-                <Button
-                  label={t('label.cancel', 'Cancel')}
-                  color="secondary"
-                  type="outlined"
-                  onClick={(): void => {
-                    setIsAdding(false);
-                    setAddMode('all');
-                    setSelectedFolder(undefined);
-                  }}
-                  disabled={isSubmittingAdd}
-                />
-                <Button
-                  label={t('label.add', 'Add')}
-                  color="primary"
-                  onClick={submitInlineAdd}
-                  loading={isSubmittingAdd}
-                  disabled={!canSubmitAdd || isSubmittingAdd}
-                />
-              </Row>
-            </Container>
+            <InlineExposeForm
+              domainName={domainName}
+              account={entry.account}
+              availableFolderItems={availableFolderItems}
+              hasAllShared={hasAllShared}
+              onCancel={(): void => setIsAdding(false)}
+            />
           ) : (
             <>
               <Button
@@ -458,9 +356,9 @@ export function AddressBookDetailPanel({
                 label={t('label.add_address_book', 'Add address book')}
                 icon="Plus"
                 onClick={(): void => setIsAdding(true)}
-                disabled={!canOpenInlineAdd || isResolvingFolders}
+                disabled={!canOpenInlineAdd || isResolving}
               />
-              {(hasAllShared || availableFolderItems.length === 0) && !isResolvingFolders && (
+              {(hasAllShared || availableFolderItems.length === 0) && !isResolving && (
                 <ds-text as="p" size="small" color="gray1" overflow="break-word">
                   {hasAllShared
                     ? t(
@@ -484,7 +382,7 @@ export function AddressBookDetailPanel({
         open={Boolean(folderToRemove)}
         showCloseIcon
         onClose={(): void => {
-          if (!isRemoving) {
+          if (!removeAddressBookMutation.isPending) {
             setFolderToRemove(null);
           }
         }}
@@ -496,21 +394,26 @@ export function AddressBookDetailPanel({
                 color="gray0"
                 type="outlined"
                 onClick={(): void => setFolderToRemove(null)}
-                disabled={isRemoving}
+                disabled={removeAddressBookMutation.isPending}
               />
               <Button
                 label={t('label.remove', 'Remove')}
                 color="error"
                 onClick={confirmRemoveFolder}
-                loading={isRemoving}
-                disabled={isRemoving}
+                loading={removeAddressBookMutation.isPending}
+                disabled={removeAddressBookMutation.isPending}
               />
             </Row>
           </Container>
         }
       >
         <Container padding={{ top: 'extralarge', bottom: 'extralarge' }} mainAlignment="flex-start">
-          <ds-text as="p" size="large" overflow="break-word" style={{ whiteSpace: 'pre-line', textAlign: 'left'}}>
+          <ds-text
+            as="p"
+            size="large"
+            overflow="break-word"
+            style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
+          >
             <Trans
               i18nKey="label.remove_exposed_folder_confirm"
               defaults='Remove exposed folder "{{folder}}" from {{account}}?'
@@ -527,4 +430,4 @@ export function AddressBookDetailPanel({
       </Modal>
     </>
   );
-}
+};

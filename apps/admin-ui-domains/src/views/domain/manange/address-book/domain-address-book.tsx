@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Input, ModalOverlay, Row, useSnackbar } from '@zextras/ui-components';
+import { Button, Container, Input, ModalOverlay, Row } from '@zextras/ui-components';
 import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry } from '../../../../../types';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { listAddressBooks } from '../../../../services/list-address-books';
+import { useAddressBookList } from '../../../../services/use-domain-address-book';
 import { AddAddressBookPanel } from './add-address-book-panel';
 import { AddressBookDetailPanel } from './address-book-detail-panel';
 
@@ -43,8 +43,10 @@ function refreshSelectedEntry(
   const refreshed = books.find(
     (book) => book.accountId === current.accountId || book.account === current.account,
   );
-  // Keep detail open after last folder delete so admin can add another folder.
   if (!refreshed) {
+    if ((current.folders?.length ?? 0) === 0 && current.folderIds === undefined) {
+      return current;
+    }
     return { ...current, folders: [], folderIds: undefined };
   }
   return refreshed;
@@ -52,129 +54,73 @@ function refreshSelectedEntry(
 
 type AddressBookAccountRowProps = {
   entry: AddressBookEntry;
-  index: number;
+  showTopBorder: boolean;
   onSelect: (entry: AddressBookEntry) => void;
 };
 
-function AddressBookAccountRow({
+const AddressBookAccountRow = ({
   entry,
-  index,
+  showTopBorder,
   onSelect,
-}: Readonly<AddressBookAccountRowProps>) {
-  return (
+}: Readonly<AddressBookAccountRowProps>) => (
+  <Container
+    orientation="horizontal"
+    width="100%"
+    height="fit"
+    mainAlignment="flex-start"
+    crossAlignment="center"
+    padding={{ all: 'large' }}
+    gap="0.875rem"
+    background="gray6"
+    borderColor={showTopBorder ? { top: 'gray3' } : undefined}
+    style={{ cursor: 'pointer' }}
+    onClick={(): void => onSelect(entry)}
+  >
     <Container
-      orientation="horizontal"
-      width="100%"
+      width="2.125rem"
+      height="2.125rem"
+      minWidth="2.125rem"
+      mainAlignment="center"
+      crossAlignment="center"
+      background="highlight"
+      style={{
+        borderRadius: '50%',
+        flexShrink: 0,
+      }}
+    >
+      <ds-text as="span" size="small" weight="bold" color="primary">
+        {getAccountAvatarLabel(entry.account)}
+      </ds-text>
+    </Container>
+    <Container
+      width="fill"
       height="fit"
       mainAlignment="flex-start"
-      crossAlignment="center"
-      padding={{ all: 'large' }}
-      gap="0.875rem"
-      background="gray6"
-      borderColor={index > 0 ? { top: 'gray3' } : undefined}
-      style={{ cursor: 'pointer' }}
-      onClick={(): void => onSelect(entry)}
+      crossAlignment="flex-start"
+      minWidth="0"
+      flexGrow={1}
     >
-      <Container
-        width="2.125rem"
-        height="2.125rem"
-        minWidth="2.125rem"
-        mainAlignment="center"
-        crossAlignment="center"
-        background="highlight"
-        style={{
-          borderRadius: '50%',
-          flexShrink: 0,
-        }}
-      >
-        <ds-text as="span" size="small" weight="bold" color="primary">
-          {getAccountAvatarLabel(entry.account)}
-        </ds-text>
-      </Container>
-      <Container
-        width="fill"
-        height="fit"
-        mainAlignment="flex-start"
-        crossAlignment="flex-start"
-        minWidth="0"
-        flexGrow={1}
-      >
-        <ds-text as="span" size="small" weight="medium" overflow="ellipsis">
-          {entry.account}
-        </ds-text>
-      </Container>
-      <ds-icon icon="ChevronRight" size="large" color="secondary"></ds-icon>
+      <ds-text as="span" size="small" weight="medium" overflow="ellipsis">
+        {entry.account}
+      </ds-text>
     </Container>
-  );
-}
+    <ds-icon icon="ChevronRight" size="large" color="secondary"></ds-icon>
+  </Container>
+);
 
-export function DomainAddressBook() {
+export const DomainAddressBook = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name ?? '';
+  const { data: entries = [], isFetching } = useAddressBookList(domainName);
 
-  const [entries, setEntries] = useState<Array<AddressBookEntry>>([]);
   const [searchString, setSearchString] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<AddressBookEntry | null>(null);
 
-  function loadAddressBooks(): void {
-    if (!domainName) {
-      return;
-    }
-
-    setIsLoading(true);
-    listAddressBooks({ domain: domainName })
-      .then((books) => {
-        setEntries(books);
-        setSelectedEntry((current) => refreshSelectedEntry(current, books));
-      })
-      .catch((error: Error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-  }
-
   useEffect(() => {
-    if (!domainName) {
-      return;
-    }
-    setIsLoading(true);
-    listAddressBooks({ domain: domainName })
-      .then((books) => {
-        setEntries(books);
-      })
-      .catch((error: Error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      })
-      .finally(() => {
-        setIsLoading(false);
-      });
-    // Intentionally depend only on domain identity — snackbar/t must not re-fetch.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- stable domain only
-  }, [domainName]);
+    setSelectedEntry((current) => refreshSelectedEntry(current, entries));
+  }, [entries]);
 
   const filteredEntries = entries.filter((entry) => entryMatchesSearch(entry, searchString));
   const searchQuery = searchString.trim();
@@ -247,7 +193,7 @@ export function DomainAddressBook() {
           }}
         />
 
-        {isLoading ? (
+        {isFetching && entries.length === 0 ? (
           <Container padding={{ all: 'extralarge' }} height="fit">
             <ds-spinner />
           </Container>
@@ -279,7 +225,7 @@ export function DomainAddressBook() {
                 <AddressBookAccountRow
                   key={entry.accountId || entry.account}
                   entry={entry}
-                  index={index}
+                  showTopBorder={index > 0}
                   onSelect={openDetail}
                 />
               ))
@@ -294,7 +240,6 @@ export function DomainAddressBook() {
             domainName={domainName}
             existingEntries={entries}
             onClose={(): void => setIsAddOpen(false)}
-            onAdded={loadAddressBooks}
           />
         </ModalOverlay>
       )}
@@ -305,10 +250,9 @@ export function DomainAddressBook() {
             domainName={domainName}
             entry={selectedEntry}
             onClose={(): void => setSelectedEntry(null)}
-            onChanged={loadAddressBooks}
           />
         </ModalOverlay>
       )}
     </Container>
   );
-}
+};

@@ -4,6 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+vi.mock('lodash-es', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('lodash-es')>();
+	return {
+		...actual,
+		debounce: <Args extends Array<unknown>>(
+			fn: (...args: Args) => void,
+		): ((...args: Args) => void) & { cancel: () => void; flush: () => void } => {
+			const wrapped = (...args: Args): void => {
+				fn(...args);
+			};
+			wrapped.cancel = (): void => undefined;
+			wrapped.flush = (): void => undefined;
+			return wrapped;
+		},
+	};
+});
+
 import { domainByIdKey } from '@zextras/ui-shared';
 import {
 	createBrowserSoapAPIInterceptor,
@@ -114,6 +131,7 @@ function setupAddressBookZextrasInterceptor(
 	options: {
 		books?: Array<AddressBookListItem>;
 		folders?: Array<ContactFolder>;
+		listError?: string;
 	} = {},
 ): {
 	capturedActions: Array<ZextrasBody>;
@@ -136,6 +154,14 @@ function setupAddressBookZextrasInterceptor(
 			capturedActions.push(zextrasBody);
 
 			if (action === 'ListAddressBookCommand') {
+				if (options.listError) {
+					return HttpResponse.json(
+						buildZextrasResponse({
+							ok: false,
+							message: options.listError,
+						}),
+					);
+				}
 				return HttpResponse.json(
 					buildZextrasResponse({ response: { 'address books': books } }),
 				);
@@ -305,6 +331,13 @@ describe('DomainAddressBook (browser)', () => {
 				domain: DOMAIN_NAME,
 			});
 		});
+
+		it('should show an error snackbar when the list fails to load', async () => {
+			setupAddressBookZextrasInterceptor({ listError: 'List failed' });
+			await setupBrowserTest(<DomainAddressBook />);
+
+			await expect.element(page.getByText('List failed')).toBeInTheDocument();
+		});
 	});
 
 	describe('Add panel', () => {
@@ -366,6 +399,35 @@ describe('DomainAddressBook (browser)', () => {
 
 			const panelAddButton = page.getByRole('button', { name: 'Add' }).nth(1);
 			await expect.element(panelAddButton).toBeDisabled();
+		});
+
+		it('should show the new account in the list after exposing an address book', async () => {
+			const { setBooks } = setupAddressBookZextrasInterceptor();
+			setupSearchDirectoryInterceptor();
+			await setupBrowserTest(<DomainAddressBook />);
+
+			await userEvent.click(page.getByRole('button', { name: 'Add' }));
+			const accountInput = page.getByLabelText(/Start typing an account e-mail/i);
+			await userEvent.type(accountInput, 'carol');
+			await userEvent.click(accountInput);
+			await expect
+				.element(page.getByText('carol@example.com', { exact: true }))
+				.toBeInTheDocument();
+			await userEvent.click(page.getByText('carol@example.com', { exact: true }));
+
+			setBooks([
+				...DEFAULT_BOOKS,
+				{
+					account: 'carol@example.com',
+					accountId: 'acc-3',
+					folderIds: 'all',
+					folders: [{ id: 'all', name: 'all', isShared: false }],
+				},
+			]);
+
+			await userEvent.click(page.getByRole('button', { name: 'Add' }).nth(1));
+			await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
+			await expect.element(page.getByText('carol@example.com')).toBeInTheDocument();
 		});
 	});
 

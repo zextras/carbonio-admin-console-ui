@@ -20,6 +20,16 @@ export const domainQueryKeys = {
   twoFactorPolicies: (domain: string) =>
     [...domainQueryKeys.all, 'two-factor-policies', domain] as const,
   addressBookService: () => [...domainQueryKeys.all, 'address-book-service'] as const,
+  addressBookList: (domainName: string) =>
+    [...domainQueryKeys.all, 'address-book-list', domainName] as const,
+  mailboxContactFolders: (account: string) =>
+    [...domainQueryKeys.all, 'mailbox-contact-folders', account] as const,
+  exposedAddressBookFolders: (domain: string, account: string) =>
+    [...domainQueryKeys.all, 'exposed-address-book-folders', domain, account] as const,
+  unexposedAddressBookFolders: (domain: string, account: string) =>
+    [...domainQueryKeys.all, 'unexposed-address-book-folders', domain, account] as const,
+  addressBookAccountSearch: (domainName: string, keyword: string) =>
+    [...domainQueryKeys.all, 'address-book-account-search', domainName, keyword] as const,
   antiDosConfig: () => [...domainQueryKeys.all, 'anti-dos-config'] as const,
   samlConfig: (domain: string) => [...domainQueryKeys.all, 'saml-config', domain] as const,
   gal: () => [...domainQueryKeys.all, 'gal'] as const,

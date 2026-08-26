@@ -216,7 +216,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -241,7 +240,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -259,7 +257,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -279,7 +276,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={onClose}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -296,7 +292,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={onClose}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -315,7 +310,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -329,7 +323,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -347,13 +340,11 @@ describe('AddAddressBookPanel (browser)', () => {
 	it('should expose all address books after selecting an account', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
 		const onClose = vi.fn();
-		const onAdded = vi.fn();
 		await renderPanel(
 			<AddAddressBookPanel
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={onClose}
-				onAdded={onAdded}
 			/>,
 		);
 
@@ -362,7 +353,6 @@ describe('AddAddressBookPanel (browser)', () => {
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
 		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
-		expect(onAdded).toHaveBeenCalledOnce();
 		expect(onClose).toHaveBeenCalledOnce();
 		await expect
 			.poll(() =>
@@ -384,13 +374,11 @@ describe('AddAddressBookPanel (browser)', () => {
 
 	it('should expose a specific address book folder', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
-		const onAdded = vi.fn();
 		await renderPanel(
 			<AddAddressBookPanel
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={onAdded}
 			/>,
 		);
 
@@ -401,7 +389,6 @@ describe('AddAddressBookPanel (browser)', () => {
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
 		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
-		expect(onAdded).toHaveBeenCalledOnce();
 
 		const addRequest = capturedActions.find(
 			(action) => action.action === 'AddAddressBookCommand',
@@ -420,7 +407,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -440,7 +426,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[ALL_SHARED_ENTRY]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -467,7 +452,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[PARTIAL_SHARED_ENTRY]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -493,7 +477,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
@@ -505,13 +488,11 @@ describe('AddAddressBookPanel (browser)', () => {
 	it('should show an error snackbar when add address book fails', async () => {
 		setupAddressBookZextrasInterceptor({ addError: 'Add failed' });
 		const onClose = vi.fn();
-		const onAdded = vi.fn();
 		await renderPanel(
 			<AddAddressBookPanel
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={onClose}
-				onAdded={onAdded}
 			/>,
 		);
 
@@ -520,7 +501,6 @@ describe('AddAddressBookPanel (browser)', () => {
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
 		await expect.element(page.getByText('Add failed')).toBeInTheDocument();
-		expect(onAdded).not.toHaveBeenCalled();
 		expect(onClose).not.toHaveBeenCalled();
 		await expect
 			.element(page.getByText('Expose a new address book', { exact: true }))
@@ -535,7 +515,6 @@ describe('AddAddressBookPanel (browser)', () => {
 				domainName={DOMAIN_NAME}
 				existingEntries={[]}
 				onClose={vi.fn()}
-				onAdded={vi.fn()}
 			/>,
 		);
 
