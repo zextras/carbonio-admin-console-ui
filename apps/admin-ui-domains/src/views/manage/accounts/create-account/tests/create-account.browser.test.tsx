@@ -5,16 +5,21 @@
  */
 
 import { domainByIdKey } from '@zextras/ui-shared';
-import { createBrowserAPIInterceptor, createBrowserSoapAPIInterceptor, getQueryClient, setupBrowserTest as _setupBrowserTest } from 'admin-ui-test-utils';
+import {
+  createBrowserAPIInterceptor,
+  createBrowserSoapAPIInterceptor,
+  getQueryClient,
+  setupBrowserTest as _setupBrowserTest,
+} from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import { AccountContext } from '../account-context';
 import CreateAccount from '../create-account';
 import CreateAccountDetailSection from '../create-account-detail-section';
+import { CreateAccountFormTestProvider } from './create-account-form-test-provider';
 
 const DOMAIN_ID = 'domain-123';
 const DOMAIN_NAME = 'test-domain.com';
@@ -33,66 +38,6 @@ function setupBrowserTest(ui: ReactElement): Promise<RenderResult> {
   });
 }
 
-const mockAccountContext = {
-  accountDetail: {
-    // Account base
-    name: '',
-    givenName: '',
-    initials: '',
-    sn: '',
-    displayName: '',
-
-    // Password
-    password: '',
-    repeatPassword: '',
-    zimbraPasswordMustChange: false,
-
-    // Settings
-    defaultCOS: true,
-    zimbraAccountStatus: 'active',
-    zimbraCOSId: '',
-    zimbraPrefLocale: '',
-    zimbraPrefTimeZoneId: '',
-
-    // Description & Notes
-    description: '',
-    zimbraNotes: '',
-
-    // Phone
-    telephoneNumber: '',
-    homePhone: '',
-    mobile: '',
-    pager: '',
-    facsimileTelephoneNumber: '',
-
-    // Company
-    company: '',
-    title: '',
-
-    // Address
-    co: '',
-    l: '',
-    st: '',
-    postalCode: '',
-    street: '',
-
-    // Internal flags
-    changeNameBool: false,
-    changeDisplayNameBool: false,
-
-    // OTP
-    generateFirst2FAToken: true,
-    generateOTP: false,
-    administrationRigths: false,
-    qrData: '',
-    secrateCode: '',
-    pinCodes: '',
-    showOtpOptionSection: true,
-  },
-  setAccountDetail: vi.fn(),
-  setShowCreateAccountView: vi.fn(),
-};
-
 describe('CreateAccountDetailSection (browser)', () => {
   beforeEach(() => {
     createBrowserSoapAPIInterceptor('SearchDirectory', {
@@ -107,9 +52,9 @@ describe('CreateAccountDetailSection (browser)', () => {
   describe('Basic Rendering', () => {
     it('should render all main form sections', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
@@ -123,9 +68,9 @@ describe('CreateAccountDetailSection (browser)', () => {
 
     it('should render all required account input fields', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByLabelText('Surname')).toBeVisible();
@@ -140,9 +85,9 @@ describe('CreateAccountDetailSection (browser)', () => {
 
     it('should display domain name as read-only', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const domainField = page.getByText('Domain Name');
@@ -153,126 +98,139 @@ describe('CreateAccountDetailSection (browser)', () => {
   });
 
   describe('Auto-fill Account Name', () => {
-    it('should auto-generate account name from given name and surname', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
+    it('should auto-generate the account name from name parts', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
-      const givenNameInput = page.getByLabelText('Name', { exact: true });
-      await userEvent.fill(givenNameInput, 'John');
+      await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
+      await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
 
-      const surnameInput = page.getByLabelText('Surname');
-      await userEvent.fill(surnameInput, 'Doe');
-
-      expect(setAccountDetail).toHaveBeenCalled();
+      const userNameInput = page.getByLabelText(/user \(Auto-fill\)/i);
+      await expect.element(userNameInput).toHaveValue('john.doe');
     });
 
-    it('should auto-generate account name with middle initial', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
+    it('should auto-generate the account name including the middle initial', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
-      );
-
-      const givenNameInput = page.getByLabelText('Name', { exact: true });
-      await userEvent.fill(givenNameInput, 'John');
-
-      const initialsInput = page.getByLabelText('Middle Name Initials');
-      await userEvent.fill(initialsInput, 'M');
-
-      const surnameInput = page.getByLabelText('Surname');
-      await userEvent.fill(surnameInput, 'Doe');
-
-      expect(setAccountDetail).toHaveBeenCalled();
-    });
-  });
-
-  describe('Auto-fill Display Name', () => {
-    it('should auto-generate display name from name fields', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
-      setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
-          <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
       await userEvent.fill(page.getByLabelText('Middle Name Initials'), 'M');
       await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
 
-      expect(setAccountDetail).toHaveBeenCalled();
+      const userNameInput = page.getByLabelText(/user \(Auto-fill\)/i);
+      await expect.element(userNameInput).toHaveValue('john.m.doe');
+    });
+
+    it('should let the user override the auto-filled account name', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider>
+          <CreateAccountDetailSection />
+        </CreateAccountFormTestProvider>,
+      );
+
+      await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
+      const userNameInput = page.getByLabelText(/user \(Auto-fill\)/i);
+      await userEvent.fill(userNameInput, 'custom.name');
+      await expect.element(userNameInput).toHaveValue('custom.name');
+    });
+  });
+
+  describe('Auto-fill Display Name', () => {
+    it('should auto-generate the display name from name fields', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider>
+          <CreateAccountDetailSection />
+        </CreateAccountFormTestProvider>,
+      );
+
+      await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
+      await userEvent.fill(page.getByLabelText('Middle Name Initials'), 'M');
+      await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
+
+      await expect.element(page.getByLabelText(/Display Name \(Auto-fill\)/i)).toHaveValue(
+        'John M Doe',
+      );
     });
   });
 
   describe('Password Fields', () => {
     it('should accept password input', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
-      const passwordInput = page.getByLabelText('Password', { exact: true });
+      const passwordInput = page.getByPlaceholder('Password', { exact: true });
       await userEvent.fill(passwordInput, 'SecurePassword123!');
 
-      const repeatPasswordInput = page.getByLabelText('Repeat Password');
+      const repeatPasswordInput = page.getByPlaceholder('Repeat Password');
       await userEvent.fill(repeatPasswordInput, 'SecurePassword123!');
 
-      expect(setAccountDetail).toHaveBeenCalled();
+      await expect.element(passwordInput).toHaveValue('SecurePassword123!');
+      await expect.element(repeatPasswordInput).toHaveValue('SecurePassword123!');
     });
 
     it('should toggle password must change switch', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const switchElement = page.getByText(/User will change password on next login/i);
       await expect.element(switchElement).toBeVisible();
       await switchElement.click();
+    });
+  });
 
-      expect(setAccountDetail).toHaveBeenCalled();
+  describe('Field Validation', () => {
+    it('should show the surname required error once submit was attempted', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider submitAttempted>
+          <CreateAccountDetailSection />
+        </CreateAccountFormTestProvider>,
+      );
+
+      await expect.element(page.getByText('Surname is required').first()).toBeVisible();
+    });
+
+    it('should not show the surname error before any submit attempt', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider>
+          <CreateAccountDetailSection />
+        </CreateAccountFormTestProvider>,
+      );
+
+      await expect.element(page.getByText('Surname is required')).not.toBeInTheDocument();
+    });
+
+    it('should show the password mismatch error on touched fields', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider>
+          <CreateAccountDetailSection />
+        </CreateAccountFormTestProvider>,
+      );
+
+      await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+      await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'DifferentPass456!');
+
+      await expect.element(page.getByText('Passwords do not match').first()).toBeVisible();
     });
   });
 
   describe('Settings Section', () => {
     it('should display account status dropdown', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('Account Status')).toBeVisible();
@@ -280,9 +238,9 @@ describe('CreateAccountDetailSection (browser)', () => {
 
     it('should display COS selection with default COS switch', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('Default COS')).toBeVisible();
@@ -291,9 +249,9 @@ describe('CreateAccountDetailSection (browser)', () => {
 
     it('should disable COS dropdown when default COS is enabled', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider values={{ defaultCOS: true }}>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('Default COS')).toBeVisible();
@@ -302,71 +260,68 @@ describe('CreateAccountDetailSection (browser)', () => {
 
   describe('Phone Number Validation', () => {
     it('should accept valid phone number', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
-      const phoneInput = page.getByLabelText('Phone');
+      const phoneInput = page.getByRole('textbox', { name: 'Phone', exact: true });
       await userEvent.fill(phoneInput, '+1-555-1234');
 
-      expect(setAccountDetail).toHaveBeenCalled();
+      await expect.element(phoneInput).toHaveValue('+1-555-1234');
+    });
+
+    it('should flag an invalid phone number', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider>
+          <CreateAccountDetailSection />
+        </CreateAccountFormTestProvider>,
+      );
+
+      const phoneInput = page.getByRole('textbox', { name: 'Phone', exact: true });
+      await userEvent.fill(phoneInput, 'abc');
+
+      await expect.element(
+        page.getByText('allowed chars are whitespaces, numbers and symbols -+()/,.').first(),
+      ).toBeVisible();
     });
   });
 
   describe('Description and Notes', () => {
     it('should accept description input', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
-      const descriptionInput = page.getByLabelText('Description');
+      const descriptionInput = page.getByRole('textbox', { name: 'Description', exact: true });
       await userEvent.fill(descriptionInput, 'Test user account');
 
-      expect(setAccountDetail).toHaveBeenCalled();
+      await expect.element(descriptionInput).toHaveValue('Test user account');
     });
 
     it('should accept notes input', async () => {
-      const setAccountDetail = vi.fn();
-      const contextWithMock = {
-        ...mockAccountContext,
-        setAccountDetail,
-      };
-
       setupBrowserTest(
-        <AccountContext.Provider value={contextWithMock}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
-      const notesInput = page.getByLabelText('Notes');
+      const notesInput = page.getByRole('textbox', { name: 'Notes', exact: true });
       await userEvent.fill(notesInput, 'Important notes about this account');
 
-      expect(setAccountDetail).toHaveBeenCalled();
+      await expect.element(notesInput).toHaveValue('Important notes about this account');
     });
   });
 
   describe('Company and Address Fields', () => {
     it('should render company fields', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByLabelText('Company')).toBeVisible();
@@ -375,9 +330,9 @@ describe('CreateAccountDetailSection (browser)', () => {
 
     it('should render address fields', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={mockAccountContext}>
+        <CreateAccountFormTestProvider>
           <CreateAccountDetailSection />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByLabelText('Country')).toBeVisible();
@@ -410,8 +365,6 @@ describe('CreateAccount API Integration (browser)', () => {
   });
 
   it('should send correct request payload for account creation', async () => {
-    let capturedRequestBody: any = null;
-
     const apiInterceptor = await createBrowserAPIInterceptor(
       'post',
       '/service/admin/soap/CreateAccountRequest',
@@ -434,8 +387,8 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
     await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
-    await userEvent.fill(page.getByLabelText('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByLabelText('Repeat Password'), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
 
     const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
     await userEvent.click(createButton);
@@ -443,7 +396,8 @@ describe('CreateAccount API Integration (browser)', () => {
     await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
 
     const capturedRequest = apiInterceptor.getLastRequest();
-    capturedRequestBody = await capturedRequest.json();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const capturedRequestBody: any = await capturedRequest.json();
 
     expect(capturedRequestBody.Body.CreateAccountRequest.name).toBe('john.doe@test-domain.com');
     expect(capturedRequestBody.Body.CreateAccountRequest.password).toBe('SecurePass123!');
@@ -454,5 +408,66 @@ describe('CreateAccount API Integration (browser)', () => {
         expect.objectContaining({ n: 'displayName' }),
       ]),
     );
+  });
+
+  it('should block creation and show a visible error when the surname is missing', async () => {
+    let requestSeen = false;
+    const apiInterceptor = await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateAccountRequest',
+      () => {
+        requestSeen = true;
+        return HttpResponse.json({
+          Body: { CreateAccountResponse: { account: [{ id: 'x', name: 'x' }] } },
+        });
+      },
+    );
+    void apiInterceptor;
+
+    setupBrowserTest(<CreateAccount {...mockProps} />);
+
+    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+
+    const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
+    await userEvent.click(createButton);
+
+    await expect.element(page.getByText('Surname is required').first()).toBeVisible();
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 500);
+    });
+    expect(requestSeen).toBe(false);
+  });
+
+  it('should block creation when passwords do not match', async () => {
+    let requestSeen = false;
+    await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateAccountRequest',
+      () => {
+        requestSeen = true;
+        return HttpResponse.json({
+          Body: { CreateAccountResponse: { account: [{ id: 'x', name: 'x' }] } },
+        });
+      },
+    );
+
+    setupBrowserTest(<CreateAccount {...mockProps} />);
+
+    await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
+    await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
+    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'DifferentPass456!');
+
+    const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
+    await userEvent.click(createButton);
+
+    await expect.element(page.getByText('Passwords do not match').first()).toBeVisible();
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, 500);
+    });
+    expect(requestSeen).toBe(false);
   });
 });

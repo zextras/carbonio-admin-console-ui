@@ -15,13 +15,13 @@ import { deleteTotp, generateTotp, restoreTotp } from './otp-service';
  * (recorded repo convention).
  */
 
-export const useGenerateTotp = (account: string) => {
+export const useGenerateTotp = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: () => generateTotp(account),
-    onSuccess: () => {
+    mutationFn: ({ account }: { account: string }) => generateTotp(account),
+    onSuccess: (_data, vars) => {
       queryClient.invalidateQueries({
-        queryKey: domainQueryKeys.otpList(account),
+        queryKey: domainQueryKeys.otpList(vars.account),
       });
     },
   });

@@ -8,12 +8,13 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { AccountContext } from '../account-context';
 import AccountOtpSection from '../account-otp-section';
+import type { CreateAccountFormValues } from '../create-account-types';
+import { CreateAccountFormTestProvider } from './create-account-form-test-provider';
 
 const mockSetToggleNextBtn = vi.fn();
 
-const baseAccountDetail = {
+const baseAccountDetail: Partial<CreateAccountFormValues> = {
   name: 'testuser',
   givenName: 'Test',
   sn: 'User',
@@ -31,12 +32,6 @@ const baseAccountDetail = {
   showOtpOptionSection: false,
 };
 
-const buildContext = (overrides: Partial<typeof baseAccountDetail> = {}) => ({
-  accountDetail: { ...baseAccountDetail, ...overrides },
-  setAccountDetail: vi.fn(),
-  setShowCreateAccountView: vi.fn(),
-});
-
 describe('AccountOtpSection – QRCodeSVG', () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -45,9 +40,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
   describe('QR code view (showOtpOptionSection = false)', () => {
     it('should render the QRCodeSVG element', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const qr = page.getByTestId('qrcode-password');
@@ -56,9 +51,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should render QRCodeSVG as an SVG element', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const qr = page.getByTestId('qrcode-password');
@@ -70,9 +65,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should render QRCodeSVG with size 179', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const qr = page.getByTestId('qrcode-password');
@@ -83,9 +78,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should display the secret code text below the QR code', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('Secret Code')).toBeVisible();
@@ -94,9 +89,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should display all static pin codes', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('12345678')).toBeVisible();
@@ -107,9 +102,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should render QRCodeSVG even when qrData is an empty string', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext({ qrData: '' })}>
+        <CreateAccountFormTestProvider values={{ ...baseAccountDetail, qrData: '' }}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const qr = page.getByTestId('qrcode-password');
@@ -121,9 +116,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
         'otpauth://totp/verylongusername%40example-enterprise-domain.com?secret=ABCDEFGHIJKLMNOP&issuer=Carbonio+Admin';
 
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext({ qrData: longUrl })}>
+        <CreateAccountFormTestProvider values={{ ...baseAccountDetail, qrData: longUrl }}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       const qr = page.getByTestId('qrcode-password');
@@ -132,9 +127,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should not render the OTP option switches in QR code view', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('Create OTP code')).not.toBeInTheDocument();
@@ -143,9 +138,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should display the send OTP chip input and send button', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext()}>
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByText('SEND', { exact: true })).toBeVisible();
@@ -155,9 +150,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
   describe('OTP options view (showOtpOptionSection = true)', () => {
     it('should NOT render the QRCodeSVG when showOtpOptionSection is true', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext({ showOtpOptionSection: true })}>
+        <CreateAccountFormTestProvider values={{ ...baseAccountDetail, showOtpOptionSection: true }}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect.element(page.getByTestId('qrcode-password')).not.toBeInTheDocument();
@@ -165,9 +160,9 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
     it('should render the success banner and OTP switches', async () => {
       setupBrowserTest(
-        <AccountContext.Provider value={buildContext({ showOtpOptionSection: true })}>
+        <CreateAccountFormTestProvider values={{ ...baseAccountDetail, showOtpOptionSection: true }}>
           <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
-        </AccountContext.Provider>,
+        </CreateAccountFormTestProvider>,
       );
 
       await expect

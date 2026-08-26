@@ -3,28 +3,30 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import { Button, ChipInput, Container, Padding, Row, Switch } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { sendMail } from '../../../../services/send-mail-service';
+import { useSendOtpEmail } from '../../../../services/use-send-otp-email';
 import CustomChip from '../../../components/customChip';
 import { isValidEmail } from '../../../utility/utils';
-import { AccountContext } from './account-context';
 import staticCodesStyles from './account-otp-section.module.css';
+import { useCreateAccountFormContext } from './create-account-form-context';
 import { emailContent } from './email-content';
 const AccountOtpSection: FC<{
   setToggleNextBtn: (newValue: boolean) => void;
 }> = ({ setToggleNextBtn }) => {
-  const context = useContext(AccountContext);
-  const { accountDetail, setAccountDetail } = context;
+  const { form } = useCreateAccountFormContext();
+  const accountDetail = useSelector(form.store, (s) => s.values);
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
   const [sendEmailTo, setSendEmailTo] = useState<any>('');
   const [t] = useTranslation();
+  const sendOtpEmail = useSendOtpEmail();
 
   useEffect(() => {
     if (accountDetail?.generateOTP || accountDetail?.administrationRigths) {
@@ -83,10 +85,7 @@ const AccountOtpSection: FC<{
               <Switch
                 defaultChecked={accountDetail.generateOTP}
                 onClick={(): void => {
-                  setAccountDetail((prev: any) => ({
-                    ...prev,
-                    generateOTP: !accountDetail.generateOTP,
-                  }));
+                  form.setFieldValue('generateOTP', !accountDetail.generateOTP);
                 }}
                 padding={{ top: 'large' }}
                 label={t('label.create_otp_code', 'Create OTP code')}
@@ -105,10 +104,7 @@ const AccountOtpSection: FC<{
               <Switch
                 defaultChecked={accountDetail.administrationRigths}
                 onClick={(): void => {
-                  setAccountDetail((prev: any) => ({
-                    ...prev,
-                    administrationRigths: !accountDetail.administrationRigths,
-                  }));
+                  form.setFieldValue('administrationRigths', !accountDetail.administrationRigths);
                 }}
                 padding={{ top: 'large' }}
                 label={t('label.add_administration_rights', 'Add Administration rights')}
@@ -252,33 +248,44 @@ const AccountOtpSection: FC<{
                   icon="PaperPlaneOutline"
                   iconPlacement="right"
                   onClick={(): void => {
-                    sendMail('SendMsgRequest', {
-                      _jsns: 'urn:zimbraMail',
-                      m: {
-                        attach: { mp: [] },
-                        su: { _content: 'Account 2FA code' },
-                        e: [
-                          {
-                            t: 'f',
-                            a: `${accountDetail?.name}@${domainName}`,
-                            d: accountDetail?.name,
-                          },
-                          ...map(sendEmailTo, (email: any) => ({ t: 't', a: email.label, d: '' })),
-                        ],
-                        mp: [
-                          {
-                            ct: 'text/html',
-                            body: true,
-                            content: {
-                              _content: emailContent(
-                                accountDetail?.pinCodes,
-                                accountDetail?.secrateCode,
-                              ),
+                    sendOtpEmail.mutate(
+                      {
+                        _jsns: 'urn:zimbraMail',
+                        m: {
+                          attach: { mp: [] },
+                          su: { _content: 'Account 2FA code' },
+                          e: [
+                            {
+                              t: 'f',
+                              a: `${accountDetail?.name}@${domainName}`,
+                              d: accountDetail?.name,
                             },
-                          },
-                        ],
+                            ...map(sendEmailTo, (email: any) => ({
+                              t: 't',
+                              a: email.label,
+                              d: '',
+                            })),
+                          ],
+                          mp: [
+                            {
+                              ct: 'text/html',
+                              body: true,
+                              content: {
+                                _content: emailContent(
+                                  accountDetail?.pinCodes,
+                                  accountDetail?.secrateCode,
+                                ),
+                              },
+                            },
+                          ],
+                        },
                       },
-                    }).then(() => setSendEmailTo(''));
+                      {
+                        onSuccess: (): void => {
+                          setSendEmailTo([]);
+                        },
+                      },
+                    );
                   }}
                 ></Button>
               </Row>

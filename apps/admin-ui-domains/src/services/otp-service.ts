@@ -16,7 +16,7 @@ export type TotpGenerateResponse = {
     algorithm?: string;
     digits_length?: string;
     period?: string;
-    static_otp_codes?: Array<string>;
+    static_otp_codes?: Array<{ code: string }>;
   };
 };
 

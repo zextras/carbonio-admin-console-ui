@@ -37,14 +37,14 @@ describe('useOtpMutations', () => {
 
 	const account = 'user@example.com';
 
-	it('useGenerateTotp calls generateTotp and invalidates the OTP list', async () => {
+	it('useGenerateTotp calls generateTotp for the account and invalidates the OTP list', async () => {
 		vi.mocked(generateTotp).mockResolvedValue({ ok: true, response: { secret: 'abc' } });
 
 		const { wrapper, queryClient } = createWrapper();
 		const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
-		const { result } = renderHook(() => useGenerateTotp(account), { wrapper });
+		const { result } = renderHook(() => useGenerateTotp(), { wrapper });
 
-		result.current.mutate(undefined);
+		result.current.mutate({ account });
 
 		await waitFor(() => expect(result.current.isSuccess).toBe(true));
 		expect(generateTotp).toHaveBeenCalledWith(account);

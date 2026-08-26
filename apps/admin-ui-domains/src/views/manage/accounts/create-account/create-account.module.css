@@ -1,0 +1,32 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/*
+ * Replicates the panel styles previously produced by the deprecated
+ * Container layout component wrapping the wizard.
+ */
+
+.wizardPanel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  background: var(--color-gray5-regular);
+  height: 100%;
+  width: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+  z-index: 10;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  transition: left 0.2s ease-in-out;
+  max-height: 100%;
+  overflow: hidden;
+  box-shadow: -0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1);
+}
