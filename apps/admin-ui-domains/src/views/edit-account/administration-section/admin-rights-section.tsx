@@ -9,7 +9,6 @@ import {
 	Dropdown,
 	HoverableRowFactory,
 	Input,
-	Padding,
 	Select,
 	Table,
 	useSnackbar,
@@ -263,16 +262,16 @@ export const AdminRightsSection = ({
 						}}
 					/>
 				</div>
-				<Padding top="large" right="small">
-					<Button
-						label={t('label.add', 'Add')}
-						onClick={onAdd}
-						disabled={domainId === '' || selectedOption?.length === 0}
-						type="outlined"
-						color="primary"
-						size="extralarge"
-					/>
-				</Padding>
+			<div className={styles.addBtnCol}>
+				<Button
+					label={t('label.add', 'Add')}
+					onClick={onAdd}
+					disabled={domainId === '' || selectedOption?.length === 0}
+					type="outlined"
+					color="primary"
+					size="extralarge"
+				/>
+			</div>
 			</div>
 			{adminGroups.length > 0 && (
 				<>

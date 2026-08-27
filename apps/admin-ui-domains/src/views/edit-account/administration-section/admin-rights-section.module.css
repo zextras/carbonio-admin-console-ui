@@ -19,8 +19,15 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-start;
-  width: 45%;
+  flex: 1 1 0;
+  min-width: 0;
   padding: var(--padding-size-large) var(--padding-size-large) 0 0;
+}
+
+.addBtnCol {
+  display: flex;
+  align-items: flex-end;
+  padding: 0 var(--padding-size-large) 0 0;
 }
 
 .dividerRow {
