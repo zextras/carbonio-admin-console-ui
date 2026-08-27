@@ -28,7 +28,7 @@ import { distributionListAction } from '../../../services/distribution-list-acti
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
-import EditMailingListView from './edit-mailing-detail-view';
+import EditDistributionList from './edit-distribution-list/edit-distribution-list';
 
 const DomainMailingList: FC = () => {
   const [t] = useTranslation();
@@ -782,7 +782,7 @@ const DomainMailingList: FC = () => {
       </Container>
       {showMailingListDetailView && (
         <ModalOverlay open={showMailingListDetailView} maxWidth="58.75rem">
-          <EditMailingListView
+          <EditDistributionList
             selectedMailingList={selectedMailingList}
             setIsUpdateRecord={setIsUpdateRecord}
             setShowMailingListDetailView={setShowMailingListDetailView}

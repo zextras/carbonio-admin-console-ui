@@ -11,12 +11,12 @@ import { removeDistributionListMember } from './remove-distributionlist-member-s
 
 /**
  * Removes `member` from a distribution list. `accountId` is the account whose
- * membership view must refresh (edit-account callers); the mutation vars carry
- * `listId`, whose distribution list detail/membership queries are also
- * invalidated. Snackbars stay at the call site via
+ * membership view must refresh (edit-account callers) and is optional; the
+ * mutation vars carry `listId`, whose distribution list detail/membership
+ * queries are also invalidated. Snackbars stay at the call site via
  * `mutate(vars, { onSuccess, onError })` (recorded repo convention).
  */
-export const useRemoveDistributionListMember = (accountId: string) => {
+export const useRemoveDistributionListMember = (accountId?: string) => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: ({ listId, member }: { listId: string; member: string }) =>
@@ -25,9 +25,11 @@ export const useRemoveDistributionListMember = (accountId: string) => {
 				{ n: 'dlm', _content: member },
 			),
 		onSuccess: (_data, { listId }) => {
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.accountMembership(accountId),
-			});
+			if (accountId) {
+				queryClient.invalidateQueries({
+					queryKey: domainQueryKeys.accountMembership(accountId),
+				});
+			}
 			queryClient.invalidateQueries({
 				queryKey: domainQueryKeys.distributionList(listId),
 			});
