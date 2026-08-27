@@ -33,13 +33,13 @@ import { useRemoveDistributionListMember } from '../../../../services/use-remove
 import { useRenameDistributionList } from '../../../../services/use-rename-distribution-list';
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from '../edit-mailing-detail/general-tab';
-import { MembersTab } from '../edit-mailing-detail/members-tab';
 import { OwnersTab } from '../edit-mailing-detail/owners-tab';
 import { ReusedDefaultTabBar } from '../edit-mailing-detail/reused-default-tab-bar';
 import { SendAsTab } from '../edit-mailing-detail/send-as-tab';
 import { SendToTab } from '../edit-mailing-detail/send-to-tab';
 import { buildSaveOperations, type SaveOperation } from './build-save-operations';
 import { DeleteDistributionListModal } from './delete-distribution-list-modal';
+import { MembersTab } from './members-tab/members-tab';
 import {
 	parseDistributionListDetail,
 	parseDistributionListGrants,
