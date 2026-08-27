@@ -130,7 +130,7 @@ vi.mock('../domain/details/domain-authentication', () => ({
 vi.mock('../domain/details/domain-2fa', () => ({
   DomainTwoFactorAuthentication: MockDomainTwoFactor,
 }));
-vi.mock('../domain/details/domain-theme', () => ({ default: MockDomainTheme }));
+vi.mock('../domain/details/domain-theme', () => ({ DomainTheme: MockDomainTheme }));
 vi.mock('../domain/details/domain-saml', () => ({ default: MockDomainSaml }));
 vi.mock('../domain/details/domain-disclaimer', () => ({ default: MockDomainDisclaimer }));
 vi.mock('../domain/details/virtual-hosts-certificates/domain-virtual-hosts', () => ({

@@ -286,7 +286,10 @@ export const ThemeConfigs = ({
                   color="error"
                   size="large"
                   width="fill"
-                  onClick={onResetTheme}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onResetTheme();
+                  }}
                   style={{ width: '100%' }}
                   disabled={isGlobalTheme && !hasModifyRights}
                 />

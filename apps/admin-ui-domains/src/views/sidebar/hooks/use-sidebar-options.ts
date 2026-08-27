@@ -45,22 +45,22 @@ import {
 } from '../../../constants';
 import type { Domain } from '../../../store/types';
 
-export type UseDomainListOptionsParams = {
+export type UseSidebarOptionsParams = {
   isDomainSelect: boolean;
   domainInformation: Domain | undefined;
 };
 
-export type UseDomainListOptionsReturn = {
+export type UseSidebarOptionsReturn = {
   manageOptions: Array<ListItemType>;
   detailItems: Array<ListItemType>;
   globalOptionsItems: Array<ListItemType>;
   isShowGlobalConfig: boolean;
 };
 
-export const useDomainListOptions = ({
+export const useSidebarOptions = ({
   isDomainSelect,
   domainInformation,
-}: UseDomainListOptionsParams): UseDomainListOptionsReturn => {
+}: UseSidebarOptionsParams): UseSidebarOptionsReturn => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
   const { data: backupData } = useBackupServers({ enabled: isAdvanced });

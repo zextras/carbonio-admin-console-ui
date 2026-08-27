@@ -8,9 +8,9 @@ import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
 
-import { DomainListPanel } from './domain/domain-list-panel';
 import { DomainContentPanel } from './domain-content-panel';
 import { DomainPageHeader } from './domain-page-header';
+import { DomainSidebar } from './sidebar/domain-sidebar';
 
 export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
@@ -21,7 +21,7 @@ export const AppView: FC = () => {
       <Container orientation="horizontal" mainAlignment="flex-start" style={{ overflow: 'hidden' }}>
         <Container style={{ maxWidth: '265px' }}>
           <Suspense fallback={<ds-spinner />}>
-            <DomainListPanel />
+            <DomainSidebar />
           </Suspense>
         </Container>
         <Container style={{ maxWidth: '100%' }}>
