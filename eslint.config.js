@@ -130,4 +130,23 @@ export default tseslint.config(
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
     },
   },
+  // TODO(CO-4164): temporary while distribution lists is being refactored —
+  // strict rules re-enabled when the rewrite lands (remove this block then)
+  {
+    files: ['apps/admin-ui-domains/src/views/manage/mailing-list/**'],
+    rules: {
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/set-state-in-render': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/use-memo': 'warn',
+      'react-hooks/exhaustive-deps': 'warn',
+      'react-compiler/react-compiler': 'warn',
+      'react-you-might-not-need-an-effect/no-event-handler': 'warn',
+      'react-you-might-not-need-an-effect/no-chain-state-updates': 'warn',
+      'react-you-might-not-need-an-effect/no-pass-data-to-parent': 'warn',
+      'react-you-might-not-need-an-effect/no-derived-state': 'warn',
+      'react-you-might-not-need-an-effect/no-adjust-state-on-prop-change': 'warn',
+      'react-you-might-not-need-an-effect/no-pass-live-state-to-parent': 'warn',
+    },
+  },
 );

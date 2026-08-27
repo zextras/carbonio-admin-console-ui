@@ -22,10 +22,10 @@ import { sortedUniq, uniq } from 'lodash';
 import { type ChangeEvent, type FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import helmetLogo from '../../../../../assets/helmet_logo.svg';
-import { EMAIL } from '../../../../../constants';
-import { searchGal } from '../../../../../services/search-gal-service';
-import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
+import helmetLogo from '../../../../assets/helmet_logo.svg';
+import { EMAIL } from '../../../../constants';
+import { searchGal } from '../../../../services/search-gal-service';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
 import { useTableFilter } from './hooks/use-table-filter';
 

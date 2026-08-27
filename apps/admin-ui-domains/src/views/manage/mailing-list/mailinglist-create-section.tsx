@@ -16,7 +16,7 @@ import {
 import { FC, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
+import { ALL, EMAIL, GRP, PUB } from '../../../constants';
 import { MailingListContext } from './mailinglist-context';
 
 const MailingListCreateSection: FC<any> = () => {

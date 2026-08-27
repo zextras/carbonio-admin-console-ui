@@ -21,10 +21,10 @@ import { debounce, sortedUniq, uniq } from 'lodash';
 import React, { FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import helmetLogo from '../../../../assets/helmet_logo.svg';
-import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
-import { searchGal } from '../../../../services/search-gal-service';
-import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
+import helmetLogo from '../../../assets/helmet_logo.svg';
+import { ALL, EMAIL, GRP, PUB } from '../../../constants';
+import { searchGal } from '../../../services/search-gal-service';
+import { getAllEmailFromString, isValidEmail } from '../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
 
 const MailingListSettingsSection: FC<any> = () => {

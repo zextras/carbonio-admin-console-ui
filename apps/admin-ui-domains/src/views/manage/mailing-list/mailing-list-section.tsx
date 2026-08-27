@@ -22,9 +22,9 @@ import { searchDirectory, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { isValidLdapQuery } from '../../../utility/utils';
+import { LDAP, LDAP_QUERY, TRUE } from '../../../constants';
+import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import { isValidLdapQuery } from '../../utility/utils';
 import { MailingListContext } from './mailinglist-context';
 
 const LIMIT = 15;

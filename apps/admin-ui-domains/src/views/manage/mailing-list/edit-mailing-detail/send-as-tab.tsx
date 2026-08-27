@@ -24,10 +24,10 @@ import { sortedUniq, uniq } from 'lodash';
 import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import helmetLogo from '../../../../../assets/helmet_logo.svg';
-import { distributionListAction } from '../../../../../services/distribution-list-action-service';
-import { searchGal } from '../../../../../services/search-gal-service';
-import { getAllEmailFromString, isValidEmail } from '../../../../utility/utils';
+import helmetLogo from '../../../../assets/helmet_logo.svg';
+import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { searchGal } from '../../../../services/search-gal-service';
+import { getAllEmailFromString, isValidEmail } from '../../../utility/utils';
 import { useSearchWithDebounce } from './hooks/use-search-with-debounce';
 import { useTableFilter } from './hooks/use-table-filter';
 

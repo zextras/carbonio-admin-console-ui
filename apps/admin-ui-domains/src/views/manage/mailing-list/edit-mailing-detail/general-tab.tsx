@@ -17,7 +17,7 @@ import {
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import ManageAliases from '../../../../components/manageAliases';
+import ManageAliases from '../../../components/manageAliases';
 
 type GeneralTabProps = {
   displayName: string;

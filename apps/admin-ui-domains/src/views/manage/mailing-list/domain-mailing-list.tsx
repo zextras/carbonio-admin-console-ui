@@ -9,7 +9,7 @@ import { debounce } from 'lodash';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import logo from '../../../../assets/gardian.svg';
+import logo from '../../../assets/gardian.svg';
 import {
   ALL,
   ASC,
@@ -20,13 +20,13 @@ import {
   PUB,
   RECORD_DISPLAY_LIMIT,
   TRUE,
-} from '../../../../constants';
-import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
-import { createMailingList } from '../../../../services/create-mailing-list-service';
-import { distributionListAction } from '../../../../services/distribution-list-action-service';
-import ScrollContainer from '../../../components/scrollComponent';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+} from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
+import { addDistributionListMember } from '../../../services/add-distributionlist-member-service';
+import { createMailingList } from '../../../services/create-mailing-list-service';
+import { distributionListAction } from '../../../services/distribution-list-action-service';
+import ScrollContainer from '../../components/scrollComponent';
+import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
 import EditMailingListView from './edit-mailing-detail-view';
 
