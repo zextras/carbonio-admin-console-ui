@@ -201,6 +201,7 @@
 
 .pagingSticky {
   position: sticky;
+  width: 100%;
 }
 
 .pagingBar {
@@ -224,7 +225,8 @@
   justify-content: center;
   flex-wrap: nowrap;
   height: 100%;
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .pagingTrack {
