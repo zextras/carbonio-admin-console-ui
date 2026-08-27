@@ -51,8 +51,8 @@ describe('useSetAccountQuota', () => {
 		expect(unsetAccountQuota).not.toHaveBeenCalled();
 	});
 
-	it('unsets the quota when the limit is unlimited or missing', async () => {
-		vi.mocked(unsetAccountQuota).mockResolvedValue({ type: 'success' });
+	it('sets the quota when an unlimited value is given', async () => {
+		vi.mocked(setAccountQuota).mockResolvedValue({ type: 'success' });
 
 		const { wrapper } = createWrapper();
 		const { result } = renderHook(() => useSetAccountQuota(), { wrapper });
@@ -60,11 +60,20 @@ describe('useSetAccountQuota', () => {
 		result.current.mutate({ accountId: 'acc-1', limit: { type: 'unlimited' } });
 
 		await waitFor(() => expect(result.current.isSuccess).toBe(true));
-		result.current.mutate({ accountId: 'acc-2' });
+		expect(setAccountQuota).toHaveBeenCalledWith('acc-1', { type: 'unlimited' });
+		expect(unsetAccountQuota).not.toHaveBeenCalled();
+	});
 
-		await waitFor(() => expect(unsetAccountQuota).toHaveBeenCalledTimes(2));
+	it('unsets the quota when the limit is missing', async () => {
+		vi.mocked(unsetAccountQuota).mockResolvedValue({ type: 'success' });
+
+		const { wrapper } = createWrapper();
+		const { result } = renderHook(() => useSetAccountQuota(), { wrapper });
+
+		result.current.mutate({ accountId: 'acc-1' });
+
+		await waitFor(() => expect(result.current.isSuccess).toBe(true));
 		expect(unsetAccountQuota).toHaveBeenCalledWith('acc-1');
-		expect(unsetAccountQuota).toHaveBeenCalledWith('acc-2');
 		expect(setAccountQuota).not.toHaveBeenCalled();
 	});
 

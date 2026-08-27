@@ -22,7 +22,7 @@ export const useSetAccountQuota = () => {
   return useMutation({
     mutationFn: async (vars: SetAccountQuotaVars) => {
       const result =
-        vars.limit === undefined || vars.limit.type === 'unlimited'
+        vars.limit === undefined
           ? await unsetAccountQuota(vars.accountId)
           : await setAccountQuota(vars.accountId, vars.limit);
       if (result.type === 'error') {
