@@ -38,6 +38,7 @@
   flex-wrap: wrap;
   width: 100%;
   padding: var(--padding-size-large);
+  box-sizing: border-box;
 }
 
 .dividerRow {
@@ -96,6 +97,7 @@
   flex-wrap: wrap;
   width: 100%;
   padding: var(--padding-size-large) var(--padding-size-large) 0 var(--padding-size-large);
+  box-sizing: border-box;
 }
 
 .tablePanel {
