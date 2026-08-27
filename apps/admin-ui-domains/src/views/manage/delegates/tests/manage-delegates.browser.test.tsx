@@ -18,7 +18,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import ManageDelegates from '../manage-delegates';
+import { ManageDelegates } from '../manage-delegates';
 
 vi.mock('../../../edit-account/edit-account', () => ({
   EditAccount: (): ReactElement => <div>EDIT-ACCOUNT-VIEW</div>,
@@ -60,12 +60,6 @@ type AccountEntry = {
   a: Array<{ n: string; _content: string }>;
 };
 
-type DlEntry = {
-  name: string;
-  id: string;
-  a: Array<{ n: string; _content: string }>;
-};
-
 function buildDelegateAccount(
   email: string,
   id: string,
@@ -90,17 +84,6 @@ function buildDelegateAccount(
       { n: 'description', _content: '' },
       { n: 'zimbraId', _content: id },
       { n: 'zimbraCOSId', _content: 'cos-default-id' },
-    ],
-  };
-}
-
-function buildDistributionList(name: string, id: string, isAdminGroup = false): DlEntry {
-  return {
-    name,
-    id,
-    a: [
-      { n: 'description', _content: `DL ${name}` },
-      { n: 'zimbraIsAdminGroup', _content: isAdminGroup ? 'TRUE' : 'FALSE' },
     ],
   };
 }
@@ -141,12 +124,11 @@ type AccountsRequestParams = {
 function setupSearchDirectoryHandler(
   accounts: Array<AccountEntry> = DELEGATE_ACCOUNTS,
   options: {
-    hasAdminGroup?: boolean;
     onAccountsRequest?: (params: AccountsRequestParams) => void;
     delayAccountsMs?: number;
   } = {},
 ): void {
-  const { hasAdminGroup = false, onAccountsRequest, delayAccountsMs = 0 } = options;
+  const { onAccountsRequest, delayAccountsMs = 0 } = options;
 
   worker.use(
     http.post<never, SearchDirectoryBody>(
@@ -154,38 +136,6 @@ function setupSearchDirectoryHandler(
       async ({ request }) => {
         const body = await request.json();
         const params = body?.Body?.SearchDirectoryRequest;
-
-        // Distribution list queries (types = 'distributionlists,dynamicgroups')
-        if (params?.types?.includes('distributionlists')) {
-          const query = params?.query ?? '';
-
-          // Admin group check: query contains zimbraIsAdminGroup=TRUE
-          if (query.includes('zimbraIsAdminGroup=TRUE')) {
-            const dlList = hasAdminGroup
-              ? [buildDistributionList(`__helpdesk_admins@${DOMAIN_NAME}`, 'dl-admin-1', true)]
-              : [];
-            return HttpResponse.json({
-              Body: {
-                SearchDirectoryResponse: {
-                  dl: dlList,
-                  searchTotal: dlList.length,
-                  more: false,
-                },
-              },
-            });
-          }
-
-          // System account filter: regular distribution lists
-          return HttpResponse.json({
-            Body: {
-              SearchDirectoryResponse: {
-                dl: [],
-                searchTotal: 0,
-                more: false,
-              },
-            },
-          });
-        }
 
         // Account list query (types = 'accounts')
         if (params?.types === 'accounts') {
@@ -213,6 +163,32 @@ function setupSearchDirectoryHandler(
             },
           },
         });
+      },
+    ),
+  );
+}
+
+type InitializedDomainsBody = { domainName?: string };
+
+/**
+ * Setup MSW handler for the getInitializedDomains extension endpoint, which
+ * drives the INIT / RE-INIT DOMAIN button state.
+ */
+function setupInitializedDomainsHandler(
+  options: {
+    initialized?: boolean;
+    onInitializedDomainsRequest?: (body: InitializedDomainsBody) => void;
+  } = {},
+): void {
+  const { initialized = false, onInitializedDomainsRequest } = options;
+  worker.use(
+    http.post<never, InitializedDomainsBody>(
+      '/service/extension/zextras_admin/admin/getInitializedDomains',
+      async ({ request }) => {
+        const body = (await request.json()) as InitializedDomainsBody;
+        onInitializedDomainsRequest?.(body);
+        const domain = initialized ? [{ name: DOMAIN_NAME, id: DOMAIN_ID }] : [];
+        return HttpResponse.json({ domain, searchTotal: domain.length });
       },
     ),
   );
@@ -304,7 +280,8 @@ describe('ManageDelegates (browser)', () => {
     });
 
     it('should show INIT DOMAIN button for global admin users', async () => {
-      setupSearchDirectoryHandler(DELEGATE_ACCOUNTS, { hasAdminGroup: false });
+      setupSearchDirectoryHandler();
+      setupInitializedDomainsHandler({ initialized: false });
       const qc = getQueryClient();
       setupGlobalAdminSettings(qc);
       await setupBrowserTest(<ManageDelegates />, { queryClient: qc });
@@ -312,7 +289,8 @@ describe('ManageDelegates (browser)', () => {
     });
 
     it('should show RE-INIT DOMAIN button when domain is already initialized', async () => {
-      setupSearchDirectoryHandler(DELEGATE_ACCOUNTS, { hasAdminGroup: true });
+      setupSearchDirectoryHandler();
+      setupInitializedDomainsHandler({ initialized: true });
       const qc = getQueryClient();
       setupGlobalAdminSettings(qc);
       await setupBrowserTest(<ManageDelegates />, { queryClient: qc });
@@ -363,6 +341,7 @@ describe('ManageDelegates (browser)', () => {
 
     it('should initialize the domain and grant COS rights to helpdesk admins', async () => {
       setupSearchDirectoryHandler();
+      setupInitializedDomainsHandler({ initialized: false });
       const qc = setupGlobalAdminWithCosLimits();
       worker.use(
         http.post('/service/extension/zextras_admin/admin/initDomainForDelegation', async ({ request }) => {
@@ -413,6 +392,7 @@ describe('ManageDelegates (browser)', () => {
 
     it('should show an error snackbar when domain initialization fails', async () => {
       setupSearchDirectoryHandler();
+      setupInitializedDomainsHandler({ initialized: false });
       const qc = setupGlobalAdminWithCosLimits();
       worker.use(
         http.post('/service/extension/zextras_admin/admin/initDomainForDelegation', () =>
@@ -509,36 +489,21 @@ describe('ManageDelegates (browser)', () => {
       expect(capturedAccountsQuery).toContain('zimbraIsDelegatedAdminAccount=TRUE');
     });
 
-    it('should request distribution lists with admin group query', async () => {
-      let capturedDlQuery = '';
-      worker.use(
-        http.post<never, SearchDirectoryBody>(
-          '/service/admin/soap/SearchDirectoryRequest',
-          async ({ request }) => {
-            const body = await request.json();
-            const params = body?.Body?.SearchDirectoryRequest;
-            if (
-              params?.types?.includes('distributionlists') &&
-              (params?.query as string)?.includes('zimbraIsAdminGroup')
-            ) {
-              capturedDlQuery = params?.query as string;
-            }
-            return HttpResponse.json({
-              Body: {
-                SearchDirectoryResponse: {
-                  account: [],
-                  dl: [],
-                  searchTotal: 0,
-                  more: false,
-                },
-              },
-            });
-          },
-        ),
-      );
-      await setupBrowserTest(<ManageDelegates />);
-      await expect.element(page.getByText('This list is empty.')).toBeInTheDocument();
-      expect(capturedDlQuery).toContain('zimbraIsAdminGroup=TRUE');
+    it('should check the domain initialization state via getInitializedDomains', async () => {
+      const capturedBodies: Array<InitializedDomainsBody> = [];
+      setupSearchDirectoryHandler();
+      setupInitializedDomainsHandler({
+        onInitializedDomainsRequest: (body) => capturedBodies.push(body),
+      });
+      const qc = getQueryClient();
+      setupGlobalAdminSettings(qc);
+      await setupBrowserTest(<ManageDelegates />, { queryClient: qc });
+      await expect.element(page.getByText('delegated1@example.com')).toBeInTheDocument();
+
+      await vi.waitFor(() => {
+        expect(capturedBodies.length).toBeGreaterThan(0);
+      });
+      expect(capturedBodies[0]?.domainName).toBe(DOMAIN_NAME);
     });
   });
 });

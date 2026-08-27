@@ -47,7 +47,7 @@ import DomainResources from './domain/manange/resources/domain-resources';
 import RestoreAccount from './domain/manange/restore-delete-account/restore-delete-account';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 import { ManageAccounts } from './manage/accounts/manage-accounts';
-import ManageDelegates from './manage/delegates/manage-delegates';
+import { ManageDelegates } from './manage/delegates/manage-delegates';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();

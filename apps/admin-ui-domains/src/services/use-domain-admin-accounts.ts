@@ -21,10 +21,12 @@ export type DirectoryAccountEntry = {
 };
 
 /** A directory account with its attributes flattened onto the entry itself. */
+export type FlattenedAccount = { id: string; name: string } & Record<string, unknown>;
+
 export type DomainAdminAccount = {
-	id: string;
-	name: string;
-	item: Record<string, unknown>;
+  id: string;
+  name: string;
+  item: FlattenedAccount;
 };
 
 export type DomainAdminAccounts = {
@@ -38,7 +40,7 @@ export type DomainAdminAccounts = {
  * its last value.
  */
 export function toDomainAdminAccount(entry: DirectoryAccountEntry): DomainAdminAccount {
-	const item: Record<string, unknown> = { ...entry };
+	const item: Record<string, unknown> = { ...entry, name: entry.name ?? '' };
 	(entry.a ?? []).forEach((attr) => {
 		if (attr.n === 'mail') {
 			const current = item.mail;
@@ -51,7 +53,7 @@ export function toDomainAdminAccount(entry: DirectoryAccountEntry): DomainAdminA
 			item[attr.n] = attr._content;
 		}
 	});
-	return { id: entry.id, name: entry.name ?? '', item };
+	return { id: entry.id, name: entry.name ?? '', item: item as FlattenedAccount };
 }
 
 /** Projects a SearchDirectory response into the admin-accounts view model. */
