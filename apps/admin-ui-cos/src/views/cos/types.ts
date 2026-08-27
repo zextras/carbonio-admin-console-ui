@@ -9,6 +9,8 @@ type CosFeaturesFormValues = {
   carbonioFeatureMailsAppEnabled: string;
   zimbraFeatureOutOfOfficeReplyEnabled: string;
   zimbraFeatureSignaturesEnabled: string;
+  zimbraFeatureImportFolderEnabled: string;
+  zimbraFeatureExportFolderEnabled: string;
   zimbraFeatureMobileSyncEnabled: string;
   zimbraFeatureContactsEnabled: string;
   zimbraFeatureCalendarEnabled: string;
