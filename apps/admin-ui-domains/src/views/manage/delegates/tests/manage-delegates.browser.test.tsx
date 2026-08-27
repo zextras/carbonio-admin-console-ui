@@ -14,29 +14,39 @@ import {
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
-import { beforeEach, describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
 import ManageDelegates from '../manage-delegates';
 
+vi.mock('../../../edit-account/edit-account', () => ({
+  EditAccount: (): ReactElement => <div>EDIT-ACCOUNT-VIEW</div>,
+}));
+
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';
 
-function seedDomainData(queryClient: QueryClient): void {
+function seedDomainData(
+  queryClient: QueryClient,
+  extraAttrs: Array<{ n: string; _content: string }> = [],
+): void {
   queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
     id: DOMAIN_ID,
     name: DOMAIN_NAME,
-    a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+    a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }, ...extraAttrs],
   });
 }
 
 function setupBrowserTest(
   ui: ReactElement,
-  options?: { queryClient?: QueryClient },
+  options?: {
+    queryClient?: QueryClient;
+    extraDomainAttrs?: Array<{ n: string; _content: string }>;
+  },
 ): Promise<RenderResult> {
   const queryClient = options?.queryClient ?? getQueryClient();
-  seedDomainData(queryClient);
+  seedDomainData(queryClient, options?.extraDomainAttrs ?? []);
   return _setupBrowserTest(ui, {
     queryClient,
     withDomainIdRoute: true,
@@ -119,6 +129,11 @@ type SearchDirectoryBody = {
   };
 };
 
+type AccountsRequestParams = {
+  offset?: number;
+  limit?: number;
+};
+
 /**
  * Setup MSW handler for all SearchDirectory calls.
  * Routes responses based on `types` and `query` parameters in the request body.
@@ -127,9 +142,11 @@ function setupSearchDirectoryHandler(
   accounts: Array<AccountEntry> = DELEGATE_ACCOUNTS,
   options: {
     hasAdminGroup?: boolean;
+    onAccountsRequest?: (params: AccountsRequestParams) => void;
+    delayAccountsMs?: number;
   } = {},
 ): void {
-  const { hasAdminGroup = false } = options;
+  const { hasAdminGroup = false, onAccountsRequest, delayAccountsMs = 0 } = options;
 
   worker.use(
     http.post<never, SearchDirectoryBody>(
@@ -172,6 +189,10 @@ function setupSearchDirectoryHandler(
 
         // Account list query (types = 'accounts')
         if (params?.types === 'accounts') {
+          onAccountsRequest?.(params as AccountsRequestParams);
+          if (delayAccountsMs > 0) {
+            await new Promise((resolve) => setTimeout(resolve, delayAccountsMs));
+          }
           return HttpResponse.json({
             Body: {
               SearchDirectoryResponse: {
@@ -296,6 +317,164 @@ describe('ManageDelegates (browser)', () => {
       setupGlobalAdminSettings(qc);
       await setupBrowserTest(<ManageDelegates />, { queryClient: qc });
       await expect.element(page.getByText('RE-INIT DOMAIN', { exact: true })).toBeInTheDocument();
+    });
+  });
+
+  describe('Edit account modal', () => {
+    it('should open the EditAccount view in a modal when a row is clicked', async () => {
+      setupSearchDirectoryHandler();
+      await setupBrowserTest(<ManageDelegates />);
+      await expect.element(page.getByText('delegated1@example.com')).toBeInTheDocument();
+
+      await userEvent.click(page.getByText('delegated1@example.com'));
+
+      await expect.element(page.getByText('EDIT-ACCOUNT-VIEW')).toBeVisible();
+    });
+  });
+
+  describe('Init domain action', () => {
+    const initCalls: Array<{ domain?: string }> = [];
+    const grantRightCalls: Array<{
+      target?: { _content?: string };
+      grantee?: { _content?: string };
+      right?: { _content?: string };
+    }> = [];
+
+    type GrantRightSoapBody = {
+      Body?: {
+        GrantRightRequest?: {
+          target?: { _content?: string };
+          grantee?: { _content?: string };
+          right?: { _content?: string };
+        };
+      };
+    };
+
+    function setupGlobalAdminWithCosLimits(): QueryClient {
+      const qc = getQueryClient();
+      setupGlobalAdminSettings(qc);
+      return qc;
+    }
+
+    const COS_LIMIT_ATTRS: Array<{ n: string; _content: string }> = [
+      { n: 'zimbraDomainCOSMaxAccounts', _content: 'cos-a:50' },
+      { n: 'zimbraDomainCOSMaxAccounts', _content: 'cos-b:100' },
+    ];
+
+    it('should initialize the domain and grant COS rights to helpdesk admins', async () => {
+      setupSearchDirectoryHandler();
+      const qc = setupGlobalAdminWithCosLimits();
+      worker.use(
+        http.post('/service/extension/zextras_admin/admin/initDomainForDelegation', async ({ request }) => {
+          initCalls.push((await request.json()) as { domain?: string });
+          return HttpResponse.json({ message: 'Domain initialized' });
+        }),
+        http.post('/service/admin/soap/GrantRightRequest', async ({ request }) => {
+          const body = (await request.json()) as GrantRightSoapBody;
+          if (body?.Body?.GrantRightRequest) {
+            grantRightCalls.push(body.Body.GrantRightRequest);
+          }
+          return HttpResponse.json({ Body: { GrantRightResponse: {} } });
+        }),
+      );
+      await setupBrowserTest(<ManageDelegates />, {
+        queryClient: qc,
+        extraDomainAttrs: COS_LIMIT_ATTRS,
+      });
+
+      await userEvent.click(page.getByRole('button', { name: 'INIT DOMAIN' }));
+
+      await vi.waitFor(() => {
+        expect(initCalls).toHaveLength(1);
+      });
+      expect(initCalls[0]?.domain).toBe(DOMAIN_NAME);
+
+      // 2 COS entries x 3 rights (getCos, listCos, assignCos)
+      await vi.waitFor(() => {
+        expect(grantRightCalls).toHaveLength(6);
+      });
+      const grantedRights = grantRightCalls
+        .map((call) => `${call.target?._content}:${call.right?._content}`)
+        .sort();
+      expect(grantedRights).toEqual([
+        'cos-a:assignCos',
+        'cos-a:getCos',
+        'cos-a:listCos',
+        'cos-b:assignCos',
+        'cos-b:getCos',
+        'cos-b:listCos',
+      ]);
+      grantRightCalls.forEach((call) => {
+        expect(call.grantee?._content).toBe(`__helpdesk_admins@${DOMAIN_NAME}`);
+      });
+
+      await expect.element(page.getByText('Domain initialized')).toBeVisible();
+    });
+
+    it('should show an error snackbar when domain initialization fails', async () => {
+      setupSearchDirectoryHandler();
+      const qc = setupGlobalAdminWithCosLimits();
+      worker.use(
+        http.post('/service/extension/zextras_admin/admin/initDomainForDelegation', () =>
+          HttpResponse.error(),
+        ),
+      );
+      await setupBrowserTest(<ManageDelegates />, {
+        queryClient: qc,
+        extraDomainAttrs: COS_LIMIT_ATTRS,
+      });
+
+      await userEvent.click(page.getByRole('button', { name: 'INIT DOMAIN' }));
+
+      await expect.element(page.getByText('Failed to fetch')).toBeVisible();
+    });
+  });
+
+  describe('Pagination interactions', () => {
+    function buildManyAccounts(count: number): Array<AccountEntry> {
+      return Array.from({ length: count }, (_, index) =>
+        buildDelegateAccount(`user${index + 1}@${DOMAIN_NAME}`, `many-${index + 1}`),
+      );
+    }
+
+    it('should re-request accounts with offset 10 when navigating to the next page', async () => {
+      const accountsRequests: Array<AccountsRequestParams> = [];
+      setupSearchDirectoryHandler(buildManyAccounts(15), {
+        onAccountsRequest: (params) => accountsRequests.push(params),
+      });
+      await setupBrowserTest(<ManageDelegates />);
+      await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+
+      await userEvent.click(page.getByRole('button', { name: 'Next page' }));
+
+      await vi.waitFor(() => {
+        expect(accountsRequests.at(-1)?.offset).toBe(10);
+      });
+    });
+
+    it('should re-request accounts with the new limit when page size changes', async () => {
+      const accountsRequests: Array<AccountsRequestParams> = [];
+      setupSearchDirectoryHandler(buildManyAccounts(15), {
+        onAccountsRequest: (params) => accountsRequests.push(params),
+      });
+      await setupBrowserTest(<ManageDelegates />);
+      await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+
+      await userEvent.click(page.getByTestId('pagination-select').getByText('10', { exact: true }));
+      await userEvent.click(page.getByText('25', { exact: true }));
+
+      await vi.waitFor(() => {
+        expect(accountsRequests.at(-1)?.limit).toBe(25);
+      });
+    });
+  });
+
+  describe('Loading state', () => {
+    it('should show a spinner while the account list is loading', async () => {
+      setupSearchDirectoryHandler(DELEGATE_ACCOUNTS, { delayAccountsMs: 5000 });
+      await setupBrowserTest(<ManageDelegates />);
+
+      await expect.element(page.getByRole('status')).toBeVisible();
     });
   });
 
