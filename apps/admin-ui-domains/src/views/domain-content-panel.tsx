@@ -42,12 +42,12 @@ import { DomainDetailPanel } from './domain/domain-detail-panel';
 import { DomainOperationsLayout } from './domain/domain-operations-layout';
 import ActiveSync from './domain/manange/active-sync/active-sync';
 import { DomainAddressBook } from './domain/manange/address-book/domain-address-book';
-import ManageDelegates from './domain/manange/delegates/manage-delegates';
 import DomainMailingList from './domain/manange/mailing-list/domain-mailing-list';
 import DomainResources from './domain/manange/resources/domain-resources';
 import RestoreAccount from './domain/manange/restore-delete-account/restore-delete-account';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 import { ManageAccounts } from './manage/accounts/manage-accounts';
+import ManageDelegates from './manage/delegates/manage-delegates';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();

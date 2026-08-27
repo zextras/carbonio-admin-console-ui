@@ -9,8 +9,8 @@ import { debounce } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Attribute, CosMaxAccountValues, objectType } from '../../../../../types';
-import logo from '../../../../assets/guardian.svg';
+import { Attribute, CosMaxAccountValues, objectType } from '../../../../types';
+import logo from '../../../assets/guardian.svg';
 import {
   ADMIN_GROUP_FLAG,
   HELPDESK_ADMINS,
@@ -18,15 +18,15 @@ import {
   SYSTEM_ACCOUNT_FLAG,
   ZIMBRA_ADMIN_URN,
   ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS,
-} from '../../../../constants';
-import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { accountListDirectory } from '../../../../services/account-list-directory-service';
-import { getAccountMembershipRequest } from '../../../../services/get-account-membership';
-import { InitDomainForDelegation } from '../../../../services/init-domain-for-delegation';
-import { removeDistributionListMember } from '../../../../services/remove-distributionlist-member-service';
-import ScrollContainer from '../../../components/scrollComponent';
-import { EditAccount } from '../../../edit-account/edit-account';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+} from '../../../constants';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
+import { accountListDirectory } from '../../../services/account-list-directory-service';
+import { getAccountMembershipRequest } from '../../../services/get-account-membership';
+import { InitDomainForDelegation } from '../../../services/init-domain-for-delegation';
+import { removeDistributionListMember } from '../../../services/remove-distributionlist-member-service';
+import ScrollContainer from '../../components/scrollComponent';
+import { EditAccount } from '../../edit-account/edit-account';
+import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import DisableDelegateAdminModel from './disable-delegate-admin-model';
 
 const ManageDelegates: FC = () => {

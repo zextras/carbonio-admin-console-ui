@@ -7,7 +7,7 @@ import { Button, Container, Modal, Padding,Row } from '@zextras/ui-components';
 import { FC } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import { Domain } from '../../../../../types';
+import { Domain } from '../../../../types';
 
 const DisableDelegateAdminModel: FC<{
 	open: boolean;
