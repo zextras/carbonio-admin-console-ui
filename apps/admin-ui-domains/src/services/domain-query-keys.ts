@@ -97,4 +97,10 @@ export const domainQueryKeys = {
   },
   quarantineAccount: () => [...domainQueryKeys.all, 'quarantine-account'] as const,
   quarantineMessages: () => [...domainQueryKeys.all, 'quarantine-messages'] as const,
+  distributionList: (listId: string) => [...domainQueryKeys.all, 'distribution-list', listId] as const,
+  distributionListGrants: (listId: string) =>
+    [...domainQueryKeys.distributionList(listId), 'grants'] as const,
+  distributionListMembership: (listId: string) =>
+    [...domainQueryKeys.distributionList(listId), 'membership'] as const,
+  galSearch: (keyword: string) => [...domainQueryKeys.all, 'gal-search', keyword] as const,
 } as const;
