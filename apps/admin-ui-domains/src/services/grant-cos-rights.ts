@@ -6,7 +6,8 @@
 
 import { postSoapFetchRequest } from '@zextras/ui-shared';
 
-import { HELPDESK_ADMINS, ZIMBRA_ADMIN_URN } from '../constants';
+import { Attribute, CosMaxAccountValues } from '../../types';
+import { HELPDESK_ADMINS, ZIMBRA_ADMIN_URN, ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS } from '../constants';
 
 const COS_RIGHTS = ['getCos', 'listCos', 'assignCos'] as const;
 
@@ -43,4 +44,31 @@ export async function revokeCosRights(cosId: string, domainName: string): Promis
       'RevokeRightRequest',
     );
   }
+}
+
+/**
+ * Grants the delegation rights on every given COS in parallel, resolving once
+ * all grants have settled (INIT DOMAIN flow).
+ */
+export async function grantAllCosRights(
+  domainName: string,
+  cosIds: Array<string>,
+): Promise<Array<void>> {
+  return Promise.all(cosIds.map((cosId) => grantCosRights(cosId, domainName)));
+}
+
+/**
+ * Parses the `zimbraDomainCOSMaxAccounts` attributes of a domain into
+ * `{ id, value }` pairs. A missing max-accounts value is reported as `-1`,
+ * mirroring the server-side default (unlimited).
+ */
+export function parseCosMaxAccounts(
+  attrs: Array<Attribute> | undefined,
+): Array<CosMaxAccountValues> {
+  return (attrs ?? [])
+    .filter((attr) => attr.n === ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS)
+    .map((attr) => {
+      const [id, value] = attr._content.split(':');
+      return { id, value: value ?? '-1' };
+    });
 }
