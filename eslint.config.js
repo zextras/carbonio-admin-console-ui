@@ -94,7 +94,7 @@ export default tseslint.config(
   {
     files: [
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
-      'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
+      'apps/admin-ui-domains/src/views/sidebar/**',
       'apps/admin-ui-domains/src/views/global/**',
       'apps/admin-ui-domains/src/views/manage/**',
       'apps/admin-ui-domains/src/views/create-new-domain/**',

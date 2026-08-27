@@ -11,11 +11,11 @@ import { useTranslation } from 'react-i18next';
 import { IS_DETAIL_LIST_EXPANDED, IS_MANAGE_LIST_EXPANDED } from '../../constants';
 import type { Domain } from '../../store/types';
 import { DomainSearchDropdown } from './components/domain-search-dropdown';
-import { GlobalListPanel } from './global-list-panel';
-import { useDomainListOptions } from './hooks/use-domain-list-options';
+import { GlobalOptionsSection } from './global-options-section';
 import { useDomainNavigation } from './hooks/use-domain-navigation';
+import { useSidebarOptions } from './hooks/use-sidebar-options';
 
-export const DomainListPanel = () => {
+export const DomainSidebar = () => {
   const [t] = useTranslation();
   const { isDomainSelect, selectedDomainId, domainView, navigateToView } = useDomainNavigation();
   const [isDetailListExpanded, setIsDetailListExpanded] = useState(
@@ -29,8 +29,9 @@ export const DomainListPanel = () => {
     domainId: selectedDomainId || undefined,
   });
 
-  const { manageOptions, detailItems, globalOptionsItems, isShowGlobalConfig } =
-    useDomainListOptions({ isDomainSelect, domainInformation });
+  const { manageOptions, detailItems, globalOptionsItems, isShowGlobalConfig } = useSidebarOptions(
+    { isDomainSelect, domainInformation },
+  );
 
   const toggleDetailView = (): void => {
     if (isDetailListExpanded) {
@@ -61,7 +62,7 @@ export const DomainListPanel = () => {
       style={{ overflow: 'auto', borderTop: '0.063rem solid #FFFFFF' }}
     >
       {isShowGlobalConfig && globalOptionsItems.length > 0 && (
-        <GlobalListPanel
+        <GlobalOptionsSection
           globalOptionItems={globalOptionsItems}
           selectedOperationItem={domainView}
           setSelectedOperationItem={navigateToView}

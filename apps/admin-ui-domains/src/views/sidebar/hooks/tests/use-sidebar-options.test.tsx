@@ -22,7 +22,7 @@ import {
   useIsAdvanced,
 } from '@zextras/ui-shared';
 
-import { useDomainListOptions } from '../use-domain-list-options';
+import { useSidebarOptions } from '../use-sidebar-options';
 
 const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
 const useBackupServersMock = useBackupServers as unknown as Mock;
@@ -38,7 +38,7 @@ function renderOptionsHook({
   domainInformation?: object;
 } = {}) {
   const { result } = renderHook(() =>
-    useDomainListOptions({ isDomainSelect, domainInformation: domainInformation as never }),
+    useSidebarOptions({ isDomainSelect, domainInformation: domainInformation as never }),
   );
   return result.current;
 }
@@ -50,7 +50,7 @@ const RIGHTS_WITH_GLOBAL_CONFIG = [
   },
 ];
 
-describe('useDomainListOptions', () => {
+describe('useSidebarOptions', () => {
   describe('isAdvanced filtering', () => {
     it('should exclude advanced-only manage items when isAdvanced is false', () => {
       useIsAdvancedMock.mockReturnValue(false);

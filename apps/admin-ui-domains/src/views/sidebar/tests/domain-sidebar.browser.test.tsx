@@ -16,7 +16,7 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { DOMAINS_ROUTE_ID, MANAGE_APP_ID } from '../../../constants';
-import { DomainListPanel } from '../domain-list-panel';
+import { DomainSidebar } from '../domain-sidebar';
 
 type DomainEntry = {
   name: string;
@@ -52,7 +52,7 @@ function setupSearchDirectoryInterceptor(domains: Array<DomainEntry> = DOMAINS):
 const DOMAIN_ROUTE = `${MANAGE_APP_ID}/${DOMAINS_ROUTE_ID}`;
 const DOMAIN_ID = 'domain-1';
 
-describe('DomainListPanel', () => {
+describe('DomainSidebar', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
   beforeEach(async () => {
@@ -74,7 +74,7 @@ describe('DomainListPanel', () => {
 
   describe('Rendering', () => {
     it('should render the Manage section header', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -83,7 +83,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should render the Details section header', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -92,7 +92,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should render manage items when a domain is selected', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -103,7 +103,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should render detail items when a domain is selected', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -114,7 +114,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should render the domain search input with selected-domain label', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -125,7 +125,7 @@ describe('DomainListPanel', () => {
 
   describe('Section toggling', () => {
     it('should collapse manage items when Manage header is clicked', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -138,7 +138,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should collapse detail items when Details header is clicked', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -151,7 +151,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should restore detail items when Details header is clicked again', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -164,7 +164,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should restore manage items when Manage header is clicked again', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -179,7 +179,7 @@ describe('DomainListPanel', () => {
 
   describe('Domain dropdown', () => {
     it('should show domain names when the search input is clicked', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -192,7 +192,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should populate the input with the domain name when a domain is clicked', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -208,7 +208,7 @@ describe('DomainListPanel', () => {
 
   describe('Navigation', () => {
     it('should keep the panel rendered after clicking a detail item', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -220,7 +220,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should keep the panel rendered after clicking a manage item', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -236,7 +236,7 @@ describe('DomainListPanel', () => {
     it('should still render panel sections when no domains are returned', async () => {
       setupSearchDirectoryInterceptor([]);
 
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -248,7 +248,7 @@ describe('DomainListPanel', () => {
     it('should show the not-found message when search returns no results', async () => {
       setupSearchDirectoryInterceptor([]);
 
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -261,7 +261,7 @@ describe('DomainListPanel', () => {
 
   describe('Global config', () => {
     it('should render the global config section with global items', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -274,7 +274,7 @@ describe('DomainListPanel', () => {
 
   describe('No domain selected', () => {
     it('should show the search input with no-domain label', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/global/settings`,
       });
@@ -292,7 +292,7 @@ describe('DomainListPanel', () => {
       );
       setupSearchDirectoryInterceptor(manyDomains);
 
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -317,7 +317,7 @@ describe('DomainListPanel', () => {
         a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
       });
 
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -328,7 +328,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should update the search input when typing', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -340,7 +340,7 @@ describe('DomainListPanel', () => {
     });
 
     it('should replace typed text with domain name when selecting from dropdown', async () => {
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
@@ -362,7 +362,7 @@ describe('DomainListPanel', () => {
         a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
       });
 
-      await setupBrowserTest(<DomainListPanel />, {
+      await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/global/settings`,
       });

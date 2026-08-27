@@ -9,17 +9,17 @@ import { useTranslation } from 'react-i18next';
 
 import { IS_GLOBAL_LIST_EXPANDED } from '../../constants';
 
-type GlobalListPanelProps = {
+type GlobalOptionsSectionProps = {
   globalOptionItems: Array<ListItemType>;
   selectedOperationItem: string | null;
   setSelectedOperationItem: (id: string) => void;
 };
 
-export const GlobalListPanel = ({
+export const GlobalOptionsSection = ({
   globalOptionItems,
   selectedOperationItem,
   setSelectedOperationItem,
-}: GlobalListPanelProps) => {
+}: GlobalOptionsSectionProps) => {
   const [t] = useTranslation();
   const [isGlobalListExpanded, setIsGlobalListExpanded] = useState(
     () => localStorage.getItem(IS_GLOBAL_LIST_EXPANDED) !== 'false',
