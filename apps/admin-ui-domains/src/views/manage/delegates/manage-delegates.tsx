@@ -90,7 +90,6 @@ export const ManageDelegates = () => {
                 pageSize={pageLimit}
                 setOffset={setOffset}
                 setPageSize={setPageLimit}
-                tableRef={tableRef}
               />
             )}
             {selectedAccount !== null && (
