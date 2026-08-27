@@ -21,12 +21,6 @@ type InitDomainSectionProps = {
   domainAttrs: Array<Attribute> | undefined;
 };
 
-/**
- * INIT / RE-INIT DOMAIN control, rendered for global administrators only.
- * Initializing delegates the domain and then grants the COS delegation rights
- * to the domain helpdesk admins group; the initialized-domains query
- * invalidation flips the button to RE-INIT automatically.
- */
 export const InitDomainSection = ({ domainName, domainAttrs }: InitDomainSectionProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();

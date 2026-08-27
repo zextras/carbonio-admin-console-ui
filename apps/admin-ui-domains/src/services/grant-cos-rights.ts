@@ -46,10 +46,6 @@ export async function revokeCosRights(cosId: string, domainName: string): Promis
   }
 }
 
-/**
- * Grants the delegation rights on every given COS in parallel, resolving once
- * all grants have settled (INIT DOMAIN flow).
- */
 export async function grantAllCosRights(
   domainName: string,
   cosIds: Array<string>,
@@ -57,11 +53,6 @@ export async function grantAllCosRights(
   return Promise.all(cosIds.map((cosId) => grantCosRights(cosId, domainName)));
 }
 
-/**
- * Parses the `zimbraDomainCOSMaxAccounts` attributes of a domain into
- * `{ id, value }` pairs. A missing max-accounts value is reported as `-1`,
- * mirroring the server-side default (unlimited).
- */
 export function parseCosMaxAccounts(
   attrs: Array<Attribute> | undefined,
 ): Array<CosMaxAccountValues> {

@@ -31,12 +31,6 @@ export type GrantAllCosRightsVariables = {
   cosIds: Array<string>;
 };
 
-/**
- * Grants COS delegation rights for the whole domain (INIT DOMAIN follow-up
- * grants). Invalidation of the initialized-domains queries is owned here;
- * user feedback (snackbars) is left to the call site via
- * `mutate(vars, { onSuccess, onError })` (recorded repo convention).
- */
 export const useGrantAllCosRights = () => {
   const queryClient = useQueryClient();
 

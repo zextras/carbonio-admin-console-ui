@@ -22,10 +22,6 @@ import { AdminAccountsTable } from './admin-accounts-table';
 import styles from './delegates.module.css';
 import { InitDomainSection } from './init-domain-section';
 
-/**
- * Per-domain Delegates view: lists the domain's administrators and delegated
- * administrators, and offers global admins the INIT/RE-INIT DOMAIN control.
- */
 export const ManageDelegates = () => {
   const [t] = useTranslation();
   const { data: domain } = useSelectedDomain();

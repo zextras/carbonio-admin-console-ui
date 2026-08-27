@@ -7,7 +7,6 @@
 import { Attribute } from '../../types';
 import { useAccountListDirectory } from './use-account-list-directory';
 
-/** LDAP query matching global admins and delegated admins (excluding globals). */
 export const ADMIN_ACCOUNTS_QUERY =
 	'(|(&(zimbraIsAdminAccount=TRUE))(&(zimbraIsDelegatedAdminAccount=TRUE)(!(zimbraIsAdminAccount=TRUE))))';
 
@@ -20,7 +19,6 @@ export type DirectoryAccountEntry = {
 	a?: Array<Attribute>;
 };
 
-/** A directory account with its attributes flattened onto the entry itself. */
 export type FlattenedAccount = { id: string; name: string } & Record<string, unknown>;
 
 export type DomainAdminAccount = {
@@ -34,10 +32,6 @@ export type DomainAdminAccounts = {
 	total: number;
 };
 
-/**
- * Merges a `mail` attribute value with the value already collected so far:
- * repeated `mail` attributes accumulate into an array.
- */
 function mergeMailAttribute(current: unknown, mail: string): Array<string> {
 	if (Array.isArray(current)) {
 		return [...current, mail];
@@ -48,11 +42,6 @@ function mergeMailAttribute(current: unknown, mail: string): Array<string> {
 	return [current as string, mail];
 }
 
-/**
- * Flattens the SOAP `a` attribute list onto a copy of the entry: repeated
- * `mail` attributes are collected into an array, every other attribute keeps
- * its last value.
- */
 export function toDomainAdminAccount(entry: DirectoryAccountEntry): DomainAdminAccount {
 	const item: Record<string, unknown> = { ...entry, name: entry.name ?? '' };
 	(entry.a ?? []).forEach((attr) => {
@@ -65,7 +54,6 @@ export function toDomainAdminAccount(entry: DirectoryAccountEntry): DomainAdminA
 	return { id: entry.id, name: entry.name ?? '', item: item as FlattenedAccount };
 }
 
-/** Projects a SearchDirectory response into the admin-accounts view model. */
 export function selectDomainAdminAccounts(res: unknown): DomainAdminAccounts {
 	const body = (res ?? {}) as { account?: Array<DirectoryAccountEntry>; searchTotal?: number };
 	return {
@@ -74,11 +62,6 @@ export function selectDomainAdminAccounts(res: unknown): DomainAdminAccounts {
 	};
 }
 
-/**
- * Admin and delegated-admin accounts of a domain, server-paginated via
- * SearchDirectory. Reuses the module's shared directory query (cached,
- * `keepPreviousData`) so the data is shared with the other screens.
- */
 export const useDomainAdminAccounts = ({
 	domainName,
 	offset,

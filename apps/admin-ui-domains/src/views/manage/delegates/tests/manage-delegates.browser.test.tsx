@@ -170,10 +170,6 @@ function setupSearchDirectoryHandler(
 
 type InitializedDomainsBody = { domainName?: string };
 
-/**
- * Setup MSW handler for the getInitializedDomains extension endpoint, which
- * drives the INIT / RE-INIT DOMAIN button state.
- */
 function setupInitializedDomainsHandler(
   options: {
     initialized?: boolean;
@@ -368,7 +364,6 @@ describe('ManageDelegates (browser)', () => {
       });
       expect(initCalls[0]?.domain).toBe(DOMAIN_NAME);
 
-      // 2 COS entries x 3 rights (getCos, listCos, assignCos)
       await vi.waitFor(() => {
         expect(grantRightCalls).toHaveLength(6);
       });

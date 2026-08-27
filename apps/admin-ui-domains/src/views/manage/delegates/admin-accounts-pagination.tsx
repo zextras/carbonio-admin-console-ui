@@ -15,11 +15,6 @@ type AdminAccountsPaginationProps = {
   setPageSize: (pageSize: number) => void;
 };
 
-/**
- * Sticky pagination bar for the admin accounts table. The ResizeObserver keeps
- * the bar (and its scroll-to-top affordance) glued to the viewport bottom only
- * when the table is taller than the viewport.
- */
 export const AdminAccountsPagination = ({
   total,
   pageSize,
