@@ -35,6 +35,20 @@ export type DomainAdminAccounts = {
 };
 
 /**
+ * Merges a `mail` attribute value with the value already collected so far:
+ * repeated `mail` attributes accumulate into an array.
+ */
+function mergeMailAttribute(current: unknown, mail: string): Array<string> {
+	if (Array.isArray(current)) {
+		return [...current, mail];
+	}
+	if (current === undefined) {
+		return [mail];
+	}
+	return [current as string, mail];
+}
+
+/**
  * Flattens the SOAP `a` attribute list onto a copy of the entry: repeated
  * `mail` attributes are collected into an array, every other attribute keeps
  * its last value.
@@ -43,12 +57,7 @@ export function toDomainAdminAccount(entry: DirectoryAccountEntry): DomainAdminA
 	const item: Record<string, unknown> = { ...entry, name: entry.name ?? '' };
 	(entry.a ?? []).forEach((attr) => {
 		if (attr.n === 'mail') {
-			const current = item.mail;
-			item.mail = Array.isArray(current)
-				? [...current, attr._content]
-				: current !== undefined
-					? [current, attr._content]
-					: [attr._content];
+			item.mail = mergeMailAttribute(item.mail, attr._content);
 		} else {
 			item[attr.n] = attr._content;
 		}
