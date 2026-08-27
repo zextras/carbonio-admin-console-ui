@@ -20,7 +20,7 @@ import {
 	adminAccountListQueryKeys,
 	useAdminAccountList,
 } from '../../../services/use-admin-account-list';
-import { EditAccount } from '../../domain/edit-account/edit-account';
+import { EditAccount } from '../../edit-account/edit-account';
 import { AdministratorsEmptyState } from './administrators-empty-state';
 import styles from './global-administrators.module.css';
 import { type AdminAccountEntry,buildAdministratorRows } from './utils';

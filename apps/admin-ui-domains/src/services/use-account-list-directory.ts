@@ -51,7 +51,7 @@ export const useAccountListDirectory = (
 	enabled = true,
 ) =>
 	useQuery({
-		queryKey: domainQueryKeys.accountListDirectory(params),
+		queryKey: domainQueryKeys.accountListDirectory.search(params),
 		queryFn: () =>
 			accountListDirectory(
 				params.attr,
