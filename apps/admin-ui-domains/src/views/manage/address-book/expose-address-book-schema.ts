@@ -6,7 +6,7 @@
 
 import { z } from 'zod';
 
-import { isValidEmail } from '../../../utility/utils';
+import { isValidEmail } from '../../utility/utils';
 
 export type FolderMode = 'all' | 'specific';
 

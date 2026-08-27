@@ -19,13 +19,13 @@ import { debounce } from 'lodash-es';
 import { type ChangeEvent, type ReactNode, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { AddressBookEntry } from '../../../../../types';
+import type { AddressBookEntry } from '../../../../types';
 import {
   useAddAddressBook,
   useAddressBookAccountSearch,
   useMailboxContactFolders,
-} from '../../../../services/use-domain-address-book';
-import { isValidEmail } from '../../../utility/utils';
+} from '../../../services/use-domain-address-book';
+import { isValidEmail } from '../../utility/utils';
 import { entryHasAllShared, getFolderSelectLabel, getLinkedFolderIds } from './address-book-folder-utils';
 import {
   EXPOSE_ADDRESS_BOOK_DEFAULT_VALUES,
@@ -113,11 +113,9 @@ export const AddAddressBookPanel = ({
     account !== '' && account !== selectedAccount ? searchKeyword : '',
   );
 
-  const setSearchKeywordRef = useRef(setSearchKeyword);
-  setSearchKeywordRef.current = setSearchKeyword;
   const searchAccountCallRef = useRef(
     debounce((searchValue: string) => {
-      setSearchKeywordRef.current(searchValue);
+      setSearchKeyword(searchValue);
     }, 700),
   );
 
@@ -133,7 +131,6 @@ export const AddAddressBookPanel = ({
       searchAccountCallRef.current(account);
     } else {
       searchAccountCallRef.current.cancel();
-      setSearchKeyword('');
     }
   }, [account, selectedAccount]);
 
@@ -154,6 +151,9 @@ export const AddAddressBookPanel = ({
       form.setFieldValue('selectedAccount', '');
       form.setFieldValue('folderId', '');
       form.setFieldValue('folderMode', 'all');
+    }
+    if (value === '') {
+      setSearchKeyword('');
     }
   }
 

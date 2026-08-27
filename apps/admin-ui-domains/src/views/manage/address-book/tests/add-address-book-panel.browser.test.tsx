@@ -40,8 +40,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import type { AddressBookEntry } from '../../../../../../types';
-import { ZX_ADDRESS_BOOK } from '../../../../../constants';
+import type { AddressBookEntry } from '../../../../../types';
+import { ZX_ADDRESS_BOOK } from '../../../../constants';
 import { AddAddressBookPanel } from '../add-address-book-panel';
 
 const searchDirectoryMock = vi.mocked(searchDirectory);

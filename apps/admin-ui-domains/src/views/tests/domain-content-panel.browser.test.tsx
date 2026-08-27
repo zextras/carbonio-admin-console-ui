@@ -144,7 +144,7 @@ vi.mock('../domain/manange/resources/domain-resources', () => ({ default: MockDo
 vi.mock('../domain/manange/restore-delete-account/restore-delete-account', () => ({
   default: MockRestoreAccount,
 }));
-vi.mock('../domain/manange/address-book/domain-address-book', () => ({
+vi.mock('../manage/address-book/domain-address-book', () => ({
   DomainAddressBook: MockDomainAddressBook,
 }));
 

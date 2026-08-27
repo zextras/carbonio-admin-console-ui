@@ -19,12 +19,12 @@ import {
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
+import type { AddressBookEntry, AddressBookFolder } from '../../../../types';
 import {
   useAddAddressBook,
   useAddressBookPickerFolders,
   useRemoveAddressBook,
-} from '../../../../services/use-domain-address-book';
+} from '../../../services/use-domain-address-book';
 import {
   foldersHaveAllShared,
   getFolderDisplayName,

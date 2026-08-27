@@ -5,12 +5,12 @@
  */
 
 import { Button, Container, Input, ModalOverlay, Row } from '@zextras/ui-components';
-import { type ChangeEvent, useEffect, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { AddressBookEntry } from '../../../../../types';
-import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import { useAddressBookList } from '../../../../services/use-domain-address-book';
+import type { AddressBookEntry } from '../../../../types';
+import { useSelectedDomain } from '../../../hooks/use-selected-domain';
+import { useAddressBookList } from '../../../services/use-domain-address-book';
 import { AddAddressBookPanel } from './add-address-book-panel';
 import { AddressBookDetailPanel } from './address-book-detail-panel';
 
@@ -117,10 +117,7 @@ export const DomainAddressBook = () => {
   const [searchString, setSearchString] = useState('');
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<AddressBookEntry | null>(null);
-
-  useEffect(() => {
-    setSelectedEntry((current) => refreshSelectedEntry(current, entries));
-  }, [entries]);
+  const activeEntry = refreshSelectedEntry(selectedEntry, entries);
 
   const filteredEntries = entries.filter((entry) => entryMatchesSearch(entry, searchString));
   const searchQuery = searchString.trim();
@@ -244,11 +241,11 @@ export const DomainAddressBook = () => {
         </ModalOverlay>
       )}
 
-      {selectedEntry && (
-        <ModalOverlay open={Boolean(selectedEntry)} maxWidth="58.75rem">
+      {activeEntry && (
+        <ModalOverlay open={Boolean(activeEntry)} maxWidth="58.75rem">
           <AddressBookDetailPanel
             domainName={domainName}
-            entry={selectedEntry}
+            entry={activeEntry}
             onClose={(): void => setSelectedEntry(null)}
           />
         </ModalOverlay>

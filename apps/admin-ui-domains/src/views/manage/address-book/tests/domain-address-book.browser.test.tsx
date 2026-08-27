@@ -34,7 +34,7 @@ import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import { ZX_ADDRESS_BOOK } from '../../../../../constants';
+import { ZX_ADDRESS_BOOK } from '../../../../constants';
 import { DomainAddressBook } from '../domain-address-book';
 
 const DOMAIN_ID = 'test-domain-id';

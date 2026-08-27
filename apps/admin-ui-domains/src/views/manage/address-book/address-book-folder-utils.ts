@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { AddressBookEntry, AddressBookFolder } from '../../../../../types';
+import type { AddressBookEntry, AddressBookFolder } from '../../../../types';
 
 export function getFolderDisplayName(name: string): string {
   if (name === 'all') {
