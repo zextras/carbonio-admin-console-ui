@@ -31,7 +31,7 @@ export const QuotaDisplay = () => {
   };
 
   return (
-    <>
+    <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
       {isAdvanced && (
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
@@ -104,6 +104,6 @@ export const QuotaDisplay = () => {
           />
         </Row>
       </Row>
-    </>
+    </Row>
   );
 };

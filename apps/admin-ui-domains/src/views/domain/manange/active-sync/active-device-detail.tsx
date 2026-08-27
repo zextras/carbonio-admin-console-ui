@@ -53,7 +53,8 @@ export const ActiveDeviceDetail = ({
   const wipeDevice = useWipeDevice();
   const resetDevice = useResetDevice();
   const suspendDevice = useSuspendDevice();
-  const isOperationPending = wipeDevice.isPending || resetDevice.isPending || suspendDevice.isPending;
+  const isOperationPending =
+    wipeDevice.isPending || resetDevice.isPending || suspendDevice.isPending;
 
   const abqStatusOptions: Array<SelectOption> = [
     { label: t('label.allowed', 'Allowed'), value: 1 },
@@ -85,13 +86,26 @@ export const ActiveDeviceDetail = ({
     const accountName = mobileDeviceDetail?.accountName ?? selectedDevice.accountName;
     const deviceId = mobileDeviceDetail?.deviceId ?? selectedDevice.deviceId;
     if (operationType === RESET_DEVICE) {
-      resetDevice.mutate({ accountName, deviceId }, { onSuccess: () => { closeConfirm(); onClose(); } });
+      resetDevice.mutate(
+        { accountName, deviceId },
+        {
+          onSuccess: () => {
+            closeConfirm();
+            onClose();
+          },
+        },
+      );
       return;
     }
     if (operationType === WIPE_DEVICE) {
       wipeDevice.mutate(
         { accountName, deviceId, confirm: wipeConfirmed },
-        { onSuccess: () => { closeConfirm(); onClose(); } },
+        {
+          onSuccess: () => {
+            closeConfirm();
+            onClose();
+          },
+        },
       );
     }
   }

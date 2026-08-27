@@ -37,9 +37,7 @@ export const SessionsTable = () => {
   const delegateAuth = useDelegateAuth();
   const endSessionMutation = useEndSession();
 
-  const allUserSessionList = sessions.filter(
-    (item: UserSession) => !endedSids.includes(item?.sid),
-  );
+  const allUserSessionList = sessions.filter((item: UserSession) => !endedSids.includes(item?.sid));
   const userSessionList = filterSessions(allUserSessionList, sessionFilter);
 
   const accountsLabel = t('label.accounts', 'Accounts');
@@ -154,7 +152,7 @@ export const SessionsTable = () => {
       </Row>
       <Row
         padding={{ top: 'extralarge' }}
-        width="97%"
+        width="100%"
         mainAlignment="flex-start"
         crossAlignment="flex-start"
       >

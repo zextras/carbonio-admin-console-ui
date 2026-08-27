@@ -11,10 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
-import {
-  useAccountForm,
-  useSetAccountValues,
-} from '../account-form-context';
+import { useAccountForm, useSetAccountValues } from '../account-form-context';
 import { somethingWrongSnackbarConfig } from './utils';
 
 type PasswordFieldRowProps = {
@@ -122,7 +119,7 @@ export const PasswordFields = ({
   };
 
   return (
-    <>
+    <Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
         <Row width="49%" mainAlignment="flex-start">
           <PasswordFieldRow
@@ -219,6 +216,6 @@ export const PasswordFields = ({
           />
         </ds-text>
       </Modal>
-    </>
+    </Row>
   );
 };
