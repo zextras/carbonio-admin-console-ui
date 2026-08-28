@@ -23,10 +23,9 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { ASC, DESC } from '../../../../../constants';
 import { useDistributionListAction } from '../../../../../services/use-distribution-list-action';
-import { useSearchGal } from '../../../../../services/use-search-gal';
-import { useSearchWithDebounce } from '../../edit-mailing-detail/hooks/use-search-with-debounce';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
 import { resolveNewMembers } from '../members-tab/filter-members';
+import { useGalEmailSearch } from '../use-gal-email-search';
 import { buildOwnerRow } from './owner-row';
 import { resolveOwnerType, sortOwnersByName } from './owner-type';
 import { RemoveOwnerModal } from './remove-owner-modal';
@@ -55,9 +54,6 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 
 	const [ownerTableRows, setOwnerTableRows] = useState<Array<any>>([]);
 	const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<Array<any>>([]);
-	const [searchOwner, setSearchOwner] = useState('');
-	const [debouncedSearchOwner, setDebouncedSearchOwner] = useState('');
-	const [searchOwnerResult, setSearchOwnerResult] = useState<Array<any>>([]);
 	const [isShowOwnerError, setIsShowOwnerError] = useState(false);
 	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
 	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
@@ -71,6 +67,22 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 		filteredRows: filteredOwnerRows,
 		handleFilterChange: handleInputChangeOwner
 	} = useTableFilter(ownerTableRows);
+
+	const { searchValue: searchOwner, setSearchValue: setSearchOwner, items: searchOwnerList } =
+		useGalEmailSearch((contacts) => {
+			setAllOwnerList((prevState: Array<any>) =>
+				uniqBy(
+					prevState.concat(
+						contacts.map((item: any) => ({
+							id: item?.id,
+							name: item?._attrs?.email,
+							type: item?._attrs?.type
+						}))
+					),
+					'id'
+				)
+			);
+		});
 
 	const _allOwnerLists = useMemo(
 		() =>
@@ -118,27 +130,6 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 		[t, ownerTableRows]
 	);
 
-	const searchOwnerList = searchOwnerResult.map((item: any) => ({
-		id: item.id,
-		label: item.name,
-		customComponent: (
-			<Row
-				style={{
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					setSearchOwner(item?.name);
-				}}
-			>
-				{item?.name}
-			</Row>
-		)
-	}));
-
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
 			const sortedOwners = sortOwnersByName(ownersList);
@@ -159,40 +150,6 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 			setOwnerTableRows([]);
 		}
 	}, [ownersList, t]);
-
-	/* Cached GAL search — debounced keyword drives the cached query */
-	useSearchWithDebounce(searchOwner, setDebouncedSearchOwner);
-	const galQuery = useSearchGal(debouncedSearchOwner);
-
-	useEffect(() => {
-		const data = galQuery.data;
-		if (!data) {
-			return;
-		}
-		const contactList = data?.cn;
-		if (contactList) {
-			setSearchOwnerResult(
-				contactList.map((item: any): any => ({
-					id: item?.id,
-					name: item?._attrs?.email
-				}))
-			);
-			setAllOwnerList((prevState: Array<any>) =>
-				uniqBy(
-					prevState.concat(
-						contactList.map((item: any) => ({
-							id: item?.id,
-							name: item?._attrs?.email,
-							type: item?._attrs?.type
-						}))
-					),
-					'id'
-				)
-			);
-		} else {
-			setSearchOwnerResult([]);
-		}
-	}, [galQuery.data]);
 
 	const onAddOwner = useCallback((): void => {
 		const resolution = resolveNewMembers(

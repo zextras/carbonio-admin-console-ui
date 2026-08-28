@@ -22,10 +22,9 @@ import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { EMAIL } from '../../../../../constants';
-import { useSearchGal } from '../../../../../services/use-search-gal';
-import { useSearchWithDebounce } from '../../edit-mailing-detail/hooks/use-search-with-debounce';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
 import { resolveNewMembers } from '../members-tab/filter-members';
+import { useGalEmailSearch } from '../use-gal-email-search';
 import { buildGrantEmailRow } from './grant-email-row';
 import { GrantTypeSelect } from './grant-type-select';
 
@@ -57,9 +56,6 @@ export const SendToTab: FC<SendToTabProps> = ({
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
-	const [grantEmailItem, setGrantEmailItem] = useState('');
-	const [debouncedGrantEmailItem, setDebouncedGrantEmailItem] = useState('');
-	const [searchGrantEmailResult, setSearchGrantEmailResult] = useState<Array<any>>([]);
 	const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
 	const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
 	const [senderToErrorMessage, setSenderToErrorMessage] = useState<string>('');
@@ -69,6 +65,9 @@ export const SendToTab: FC<SendToTabProps> = ({
 		filteredRows: filteredGrantEmailRows,
 		handleFilterChange: handleInputChangeGrantEmail
 	} = useTableFilter(grantEmailTableRows);
+
+	const { searchValue: grantEmailItem, setSearchValue: setGrantEmailItem, items: grantItems } =
+		useGalEmailSearch();
 
 	const grantEmailHeaders: Array<any> = useMemo(
 		() => [
@@ -87,49 +86,6 @@ export const SendToTab: FC<SendToTabProps> = ({
 		],
 		[t]
 	);
-
-	const grantItems = searchGrantEmailResult.map((item: any) => ({
-		id: item?.id,
-		label: item?.name,
-		customComponent: (
-			<Row
-				style={{
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					setGrantEmailItem(item?.name);
-				}}
-			>
-				{item?.name}
-			</Row>
-		)
-	}));
-
-	/* Cached GAL search — debounced keyword drives the cached query */
-	useSearchWithDebounce(grantEmailItem, setDebouncedGrantEmailItem);
-	const galQuery = useSearchGal(debouncedGrantEmailItem);
-
-	useEffect(() => {
-		const data = galQuery.data;
-		if (!data) {
-			return;
-		}
-		const contactList = data?.cn;
-		if (contactList) {
-			setSearchGrantEmailResult(
-				contactList.map((item: any): any => ({
-					id: item?.id,
-					name: item?._attrs?.email
-				}))
-			);
-		} else {
-			setSearchGrantEmailResult([]);
-		}
-	}, [galQuery.data]);
 
 	const onAddGrantEmail = useCallback(() => {
 		const resolution = resolveNewMembers(grantEmailItem, grantEmailsList);

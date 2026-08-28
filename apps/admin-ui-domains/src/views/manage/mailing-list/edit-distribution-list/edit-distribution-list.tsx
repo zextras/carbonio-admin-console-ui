@@ -34,7 +34,6 @@ import { useRenameDistributionList } from '../../../../services/use-rename-distr
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from '../edit-mailing-detail/general-tab';
 import { ReusedDefaultTabBar } from '../edit-mailing-detail/reused-default-tab-bar';
-import { SendAsTab } from '../edit-mailing-detail/send-as-tab';
 import { buildSaveOperations, type SaveOperation } from './build-save-operations';
 import { DeleteDistributionListModal } from './delete-distribution-list-modal';
 import { MembersTab } from './members-tab/members-tab';
@@ -44,6 +43,7 @@ import {
 	parseDistributionListGrants,
 	parseDistributionListMembership
 } from './parse-distribution-list-detail';
+import { SendAsTab } from './send-as-tab/send-as-tab';
 import { SendToTab } from './send-to-tab/send-to-tab';
 import { TabDirtyGuardModal } from './tab-dirty-guard-modal';
 
