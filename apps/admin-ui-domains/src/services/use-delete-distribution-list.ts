@@ -20,6 +20,7 @@ export const useDeleteDistributionList = (listId: string) => {
     mutationFn: () => deleteDistributionList(listId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
     },
   });
 };

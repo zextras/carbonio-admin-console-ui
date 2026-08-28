@@ -20,6 +20,7 @@ export const useAddMailingListAlias = (listId: string) => {
     mutationFn: (alias: string) => addMailingListAliasRequest(listId, alias),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
     },
   });
 };

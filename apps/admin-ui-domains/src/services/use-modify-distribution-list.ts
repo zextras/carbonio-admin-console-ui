@@ -23,6 +23,7 @@ export const useModifyDistributionList = (listId: string) => {
       modifyDistributionList(listId, attributes),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
     },
   });
 };

@@ -29,7 +29,6 @@ export const OwnersSettingsSection: FC = () => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { mailingListDetail, setMailingListDetail } = useContext(MailingListContext);
-	const [ownerTableRows, setOwnerTableRows] = useState<Array<any>>([]);
 	const [ownersList, setOwnersList] = useState<Array<any>>(
 		mailingListDetail?.owners ? mailingListDetail?.owners : []
 	);
@@ -61,38 +60,28 @@ export const OwnersSettingsSection: FC = () => {
 		}
 	}, [contactList, setMailingListDetail]);
 
+	/* the wizard context tracks the owners so the summary step can show them */
 	useEffect(() => {
-		if (ownersList && ownersList.length > 0) {
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				owners: ownersList
-			}));
-			const allRows = ownersList.map((item: any) => ({
-				id: item,
-				columns: [
-					<ds-text
-						as="span"
-						size="medium"
-						weight="light"
-						key={item?.id}
-						color="#828282"
-						onClick={(): void => {
-							setSelectedDistributionListOwner([item]);
-						}}
-					>
-						{item}
-					</ds-text>
-				]
-			}));
-			setOwnerTableRows(allRows);
-		} else {
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				owners: []
-			}));
-			setOwnerTableRows([]);
-		}
+		setMailingListDetail((prev: any) => ({ ...prev, owners: ownersList ?? [] }));
 	}, [ownersList, setMailingListDetail]);
+
+	const ownerTableRows: Array<any> = (ownersList ?? []).map((item: any) => ({
+		id: item,
+		columns: [
+			<ds-text
+				as="span"
+				size="medium"
+				weight="light"
+				key={item?.id}
+				color="#828282"
+				onClick={(): void => {
+					setSelectedDistributionListOwner([item]);
+				}}
+			>
+				{item}
+			</ds-text>
+		]
+	}));
 
 	const onAdd = useCallback((): void => {
 		if (member === '') return;

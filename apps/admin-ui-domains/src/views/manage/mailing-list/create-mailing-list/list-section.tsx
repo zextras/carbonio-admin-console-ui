@@ -24,7 +24,6 @@ import {
 	type FC,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useState
 } from 'react';
@@ -46,29 +45,18 @@ const ListSection: FC<any> = () => {
 	const [dynamicListMember, setDynamicListMember] = useState<Array<any>>(
 		mailingListDetail?.ldapQueryMembers
 	);
-	const [dynamicListMemberRows, setDynamicListMemberRows] = useState<Array<any>>([]);
 	const [isShowLdapQueryMessage, setIsShowLdapQueryMessage] = useState<boolean>(false);
 	const [ldapQueryErrorMessage, setLdapQueryErrorMessage] = useState<string | null>('');
 
 	const userSetting = useUserSettings();
-	const [isDelegatedAdmin, setIsDelegatedAdmin] = useState<boolean>(false);
-	useEffect(() => {
-		if (userSetting?.attrs) {
-			const account = userSetting?.attrs?.zimbraIsDelegatedAdminAccount;
-			if (account && account === TRUE) {
-				setIsDelegatedAdmin(true);
-			}
-		}
-	}, [userSetting?.attrs]);
+	const isDelegatedAdmin = userSetting?.attrs?.zimbraIsDelegatedAdminAccount === TRUE;
 
 	// dist list members offset
 	const [offset, setOffset] = useState<number>(0);
 	const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
-	const [DLMPagedRows, setDLMPagedRows] = useState<any>([]);
 
 	// filtering
 	const [filterMember, setFilterMember] = useState<string>('');
-	const [filteredDlmTableRows, setFilteredDlmTableRows] = useState<any>([]);
 
 	const setValueByName = useCallback(
 		(name: string, value: any) => {
@@ -147,75 +135,39 @@ const ListSection: FC<any> = () => {
 				}
 				if (allList && allList.length > 0) {
 					setDynamicListMember(allList);
+					setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: allList }));
 				} else {
 					setDynamicListMember([]);
+					setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: [] }));
 				}
 			})
 			.catch((error) => {
 				const snackbarConfig = generateSnackbarFromError(error, t);
 				createSnackbar(snackbarConfig);
 			});
-	}, [createSnackbar, mailingListDetail?.memberURL, t]);
+	}, [createSnackbar, mailingListDetail?.memberURL, t, setMailingListDetail]);
 
-	useEffect(() => {
-		if (dynamicListMember && dynamicListMember.length > 0) {
-			if (!filterMember) {
-				const searchDlRows = dynamicListMember.map((item: any) => ({
-					id: item?.name,
-					columns: [
-						<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
-							{item?.name}
-						</ds-text>,
-						''
-					]
-				}));
-				const pagedRows = searchDlRows.slice(offset, offset + LIMIT);
-				setDynamicListMemberRows(searchDlRows);
-				setDLMPagedRows(pagedRows);
-				setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: dynamicListMember }));
-			} else {
-				const allRows = dynamicListMember.filter((item: any) =>
+	const dynamicListMemberRows: Array<any> = (
+		filterMember
+			? dynamicListMember.filter((item: any) =>
 					item?.name.toLowerCase().includes(filterMember.toLowerCase())
-				);
-				const searchDlRows = allRows.map((item: any) => ({
-					id: item?.name,
-					columns: [
-						<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
-							{item?.name}
-						</ds-text>,
-						''
-					]
-				}));
-				const pagedRows = searchDlRows.slice(offset, offset + LIMIT);
-				setDLMPagedRows(pagedRows);
-			}
-		} else {
-			setDynamicListMemberRows([]);
-			setDLMPagedRows([]);
-			setMailingListDetail((prev: any) => ({ ...prev, ldapQueryMembers: [] }));
-		}
-	}, [dynamicListMember, offset]);
+				)
+			: (dynamicListMember ?? [])
+	).map((item: any) => ({
+		id: item?.name,
+		columns: [
+			<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
+				{item?.name}
+			</ds-text>,
+			''
+		]
+	}));
+	const DLMPagedRows = dynamicListMemberRows.slice(offset, offset + LIMIT);
 
 	const handleInputChangeMember = (e: ChangeEvent<HTMLInputElement>): void => {
-		const value = e.target.value;
-		if (value != '') {
-			setFilterMember(value);
-			setDLMSearchCurrentPage(1);
-			setOffset(0);
-			const allRows = dynamicListMemberRows.filter((item: any) =>
-				item?.id.toLowerCase().includes(value.toLowerCase())
-			);
-			setFilteredDlmTableRows(allRows);
-			const pagedRows = allRows.slice(0, LIMIT);
-			setDLMPagedRows(pagedRows);
-		} else {
-			setFilterMember('');
-			setDLMSearchCurrentPage(1);
-			setOffset(0);
-			const pagedRows = dynamicListMemberRows.slice(0, LIMIT);
-			setFilteredDlmTableRows([]);
-			setDLMPagedRows(pagedRows);
-		}
+		setFilterMember(e.target.value);
+		setDLMSearchCurrentPage(1);
+		setOffset(0);
 	};
 
 	return (
@@ -448,11 +400,7 @@ const ListSection: FC<any> = () => {
 									>
 										<Container crossAlignment="flex-start">
 											<Paging
-												totalItem={
-													filterMember
-														? filteredDlmTableRows.length
-														: dynamicListMemberRows.length
-												}
+												totalItem={dynamicListMemberRows.length}
 												setOffset={setOffset}
 												pageSize={LIMIT}
 												currentPageProp={DLMCurrentPage}

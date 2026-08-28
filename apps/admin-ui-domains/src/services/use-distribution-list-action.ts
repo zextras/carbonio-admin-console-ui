@@ -26,6 +26,7 @@ export const useDistributionListAction = (listId: string) => {
       distributionListAction(vars.dl, vars.action),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionListGrants(listId) });
     },
   });

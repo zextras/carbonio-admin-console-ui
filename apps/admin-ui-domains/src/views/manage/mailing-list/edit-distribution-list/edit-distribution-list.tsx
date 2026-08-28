@@ -53,7 +53,6 @@ import type { EditDistributionListFormValues } from './types';
 
 const EditDistributionList: FC<any> = ({
   selectedMailingList,
-  setIsUpdateRecord,
   setShowMailingListDetailView,
 }) => {
   /* Cached data layer */
@@ -142,7 +141,6 @@ const EditDistributionList: FC<any> = ({
       formValues={formValues}
       parsedDetail={parsedDetail as DistributionListDetail}
       dlCreateDate={dlCreateDate}
-      setIsUpdateRecord={setIsUpdateRecord}
       setShowMailingListDetailView={setShowMailingListDetailView}
     />
   );
@@ -153,7 +151,6 @@ type EditDistributionListContentProps = {
   formValues: EditDistributionListFormValues;
   parsedDetail: DistributionListDetail;
   dlCreateDate: string;
-  setIsUpdateRecord: (value: boolean) => void;
   setShowMailingListDetailView: (value: boolean) => void;
 };
 
@@ -162,7 +159,6 @@ function EditDistributionListContent({
   formValues,
   parsedDetail,
   dlCreateDate,
-  setIsUpdateRecord,
   setShowMailingListDetailView,
 }: EditDistributionListContentProps) {
   const [t] = useTranslation();
@@ -252,7 +248,6 @@ function EditDistributionListContent({
           });
         }
         form.reset(finalValue, { keepDefaultValues: true });
-        setIsUpdateRecord(true);
       } catch (error: any) {
         createSnackbar({
           key: 'error',
@@ -380,7 +375,6 @@ function EditDistributionListContent({
     setIsRequestInProgress(false);
     closeHandler();
     setShowMailingListDetailView(false);
-    setIsUpdateRecord(true);
   };
 
   const onDeleteHandler = () => {

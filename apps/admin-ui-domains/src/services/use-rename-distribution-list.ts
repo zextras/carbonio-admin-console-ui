@@ -20,6 +20,7 @@ export const useRenameDistributionList = (listId: string) => {
     mutationFn: (newName: string) => renameDistributionList(listId, newName),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
     },
   });
 };

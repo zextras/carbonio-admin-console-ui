@@ -3,10 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash';
-import { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -25,11 +26,13 @@ import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { addDistributionListMember } from '../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../services/distribution-list-action-service';
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list/create-mailing-list';
 import { buildDistributionListRow } from './distribution-list-row';
 import EditDistributionList from './edit-distribution-list/edit-distribution-list';
+import { useDebouncedValue } from './edit-mailing-detail/hooks/use-debounced-value';
 import { buildSearchFilterQuery } from './mailing-list-query';
 
 const DomainMailingList: FC = () => {
@@ -37,22 +40,18 @@ const DomainMailingList: FC = () => {
   const createSnackbar = useSnackbar();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
-  const [mailingList, setMailingList] = useState<any[]>([]);
+  const queryClient = useQueryClient();
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-  const [totalAccount, setTotalAccount] = useState<number>(0);
   const [selectedMailingList, setSelectedMailingList] = useState<any>({});
   const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
   const [searchString, setSearchString] = useState<string>('');
-  const [searchQuery, setSearchQuery] = useState<string>('');
   const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
-  const [isUpdateRecord, setIsUpdateRecord] = useState<boolean>(false);
   const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
-  const timer = useRef<any>(null);
   const [statusFilter, setStatusFilter] = useState<string>('');
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+  /* timeout id holder for single/double-click detection (only written in handlers) */
+  const [, setCellClickTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [hasError, setHasError] = useState<boolean>(false);
   const [sortedColumn, setSortedColumn] = useState<string>('displayName');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
   const tableRef = useRef<HTMLTableElement>(null);
@@ -156,94 +155,77 @@ const DomainMailingList: FC = () => {
   const handleClick = useCallback(
     (event: any) => {
       event.stopPropagation();
-      clearTimeout(timer.current);
-      if (event.detail === 1) {
-        timer.current = setTimeout(doClickAction, 300);
-      } else if (event.detail === 2) {
+      setCellClickTimer((current) => {
+        if (current) {
+          clearTimeout(current);
+        }
+        if (event.detail === 1) {
+          return setTimeout(doClickAction, 300);
+        }
+        return null;
+      });
+      if (event.detail === 2) {
         doDoubleClickAction();
       }
     },
     [doClickAction, doDoubleClickAction],
   );
 
-  const getMailingList = useCallback((): void => {
-    const attrs =
-      'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
-    const types = 'distributionlists,dynamicgroups';
-    const query = `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`;
-    setIsRequestInProgress(true);
-    searchDirectory({ attr: attrs, type: types, domainName: domainName || '', query, offset, limit, sortBy: sortedColumn, sortAscending: sortOrder })
-      .then((data) => {
-        const dlList = data?.dl;
-        if (dlList) {
-          if (data?.searchTotal) {
-            setTotalAccount(data?.searchTotal);
-          }
-          const mList: any[] = dlList.map((item: any) =>
-            buildDistributionListRow(item, {
-              canReceiveLabel: t('domain.mailingList.canReceive', 'Can Receive'),
-              cantReceiveLabel: t('domain.mailingList.cantReceive', "Can't Receive"),
-              yesLabel: t('label.yes', 'Yes'),
-              noLabel: t('label.no', 'No'),
-              onCellClick: (clickedItem, e): void => {
-                setSelectedMailingList(clickedItem);
-                handleClick(e);
-              },
-            }),
-          );
-          setMailingList(mList);
-          setIsUpdateRecord(false);
-        } else {
-          setTotalAccount(0);
-          setMailingList([]);
-          setIsUpdateRecord(false);
-        }
-        setIsRequestInProgress(false);
-      })
-      .catch((error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-        setIsRequestInProgress(false);
-        setHasError(true);
-      });
-  }, [
-    searchQuery,
-    domainName,
-    offset,
-    limit,
-    sortedColumn,
-    sortOrder,
-    t,
-    handleClick,
-    createSnackbar,
-  ]);
+  const debouncedSearchString = useDebouncedValue(searchString);
+  const searchQuery = buildSearchFilterQuery(debouncedSearchString, statusFilter);
 
-  useEffect(() => {
-    getMailingList();
-  }, [getMailingList]);
+  /* Cached distribution list search — filters are part of the query key */
+  const listsQuery = useQuery({
+    queryKey: [
+      ...domainQueryKeys.distributionLists(),
+      domainName,
+      searchQuery,
+      offset,
+      limit,
+      sortedColumn,
+      sortOrder,
+    ],
+    queryFn: async () => {
+      const attrs =
+        'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
+      const types = 'distributionlists,dynamicgroups';
+      try {
+        return await searchDirectory({
+          attr: attrs,
+          type: types,
+          domainName: domainName || '',
+          query: `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`,
+          offset,
+          limit,
+          sortBy: sortedColumn,
+          sortAscending: sortOrder,
+        });
+      } catch (error: any) {
+        createSnackbar(generateSnackbarFromError(error, t));
+        throw error;
+      }
+    },
+    placeholderData: keepPreviousData,
+  });
 
-  const searchMailingListQuery = useCallback(
-    debounce((searchStr: string, sfilter: string) => {
-      setSearchQuery(buildSearchFilterQuery(searchStr, sfilter));
-    }, 700),
-    [debounce],
+  const totalAccount = listsQuery.data?.searchTotal ?? 0;
+  const isRequestInProgress = listsQuery.isFetching;
+  const hasError = listsQuery.isError;
+
+  const mailingList: Array<any> = (listsQuery.data?.dl ?? []).map((item: any) =>
+    buildDistributionListRow(item, {
+      canReceiveLabel: t('domain.mailingList.canReceive', 'Can Receive'),
+      cantReceiveLabel: t('domain.mailingList.cantReceive', "Can't Receive"),
+      yesLabel: t('label.yes', 'Yes'),
+      noLabel: t('label.no', 'No'),
+      onCellClick: (clickedItem, e): void => {
+        setSelectedMailingList(clickedItem);
+        handleClick(e);
+      },
+    }),
   );
 
-  useEffect(() => {
-    searchMailingListQuery(searchString, statusFilter);
-  }, [searchString, searchMailingListQuery, statusFilter]);
 
-  useEffect(() => {
-    if (showMailingListDetailView !== undefined && !showMailingListDetailView) {
-      setShowMailingListDetailView(false);
-    }
-  }, [showMailingListDetailView]);
-
-  useEffect(() => {
-    if (isUpdateRecord) {
-      getMailingList();
-    }
-  }, [isUpdateRecord, getMailingList]);
 
   const onAddClick = useCallback(() => {
     setShowCreateMailingListView(true);
@@ -254,7 +236,7 @@ const DomainMailingList: FC = () => {
       Promise.all(requests)
         .then((response: any) => Promise.all(response.map((res: any) => res.json())))
         .then((data: any) => {
-          setIsUpdateRecord(true);
+          queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
 
           let isError = false;
           let errorMessage = '';
@@ -276,10 +258,10 @@ const DomainMailingList: FC = () => {
           }
         })
         .catch(() => {
-          setIsUpdateRecord(true);
+          queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
         });
     },
-    [createSnackbar],
+    [createSnackbar, queryClient],
   );
 
   const getOwnerType = useCallback((ownersList: any, email?: string): any => {
@@ -329,10 +311,10 @@ const DomainMailingList: FC = () => {
       if (request.length > 0) {
         callAllRequest(request);
       } else {
-        setIsUpdateRecord(true);
+        queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
       }
     },
-    [callAllRequest, getOwnerType],
+    [callAllRequest, getOwnerType, queryClient],
   );
 
   const createMailingListReq = useCallback(
@@ -678,7 +660,6 @@ const DomainMailingList: FC = () => {
         <ModalOverlay open={showMailingListDetailView} maxWidth="58.75rem">
           <EditDistributionList
             selectedMailingList={selectedMailingList}
-            setIsUpdateRecord={setIsUpdateRecord}
             setShowMailingListDetailView={setShowMailingListDetailView}
           />
         </ModalOverlay>

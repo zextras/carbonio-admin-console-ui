@@ -77,7 +77,6 @@ const MembersSection: FC<any> = () => {
 	const context = useContext(MailingListContext);
 	const { mailingListDetail, setMailingListDetail } = context;
 	const [dlm, setDlm] = useState<Array<any>>(mailingListDetail?.members);
-	const [dlmTableRows, setDlmTableRows] = useState<Array<any>>([]);
 	const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
 		[]
 	);
@@ -97,39 +96,29 @@ const MembersSection: FC<any> = () => {
 		[t]
 	);
 
+	/* the wizard context tracks the members so the summary step can show them */
 	useEffect(() => {
-		if (dlm && dlm.length > 0) {
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				members: dlm
-			}));
-			const allRows = dlm.map((item: any) => ({
-				id: item,
-				columns: [
-					<ds-text
-						as="span"
-						size="medium"
-						weight="light"
-						key={item}
-						color="#828282"
-						onClick={(): void => {
-							setSelectedDistributionListMember([item]);
-						}}
-					>
-						{item}
-					</ds-text>,
-					''
-				]
-			}));
-			setDlmTableRows(allRows);
-		} else {
-			setDlmTableRows([]);
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				members: []
-			}));
-		}
+		setMailingListDetail((prev: any) => ({ ...prev, members: dlm ?? [] }));
 	}, [dlm, setMailingListDetail]);
+
+	const dlmTableRows: Array<any> = (dlm ?? []).map((item: any) => ({
+		id: item,
+		columns: [
+			<ds-text
+				as="span"
+				size="medium"
+				weight="light"
+				key={item}
+				color="#828282"
+				onClick={(): void => {
+					setSelectedDistributionListMember([item]);
+				}}
+			>
+				{item}
+			</ds-text>,
+			''
+		]
+	}));
 
 	const onAdd = useCallback((): void => {
 		if (member === '') return;

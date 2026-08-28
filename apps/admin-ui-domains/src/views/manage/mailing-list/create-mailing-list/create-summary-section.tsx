@@ -13,7 +13,7 @@ import {
 	Row,
 	Table
 } from '@zextras/ui-components';
-import { type FC, useContext, useEffect, useMemo, useState } from 'react';
+import { type FC, useContext, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
@@ -23,10 +23,6 @@ const CreateSummarySection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
 	const { mailingListDetail } = context;
-	const [ownerMember, setOwnerMember] = useState<Array<any>>([]);
-	const [memberList, setMemberList] = useState<Array<any>>([]);
-	const [grantEmailType, setGrantEmailType] = useState<string>('');
-	const [grantEmailsList, setGrantEmailsList] = useState<Array<any>>([]);
 
 	const tableHeader: any[] = useMemo(
 		() => [
@@ -64,62 +60,43 @@ const CreateSummarySection: FC<any> = () => {
 		[t]
 	);
 
-	useEffect(() => {
-		const member = mailingListDetail?.members;
-		if (member && member.length > 0) {
-			const allRows = member.map((item: any) => ({
-				id: item,
-				columns: [
-					<ds-text as="span" size="medium" weight="light" key={item} color="#828282">
-						{item}
-					</ds-text>
-				]
-			}));
-			setMemberList(allRows);
-		}
-	}, [mailingListDetail?.members]);
+	const memberList: Array<any> = (mailingListDetail?.members ?? []).map((item: any) => ({
+		id: item,
+		columns: [
+			<ds-text as="span" size="medium" weight="light" key={item} color="#828282">
+				{item}
+			</ds-text>
+		]
+	}));
 
-	useEffect(() => {
-		const ownersList = mailingListDetail?.owners;
-		if (ownersList && ownersList.length > 0) {
-			const allRows = ownersList.map((item: any) => ({
-				id: item,
-				columns: [
-					<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
-						{item}
-					</ds-text>
-				]
-			}));
-			setOwnerMember(allRows);
-		}
-	}, [mailingListDetail?.owners]);
+	const ownerMember: Array<any> = (mailingListDetail?.owners ?? []).map((item: any) => ({
+		id: item,
+		columns: [
+			<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
+				{item}
+			</ds-text>
+		]
+	}));
 
-	useEffect(() => {
-		const grantList = mailingListDetail?.ownerGrantEmails;
-		if (grantList && grantList.length > 0) {
-			const allRows = grantList.map((item: any) => ({
-				id: item,
-				columns: [
-					<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
-						{item}
-					</ds-text>
-				]
-			}));
-			setGrantEmailsList(allRows);
-		}
-	}, [mailingListDetail?.owners]);
+	const grantEmailsList: Array<any> = (mailingListDetail?.ownerGrantEmails ?? []).map(
+		(item: any) => ({
+			id: item,
+			columns: [
+				<ds-text as="span" size="medium" weight="light" key={item?.id} color="#828282">
+					{item}
+				</ds-text>
+			]
+		})
+	);
 
-	useEffect(() => {
-		if (mailingListDetail?.ownerGrantEmailType?.value === PUB) {
-			setGrantEmailType(t('label.everyone', 'Everyone'));
-		} else if (mailingListDetail?.ownerGrantEmailType?.value === GRP) {
-			setGrantEmailType(t('label.members_only', 'Members only'));
-		} else if (mailingListDetail?.ownerGrantEmailType?.value === ALL) {
-			setGrantEmailType(t('label.internal_users_only', 'Internal Users only'));
-		} else if (mailingListDetail?.ownerGrantEmailType?.value === EMAIL) {
-			setGrantEmailType(t('label.only_there_users', 'Only these users'));
-		}
-	}, [mailingListDetail?.ownerGrantEmailType, t]);
+	const grantEmailTypeLabel: Record<string, string> = {
+		[PUB]: t('label.everyone', 'Everyone'),
+		[GRP]: t('label.members_only', 'Members only'),
+		[ALL]: t('label.internal_users_only', 'Internal Users only'),
+		[EMAIL]: t('label.only_there_users', 'Only these users')
+	};
+	const grantEmailType =
+		grantEmailTypeLabel[mailingListDetail?.ownerGrantEmailType?.value ?? ''] ?? '';
 
 	return (
 		<Container mainAlignment="flex-start">

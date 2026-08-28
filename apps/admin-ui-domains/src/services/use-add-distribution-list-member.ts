@@ -34,6 +34,9 @@ export const useAddDistributionListMember = (accountId?: string) => {
 				queryKey: domainQueryKeys.distributionList(listId),
 			});
 			queryClient.invalidateQueries({
+				queryKey: domainQueryKeys.distributionLists(),
+			});
+			queryClient.invalidateQueries({
 				queryKey: domainQueryKeys.distributionListMembership(listId),
 			});
 		},

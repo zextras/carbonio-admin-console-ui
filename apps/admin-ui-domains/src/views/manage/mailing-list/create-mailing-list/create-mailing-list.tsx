@@ -6,7 +6,7 @@
 
 import { Button, Container, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
 import { noop } from 'lodash-es';
-import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, PUB } from '../../../../constants';
@@ -60,7 +60,7 @@ const CreateMailingList: FC<{
 		zimbraDistributionListSendShareMessageToNewMembers: false,
 		owners: [],
 		prefixName: '',
-		suffixName: '',
+		suffixName: domainInformation?.name ?? '',
 		ldapQueryMembers: [],
 		allOwnersList: [],
 		ownerGrantEmailType: {
@@ -186,12 +186,6 @@ const CreateMailingList: FC<{
 	const onComplete = useCallback(() => {
 		setShowCreateMailingListView(false);
 	}, [setShowCreateMailingListView]);
-
-	useEffect(() => {
-		if (domainInformation?.name) {
-			setMailingListDetail((prev: any) => ({ ...prev, suffixName: domainInformation?.name }));
-		}
-	}, [domainInformation?.name]);
 
 	return (
 		<>

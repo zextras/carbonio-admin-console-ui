@@ -40,7 +40,6 @@ export const SendingOptionsSection: FC = () => {
 	const createSnackbar = useSnackbar();
 	const { mailingListDetail, setMailingListDetail } = useContext(MailingListContext);
 	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
-	const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
 	const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
 	const [grantEmailsList, setGrantEmailsList] = useState<any>(
 		mailingListDetail?.ownerGrantEmails ? mailingListDetail?.ownerGrantEmails : []
@@ -136,38 +135,28 @@ export const SendingOptionsSection: FC = () => {
 		}
 	}, [selectedGrantEmail, grantEmailsList]);
 
+	/* the wizard context tracks the senders so the summary step can show them */
 	useEffect(() => {
-		if (grantEmailsList && grantEmailsList.length > 0) {
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				ownerGrantEmails: grantEmailsList
-			}));
-			const allRows = grantEmailsList.map((item: any) => ({
-				id: item,
-				columns: [
-					<ds-text
-						as="span"
-						size="medium"
-						weight="light"
-						key={item?.id}
-						color="#828282"
-						onClick={(): void => {
-							setSelectedGrantEmail([item]);
-						}}
-					>
-						{item}
-					</ds-text>
-				]
-			}));
-			setGrantEmailTableRows(allRows);
-		} else {
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				ownerGrantEmails: []
-			}));
-			setGrantEmailTableRows([]);
-		}
+		setMailingListDetail((prev: any) => ({ ...prev, ownerGrantEmails: grantEmailsList ?? [] }));
 	}, [grantEmailsList, setMailingListDetail]);
+
+	const grantEmailTableRows: Array<any> = (grantEmailsList ?? []).map((item: any) => ({
+		id: item,
+		columns: [
+			<ds-text
+				as="span"
+				size="medium"
+				weight="light"
+				key={item?.id}
+				color="#828282"
+				onClick={(): void => {
+					setSelectedGrantEmail([item]);
+				}}
+			>
+				{item}
+			</ds-text>
+		]
+	}));
 
 	return (
 		<>
