@@ -3,146 +3,45 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { keepPreviousData, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Button, Container, CustomHeaderFactory, HoverableRowFactory, Input, ModalOverlay, Padding, Paging, Row, Table, TrackNumberPerPage, useSnackbar, } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
-import { debounce } from 'lodash';
-import { type FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { Button, Container, ModalOverlay, Padding, Row } from '@zextras/ui-components';
+import { type FC, useCallback, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import logo from '../../../assets/gardian.svg';
-import {
-  ALL,
-  ASC,
-  DESC,
-  EMAIL,
-  FALSE,
-  GRP,
-  PUB,
-  RECORD_DISPLAY_LIMIT,
-  TRUE,
-} from '../../../constants';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { addDistributionListMember } from '../../../services/add-distributionlist-member-service';
-import { createMailingList } from '../../../services/create-mailing-list-service';
-import { distributionListAction } from '../../../services/distribution-list-action-service';
-import { domainQueryKeys } from '../../../services/domain-query-keys';
-import ScrollContainer from '../../components/scrollComponent';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list/create-mailing-list';
+import { useCreateMailingListFlow } from './create-mailing-list/use-create-mailing-list-flow';
 import { buildDistributionListRow } from './distribution-list-row';
+import { DistributionListTable } from './distribution-list-table';
 import EditDistributionList from './edit-distribution-list/edit-distribution-list';
-import { useDebouncedValue } from './edit-mailing-detail/hooks/use-debounced-value';
-import { buildSearchFilterQuery } from './mailing-list-query';
+import { useDistributionListsSearch } from './use-distribution-lists-search';
 
 const DomainMailingList: FC = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
-  const queryClient = useQueryClient();
-  const [offset, setOffset] = useState<number>(0);
-  const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
+
+  const {
+    lists,
+    totalAccount,
+    isFetching,
+    hasError,
+    headers,
+    searchString,
+    setSearchString,
+    setOffset,
+    setLimit,
+    limit,
+  } = useDistributionListsSearch(domainName);
+
   const [selectedMailingList, setSelectedMailingList] = useState<any>({});
   const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
-  const [searchString, setSearchString] = useState<string>('');
-  const [selectedDlRow, setSelectedDlRow] = useState<any>([]);
   const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
-  const [statusFilter, setStatusFilter] = useState<string>('');
   /* timeout id holder for single/double-click detection (only written in handlers) */
   const [, setCellClickTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [sortedColumn, setSortedColumn] = useState<string>('displayName');
-  const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-  const tableRef = useRef<HTMLTableElement>(null);
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
-  const mailingListStatusFilter: any = useMemo(
-    () => [
-      {
-        label: t('domain.mailingList.canReceive', 'Can Receive'),
-        value: '(&(zimbraMailStatus=enabled))',
-      },
-      {
-        label: t('domain.mailingList.cantReceive', "Can't Receive"),
-        value: '(&(zimbraMailStatus=disabled))',
-      },
-    ],
-    [t],
-  );
-
-  const headers: any[] = useMemo(
-    () => [
-      {
-        id: 'displayName',
-        label: t('label.display_name', 'DisplayName'),
-        width: '20%',
-        bold: true,
-        sortable: true,
-        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          setSortOrder(order);
-          setSortedColumn(id);
-        },
-      },
-      {
-        id: 'name',
-        label: t('label.address', 'Address'),
-        width: '20%',
-        bold: true,
-        sortable: true,
-        onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-          setSortOrder(order);
-          setSortedColumn(id);
-        },
-      },
-      {
-        id: 'status',
-        label: t('label.status', 'Status'),
-        width: '15%',
-        i18nAllLabel: t('label.all', 'All'),
-        bold: true,
-        items: [
-          { label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
-          { label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value },
-        ],
-
-        onChange: (e: any) => {
-          if (e?.length > 0) {
-            let statusQuery = '';
-            e.forEach((item: { value: string }) => {
-              statusQuery += item.value;
-            });
-            if (e?.length > 1) {
-              statusQuery = `(|${statusQuery})`;
-            }
-            setStatusFilter(statusQuery);
-          } else {
-            setStatusFilter('');
-          }
-        },
-      },
-      {
-        id: 'dynamic',
-        label: t('label.dynamic', 'Dynamic'),
-        width: '7%',
-        bold: true,
-      },
-      {
-        id: 'gal',
-        label: t('label.gal', 'GAL'),
-        width: '7%',
-        bold: true,
-      },
-      {
-        id: 'description',
-        label: t('label.description', 'Description'),
-        width: '15%',
-        bold: true,
-      },
-    ],
-    [mailingListStatusFilter, t],
-  );
+  const { createList, isCreating } = useCreateMailingListFlow((): void => {
+    setShowCreateMailingListView(false);
+  });
 
   const doClickAction = useCallback((): void => {
     setShowMailingListDetailView(true);
@@ -171,48 +70,7 @@ const DomainMailingList: FC = () => {
     [doClickAction, doDoubleClickAction],
   );
 
-  const debouncedSearchString = useDebouncedValue(searchString);
-  const searchQuery = buildSearchFilterQuery(debouncedSearchString, statusFilter);
-
-  /* Cached distribution list search — filters are part of the query key */
-  const listsQuery = useQuery({
-    queryKey: [
-      ...domainQueryKeys.distributionLists(),
-      domainName,
-      searchQuery,
-      offset,
-      limit,
-      sortedColumn,
-      sortOrder,
-    ],
-    queryFn: async () => {
-      const attrs =
-        'displayName,zimbraId,zimbraMailHost,uid,description,zimbraMailStatus,zimbraHideInGal';
-      const types = 'distributionlists,dynamicgroups';
-      try {
-        return await searchDirectory({
-          attr: attrs,
-          type: types,
-          domainName: domainName || '',
-          query: `${searchQuery}(&(!(zimbraIsAdminGroup=TRUE)))`,
-          offset,
-          limit,
-          sortBy: sortedColumn,
-          sortAscending: sortOrder,
-        });
-      } catch (error: any) {
-        createSnackbar(generateSnackbarFromError(error, t));
-        throw error;
-      }
-    },
-    placeholderData: keepPreviousData,
-  });
-
-  const totalAccount = listsQuery.data?.searchTotal ?? 0;
-  const isRequestInProgress = listsQuery.isFetching;
-  const hasError = listsQuery.isError;
-
-  const mailingList: Array<any> = (listsQuery.data?.dl ?? []).map((item: any) =>
+  const rows: Array<any> = lists.map((item: any) =>
     buildDistributionListRow(item, {
       canReceiveLabel: t('domain.mailingList.canReceive', 'Can Receive'),
       cantReceiveLabel: t('domain.mailingList.cantReceive', "Can't Receive"),
@@ -224,269 +82,6 @@ const DomainMailingList: FC = () => {
       },
     }),
   );
-
-
-
-  const onAddClick = useCallback(() => {
-    setShowCreateMailingListView(true);
-  }, []);
-
-  const callAllRequest = useCallback(
-    (requests: any): void => {
-      Promise.all(requests)
-        .then((response: any) => Promise.all(response.map((res: any) => res.json())))
-        .then((data: any) => {
-          queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
-
-          let isError = false;
-          let errorMessage = '';
-          data.forEach((item: any) => {
-            if (item?.Body?.Fault) {
-              isError = true;
-              errorMessage = item?.Body?.Fault?.Reason?.Text;
-            }
-          });
-          if (isError) {
-            createSnackbar({
-              key: 'error',
-              severity: 'error',
-              label: errorMessage,
-              autoHideTimeout: 3000,
-              hideButton: true,
-              replace: true,
-            });
-          }
-        })
-        .catch(() => {
-          queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
-        });
-    },
-    [createSnackbar, queryClient],
-  );
-
-  const getOwnerType = useCallback((ownersList: any, email?: string): any => {
-    let type = 'email';
-    ownersList.forEach((item: any) => {
-      if (item?._attrs && item?._attrs?.type && item?._attrs?.email === email) {
-        type = item?._attrs?.type === 'group' ? 'grp' : 'usr';
-      }
-    });
-    return type;
-  }, []);
-
-  const addMemberToMailingList = useCallback(
-    (members: any, owners: any, mlId: string, ownersList: Array<any>): void => {
-      const request: any[] = [];
-      if (members.length > 0 && mlId) {
-        members.forEach((item: any) => {
-          const id: any = {
-            n: 'id',
-            _content: mlId,
-          };
-          const dlmItem: any = {
-            n: 'dlm',
-            _content: item,
-          };
-          request.push(addDistributionListMember(id, dlmItem));
-        });
-      }
-
-      if (owners.length > 0 && mlId) {
-        owners.forEach((item: any) => {
-          const dl: any = {
-            by: 'id',
-            _content: mlId,
-          };
-          const action: any = {
-            op: 'addOwners',
-            owner: {
-              by: 'name',
-              type: getOwnerType(ownersList, item),
-              _content: item,
-            },
-          };
-          request.push(distributionListAction(dl, action));
-        });
-      }
-      if (request.length > 0) {
-        callAllRequest(request);
-      } else {
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
-      }
-    },
-    [callAllRequest, getOwnerType, queryClient],
-  );
-
-  const createMailingListReq = useCallback(
-    (
-      name: string,
-      description: string,
-      dynamic: boolean,
-      displayName: string,
-      zimbraHideInGal: boolean,
-      zimbraMailStatus: boolean,
-      zimbraNotes: string,
-      memberURL: string,
-      members: string[],
-      zimbraDistributionListSendShareMessageToNewMembers: boolean,
-      owners: string[],
-      allOwnersList: any[],
-      ownerGrantEmailType: { value: string },
-      ownerGrantEmails: string[],
-    ) => {
-      setIsLoading(true);
-      const attributes: any[] = [];
-      attributes.push({
-        n: 'displayName',
-        _content: displayName,
-      });
-      attributes.push({
-        n: 'zimbraNotes',
-        _content: zimbraNotes,
-      });
-      attributes.push({
-        n: 'zimbraHideInGal',
-        _content: zimbraHideInGal ? TRUE : FALSE,
-      });
-      attributes.push({
-        n: 'zimbraMailStatus',
-        _content: zimbraMailStatus ? 'enabled' : 'disabled',
-      });
-      if (dynamic) {
-        attributes.push({
-          n: 'zimbraIsACLGroup',
-          _content: memberURL !== '' ? 'FALSE' : 'TRUE',
-        });
-        attributes.push({
-          n: 'memberURL',
-          _content: memberURL,
-        });
-      } else {
-        attributes.push({
-          n: 'zimbraDistributionListSendShareMessageToNewMembers',
-          _content: zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE,
-        });
-      }
-
-      attributes.push({
-        n: 'description',
-        _content: description,
-      });
-
-      let dl: any = {};
-      let action: any = {};
-      if (ownerGrantEmailType?.value === PUB) {
-        dl = { by: 'name', _content: name };
-        action = {
-          op: 'setRights',
-          right: { right: 'sendToDistList', grantee: [] },
-        };
-      } else if (ownerGrantEmailType?.value === GRP) {
-        dl = { by: 'name', _content: name };
-        action = {
-          op: 'setRights',
-          right: {
-            right: 'sendToDistList',
-            grantee: [{ type: 'grp', by: 'name', _content: name }],
-          },
-        };
-      } else if (ownerGrantEmailType?.value === ALL) {
-        dl = { by: 'name', _content: name };
-        action = {
-          op: 'setRights',
-          right: { right: 'sendToDistList', grantee: [{ type: 'all' }] },
-        };
-      } else if (ownerGrantEmailType?.value === EMAIL) {
-        dl = { by: 'name', _content: name };
-        action = {
-          op: 'setRights',
-          right: {
-            right: 'sendToDistList',
-            grantee: ownerGrantEmails.map((item: any) => ({
-              type: 'email',
-              by: 'name',
-              _content: item,
-            })),
-          },
-        };
-      }
-      createMailingList(dynamic, name, attributes)
-        .then((data) => {
-          const severity = 'success';
-          let message = '';
-          const mlId = data?.dl[0]?.id;
-          addMemberToMailingList(members, owners, mlId, allOwnersList);
-          callAllRequest([distributionListAction(dl, action)]);
-          setShowCreateMailingListView(false);
-          message = t('label.the_has_been_created_success', {
-            name,
-            defaultValue: 'The {{name}} has been created successfully',
-          });
-          createSnackbar({
-            key: 'success',
-            severity,
-            label: message,
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          setIsLoading(false);
-        })
-        .catch((error) => {
-          let message = '';
-          if (error?.message) {
-            const text = error?.message;
-            if (text.includes('no such domain')) {
-              message = t('label.specified_domain_not_exist', 'Specified domain does not exist');
-            } else if (text.includes('email address already exists')) {
-              message = t('label.email_addready_exists', {
-                name,
-                defaultValue: 'Email address {{name}} already exists',
-              });
-            } else {
-              message = text;
-            }
-          }
-          createSnackbar({
-            key: 'error',
-            severity: 'error',
-            label:
-              message ||
-              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-            autoHideTimeout: 3000,
-            hideButton: true,
-            replace: true,
-          });
-          setIsLoading(false);
-        });
-    },
-    [createSnackbar, t, addMemberToMailingList, callAllRequest],
-  );
-
-  useEffect(() => {
-    const table = tableRef.current;
-
-    const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = window.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
-
-    if (table && !resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
-    }
-
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
-    };
-  }, []);
 
   return (
     <Container
@@ -509,7 +104,11 @@ const DomainMailingList: FC = () => {
             </Row>
             <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end">
               <Padding all={'0'}>
-                <Button color="primary" icon="Plus" onClick={onAddClick} />
+                <Button
+                  color="primary"
+                  icon="Plus"
+                  onClick={(): void => setShowCreateMailingListView(true)}
+                />
               </Padding>
             </Row>
           </Row>
@@ -529,132 +128,20 @@ const DomainMailingList: FC = () => {
         }}
         padding={{ top: 'small', left: 'small', right: 'small' }}
       >
-        <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }}>
-          <Container
-            height="fit"
-            crossAlignment="flex-start"
-            background="gray6"
-            style={{ position: 'relative' }}
-          >
-            <Row
-              orientation="horizontal"
-              mainAlignment="space-between"
-              crossAlignment="flex-start"
-              width="fill"
-              padding={{ bottom: 'large' }}
-            >
-              <Container>
-                <Input
-                  disabled={mailingList.length === 0 && searchString.length === 0 && !hasError}
-                  backgroundColor="gray5"
-                  label={t('label.search_dot', 'Search…')}
-                  onChange={(e: any): any => {
-                    setSearchString(e.target.value);
-                  }}
-                  CustomIcon={(): any => (
-                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                  )}
-                />
-              </Container>
-            </Row>
-            <Row
-              orientation="horizontal"
-              mainAlignment="space-between"
-              crossAlignment="flex-start"
-              width="fill"
-            >
-              <Table
-                rows={!isRequestInProgress ? mailingList : []}
-                headers={headers}
-                showCheckbox={false}
-                multiSelect={false}
-                ref={tableRef}
-                style={{
-                  overflow: 'auto',
-                  height: isRequestInProgress || mailingList.length === 0 ? '50%' : '100%',
-                }}
-                selectedRows={selectedDlRow}
-                onSelectionChange={(selected: any): void => {
-                  setSelectedDlRow(selected);
-                }}
-                RowFactory={HoverableRowFactory}
-                HeaderFactory={CustomHeaderFactory}
-              />
-              {isRequestInProgress && (
-                <Container
-                  crossAlignment="center"
-                  mainAlignment="flex-start"
-                  height="auto"
-                  padding={{ top: 'medium' }}
-                >
-                  <ds-spinner></ds-spinner>
-                </Container>
-              )}
-              {mailingList.length === 0 && !isRequestInProgress && (
-                <Container orientation="column" crossAlignment="center" mainAlignment="center">
-                  <Row>
-                    <img src={logo} alt="logo" />
-                  </Row>
-                  <Row
-                    padding={{ top: 'extralarge' }}
-                    orientation="vertical"
-                    crossAlignment="center"
-                    style={{ textAlign: 'center' }}
-                  >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                      {t('label.this_list_is_empty', 'This list is empty.')}
-                    </ds-text>
-                  </Row>
-                  <Row
-                    orientation="vertical"
-                    crossAlignment="center"
-                    style={{ textAlign: 'center' }}
-                    padding={{ top: 'small' }}
-                    width="53%"
-                  >
-                    <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                      <Trans
-                        i18nKey="label.create_distribution_list_msg"
-                        defaults="You can create a new Distribution List by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
-                        components={{ bold: <strong /> }}
-                      />
-                    </ds-text>
-                  </Row>
-                </Container>
-              )}
-            </Row>
-            {mailingList && mailingList.length > 0 && (
-              <Container
-                style={{
-                  position: 'sticky',
-                  bottom: isTableTooTall ? '0' : '-4rem',
-                }}
-              >
-                <ScrollContainer isVisible={isTableTooTall} />
-                <Container
-                  orientation="horizontal"
-                  mainAlignment="space-between"
-                  background="gray6"
-                  width="100%"
-                  padding={{ right: 'extralarge' }}
-                  height="auto"
-                >
-                  <Container crossAlignment="flex-start">
-                    <Paging totalItem={totalAccount} setOffset={setOffset} pageSize={limit} />
-                  </Container>
-                  <Container
-                    crossAlignment="flex-end"
-                    orientation="horizontal"
-                    mainAlignment="flex-end"
-                    padding={{ top: 'small' }}
-                  >
-                    <TrackNumberPerPage setPageSize={setLimit} />
-                  </Container>
-                </Container>
-              </Container>
-            )}
-          </Container>
-        </Row>
+        <DistributionListTable
+          rows={rows}
+          headers={headers}
+          isFetching={isFetching}
+          hasError={hasError}
+          searchString={searchString}
+          onSearchChange={(e): void => {
+            setSearchString(e.target.value);
+          }}
+          totalAccount={totalAccount}
+          offsetSetter={setOffset}
+          pageSize={limit}
+          onPageSizeChange={setLimit}
+        />
       </Container>
       {showMailingListDetailView && (
         <ModalOverlay open={showMailingListDetailView} maxWidth="58.75rem">
@@ -669,8 +156,8 @@ const DomainMailingList: FC = () => {
         <ModalOverlay open={showCreateMailingListView} maxWidth="58.75rem">
           <CreateMailingList
             setShowCreateMailingListView={setShowCreateMailingListView}
-            createMailingListReq={createMailingListReq}
-            isLoading={isLoading}
+            createList={createList}
+            isLoading={isCreating}
           />
         </ModalOverlay>
       )}

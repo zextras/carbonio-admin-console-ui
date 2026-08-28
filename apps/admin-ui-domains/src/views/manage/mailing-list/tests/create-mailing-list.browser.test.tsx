@@ -55,7 +55,7 @@ describe('CreateMailingList (browser)', () => {
 			setup(
 				<CreateMailingList
 					setShowCreateMailingListView={vi.fn()}
-					createMailingListReq={vi.fn()}
+					createList={vi.fn()}
 					isLoading={false}
 				/>,
 			);
@@ -69,7 +69,7 @@ describe('CreateMailingList (browser)', () => {
 			setup(
 				<CreateMailingList
 					setShowCreateMailingListView={vi.fn()}
-					createMailingListReq={vi.fn()}
+					createList={vi.fn()}
 					isLoading={false}
 				/>,
 			);
@@ -83,7 +83,7 @@ describe('CreateMailingList (browser)', () => {
 			setup(
 				<CreateMailingList
 					setShowCreateMailingListView={vi.fn()}
-					createMailingListReq={vi.fn()}
+					createList={vi.fn()}
 					isLoading={false}
 				/>,
 			);
@@ -99,7 +99,7 @@ describe('CreateMailingList (browser)', () => {
 			setup(
 				<CreateMailingList
 					setShowCreateMailingListView={vi.fn()}
-					createMailingListReq={vi.fn()}
+					createList={vi.fn()}
 					isLoading={true}
 				/>,
 			);
@@ -114,7 +114,7 @@ describe('CreateMailingList (browser)', () => {
 			setup(
 				<CreateMailingList
 					setShowCreateMailingListView={setShowCreateMailingListView}
-					createMailingListReq={vi.fn()}
+					createList={vi.fn()}
 					isLoading={false}
 				/>,
 			);

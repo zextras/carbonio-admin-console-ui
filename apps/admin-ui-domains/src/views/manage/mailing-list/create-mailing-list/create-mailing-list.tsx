@@ -40,9 +40,9 @@ type MailingListDetailObj = {
 
 const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
-	createMailingListReq: any;
+	createList: (detail: any) => void;
 	isLoading: boolean;
-}> = ({ setShowCreateMailingListView, createMailingListReq, isLoading }) => {
+}> = ({ setShowCreateMailingListView, createList, isLoading }) => {
 	const { t } = useTranslation();
 	const { data: domainInformation } = useSelectedDomain();
 
@@ -71,23 +71,8 @@ const CreateMailingList: FC<{
 	});
 
 	const onCreate = useCallback(() => {
-		createMailingListReq(
-			`${mailingListDetail?.prefixName}@${mailingListDetail?.suffixName}`,
-			mailingListDetail?.description,
-			mailingListDetail?.dynamic,
-			mailingListDetail?.displayName,
-			mailingListDetail?.zimbraHideInGal,
-			mailingListDetail?.zimbraMailStatus,
-			mailingListDetail?.zimbraNotes,
-			mailingListDetail?.memberURL,
-			mailingListDetail?.members,
-			mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers,
-			mailingListDetail?.owners,
-			mailingListDetail?.allOwnersList,
-			mailingListDetail?.ownerGrantEmailType,
-			mailingListDetail?.ownerGrantEmails
-		);
-	}, [createMailingListReq, mailingListDetail]);
+		createList(mailingListDetail);
+	}, [createList, mailingListDetail]);
 
 	const steps = useMemo(() => {
 		// defined inside the memo (not a module-level factory): the React
