@@ -130,10 +130,10 @@ function buildMemberOfOperations(
 		return [];
 	}
 
-	const previousIds = (previous.dlMembershipList ?? []).map((i) => i?.id);
-	const currentIds = (current.dlMembershipList ?? []).map((i) => i?.id);
-	const newAddedMember = (current.dlMembershipList ?? []).filter((item) => !previousIds.includes(item?.id));
-	const removeMember = (previous.dlMembershipList ?? []).filter((item) => !currentIds.includes(item?.id));
+	const previousIds = new Set((previous.dlMembershipList ?? []).map((i) => i?.id));
+	const currentIds = new Set((current.dlMembershipList ?? []).map((i) => i?.id));
+	const newAddedMember = (current.dlMembershipList ?? []).filter((item) => !previousIds.has(item?.id));
+	const removeMember = (previous.dlMembershipList ?? []).filter((item) => !currentIds.has(item?.id));
 
 	return [
 		...newAddedMember.map((item) => ({
@@ -161,10 +161,10 @@ function buildDynamicOwnerOperations(
 		return [];
 	}
 
-	const previousIds = (previous.ownerOfList ?? []).map((i) => i?.id);
-	const currentIds = (current.ownerOfList ?? []).map((i) => i?.id);
-	const addedCount = (current.ownerOfList ?? []).filter((item) => !previousIds.includes(item?.id)).length;
-	const removedCount = (previous.ownerOfList ?? []).filter((item) => !currentIds.includes(item?.id)).length;
+	const previousIds = new Set((previous.ownerOfList ?? []).map((i) => i?.id));
+	const currentIds = new Set((current.ownerOfList ?? []).map((i) => i?.id));
+	const addedCount = (current.ownerOfList ?? []).filter((item) => !previousIds.has(item?.id)).length;
+	const removedCount = (previous.ownerOfList ?? []).filter((item) => !currentIds.has(item?.id)).length;
 
 	return [
 		...Array.from({ length: addedCount }, () => ({
@@ -281,10 +281,12 @@ export function buildSaveOperations(
 		operations.push({ type: 'rename', id: current.listId, newName: current.distributionName });
 	}
 
-	operations.push(...buildMemberOfOperations(previous, current));
-	operations.push(...buildDynamicOwnerOperations(previous, current));
-	operations.push(...buildAliasOperations(current));
-	operations.push(...buildGrantOperation(previous, current));
+	operations.push(
+		...buildMemberOfOperations(previous, current),
+		...buildDynamicOwnerOperations(previous, current),
+		...buildAliasOperations(current),
+		...buildGrantOperation(previous, current)
+	);
 
 	return operations;
 }
