@@ -599,20 +599,16 @@ function EditDistributionListContent({
 				/>
 			)}
 
-				{selectedTab === 'members' && (
-					<MembersTab
-						dlm={values.dlm}
-						setDlm={(v: Array<any>): void => form.setFieldValue('dlm', v)}
-						setPreviousDetail={ignorePreviousDetail}
-						selectedMailingList={selectedMailingList}
-						isRequestInProgress={isRequestInProgress}
-						setIsRequestInProgress={setIsRequestInProgress}
-						searchUserLabelValue={searchUserLabelValue}
-						isGlobalAdmin={isGlobalAdmin}
-						memberURL={values.memberURL}
-						setMemberURL={(v: string): void => form.setFieldValue('memberURL', v)}
-					/>
-				)}
+			{selectedTab === 'members' && (
+				<MembersTab
+					form={form as never}
+					selectedMailingList={selectedMailingList}
+					isRequestInProgress={isRequestInProgress}
+					setIsRequestInProgress={setIsRequestInProgress}
+					searchUserLabelValue={searchUserLabelValue}
+					isGlobalAdmin={isGlobalAdmin}
+				/>
+			)}
 
 				{selectedTab === 'owners' && (
 					<OwnersTab

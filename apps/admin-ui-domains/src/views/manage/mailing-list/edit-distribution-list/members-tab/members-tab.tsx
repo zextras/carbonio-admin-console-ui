@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import {
 	Container,
 	CustomHeaderFactory,
@@ -17,7 +18,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
@@ -26,36 +27,31 @@ import { useAddDistributionListMember } from '../../../../../services/use-add-di
 import { useRemoveDistributionListMember } from '../../../../../services/use-remove-distribution-list-member';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
 import { useSearchWithDebounce } from '../../edit-mailing-detail/hooks/use-search-with-debounce';
+import type { EditDistributionListFormApi } from '../types';
 import { AddMemberRow } from './add-member-row';
 import { filterMemberRows, pageRows, resolveNewMembers } from './filter-members';
 import { buildMemberRow } from './member-row';
 import { RemoveMemberModal } from './remove-member-modal';
 
 type MembersTabProps = {
-	dlm: Array<any>;
-	setDlm: (dlm: Array<any>) => void;
-	setPreviousDetail: (fn: any) => void;
+	form: EditDistributionListFormApi;
 	selectedMailingList: any;
 	isRequestInProgress: boolean;
 	setIsRequestInProgress: (v: boolean) => void;
 	searchUserLabelValue: string;
 	isGlobalAdmin: boolean;
-	memberURL: string | undefined;
-	setMemberURL: (v: string) => void;
 };
 
 export const MembersTab: FC<MembersTabProps> = ({
-	dlm,
-	setDlm,
-	setPreviousDetail,
+	form,
 	selectedMailingList,
 	isRequestInProgress,
 	setIsRequestInProgress,
 	searchUserLabelValue,
-	isGlobalAdmin,
-	memberURL,
-	setMemberURL
+	isGlobalAdmin
 }) => {
+	const dlm = useStore(form.store, (state) => state.values.dlm);
+	const memberURL = useStore(form.store, (state) => state.values.memberURL);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
@@ -79,25 +75,22 @@ export const MembersTab: FC<MembersTabProps> = ({
 	const addMemberMutation = useAddDistributionListMember();
 	const removeMemberMutation = useRemoveDistributionListMember();
 
-	const memberHeaders: Array<any> = useMemo(
-		() => [
-			{
-				id: 'members',
-				label: t('label.members', 'Members'),
-				width: '80%',
-				bold: true
-			},
-			!selectedMailingList?.dynamic
-				? {
-						id: 'actions',
-						label: t('label.actions', 'Actions'),
-						width: '20%',
-						bold: false
-					}
-				: { id: 'actions', label: '', width: '0%', bold: false }
-		],
-		[t]
-	);
+	const memberHeaders: Array<any> = [
+		{
+			id: 'members',
+			label: t('label.members', 'Members'),
+			width: '80%',
+			bold: true
+		},
+		!selectedMailingList?.dynamic
+			? {
+					id: 'actions',
+					label: t('label.actions', 'Actions'),
+					width: '20%',
+					bold: false
+				}
+			: { id: 'actions', label: '', width: '0%', bold: false }
+	];
 
 	const searchMemberItems = searchMemberResult.map((item: any) => ({
 		id: item.id,
@@ -246,11 +239,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 					});
 				} else {
 					const updatedDlm = uniq(dlm.concat(newMembers));
-					setDlm(updatedDlm);
-					setPreviousDetail((prevState: any) => ({
-						...prevState,
-						dlm: updatedDlm
-					}));
+					form.setFieldValue('dlm', updatedDlm);
 					setIsShowMemberError(false);
 					setSearchMember('');
 					setMemberErrorMessage('');
@@ -287,8 +276,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 		dlm,
 		selectedMailingList?.id,
 		createSnackbar,
-		setDlm,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		addMemberMutation
 	]);
@@ -335,12 +323,8 @@ export const MembersTab: FC<MembersTabProps> = ({
 					});
 				} else {
 					const updatedDlm = dlm.filter((item: any) => item !== memberToDelete);
-					setDlm(updatedDlm);
+					form.setFieldValue('dlm', updatedDlm);
 					setSelectedDistributionListMember([]);
-					setPreviousDetail((prevState: any) => ({
-						...prevState,
-						dlm: updatedDlm
-					}));
 					if (DLMPagedRows.length === 1) {
 						setDLMSearchCurrentPage(1);
 						setOffset(0);
@@ -383,8 +367,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 		createSnackbar,
 		t,
 		closeDeleteMemberHandler,
-		setDlm,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		removeMemberMutation
 	]);
@@ -415,7 +398,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 										value={memberURL}
 										backgroundColor="gray5"
 										onChange={(e: any): any => {
-											setMemberURL(e.target.value);
+											form.setFieldValue('memberURL', e.target.value);
 										}}
 										disabled={!isGlobalAdmin}
 									/>
