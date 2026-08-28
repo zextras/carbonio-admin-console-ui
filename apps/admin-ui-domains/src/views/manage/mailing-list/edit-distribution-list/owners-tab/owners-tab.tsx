@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
 	Button,
 	Container,
@@ -25,6 +25,7 @@ import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { ASC, DESC } from '../../../../../constants';
 import { useDistributionListAction } from '../../../../../services/use-distribution-list-action';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
+import { FilterColumnIcon } from '../../filter-column-icon';
 import { useGalContactTypeResolver } from '../gal-contact-type-resolver';
 import { resolveNewMembers } from '../members-tab/filter-members';
 import type { EditDistributionListFormApi } from '../types';
@@ -48,7 +49,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 	setIsRequestInProgress,
 	searchUserLabelValue
 }) => {
-	const ownersList = useStore(form.store, (state) => state.values.ownersList);
+	const ownersList = useSelector(form.store, (state) => state.values.ownersList);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
@@ -121,14 +122,6 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 				);
 				return;
 			case 'undefined':
-				setIsShowOwnerError(true);
-				setOwnerErrorMessage(
-					t(
-						'domain.distributionList.invalidEmailErrorMsg',
-						'The account does not exist. Please check the spelling and try again.'
-					)
-				);
-				return;
 			case 'invalid':
 				setIsShowOwnerError(true);
 				setOwnerErrorMessage(
@@ -399,9 +392,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 										value={filterOwner}
 										backgroundColor="gray5"
 										onChange={handleInputChangeOwner}
-										CustomIcon={(): any => (
-											<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-										)}
+										CustomIcon={FilterColumnIcon}
 									/>
 								</Row>
 							</ListRow>
