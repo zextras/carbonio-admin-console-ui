@@ -57,7 +57,18 @@ async function setupEditView(): Promise<EditViewSetup> {
   createBrowserSoapAPIInterceptor('GetDistributionListMembership', {
     dl: [{ id: 'dl-2', name: 'other@example.com' }],
   });
-  createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+  createBrowserSoapAPIInterceptor('GetGrants', {
+    grant: [
+      {
+        right: [{ _content: 'ownDistList' }],
+        grantee: [{ id: 'owner-1', name: 'owner@example.com', type: 'usr' }],
+      },
+      {
+        right: [{ _content: 'sendAsDistList' }],
+        grantee: [{ id: 'send-1', name: 'sender@example.com', type: 'usr' }],
+      },
+    ],
+  });
   // resolves ManageAliases' useDomainById query (suffix for new aliases)
   createBrowserSoapAPIInterceptor('GetDomain', {
     domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] }],
@@ -354,9 +365,10 @@ describe('EditDistributionList (browser)', () => {
       await setupEditView();
       await waitForLoad();
       await page.getByText('OWNERS', { exact: true }).click();
+      await expect.element(page.getByText('owner@example.com')).toBeInTheDocument();
       await userEvent.type(
         page.getByLabelText('Add owners by email address'),
-        'owner@example.com',
+        'newowner@example.com',
       );
       // allow the debounced GAL search to run, then add the typed email
       await new Promise((resolve) => setTimeout(resolve, 900));
@@ -366,6 +378,107 @@ describe('EditDistributionList (browser)', () => {
       await expect
         .element(page.getByText('Owner has been added successfully'))
         .toBeInTheDocument();
+    });
+
+    it('removes an existing owner after confirmation', async () => {
+      const removeAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('OWNERS', { exact: true }).click();
+      await expect.element(page.getByText('owner@example.com')).toBeInTheDocument();
+      await page.getByRole('button', { name: 'Delete', exact: true }).click();
+      await expect
+        .element(page.getByText('Are you sure you want to remove owner@example.com'))
+        .toBeInTheDocument();
+      await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
+      const params = (await removeAction) as { action: Record<string, unknown> };
+      expect(params.action).toMatchObject({ op: 'removeOwners' });
+      await expect.element(page.getByText('owner@example.com')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Send-as tab interactions', () => {
+    it('removes an authorized sender after confirmation', async () => {
+      const revokeAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
+      await page.getByRole('button', { name: 'Delete', exact: true }).click();
+      await expect
+        .element(page.getByText('Are you sure you want to remove sender@example.com'))
+        .toBeInTheDocument();
+      await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
+      const params = (await revokeAction) as { action: Record<string, unknown> };
+      expect(params.action).toMatchObject({ op: 'revokeRights' });
+      await expect.element(page.getByText('sender@example.com')).not.toBeInTheDocument();
+    });
+
+    it('edits the permission level of an authorized sender', async () => {
+      const editAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
+      await page.getByRole('button', { name: 'Edit', exact: true }).click();
+      await expect.element(page.getByText('Edit permission level')).toBeInTheDocument();
+      await page.getByTestId('modal').getByText('Send on behalf of', { exact: true }).click();
+      await page.getByRole('button', { name: 'SAVE CHANGES' }).click();
+      const revokeParams = (await editAction) as { action: Record<string, unknown> };
+      expect(revokeParams.action).toMatchObject({
+        op: 'revokeRights',
+        right: { right: 'sendAsDistList' },
+      });
+      // the edit flow revokes the old right first, then grants the new one
+      const grantAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      const grantParams = (await grantAction) as { action: Record<string, unknown> };
+      expect(grantParams.action).toMatchObject({
+        op: 'grantRights',
+        right: { right: 'sendOnBehalfOfDistList' },
+      });
+      await expect
+        .element(page.getByText('Permission level has been updated successfully'))
+        .toBeInTheDocument();
+    });
+
+    it('adds an authorized sender with the selected permission level', async () => {
+      const grantAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await page.getByText('Send on behalf of', { exact: true }).click();
+      await userEvent.type(
+        page.getByLabelText('Add senders by email address'),
+        'as-new@example.com',
+      );
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      const params = (await grantAction) as { action: Record<string, unknown> };
+      expect(params.action).toMatchObject({
+        op: 'grantRights',
+        right: {
+          right: 'sendOnBehalfOfDistList',
+          grantee: { _content: 'as-new@example.com' },
+        },
+      });
+      await expect.element(page.getByText('as-new@example.com')).toBeInTheDocument();
+    });
+  });
+
+  describe('Send-to tab interactions', () => {
+    it('adds and removes senders when only these users is selected', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND TO', { exact: true }).click();
+      await page.getByText('Everyone').click();
+      await page.getByText('Only these users').click();
+      await userEvent.type(
+        page.getByLabelText('Add senders by email address'),
+        'to-new@example.com',
+      );
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      await expect.element(page.getByText('to-new@example.com')).toBeInTheDocument();
+      await page.getByRole('button', { name: 'Delete', exact: true }).click();
+      await expect.element(page.getByText('to-new@example.com')).not.toBeInTheDocument();
     });
   });
 });
