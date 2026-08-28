@@ -202,6 +202,11 @@ export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
 
+export const TRUE_FALSE = {
+	TRUE: 'TRUE',
+	FALSE: 'FALSE'
+} as const;
+
 // Storages API constants\
 export const STORAGES_API_BASE_URL = '/services/storages/admin';
 export const STORAGES_API_VERSION = '2';

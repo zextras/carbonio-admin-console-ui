@@ -288,6 +288,7 @@ Key enforced rules:
 - `react-hooks/rules-of-hooks` - Proper hooks usage
 - `@typescript-eslint/no-explicit-any` - Warn, avoid `any`
 - `no-console` - Error (allow `console.error` only)
+- **Never use `eslint-disable` comments** (line, block, or file level) — not even in tests or type declarations. A disable is a symptom of a bigger problem: solve the root cause instead (fix the dependency array, restructure the effect, derive the state, or type it properly). If a rule feels impossible to satisfy, escalate the design rather than suppressing the lint.
 
 ### Naming Conventions
 - Components: PascalCase (`MyComponent`)

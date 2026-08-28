@@ -31,7 +31,7 @@ describe('useRemoveDistributionListMember', () => {
 		vi.clearAllMocks();
 	});
 
-	it('should call the service and invalidate the membership query', async () => {
+	it('should call the service and invalidate the membership queries', async () => {
 		mockRemoveDistributionListMember.mockResolvedValue({ Body: {} });
 		const queryClient = new QueryClient();
 		const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
@@ -49,6 +49,12 @@ describe('useRemoveDistributionListMember', () => {
 		);
 		expect(invalidateSpy).toHaveBeenCalledWith({
 			queryKey: domainQueryKeys.accountMembership('account-1'),
+		});
+		expect(invalidateSpy).toHaveBeenCalledWith({
+			queryKey: domainQueryKeys.distributionList('dl-1'),
+		});
+		expect(invalidateSpy).toHaveBeenCalledWith({
+			queryKey: domainQueryKeys.distributionListMembership('dl-1'),
 		});
 	});
 

@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const distributionListAction = async (dl: JSON, action?: JSON): Promise<any> => {
+export const distributionListAction = async (dl: Record<string, unknown>, action?: Record<string, unknown>): Promise<any> => {
 	const request: any = {
 		_jsns: 'urn:zimbraAccount',
 		dl
