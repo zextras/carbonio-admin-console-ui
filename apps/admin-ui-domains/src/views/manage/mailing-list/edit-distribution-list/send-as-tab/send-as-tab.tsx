@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
 	Button,
 	Container,
@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { useDistributionListAction } from '../../../../../services/use-distribution-list-action';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
+import { FilterColumnIcon } from '../../filter-column-icon';
 import { resolveNewMembers } from '../members-tab/filter-members';
 import type { EditDistributionListFormApi } from '../types';
 import { useGalEmailSearch } from '../use-gal-email-search';
@@ -57,7 +58,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const sendEmailsList = useStore(form.store, (state) => state.values.sendEmails);
+	const sendEmailsList = useSelector(form.store, (state) => state.values.sendEmails);
 
 
 	const [selectedSendEmail, setSelectedSendEmail] = useState<Array<any>>([]);
@@ -168,7 +169,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 		}));
 		const sortedList = sortedUniq(withAcl);
 		const newSenders = sortedList.filter(
-			(item: any) => !sendEmailsList.find((s: any) => s?.name === item?.name)
+			(item: any) => !sendEmailsList.some((s: any) => s?.name === item?.name)
 		);
 		if (newSenders.length === 0) return;
 		setIsRequestInProgress(true);
@@ -347,7 +348,9 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 			setIsOpenEditPermissionDialog(false);
 			return;
 		}
-		if (sendEmailsList.find((s: any) => s?.name === editingEmailItem?.name && s?.sendAcl === newAcl)) {
+		if (
+			sendEmailsList.some((s: any) => s?.name === editingEmailItem?.name && s?.sendAcl === newAcl)
+		) {
 			createSnackbar({
 				key: 'error',
 				severity: 'error',
@@ -570,9 +573,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 											value={filterSendEmail}
 											backgroundColor="gray5"
 											onChange={handleInputChangeSendEmail}
-											CustomIcon={(): any => (
-												<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-											)}
+											CustomIcon={FilterColumnIcon}
 										/>
 									</Row>
 								</ListRow>
