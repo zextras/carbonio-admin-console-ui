@@ -147,11 +147,11 @@ const EditDistributionList: FC<any> = ({
 };
 
 type EditDistributionListContentProps = {
-  selectedMailingList: any;
-  formValues: EditDistributionListFormValues;
-  parsedDetail: DistributionListDetail;
-  dlCreateDate: string;
-  setShowMailingListDetailView: (value: boolean) => void;
+  readonly selectedMailingList: any;
+  readonly formValues: EditDistributionListFormValues;
+  readonly parsedDetail: DistributionListDetail;
+  readonly dlCreateDate: string;
+  readonly setShowMailingListDetailView: (value: boolean) => void;
 };
 
 function EditDistributionListContent({
@@ -223,7 +223,7 @@ function EditDistributionListContent({
       // the original flow clears the grant emails after saving when the
       // grant type is not "only these users"
       const finalValue: EditDistributionListFormValues =
-        value.grantTypeValue !== EMAIL ? { ...value, grantEmails: [] } : value;
+        value.grantTypeValue === EMAIL ? value : { ...value, grantEmails: [] };
       try {
         const responses = await Promise.all(operations.map(executeSaveOperation));
         const fault = responses.find((item: any) => item?.Fault);
@@ -294,7 +294,7 @@ function EditDistributionListContent({
     getGrantBody.grantee = grantee;
     getGrant(getGrantBody)
       .then((data: any) => {
-        if (data && data?.grant && Array.isArray(data?.grant)) {
+        if (Array.isArray(data?.grant)) {
           let granteeTotal = 0;
 
           const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
@@ -330,7 +330,7 @@ function EditDistributionListContent({
     getGrantBodyTarget.target = target;
     getGrant(getGrantBodyTarget)
       .then((resFromTarget: any) => {
-        if (resFromTarget && resFromTarget?.grant && Array.isArray(resFromTarget?.grant)) {
+        if (Array.isArray(resFromTarget?.grant)) {
           let targetTotal = 0;
           const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
           const targetRightLenght = targetRights?.values();
