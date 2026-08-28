@@ -21,8 +21,8 @@ import {
 import { searchDirectory, useUserSettings } from '@zextras/ui-shared';
 import {
 	type ChangeEvent,
-	type FC,
 	createContext,
+	type FC,
 	useCallback,
 	useContext,
 	useMemo,
