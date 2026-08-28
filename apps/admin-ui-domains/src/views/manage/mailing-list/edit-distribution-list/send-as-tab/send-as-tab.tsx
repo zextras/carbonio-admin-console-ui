@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import {
 	Button,
 	Container,
@@ -24,6 +25,7 @@ import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { useDistributionListAction } from '../../../../../services/use-distribution-list-action';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
 import { resolveNewMembers } from '../members-tab/filter-members';
+import type { EditDistributionListFormApi } from '../types';
 import { useGalEmailSearch } from '../use-gal-email-search';
 import { EditPermissionModal } from './edit-permission-modal';
 import {
@@ -34,10 +36,7 @@ import { RemoveSenderModal } from './remove-sender-modal';
 import { buildSendAsRow } from './send-as-row';
 
 type SendAsTabProps = {
-	sendEmailsList: Array<any>;
-	setSendEmailsList: (list: Array<any>) => void;
-	setSendEmails: (list: Array<any>) => void;
-	setPreviousDetail: (fn: any) => void;
+	form: EditDistributionListFormApi;
 	selectedMailingList: any;
 	isRequestInProgress: boolean;
 	setIsRequestInProgress: (v: boolean) => void;
@@ -50,10 +49,7 @@ const SEND_ACL_BY_PERMISSION: Record<PermissionLevelValue, string> = {
 };
 
 export const SendAsTab: FC<SendAsTabProps> = ({
-	sendEmailsList,
-	setSendEmailsList,
-	setSendEmails,
-	setPreviousDetail,
+	form,
 	selectedMailingList,
 	isRequestInProgress,
 	setIsRequestInProgress,
@@ -61,6 +57,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
+	const sendEmailsList = useStore(form.store, (state) => state.values.sendEmails);
 
 	const [sendEmailTableRows, setSendEmailTableRows] = useState<Array<any>>([]);
 	const [selectedSendEmail, setSelectedSendEmail] = useState<Array<any>>([]);
@@ -219,12 +216,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 					});
 				} else {
 					const updatedEmails = uniq(sendEmailsList.concat(newSenders));
-					setSendEmailsList(updatedEmails);
-					setSendEmails(updatedEmails);
-					setPreviousDetail((prevState: any) => ({
-						...prevState,
-						sendEmailsList: updatedEmails
-					}));
+					form.setFieldValue('sendEmails', updatedEmails);
 					createSnackbar({
 						key: 'success',
 						severity: 'success',
@@ -259,9 +251,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 		sendEmailsList,
 		radioPermisionValue,
 		selectedMailingList?.id,
-		setSendEmailsList,
-		setSendEmails,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		actionMutation,
 		setSendEmailItem
@@ -311,13 +301,8 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 								item?.sendAcl === sendEmailToDelete?.sendAcl
 							)
 					);
-					setSendEmailsList(updatedEmails);
-					setSendEmails(updatedEmails);
+					form.setFieldValue('sendEmails', updatedEmails);
 					setSelectedSendEmail([]);
-					setPreviousDetail((prevState: any) => ({
-						...prevState,
-						sendEmailsList: updatedEmails
-					}));
 					createSnackbar({
 						key: 'success',
 						severity: 'success',
@@ -354,9 +339,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 		createSnackbar,
 		t,
 		closeDeleteSendEmailHandler,
-		setSendEmailsList,
-		setSendEmails,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		actionMutation
 	]);
@@ -428,12 +411,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 				const updatedList = sendEmailsList.map((item: any) =>
 					item?.name === editingEmailItem?.name ? { ...item, sendAcl: newAcl } : item
 				);
-				setSendEmailsList(updatedList);
-				setSendEmails(updatedList);
-				setPreviousDetail((prevState: any) => ({
-					...prevState,
-					sendEmailsList: updatedList
-				}));
+				form.setFieldValue('sendEmails', updatedList);
 				createSnackbar({
 					key: 'success',
 					severity: 'success',
@@ -469,9 +447,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 		selectedMailingList?.id,
 		createSnackbar,
 		t,
-		setSendEmailsList,
-		setSendEmails,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		actionMutation
 	]);

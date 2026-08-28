@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import {
 	Button,
 	Container,
@@ -25,15 +26,14 @@ import { ASC, DESC } from '../../../../../constants';
 import { useDistributionListAction } from '../../../../../services/use-distribution-list-action';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
 import { resolveNewMembers } from '../members-tab/filter-members';
+import type { EditDistributionListFormApi } from '../types';
 import { useGalEmailSearch } from '../use-gal-email-search';
 import { buildOwnerRow } from './owner-row';
 import { resolveOwnerType, sortOwnersByName } from './owner-type';
 import { RemoveOwnerModal } from './remove-owner-modal';
 
 type OwnersTabProps = {
-	ownersList: Array<any>;
-	setOwnersList: (list: Array<any>) => void;
-	setPreviousDetail: (fn: any) => void;
+	form: EditDistributionListFormApi;
 	selectedMailingList: any;
 	isRequestInProgress: boolean;
 	setIsRequestInProgress: (v: boolean) => void;
@@ -41,14 +41,13 @@ type OwnersTabProps = {
 };
 
 export const OwnersTab: FC<OwnersTabProps> = ({
-	ownersList,
-	setOwnersList,
-	setPreviousDetail,
+	form,
 	selectedMailingList,
 	isRequestInProgress,
 	setIsRequestInProgress,
 	searchUserLabelValue
 }) => {
+	const ownersList = useStore(form.store, (state) => state.values.ownersList);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
@@ -225,11 +224,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 					});
 				} else {
 					const updatedOwners = uniq(ownersList.concat(newOwners));
-					setOwnersList(updatedOwners);
-					setPreviousDetail((prevState: any) => ({
-						...prevState,
-						ownersList: updatedOwners
-					}));
+					form.setFieldValue('ownersList', updatedOwners);
 					setSearchOwner('');
 					createSnackbar({
 						key: 'success',
@@ -265,8 +260,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 		selectedMailingList?.id,
 		getOwnerType,
 		createSnackbar,
-		setOwnersList,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		actionMutation
 	]);
@@ -308,12 +302,8 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 					const updatedOwners = ownersList.filter(
 						(item: any) => item?.name !== ownerToDelete?.name
 					);
-					setOwnersList(updatedOwners);
+					form.setFieldValue('ownersList', updatedOwners);
 					setSelectedOwnerListMember([]);
-					setPreviousDetail((prevState: any) => ({
-						...prevState,
-						ownersList: updatedOwners
-					}));
 					createSnackbar({
 						key: 'success',
 						severity: 'success',
@@ -351,8 +341,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 		createSnackbar,
 		t,
 		closeDeleteOwnerHandler,
-		setOwnersList,
-		setPreviousDetail,
+		form,
 		setIsRequestInProgress,
 		actionMutation
 	]);

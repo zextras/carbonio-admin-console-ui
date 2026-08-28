@@ -20,7 +20,7 @@ export type EditDistributionListFormValues = {
 	dlMembershipList: Array<{ id: string; name: string }>; // member-of lists
 	ownersList: Array<{ id: string; name: string }>;
 	ownerOfList: Array<{ id: string }>; // dynamic owners (kept for parity with the save builder)
-	sendEmails: Array<{ id: string; name: string; sendAcl: string }>;
+	sendEmails: Array<{ id?: string; name?: string; sendAcl?: string }>;
 	grantEmails: Array<{ id?: string; name?: string } | string>;
 	grantTypeValue: string; // pub | grp | all | email
 };
