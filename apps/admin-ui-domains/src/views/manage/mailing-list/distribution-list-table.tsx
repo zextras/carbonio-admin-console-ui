@@ -20,6 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import ScrollContainer from '../../components/scrollComponent';
+import { FilterColumnIcon } from './filter-column-icon';
 
 type DistributionListTableProps = {
 	rows: Array<any>;
@@ -98,9 +99,7 @@ export const DistributionListTable: FC<DistributionListTableProps> = ({
 							backgroundColor="gray5"
 							label={t('label.search_dot', 'Search…')}
 							onChange={onSearchChange}
-							CustomIcon={(): any => (
-								<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-							)}
+							CustomIcon={FilterColumnIcon}
 						/>
 					</Container>
 				</Row>
@@ -111,7 +110,7 @@ export const DistributionListTable: FC<DistributionListTableProps> = ({
 					width="fill"
 				>
 					<Table
-						rows={!isFetching ? rows : []}
+						rows={isFetching ? [] : rows}
 						headers={headers}
 						showCheckbox={false}
 						multiSelect={false}
