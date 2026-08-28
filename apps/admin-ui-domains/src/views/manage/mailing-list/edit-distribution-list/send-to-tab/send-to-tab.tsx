@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
 	Button,
 	Container,
@@ -24,6 +24,7 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { ALL, EMAIL, GRP, PUB } from '../../../../../constants';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
+import { FilterColumnIcon } from '../../filter-column-icon';
 import { resolveNewMembers } from '../members-tab/filter-members';
 import type { EditDistributionListFormApi } from '../types';
 import { useGalEmailSearch } from '../use-gal-email-search';
@@ -39,8 +40,8 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
-	const grantTypeValue = useStore(form.store, (state) => state.values.grantTypeValue);
-	const grantEmails = useStore(form.store, (state) => state.values.grantEmails);
+	const grantTypeValue = useSelector(form.store, (state) => state.values.grantTypeValue);
+	const grantEmails = useSelector(form.store, (state) => state.values.grantEmails);
 	const grantEmailsList: Array<string> = grantEmails.map((item: any) =>
 		typeof item === 'string' ? item : (item?.name ?? '')
 	);
@@ -288,9 +289,7 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
 											value={filterGrantEmail}
 											backgroundColor="gray5"
 											onChange={handleInputChangeGrantEmail}
-											CustomIcon={(): any => (
-												<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-											)}
+											CustomIcon={FilterColumnIcon}
 										/>
 									</Row>
 								</ListRow>
