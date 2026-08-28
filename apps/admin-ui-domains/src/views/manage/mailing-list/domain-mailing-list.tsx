@@ -36,8 +36,8 @@ const DomainMailingList: FC = () => {
   const [selectedMailingList, setSelectedMailingList] = useState<any>({});
   const [showMailingListDetailView, setShowMailingListDetailView] = useState<any>();
   const [showCreateMailingListView, setShowCreateMailingListView] = useState<boolean>(false);
-  /* timeout id holder for single/double-click detection (only written in handlers) */
-  const [, setCellClickTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  /* timeout id holder for single/double-click detection */
+  const [cellClickTimer, setCellClickTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
 
   const { createList, isCreating } = useCreateMailingListFlow((): void => {
     setShowCreateMailingListView(false);
@@ -54,20 +54,17 @@ const DomainMailingList: FC = () => {
   const handleClick = useCallback(
     (event: any) => {
       event.stopPropagation();
-      setCellClickTimer((current) => {
-        if (current) {
-          clearTimeout(current);
-        }
-        if (event.detail === 1) {
-          return setTimeout(doClickAction, 300);
-        }
-        return null;
-      });
-      if (event.detail === 2) {
+      if (cellClickTimer) {
+        clearTimeout(cellClickTimer);
+      }
+      if (event.detail === 1) {
+        setCellClickTimer(setTimeout(doClickAction, 300));
+      } else if (event.detail === 2) {
+        setCellClickTimer(null);
         doDoubleClickAction();
       }
     },
-    [doClickAction, doDoubleClickAction],
+    [cellClickTimer, doClickAction, doDoubleClickAction],
   );
 
   const rows: Array<any> = lists.map((item: any) =>
