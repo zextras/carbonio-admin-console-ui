@@ -9,10 +9,12 @@ import { getDomainAttributeValue, getSamlAttributes, getSpEndpoints } from './ut
 
 describe('getSamlAttributes', () => {
   it('maps config entries to attribute objects', () => {
-    expect(getSamlAttributes({ samlKey: 'samlValue', audience: 'https://sp.example.com' })).toEqual([
-      { attribute: 'samlKey', value: 'samlValue' },
-      { attribute: 'audience', value: 'https://sp.example.com' },
-    ]);
+    expect(getSamlAttributes({ samlKey: 'samlValue', audience: 'https://sp.example.com' })).toEqual(
+      [
+        { attribute: 'samlKey', value: 'samlValue' },
+        { attribute: 'audience', value: 'https://sp.example.com' },
+      ],
+    );
   });
 
   it('returns an empty array when the config is undefined', () => {
@@ -31,7 +33,9 @@ describe('getDomainAttributeValue', () => {
   });
 
   it('returns an empty string when the attribute is missing', () => {
-    expect(getDomainAttributeValue([{ n: 'other', _content: 'x' }], 'zimbraPublicServiceProtocol')).toBe('');
+    expect(
+      getDomainAttributeValue([{ n: 'other', _content: 'x' }], 'zimbraPublicServiceProtocol'),
+    ).toBe('');
   });
 
   it('returns an empty string when domain information is undefined', () => {
@@ -54,7 +58,10 @@ describe('getSpEndpoints', () => {
 
   it('defaults the protocol to https when missing', () => {
     expect(
-      getSpEndpoints([{ n: 'zimbraPublicServiceHostname', _content: 'mail.example.com' }], 'example.com'),
+      getSpEndpoints(
+        [{ n: 'zimbraPublicServiceHostname', _content: 'mail.example.com' }],
+        'example.com',
+      ),
     ).toEqual({
       entityId: 'https://mail.example.com/zx/auth/samlMetadata?domain=example.com',
       serviceUrl: 'https://mail.example.com/zx/auth/saml',
