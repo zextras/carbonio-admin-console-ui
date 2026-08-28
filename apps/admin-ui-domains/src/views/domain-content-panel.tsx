@@ -30,7 +30,7 @@ import {
   WHITELABEL_SETTINGS,
 } from '../constants';
 import { CreateDomain } from './create-new-domain/create-new-domain';
-import DomainTwoFactorAuthentication from './domain/details/domain-2fa';
+import { DomainTwoFactorAuthentication } from './domain/details/domain-2fa';
 import { DomainAuthentication } from './domain/details/domain-authentication';
 import DomainDisclaimer from './domain/details/domain-disclaimer';
 import { DomainGalSettings } from './domain/details/domain-gal-settings';
