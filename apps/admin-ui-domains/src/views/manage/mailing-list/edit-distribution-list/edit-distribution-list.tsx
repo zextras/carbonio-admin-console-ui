@@ -220,7 +220,6 @@ function EditDistributionListContent({
       if (operations.length === 0) {
         return;
       }
-      setIsLoading(true);
       // the original flow clears the grant emails after saving when the
       // grant type is not "only these users"
       const finalValue: EditDistributionListFormValues =
@@ -259,8 +258,6 @@ function EditDistributionListContent({
           hideButton: true,
           replace: true,
         });
-      } finally {
-        setIsLoading(false);
       }
     },
   });
@@ -271,6 +268,7 @@ function EditDistributionListContent({
   }, [form, formValues]);
 
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+  const isLoading = useSelector(form.store, (state) => state.isSubmitting);
   const values = useSelector(form.store, (state) => state.values);
 
   const [selectedTab, setSelectedTab] = useState<string>('general');
@@ -280,7 +278,6 @@ function EditDistributionListContent({
   const [granteeTotalRights, setGranteeTotalRights] = useState(0);
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState(false);
 
   const totalGrantRights = granteeTotalRights + targetTotalRights;
 
