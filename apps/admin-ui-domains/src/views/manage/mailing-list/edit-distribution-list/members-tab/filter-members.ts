@@ -57,7 +57,7 @@ export function resolveNewMembers(
   if (invalidEmailAddress.length > 0) {
     return { type: 'invalid' };
   }
-  if (dlm.find((item) => item === searchMember)) {
+  if (dlm.some((item) => item === searchMember)) {
     return { type: 'alreadyInList' };
   }
 
