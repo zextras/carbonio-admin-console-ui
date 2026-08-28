@@ -94,12 +94,7 @@ export default tseslint.config(
   {
     files: [
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
-      'apps/admin-ui-domains/src/views/sidebar/**',
-      'apps/admin-ui-domains/src/views/global/**',
-      'apps/admin-ui-domains/src/views/manage/**',
-      'apps/admin-ui-domains/src/views/details/**',
-      'apps/admin-ui-domains/src/views/create-new-domain/**',
-      'apps/admin-ui-domains/src/views/edit-account/**',
+      'apps/admin-ui-domains/**',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
       'apps/admin-ui-bootstrap/**',
