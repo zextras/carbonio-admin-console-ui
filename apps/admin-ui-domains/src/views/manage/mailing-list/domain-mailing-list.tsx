@@ -28,7 +28,9 @@ import { distributionListAction } from '../../../services/distribution-list-acti
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import CreateMailingList from './create-mailing-list';
+import { buildDistributionListRow } from './distribution-list-row';
 import EditDistributionList from './edit-distribution-list/edit-distribution-list';
+import { buildSearchFilterQuery } from './mailing-list-query';
 
 const DomainMailingList: FC = () => {
   const [t] = useTranslation();
@@ -177,112 +179,18 @@ const DomainMailingList: FC = () => {
           if (data?.searchTotal) {
             setTotalAccount(data?.searchTotal);
           }
-          const mList: any[] = [];
-          dlList.forEach((item: any) => {
-            mList.push({
-              id: item?.id,
-              columns: [
-                <Container
-                  crossAlignment="flex-start"
-                  key={item?.id}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    handleClick(e);
-                  }}
-                >
-                  <ds-text as="span"
-                    size="small"
-                    weight="regular"
-                    key={`${item?.id}display-child`}
-                    color="gray0"
-                  >
-                    {item?.a?.find((a: any) => a?.n === 'displayName')?._content}
-                  </ds-text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-address`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    handleClick(e);
-                  }}
-                >
-                  <ds-text as="span" size="small" weight="light" key={`${item?.id}address-child`} color="gray0">
-                    {item?.name}
-                  </ds-text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-status`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    handleClick(e);
-                  }}
-                >
-                  <ds-text as="span" size="small" weight="light" key={`${item?.id}status-child`} color="gray0">
-                    {item?.a?.find((a: any) => a?.n === 'zimbraMailStatus')?._content === 'enabled'
-                      ? t('domain.mailingList.canReceive', 'Can Receive')
-                      : t('domain.mailingList.cantReceive', "Can't Receive")}
-                  </ds-text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-dynamic`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    handleClick(e);
-                  }}
-                >
-                  <ds-text as="span" size="small" weight="light" key={`${item?.id}dynamic-child`} color="gray0">
-                    {item?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
-                  </ds-text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-gal`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    handleClick(e);
-                  }}
-                >
-                  <ds-text as="span" size="small" weight="light" key={`${item?.id}gal-child`} color="gray0">
-                    {item?.a?.find((a: any) => a?.n === 'zimbraHideInGal')?._content === 'TRUE'
-                      ? t('label.no', 'No')
-                      : t('label.yes', 'Yes')}
-                  </ds-text>
-                </Container>,
-                <Container
-                  crossAlignment="flex-start"
-                  key={`${item?.id}-description`}
-                  style={{ cursor: 'pointer' }}
-                  onClick={(e: { stopPropagation: () => void }): void => {
-                    e.stopPropagation();
-                    setSelectedMailingList(item);
-                    handleClick(e);
-                  }}
-                >
-                  <ds-text as="span"
-                    size="small"
-                    weight="light"
-                    key={`${item?.id}description-child`}
-                    color="gray0"
-                  >
-                    {item?.a?.find((a: any) => a?.n === 'description')?._content}
-                  </ds-text>
-                </Container>,
-              ],
-            });
-          });
+          const mList: any[] = dlList.map((item: any) =>
+            buildDistributionListRow(item, {
+              canReceiveLabel: t('domain.mailingList.canReceive', 'Can Receive'),
+              cantReceiveLabel: t('domain.mailingList.cantReceive', "Can't Receive"),
+              yesLabel: t('label.yes', 'Yes'),
+              noLabel: t('label.no', 'No'),
+              onCellClick: (clickedItem, e): void => {
+                setSelectedMailingList(clickedItem);
+                handleClick(e);
+              },
+            }),
+          );
           setMailingList(mList);
           setIsUpdateRecord(false);
         } else {
@@ -314,25 +222,11 @@ const DomainMailingList: FC = () => {
     getMailingList();
   }, [getMailingList]);
 
-  const generateSearchFilterQuery = useCallback((searchStr: string, sfilter: string): string => {
-    let filterQuery = '';
-    if (sfilter) {
-      filterQuery += sfilter;
-    }
-    if (searchStr) {
-      filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-    }
-    if (sfilter && searchStr) {
-      return `(&${filterQuery})`;
-    }
-    return filterQuery;
-  }, []);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const searchMailingListQuery = useCallback(
     debounce((searchStr: string, sfilter: string) => {
-      setSearchQuery(generateSearchFilterQuery(searchStr, sfilter));
+      setSearchQuery(buildSearchFilterQuery(searchStr, sfilter));
     }, 700),
-    [debounce, generateSearchFilterQuery],
+    [debounce],
   );
 
   useEffect(() => {
