@@ -36,6 +36,23 @@ import { MailingListContext } from './mailinglist-context';
 
 const LIMIT = 15;
 
+const LdapQueryLoaderContext = createContext<{ loadMembers: () => void }>({
+	loadMembers: (): void => undefined
+});
+
+const LdapQueryIcon = (): React.ReactElement => {
+	const { loadMembers } = useContext(LdapQueryLoaderContext);
+	return (
+		<ds-icon
+			icon="CheckmarkOutline"
+			size="large"
+			color="grey"
+			onClick={loadMembers}
+			style={{ cursor: 'pointer' }}
+		></ds-icon>
+	);
+};
+
 const ListSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
@@ -53,7 +70,7 @@ const ListSection: FC<any> = () => {
 
 	// dist list members offset
 	const [offset, setOffset] = useState<number>(0);
-	const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
+	const [dlmCurrentPage, setDlmCurrentPage] = useState(1);
 
 	// filtering
 	const [filterMember, setFilterMember] = useState<string>('');
@@ -166,7 +183,7 @@ const ListSection: FC<any> = () => {
 
 	const handleInputChangeMember = (e: ChangeEvent<HTMLInputElement>): void => {
 		setFilterMember(e.target.value);
-		setDLMSearchCurrentPage(1);
+		setDlmCurrentPage(1);
 		setOffset(0);
 	};
 
@@ -314,6 +331,7 @@ const ListSection: FC<any> = () => {
 								orientation="horizontal"
 								padding={{ top: 'small', bottom: 'medium' }}
 							>
+								<LdapQueryLoaderContext.Provider value={{ loadMembers: getMemberFromLdapQuery }}>
 								<Input
 									isRequired
 									label={t('label.distribution_list_url', "Distribution List's URL")}
@@ -322,16 +340,9 @@ const ListSection: FC<any> = () => {
 									inputName="memberURL"
 									onChange={changeLdapDetail}
 									hasError={!isValidQuery}
-									CustomIcon={(): any => (
-										<ds-icon
-											icon="CheckmarkOutline"
-											size="large"
-											color="grey"
-											onClick={getMemberFromLdapQuery}
-											style={{ cursor: 'pointer' }}
-										></ds-icon>
-									)}
+									CustomIcon={LdapQueryIcon}
 								/>
+								</LdapQueryLoaderContext.Provider>
 							</Container>
 						</ListRow>
 						<ListRow>
@@ -403,8 +414,8 @@ const ListSection: FC<any> = () => {
 												totalItem={dynamicListMemberRows.length}
 												setOffset={setOffset}
 												pageSize={LIMIT}
-												currentPageProp={DLMCurrentPage}
-												onPageChange={setDLMSearchCurrentPage}
+												currentPageProp={dlmCurrentPage}
+												onPageChange={setDlmCurrentPage}
 											/>
 										</Container>
 									</Container>
