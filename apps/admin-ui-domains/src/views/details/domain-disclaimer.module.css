@@ -3,6 +3,27 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+.page {
+  height: calc(100vh - 105px);
+  background: var(--color-gray6-regular);
+  overflow-y: auto;
+}
+
+.editorsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--padding-size-large);
+  margin-top: var(--padding-size-extralarge);
+  width: 100%;
+}
+
+.editorColumn {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--padding-size-small);
+  min-width: 0;
+}
 
 .editorWrapper {
   width: 100%;

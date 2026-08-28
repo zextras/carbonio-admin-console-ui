@@ -97,6 +97,7 @@ export default tseslint.config(
       'apps/admin-ui-domains/src/views/sidebar/**',
       'apps/admin-ui-domains/src/views/global/**',
       'apps/admin-ui-domains/src/views/manage/**',
+      'apps/admin-ui-domains/src/views/details/**',
       'apps/admin-ui-domains/src/views/create-new-domain/**',
       'apps/admin-ui-domains/src/views/edit-account/**',
       'apps/admin-ui-dashboard/**',

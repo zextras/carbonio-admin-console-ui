@@ -13,7 +13,7 @@ import {
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import DomainDisclaimer from '../domain-disclaimer';
+import { DomainDisclaimer } from '../domain-disclaimer';
 
 const DOMAIN_ID = 'test-domain-id-123';
 const DOMAIN_NAME = 'example.com';
