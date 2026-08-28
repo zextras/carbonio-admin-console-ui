@@ -140,16 +140,16 @@ const ListSection: FC<any> = () => {
 					setLdapQueryErrorMessage('');
 				}
 				if (dl) {
-					dl.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+					dl.forEach((item: any) => allList.push({ id: item?.id, name: item?.name }));
 				}
 				if (account) {
-					account.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+					account.forEach((item: any) => allList.push({ id: item?.id, name: item?.name }));
 				}
 				if (alias) {
-					alias.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+					alias.forEach((item: any) => allList.push({ id: item?.id, name: item?.name }));
 				}
 				if (calresource) {
-					calresource.map((item: any) => allList.push({ id: item?.id, name: item?.name }));
+					calresource.forEach((item: any) => allList.push({ id: item?.id, name: item?.name }));
 				}
 				if (allList && allList.length > 0) {
 					setDynamicListMember(allList);
@@ -380,9 +380,7 @@ const ListSection: FC<any> = () => {
 											value={filterMember}
 											backgroundColor="gray5"
 											onChange={handleInputChangeMember}
-											CustomIcon={(): any => (
-												<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-											)}
+											CustomIcon={FilterColumnIcon}
 										/>
 										<Container padding={{ bottom: 'small' }}>
 											<ds-divider />
