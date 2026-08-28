@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useStore } from '@tanstack/react-form';
 import {
   Container,
   CustomTextArea,
@@ -17,60 +18,39 @@ import {
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { TRUE_FALSE } from '../../../../constants';
 import ManageAliases from '../../../components/manageAliases';
+import type { EditDistributionListFormApi } from '../edit-distribution-list/types';
 
 type GeneralTabProps = {
-  displayName: string;
-  setDisplayName: (v: string) => void;
-  distributionName: string;
-  setDistributionName: (v: string) => void;
-  zimbraHideInGal: boolean;
-  setZimbraHideInGal: (v: boolean) => void;
-  zimbraNotes: string;
-  setZimbraNotes: (v: string) => void;
-  description: string;
-  setDescription: (v: string) => void;
-  zimbraDistributionListSendShareMessageToNewMembers: boolean;
-  setZimbraDistributionListSendShareMessageToNewMembers: (v: boolean) => void;
-  zimbraMailStatus: any;
-  onRightsChange: (v: any) => void;
-  rightsOptions: Array<any>;
-  zimbraMailAlias: Array<any>;
-  setZimbraMailAlias: (v: Array<any>) => void;
+  form: EditDistributionListFormApi;
   dlCreateDate: string;
   dlId: string;
-  dlmCount: number;
   selectedMailingList: any;
   dlMembershipListNames: string;
-  setIsDirty: (v: boolean) => void;
 };
 
 export const GeneralTab: FC<GeneralTabProps> = ({
-  displayName,
-  setDisplayName,
-  distributionName,
-  setDistributionName,
-  zimbraHideInGal,
-  setZimbraHideInGal,
-  zimbraNotes,
-  setZimbraNotes,
-  description,
-  setDescription,
-  zimbraDistributionListSendShareMessageToNewMembers,
-  setZimbraDistributionListSendShareMessageToNewMembers,
-  zimbraMailStatus,
-  onRightsChange,
-  rightsOptions,
-  zimbraMailAlias,
-  setZimbraMailAlias,
+  form,
   dlCreateDate,
   dlId,
-  dlmCount,
   selectedMailingList,
   dlMembershipListNames,
-  setIsDirty,
 }) => {
   const [t] = useTranslation();
+  const dlmCount = useStore(form.store, (state) => state.values.dlm.length);
+  const aliasCount = useStore(form.store, (state) => state.values.aliases.length);
+
+  const rightsOptions: any[] = [
+    {
+      label: t('domain.mailingList.canReceive', 'Can Receive'),
+      value: TRUE_FALSE.TRUE,
+    },
+    {
+      label: t('domain.mailingList.cantReceive', "Can't Receive"),
+      value: TRUE_FALSE.FALSE,
+    },
+  ];
 
   return (
     <Container
@@ -90,49 +70,72 @@ export const GeneralTab: FC<GeneralTabProps> = ({
 
       <ListRow padding={{ right: 'small', bottom: 'small' }}>
         <Container padding={{ top: 'small' }}>
-          <Input
-            isRequired
-            label={t('label.display_name', 'Display Name')}
-            value={displayName}
-            backgroundColor="gray5"
-            onChange={(e: any): any => {
-              setDisplayName(e.target.value);
-            }}
-          />
+          <form.Field name="displayName">
+            {(field) => (
+              <Input
+                isRequired
+                label={t('label.display_name', 'Display Name')}
+                value={field.state.value}
+                backgroundColor="gray5"
+                onChange={(e: any): any => {
+                  field.handleChange(e.target.value);
+                }}
+              />
+            )}
+          </form.Field>
         </Container>
         <Container padding={{ left: 'large', top: 'small' }}>
-          <Input
-            isRequired
-            label={t('label.address', 'Address')}
-            value={distributionName}
-            backgroundColor="gray5"
-            onChange={(e: any): any => {
-              setDistributionName(e.target.value);
-            }}
-          />
+          <form.Field name="distributionName">
+            {(field) => (
+              <Input
+                isRequired
+                label={t('label.address', 'Address')}
+                value={field.state.value}
+                backgroundColor="gray5"
+                onChange={(e: any): any => {
+                  field.handleChange(e.target.value);
+                }}
+              />
+            )}
+          </form.Field>
         </Container>
       </ListRow>
       <ListRow>
         <Container padding={{ right: 'small', top: 'small' }}>
-          <Select
-            items={rightsOptions}
-            background="gray5"
-            label={t('label.status', 'Status')}
-            showCheckbox={false}
-            onChange={onRightsChange}
-            selection={zimbraMailStatus}
-          />
+          <form.Field name="zimbraMailStatusValue">
+            {(field) => (
+              <Select
+                items={rightsOptions}
+                background="gray5"
+                label={t('label.status', 'Status')}
+                showCheckbox={false}
+                onChange={(v: any): void => {
+                  field.handleChange(v);
+                }}
+                selection={
+                  rightsOptions.find((item: any) => item.value === field.state.value) ??
+                  rightsOptions[1]
+                }
+              />
+            )}
+          </form.Field>
         </Container>
       </ListRow>
       <Container
         height="fit"
         padding={{ left: 'small', top: 'large', right: 'small', bottom: 'small' }}
       >
-        <ManageAliases
-          listAliases={zimbraMailAlias}
-          setListAliases={setZimbraMailAlias}
-          setAliasChange={(): void => ((): any => true)()}
-        />
+        <form.Field name="aliases">
+          {(field) => (
+            <ManageAliases
+              listAliases={field.state.value}
+              setListAliases={(aliases: Array<any>): void => {
+                field.handleChange(aliases as never);
+              }}
+              setAliasChange={(): void => undefined}
+            />
+          )}
+        </form.Field>
       </Container>
       {!selectedMailingList?.dynamic && (
         <ListRow padding={{ all: 'small' }}>
@@ -141,34 +144,38 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             mainAlignment="flex-start"
             crossAlignment="flex-start"
           >
-            <Switch
-              value={zimbraDistributionListSendShareMessageToNewMembers}
-              label={t(
-                'label.send_new_members_notification_for_share_assigned_to_this_group',
-                'Send to new members a notification for the share/delegation assigned to this group',
+            <form.Field name="sendShareMessageToNewMembers">
+              {(field) => (
+                <Switch
+                  value={field.state.value}
+                  label={t(
+                    'label.send_new_members_notification_for_share_assigned_to_this_group',
+                    'Send to new members a notification for the share/delegation assigned to this group',
+                  )}
+                  onClick={(): void => {
+                    field.handleChange(!field.state.value);
+                  }}
+                  iconColor="primary"
+                />
               )}
-              onClick={(): void => {
-                setIsDirty(true);
-                setZimbraDistributionListSendShareMessageToNewMembers(
-                  !zimbraDistributionListSendShareMessageToNewMembers,
-                );
-              }}
-              iconColor="primary"
-            />
+            </form.Field>
           </Container>
         </ListRow>
       )}
       <ListRow padding={{ left: 'small', right: 'small', bottom: 'small' }}>
         <Container mainAlignment="flex-start" crossAlignment="flex-start">
-          <Switch
-            value={zimbraHideInGal}
-            label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
-            onClick={(): void => {
-              setIsDirty(true);
-              setZimbraHideInGal(!zimbraHideInGal);
-            }}
-            iconColor="primary"
-          />
+          <form.Field name="zimbraHideInGal">
+            {(field) => (
+              <Switch
+                value={field.state.value}
+                label={t('label.this_is_hidden_from_gal', 'This list is hidden from GAL')}
+                onClick={(): void => {
+                  field.handleChange(!field.state.value);
+                }}
+                iconColor="primary"
+              />
+            )}
+          </form.Field>
         </Container>
       </ListRow>
       <ListRow padding={{ all: 'small' }}>
@@ -184,7 +191,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
           <Container>
             <LabeledValue
               label={t('label.alias_in_the_list', 'Alias in the List')}
-              value={zimbraMailAlias.length}
+              value={aliasCount}
               backgroundColor="gray5"
               textColor={'black'}
             />
@@ -219,17 +226,21 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       </Row>
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'medium' }}>
-          <Input
-            value={description}
-            label={t(
-              'label.note_label',
-              'Write something that will easily make you remember this element',
+          <form.Field name="description">
+            {(field) => (
+              <Input
+                value={field.state.value}
+                label={t(
+                  'label.note_label',
+                  'Write something that will easily make you remember this element',
+                )}
+                backgroundColor="gray5"
+                onChange={(e: any): any => {
+                  field.handleChange(e.target.value);
+                }}
+              />
             )}
-            backgroundColor="gray5"
-            onChange={(e: any): any => {
-              setDescription(e.target.value);
-            }}
-          />
+          </form.Field>
         </Container>
       </ListRow>
       <Row padding={{ top: 'large' }}>
@@ -239,14 +250,18 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       </Row>
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'medium' }}>
-          <CustomTextArea
-            value={zimbraNotes}
-            label={t('label.notes', 'Notes')}
-            backgroundColor="gray5"
-            onChange={(e: any): any => {
-              setZimbraNotes(e.target.value);
-            }}
-          />
+          <form.Field name="zimbraNotes">
+            {(field) => (
+              <CustomTextArea
+                value={field.state.value}
+                label={t('label.notes', 'Notes')}
+                backgroundColor="gray5"
+                onChange={(e: any): any => {
+                  field.handleChange(e.target.value);
+                }}
+              />
+            )}
+          </form.Field>
         </Container>
       </ListRow>
 

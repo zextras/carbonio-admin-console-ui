@@ -19,7 +19,7 @@ import { format, isValid } from 'date-fns';
 import { type FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ALL, DL, EMAIL, GRP, PUB, TRUE_FALSE } from '../../../../constants';
+import { ALL, DL, EMAIL, GRP, PUB } from '../../../../constants';
 import { getGrant } from '../../../../services/get-grant';
 import { useAddDistributionListMember } from '../../../../services/use-add-distribution-list-member';
 import { useAddMailingListAlias } from '../../../../services/use-add-mailing-list-alias';
@@ -291,17 +291,6 @@ function EditDistributionListContent({
 
 	const totalGrantRights = granteeTotalRights + targetTotalRights;
 
-	const rightsOptions: any[] = [
-		{
-			label: t('domain.mailingList.canReceive', 'Can Receive'),
-			value: TRUE_FALSE.TRUE
-		},
-		{
-			label: t('domain.mailingList.cantReceive', "Can't Receive"),
-			value: TRUE_FALSE.FALSE
-		}
-	];
-
 	const grantTypeOptions: any[] = [
 		{
 			label: t('label.everyone', 'Everyone'),
@@ -321,9 +310,6 @@ function EditDistributionListContent({
 		}
 	];
 
-	const zimbraMailStatusOption =
-		rightsOptions.find((item: any) => item.value === values.zimbraMailStatusValue) ??
-		rightsOptions[1];
 	const grantTypeOption =
 		grantTypeOptions.find((item: any) => item.value === values.grantTypeValue) ??
 		grantTypeOptions[0];
@@ -333,10 +319,6 @@ function EditDistributionListContent({
 	const dlMembershipListNames = values.dlMembershipList
 		.map((item) => item?.name)
 		.join(', ');
-
-	const onRightsChange = (v: any): any => {
-		form.setFieldValue('zimbraMailStatusValue', v);
-	};
 
 	const onGrantTypeChange = (v: any): any => {
 		form.setFieldValue('grantTypeValue', v);
@@ -607,39 +589,15 @@ function EditDistributionListContent({
 					<ds-divider color="gray2" />
 				</Container>
 
-				{selectedTab === 'general' && (
-					<GeneralTab
-						displayName={values.displayName}
-						setDisplayName={(v: string): void => form.setFieldValue('displayName', v)}
-						distributionName={values.distributionName}
-						setDistributionName={(v: string): void =>
-							form.setFieldValue('distributionName', v)
-						}
-						zimbraHideInGal={values.zimbraHideInGal}
-						setZimbraHideInGal={(v: boolean): void => form.setFieldValue('zimbraHideInGal', v)}
-						zimbraNotes={values.zimbraNotes}
-						setZimbraNotes={(v: string): void => form.setFieldValue('zimbraNotes', v)}
-						description={values.description}
-						setDescription={(v: string): void => form.setFieldValue('description', v)}
-						zimbraDistributionListSendShareMessageToNewMembers={
-							values.sendShareMessageToNewMembers
-						}
-						setZimbraDistributionListSendShareMessageToNewMembers={(v: boolean): void =>
-							form.setFieldValue('sendShareMessageToNewMembers', v)
-						}
-						zimbraMailStatus={zimbraMailStatusOption}
-						onRightsChange={onRightsChange}
-						rightsOptions={rightsOptions}
-						zimbraMailAlias={values.aliases}
-						setZimbraMailAlias={(v: any): void => form.setFieldValue('aliases', v)}
-						dlCreateDate={dlCreateDate}
-						dlId={parsedDetail.dlId}
-						dlmCount={values.dlm.length}
-						selectedMailingList={selectedMailingList}
-						dlMembershipListNames={dlMembershipListNames}
-						setIsDirty={ignoreDirty}
-					/>
-				)}
+			{selectedTab === 'general' && (
+				<GeneralTab
+					form={form as never}
+					dlCreateDate={dlCreateDate}
+					dlId={parsedDetail.dlId}
+					selectedMailingList={selectedMailingList}
+					dlMembershipListNames={dlMembershipListNames}
+				/>
+			)}
 
 				{selectedTab === 'members' && (
 					<MembersTab
