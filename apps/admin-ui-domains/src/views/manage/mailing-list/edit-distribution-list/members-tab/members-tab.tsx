@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
 	Container,
 	CustomHeaderFactory,
@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { useAddDistributionListMember } from '../../../../../services/use-add-distribution-list-member';
 import { useRemoveDistributionListMember } from '../../../../../services/use-remove-distribution-list-member';
+import { FilterColumnIcon } from '../../filter-column-icon';
 import {
 	type DirectorySearchConfig,
 	useDirectoryEmailSearch
@@ -58,8 +59,8 @@ export const MembersTab: FC<MembersTabProps> = ({
 	searchUserLabelValue,
 	isGlobalAdmin
 }) => {
-	const dlm = useStore(form.store, (state) => state.values.dlm);
-	const memberURL = useStore(form.store, (state) => state.values.memberURL);
+	const dlm = useSelector(form.store, (state) => state.values.dlm);
+	const memberURL = useSelector(form.store, (state) => state.values.memberURL);
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
@@ -70,7 +71,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 	const [isShowMemberError, setIsShowMemberError] = useState(false);
 	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [offset, setOffset] = useState(0);
-	const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
+	const [dlmCurrentPage, setDlmCurrentPage] = useState(1);
 	const [filterMember, setFilterMember] = useState('');
 	const [isOpenDeleteMemberDialog, setIsOpenDeleteMemberDialog] = useState(false);
 	const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
@@ -88,19 +89,20 @@ export const MembersTab: FC<MembersTabProps> = ({
 			width: '80%',
 			bold: true
 		},
-		!selectedMailingList?.dynamic
-			? {
+		selectedMailingList?.dynamic
+			? { id: 'actions', label: '', width: '0%', bold: false }
+			: {
 					id: 'actions',
 					label: t('label.actions', 'Actions'),
 					width: '20%',
 					bold: false
 				}
-			: { id: 'actions', label: '', width: '0%', bold: false }
 	];
 
+	const membersSource = filterMember ? filterMemberRows(dlm, filterMember) : dlm;
 	const dlmTableRows: Array<any> =
 		dlm && dlm.length > 0
-			? (filterMember ? filterMemberRows(dlm, filterMember) : dlm).map((item: string) =>
+			? membersSource.map((item: string) =>
 					buildMemberRow(item, {
 						dynamic: Boolean(selectedMailingList?.dynamic),
 						deleteLabel: t('label.delete', 'Delete'),
@@ -219,7 +221,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
 		setFilterMember(e.target.value);
-		setDLMSearchCurrentPage(1);
+		setDlmCurrentPage(1);
 		setOffset(0);
 	};
 
@@ -248,7 +250,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 					form.setFieldValue('dlm', updatedDlm);
 					setSelectedDistributionListMember([]);
 					if (DLMPagedRows.length === 1) {
-						setDLMSearchCurrentPage(1);
+						setDlmCurrentPage(1);
 						setOffset(0);
 						setFilterMember('');
 					}
@@ -377,9 +379,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 										value={filterMember}
 										backgroundColor="gray5"
 										onChange={handleInputChange}
-										CustomIcon={(): any => (
-											<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-										)}
+										CustomIcon={FilterColumnIcon}
 									/>
 								</Row>
 							</ListRow>
@@ -414,8 +414,8 @@ export const MembersTab: FC<MembersTabProps> = ({
 										totalItem={dlmTableRows.length}
 										setOffset={setOffset}
 										pageSize={limit}
-										currentPageProp={DLMCurrentPage}
-										onPageChange={setDLMSearchCurrentPage}
+										currentPageProp={dlmCurrentPage}
+										onPageChange={setDlmCurrentPage}
 									/>
 								</Container>
 							</Container>
