@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useStore } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   CustomTextArea,
@@ -38,8 +38,8 @@ export const GeneralTab: FC<GeneralTabProps> = ({
   dlMembershipListNames,
 }) => {
   const [t] = useTranslation();
-  const dlmCount = useStore(form.store, (state) => state.values.dlm.length);
-  const aliasCount = useStore(form.store, (state) => state.values.aliases.length);
+  const dlmCount = useSelector(form.store, (state) => state.values.dlm.length);
+  const aliasCount = useSelector(form.store, (state) => state.values.aliases.length);
 
   const rightsOptions: any[] = [
     {
