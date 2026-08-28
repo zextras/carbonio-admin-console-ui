@@ -140,7 +140,10 @@ export const DomainSaml = () => {
       {
         onSuccess: () =>
           showSuccessSnackbar(
-            t('label.you_have_generated_the_sp_certificate', 'You have generated the SP Certificate'),
+            t(
+              'label.you_have_generated_the_sp_certificate',
+              'You have generated the SP Certificate',
+            ),
           ),
         onError: showErrorSnackbar,
       },
@@ -485,7 +488,7 @@ export const DomainSaml = () => {
                 () => {
                   setSamlAttrKey('');
                 },
-                t('label.close', 'Close'),
+                t('label.clear_attribute', 'Clear attribute'),
               )}
             />
           </Container>
@@ -513,7 +516,7 @@ export const DomainSaml = () => {
                 () => {
                   setSamlAttrValue('');
                 },
-                t('label.close', 'Close'),
+                t('label.clear_value', 'Clear value'),
               )}
             />
           </Container>
