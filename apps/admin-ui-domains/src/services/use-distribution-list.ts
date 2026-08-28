@@ -22,7 +22,7 @@ export function useDistributionListSnackbar() {
     createSnackbar({
       key: 'error',
       severity: 'error',
-      label: err.message !== '' ? err.message : fallback,
+      label: err.message === '' ? fallback : err.message,
       autoHideTimeout: 3000,
       hideButton: true,
       replace: true,
