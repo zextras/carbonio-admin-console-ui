@@ -7,6 +7,7 @@ import { Button, Container, Padding, Row, Tooltip } from '@zextras/ui-components
 import { useTranslation } from 'react-i18next';
 
 import { copyTextToClipboard } from '../../utility/utils';
+import styles from '../domain-saml.module.css';
 
 type SamlBannerProps = {
   entityId: string;
@@ -83,9 +84,9 @@ export const SamlBanner = ({ entityId, serviceUrl, onDismiss }: SamlBannerProps)
           type="button"
           aria-label={t('label.close', 'Close')}
           onClick={onDismiss}
-          style={{ cursor: 'pointer', background: 'none', border: 'none', padding: 0 }}
+          className={styles.clearButton}
         >
-          <ds-icon icon="CloseOutline" size="large" color="secondary"></ds-icon>
+          <ds-icon icon="CloseOutline" size="large" color="text"></ds-icon>
         </button>
       </Row>
     </Container>
