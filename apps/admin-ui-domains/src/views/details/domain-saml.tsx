@@ -19,18 +19,18 @@ import {
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import logo from '../../../assets/ninja_robo.svg';
+import logo from '../../assets/ninja_robo.svg';
 import {
   CONTENT_TYPE_TEXT_PLAIN,
   SAML_METADATA_JSON_FILE,
   ZIMBRA_PUBLIC_SERVICE_HOSTNAME,
   ZIMBRA_PUBLIC_SERVICE_PROTOCOL,
-} from '../../../constants';
-import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { getSamlConfig } from '../../../services/get-saml-configurations';
-import { useSamlConfig } from '../../../services/use-saml-config';
-import { useSamlMutation } from '../../../services/use-saml-mutation';
-import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../../utility/utils';
+} from '../../constants';
+import { useSelectedDomain } from '../../hooks/use-selected-domain';
+import { getSamlConfig } from '../../services/get-saml-configurations';
+import { useSamlConfig } from '../../services/use-saml-config';
+import { useSamlMutation } from '../../services/use-saml-mutation';
+import { copyTextToClipboard, download, getServiceUrl, getSPEntityId } from '../utility/utils';
 
 type SamlAttribute = {
   attribute: string;
