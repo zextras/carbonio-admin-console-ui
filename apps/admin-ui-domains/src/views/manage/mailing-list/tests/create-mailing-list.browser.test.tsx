@@ -9,24 +9,24 @@ import { type ReactElement } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import CreateMailingList from '../create-mailing-list';
+import CreateMailingList from '../create-mailing-list/create-mailing-list';
 
-vi.mock('../mailing-list-section', () => ({
+vi.mock('../create-mailing-list/list-section', () => ({
 	default: (): ReactElement => (
 		<div data-testid="mock-mailing-list-section">Distribution List Section</div>
 	),
 }));
-vi.mock('../mailing-list-members-section', () => ({
+vi.mock('../create-mailing-list/members-section', () => ({
 	default: (): ReactElement => (
 		<div data-testid="mock-members-section">Members Section</div>
 	),
 }));
-vi.mock('../mailing-list-settings-sections', () => ({
+vi.mock('../create-mailing-list/settings/settings-section', () => ({
 	default: (): ReactElement => (
 		<div data-testid="mock-settings-section">Settings Section</div>
 	),
 }));
-vi.mock('../mailinglist-create-section', () => ({
+vi.mock('../create-mailing-list/create-summary-section', () => ({
 	default: (): ReactElement => (
 		<div data-testid="mock-create-section">Create Section</div>
 	),

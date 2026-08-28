@@ -27,7 +27,7 @@ import { createMailingList } from '../../../services/create-mailing-list-service
 import { distributionListAction } from '../../../services/distribution-list-action-service';
 import ScrollContainer from '../../components/scrollComponent';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
-import CreateMailingList from './create-mailing-list';
+import CreateMailingList from './create-mailing-list/create-mailing-list';
 import { buildDistributionListRow } from './distribution-list-row';
 import EditDistributionList from './edit-distribution-list/edit-distribution-list';
 import { buildSearchFilterQuery } from './mailing-list-query';
