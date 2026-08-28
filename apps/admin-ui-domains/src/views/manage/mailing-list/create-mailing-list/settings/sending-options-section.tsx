@@ -223,7 +223,7 @@ export const SendingOptionsSection: FC = () => {
 								color="error"
 								size="extralarge"
 								onClick={onDeleteFromGrantEmail}
-								disabled={selectedGrantEmail && selectedGrantEmail.length === 0}
+								disabled={selectedGrantEmail?.length === 0}
 							/>
 						</Padding>
 					</Row>

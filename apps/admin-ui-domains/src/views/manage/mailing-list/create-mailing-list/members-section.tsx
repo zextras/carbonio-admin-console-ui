@@ -190,7 +190,7 @@ const MembersSection: FC<any> = () => {
 								iconPlacement="right"
 								size="large"
 								disabled={
-									selectedDistributionListMember && selectedDistributionListMember.length === 0
+									selectedDistributionListMember?.length === 0
 								}
 								onClick={onDeleteFromList}
 							/>

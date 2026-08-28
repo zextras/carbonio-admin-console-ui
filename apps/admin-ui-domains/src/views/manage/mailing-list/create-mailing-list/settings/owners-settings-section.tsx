@@ -174,7 +174,7 @@ export const OwnersSettingsSection: FC = () => {
 								size="extralarge"
 								onClick={onDeleteFromList}
 								disabled={
-									selectedDistributionListOwner && selectedDistributionListOwner.length === 0
+									selectedDistributionListOwner?.length === 0
 								}
 							/>
 						</Padding>
