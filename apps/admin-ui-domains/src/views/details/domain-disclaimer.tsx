@@ -11,8 +11,8 @@ import { ChangeEvent, FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { DomainDisclaimerType, objectType } from '../../../../types';
-import Composer from '../../../composer/composer';
+import { DomainDisclaimerType, objectType } from '../../../types';
+import Composer from '../../composer/composer';
 import {
   AMAVIS_DISCLAIMER_OPTIONS,
   FALSE,
@@ -21,9 +21,9 @@ import {
   ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_HTML,
   ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT,
   ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED,
-} from '../../../constants';
-import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { modifyDomain } from '../../../services/modify-domain-service';
+} from '../../constants';
+import { useSelectedDomain } from '../../hooks/use-selected-domain';
+import { modifyDomain } from '../../services/modify-domain-service';
 import styles from './domain-disclaimer.module.css';
 
 const DomainDisclaimer: FC = () => {
