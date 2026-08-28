@@ -9,7 +9,9 @@ import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   setupBrowserTest as _setupBrowserTest,
+  worker,
 } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
@@ -272,6 +274,45 @@ describe('DomainMailingList (browser)', () => {
       await setupBrowserTest(<DomainMailingList />);
       const params = await interceptor;
       expect((params as { query: string }).query).toContain('!(zimbraIsAdminGroup=TRUE)');
+    });
+  });
+
+  describe('Row interactions', () => {
+    it('opens the edit view when a row is single-clicked', async () => {
+      setupSearchDirectoryInterceptor();
+      createBrowserSoapAPIInterceptor('GetDistributionList', {
+        dl: [
+          {
+            id: 'dl-1',
+            name: 'team@example.com',
+            dlm: [{ _content: 'user1@example.com' }],
+            a: [{ n: 'zimbraMailStatus', _content: 'enabled' }],
+          },
+        ],
+      });
+      createBrowserSoapAPIInterceptor('GetDistributionListMembership', { dl: [] });
+      createBrowserSoapAPIInterceptor('GetGrants', { grant: [] });
+      await setupBrowserTest(<DomainMailingList />);
+      await expect.element(page.getByText('team@example.com')).toBeInTheDocument();
+      await page.getByText('team@example.com').click();
+      // the single-click fires after a 300ms double-click detection window
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      await expect.element(page.getByText('GENERAL', { exact: true })).toBeInTheDocument();
+    });
+  });
+
+  describe('Errors', () => {
+    it('shows an error snackbar when the list search fails', async () => {
+      worker.use(
+        http.post('/service/admin/soap/SearchDirectoryRequest', () =>
+          HttpResponse.json(
+            { Body: { Fault: { Reason: { Text: 'Search failed' } } } },
+            { status: 500 },
+          ),
+        ),
+      );
+      await setupBrowserTest(<DomainMailingList />);
+      await expect.element(page.getByText('Search failed')).toBeInTheDocument();
     });
   });
 
