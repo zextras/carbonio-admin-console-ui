@@ -135,11 +135,13 @@ export function useCreateMailingListFlow(onClose: () => void) {
 			{ n: 'zimbraMailStatus', _content: detail.zimbraMailStatus ? 'enabled' : 'disabled' }
 		];
 		if (detail.dynamic) {
-			attributes.push({
-				n: 'zimbraIsACLGroup',
-				_content: detail.memberURL !== '' ? FALSE : TRUE
-			});
-			attributes.push({ n: 'memberURL', _content: detail.memberURL });
+			attributes.push(
+				{
+					n: 'zimbraIsACLGroup',
+					_content: detail.memberURL === '' ? TRUE : FALSE
+				},
+				{ n: 'memberURL', _content: detail.memberURL }
+			);
 		} else {
 			attributes.push({
 				n: 'zimbraDistributionListSendShareMessageToNewMembers',
