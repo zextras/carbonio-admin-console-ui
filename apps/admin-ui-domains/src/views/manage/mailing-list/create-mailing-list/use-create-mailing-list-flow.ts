@@ -14,7 +14,7 @@ import { addDistributionListMember } from '../../../../services/add-distribution
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
-import { type OwnerTypeSource,resolveOwnerType } from '../edit-distribution-list/owners-tab/owner-type';
+import { useGalContactTypeResolver } from '../edit-distribution-list/gal-contact-type-resolver';
 import { buildCreateGrantAction } from './build-create-grant-action';
 
 /** Shape of the wizard's `mailingListDetail` consumed by the create flow. */
@@ -31,18 +31,9 @@ export type CreateMailingListDetail = {
 	members: Array<string>;
 	zimbraDistributionListSendShareMessageToNewMembers: boolean;
 	owners: Array<string>;
-	allOwnersList: Array<any>;
 	ownerGrantEmailType: { value?: string } | undefined;
 	ownerGrantEmails: Array<string>;
 };
-
-function toOwnerTypeSources(contacts: Array<any>): Array<OwnerTypeSource> {
-	return (contacts ?? []).map((contact) => ({
-		id: contact?.id,
-		type: contact?._attrs?.type,
-		email: contact?._attrs?.email
-	}));
-}
 
 /**
  * Owns the "create distribution list" flow fired at the end of the wizard:
@@ -55,6 +46,7 @@ export function useCreateMailingListFlow(onClose: () => void) {
 	const createSnackbar = useSnackbar();
 	const queryClient = useQueryClient();
 	const [isCreating, setIsCreating] = useState(false);
+	const resolveOwnerType = useGalContactTypeResolver();
 
 	function showRequestError(label: string): void {
 		createSnackbar({
@@ -93,8 +85,7 @@ export function useCreateMailingListFlow(onClose: () => void) {
 	function addMembersAndOwners(
 		members: Array<string>,
 		owners: Array<string>,
-		listId: string,
-		allOwnersList: Array<any>
+		listId: string
 	): void {
 		const requests: Array<Promise<any>> = [];
 		if (members.length > 0 && listId) {
@@ -109,7 +100,6 @@ export function useCreateMailingListFlow(onClose: () => void) {
 		}
 
 		if (owners.length > 0 && listId) {
-			const ownerTypeSources = toOwnerTypeSources(allOwnersList);
 			owners.forEach((item) => {
 				requests.push(
 					distributionListAction(
@@ -118,7 +108,7 @@ export function useCreateMailingListFlow(onClose: () => void) {
 							op: 'addOwners',
 							owner: {
 								by: 'name',
-								type: resolveOwnerType(ownerTypeSources, item),
+								type: resolveOwnerType(item),
 								_content: item
 							}
 						}
@@ -167,7 +157,7 @@ export function useCreateMailingListFlow(onClose: () => void) {
 		createMailingList(detail.dynamic, name, attributes)
 			.then((data) => {
 				const listId = data?.dl[0]?.id;
-				addMembersAndOwners(detail.members, detail.owners, listId, detail.allOwnersList);
+				addMembersAndOwners(detail.members, detail.owners, listId);
 				if (grant) {
 					callAllRequests([distributionListAction(grant.dl, grant.action)]);
 				} else {

@@ -23,7 +23,6 @@ import {
 	type FC,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useState
 } from 'react';
@@ -39,11 +38,9 @@ export const SendingOptionsSection: FC = () => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { mailingListDetail, setMailingListDetail } = useContext(MailingListContext);
-	const [grantType, setGrantType] = useState<any>(mailingListDetail?.ownerGrantEmailType);
+	const grantType = mailingListDetail?.ownerGrantEmailType;
 	const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
-	const [grantEmailsList, setGrantEmailsList] = useState<any>(
-		mailingListDetail?.ownerGrantEmails ? mailingListDetail?.ownerGrantEmails : []
-	);
+	const grantEmailsList = mailingListDetail?.ownerGrantEmails ?? [];
 
 	const grantEmailHeaders: any[] = useMemo(
 		() => [
@@ -87,7 +84,6 @@ export const SendingOptionsSection: FC = () => {
 				...prev,
 				ownerGrantEmailType: it
 			}));
-			setGrantType(it);
 		},
 		[grantTypeOptions, setMailingListDetail]
 	);
@@ -124,21 +120,23 @@ export const SendingOptionsSection: FC = () => {
 		}
 		setGrantEmailItem('');
 		const sortedList = sortedUniq(parsed.emails);
-		setGrantEmailsList(uniq(grantEmailsList.concat(sortedList)));
-	}, [grantEmailsList, createSnackbar, grantEmailItem, t, setGrantEmailItem]);
+		setMailingListDetail((prev: any) => ({
+			...prev,
+			ownerGrantEmails: uniq((prev.ownerGrantEmails ?? []).concat(sortedList))
+		}));
+	}, [createSnackbar, grantEmailItem, t, setGrantEmailItem, setMailingListDetail]);
 
 	const onDeleteFromGrantEmail = useCallback(() => {
 		if (selectedGrantEmail.length > 0) {
-			const _dlm = grantEmailsList.filter((item: any) => !selectedGrantEmail.includes(item));
-			setGrantEmailsList(_dlm);
+			setMailingListDetail((prev: any) => ({
+				...prev,
+				ownerGrantEmails: (prev.ownerGrantEmails ?? []).filter(
+					(item: any) => !selectedGrantEmail.includes(item)
+				)
+			}));
 			setSelectedGrantEmail([]);
 		}
-	}, [selectedGrantEmail, grantEmailsList]);
-
-	/* the wizard context tracks the senders so the summary step can show them */
-	useEffect(() => {
-		setMailingListDetail((prev: any) => ({ ...prev, ownerGrantEmails: grantEmailsList ?? [] }));
-	}, [grantEmailsList, setMailingListDetail]);
+	}, [selectedGrantEmail, setMailingListDetail]);
 
 	const grantEmailTableRows: Array<any> = (grantEmailsList ?? []).map((item: any) => ({
 		id: item,

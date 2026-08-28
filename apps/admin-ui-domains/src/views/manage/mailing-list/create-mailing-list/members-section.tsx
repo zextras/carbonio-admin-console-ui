@@ -15,74 +15,43 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
 import { uniq } from 'lodash-es';
 import React, {
 	type FC,
 	useCallback,
 	useContext,
-	useEffect,
 	useMemo,
 	useState
 } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
-import { useDebouncedValue } from '../edit-mailing-detail/hooks/use-debounced-value';
+import {
+	type DirectorySearchConfig,
+	useDirectoryEmailSearch
+} from '../use-directory-email-search';
 import { HelmetEmptyState } from './helmet-empty-state';
 import { MailingListContext } from './mailinglist-context';
 import { parseEmailInput } from './parse-email-input';
 
-function fetchSearchMemberList(
-	mem: string,
-	onSuccess: (result: Array<any>) => void,
-	onError: (error: any) => void
-): void {
-	const attrs =
-		'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-	const types = 'accounts,distributionlists,aliases';
-	const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
-
-	searchDirectory({
-		attr: attrs,
-		type: types,
-		domainName: '',
-		query,
-		offset: 0,
-		limit: RECORD_DISPLAY_LIMIT,
-		sortBy: 'name'
-	})
-		.then((data) => {
-			const result: Array<any> = [];
-			const dl = data?.dl;
-			const account = data?.account;
-			const alias = data?.alias;
-			if (dl) {
-				dl.map((item: any) => result.push(item));
-			}
-			if (account) {
-				account.map((item: any) => result.push(item));
-			}
-			if (alias) {
-				alias.map((item: any) => result.push(item));
-			}
-			onSuccess(result);
-		})
-		.catch(onError);
-}
+const WIZARD_MEMBER_SEARCH_CONFIG: DirectorySearchConfig = {
+	attrs:
+		'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSid,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus',
+	types: 'accounts,distributionlists,aliases',
+	buildQuery: (mem: string): string =>
+		`(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`
+};
 
 const MembersSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
 	const { mailingListDetail, setMailingListDetail } = context;
-	const [dlm, setDlm] = useState<Array<any>>(mailingListDetail?.members);
+	const dlm = mailingListDetail?.members ?? [];
 	const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
 		[]
 	);
-	const [member, setMember] = useState<string>('');
-	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const createSnackbar = useSnackbar();
+	const { searchValue: member, setSearchValue: setMember, items } =
+		useDirectoryEmailSearch(WIZARD_MEMBER_SEARCH_CONFIG);
 
 	const memberHeaders: any[] = useMemo(
 		() => [
@@ -95,11 +64,6 @@ const MembersSection: FC<any> = () => {
 		],
 		[t]
 	);
-
-	/* the wizard context tracks the members so the summary step can show them */
-	useEffect(() => {
-		setMailingListDetail((prev: any) => ({ ...prev, members: dlm ?? [] }));
-	}, [dlm, setMailingListDetail]);
 
 	const dlmTableRows: Array<any> = (dlm ?? []).map((item: any) => ({
 		id: item,
@@ -148,55 +112,24 @@ const MembersSection: FC<any> = () => {
 			return;
 		}
 		const sortedList = parsed.emails;
-		setDlm(uniq(dlm.concat(sortedList)));
+		setMailingListDetail((prev: any) => ({
+			...prev,
+			members: uniq((prev.members ?? []).concat(sortedList))
+		}));
 		setMember('');
-	}, [member, createSnackbar, t, dlm]);
+	}, [member, createSnackbar, t, setMailingListDetail, setMember]);
 
 	const onDeleteFromList = useCallback((): void => {
 		if (selectedDistributionListMember.length > 0) {
-			const _dlm = dlm.filter((item: any) => !selectedDistributionListMember.includes(item));
-			setDlm(_dlm);
+			setMailingListDetail((prev: any) => ({
+				...prev,
+				members: (prev.members ?? []).filter(
+					(item: any) => !selectedDistributionListMember.includes(item)
+				)
+			}));
 			setSelectedDistributionListMember([]);
 		}
-	}, [dlm, selectedDistributionListMember]);
-
-	const debouncedMember = useDebouncedValue(member);
-
-	useEffect(() => {
-		if (debouncedMember !== '') {
-			fetchSearchMemberList(
-				debouncedMember,
-				(result) => {
-					setSearchMemberResult(result);
-				},
-				(error) => {
-					const snackbarConfig = generateSnackbarFromError(error, t);
-					createSnackbar(snackbarConfig);
-				}
-			);
-		}
-	}, [debouncedMember, t, createSnackbar]);
-
-	const items = searchMemberResult.map((item: any) => ({
-		id: item.id,
-		label: item.name,
-		customComponent: (
-			<Row
-				style={{
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					setMember(item?.name);
-				}}
-			>
-				{item?.name}
-			</Row>
-		)
-	}));
+	}, [selectedDistributionListMember, setMailingListDetail]);
 
 	return (
 		<Container mainAlignment="flex-start">

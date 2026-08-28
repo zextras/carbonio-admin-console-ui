@@ -33,7 +33,6 @@ type MailingListDetailObj = {
 	prefixName: string;
 	suffixName: string;
 	ldapQueryMembers: Array<any>;
-	allOwnersList: Array<any>;
 	ownerGrantEmailType: any;
 	ownerGrantEmails: Array<any>;
 };
@@ -62,7 +61,6 @@ const CreateMailingList: FC<{
 		prefixName: '',
 		suffixName: domainInformation?.name ?? '',
 		ldapQueryMembers: [],
-		allOwnersList: [],
 		ownerGrantEmailType: {
 			label: t('label.everyone', 'Everyone'),
 			value: PUB

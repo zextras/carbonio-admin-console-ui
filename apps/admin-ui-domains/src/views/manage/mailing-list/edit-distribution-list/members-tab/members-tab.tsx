@@ -16,22 +16,30 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
 import { uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, type FC, useCallback, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../../../constants';
 import { useAddDistributionListMember } from '../../../../../services/use-add-distribution-list-member';
 import { useRemoveDistributionListMember } from '../../../../../services/use-remove-distribution-list-member';
-import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { useDebouncedValue } from '../../edit-mailing-detail/hooks/use-debounced-value';
+import {
+	type DirectorySearchConfig,
+	useDirectoryEmailSearch
+} from '../../use-directory-email-search';
 import type { EditDistributionListFormApi } from '../types';
 import { AddMemberRow } from './add-member-row';
 import { filterMemberRows, pageRows, resolveNewMembers } from './filter-members';
 import { buildMemberRow } from './member-row';
 import { RemoveMemberModal } from './remove-member-modal';
+
+const MEMBER_SEARCH_CONFIG: DirectorySearchConfig = {
+	attrs:
+		'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraMailStatus',
+	types: 'accounts,distributionlists,aliases',
+	buildQuery: (mem: string): string =>
+		`(&(!(zimbraAccountStatus=closed))(!(zimbraIsAdminGroup=TRUE))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)))`
+};
 
 type MembersTabProps = {
 	form: EditDistributionListFormApi;
@@ -59,8 +67,6 @@ export const MembersTab: FC<MembersTabProps> = ({
 	const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
 		[]
 	);
-	const [searchMember, setSearchMember] = useState('');
-	const [searchMemberResult, setSearchMemberResult] = useState<Array<any>>([]);
 	const [isShowMemberError, setIsShowMemberError] = useState(false);
 	const [memberErrorMessage, setMemberErrorMessage] = useState<string | null>('');
 	const [offset, setOffset] = useState(0);
@@ -68,6 +74,9 @@ export const MembersTab: FC<MembersTabProps> = ({
 	const [filterMember, setFilterMember] = useState('');
 	const [isOpenDeleteMemberDialog, setIsOpenDeleteMemberDialog] = useState(false);
 	const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
+
+	const { searchValue: searchMember, setSearchValue: setSearchMember, items: searchMemberItems } =
+		useDirectoryEmailSearch(MEMBER_SEARCH_CONFIG);
 
 	const addMemberMutation = useAddDistributionListMember();
 	const removeMemberMutation = useRemoveDistributionListMember();
@@ -89,27 +98,6 @@ export const MembersTab: FC<MembersTabProps> = ({
 			: { id: 'actions', label: '', width: '0%', bold: false }
 	];
 
-	const searchMemberItems = searchMemberResult.map((item: any) => ({
-		id: item.id,
-		label: item.name,
-		customComponent: (
-			<Row
-				style={{
-					display: 'block',
-					textAlign: 'left',
-					height: 'inherit',
-					padding: '3px',
-					width: 'inherit'
-				}}
-				onClick={(): void => {
-					setSearchMember(item?.name);
-				}}
-			>
-				{item?.name}
-			</Row>
-		)
-	}));
-
 	const dlmTableRows: Array<any> =
 		dlm && dlm.length > 0
 			? (filterMember ? filterMemberRows(dlm, filterMember) : dlm).map((item: string) =>
@@ -127,54 +115,6 @@ export const MembersTab: FC<MembersTabProps> = ({
 				)
 			: [];
 	const DLMPagedRows = pageRows(dlmTableRows, offset, limit);
-
-	const getSearchMemberList = useCallback(
-		(mem: string) => {
-			const attrs =
-				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraMailStatus';
-			const types = 'accounts,distributionlists,aliases';
-			const query = `(&(!(zimbraAccountStatus=closed))(!(zimbraIsAdminGroup=TRUE))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)))`;
-
-			searchDirectory({
-				attr: attrs,
-				type: types,
-				domainName: '',
-				query,
-				offset: 0,
-				limit: RECORD_DISPLAY_LIMIT,
-				sortBy: 'name'
-			})
-				.then((data) => {
-					const result: Array<any> = [];
-					const dl = data?.dl;
-					const account = data?.account;
-					const alias = data?.alias;
-					if (dl) {
-						dl.map((item: any) => result.push(item));
-					}
-					if (account) {
-						account.map((item: any) => result.push(item));
-					}
-					if (alias) {
-						alias.map((item: any) => result.push(item));
-					}
-					setSearchMemberResult(result);
-				})
-				.catch((error) => {
-					const snackbarConfig = generateSnackbarFromError(error, t);
-					createSnackbar(snackbarConfig);
-				});
-		},
-		[createSnackbar, t]
-	);
-
-	const debouncedSearchMember = useDebouncedValue(searchMember);
-
-	useEffect(() => {
-		if (debouncedSearchMember !== '') {
-			getSearchMemberList(debouncedSearchMember);
-		}
-	}, [debouncedSearchMember, getSearchMemberList]);
 
 	const onAdd = useCallback((): void => {
 		const resolution = resolveNewMembers(searchMember, dlm);
@@ -272,6 +212,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 		selectedMailingList?.id,
 		createSnackbar,
 		form,
+		setSearchMember,
 		setIsRequestInProgress,
 		addMemberMutation
 	]);

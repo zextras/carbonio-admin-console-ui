@@ -16,8 +16,8 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/ui-components';
-import { sortedUniq, uniq, uniqBy } from 'lodash-es';
-import { type FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { sortedUniq, uniq } from 'lodash-es';
+import { type FC, useCallback, useContext, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useGalEmailSearch } from '../../edit-distribution-list/use-gal-email-search';
@@ -29,9 +29,7 @@ export const OwnersSettingsSection: FC = () => {
 	const { t } = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { mailingListDetail, setMailingListDetail } = useContext(MailingListContext);
-	const [ownersList, setOwnersList] = useState<Array<any>>(
-		mailingListDetail?.owners ? mailingListDetail?.owners : []
-	);
+	const ownersList = mailingListDetail?.owners ?? [];
 	const [selectedDistributionListOwner, setSelectedDistributionListOwner] = useState<Array<any>>(
 		[]
 	);
@@ -48,22 +46,7 @@ export const OwnersSettingsSection: FC = () => {
 		[t]
 	);
 
-	const { searchValue: member, setSearchValue: setMember, items, contactList } =
-		useGalEmailSearch();
-
-	useEffect(() => {
-		if (contactList && contactList.length > 0) {
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				allOwnersList: uniqBy(prev.allOwnersList.concat(contactList), 'id')
-			}));
-		}
-	}, [contactList, setMailingListDetail]);
-
-	/* the wizard context tracks the owners so the summary step can show them */
-	useEffect(() => {
-		setMailingListDetail((prev: any) => ({ ...prev, owners: ownersList ?? [] }));
-	}, [ownersList, setMailingListDetail]);
+	const { searchValue: member, setSearchValue: setMember, items } = useGalEmailSearch();
 
 	const ownerTableRows: Array<any> = (ownersList ?? []).map((item: any) => ({
 		id: item,
@@ -112,18 +95,23 @@ export const OwnersSettingsSection: FC = () => {
 		}
 		setMember('');
 		const sortedList = sortedUniq(parsed.emails);
-		setOwnersList(uniq(ownersList.concat(sortedList)));
-	}, [member, createSnackbar, ownersList, t, setMember]);
+		setMailingListDetail((prev: any) => ({
+			...prev,
+			owners: uniq((prev.owners ?? []).concat(sortedList))
+		}));
+	}, [member, createSnackbar, t, setMember, setMailingListDetail]);
 
 	const onDeleteFromList = useCallback((): void => {
 		if (selectedDistributionListOwner.length > 0) {
-			const _dlm = ownersList.filter(
-				(item: any) => !selectedDistributionListOwner.includes(item)
-			);
-			setOwnersList(_dlm);
+			setMailingListDetail((prev: any) => ({
+				...prev,
+				owners: (prev.owners ?? []).filter(
+					(item: any) => !selectedDistributionListOwner.includes(item)
+				)
+			}));
 			setSelectedDistributionListOwner([]);
 		}
-	}, [ownersList, selectedDistributionListOwner]);
+	}, [selectedDistributionListOwner, setMailingListDetail]);
 
 	return (
 		<>
