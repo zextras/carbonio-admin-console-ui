@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useStore } from '@tanstack/react-form';
 import {
 	Button,
 	Container,
@@ -17,45 +18,55 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
-import { EMAIL } from '../../../../../constants';
+import { ALL, EMAIL, GRP, PUB } from '../../../../../constants';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
 import { resolveNewMembers } from '../members-tab/filter-members';
+import type { EditDistributionListFormApi } from '../types';
 import { useGalEmailSearch } from '../use-gal-email-search';
 import { buildGrantEmailRow } from './grant-email-row';
 import { GrantTypeSelect } from './grant-type-select';
 
 type SendToTabProps = {
-	grantTypeOptions: Array<any>;
-	grantType: any;
-	onGrantTypeChange: (v: any) => void;
-	grantEmailsList: Array<any>;
-	setGrantEmailsList: (v: Array<any>) => void;
-	setGrantEmails: (v: Array<any>) => void;
-	setIsDirty: (v: boolean) => void;
+	form: EditDistributionListFormApi;
 	searchUserLabelValue: string;
-	isShowSenderToError: boolean;
-	setIsShowSenderToError: (v: boolean) => void;
 };
 
-export const SendToTab: FC<SendToTabProps> = ({
-	grantTypeOptions,
-	grantType,
-	onGrantTypeChange,
-	grantEmailsList,
-	setGrantEmailsList,
-	setGrantEmails,
-	setIsDirty,
-	searchUserLabelValue,
-	isShowSenderToError,
-	setIsShowSenderToError
-}) => {
+export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
+	const grantTypeValue = useStore(form.store, (state) => state.values.grantTypeValue);
+	const grantEmails = useStore(form.store, (state) => state.values.grantEmails);
+	const grantEmailsList: Array<string> = grantEmails.map((item: any) =>
+		typeof item === 'string' ? item : (item?.name ?? '')
+	);
+
+	const grantTypeOptions: Array<any> = [
+		{
+			label: t('label.everyone', 'Everyone'),
+			value: PUB
+		},
+		{
+			label: t('label.members_only', 'Members only'),
+			value: GRP
+		},
+		{
+			label: t('label.internal_users_only', 'Internal Users only'),
+			value: ALL
+		},
+		{
+			label: t('label.only_there_users', 'Only these users'),
+			value: EMAIL
+		}
+	];
+	const grantType: any =
+		grantTypeOptions.find((item: any) => item.value === grantTypeValue) ?? grantTypeOptions[0];
+
+	const [isShowSenderToError, setIsShowSenderToError] = useState(false);
 	const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
 	const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
 	const [senderToErrorMessage, setSenderToErrorMessage] = useState<string>('');
@@ -69,23 +80,20 @@ export const SendToTab: FC<SendToTabProps> = ({
 	const { searchValue: grantEmailItem, setSearchValue: setGrantEmailItem, items: grantItems } =
 		useGalEmailSearch();
 
-	const grantEmailHeaders: Array<any> = useMemo(
-		() => [
-			{
-				id: 'grantEmail',
-				label: t('domain.distributionList.sendTo.account', 'Account'),
-				width: '80%',
-				bold: true
-			},
-			{
-				id: 'actions',
-				label: t('label.actions', 'Actions'),
-				width: '20%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const grantEmailHeaders: Array<any> = [
+		{
+			id: 'grantEmail',
+			label: t('domain.distributionList.sendTo.account', 'Account'),
+			width: '80%',
+			bold: true
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '20%',
+			bold: true
+		}
+	];
 
 	const onAddGrantEmail = useCallback(() => {
 		const resolution = resolveNewMembers(grantEmailItem, grantEmailsList);
@@ -129,20 +137,8 @@ export const SendToTab: FC<SendToTabProps> = ({
 		setGrantEmailItem('');
 		setIsShowSenderToError(false);
 		setSenderToErrorMessage('');
-		const emails = uniq(grantEmailsList.concat(resolution.members));
-		setGrantEmailsList(emails);
-		setGrantEmails(emails);
-		setIsDirty(true);
-	}, [
-		grantEmailsList,
-		createSnackbar,
-		grantEmailItem,
-		t,
-		setGrantEmailsList,
-		setGrantEmails,
-		setIsDirty,
-		setIsShowSenderToError
-	]);
+		form.setFieldValue('grantEmails', uniq(grantEmailsList.concat(resolution.members)));
+	}, [grantEmailsList, createSnackbar, grantEmailItem, t, form, setGrantEmailItem]);
 
 	useEffect(() => {
 		if (grantEmailsList && grantEmailsList.length > 0) {
@@ -151,10 +147,8 @@ export const SendToTab: FC<SendToTabProps> = ({
 					deleteLabel: t('label.delete', 'Delete'),
 					onDelete: (email): void => {
 						const updated = grantEmailsList.filter((g: any) => email !== g);
-						setGrantEmailsList(updated);
-						setGrantEmails(updated);
+						form.setFieldValue('grantEmails', updated);
 						setSelectedGrantEmail([]);
-						setIsDirty(true);
 					},
 					onSelect: (email): void => {
 						setSelectedGrantEmail([email]);
@@ -165,7 +159,7 @@ export const SendToTab: FC<SendToTabProps> = ({
 		} else {
 			setGrantEmailTableRows([]);
 		}
-	}, [grantEmailsList, t, setGrantEmailsList, setGrantEmails, setIsDirty]);
+	}, [grantEmailsList, t, form]);
 
 	return (
 		<Container
@@ -201,10 +195,20 @@ export const SendToTab: FC<SendToTabProps> = ({
 			</Row>
 
 			<ListRow>
-				<GrantTypeSelect items={grantTypeOptions} selection={grantType} onChange={onGrantTypeChange} />
+				<GrantTypeSelect
+					items={grantTypeOptions}
+					selection={grantType}
+					onChange={(v: any): void => {
+						form.setFieldValue('grantTypeValue', v);
+						if (v === ALL) {
+							// the original cleared the senders list when switching to Internal Users only
+							form.setFieldValue('grantEmails', []);
+						}
+					}}
+				/>
 			</ListRow>
 
-			{grantType?.value === EMAIL && (
+			{grantTypeValue === EMAIL && (
 				<Container padding={{ bottom: 'large' }} height={'auto'}>
 					<ListRow>
 						<Container orientation="vertical" mainAlignment="flex-start" background="gray6">
@@ -226,7 +230,7 @@ export const SendToTab: FC<SendToTabProps> = ({
 									}}
 									inputValue={grantEmailItem}
 									isCustomIcon={false}
-									inputDisabled={grantType?.value !== EMAIL}
+									inputDisabled={grantTypeValue !== EMAIL}
 									width="100%"
 									hasError={isShowSenderToError}
 								/>

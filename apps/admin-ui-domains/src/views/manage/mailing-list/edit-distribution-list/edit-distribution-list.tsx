@@ -19,7 +19,7 @@ import { format, isValid } from 'date-fns';
 import { type FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ALL, DL, EMAIL, GRP, PUB } from '../../../../constants';
+import { DL, EMAIL, GRP } from '../../../../constants';
 import { getGrant } from '../../../../services/get-grant';
 import { useAddDistributionListMember } from '../../../../services/use-add-distribution-list-member';
 import { useAddMailingListAlias } from '../../../../services/use-add-mailing-list-alias';
@@ -286,47 +286,10 @@ function EditDistributionListContent({
   const [targetTotalRights, setTargetTotalRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
 
   const totalGrantRights = granteeTotalRights + targetTotalRights;
 
-  const grantTypeOptions: any[] = [
-    {
-      label: t('label.everyone', 'Everyone'),
-      value: PUB,
-    },
-    {
-      label: t('label.members_only', 'Members only'),
-      value: GRP,
-    },
-    {
-      label: t('label.internal_users_only', 'Internal Users only'),
-      value: ALL,
-    },
-    {
-      label: t('label.only_there_users', 'Only these users'),
-      value: EMAIL,
-    },
-  ];
-
-  const grantTypeOption =
-    grantTypeOptions.find((item: any) => item.value === values.grantTypeValue) ??
-    grantTypeOptions[0];
-  const grantEmailsList = values.grantEmails.map((item: any) =>
-    typeof item === 'string' ? item : item?.name,
-  );
   const dlMembershipListNames = values.dlMembershipList.map((item) => item?.name).join(', ');
-
-  const onGrantTypeChange = (v: any): any => {
-    form.setFieldValue('grantTypeValue', v);
-    if (v === ALL) {
-      // the original cleared the senders list when switching to Internal Users only
-      form.setFieldValue('grantEmails', []);
-    }
-  };
-
-  /* Legacy adapter: dirty state is derived from the form store now. */
-  const ignoreDirty = (): void => undefined;
 
   const handleClickDeleteEvent = () => {
     const getGrantBody: any = {};
@@ -625,18 +588,7 @@ function EditDistributionListContent({
         )}
 
         {selectedTab === 'sendto' && (
-          <SendToTab
-            grantTypeOptions={grantTypeOptions}
-            grantType={grantTypeOption}
-            onGrantTypeChange={onGrantTypeChange}
-            grantEmailsList={grantEmailsList}
-            setGrantEmailsList={(v: Array<any>): void => form.setFieldValue('grantEmails', v)}
-            setGrantEmails={(v: Array<any>): void => form.setFieldValue('grantEmails', v)}
-            setIsDirty={ignoreDirty}
-            searchUserLabelValue={searchUserLabelValue}
-            isShowSenderToError={isShowSenderToError}
-            setIsShowSenderToError={setIsShowSenderToError}
-          />
+          <SendToTab form={form as never} searchUserLabelValue={searchUserLabelValue} />
         )}
 
         {isOpenUnsavedDialog && (
