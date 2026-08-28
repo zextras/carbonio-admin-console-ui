@@ -6,7 +6,15 @@
 
 import { Button, Container, HorizontalWizard, WizardInSection } from '@zextras/ui-components';
 import { noop } from 'lodash-es';
-import { type FC, type ReactElement, useCallback, useMemo, useState } from 'react';
+import {
+	createContext,
+	type FC,
+	type ReactElement,
+	useCallback,
+	useContext,
+	useMemo,
+	useState
+} from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, PUB } from '../../../../constants';
@@ -36,6 +44,82 @@ type MailingListDetailObj = {
 	ownerGrantEmailType: any;
 	ownerGrantEmails: Array<any>;
 };
+
+type WizardActionsContextValue = {
+	t: (key: string, fallback?: string) => string;
+	onCancel: () => void;
+	createDisabled: boolean;
+	onCreate: () => void;
+};
+
+const WizardActionsContext = createContext<WizardActionsContextValue | null>(null);
+
+function useWizardActions(): WizardActionsContextValue {
+	const context = useContext(WizardActionsContext);
+	if (!context) {
+		throw new Error('wizard buttons must be used within WizardActionsContext');
+	}
+	return context;
+}
+
+/* Module-level wizard buttons: dynamic values come from context, so the
+ * React compiler can hoist them safely (no closures to break). */
+const WizardCancelButton = (props: any): ReactElement => {
+	const { t, onCancel } = useWizardActions();
+	return (
+		<Button
+			{...props}
+			type="outlined"
+			key="wizard-cancel"
+			label={t('label.cancel', 'Cancel')}
+			color="secondary"
+			icon="CloseOutline"
+			iconPlacement="right"
+			onClick={onCancel}
+		/>
+	);
+};
+
+const WizardPrevButton = (props: any): ReactElement => {
+	const { t } = useWizardActions();
+	return (
+		<Button
+			{...props}
+			label={t('label.back', 'BACK')}
+			icon="ChevronLeftOutline"
+			color="secondary"
+			iconPlacement="left"
+		/>
+	);
+};
+
+const WizardNextButton = (props: any): ReactElement => {
+	const { t } = useWizardActions();
+	return (
+		<Button
+			{...props}
+			label={t('label.next', 'NEXT')}
+			icon="ChevronRightOutline"
+			iconPlacement="right"
+		/>
+	);
+};
+
+const WizardCreateButton = (props: any): ReactElement => {
+	const { t, createDisabled, onCreate } = useWizardActions();
+	return (
+		<Button
+			{...props}
+			label={t('label.create', 'CREATE')}
+			icon="PowerOutline"
+			iconPlacement="right"
+			disabled={createDisabled}
+			onClick={onCreate}
+		/>
+	);
+};
+
+const WizardNoButton = (): ReactElement => <></>;
 
 const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
@@ -73,98 +157,47 @@ const CreateMailingList: FC<{
 	}, [createList, mailingListDetail]);
 
 	const steps = useMemo(() => {
-		// defined inside the memo (not a module-level factory): the React
-		// compiler hoists factory-created components and breaks their closures
-		const CancelButton = (props: any): ReactElement => (
-			<Button
-				{...props}
-				type="outlined"
-				key="wizard-cancel"
-				label={t('label.cancel', 'Cancel')}
-				color="secondary"
-				icon="CloseOutline"
-				iconPlacement="right"
-				onClick={(): void => {
-					setShowCreateMailingListView(false);
-				}}
-			/>
-		);
-		const PrevButton = (props: any): ReactElement => (
-			<Button
-				{...props}
-				label={t('label.back', 'BACK')}
-				icon="ChevronLeftOutline"
-				color="secondary"
-				iconPlacement="left"
-			/>
-		);
-		const NextButton = (props: any): ReactElement => (
-			<Button
-				{...props}
-				label={t('label.next', 'NEXT')}
-				icon="ChevronRightOutline"
-				iconPlacement="right"
-			/>
-		);
-		const CreateButton = (props: any): ReactElement => (
-			<Button
-				{...props}
-				label={t('label.create', 'CREATE')}
-				icon="PowerOutline"
-				iconPlacement="right"
-				disabled={!mailingListDetail?.prefixName || !mailingListDetail?.suffixName}
-				onClick={onCreate}
-			/>
-		);
-
 		const detailsStep = {
 			name: 'details',
 			label: t('label.distribution_list', 'Distribution List'),
 			icon: 'ListOutline',
 			view: ListSection,
-			CancelButton,
-			PrevButton: (): ReactElement => <></>,
-			NextButton
+			CancelButton: WizardCancelButton,
+			PrevButton: WizardNoButton,
+			NextButton: WizardNextButton
 		};
 		const membersStep = {
 			name: 'members',
 			label: t('label.members', 'Members'),
 			icon: 'PeopleOutline',
 			view: MembersSection,
-			CancelButton,
-			PrevButton,
-			NextButton
+			CancelButton: WizardCancelButton,
+			PrevButton: WizardPrevButton,
+			NextButton: WizardNextButton
 		};
 		const settingsStep = {
 			name: 'settings',
 			label: t('label.settings', 'Settings'),
 			icon: 'OptionsOutline',
 			view: SettingsSection,
-			CancelButton,
-			PrevButton,
-			NextButton
+			CancelButton: WizardCancelButton,
+			PrevButton: WizardPrevButton,
+			NextButton: WizardNextButton
 		};
 		const createStep = {
 			name: 'create',
 			label: t('label.create', 'Create'),
 			icon: 'PowerOutline',
 			view: CreateSummarySection,
-			CancelButton,
-			PrevButton,
-			NextButton: CreateButton
+			CancelButton: WizardCancelButton,
+			PrevButton: WizardPrevButton,
+			NextButton: WizardCreateButton
 		};
 
 		return mailingListDetail?.dynamic
 			? [detailsStep, settingsStep, createStep]
 			: [detailsStep, membersStep, settingsStep, createStep];
-	}, [
-		t,
-		setShowCreateMailingListView,
-		mailingListDetail?.dynamic,
-		mailingListDetail?.prefixName,
-		mailingListDetail?.suffixName,
-		onCreate
-	]);
+	}, [t, mailingListDetail?.dynamic]);
 
 	const onComplete = useCallback(() => {
 		setShowCreateMailingListView(false);
@@ -187,14 +220,26 @@ const CreateMailingList: FC<{
 				}}
 			>
 				<MailingListContext.Provider value={{ mailingListDetail, setMailingListDetail }}>
-					<HorizontalWizard
+					<WizardActionsContext.Provider
+						value={{
+							t: (key: string, fallback?: string): string => t(key, fallback ?? key),
+							onCancel: (): void => {
+								setShowCreateMailingListView(false);
+							},
+							createDisabled:
+								!mailingListDetail?.prefixName || !mailingListDetail?.suffixName,
+							onCreate
+						}}
+					>
+						<HorizontalWizard
 						steps={steps}
 						title={t('label.new_distribution_list', 'New Distribution List')}
 						Wrapper={WizardInSection}
 						onChange={noop}
-						onComplete={onComplete}
-						setToggleWizardSection={setShowCreateMailingListView}
-					/>
+							onComplete={onComplete}
+							setToggleWizardSection={setShowCreateMailingListView}
+						/>
+					</WizardActionsContext.Provider>
 				</MailingListContext.Provider>
 			</Container>
 		</>
