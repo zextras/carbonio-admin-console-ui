@@ -3,36 +3,42 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { FormPageLayout, useSnackbar } from '@zextras/ui-components';
+import { useSnackbar } from '@zextras/ui-components';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { TwoFactorAuthPolicyValues } from '../../../../types';
-import { OK } from '../../../constants';
-import { useSet2faPolicies } from '../../../services/use-set-2fa-policies';
-import { TwoFactorPolicyArray } from '../../utility/utils';
-import styles from './global-two-factor-auth.module.css';
-import { TwoFactorPoliciesForm } from './two-factor-policies-form';
-import { twoFactorPoliciesSchema } from './two-factor-policies-schema';
-import { buildPoliciesFormValues, getChangedServices } from './two-factor-policies-utils';
+import type { TwoFactorAuthPolicyValues, TwoFactorPolicy } from '../../../../../types';
+import { OK } from '../../../../constants';
+import { useSet2faPolicies } from '../../../../services/use-set-2fa-policies';
+import { twoFactorPoliciesSchema } from '../../../global/global-two-factor-auth/two-factor-policies-schema';
+import {
+  buildPoliciesFormValues,
+  getChangedServices,
+} from '../../../global/global-two-factor-auth/two-factor-policies-utils';
 
-export type GlobalTwoFactorAuthContentProps = {
+type UseDomain2faFormArgs = {
   policies: Array<TwoFactorAuthPolicyValues>;
+  domainName: string;
+  services: Array<TwoFactorPolicy>;
 };
 
-export const GlobalTwoFactorAuthContent = ({ policies }: GlobalTwoFactorAuthContentProps) => {
+export function useDomain2faForm({ policies, domainName, services }: UseDomain2faFormArgs) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const setPolicyMutation = useSet2faPolicies('');
-  const twoFactorPolicyArray = TwoFactorPolicyArray(t);
-
-  const defaultValues = buildPoliciesFormValues(policies, twoFactorPolicyArray);
+  const saveInFlightRef = useRef(false);
+  const setPolicyMutation = useSet2faPolicies(domainName);
+  const defaultValues = buildPoliciesFormValues(policies, services);
 
   const form = useForm({
     defaultValues,
-    validators: { onChange: twoFactorPoliciesSchema, onSubmit: twoFactorPoliciesSchema },
-    onSubmit: async ({ value }) => {
+    validators: {
+      onChange: twoFactorPoliciesSchema,
+      onSubmit: twoFactorPoliciesSchema,
+    },
+    onSubmit: async ({ value, formApi }) => {
       const results = await Promise.allSettled(
         getChangedServices(value, defaultValues).map((service) =>
           setPolicyMutation.mutateAsync({
@@ -82,22 +88,23 @@ export const GlobalTwoFactorAuthContent = ({ policies }: GlobalTwoFactorAuthCont
         replace: true,
       });
 
-      form.reset(value, { keepDefaultValues: true });
+      formApi.reset(value, { keepDefaultValues: true });
     },
   });
 
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
-  return (
-    <div className={styles.page}>
-      <FormPageLayout
-        title={t('label.2-factor-authentication', '2-Factor-Authentication')}
-        unsavedChanges={isDirty}
-        onCancel={() => form.reset()}
-        onSave={() => form.handleSubmit()}
-      >
-        <TwoFactorPoliciesForm form={form} services={twoFactorPolicyArray} />
-      </FormPageLayout>
-    </div>
-  );
-};
+  function handleSave(): void {
+    if (saveInFlightRef.current) return;
+    saveInFlightRef.current = true;
+    void form.handleSubmit().finally(() => {
+      saveInFlightRef.current = false;
+    });
+  }
+
+  function handleCancel(): void {
+    form.reset();
+  }
+
+  return { form, handleSave, handleCancel, isDirty };
+}

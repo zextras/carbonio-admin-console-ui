@@ -112,51 +112,104 @@ export const Features: FC<{
 					</Container>
 				)}
 			</Row>
-			<Row
+			<Container
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
-				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				orientation="vertical"
 				width="100%"
 			>
-				<Container
+				<Row
 					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					width="50%"
-					orientation="vertical"
-					padding={{ bottom: 'large' }}
+					width="100%"
+					padding={{ top: 'large', right: 'large', left: 'large' }}
 				>
 					<ds-text as="h3" weight="bold">
 						{t('label.mail', 'Mail')}
 					</ds-text>
-					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<InheritedSwitch
-							subValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
-							onChange={changeSwitchOption}
-							label={t('label.mail_signatures', 'Mail Signatures')}
-							iconColor="primary"
-							inheritedValue={cosDetail?.zimbraFeatureSignaturesEnabled}
-							fromSubValue={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
-							inputName={'zimbraFeatureSignaturesEnabled'}
-							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureSignaturesEnabled')}
-							disabled={readonlyFeatures}
-						/>
-					</Row>
-					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<InheritedSwitch
-							subValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
-							onChange={changeSwitchOption}
-							label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
-							iconColor="primary"
-							inheritedValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
-							fromSubValue={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
-							inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
-							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureOutOfOfficeReplyEnabled')}
-							disabled={readonlyFeatures}
-						/>
-					</Row>
-				</Container>
-				<ds-divider></ds-divider>
-			</Row>
+				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+					width="100%"
+				>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<Row width="100%" mainAlignment="flex-start">
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.mail_signatures', 'Mail Signatures')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureSignaturesEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
+								inputName={'zimbraFeatureSignaturesEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureSignaturesEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+								inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureOutOfOfficeReplyEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<Row width="100%" mainAlignment="flex-start">
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureImportFolderEnabled}
+								onChange={changeSwitchOption}
+								label={t(
+									'label.allow_user_to_import_external_mailbox',
+									'Allow user to import external mailbox'
+								)}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureImportFolderEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureImportFolderEnabled}
+								inputName={'zimbraFeatureImportFolderEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureImportFolderEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureExportFolderEnabled}
+								onChange={changeSwitchOption}
+								label={t(
+									'label.allow_user_to_export_their_mailbox',
+									'Allow user to export their mailbox'
+								)}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureExportFolderEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureExportFolderEnabled}
+								inputName={'zimbraFeatureExportFolderEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureExportFolderEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+					<ds-divider></ds-divider>
+				</Row>
+			</Container>
 			<Row
 				mainAlignment="flex-start"
 				crossAlignment="flex-start"
