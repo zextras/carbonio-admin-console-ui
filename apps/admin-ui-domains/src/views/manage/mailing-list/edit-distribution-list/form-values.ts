@@ -5,6 +5,11 @@
  */
 
 import { PUB, TRUE_FALSE } from '../../../../constants';
+import {
+	buildSaveOperations,
+	type CurrentDetailSnapshot,
+	type PreviousDetailSnapshot
+} from './build-save-operations';
 import type {
 	DistributionListDetail,
 	DistributionListGrants,
@@ -45,4 +50,62 @@ export function mapToFormValues(
 		grantEmails: grants?.grantEmails ?? [],
 		grantTypeValue: grants?.grantType ?? PUB
 	};
+}
+
+/** Maps form values to the save builder's "previous" snapshot (the loaded defaults). */
+export function toPreviousSnapshot(values: EditDistributionListFormValues): PreviousDetailSnapshot {
+	return {
+		displayName: values.displayName,
+		distributionName: values.distributionName,
+		zimbraNotes: values.zimbraNotes,
+		description: values.description,
+		zimbraMailStatus: { value: values.zimbraMailStatusValue },
+		zimbraHideInGal: values.zimbraHideInGal,
+		zimbraDistributionListSendShareMessageToNewMembers: values.sendShareMessageToNewMembers,
+		memberURL: values.memberURL,
+		dlMembershipList: values.dlMembershipList,
+		ownerOfList: values.ownerOfList,
+		grantEmails: values.grantEmails,
+		grantType: { value: values.grantTypeValue }
+	};
+}
+
+/** Maps form values to the save builder's "current" snapshot. */
+export function toCurrentSnapshot(
+	values: EditDistributionListFormValues,
+	defaults: EditDistributionListFormValues,
+	context: { dynamic: boolean; isACLGroup: boolean; listId: string; listName: string }
+): CurrentDetailSnapshot {
+	return {
+		displayName: values.displayName,
+		distributionName: values.distributionName,
+		zimbraNotes: values.zimbraNotes,
+		description: values.description,
+		zimbraMailStatusValue: values.zimbraMailStatusValue,
+		zimbraHideInGal: values.zimbraHideInGal,
+		sendShareMessageToNewMembers: values.sendShareMessageToNewMembers,
+		memberURL: values.memberURL,
+		dynamic: context.dynamic,
+		isACLGroup: context.isACLGroup,
+		listId: context.listId,
+		listName: context.listName,
+		defaultAliases: defaults.aliases,
+		aliases: values.aliases,
+		dlMembershipList: values.dlMembershipList,
+		ownerOfList: values.ownerOfList,
+		grantEmails: values.grantEmails,
+		grantTypeValue: values.grantTypeValue
+	};
+}
+
+/**
+ * Convenience: builds the save operations diffing current form values against
+ * the loaded defaults.
+ */
+export function buildFormSaveOperations(
+	values: EditDistributionListFormValues,
+	defaults: EditDistributionListFormValues,
+	context: { dynamic: boolean; isACLGroup: boolean; listId: string; listName: string }
+): Array<ReturnType<typeof buildSaveOperations>[number]> {
+	return buildSaveOperations(toPreviousSnapshot(defaults), toCurrentSnapshot(values, defaults, context));
 }

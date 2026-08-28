@@ -3,6 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
 	Button,
 	Container,
@@ -14,8 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
-import { isEqual } from 'lodash';
-import { type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ALL, DL, EMAIL, GRP, PUB, TRUE_FALSE } from '../../../../constants';
@@ -34,374 +35,158 @@ import { useRenameDistributionList } from '../../../../services/use-rename-distr
 import { getDateTimeFromStr } from '../../../utility/utils';
 import { GeneralTab } from '../edit-mailing-detail/general-tab';
 import { ReusedDefaultTabBar } from '../edit-mailing-detail/reused-default-tab-bar';
-import { buildSaveOperations, type SaveOperation } from './build-save-operations';
+import { type SaveOperation } from './build-save-operations';
 import { DeleteDistributionListModal } from './delete-distribution-list-modal';
+import { buildFormSaveOperations, mapToFormValues } from './form-values';
 import { MembersTab } from './members-tab/members-tab';
 import { OwnersTab } from './owners-tab/owners-tab';
 import {
+	type DistributionListDetail,
 	parseDistributionListDetail,
 	parseDistributionListGrants,
-	parseDistributionListMembership
-} from './parse-distribution-list-detail';
+	parseDistributionListMembership} from './parse-distribution-list-detail';
 import { SendAsTab } from './send-as-tab/send-as-tab';
 import { SendToTab } from './send-to-tab/send-to-tab';
 import { TabDirtyGuardModal } from './tab-dirty-guard-modal';
+import type { EditDistributionListFormValues } from './types';
 
 const EditDistributionList: FC<any> = ({
 	selectedMailingList,
 	setIsUpdateRecord,
 	setShowMailingListDetailView
 }) => {
+	/* Cached data layer */
+	const detailQuery = useDistributionList(selectedMailingList?.id, selectedMailingList?.name);
+	const membershipQuery = useDistributionListMembership(
+		selectedMailingList?.dynamic || !selectedMailingList?.id
+			? undefined
+			: selectedMailingList?.id
+	);
+	const grantsQuery = useDistributionListGrants(selectedMailingList?.id);
+
+	const parsedDetail = useMemo(
+		() => parseDistributionListDetail(detailQuery.data, selectedMailingList?.name),
+		[detailQuery.data, selectedMailingList?.name]
+	);
+	const membership = useMemo(
+		() => parseDistributionListMembership(membershipQuery.data),
+		[membershipQuery.data]
+	);
+	const parsedGrants = useMemo(
+		() => parseDistributionListGrants(grantsQuery.data, selectedMailingList?.id),
+		[grantsQuery.data, selectedMailingList?.id]
+	);
+
+	const formValues = useMemo(
+		() => mapToFormValues(parsedDetail, membership, parsedGrants, selectedMailingList),
+		[parsedDetail, membership, parsedGrants, selectedMailingList]
+	);
+
+	const isReady =
+		Boolean(parsedDetail) &&
+		(Boolean(selectedMailingList?.dynamic) || membershipQuery.data !== undefined) &&
+		grantsQuery.data !== undefined;
+
+	const dlCreateDate = useMemo(() => {
+		const timestamp = parsedDetail?.createTimestamp;
+		if (!timestamp || timestamp === '') {
+			return '';
+		}
+		const date = getDateTimeFromStr(timestamp);
+		return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
+	}, [parsedDetail?.createTimestamp]);
+
+	if (!isReady) {
+		return (
+			<Container
+				background="gray5"
+				mainAlignment="flex-start"
+				style={{
+					position: 'absolute',
+					top: '0rem',
+					height: 'auto',
+					width: 'auto',
+					overflow: 'hidden',
+					transition: 'left 0.2s ease-in-out',
+					boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
+					right: 0
+				}}
+			>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="center"
+					orientation="horizontal"
+					background="white"
+					width="fill"
+					height="56px"
+				>
+					<Row padding={{ horizontal: 'small' }}></Row>
+					<Row takeAvailableSpace mainAlignment="flex-start">
+						<ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
+							{selectedMailingList?.name}
+						</ds-text>
+					</Row>
+				</Row>
+				<Row>
+					<ds-divider color="gray3" />
+				</Row>
+				<Container height="calc(100vh - 3.5rem)" mainAlignment="center">
+					<ds-spinner></ds-spinner>
+				</Container>
+			</Container>
+		);
+	}
+
+	return (
+		<EditDistributionListContent
+			selectedMailingList={selectedMailingList}
+			formValues={formValues}
+			parsedDetail={parsedDetail as DistributionListDetail}
+			dlCreateDate={dlCreateDate}
+			setIsUpdateRecord={setIsUpdateRecord}
+			setShowMailingListDetailView={setShowMailingListDetailView}
+		/>
+	);
+};
+
+type EditDistributionListContentProps = {
+	selectedMailingList: any;
+	formValues: EditDistributionListFormValues;
+	parsedDetail: DistributionListDetail;
+	dlCreateDate: string;
+	setIsUpdateRecord: (value: boolean) => void;
+	setShowMailingListDetailView: (value: boolean) => void;
+};
+
+function EditDistributionListContent({
+	selectedMailingList,
+	formValues,
+	parsedDetail,
+	dlCreateDate,
+	setIsUpdateRecord,
+	setShowMailingListDetailView
+}: EditDistributionListContentProps) {
 	const [t] = useTranslation();
 	const searchUserLabelValue = t(
 		'label.search_for_user_and_clic_to_add',
 		'Search for a user and click on the ADD button.'
 	);
 	const createSnackbar = useSnackbar();
-	const [displayName, setDisplayName] = useState<string>('');
-	const [distributionName, setDistributionName] = useState<string>('');
-	const [
-		zimbraDistributionListSendShareMessageToNewMembers,
-		setZimbraDistributionListSendShareMessageToNewMembers
-	] = useState<boolean>(false);
-
-	const [zimbraHideInGal, setZimbraHideInGal] = useState<boolean>(false);
-	const [zimbraDefaultMailAlias, setDefaultZimbraMailAlias] = useState<any>([]);
-	const [zimbraMailAlias, setZimbraMailAlias] = useState<any>([]);
-	const [dlm, setDlm] = useState<any[]>([]);
-	const [zimbraNotes, setZimbraNotes] = useState<string>('');
-	const [description, setDescription] = useState<string>('');
-	const [zimbraCreateTimestamp, setZimbraCreateTimestamp] = useState<string>('');
-	const [dlId, setdlId] = useState<string>('');
-	const [dlMembershipList, setDlMembershipList] = useState<any>([]);
-	const [ownersList, setOwnersList] = useState<any[]>([]);
-	const [dlMembershipListNames, setDlMembershipListNames] = useState<string>('');
-	const [isDirty, setIsDirty] = useState<boolean>(false);
-	const [memberURL, setMemberURL] = useState<string>();
-	const [ownerOfList, setOwnerOfList] = useState<any[]>([]);
-	const [zimbraIsACLGroup, setZimbraIsACLGroup] = useState<boolean>(false);
-	const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
-	const [granteeTotalRights, setGranteeTotalRights] = useState(0);
-	const [targetTotalRights, setTargetTotalRights] = useState(0);
-	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
-	const [totalGrantRights, setTotalGrantRights] = useState(0);
-	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState(false);
 	const userSetting = useUserSettings();
-	const [isGlobalAdmin, setIsGlobalAdmin] = useState<boolean>(false);
-	const [selectedTab, setSelectedTab] = useState<string>('general');
-	const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
-	const [pendingTab, setPendingTab] = useState<string | null>(null);
+	const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === 'TRUE';
 
-	// sendEmails
-	const [sendEmails, setSendEmails] = useState<any>([]);
+	const listId = selectedMailingList?.id ?? '';
+	const listName = selectedMailingList?.name ?? '';
+	const dynamic = Boolean(selectedMailingList?.dynamic);
 
-	const [sendEmailsList, setSendEmailsList] = useState<any>([]);
-
-	const dlCreateDate = useMemo(() => {
-		if (!zimbraCreateTimestamp || zimbraCreateTimestamp === '') {
-			return '';
-		}
-		const date = getDateTimeFromStr(zimbraCreateTimestamp);
-		return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
-	}, [zimbraCreateTimestamp]);
-
-	const rightsOptions: any[] = useMemo(
-		() => [
-			{
-				label: t('domain.mailingList.canReceive', 'Can Receive'),
-				value: TRUE_FALSE.TRUE
-			},
-			{
-				label: t('domain.mailingList.cantReceive', "Can't Receive"),
-				value: TRUE_FALSE.FALSE
-			}
-		],
-		[t]
-	);
-
-	const grantTypeOptions: any[] = useMemo(
-		() => [
-			{
-				label: t('label.everyone', 'Everyone'),
-				value: PUB
-			},
-			{
-				label: t('label.members_only', 'Members only'),
-				value: GRP
-			},
-			{
-				label: t('label.internal_users_only', 'Internal Users only'),
-				value: ALL
-			},
-			{
-				label: t('label.only_there_users', 'Only these users'),
-				value: EMAIL
-			}
-		],
-		[t]
-	);
-
-	useEffect(() => {
-		if (userSetting?.attrs) {
-			const account = userSetting?.attrs?.zimbraIsAdminAccount;
-			if (account && account === 'TRUE') {
-				setIsGlobalAdmin(true);
-			}
-		}
-	}, [userSetting?.attrs]);
-
-	const [previousDetail, setPreviousDetail] = useState<any>({});
-
-	const [zimbraMailStatus, setZimbraMailStatus] = useState<any>(rightsOptions[1]);
-
-	const onRightsChange = useCallback(
-		(v: any): any => {
-			const it = rightsOptions.find((item: any) => item.value === v);
-			setZimbraMailStatus(it);
-		},
-		[rightsOptions]
-	);
-
-	/* Cached data layer */
-	const detailQuery = useDistributionList(selectedMailingList?.id, selectedMailingList?.name);
-	const membershipQuery = useDistributionListMembership(
-		selectedMailingList?.dynamic || !selectedMailingList?.id ? undefined : selectedMailingList?.id
-	);
-	const grantsQuery = useDistributionListGrants(
-		isDirty || !selectedMailingList?.id ? undefined : selectedMailingList?.id
-	);
-
-	const modifyMutation = useModifyDistributionList(selectedMailingList?.id ?? '');
-	const renameMutation = useRenameDistributionList(selectedMailingList?.id ?? '');
-	const addAliasMutation = useAddMailingListAlias(selectedMailingList?.id ?? '');
-	const removeAliasMutation = useDeleteMailingListAlias(selectedMailingList?.id ?? '');
-	const actionMutation = useDistributionListAction(selectedMailingList?.id ?? '');
+	const modifyMutation = useModifyDistributionList(listId);
+	const renameMutation = useRenameDistributionList(listId);
+	const addAliasMutation = useAddMailingListAlias(listId);
+	const removeAliasMutation = useDeleteMailingListAlias(listId);
+	const actionMutation = useDistributionListAction(listId);
 	const addMemberMutation = useAddDistributionListMember();
 	const removeMemberMutation = useRemoveDistributionListMember();
-	const deleteListMutation = useDeleteDistributionList(selectedMailingList?.id ?? '');
-
-	/* Mirror the selected list (display name / address) into the edit state */
-	useEffect(() => {
-		if (selectedMailingList?.a) {
-			const dsName = selectedMailingList?.a?.find((a: any) => a?.n === 'displayName')?._content;
-			if (dsName) {
-				setDisplayName(dsName);
-				setPreviousDetail((prevState: any) => ({
-					...prevState,
-					displayName: dsName
-				}));
-			} else {
-				setDisplayName('');
-				setPreviousDetail((prevState: any) => ({
-					...prevState,
-					displayName: ''
-				}));
-			}
-		}
-		setDistributionName(selectedMailingList?.name);
-		setPreviousDetail((prevState: any) => ({
-			...prevState,
-			distributionName: selectedMailingList?.name
-		}));
-	}, [selectedMailingList]);
-
-	/* Mirror the cached distribution list detail into the edit state */
-	useEffect(() => {
-		const parsed = parseDistributionListDetail(detailQuery.data, selectedMailingList?.name);
-		if (!parsed) {
-			return;
-		}
-		setdlId(parsed.dlId);
-		setDlm(parsed.dlm);
-		setZimbraHideInGal(parsed.zimbraHideInGal);
-		setZimbraNotes(parsed.zimbraNotes);
-		setDescription(parsed.description);
-		setZimbraDistributionListSendShareMessageToNewMembers(parsed.sendShareMessageToNewMembers);
-		setZimbraMailAlias(parsed.aliases);
-		setDefaultZimbraMailAlias(parsed.aliases);
-		setZimbraCreateTimestamp(parsed.createTimestamp);
-		setZimbraMailStatus(rightsOptions[parsed.mailStatusEnabled ? 0 : 1]);
-		setZimbraIsACLGroup(parsed.isACLGroup);
-		if (parsed.memberURL) {
-			setMemberURL(parsed.memberURL);
-		}
-		setPreviousDetail((prevState: any) => ({
-			...prevState,
-			dlm: parsed.dlm,
-			zimbraHideInGal: parsed.zimbraHideInGal,
-			zimbraNotes: parsed.zimbraNotes,
-			description: parsed.description,
-			zimbraDistributionListSendShareMessageToNewMembers: parsed.sendShareMessageToNewMembers,
-			zimbraMailStatus: rightsOptions[parsed.mailStatusEnabled ? 0 : 1],
-			memberURL: parsed.memberURL
-				? parsed.memberURL
-				: selectedMailingList?.dynamic
-					? ''
-					: prevState.memberURL
-		}));
-	}, [detailQuery.data, selectedMailingList?.name, selectedMailingList?.dynamic, rightsOptions]);
-
-	/* Mirror the cached membership (lists this list is a member of) */
-	useEffect(() => {
-		const data = membershipQuery.data;
-		if (!data) {
-			return;
-		}
-		const members = parseDistributionListMembership(data);
-		if (members.length > 0) {
-			const allMembers = members.map((item) => ({
-				label: item.name,
-				background: 'gray3',
-				color: 'text',
-				id: item.id,
-				name: item.name
-			}));
-			setDlMembershipList(allMembers);
-			setDlMembershipListNames(allMembers.map((item: any) => item?.name).join(', '));
-			setPreviousDetail((prevState: any) => ({
-				...prevState,
-				dlMembershipList: allMembers
-			}));
-		} else {
-			setPreviousDetail((prevState: any) => ({
-				...prevState,
-				dlMembershipList: []
-			}));
-			setDlMembershipListNames('');
-		}
-	}, [membershipQuery.data]);
-
-	const [grantType, setGrantType] = useState<any>([]);
-	const [grantEmails, setGrantEmails] = useState<any>([]);
-	const [grantEmailsList, setGrantEmailsList] = useState<any>([]);
-
-	const onGrantTypeChange = useCallback(
-		(v: any): any => {
-			const it = grantTypeOptions.find((item: any) => item.value === v);
-			setGrantType(it);
-			if (
-				previousDetail?.grantType !== undefined &&
-				previousDetail?.grantType?.value !== undefined &&
-				previousDetail?.grantType?.value !== v
-			) {
-				setIsDirty(true);
-			}
-		},
-		[grantTypeOptions, grantType, previousDetail?.grantType, setIsDirty]
-	);
-
-	useEffect(() => {
-		if (grantType && grantType?.value === ALL) {
-			setTimeout(() => {
-				setGrantEmailsList([]);
-			}, 100);
-		}
-	}, [grantType]);
-
-	/* Mirror the cached grants (owners / send-as / send-to rights) */
-	useEffect(() => {
-		const data = grantsQuery.data;
-		if (!data) {
-			return;
-		}
-		const parsed = parseDistributionListGrants(data, selectedMailingList?.id);
-
-		// same dirty implications as the original imperative flow
-		if (
-			previousDetail?.grantType !== undefined &&
-			previousDetail?.grantType?.value !== undefined &&
-			previousDetail?.grantType?.value !== parsed.grantType
-		) {
-			setIsDirty(true);
-		}
-		setGrantType(grantTypeOptions.find((item: any) => item.value === parsed.grantType));
-
-		if (parsed.sendAs.length > 0) {
-			setSendEmails(parsed.sendAs);
-			setSendEmailsList(parsed.sendAs);
-		}
-		if (parsed.grantEmails.length > 0) {
-			setGrantEmails(parsed.grantEmails);
-			setGrantEmailsList(parsed.grantEmails.map((item: any) => item?.name));
-		}
-		if (parsed.owners.length > 0) {
-			setOwnersList(parsed.owners);
-		}
-		setPreviousDetail((prevState: any) => ({
-			...prevState,
-			grantEmails: parsed.grantEmails,
-			ownersList: parsed.owners,
-			sendEmailsList: parsed.sendAs,
-			grantType: grantTypeOptions.find((item: any) => item.value === parsed.grantType)
-		}));
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [grantsQuery.data, selectedMailingList?.id]);
-
-	const updatePreviousDetail = (): void => {
-		const latestData: any = {};
-		latestData.displayName = displayName;
-		latestData.distributionName = distributionName;
-		zimbraHideInGal ? (latestData.zimbraHideInGal = true) : (latestData.zimbraHideInGal = false);
-		dlm ? (latestData.dlm = dlm) : (latestData.dlm = []);
-		ownersList ? (latestData.ownersList = ownersList) : (latestData.ownersList = []);
-		dlMembershipList
-			? (latestData.dlMembershipList = dlMembershipList)
-			: (latestData.dlMembershipList = []);
-		zimbraNotes ? (latestData.zimbraNotes = zimbraNotes) : (latestData.zimbraNotes = '');
-		description ? (latestData.description = description) : (latestData.description = '');
-		zimbraDistributionListSendShareMessageToNewMembers
-			? (latestData.zimbraDistributionListSendShareMessageToNewMembers = true)
-			: (latestData.zimbraDistributionListSendShareMessageToNewMember = false);
-		latestData.zimbraMailStatus = zimbraMailStatus;
-
-		if (selectedMailingList?.dynamic) {
-			latestData.memberURL = memberURL;
-			ownerOfList ? (latestData.ownerOffset = ownerOfList) : (latestData.ownerOffset = []);
-		}
-
-		latestData.grantType = grantType;
-		latestData.grantEmails = grantEmails;
-		latestData.sendEmails = sendEmails;
-		setPreviousDetail(latestData);
-		setIsDirty(false);
-	};
-
-	const onUndo = (): void => {
-		previousDetail?.displayName ? setDisplayName(previousDetail?.displayName) : setDisplayName('');
-		if (selectedMailingList?.dynamic) {
-			previousDetail?.memberURL ? setMemberURL(previousDetail?.memberURL) : setMemberURL('');
-		}
-		setDistributionName(previousDetail?.distributionName);
-		previousDetail?.zimbraHideInGal ? setZimbraHideInGal(true) : setZimbraHideInGal(false);
-		previousDetail?.dlm !== undefined ? setDlm(previousDetail?.dlm) : setDlm([]);
-		previousDetail?.ownersList !== undefined
-			? setOwnersList(previousDetail?.ownersList)
-			: setOwnersList([]);
-		previousDetail?.dlMembershipList !== undefined
-			? setDlMembershipList(previousDetail?.dlMembershipList)
-			: setDlMembershipList([]);
-		previousDetail?.sendEmailsList !== undefined
-			? setSendEmails(previousDetail?.sendEmailsList)
-			: setSendEmails([]);
-		previousDetail?.zimbraNotes ? setZimbraNotes(previousDetail?.zimbraNotes) : setZimbraNotes('');
-		previousDetail?.description
-			? setDescription(previousDetail?.description)
-			: setDescription('');
-		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers
-			? setZimbraDistributionListSendShareMessageToNewMembers(true)
-			: setZimbraDistributionListSendShareMessageToNewMembers(false);
-		previousDetail?.zimbraMailStatus !== undefined
-			? setZimbraMailStatus(previousDetail?.zimbraMailStatus)
-			: setZimbraMailStatus(rightsOptions[1]);
-		if (selectedMailingList?.dynamic) {
-			previousDetail?.ownerOfList !== undefined
-				? setOwnerOfList(previousDetail?.ownerOfList)
-				: setOwnerOfList([]);
-		}
-		setZimbraMailAlias(zimbraDefaultMailAlias);
-		setIsDirty(false);
-	};
+	const deleteListMutation = useDeleteDistributionList(listId);
 
 	function executeSaveOperation(operation: SaveOperation): Promise<any> {
 		switch (operation.type) {
@@ -428,33 +213,35 @@ const EditDistributionList: FC<any> = ({
 		}
 	}
 
-	const callAllRequests = (operations: Array<SaveOperation>): void => {
-		setIsLoading(true);
-		Promise.all(operations.map(executeSaveOperation))
-			.then((data: any) => {
-				let isError = false;
-				let errorMessage = '';
-				if (grantType?.value !== EMAIL) {
-					setGrantEmailsList([]);
-					setGrantEmails([]);
-				}
-				data.forEach((item: any) => {
-					if (item?.Fault) {
-						isError = true;
-						errorMessage = item?.Fault?.Reason?.Text;
-					}
-				});
-				if (isError) {
+	const form = useForm({
+		defaultValues: formValues,
+		onSubmit: async ({ value }) => {
+			const operations = buildFormSaveOperations(value, formValues, {
+				dynamic,
+				isACLGroup: parsedDetail.isACLGroup,
+				listId,
+				listName
+			});
+			if (operations.length === 0) {
+				return;
+			}
+			setIsLoading(true);
+			// the original flow clears the grant emails after saving when the
+			// grant type is not "only these users"
+			const finalValue: EditDistributionListFormValues =
+				value.grantTypeValue !== EMAIL ? { ...value, grantEmails: [] } : value;
+			try {
+				const responses = await Promise.all(operations.map(executeSaveOperation));
+				const fault = responses.find((item: any) => item?.Fault);
+				if (fault) {
 					createSnackbar({
 						key: 'error',
 						severity: 'error',
-						label: errorMessage,
+						label: fault?.Fault?.Reason?.Text,
 						autoHideTimeout: 3000,
 						hideButton: true,
 						replace: true
 					});
-					updatePreviousDetail();
-					setIsUpdateRecord(true);
 				} else {
 					createSnackbar({
 						key: 'success',
@@ -464,150 +251,113 @@ const EditDistributionList: FC<any> = ({
 						hideButton: true,
 						replace: true
 					});
-					updatePreviousDetail();
-					setIsUpdateRecord(true);
 				}
-				setIsLoading(false);
-			})
-			.catch((error) => {
+				form.reset(finalValue, { keepDefaultValues: true });
+				setIsUpdateRecord(true);
+			} catch (error: any) {
 				createSnackbar({
 					key: 'error',
 					severity: 'error',
-					label: error.message
-						? error.message
+					label: error?.message
+						? error?.message
 						: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
 					autoHideTimeout: 3000,
 					hideButton: true,
 					replace: true
 				});
+			} finally {
 				setIsLoading(false);
-			});
+			}
+		}
+	});
+
+	/* Keep the form defaults in sync with (re)fetched query data */
+	useEffect(() => {
+		form.update({ defaultValues: formValues });
+	}, [form, formValues]);
+
+	const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+	const values = useSelector(form.store, (state) => state.values);
+
+	const [selectedTab, setSelectedTab] = useState<string>('general');
+	const [pendingTab, setPendingTab] = useState<string | null>(null);
+	const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
+	const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
+	const [granteeTotalRights, setGranteeTotalRights] = useState(0);
+	const [targetTotalRights, setTargetTotalRights] = useState(0);
+	const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const [isShowSenderToError, setIsShowSenderToError] = useState<boolean>(false);
+
+	const totalGrantRights = granteeTotalRights + targetTotalRights;
+
+	const rightsOptions: any[] = [
+		{
+			label: t('domain.mailingList.canReceive', 'Can Receive'),
+			value: TRUE_FALSE.TRUE
+		},
+		{
+			label: t('domain.mailingList.cantReceive', "Can't Receive"),
+			value: TRUE_FALSE.FALSE
+		}
+	];
+
+	const grantTypeOptions: any[] = [
+		{
+			label: t('label.everyone', 'Everyone'),
+			value: PUB
+		},
+		{
+			label: t('label.members_only', 'Members only'),
+			value: GRP
+		},
+		{
+			label: t('label.internal_users_only', 'Internal Users only'),
+			value: ALL
+		},
+		{
+			label: t('label.only_there_users', 'Only these users'),
+			value: EMAIL
+		}
+	];
+
+	const zimbraMailStatusOption =
+		rightsOptions.find((item: any) => item.value === values.zimbraMailStatusValue) ??
+		rightsOptions[1];
+	const grantTypeOption =
+		grantTypeOptions.find((item: any) => item.value === values.grantTypeValue) ??
+		grantTypeOptions[0];
+	const grantEmailsList = values.grantEmails.map((item: any) =>
+		typeof item === 'string' ? item : item?.name
+	);
+	const dlMembershipListNames = values.dlMembershipList
+		.map((item) => item?.name)
+		.join(', ');
+
+	const onRightsChange = (v: any): any => {
+		form.setFieldValue('zimbraMailStatusValue', v);
 	};
 
-	const onSave = (): void => {
-		const operations = buildSaveOperations(previousDetail, {
-			displayName,
-			distributionName,
-			zimbraNotes,
-			description,
-			zimbraMailStatusValue: zimbraMailStatus?.value,
-			zimbraHideInGal,
-			sendShareMessageToNewMembers: zimbraDistributionListSendShareMessageToNewMembers,
-			memberURL,
-			dynamic: Boolean(selectedMailingList?.dynamic),
-			isACLGroup: zimbraIsACLGroup,
-			listId: selectedMailingList?.id ?? '',
-			listName: selectedMailingList?.name ?? '',
-			defaultAliases: zimbraDefaultMailAlias ?? [],
-			aliases: zimbraMailAlias ?? [],
-			dlMembershipList,
-			ownerOfList,
-			grantEmails: grantEmails ?? [],
-			grantTypeValue: grantType?.value
-		});
-
-		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
-			setDefaultZimbraMailAlias(zimbraMailAlias);
-		}
-
-		if (operations.length > 0) {
-			callAllRequests(operations);
+	const onGrantTypeChange = (v: any): any => {
+		form.setFieldValue('grantTypeValue', v);
+		if (v === ALL) {
+			// the original cleared the senders list when switching to Internal Users only
+			form.setFieldValue('grantEmails', []);
 		}
 	};
 
-	useEffect(() => {
-		if (previousDetail?.displayName !== undefined && previousDetail?.displayName !== displayName) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.displayName, displayName]);
-	useEffect(() => {
-		if (!isEqual(zimbraDefaultMailAlias, zimbraMailAlias)) {
-			setIsDirty(true);
-		}
-	}, [zimbraDefaultMailAlias, zimbraMailAlias]);
+	/* Legacy adapter: tabs used to mirror their mutations into previousDetail;
+	 * defaults now come from the invalidation refetch, so this is a no-op. */
+	const ignorePreviousDetail = (): void => undefined;
+	/* Legacy adapter: dirty state is derived from the form store now. */
+	const ignoreDirty = (): void => undefined;
 
-	useEffect(() => {
-		if (
-			previousDetail?.distributionName !== undefined &&
-			previousDetail?.distributionName !== distributionName
-		) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.distributionName, distributionName]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.zimbraHideInGal !== undefined &&
-			previousDetail?.zimbraHideInGal !== zimbraHideInGal
-		) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.zimbraHideInGal, zimbraHideInGal]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.ownerOfList !== undefined &&
-			!isEqual(previousDetail?.ownerOfList, ownerOfList)
-		) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.ownerOfList, ownerOfList]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.dlMembershipList !== undefined &&
-			!isEqual(previousDetail?.dlMembershipList, dlMembershipList)
-		) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.dlMembershipList, dlMembershipList]);
-
-	useEffect(() => {
-		if (previousDetail?.zimbraNotes !== undefined && previousDetail?.zimbraNotes !== zimbraNotes) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.zimbraNotes, zimbraNotes]);
-
-	useEffect(() => {
-		if (previousDetail?.description !== undefined && previousDetail?.description !== description) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.description, description]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.zimbraDistributionListSendShareMessageToNewMembers !== undefined &&
-			previousDetail?.zimbraDistributionListSendShareMessageToNewMembers !==
-				zimbraDistributionListSendShareMessageToNewMembers
-		) {
-			setIsDirty(true);
-		}
-	}, [
-		previousDetail?.zimbraDistributionListSendShareMessageToNewMembers,
-		zimbraDistributionListSendShareMessageToNewMembers
-	]);
-
-	useEffect(() => {
-		if (
-			previousDetail?.zimbraMailStatus !== undefined &&
-			previousDetail?.zimbraMailStatus?.value !== zimbraMailStatus.value
-		) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.zimbraMailStatus, zimbraMailStatus]);
-
-	useEffect(() => {
-		if (previousDetail?.memberURL !== undefined && previousDetail?.memberURL !== memberURL) {
-			setIsDirty(true);
-		}
-	}, [previousDetail?.memberURL, memberURL]);
-
-	const handleClickDeleteEvent = useCallback(() => {
+	const handleClickDeleteEvent = () => {
 		const getGrantBody: any = {};
 		const grantee = {
 			type: GRP,
 			by: 'id',
-			_content: selectedMailingList?.id,
+			_content: listId,
 			all: false
 		};
 		getGrantBody.grantee = grantee;
@@ -644,7 +394,7 @@ const EditDistributionList: FC<any> = ({
 		const target = {
 			type: DL,
 			by: 'id',
-			_content: selectedMailingList?.id
+			_content: listId
 		};
 		getGrantBodyTarget.target = target;
 		getGrant(getGrantBodyTarget)
@@ -673,14 +423,13 @@ const EditDistributionList: FC<any> = ({
 					replace: true
 				});
 			});
-	}, [createSnackbar, selectedMailingList?.name, t]);
+	};
 
-	const closeHandler = useCallback(() => {
+	const closeHandler = () => {
 		setIsOpenDeleteDialog(false);
-	}, []);
+	};
 
-	const onSuccess = useCallback(
-		(message: string) => {
+	const onSuccess = (message: string) => {
 			createSnackbar({
 				key: 'success',
 				severity: 'success',
@@ -693,17 +442,15 @@ const EditDistributionList: FC<any> = ({
 			closeHandler();
 			setShowMailingListDetailView(false);
 			setIsUpdateRecord(true);
-		},
-		[closeHandler, createSnackbar, setIsUpdateRecord, setShowMailingListDetailView]
-	);
+	};
 
-	const onDeleteHandler = useCallback(() => {
+	const onDeleteHandler = () => {
 		setIsRequestInProgress(true);
 		deleteListMutation.mutate(undefined, {
 			onSuccess: () =>
 				onSuccess(
 					t('label.dl_delete_successfull', '{{name}} has been deleted successfully', {
-						name: distributionName
+						name: values.distributionName
 					})
 				),
 			onError: (error: any) => {
@@ -720,12 +467,7 @@ const EditDistributionList: FC<any> = ({
 				});
 			}
 		});
-	}, [createSnackbar, onSuccess, t, distributionName, deleteListMutation]);
-
-	useEffect(() => {
-		const totalRights = targetTotalRights + granteeTotalRights;
-		setTotalGrantRights(totalRights);
-	}, [granteeTotalRights, targetTotalRights]);
+	};
 
 	const items: any = [
 		{
@@ -783,11 +525,8 @@ const EditDistributionList: FC<any> = ({
 					<Row padding={{ horizontal: 'small' }}></Row>
 					<Row takeAvailableSpace mainAlignment="flex-start">
 						<ds-text as="h2" size="medium" overflow="ellipsis" weight="bold">
-							{distributionName} (
-							{selectedMailingList?.dynamic
-								? t('label.dynamic', 'Dynamic')
-								: t('label.standard', 'Standard')}
-							)
+							{values.distributionName} (
+							{dynamic ? t('label.dynamic', 'Dynamic') : t('label.standard', 'Standard')})
 						</ds-text>
 					</Row>
 					<Row>
@@ -814,11 +553,15 @@ const EditDistributionList: FC<any> = ({
 									<Button
 										label={t('label.cancel', 'Cancel')}
 										color="secondary"
-										onClick={onUndo}
+										onClick={(): void => form.reset()}
 									/>
 								</Padding>
 								<Padding right="small">
-									<Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+									<Button
+										label={t('label.save', 'Save')}
+										color="primary"
+										onClick={(): void => void form.handleSubmit()}
+									/>
 								</Padding>
 							</Container>
 						)}
@@ -866,56 +609,58 @@ const EditDistributionList: FC<any> = ({
 
 				{selectedTab === 'general' && (
 					<GeneralTab
-						displayName={displayName}
-						setDisplayName={setDisplayName}
-						distributionName={distributionName}
-						setDistributionName={setDistributionName}
-						zimbraHideInGal={zimbraHideInGal}
-						setZimbraHideInGal={setZimbraHideInGal}
-						zimbraNotes={zimbraNotes}
-						setZimbraNotes={setZimbraNotes}
-						description={description}
-						setDescription={setDescription}
+						displayName={values.displayName}
+						setDisplayName={(v: string): void => form.setFieldValue('displayName', v)}
+						distributionName={values.distributionName}
+						setDistributionName={(v: string): void =>
+							form.setFieldValue('distributionName', v)
+						}
+						zimbraHideInGal={values.zimbraHideInGal}
+						setZimbraHideInGal={(v: boolean): void => form.setFieldValue('zimbraHideInGal', v)}
+						zimbraNotes={values.zimbraNotes}
+						setZimbraNotes={(v: string): void => form.setFieldValue('zimbraNotes', v)}
+						description={values.description}
+						setDescription={(v: string): void => form.setFieldValue('description', v)}
 						zimbraDistributionListSendShareMessageToNewMembers={
-							zimbraDistributionListSendShareMessageToNewMembers
+							values.sendShareMessageToNewMembers
 						}
-						setZimbraDistributionListSendShareMessageToNewMembers={
-							setZimbraDistributionListSendShareMessageToNewMembers
+						setZimbraDistributionListSendShareMessageToNewMembers={(v: boolean): void =>
+							form.setFieldValue('sendShareMessageToNewMembers', v)
 						}
-						zimbraMailStatus={zimbraMailStatus}
+						zimbraMailStatus={zimbraMailStatusOption}
 						onRightsChange={onRightsChange}
 						rightsOptions={rightsOptions}
-						zimbraMailAlias={zimbraMailAlias}
-						setZimbraMailAlias={setZimbraMailAlias}
+						zimbraMailAlias={values.aliases}
+						setZimbraMailAlias={(v: any): void => form.setFieldValue('aliases', v)}
 						dlCreateDate={dlCreateDate}
-						dlId={dlId}
-						dlmCount={dlm.length}
+						dlId={parsedDetail.dlId}
+						dlmCount={values.dlm.length}
 						selectedMailingList={selectedMailingList}
 						dlMembershipListNames={dlMembershipListNames}
-						setIsDirty={setIsDirty}
+						setIsDirty={ignoreDirty}
 					/>
 				)}
 
 				{selectedTab === 'members' && (
 					<MembersTab
-						dlm={dlm}
-						setDlm={setDlm}
-						setPreviousDetail={setPreviousDetail}
+						dlm={values.dlm}
+						setDlm={(v: Array<any>): void => form.setFieldValue('dlm', v)}
+						setPreviousDetail={ignorePreviousDetail}
 						selectedMailingList={selectedMailingList}
 						isRequestInProgress={isRequestInProgress}
 						setIsRequestInProgress={setIsRequestInProgress}
 						searchUserLabelValue={searchUserLabelValue}
 						isGlobalAdmin={isGlobalAdmin}
-						memberURL={memberURL}
-						setMemberURL={setMemberURL}
+						memberURL={values.memberURL}
+						setMemberURL={(v: string): void => form.setFieldValue('memberURL', v)}
 					/>
 				)}
 
 				{selectedTab === 'owners' && (
 					<OwnersTab
-						ownersList={ownersList}
-						setOwnersList={setOwnersList}
-						setPreviousDetail={setPreviousDetail}
+						ownersList={values.ownersList}
+						setOwnersList={(v: Array<any>): void => form.setFieldValue('ownersList', v)}
+						setPreviousDetail={ignorePreviousDetail}
 						selectedMailingList={selectedMailingList}
 						isRequestInProgress={isRequestInProgress}
 						setIsRequestInProgress={setIsRequestInProgress}
@@ -925,10 +670,10 @@ const EditDistributionList: FC<any> = ({
 
 				{selectedTab === 'sendas' && (
 					<SendAsTab
-						sendEmailsList={sendEmailsList}
-						setSendEmailsList={setSendEmailsList}
-						setSendEmails={setSendEmails}
-						setPreviousDetail={setPreviousDetail}
+						sendEmailsList={values.sendEmails}
+						setSendEmailsList={(v: any): void => form.setFieldValue('sendEmails', v)}
+						setSendEmails={(v: any): void => form.setFieldValue('sendEmails', v)}
+						setPreviousDetail={ignorePreviousDetail}
 						selectedMailingList={selectedMailingList}
 						isRequestInProgress={isRequestInProgress}
 						setIsRequestInProgress={setIsRequestInProgress}
@@ -939,12 +684,12 @@ const EditDistributionList: FC<any> = ({
 				{selectedTab === 'sendto' && (
 					<SendToTab
 						grantTypeOptions={grantTypeOptions}
-						grantType={grantType}
+						grantType={grantTypeOption}
 						onGrantTypeChange={onGrantTypeChange}
 						grantEmailsList={grantEmailsList}
-						setGrantEmailsList={setGrantEmailsList}
-						setGrantEmails={setGrantEmails}
-						setIsDirty={setIsDirty}
+						setGrantEmailsList={(v: Array<any>): void => form.setFieldValue('grantEmails', v)}
+						setGrantEmails={(v: Array<any>): void => form.setFieldValue('grantEmails', v)}
+						setIsDirty={ignoreDirty}
 						searchUserLabelValue={searchUserLabelValue}
 						isShowSenderToError={isShowSenderToError}
 						setIsShowSenderToError={setIsShowSenderToError}
@@ -955,7 +700,7 @@ const EditDistributionList: FC<any> = ({
 					<TabDirtyGuardModal
 						open={isOpenUnsavedDialog}
 						onExitWithoutSave={(): void => {
-							onUndo();
+							form.reset();
 							if (pendingTab) {
 								setSelectedTab(pendingTab);
 							}
@@ -963,7 +708,7 @@ const EditDistributionList: FC<any> = ({
 							setIsOpenUnsavedDialog(false);
 						}}
 						onSaveAndExit={(): void => {
-							onSave();
+							void form.handleSubmit();
 							if (pendingTab) {
 								setSelectedTab(pendingTab);
 							}
@@ -977,11 +722,11 @@ const EditDistributionList: FC<any> = ({
 					/>
 				)}
 
-				<RouteLeavingGuard when={isDirty} onSave={onSave} />
+				<RouteLeavingGuard when={isDirty} onSave={(): void => void form.handleSubmit()} />
 				{isOpenDeleteDialog && (
 					<DeleteDistributionListModal
 						open={isOpenDeleteDialog}
-						listLabel={displayName || distributionName}
+						listLabel={values.displayName || values.distributionName}
 						totalGrantRights={totalGrantRights}
 						isRequestInProgress={isRequestInProgress}
 						onCancel={closeHandler}
@@ -991,6 +736,6 @@ const EditDistributionList: FC<any> = ({
 			</Container>
 		</>
 	);
-};
+}
 
 export default EditDistributionList;
