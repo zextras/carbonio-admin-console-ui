@@ -298,4 +298,38 @@ describe('DomainMailingList (browser)', () => {
             expect((params as { query: string }).query).toContain('!(zimbraIsAdminGroup=TRUE)');
         });
     });
+
+    describe('Pagination and creation', () => {
+        it('should open the create wizard when the add button is clicked', async () => {
+            setupSearchDirectoryInterceptor();
+            await setupBrowserTest(<DomainMailingList />);
+            await expect.element(page.getByText('team@example.com')).toBeInTheDocument();
+            await page.getByTestId('icon: Plus').click();
+            await expect
+                .element(page.getByText('New Distribution List'))
+                .toBeInTheDocument();
+        });
+
+        it('should request the next page when paging forward', async () => {
+            const manyLists = Array.from({ length: 15 }, (_, index) =>
+                buildDistributionList(`list${index}@example.com`, `dl-${index}`),
+            );
+            const interceptor = createBrowserSoapAPIInterceptor('SearchDirectory', {
+                dl: manyLists,
+                searchTotal: manyLists.length,
+                more: false,
+            });
+            await setupBrowserTest(<DomainMailingList />);
+            await expect.element(page.getByText('list0@example.com')).toBeInTheDocument();
+            await interceptor;
+            await page.getByRole('button', { name: 'Next page' }).click();
+            const secondCall = await createBrowserSoapAPIInterceptor('SearchDirectory', {
+                dl: manyLists,
+                searchTotal: manyLists.length,
+                more: false,
+            });
+            const params = await secondCall;
+            expect(params).toHaveProperty('offset', 10);
+        });
+    });
 });
