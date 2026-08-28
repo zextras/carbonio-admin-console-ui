@@ -15,7 +15,7 @@ import { HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import DomainSaml from '../domain-saml';
+import { DomainSaml } from '../domain-saml';
 
 const DOMAIN_ID = 'test-domain-id-saml';
 const DOMAIN_NAME = 'example.com';

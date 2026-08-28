@@ -31,7 +31,7 @@ import {
 } from '../constants';
 import { CreateDomain } from './create-new-domain/create-new-domain';
 import { DomainDisclaimer } from './details/domain-disclaimer';
-import DomainSaml from './details/domain-saml';
+import { DomainSaml } from './details/domain-saml';
 import { DomainTwoFactorAuthentication } from './domain/details/domain-2fa';
 import { DomainAuthentication } from './domain/details/domain-authentication';
 import { DomainGalSettings } from './domain/details/domain-gal-settings';
