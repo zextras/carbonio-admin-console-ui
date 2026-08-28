@@ -16,7 +16,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
-import { debounce, uniq } from 'lodash-es';
+import { uniq } from 'lodash-es';
 import React, {
 	type FC,
 	useCallback,
@@ -29,9 +29,48 @@ import { useTranslation } from 'react-i18next';
 
 import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import { useDebouncedValue } from '../edit-mailing-detail/hooks/use-debounced-value';
 import { HelmetEmptyState } from './helmet-empty-state';
 import { MailingListContext } from './mailinglist-context';
 import { parseEmailInput } from './parse-email-input';
+
+function fetchSearchMemberList(
+	mem: string,
+	onSuccess: (result: Array<any>) => void,
+	onError: (error: any) => void
+): void {
+	const attrs =
+		'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
+	const types = 'accounts,distributionlists,aliases';
+	const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+
+	searchDirectory({
+		attr: attrs,
+		type: types,
+		domainName: '',
+		query,
+		offset: 0,
+		limit: RECORD_DISPLAY_LIMIT,
+		sortBy: 'name'
+	})
+		.then((data) => {
+			const result: Array<any> = [];
+			const dl = data?.dl;
+			const account = data?.account;
+			const alias = data?.alias;
+			if (dl) {
+				dl.map((item: any) => result.push(item));
+			}
+			if (account) {
+				account.map((item: any) => result.push(item));
+			}
+			if (alias) {
+				alias.map((item: any) => result.push(item));
+			}
+			onSuccess(result);
+		})
+		.catch(onError);
+}
 
 const MembersSection: FC<any> = () => {
 	const { t } = useTranslation();
@@ -132,59 +171,22 @@ const MembersSection: FC<any> = () => {
 		}
 	}, [dlm, selectedDistributionListMember]);
 
-	const getSearchMemberList = useCallback(
-		(mem: string) => {
-			const attrs =
-				'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-			const types = 'accounts,distributionlists,aliases';
-			const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
+	const debouncedMember = useDebouncedValue(member);
 
-			searchDirectory({
-				attr: attrs,
-				type: types,
-				domainName: '',
-				query,
-				offset: 0,
-				limit: RECORD_DISPLAY_LIMIT,
-				sortBy: 'name'
-			})
-				.then((data) => {
-					const result: any[] = [];
-
-					const dl = data?.dl;
-					const account = data?.account;
-					const alias = data?.alias;
-					if (dl) {
-						dl.map((item: any) => result.push(item));
-					}
-					if (account) {
-						account.map((item: any) => result.push(item));
-					}
-					if (alias) {
-						alias.map((item: any) => result.push(item));
-					}
+	useEffect(() => {
+		if (debouncedMember !== '') {
+			fetchSearchMemberList(
+				debouncedMember,
+				(result) => {
 					setSearchMemberResult(result);
-				})
-				.catch((error) => {
+				},
+				(error) => {
 					const snackbarConfig = generateSnackbarFromError(error, t);
 					createSnackbar(snackbarConfig);
-				});
-		},
-		[createSnackbar, t]
-	);
-
-	// eslint-disable-next-line react-hooks/exhaustive-deps
-	const searchMemberCall = useCallback(
-		debounce((mem) => {
-			getSearchMemberList(mem);
-		}, 700),
-		[debounce]
-	);
-	useEffect(() => {
-		if (member !== '') {
-			searchMemberCall(member);
+				}
+			);
 		}
-	}, [member, searchMemberCall]);
+	}, [debouncedMember, t, createSnackbar]);
 
 	const items = searchMemberResult.map((item: any) => ({
 		id: item.id,

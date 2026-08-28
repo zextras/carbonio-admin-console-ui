@@ -18,7 +18,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useState } from 'react';
+import { type ChangeEvent, type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
@@ -67,9 +67,23 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
 		grantTypeOptions.find((item: any) => item.value === grantTypeValue) ?? grantTypeOptions[0];
 
 	const [isShowSenderToError, setIsShowSenderToError] = useState(false);
-	const [grantEmailTableRows, setGrantEmailTableRows] = useState<Array<any>>([]);
+
 	const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
 	const [senderToErrorMessage, setSenderToErrorMessage] = useState<string>('');
+
+	const grantEmailTableRows: Array<any> = (grantEmailsList ?? []).map((item: any) =>
+		buildGrantEmailRow(item, {
+			deleteLabel: t('label.delete', 'Delete'),
+			onDelete: (email): void => {
+				const updated = grantEmailsList.filter((g: any) => email !== g);
+				form.setFieldValue('grantEmails', updated);
+				setSelectedGrantEmail([]);
+			},
+			onSelect: (email): void => {
+				setSelectedGrantEmail([email]);
+			}
+		})
+	);
 
 	const {
 		filterValue: filterGrantEmail,
@@ -95,7 +109,7 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
 		}
 	];
 
-	const onAddGrantEmail = useCallback(() => {
+	const onAddGrantEmail = () => {
 		const resolution = resolveNewMembers(grantEmailItem, grantEmailsList);
 		switch (resolution.type) {
 			case 'blank':
@@ -138,28 +152,8 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
 		setIsShowSenderToError(false);
 		setSenderToErrorMessage('');
 		form.setFieldValue('grantEmails', uniq(grantEmailsList.concat(resolution.members)));
-	}, [grantEmailsList, createSnackbar, grantEmailItem, t, form, setGrantEmailItem]);
+	};
 
-	useEffect(() => {
-		if (grantEmailsList && grantEmailsList.length > 0) {
-			const allRows = grantEmailsList.map((item: any) =>
-				buildGrantEmailRow(item, {
-					deleteLabel: t('label.delete', 'Delete'),
-					onDelete: (email): void => {
-						const updated = grantEmailsList.filter((g: any) => email !== g);
-						form.setFieldValue('grantEmails', updated);
-						setSelectedGrantEmail([]);
-					},
-					onSelect: (email): void => {
-						setSelectedGrantEmail([email]);
-					}
-				})
-			);
-			setGrantEmailTableRows(allRows);
-		} else {
-			setGrantEmailTableRows([]);
-		}
-	}, [grantEmailsList, t, form]);
 
 	return (
 		<Container

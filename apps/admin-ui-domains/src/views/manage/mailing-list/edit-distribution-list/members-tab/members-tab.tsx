@@ -26,7 +26,7 @@ import { RECORD_DISPLAY_LIMIT } from '../../../../../constants';
 import { useAddDistributionListMember } from '../../../../../services/use-add-distribution-list-member';
 import { useRemoveDistributionListMember } from '../../../../../services/use-remove-distribution-list-member';
 import { generateSnackbarFromError } from '../../../../error/generate-snackbar-error';
-import { useSearchWithDebounce } from '../../edit-mailing-detail/hooks/use-search-with-debounce';
+import { useDebouncedValue } from '../../edit-mailing-detail/hooks/use-debounced-value';
 import type { EditDistributionListFormApi } from '../types';
 import { AddMemberRow } from './add-member-row';
 import { filterMemberRows, pageRows, resolveNewMembers } from './filter-members';
@@ -56,8 +56,6 @@ export const MembersTab: FC<MembersTabProps> = ({
 	const createSnackbar = useSnackbar();
 
 	const limit = 15;
-	const [dlmTableRows, setDlmTableRows] = useState<Array<any>>([]);
-	const [DLMPagedRows, setDLMPagedRows] = useState<Array<any>>([]);
 	const [selectedDistributionListMember, setSelectedDistributionListMember] = useState<Array<any>>(
 		[]
 	);
@@ -68,7 +66,6 @@ export const MembersTab: FC<MembersTabProps> = ({
 	const [offset, setOffset] = useState(0);
 	const [DLMCurrentPage, setDLMSearchCurrentPage] = useState(1);
 	const [filterMember, setFilterMember] = useState('');
-	const [filteredDlmTableRows, setFilteredDlmTableRows] = useState<Array<any>>([]);
 	const [isOpenDeleteMemberDialog, setIsOpenDeleteMemberDialog] = useState(false);
 	const [memberToDelete, setMemberToDelete] = useState<string | null>(null);
 
@@ -113,31 +110,23 @@ export const MembersTab: FC<MembersTabProps> = ({
 		)
 	}));
 
-	useEffect(() => {
-		if (dlm && dlm.length > 0) {
-			const source = filterMember ? filterMemberRows(dlm, filterMember) : dlm;
-			const rows = source.map((item: string) =>
-				buildMemberRow(item, {
-					dynamic: Boolean(selectedMailingList?.dynamic),
-					deleteLabel: t('label.delete', 'Delete'),
-					onDelete: (member): void => {
-						setMemberToDelete(member);
-						setIsOpenDeleteMemberDialog(true);
-					},
-					onSelect: (member): void => {
-						setSelectedDistributionListMember([member]);
-					}
-				})
-			);
-			setDlmTableRows(rows);
-			setDLMPagedRows(pageRows(rows, offset, limit));
-		} else {
-			setDlmTableRows([]);
-			setDLMPagedRows([]);
-			setOffset(0);
-			setDLMSearchCurrentPage(1);
-		}
-	}, [dlm, offset, filterMember, selectedMailingList?.dynamic, t]);
+	const dlmTableRows: Array<any> =
+		dlm && dlm.length > 0
+			? (filterMember ? filterMemberRows(dlm, filterMember) : dlm).map((item: string) =>
+					buildMemberRow(item, {
+						dynamic: Boolean(selectedMailingList?.dynamic),
+						deleteLabel: t('label.delete', 'Delete'),
+						onDelete: (member): void => {
+							setMemberToDelete(member);
+							setIsOpenDeleteMemberDialog(true);
+						},
+						onSelect: (member): void => {
+							setSelectedDistributionListMember([member]);
+						}
+					})
+				)
+			: [];
+	const DLMPagedRows = pageRows(dlmTableRows, offset, limit);
 
 	const getSearchMemberList = useCallback(
 		(mem: string) => {
@@ -179,7 +168,13 @@ export const MembersTab: FC<MembersTabProps> = ({
 		[createSnackbar, t]
 	);
 
-	useSearchWithDebounce(searchMember, getSearchMemberList);
+	const debouncedSearchMember = useDebouncedValue(searchMember);
+
+	useEffect(() => {
+		if (debouncedSearchMember !== '') {
+			getSearchMemberList(debouncedSearchMember);
+		}
+	}, [debouncedSearchMember, getSearchMemberList]);
 
 	const onAdd = useCallback((): void => {
 		const resolution = resolveNewMembers(searchMember, dlm);
@@ -282,23 +277,9 @@ export const MembersTab: FC<MembersTabProps> = ({
 	]);
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-		const value = e.target.value;
-		if (value != '') {
-			setFilterMember(value);
-			setDLMSearchCurrentPage(1);
-			setOffset(0);
-			const allRows = dlmTableRows.filter((item: any) =>
-				item?.id.toLowerCase().includes(value.toLowerCase())
-			);
-			setFilteredDlmTableRows(allRows);
-			setDLMPagedRows(pageRows(allRows, 0, limit));
-		} else {
-			setFilterMember('');
-			setDLMSearchCurrentPage(1);
-			setOffset(0);
-			setDLMPagedRows(pageRows(dlmTableRows, 0, limit));
-			setFilteredDlmTableRows([]);
-		}
+		setFilterMember(e.target.value);
+		setDLMSearchCurrentPage(1);
+		setOffset(0);
 	};
 
 	const closeDeleteMemberHandler = useCallback(() => {
@@ -489,7 +470,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 							>
 								<Container crossAlignment="flex-start">
 									<Paging
-										totalItem={filterMember ? filteredDlmTableRows.length : dlmTableRows.length}
+										totalItem={dlmTableRows.length}
 										setOffset={setOffset}
 										pageSize={limit}
 										currentPageProp={DLMCurrentPage}

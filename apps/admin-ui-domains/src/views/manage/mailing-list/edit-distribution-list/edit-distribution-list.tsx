@@ -579,7 +579,7 @@ function EditDistributionListContent({
 
         {selectedTab === 'sendas' && (
           <SendAsTab
-            form={form as never}
+            form={form}
             selectedMailingList={selectedMailingList}
             isRequestInProgress={isRequestInProgress}
             setIsRequestInProgress={setIsRequestInProgress}
@@ -588,7 +588,7 @@ function EditDistributionListContent({
         )}
 
         {selectedTab === 'sendto' && (
-          <SendToTab form={form as never} searchUserLabelValue={searchUserLabelValue} />
+          <SendToTab form={form} searchUserLabelValue={searchUserLabelValue} />
         )}
 
         {isOpenUnsavedDialog && (

@@ -18,7 +18,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, useCallback, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
@@ -59,7 +59,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 	const createSnackbar = useSnackbar();
 	const sendEmailsList = useStore(form.store, (state) => state.values.sendEmails);
 
-	const [sendEmailTableRows, setSendEmailTableRows] = useState<Array<any>>([]);
+
 	const [selectedSendEmail, setSelectedSendEmail] = useState<Array<any>>([]);
 	const [radioPermisionValue, setRadioPermisionValue] = useState<PermissionLevelValue>('sendAs');
 	const [isOpenDeleteSendEmailDialog, setIsOpenDeleteSendEmailDialog] = useState(false);
@@ -71,6 +71,27 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 	const [sendEmailErrorMessage, setSendEmailErrorMessage] = useState<string | null>('');
 
 	const actionMutation = useDistributionListAction(selectedMailingList?.id ?? '');
+
+	const sendEmailTableRows: Array<any> = (sendEmailsList ?? []).map((item: any) =>
+		buildSendAsRow(item, {
+			editLabel: t('label.edit', 'Edit'),
+			deleteLabel: t('label.delete', 'Delete'),
+			sendAsLabel: t('domain.distributionList.sendAs.sendAs', 'Send As'),
+			sendOnBehalfOfLabel: t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of'),
+			onEdit: (emailItem): void => {
+				setEditingEmailItem(emailItem);
+				setEditPermissionValue(emailItem?.sendAcl === 'sendAsDistList' ? 'sendAs' : 'sendOnBehalfOf');
+				setIsOpenEditPermissionDialog(true);
+			},
+			onDelete: (emailItem): void => {
+				setSendEmailToDelete(emailItem);
+				setIsOpenDeleteSendEmailDialog(true);
+			},
+			onSelect: (name): void => {
+				setSelectedSendEmail([name]);
+			}
+		})
+	);
 
 	const {
 		filterValue: filterSendEmail,
@@ -105,38 +126,6 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 		[t]
 	);
 
-	useEffect(() => {
-		if (sendEmailsList && sendEmailsList.length > 0) {
-			const allRows = sendEmailsList.map((item: any) =>
-				buildSendAsRow(item, {
-					editLabel: t('label.edit', 'Edit'),
-					deleteLabel: t('label.delete', 'Delete'),
-					sendAsLabel: t('domain.distributionList.sendAs.sendAs', 'Send As'),
-					sendOnBehalfOfLabel: t(
-						'domain.distributionList.sendAs.sendOnBehalfOf',
-						'Send on behalf of'
-					),
-					onEdit: (emailItem): void => {
-						setEditingEmailItem(emailItem);
-						setEditPermissionValue(
-							emailItem?.sendAcl === 'sendAsDistList' ? 'sendAs' : 'sendOnBehalfOf'
-						);
-						setIsOpenEditPermissionDialog(true);
-					},
-					onDelete: (emailItem): void => {
-						setSendEmailToDelete(emailItem);
-						setIsOpenDeleteSendEmailDialog(true);
-					},
-					onSelect: (name): void => {
-						setSelectedSendEmail([name]);
-					}
-				})
-			);
-			setSendEmailTableRows(allRows);
-		} else {
-			setSendEmailTableRows([]);
-		}
-	}, [sendEmailsList, t]);
 
 	const onAddSendEmail = useCallback(() => {
 		const resolution = resolveNewMembers(

@@ -28,26 +28,15 @@ export type EditDistributionListFormValues = {
  
 export type EditDistributionListFormApi = ReactFormExtendedApi<
 	EditDistributionListFormValues,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any,
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	any
 >;

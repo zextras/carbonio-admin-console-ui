@@ -5,57 +5,37 @@
  */
 
 import { Row } from '@zextras/ui-components';
-import { type ReactElement, useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import { useSearchGal } from '../../../../services/use-search-gal';
-import { useSearchWithDebounce } from '../edit-mailing-detail/hooks/use-search-with-debounce';
+import { useDebouncedValue } from '../edit-mailing-detail/hooks/use-debounced-value';
 
 type GalSearchItem = {
 	id: string;
 	name: string;
-	customComponent: ReactElement;
+	customComponent: React.ReactElement;
 };
 
 /**
  * Shared GAL email search used by the owners / send-as / send-to tabs:
- * owns the input value, debounces it into the cached `useSearchGal` query and
- * exposes ready-to-render dropdown items. `onResults` receives the raw GAL
- * contact list whenever results arrive (used by the owners tab to accumulate
- * contact types for grantee-type resolution).
+ * owns the input value and debounces it into the cached `useSearchGal`
+ * query. Items are derived directly from the query data; the raw contact
+ * list is exposed for grantee-type resolution (see `useGalContactTypes`).
  */
-export function useGalEmailSearch(onResults?: (contacts: Array<any>) => void) {
+export function useGalEmailSearch() {
 	const [searchValue, setSearchValue] = useState('');
-	const [debouncedSearchValue, setDebouncedSearchValue] = useState('');
-	const [searchResult, setSearchResult] = useState<Array<any>>([]);
+	const debouncedSearchValue = useDebouncedValue(searchValue);
 
-	useSearchWithDebounce(searchValue, setDebouncedSearchValue);
 	const galQuery = useSearchGal(debouncedSearchValue);
 
-	useEffect(() => {
-		const data = galQuery.data;
-		if (!data) {
-			return;
-		}
-		const contactList = data?.cn;
-		if (contactList) {
-			setSearchResult(
-				contactList.map((item: any): any => ({
-					id: item?.id,
-					name: item?._attrs?.email
-				}))
-			);
-			onResults?.(contactList);
-		} else {
-			setSearchResult([]);
-		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [galQuery.data]);
+	const contactList = galQuery.data?.cn ?? [];
 
-	const items: Array<GalSearchItem> = searchResult.map((item: any) => ({
+	const items: Array<GalSearchItem> = contactList.map((item: any) => ({
 		id: item?.id,
-		name: item?.name,
+		name: item?._attrs?.email,
 		customComponent: (
 			<Row
+				key={item?.id}
 				style={{
 					display: 'block',
 					textAlign: 'left',
@@ -64,13 +44,13 @@ export function useGalEmailSearch(onResults?: (contacts: Array<any>) => void) {
 					width: 'inherit'
 				}}
 				onClick={(): void => {
-					setSearchValue(item?.name);
+					setSearchValue(item?._attrs?.email);
 				}}
 			>
-				{item?.name}
+				{item?._attrs?.email}
 			</Row>
 		)
 	}));
 
-	return { searchValue, setSearchValue, items };
+	return { searchValue, setSearchValue, items, contactList, isDebouncing: debouncedSearchValue !== searchValue };
 }

@@ -17,19 +17,20 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/ui-components';
-import { uniq, uniqBy } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { uniq } from 'lodash';
+import { type ChangeEvent, type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { ASC, DESC } from '../../../../../constants';
 import { useDistributionListAction } from '../../../../../services/use-distribution-list-action';
 import { useTableFilter } from '../../edit-mailing-detail/hooks/use-table-filter';
+import { useGalContactTypeResolver } from '../gal-contact-type-resolver';
 import { resolveNewMembers } from '../members-tab/filter-members';
 import type { EditDistributionListFormApi } from '../types';
 import { useGalEmailSearch } from '../use-gal-email-search';
 import { buildOwnerRow } from './owner-row';
-import { resolveOwnerType, sortOwnersByName } from './owner-type';
+import { sortOwnersByName } from './owner-type';
 import { RemoveOwnerModal } from './remove-owner-modal';
 
 type OwnersTabProps = {
@@ -51,15 +52,55 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
-	const [ownerTableRows, setOwnerTableRows] = useState<Array<any>>([]);
+	const [ownerSortOrder, setOwnerSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 	const [selectedOwnerListMember, setSelectedOwnerListMember] = useState<Array<any>>([]);
 	const [isShowOwnerError, setIsShowOwnerError] = useState(false);
 	const [ownerErrorMessage, setOwnerErrorMessage] = useState<string | null>('');
-	const [allOwnerList, setAllOwnerList] = useState<Array<any>>([]);
 	const [isOpenDeleteOwnerDialog, setIsOpenDeleteOwnerDialog] = useState(false);
 	const [ownerToDelete, setOwnerToDelete] = useState<any>(null);
 
 	const actionMutation = useDistributionListAction(selectedMailingList?.id ?? '');
+
+	const { searchValue: searchOwner, setSearchValue: setSearchOwner, items: searchOwnerList } =
+		useGalEmailSearch();
+
+	const getOwnerType = useGalContactTypeResolver();
+
+	const ownerHeaders: Array<any> = [
+		{
+			id: 'owners',
+			label: t('label.owners', 'Owners'),
+			width: '80%',
+			bold: true,
+			sortable: true,
+			onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+				setOwnerSortOrder(order);
+			}
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '20%',
+			bold: true
+		}
+	];
+
+	/* rows derived during render: built ascending, reversed for descending */
+	const ownerTableRows: Array<any> = (() => {
+		const rows = sortOwnersByName(ownersList ?? []).map((item: any) =>
+			buildOwnerRow(item, {
+				deleteLabel: t('label.delete', 'Delete'),
+				onDelete: (owner): void => {
+					setOwnerToDelete(owner);
+					setIsOpenDeleteOwnerDialog(true);
+				},
+				onSelect: (ownerName): void => {
+					setSelectedOwnerListMember([ownerName]);
+				}
+			})
+		);
+		return ownerSortOrder === ASC ? rows : [...rows].reverse();
+	})();
 
 	const {
 		filterValue: filterOwner,
@@ -67,90 +108,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 		handleFilterChange: handleInputChangeOwner
 	} = useTableFilter(ownerTableRows);
 
-	const { searchValue: searchOwner, setSearchValue: setSearchOwner, items: searchOwnerList } =
-		useGalEmailSearch((contacts) => {
-			setAllOwnerList((prevState: Array<any>) =>
-				uniqBy(
-					prevState.concat(
-						contacts.map((item: any) => ({
-							id: item?.id,
-							name: item?._attrs?.email,
-							type: item?._attrs?.type
-						}))
-					),
-					'id'
-				)
-			);
-		});
-
-	const _allOwnerLists = useMemo(
-		() =>
-			ownersList.map((item: any) => ({
-				id: item?.id,
-				name: item?.name,
-				type: item?.type
-			})),
-		[ownersList]
-	);
-
-	const getOwnerType = useCallback(
-		(email?: string): any => resolveOwnerType([..._allOwnerLists, ...allOwnerList], email),
-		[allOwnerList, _allOwnerLists]
-	);
-
-	const ownerHeaders: Array<any> = useMemo(
-		() => [
-			{
-				id: 'owners',
-				label: t('label.owners', 'Owners'),
-				width: '80%',
-				bold: true,
-				sortable: true,
-				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-					const sortFn = (a: any, b: any): number => {
-						const nameA = a?.columns[0]?.props?.children?.toLowerCase() || '';
-						const nameB = b?.columns[0]?.props?.children?.toLowerCase() || '';
-						if (order === ASC) {
-							return nameA.localeCompare(nameB);
-						} else {
-							return nameB.localeCompare(nameA);
-						}
-					};
-					setOwnerTableRows([...ownerTableRows].sort(sortFn));
-				}
-			},
-			{
-				id: 'actions',
-				label: t('label.actions', 'Actions'),
-				width: '20%',
-				bold: true
-			}
-		],
-		[t, ownerTableRows]
-	);
-
-	useEffect(() => {
-		if (ownersList && ownersList.length > 0) {
-			const sortedOwners = sortOwnersByName(ownersList);
-			const allRows = sortedOwners.map((item: any) =>
-				buildOwnerRow(item, {
-					deleteLabel: t('label.delete', 'Delete'),
-					onDelete: (owner): void => {
-						setOwnerToDelete(owner);
-						setIsOpenDeleteOwnerDialog(true);
-					},
-					onSelect: (ownerName): void => {
-						setSelectedOwnerListMember([ownerName]);
-					}
-				})
-			);
-			setOwnerTableRows(allRows);
-		} else {
-			setOwnerTableRows([]);
-		}
-	}, [ownersList, t]);
-
-	const onAddOwner = useCallback((): void => {
+	const onAddOwner = (): void => {
 		const resolution = resolveNewMembers(
 			searchOwner,
 			ownersList.map((item: any) => item?.name)
@@ -253,24 +211,14 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 				});
 				setIsRequestInProgress(false);
 			});
-	}, [
-		searchOwner,
-		t,
-		ownersList,
-		selectedMailingList?.id,
-		getOwnerType,
-		createSnackbar,
-		form,
-		setIsRequestInProgress,
-		actionMutation
-	]);
+	};
 
-	const closeDeleteOwnerHandler = useCallback(() => {
+	const closeDeleteOwnerHandler = () => {
 		setIsOpenDeleteOwnerDialog(false);
 		setOwnerToDelete(null);
-	}, []);
+	};
 
-	const onDeleteOwnerConfirm = useCallback(() => {
+	const onDeleteOwnerConfirm = () => {
 		if (!ownerToDelete) return;
 		setIsRequestInProgress(true);
 		actionMutation
@@ -333,18 +281,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
 				setIsRequestInProgress(false);
 				closeDeleteOwnerHandler();
 			});
-	}, [
-		ownerToDelete,
-		selectedMailingList?.id,
-		getOwnerType,
-		ownersList,
-		createSnackbar,
-		t,
-		closeDeleteOwnerHandler,
-		form,
-		setIsRequestInProgress,
-		actionMutation
-	]);
+	};
 
 	return (
 		<>

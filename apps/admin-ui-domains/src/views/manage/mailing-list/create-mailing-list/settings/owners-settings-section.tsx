@@ -16,7 +16,7 @@ import {
 	Table,
 	useSnackbar
 } from '@zextras/ui-components';
-import { sortedUniq, uniq } from 'lodash-es';
+import { sortedUniq, uniq, uniqBy } from 'lodash-es';
 import { type FC, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -49,14 +49,17 @@ export const OwnersSettingsSection: FC = () => {
 		[t]
 	);
 
-	const { searchValue: member, setSearchValue: setMember, items } = useGalEmailSearch(
-		(contactList) => {
+	const { searchValue: member, setSearchValue: setMember, items, contactList } =
+		useGalEmailSearch();
+
+	useEffect(() => {
+		if (contactList && contactList.length > 0) {
 			setMailingListDetail((prev: any) => ({
 				...prev,
-				allOwnersList: mailingListDetail?.allOwnersList.concat(contactList)
+				allOwnersList: uniqBy(prev.allOwnersList.concat(contactList), 'id')
 			}));
 		}
-	);
+	}, [contactList, setMailingListDetail]);
 
 	useEffect(() => {
 		if (ownersList && ownersList.length > 0) {
