@@ -4,48 +4,35 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { FALSE, TRUE } from '../../../../constants';
 import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { useGalContactTypeResolver } from '../edit-distribution-list/gal-contact-type-resolver';
 import { buildCreateGrantAction } from './build-create-grant-action';
+import {
+	buildCreateListAttributes,
+	type CreateMailingListDetail
+} from './build-create-list-attributes';
+import { mapCreateListError } from './map-create-list-error';
 
-/** Shape of the wizard's `mailingListDetail` consumed by the create flow. */
-export type CreateMailingListDetail = {
-	prefixName: string;
-	suffixName: string;
-	description: string;
-	dynamic: boolean;
-	displayName: string;
-	zimbraHideInGal: boolean;
-	zimbraMailStatus: boolean;
-	zimbraNotes: string;
-	memberURL: string;
-	members: Array<string>;
-	zimbraDistributionListSendShareMessageToNewMembers: boolean;
-	owners: Array<string>;
-	ownerGrantEmailType: { value?: string } | undefined;
-	ownerGrantEmails: Array<string>;
-};
+export type { CreateMailingListDetail };
 
 /**
  * Owns the "create distribution list" flow fired at the end of the wizard:
- * creates the list, then adds its initial members/owners and sets the
- * send-to rights. Failures in the follow-up requests are surfaced as error
- * snackbars (the original implementation silently swallowed them).
+ * a `useMutation` creates the list, then the follow-up requests (initial
+ * members/owners and send-to rights) are fired without blocking the success
+ * path — their faults are surfaced as error snackbars. Creation failures are
+ * mapped to localized messages by `mapCreateListError`.
  */
 export function useCreateMailingListFlow(onClose: () => void) {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const queryClient = useQueryClient();
-	const [isCreating, setIsCreating] = useState(false);
 	const resolveOwnerType = useGalContactTypeResolver();
 
 	function showRequestError(label: string): void {
@@ -124,83 +111,51 @@ export function useCreateMailingListFlow(onClose: () => void) {
 		}
 	}
 
-	function createList(detail: CreateMailingListDetail): void {
-		const name = `${detail.prefixName}@${detail.suffixName}`;
-		setIsCreating(true);
-
-		const attributes: Array<any> = [
-			{ n: 'displayName', _content: detail.displayName },
-			{ n: 'zimbraNotes', _content: detail.zimbraNotes },
-			{ n: 'zimbraHideInGal', _content: detail.zimbraHideInGal ? TRUE : FALSE },
-			{ n: 'zimbraMailStatus', _content: detail.zimbraMailStatus ? 'enabled' : 'disabled' }
-		];
-		if (detail.dynamic) {
-			attributes.push(
-				{
-					n: 'zimbraIsACLGroup',
-					_content: detail.memberURL === '' ? TRUE : FALSE
-				},
-				{ n: 'memberURL', _content: detail.memberURL }
+	const createListMutation = useMutation({
+		mutationFn: async (detail: CreateMailingListDetail) => {
+			const name = `${detail.prefixName}@${detail.suffixName}`;
+			const data = await createMailingList(
+				detail.dynamic,
+				name,
+				buildCreateListAttributes(detail)
 			);
-		} else {
-			attributes.push({
-				n: 'zimbraDistributionListSendShareMessageToNewMembers',
-				_content: detail.zimbraDistributionListSendShareMessageToNewMembers ? TRUE : FALSE
+			return { detail, name, listId: (data?.dl[0]?.id ?? '') as string };
+		},
+		onSuccess: ({ detail, name, listId }) => {
+			addMembersAndOwners(detail.members, detail.owners, listId);
+			const grant = buildCreateGrantAction(
+				name,
+				detail.ownerGrantEmailType?.value,
+				detail.ownerGrantEmails
+			);
+			if (grant) {
+				callAllRequests([distributionListAction(grant.dl, grant.action)]);
+			} else {
+				invalidateLists();
+			}
+			onClose();
+			createSnackbar({
+				key: 'success',
+				severity: 'success',
+				label: t('label.the_has_been_created_success', {
+					name,
+					defaultValue: 'The {{name}} has been created successfully'
+				}),
+				autoHideTimeout: 3000,
+				hideButton: true,
+				replace: true
 			});
+		},
+		onError: (error, variables) => {
+			showRequestError(
+				mapCreateListError(error, `${variables.prefixName}@${variables.suffixName}`, t)
+			);
 		}
-		attributes.push({ n: 'description', _content: detail.description });
+	});
 
-		const grant = buildCreateGrantAction(
-			name,
-			detail.ownerGrantEmailType?.value,
-			detail.ownerGrantEmails
-		);
+	const createList = (detail: CreateMailingListDetail): void => {
+		createListMutation.mutate(detail);
+	};
 
-		createMailingList(detail.dynamic, name, attributes)
-			.then((data) => {
-				const listId = data?.dl[0]?.id;
-				addMembersAndOwners(detail.members, detail.owners, listId);
-				if (grant) {
-					callAllRequests([distributionListAction(grant.dl, grant.action)]);
-				} else {
-					invalidateLists();
-				}
-				onClose();
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t('label.the_has_been_created_success', {
-						name,
-						defaultValue: 'The {{name}} has been created successfully'
-					}),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true
-				});
-				setIsCreating(false);
-			})
-			.catch((error: any) => {
-				let message = '';
-				if (error?.message) {
-					const text = error?.message;
-					if (text.includes('no such domain')) {
-						message = t('label.specified_domain_not_exist', 'Specified domain does not exist');
-					} else if (text.includes('email address already exists')) {
-						message = t('label.email_addready_exists', {
-							name,
-							defaultValue: 'Email address {{name}} already exists'
-						});
-					} else {
-						message = text;
-					}
-				}
-				showRequestError(
-					message ||
-						t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
-				);
-				setIsCreating(false);
-			});
-	}
-
-	return { createList, isCreating };
+	return { createList, isCreating: createListMutation.isPending };
 }
