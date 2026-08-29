@@ -4,8 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { CoreAttributeRequest } from '@zextras/ui-shared';
-import { cosQuotaQueryKey } from '@zextras/ui-shared';
+import { type CoreAttributeRequest, cosQuotaQueryKey } from '@zextras/ui-shared';
 
 export const cosQueryKeys = {
   all: ['cos'] as const,

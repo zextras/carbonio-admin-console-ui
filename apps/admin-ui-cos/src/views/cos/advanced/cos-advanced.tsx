@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
+import { useCosQuota, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { useParams } from 'react-router';
 
@@ -13,7 +13,6 @@ import { Attribute } from '../../../../types/attribute';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../../constants';
 import { useCoreAttributes } from '../../../services/use-core-attributes';
 import { useCosDetail } from '../../../services/use-cos-detail';
-import { useCosQuota } from '@zextras/ui-shared';
 import { CosAdvancedForm } from './advanced-form';
 
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [

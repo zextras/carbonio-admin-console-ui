@@ -3,9 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { ComputedLimit, QuotaSource } from '@zextras/ui-shared';
 import { useState } from 'react';
 
-import type { ComputedLimit, QuotaSource } from '@zextras/ui-shared';
 import { setCosQuota } from '../../../../services/set-cos-quota';
 import { unsetCosQuota } from '../../../../services/unset-cos-quota';
 import { useInvalidateCosQuota } from '../../../../services/use-invalidate-cos-quota';

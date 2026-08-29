@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { ComputedLimit } from '@zextras/ui-shared';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import type { ComputedLimit } from '@zextras/ui-shared';
 import { useCosQuotaState } from '../hooks/use-cos-quota-state';
 import { COSQuotasNew } from '../sections/quotas-new';
 
