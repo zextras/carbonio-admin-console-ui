@@ -8,6 +8,7 @@ import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import {
   RESOURCE_TYPE,
   SCHEDULE_POLICY_TYPE,
@@ -25,7 +26,8 @@ export const ResourceCreateSection = () => {
 
   const displayName = useSelector(form.store, (s) => s.values.displayName);
   const name = useSelector(form.store, (s) => s.values.name);
-  const domain = useSelector(form.store, (s) => s.values.domain);
+  const { data: domainData } = useSelectedDomain();
+  const domainName = domainData?.name ?? '';
   const zimbraCalResType = useSelector(form.store, (s) => s.values.zimbraCalResType);
   const zimbraAccountStatus = useSelector(form.store, (s) => s.values.zimbraAccountStatus);
   const zimbraCOSId = useSelector(form.store, (s) => s.values.zimbraCOSId);
@@ -133,7 +135,7 @@ export const ResourceCreateSection = () => {
               <LabeledValue
                 label={t('label.domain', 'Domain')}
                 backgroundColor="gray6"
-                value={domain}
+                value={domainName}
               />
             </Row>
           </Container>

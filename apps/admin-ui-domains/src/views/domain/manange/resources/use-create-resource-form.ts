@@ -12,7 +12,6 @@ export const CREATE_RESOURCE_DEFAULT_VALUES: CreateResourceFormValues = {
   displayName: '',
   name: '',
   changeNameBool: false,
-  domain: '',
   zimbraCalResType: RESOURCE_TYPE.LOCATION,
   zimbraAccountStatus: STATUS.ACTIVE,
   zimbraCOSId: '',

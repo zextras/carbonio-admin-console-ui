@@ -49,7 +49,6 @@ const SeededSummary = () => {
   useEffect(() => {
     form.setFieldValue('displayName', 'Projector');
     form.setFieldValue('name', 'projector');
-    form.setFieldValue('domain', 'example.com');
     form.setFieldValue('zimbraCalResType', RESOURCE_TYPE.EQUIPMENT);
     form.setFieldValue('zimbraAccountStatus', STATUS.CLOSED);
     form.setFieldValue('zimbraCalResAutoDeclineRecurring', TRUE_FALSE.TRUE);

@@ -251,10 +251,14 @@ function EditDistributionListContent({
     },
   });
 
-  /* Keep the form defaults in sync with (re)fetched query data */
+  /* Keep the form baseline in sync with (re)fetched query data, but never
+     re-baseline underneath unsaved user edits */
   useEffect(() => {
-    form.update({ defaultValues: formValues });
-  }, [form, formValues]);
+    if (form.state.isTouched || form.state.isDirty) {
+      return;
+    }
+    form.reset(formValues, { keepDefaultValues: false });
+  }, [formValues, form]);
 
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
   const isLoading = useSelector(form.store, (state) => state.isSubmitting);

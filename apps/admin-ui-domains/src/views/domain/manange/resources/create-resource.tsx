@@ -15,6 +15,7 @@ import { type TFunction } from 'i18next';
 import { type ComponentProps, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { useCreateCalResource } from '../../../../services/use-cal-resource';
 import { ResourceCreateSection } from './resource-create-section';
 import { ResourceDetailSection } from './resource-detail-section';
@@ -134,6 +135,7 @@ function buildAttributeList(values: CreateResourceFormValues): Array<{ n: string
 export const CreateResource = ({ onClose }: CreateResourceProps) => {
   const { t } = useTranslation();
   const createResource = useCreateCalResource();
+  const { data: selectedDomain } = useSelectedDomain();
   const form = useCreateResourceForm();
 
   const displayName = useSelector(form.store, (s) => s.values.displayName);
@@ -141,7 +143,7 @@ export const CreateResource = ({ onClose }: CreateResourceProps) => {
 
   function handleCreate(): void {
     const values = form.state.values;
-    const name = `${values.name}@${values.domain}`;
+    const name = `${values.name}@${selectedDomain?.name ?? ''}`;
     createResource.mutate(
       {
         name,

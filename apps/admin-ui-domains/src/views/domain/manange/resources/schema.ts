@@ -23,7 +23,6 @@ export const createResourceSchema = z
     displayName: z.string(),
     name: z.string(),
     changeNameBool: z.boolean(),
-    domain: z.string(),
     zimbraCalResType: z.string(),
     zimbraAccountStatus: z.string(),
     zimbraCOSId: z.string(),

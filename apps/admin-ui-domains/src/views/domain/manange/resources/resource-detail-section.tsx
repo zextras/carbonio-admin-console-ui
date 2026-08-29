@@ -14,7 +14,7 @@ import {
   Select,
 } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
-import { ChangeEvent, useEffect } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
@@ -57,7 +57,6 @@ export const ResourceDetailSection = () => {
 
   const displayName = useSelector(form.store, (s) => s.values.displayName);
   const name = useSelector(form.store, (s) => s.values.name);
-  const formDomain = useSelector(form.store, (s) => s.values.domain);
   const changeNameBool = useSelector(form.store, (s) => s.values.changeNameBool);
   const zimbraCalResType = useSelector(form.store, (s) => s.values.zimbraCalResType);
   const zimbraAccountStatus = useSelector(form.store, (s) => s.values.zimbraAccountStatus);
@@ -130,22 +129,11 @@ export const ResourceDetailSection = () => {
   );
   const selectedSchedulePolicy = schedulePolicyItems.find((o) => o.value === schedulePolicyType);
 
-  const generatedName = resolveGeneratedName(changeNameBool, displayName, name);
-
-  useEffect(() => {
-    if (domainName) {
-      form.setFieldValue('domain', domainName);
-    }
-  }, [domainName, form]);
-
-  useEffect(() => {
-    if (!changeNameBool) {
-      form.setFieldValue('name', generatedName);
-    }
-  }, [generatedName, changeNameBool, form]);
-
   function changeDisplayName(e: ChangeEvent<HTMLInputElement>): void {
     form.setFieldValue('displayName', e.target.value);
+    if (!changeNameBool) {
+      form.setFieldValue('name', resolveGeneratedName(false, e.target.value, ''));
+    }
   }
 
   function changeDescription(e: ChangeEvent<HTMLTextAreaElement>): void {
@@ -241,7 +229,7 @@ export const ResourceDetailSection = () => {
               <LabeledValue
                 label={t('label.domain', 'Domain')}
                 backgroundColor="gray5"
-                value={formDomain}
+                value={domainName}
               />
             </Row>
           </Container>
