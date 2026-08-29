@@ -11,7 +11,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import { CLOSED } from '../../../constants';
 import { useDeleteAccount } from '../../../services/use-delete-account';
 import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
-import { getAccountStatusColors } from '../../domain/constants/account-status-colors';
+import { getAccountStatusColors } from '../../constants/account-status-colors';
 import { getUserTypeFromAttrs } from '../user-type-utils';
 
 type DeleteAccountDialogProps = {

@@ -91,7 +91,7 @@ function MockDomainAddressBook() {
   return <div>VIEW:address_book</div>;
 }
 
-vi.mock('../domain/domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
+vi.mock('../domain-detail-panel', () => ({ DomainDetailPanel: MockDetailPanel }));
 vi.mock('../create-new-domain/create-new-domain', () => ({ CreateDomain: MockCreateNewDomain }));
 vi.mock('../global/global-detail-panel/global-detail-panel', () => ({
   GlobalDetailPanel: MockGlobalDetailPanel,
@@ -118,32 +118,32 @@ vi.mock('../global/global-domain-list/global-domain-list', () => ({
 vi.mock('../global/global-quarantine/global-quarantine', () => ({
   GlobalQuarantine: MockGlobalQuarantine,
 }));
-vi.mock('../domain/details/domain-general-settings', () => ({
+vi.mock('../details/domain-general-settings/domain-general-settings', () => ({
   DomainGeneralSettings: MockDomainGeneralSettings,
 }));
-vi.mock('../domain/details/domain-gal-settings', () => ({
+vi.mock('../details/domain-gal-settings/domain-gal-settings', () => ({
   DomainGalSettings: MockDomainGalSettings,
 }));
-vi.mock('../domain/details/domain-authentication', () => ({
+vi.mock('../details/domain-authentication/domain-authentication', () => ({
   DomainAuthentication: MockDomainAuthentication,
 }));
-vi.mock('../domain/details/domain-2fa', () => ({
+vi.mock('../details/domain-2fa/domain-2fa', () => ({
   DomainTwoFactorAuthentication: MockDomainTwoFactor,
 }));
-vi.mock('../domain/details/domain-theme', () => ({ DomainTheme: MockDomainTheme }));
+vi.mock('../details/domain-theme/domain-theme', () => ({ DomainTheme: MockDomainTheme }));
 vi.mock('../details/domain-saml', () => ({ DomainSaml: MockDomainSaml }));
 vi.mock('../details/domain-disclaimer', () => ({ DomainDisclaimer: MockDomainDisclaimer }));
-vi.mock('../domain/details/virtual-hosts-certificates/domain-virtual-hosts', () => ({
+vi.mock('../details/virtual-hosts-certificates/domain-virtual-hosts', () => ({
   DomainVirtualHosts: MockDomainVirtualHosts,
 }));
 vi.mock('../manage/accounts/manage-accounts', () => ({ ManageAccounts: MockManageAccounts }));
-vi.mock('../domain/manange/active-sync/active-sync', () => ({ default: MockActiveSync }));
+vi.mock('../manage/active-sync/active-sync', () => ({ default: MockActiveSync }));
 vi.mock('../manage/delegates/manage-delegates', () => ({ ManageDelegates: MockManageDelegates }));
 vi.mock('../manage/mailing-list/domain-mailing-list', () => ({
   default: MockDomainMailingList,
 }));
-vi.mock('../domain/manange/resources/domain-resources', () => ({ default: MockDomainResources }));
-vi.mock('../domain/manange/restore-delete-account/restore-delete-account', () => ({
+vi.mock('../manage/resources/domain-resources', () => ({ default: MockDomainResources }));
+vi.mock('../manage/restore-delete-account/restore-delete-account', () => ({
   default: MockRestoreAccount,
 }));
 vi.mock('../manage/address-book/domain-address-book', () => ({

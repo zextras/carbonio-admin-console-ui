@@ -6,7 +6,7 @@
 import { Button, Modal } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { getAccountStatusColors } from '../../domain/constants/account-status-colors';
+import { getAccountStatusColors } from '../../constants/account-status-colors';
 
 type DeleteAccountHintModalProps = {
   account: { id: string; name: string; [key: string]: any };

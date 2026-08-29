@@ -4,23 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-vi.mock('lodash-es', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('lodash-es')>();
-	return {
-		...actual,
-		debounce: <Args extends Array<unknown>>(
-			fn: (...args: Args) => void,
-		): ((...args: Args) => void) & { cancel: () => void; flush: () => void } => {
-			const wrapped = (...args: Args): void => {
-				fn(...args);
-			};
-			wrapped.cancel = (): void => undefined;
-			wrapped.flush = (): void => undefined;
-			return wrapped;
-		},
-	};
-});
-
 vi.mock('@zextras/ui-shared', async (importOriginal) => {
 	const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
 	return {

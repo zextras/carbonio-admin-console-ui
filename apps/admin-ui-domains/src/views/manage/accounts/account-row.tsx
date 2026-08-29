@@ -8,7 +8,7 @@ import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 
 import type { AccountListEntry } from '../../../services/use-account-list-directory';
-import { getAccountStatusColors } from '../../domain/constants/account-status-colors';
+import { getAccountStatusColors } from '../../constants/account-status-colors';
 
 export type AccountRowItem = AccountListEntry & Record<string, unknown>;
 

@@ -30,24 +30,24 @@ import {
   WHITELABEL_SETTINGS,
 } from '../constants';
 import { CreateDomain } from './create-new-domain/create-new-domain';
+import { DomainTwoFactorAuthentication } from './details/domain-2fa/domain-2fa';
+import { DomainAuthentication } from './details/domain-authentication/domain-authentication';
 import { DomainDisclaimer } from './details/domain-disclaimer';
+import { DomainGalSettings } from './details/domain-gal-settings/domain-gal-settings';
+import { DomainGeneralSettings } from './details/domain-general-settings/domain-general-settings';
 import { DomainSaml } from './details/domain-saml';
-import { DomainTwoFactorAuthentication } from './domain/details/domain-2fa';
-import { DomainAuthentication } from './domain/details/domain-authentication';
-import { DomainGalSettings } from './domain/details/domain-gal-settings';
-import { DomainGeneralSettings } from './domain/details/domain-general-settings';
-import { DomainTheme } from './domain/details/domain-theme';
-import { DomainVirtualHosts } from './domain/details/virtual-hosts-certificates/domain-virtual-hosts';
-import { DomainDetailPanel } from './domain/domain-detail-panel';
-import { DomainOperationsLayout } from './domain/domain-operations-layout';
-import ActiveSync from './domain/manange/active-sync/active-sync';
-import DomainResources from './domain/manange/resources/domain-resources';
-import RestoreAccount from './domain/manange/restore-delete-account/restore-delete-account';
+import { DomainTheme } from './details/domain-theme/domain-theme';
+import { DomainVirtualHosts } from './details/virtual-hosts-certificates/domain-virtual-hosts';
+import { DomainDetailPanel } from './domain-detail-panel';
+import { DomainOperationsLayout } from './domain-operations-layout';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 import { ManageAccounts } from './manage/accounts/manage-accounts';
+import ActiveSync from './manage/active-sync/active-sync';
 import { DomainAddressBook } from './manage/address-book/domain-address-book';
 import { ManageDelegates } from './manage/delegates/manage-delegates';
 import DomainMailingList from './manage/mailing-list/domain-mailing-list';
+import DomainResources from './manage/resources/domain-resources';
+import RestoreAccount from './manage/restore-delete-account/restore-delete-account';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();
