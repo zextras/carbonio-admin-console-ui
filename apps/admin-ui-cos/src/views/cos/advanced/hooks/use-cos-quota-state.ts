@@ -5,7 +5,7 @@
  */
 import { useState } from 'react';
 
-import { ComputedLimit, QuotaSource } from '../../../../services/get-cos-quota';
+import type { ComputedLimit, QuotaSource } from '@zextras/ui-shared';
 import { setCosQuota } from '../../../../services/set-cos-quota';
 import { unsetCosQuota } from '../../../../services/unset-cos-quota';
 import { useInvalidateCosQuota } from '../../../../services/use-invalidate-cos-quota';

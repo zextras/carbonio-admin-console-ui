@@ -9,7 +9,7 @@ import {
   STORAGES_API_VERSION,
   STORAGES_API_VERSION_HEADER,
 } from '../constants';
-import { ComputedLimit } from './get-cos-quota';
+import type { ComputedLimit } from '@zextras/ui-shared';
 
 type SetCosQuotaResponse =
   | {

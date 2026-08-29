@@ -15,7 +15,10 @@ export {
 // Real implementations, imported via relative path so the project-wide
 // '@zextras/ui-shared' alias does not resolve back to this mock file.
 export { SnackbarManagerContext } from '../../packages/ui-shared/src/hooks/useSnackbar/snackbar-context';
-export { useModifyConfig } from '../../packages/ui-shared/src/react-query/use-modify-config';
+export { useModifyConfig, modifyConfigAttributes } from '../../packages/ui-shared/src/react-query/use-modify-config';
+export { cosQuotaQueryKey, useCosQuota } from '../../packages/ui-shared/src/react-query/use-cos-quota';
+export { getCosQuota } from '../../packages/ui-shared/src/services/get-cos-quota';
+export { batchService } from '../../packages/ui-shared/src/services/batch-service';
 
 export const useDomainInformation = vi.fn();
 export const DASHBOARD_ROUTE_ID = 'dashboard';

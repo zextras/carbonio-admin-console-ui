@@ -22,7 +22,7 @@ import {
 } from '../../../constants';
 import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
-import { useCosQuota } from '../../../services/use-cos-quota';
+import { useCosQuota } from '@zextras/ui-shared';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
 import { cosAdvancedSchema } from './schema';

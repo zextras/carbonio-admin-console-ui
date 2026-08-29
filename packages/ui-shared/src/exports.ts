@@ -39,6 +39,14 @@ export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 export type { ConfigAttribute } from './react-query/use-modify-config';
 export type { BatchRequest } from './services/batch-service';
+export type {
+	ComputedLimit,
+	GetCosQuotaRawResponse,
+	GetCosQuotaResponse,
+	LimitedComputedLimit,
+	QuotaSource,
+	UnlimitedComputedLimit,
+} from './services/get-cos-quota';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -91,6 +99,7 @@ import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
 import { useCosList } from './react-query/use-cos-list';
+import { cosQuotaQueryKey, useCosQuota } from './react-query/use-cos-quota';
 import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useDomainSearch } from './react-query/use-domain-search';
@@ -142,6 +151,9 @@ import {
   getCoreAttributes,
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
+import {
+	getCosQuota,
+} from './services/get-cos-quota';
 import { getDomainInformation } from './services/get-domain-information';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
@@ -230,6 +242,7 @@ export {
   CARBONIO_LOGO_URL,
   CONFIG,
   CONTENT,
+  cosQuotaQueryKey,
   domainByIdKey,
   fetchAccountSettings,
   fetchExternalSoap,
@@ -242,6 +255,7 @@ export {
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
+  getCosQuota,
   getDomainInformation,
   getLocale,
   getResponsiveContainerStyle,
@@ -292,6 +306,7 @@ export {
   useConfigAttribute,
   useContextBridge,
   useCosList,
+  useCosQuota,
   useCurrentRoute,
   useCurrentUserRights,
   useDebouncedValue,

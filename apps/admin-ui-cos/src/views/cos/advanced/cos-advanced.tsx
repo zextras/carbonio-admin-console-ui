@@ -13,7 +13,7 @@ import { Attribute } from '../../../../types/attribute';
 import { BACKUP_ENABLED, BACKUP_SELF_UNDELETE_ALLOWED, COS } from '../../../constants';
 import { useCoreAttributes } from '../../../services/use-core-attributes';
 import { useCosDetail } from '../../../services/use-cos-detail';
-import { useCosQuota } from '../../../services/use-cos-quota';
+import { useCosQuota } from '@zextras/ui-shared';
 import { CosAdvancedForm } from './advanced-form';
 
 const COS_ADVANCED_FIELD_DEFAULTS: Array<[keyof AccountType, string]> = [

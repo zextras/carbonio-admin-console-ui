@@ -5,6 +5,7 @@
  */
 
 import type { CoreAttributeRequest } from '@zextras/ui-shared';
+import { cosQuotaQueryKey } from '@zextras/ui-shared';
 
 export const cosQueryKeys = {
   all: ['cos'] as const,
@@ -13,7 +14,7 @@ export const cosQueryKeys = {
   totalDomains: (cosId: string) => [...cosQueryKeys.all, 'total-domains', cosId] as const,
   coreAttributes: (body: Array<CoreAttributeRequest>) =>
     [...cosQueryKeys.all, 'core-attributes', body] as const,
-  cosQuota: (cosId: string) => [...cosQueryKeys.all, 'cos-quota', cosId] as const,
+  cosQuota: (cosId: string) => cosQuotaQueryKey(cosId),
   list: (searchQuery: string, limit: number, offset: number) =>
     [...cosQueryKeys.all, 'list', searchQuery, limit, offset] as const,
   accounts: (cosId: string, searchStr: string, offset: number, limit: number) =>

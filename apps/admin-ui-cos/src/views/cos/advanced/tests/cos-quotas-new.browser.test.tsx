@@ -7,7 +7,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { ComputedLimit } from '../../../../services/get-cos-quota';
+import type { ComputedLimit } from '@zextras/ui-shared';
 import { useCosQuotaState } from '../hooks/use-cos-quota-state';
 import { COSQuotasNew } from '../sections/quotas-new';
 
