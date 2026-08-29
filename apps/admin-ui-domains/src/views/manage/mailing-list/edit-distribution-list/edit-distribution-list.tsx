@@ -19,14 +19,14 @@ import { format, isValid } from 'date-fns';
 import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { DL, EMAIL, GRP } from '../../../../constants';
-import { getGrant } from '../../../../services/get-grant';
+import { EMAIL } from '../../../../constants';
 import { useAddDistributionListMember } from '../../../../services/use-add-distribution-list-member';
 import { useAddMailingListAlias } from '../../../../services/use-add-mailing-list-alias';
 import { useDeleteDistributionList } from '../../../../services/use-delete-distribution-list';
 import { useDeleteMailingListAlias } from '../../../../services/use-delete-mailing-list-alias';
 import { useDistributionList } from '../../../../services/use-distribution-list';
 import { useDistributionListAction } from '../../../../services/use-distribution-list-action';
+import { useDistributionListGrantRightsCount } from '../../../../services/use-distribution-list-grant-rights-count';
 import { useDistributionListGrants } from '../../../../services/use-distribution-list-grants';
 import { useDistributionListMembership } from '../../../../services/use-distribution-list-membership';
 import { useModifyDistributionList } from '../../../../services/use-modify-distribution-list';
@@ -268,85 +268,20 @@ function EditDistributionListContent({
   const [pendingTab, setPendingTab] = useState<string | null>(null);
   const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
-  const [granteeTotalRights, setGranteeTotalRights] = useState(0);
-  const [targetTotalRights, setTargetTotalRights] = useState(0);
+  const [totalGrantRights, setTotalGrantRights] = useState(0);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
-  const totalGrantRights = granteeTotalRights + targetTotalRights;
+  const grantRightsCountMutation = useDistributionListGrantRightsCount({
+    onCounted: (totalRights) => {
+      setTotalGrantRights(totalRights);
+      setIsOpenDeleteDialog(true);
+    },
+  });
 
   const dlMembershipListNames = values.dlMembershipList.map((item) => item?.name).join(', ');
 
   const handleClickDeleteEvent = () => {
-    const getGrantBody: any = {};
-    const grantee = {
-      type: GRP,
-      by: 'id',
-      _content: listId,
-      all: false,
-    };
-    getGrantBody.grantee = grantee;
-    getGrant(getGrantBody)
-      .then((data: any) => {
-        if (Array.isArray(data?.grant)) {
-          let granteeTotal = 0;
-
-          const granteeRights = data?.grant?.map((items: any) => items?.right?.length);
-          const granteeRightLenght = granteeRights?.values();
-
-          for (const value of granteeRightLenght) {
-            granteeTotal += value;
-          }
-          setGranteeTotalRights(granteeTotal);
-        }
-        setIsOpenDeleteDialog(true);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
-
-    // get grants' rights as target
-    const getGrantBodyTarget: any = {};
-    const target = {
-      type: DL,
-      by: 'id',
-      _content: listId,
-    };
-    getGrantBodyTarget.target = target;
-    getGrant(getGrantBodyTarget)
-      .then((resFromTarget: any) => {
-        if (Array.isArray(resFromTarget?.grant)) {
-          let targetTotal = 0;
-          const targetRights = resFromTarget?.grant?.map((items: any) => items?.right?.length);
-          const targetRightLenght = targetRights?.values();
-
-          for (const value of targetRightLenght) {
-            targetTotal += value;
-          }
-          setTargetTotalRights(targetTotal);
-        }
-        setIsOpenDeleteDialog(true);
-      })
-      .catch((error) => {
-        createSnackbar({
-          key: 'error',
-          severity: 'error',
-          label: error?.message
-            ? error?.message
-            : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-          autoHideTimeout: 3000,
-          hideButton: true,
-          replace: true,
-        });
-      });
+    grantRightsCountMutation.mutate(listId);
   };
 
   const closeHandler = () => {

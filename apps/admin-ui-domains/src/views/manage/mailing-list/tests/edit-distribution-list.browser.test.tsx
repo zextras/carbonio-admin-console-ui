@@ -310,6 +310,43 @@ describe('EditDistributionList (browser)', () => {
       await new Promise((resolve) => setTimeout(resolve, 500));
       expect(deleteRequested).toBe(false);
     });
+
+    it('shows the total grant rights warning when the list has rights', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByRole('button', { name: 'delete' }).click();
+      await expect
+        .element(page.getByText(/shared accounts rights/))
+        .toBeInTheDocument();
+      await expect.element(page.getByText('4')).toBeInTheDocument();
+    });
+
+    it('does not open the delete dialog when the rights count request fails', async () => {
+      await setupEditView();
+      worker.use(
+        http.post('/service/admin/soap/GetGrantsRequest', async ({ request }) => {
+          const body = (await request.json()) as {
+            Body?: { GetGrantsRequest?: { grantee?: unknown } };
+          };
+          if (body?.Body?.GetGrantsRequest?.grantee) {
+            return new HttpResponse(null, { status: 500 });
+          }
+          return HttpResponse.json({
+            Body: {
+              GetGrantsResponse: {
+                grant: [{ right: [{ _content: 'sendAsDistList' }] }],
+              },
+            },
+          });
+        }),
+      );
+      await waitForLoad();
+      await page.getByRole('button', { name: 'delete' }).click();
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await expect
+        .element(page.getByText('You are deleting Team List'))
+        .not.toBeInTheDocument();
+    });
   });
 
   describe('Close', () => {
