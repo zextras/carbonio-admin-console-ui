@@ -5,6 +5,7 @@
  */
 
 import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
+import { type TFunction } from 'i18next';
 import { type FC, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -48,6 +49,67 @@ interface AccountDetailObj {
   serverName: string;
 }
 
+type RestoreWizardButtonsDeps = {
+  t: TFunction;
+  onReset: () => void;
+  startRestoreAccount: () => void;
+  isRestoreDisabled: boolean;
+};
+
+function createRestoreWizardButtons({
+  t,
+  onReset,
+  startRestoreAccount,
+  isRestoreDisabled,
+}: RestoreWizardButtonsDeps) {
+  const CancelButton = (props: any): ReactElement => (
+    <Button
+      {...props}
+      type="outlined"
+      key="wizard-cancel"
+      label={t('label.cancel', 'Cancel')}
+      color="secondary"
+      icon="CloseOutline"
+      iconPlacement="right"
+      onClick={onReset}
+    />
+  );
+
+  const EmptyPrevButton = (): ReactElement => <></>;
+
+  const BackPrevButton = (props: any): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.back', 'BACK')}
+      icon="ChevronLeftOutline"
+      color="secondary"
+      iconPlacement="left"
+    />
+  );
+
+  const NextButton = (props: any): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.next', 'NEXT')}
+      icon="ChevronRightOutline"
+      iconPlacement="right"
+    />
+  );
+
+  const RestoreNextButton = (props: any): ReactElement => (
+    <Button
+      {...props}
+      label={t('label.restore_account', 'Restore Account')}
+      icon="PowerOutline"
+      iconPlacement="right"
+      onClick={startRestoreAccount}
+      disabled={isRestoreDisabled}
+    />
+  );
+
+  return { CancelButton, EmptyPrevButton, BackPrevButton, NextButton, RestoreNextButton };
+}
+
 const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
   restoreAccountRequest: (params: RestoreAccountRequestParams) => void;
@@ -89,6 +151,15 @@ const RestoreDeleteAccountWizard: FC<{
     });
   }
 
+  const { CancelButton, EmptyPrevButton, BackPrevButton, NextButton, RestoreNextButton } =
+    createRestoreWizardButtons({
+      t,
+      onReset,
+      startRestoreAccount,
+      isRestoreDisabled:
+        restoreAccountDetail?.name === '' || restoreAccountDetail?.copyAccount === '',
+    });
+
   const wizardSteps = [
     {
       name: 'details',
@@ -96,27 +167,9 @@ const RestoreDeleteAccountWizard: FC<{
       icon: 'AtOutline',
       view: RestoreSelectAccountSection,
       canGoNext: (): any => restoreAccountDetail?.id !== '',
-      CancelButton: (props: any): ReactElement => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.cancel', 'Cancel')}
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={onReset}
-        />
-      ),
-      PrevButton: () => <></>,
-      NextButton: (props: any) => (
-        <Button
-          {...props}
-          label={t('label.next', 'NEXT')}
-          icon="ChevronRightOutline"
-          iconPlacement="right"
-        />
-      ),
+      CancelButton,
+      PrevButton: EmptyPrevButton,
+      NextButton,
     },
     {
       name: 'members',
@@ -124,72 +177,18 @@ const RestoreDeleteAccountWizard: FC<{
       icon: 'OptionsOutline',
       view: RestoreAccountConfigSection,
       canGoNext: (): any => restoreAccountDetail?.copyAccount && restoreAccountDetail?.copyDomain,
-      CancelButton: (props: any): ReactElement => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.cancel', 'Cancel')}
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={onReset}
-        />
-      ),
-      PrevButton: (props: any) => (
-        <Button
-          {...props}
-          label={t('label.back', 'BACK')}
-          icon="ChevronLeftOutline"
-          color="secondary"
-          iconPlacement="left"
-        />
-      ),
-      NextButton: (props: any) => (
-        <Button
-          {...props}
-          label={t('label.next', 'NEXT')}
-          icon="ChevronRightOutline"
-          iconPlacement="right"
-        />
-      ),
+      CancelButton,
+      PrevButton: BackPrevButton,
+      NextButton,
     },
     {
       name: 'create',
       label: t('label.start', 'start'),
       icon: 'PowerOutline',
       view: RestoreAccountStartSection,
-      CancelButton: (props: any): ReactElement => (
-        <Button
-          {...props}
-          type="outlined"
-          key="wizard-cancel"
-          label={t('label.cancel', 'Cancel')}
-          color="secondary"
-          icon="CloseOutline"
-          iconPlacement="right"
-          onClick={onReset}
-        />
-      ),
-      PrevButton: (props: any) => (
-        <Button
-          {...props}
-          label={t('label.back', 'BACK')}
-          icon="ChevronLeftOutline"
-          color="secondary"
-          iconPlacement="left"
-        />
-      ),
-      NextButton: (props: any) => (
-        <Button
-          {...props}
-          label={t('label.restore_account', 'Restore Account')}
-          icon="PowerOutline"
-          iconPlacement="right"
-          onClick={startRestoreAccount}
-          disabled={restoreAccountDetail?.name === '' || restoreAccountDetail?.copyAccount === ''}
-        />
-      ),
+      CancelButton,
+      PrevButton: BackPrevButton,
+      NextButton: RestoreNextButton,
     },
   ];
 
