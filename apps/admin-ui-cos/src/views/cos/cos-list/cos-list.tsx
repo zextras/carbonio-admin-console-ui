@@ -15,13 +15,11 @@ import {
   TrackNumberPerPage,
 } from '@zextras/ui-components';
 import { replaceHistory, useCosList, useDebouncedValue } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_INFORMATION, RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { ScrollComponent } from '../../components/scroll-component';
 import { FunnelSearchIcon } from '../cos-server-pools/funnel-search-icon';
 
 type ZimbraCosAttribute = {
@@ -49,8 +47,6 @@ const STATUS_CONFIG = {
 } as const;
 
 const DEBOUNCE_SEARCH_DELAY = 700;
-const DEBOUNCE_RESIZE_DELAY = 100;
-const TABLE_VIEWPORT_OFFSET = 375;
 const HEADER_HEIGHT = '3.625rem';
 
 function parseCosAttributes(attributes: Array<ZimbraCosAttribute>): {
@@ -82,7 +78,6 @@ function getStatusDisplay(status: string, t: (key: string, defaultValue: string)
 export const CosList = () => {
   const [t] = useTranslation();
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
   const tableRef = useRef<HTMLTableElement>(null);
 
   const headers = [
@@ -149,27 +144,6 @@ export const CosList = () => {
         };
       })
     : [];
-
-  useLayoutEffect(() => {
-    const table = tableRef.current;
-    if (!table) return;
-
-    const handleResize = (): void => {
-      const tableHeight = table.clientHeight + TABLE_VIEWPORT_OFFSET;
-      setIsTableTooTall(tableHeight > window.innerHeight);
-    };
-
-    handleResize();
-
-    const debounced = debounce(handleResize, DEBOUNCE_RESIZE_DELAY);
-    const observer = new ResizeObserver(debounced);
-    observer.observe(table);
-
-    return () => {
-      debounced.cancel();
-      observer.disconnect();
-    };
-  }, []);
 
   if (isPending) {
     return <ds-page-shimmer></ds-page-shimmer>;
@@ -310,10 +284,9 @@ export const CosList = () => {
                 <Container
                   style={{
                     position: 'sticky',
-                    bottom: isTableTooTall ? '0' : '-4rem',
+                    bottom: '-4rem',
                   }}
                 >
-                  {isTableTooTall && <ScrollComponent />}
                   <Container
                     orientation="horizontal"
                     mainAlignment="space-between"
