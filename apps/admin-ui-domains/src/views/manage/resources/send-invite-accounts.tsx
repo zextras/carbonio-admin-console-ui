@@ -67,10 +67,10 @@ export const SendInviteAccounts = ({
     ? sendInviteList.filter((item) => item._content?.includes(searchAccountName))
     : sendInviteList;
 
-  const sendInviteRows: Array<TRow> = filteredInviteList.map((item, index) => ({
-    id: index.toString(),
+  const sendInviteRows: Array<TRow> = filteredInviteList.map((item) => ({
+    id: item.id,
     columns: [
-      <ds-text as="span" size="medium" weight="light" key={index} color="gray0">
+      <ds-text as="span" size="medium" weight="light" key={item.id} color="gray0">
         {item._content}
       </ds-text>,
     ],
@@ -94,10 +94,8 @@ export const SendInviteAccounts = ({
 
   function deleteSendInviteAccount(): void {
     if (selectedSendInvite.length > 0) {
-      const selectedContents = new Set(
-        selectedSendInvite.map((idx) => filteredInviteList[Number(idx)]?._content).filter(Boolean),
-      );
-      setSendInviteList(sendInviteList.filter((item) => !selectedContents.has(item._content)));
+      const selectedIds = new Set(selectedSendInvite);
+      setSendInviteList(sendInviteList.filter((item) => !selectedIds.has(item.id)));
       setSendInviteDeleteBtnDisabled(true);
       setSelectedSendInvite([]);
     }
