@@ -15,8 +15,8 @@ import { useNavigate } from 'react-router';
 import type { Attribute } from '../../../types';
 import { ACTIVE, DOMAINS_ROUTE_ID, GENERAL_SETTINGS, HTTPS, MANAGE } from '../../constants';
 import { useQueryErrorSnackbar } from '../../hooks/use-query-error-snackbar';
-import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { useCreateDomain } from '../../services/use-create-domain';
+import { useCreateGalSyncAccount } from '../../services/use-create-gal-sync-account';
 import { useInitDomainForDelegation } from '../../services/use-init-domain-for-delegation';
 import { GbToBytes } from '../utility/utils';
 import { CREATE_DOMAIN_DEFAULT_VALUES, GAL_MODE_INTERNAL } from './constants';
@@ -60,6 +60,7 @@ export function useCreateDomainForm() {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const createDomainMutation = useCreateDomain();
+  const createGalSyncAccountMutation = useCreateGalSyncAccount(undefined);
   const initDelegationMutation = useInitDomainForDelegation();
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -103,15 +104,15 @@ export function useCreateDomainForm() {
         });
         const response = data as CreateDomainSoapResponse;
         if (value.mailServer && value.galSyncAccountName !== '' && value.dataSourceName) {
-          await createGalSyncAccount(
-            value.dataSourceName,
-            value.domainName,
-            value.mailServer.value,
-            [{ by: 'name', _content: `${value.galSyncAccountName}@${value.domainName}` }],
-            GAL_MODE_INTERNAL,
-            [{ n: 'zimbraDataSourcePollingInterval', _content: '1d' }],
-            `_${value.dataSourceName}`,
-          );
+          await createGalSyncAccountMutation.mutateAsync({
+            name: value.dataSourceName,
+            domainName: value.domainName,
+            server: value.mailServer.value,
+            account: [{ by: 'name', _content: `${value.galSyncAccountName}@${value.domainName}` }],
+            type: GAL_MODE_INTERNAL,
+            a: [{ n: 'zimbraDataSourcePollingInterval', _content: '1d' }],
+            folder: `_${value.dataSourceName}`,
+          });
           if (value.isDomainDelegatedAdmin) {
             initDelegationMutation.mutate({ domain: value.domainName });
           }

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { QueryClient } from '@tanstack/react-query';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -16,6 +17,7 @@ import { Route, Routes } from 'react-router';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { CreateDomain } from '../create-new-domain';
 
 vi.mock('@zextras/ui-shared', async (importOriginal) => {
@@ -244,6 +246,40 @@ describe('CreateDomain (characterization)', () => {
       .element(page.getByText('example.com has been created successfully'))
       .toBeVisible();
     expect(replaceHistoryMock).toHaveBeenCalledWith(`/${NEW_DOMAIN_ID}/general_settings`);
+  }, 20_000);
+
+  it('invalidates cached GAL queries when a GAL sync account is created', async () => {
+    createBrowserSoapAPIInterceptor('CreateDomain', mockCreateDomainResponse);
+    createBrowserSoapAPIInterceptor('CreateGalSyncAccount', {});
+    createBrowserSoapAPIInterceptor('GetAllServers', MAIL_SERVERS);
+    createBrowserSoapAPIInterceptor('SearchDirectory', COS_LIST);
+
+    const queryClient = new QueryClient({
+      defaultOptions: { queries: { retry: false, gcTime: 5 * 60_000 } },
+    });
+    const galSeedKey = [...domainQueryKeys.gal(), 'seed'];
+    queryClient.setQueryData(galSeedKey, { seeded: true });
+
+    await setupBrowserTest(
+      <Routes>
+        <Route path="/create-new-domain" element={<CreateDomain />} />
+        <Route path="/manage/domains" element={<div>Domains Home</div>} />
+      </Routes>,
+      { queryClient, initialRouterEntry: '/create-new-domain' },
+    );
+    await expect.element(page.getByText('New Domain', { exact: true })).toBeVisible();
+
+    await fillDomainName('example.com');
+    await goToNextStep();
+    await waitForDefaultMailServer();
+    await goToNextStep();
+    await clickCreate();
+
+    await expect
+      .poll(() => queryClient.getQueryState(galSeedKey)?.isInvalidated === true, {
+        timeout: 10_000,
+      })
+      .toBe(true);
   }, 20_000);
 
   it('uses the custom GAL folder name and datasource name in the GAL sync request', async () => {
