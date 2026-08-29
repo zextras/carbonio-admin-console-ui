@@ -1,0 +1,53 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { type CreateSnackbarFnArgs, useSnackbar } from '@zextras/ui-components';
+import { useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import { resolveErrorLabel } from '../views/error/generate-snackbar-error';
+
+type UseQueryErrorSnackbarOptions = {
+	/** Snackbar key; defaults to 'error' */
+	key?: string;
+	/** autoHide timeout in milliseconds; defaults to 3000 */
+	timeout?: number;
+	/** Whether to hide the action button; defaults to true */
+	hideButton?: boolean;
+	/** Custom label used when the error carries no message */
+	fallback?: string;
+};
+
+function buildErrorSnackbarArgs(
+	error: unknown,
+	t: ReturnType<typeof useTranslation>[0],
+	options: UseQueryErrorSnackbarOptions
+): CreateSnackbarFnArgs {
+	const { key = 'error', timeout = 3000, hideButton = true, fallback } = options;
+	return {
+		key,
+		severity: 'error',
+		label: resolveErrorLabel(error, t, fallback),
+		autoHideTimeout: timeout,
+		hideButton,
+		replace: true,
+	};
+}
+
+/**
+ * Shows an error snackbar whenever `error` becomes truthy.
+ * Replaces the copy-pasted `useEffect(() => { if (error) createSnackbar(...) })` pattern.
+ */
+export function useQueryErrorSnackbar(error: unknown, options?: UseQueryErrorSnackbarOptions): void {
+	const [t] = useTranslation();
+	const createSnackbar = useSnackbar();
+	const { key = 'error', timeout = 3000, hideButton = true, fallback } = options ?? {};
+
+	useEffect(() => {
+		if (error) {
+			createSnackbar(buildErrorSnackbarArgs(error, t, { key, timeout, hideButton, fallback }));
+		}
+	}, [error, createSnackbar, t, key, timeout, hideButton, fallback]);
+}
