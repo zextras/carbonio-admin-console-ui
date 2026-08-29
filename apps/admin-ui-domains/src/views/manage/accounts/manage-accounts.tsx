@@ -13,7 +13,6 @@ import {
   Paging,
   Table,
   TrackNumberPerPage,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
@@ -21,6 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { domainQueryKeys } from '../../../services/domain-query-keys';
 import {
@@ -30,7 +30,6 @@ import {
 } from '../../../services/use-account-list-directory';
 import { useCountAccount } from '../../../services/use-count-account';
 import { EditAccount } from '../../edit-account/edit-account';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { AccountRowItem, buildAccountRow } from './account-row';
 import styles from './accounts.module.css';
 import CreateAccount from './create-account/create-account';
@@ -109,7 +108,6 @@ function joinFilterSelection(selection: Array<{ value: string }>): string {
 
 export const ManageAccounts = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
@@ -236,11 +234,7 @@ export const ManageAccounts = () => {
 
   const { data: totalAccountCreated } = useCountAccount(domainName);
 
-  useEffect(() => {
-    if (isError) {
-      createSnackbar(generateSnackbarFromError(error, t));
-    }
-  }, [isError, error, createSnackbar, t]);
+  useQueryErrorSnackbar(error);
 
   const openDetailView = (account: AccountRowItem): void => {
     setSelectedAccount(account);

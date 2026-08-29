@@ -6,11 +6,11 @@
 
 import { Button, useSnackbar } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
-import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookServiceStatus } from '../../../../types';
 import { LDAP_ADDRESS_BOOK_PORT, LDAP_ADDRESS_BOOK_SERVICE, TRUE } from '../../../constants';
+import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useAddressBookServiceStatus } from '../../../services/use-address-book-service';
 import { useSetAddressBookServiceEnabled } from '../../../services/use-set-address-book-service-enabled';
 import styles from './global-services.module.css';
@@ -36,18 +36,7 @@ export const GlobalServices = () => {
 
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-  useEffect(() => {
-    if (statusError) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label: statusError.message ?? fallbackError,
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
-    }
-  }, [statusError, createSnackbar, fallbackError]);
+  useQueryErrorSnackbar(statusError, { fallback: fallbackError });
 
   function serviceStartStop(): void {
     if (!isGlobalAdmin) {

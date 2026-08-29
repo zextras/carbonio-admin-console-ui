@@ -3,12 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, DropDownInput, Padding, Row, useSnackbar } from '@zextras/ui-components';
+import { Container, DropDownInput, Padding, Row } from '@zextras/ui-components';
 import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { GENERAL_SETTINGS, MAX_DOMAIN_DISPLAY } from '../../../constants';
+import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import type { SoapEntity } from '../../../services/search-domain-service';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import type { Domain } from '../../../store/types';
@@ -25,7 +26,6 @@ export const DomainSearchDropdown = ({
   domainInformation,
 }: DomainSearchDropdownProps) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
   const [isDomainListExpand, setIsDomainListExpand] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -39,17 +39,7 @@ export const DomainSearchDropdown = ({
   const domainList = data?.domain ?? [];
   const isShowError = (data?.searchTotal ?? 0) <= 0 && !error;
 
-  useEffect(() => {
-    if (error) {
-      createSnackbar({
-        key: 'domain-list-error',
-        severity: 'error',
-        label: t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: 5000,
-        replace: true,
-      });
-    }
-  }, [createSnackbar, error, t]);
+  useQueryErrorSnackbar(error, { key: 'domain-list-error', timeout: 5000, hideButton: false });
 
   const [prevDomainId, setPrevDomainId] = useState<string | undefined>(undefined);
   const [prevIsDomainSelect, setPrevIsDomainSelect] = useState(isDomainSelect);

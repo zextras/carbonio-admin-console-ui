@@ -17,11 +17,12 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { TFunction } from 'i18next';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../assets/ninja_robo.svg';
 import { CONTENT_TYPE_TEXT_PLAIN, SAML_METADATA_JSON_FILE } from '../../constants';
+import { useQueryErrorSnackbar } from '../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../hooks/use-selected-domain';
 import { getSamlConfig } from '../../services/get-saml-configurations';
 import { useSamlConfig } from '../../services/use-saml-config';
@@ -32,8 +33,8 @@ import { SamlBanner } from './domain-saml/saml-banner';
 import {
   getSamlAttributes,
   getSpEndpoints,
-  samlAttributeValueToString,
   type SamlAttribute,
+  samlAttributeValueToString,
 } from './domain-saml/utils';
 
 const SNACKBAR_TIMEOUT = 3000;
@@ -111,20 +112,7 @@ export const DomainSaml = () => {
     });
   }
 
-  useEffect(() => {
-    if (samlError) {
-      createSnackbar({
-        key: 'error',
-        severity: 'error',
-        label:
-          samlError.message ||
-          t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-        autoHideTimeout: SNACKBAR_TIMEOUT,
-        hideButton: true,
-        replace: true,
-      });
-    }
-  }, [samlError, createSnackbar, t]);
+  useQueryErrorSnackbar(samlError);
 
   function importSAMLConfigurations(): void {
     samlMutation.mutate(

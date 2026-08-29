@@ -12,17 +12,16 @@ import {
   Row,
   Table,
   TrackNumberPerPage,
-  useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { SoapEntity } from '../../../services/search-domain-service';
 import { useDomainSearch } from '../../../services/use-domain-search';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
 
 export type ZimbraDomainResponse = {
@@ -55,7 +54,6 @@ const DomainSearchFilterIcon = (): React.ReactElement => (
 
 export const GlobalDomainList = () => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
 
   const headers = DOMAIN_LIST_HEADERS.map((header) => ({
     id: header.id,
@@ -76,11 +74,7 @@ export const GlobalDomainList = () => {
     offset,
   });
 
-  useEffect(() => {
-    if (isError && error) {
-      createSnackbar(generateSnackbarFromError(error, t));
-    }
-  }, [isError, error, createSnackbar, t]);
+  useQueryErrorSnackbar(error);
 
   const onDomainSelect = (domain: SoapEntity): void => {
     replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);

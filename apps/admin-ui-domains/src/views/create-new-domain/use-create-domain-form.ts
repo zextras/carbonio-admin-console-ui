@@ -14,10 +14,10 @@ import { useNavigate } from 'react-router';
 
 import type { Attribute } from '../../../types';
 import { ACTIVE, DOMAINS_ROUTE_ID, GENERAL_SETTINGS, HTTPS, MANAGE } from '../../constants';
+import { useQueryErrorSnackbar } from '../../hooks/use-query-error-snackbar';
 import { createGalSyncAccount } from '../../services/create-gal-sync-service';
 import { useCreateDomain } from '../../services/use-create-domain';
 import { useInitDomainForDelegation } from '../../services/use-init-domain-for-delegation';
-import { generateSnackbarFromError } from '../error/generate-snackbar-error';
 import { GbToBytes } from '../utility/utils';
 import { CREATE_DOMAIN_DEFAULT_VALUES, GAL_MODE_INTERNAL } from './constants';
 import { createDomainSchema } from './schema';
@@ -189,12 +189,7 @@ export function useCreateDomainForm() {
     setCurrentStep((step) => step - 1);
   }
 
-  useEffect(() => {
-    if (cosError) {
-      const snackbarConfig = generateSnackbarFromError(cosError, t);
-      createSnackbar(snackbarConfig);
-    }
-  }, [cosError, createSnackbar, t]);
+  useQueryErrorSnackbar(cosError);
 
   useEffect(() => {
     if (mailServerItems.length > 0 && form.getFieldValue('mailServer') === undefined) {

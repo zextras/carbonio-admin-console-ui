@@ -4,13 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { DropDownInput, Input, Row, useSnackbar } from '@zextras/ui-components';
+import { DropDownInput, Input, Row } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
-import { ChangeEvent, useEffect, useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useDomainSearch } from '../../../services/use-domain-search';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { useAccountForm, useSetAccountValues } from '../account-form-context';
 import { buildDomainDropdownItems } from './utils';
 
@@ -24,7 +24,6 @@ export const DomainRenameFields = () => {
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const setAccountValues = useSetAccountValues();
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
 
   const [isDomainSelect, setIsDomainSelect] = useState(false);
   const [searchDomainName, setSearchDomainName] = useState<string | undefined>(
@@ -39,7 +38,7 @@ export const DomainRenameFields = () => {
 
   const debouncedSearchDomain = useDebouncedValue(searchDomainName ?? '', 700);
 
-  const { data: domainSearchData, isError, error } = useDomainSearch({
+  const { data: domainSearchData, error } = useDomainSearch({
     searchQuery: debouncedSearchDomain,
     limit: 50,
     offset: 0,
@@ -51,11 +50,7 @@ export const DomainRenameFields = () => {
       ? (searchResponse?.domain ?? [])
       : [];
 
-  useEffect(() => {
-    if (isError) {
-      createSnackbar(generateSnackbarFromError(error, t));
-    }
-  }, [isError, error, createSnackbar, t]);
+  useQueryErrorSnackbar(error);
 
   const [prevFormDomainName, setPrevFormDomainName] = useState<string | undefined>(undefined);
   if (values?.domainName !== prevFormDomainName) {

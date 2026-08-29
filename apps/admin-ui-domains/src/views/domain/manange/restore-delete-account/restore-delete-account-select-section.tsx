@@ -13,12 +13,12 @@ import {
 	Paging,
 	Row,
 	Table,
-	useSnackbar,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useDebouncedValue } from '@zextras/ui-shared';
-import { FC, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
+import { useQueryErrorSnackbar } from '../../../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { getFormatedShortDate } from '../../../utility/utils';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
@@ -70,7 +70,6 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const { data: domain } = useSelectedDomain();
 	const domainName = domain?.name;
-	const createSnackbar = useSnackbar();
 	const context = useContext(RestoreDeleteAccountContext);
 	const { setRestoreAccountDetail } = context;
 	const [searchString, setSearchString] = useState<string>('');
@@ -89,18 +88,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const totalItem = maxPage ? maxPage * ACCOUNT_LIMIT : 1;
 
 	const responseError = (data as any)?.all_server?.error?.message;
-	useEffect(() => {
-		if (responseError) {
-			createSnackbar({
-				key: 'error',
-				severity: 'error',
-				label: responseError,
-				autoHideTimeout: 3000,
-				hideButton: true,
-				replace: true,
-			});
-		}
-	}, [responseError, createSnackbar]);
+	useQueryErrorSnackbar(responseError);
 
 	const accountHeader: Array<any> = [
 		{
