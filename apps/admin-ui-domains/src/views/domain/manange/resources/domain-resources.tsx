@@ -23,7 +23,6 @@ import logo from '../../../../assets/gardian.svg';
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { useCalResourceList } from '../../../../services/use-cal-resource';
-import ScrollContainer from '../../../components/scrollComponent';
 import { CreateResource } from './create-resource';
 import { ResourceEditDetailView } from './resource-edit-detail-view';
 
@@ -99,7 +98,6 @@ export const DomainResources = () => {
   const [showCreateView, setShowCreateView] = useState<boolean>(false);
   const [sortedColumn, setSortedColumn] = useState<string>('displayName');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
-  const [isTableTooTall] = useState(false);
 
   const searchQuery = buildSearchQuery(searchString, statusFilter);
 
@@ -273,7 +271,9 @@ export const DomainResources = () => {
                   disabled={resourceList.length === 0 && searchString.length === 0}
                   backgroundColor="gray5"
                   label={t('label.search_dot', 'Search…')}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSearchString(e.target.value)}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setSearchString(e.target.value)
+                  }
                   CustomIcon={SearchFunnelIcon}
                 />
               </Container>
@@ -357,10 +357,9 @@ export const DomainResources = () => {
               <Container
                 style={{
                   position: 'sticky',
-                  bottom: isTableTooTall ? '0' : '-4rem',
+                  bottom: '-4rem',
                 }}
               >
-                <ScrollContainer isVisible={isTableTooTall} />
                 <Container
                   orientation="horizontal"
                   mainAlignment="space-between"
@@ -392,9 +391,7 @@ export const DomainResources = () => {
           onClose={() => setShowEditView(false)}
         />
       )}
-      {showCreateView && (
-        <CreateResource onClose={() => setShowCreateView(false)} />
-      )}
+      {showCreateView && <CreateResource onClose={() => setShowCreateView(false)} />}
     </Container>
   );
 };

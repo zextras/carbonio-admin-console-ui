@@ -16,7 +16,6 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
 import { ChangeEvent, ReactElement, useEffect, useRef, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -30,7 +29,6 @@ import {
   useAccountListDirectory,
 } from '../../../services/use-account-list-directory';
 import { useCountAccount } from '../../../services/use-count-account';
-import ScrollContainer from '../../components/scrollComponent';
 import { EditAccount } from '../../edit-account/edit-account';
 import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
 import { AccountRowItem, buildAccountRow } from './account-row';
@@ -80,7 +78,11 @@ function selectAccountListWithTotal(res: { searchTotal?: number }): AccountListD
   };
 }
 
-function buildSearchFilterQuery(searchStr: string, statusFilter: string, typeFilter: string): string {
+function buildSearchFilterQuery(
+  searchStr: string,
+  statusFilter: string,
+  typeFilter: string,
+): string {
   let filterQuery = '';
   if (typeFilter) {
     filterQuery += typeFilter;
@@ -119,7 +121,6 @@ export const ManageAccounts = () => {
   const [offset, setOffset] = useState<number>(0);
   const [limit, setLimit] = useState<number>(RECORD_DISPLAY_LIMIT);
   const [searchString, setSearchString] = useState<string>('');
-  const [isTableTooTall, setIsTableTooTall] = useState(false);
   const [defaultTab, setDefaultTab] = useState('general');
   const [selectedAccount, setSelectedAccount] = useState<AccountRowItem>({} as AccountRowItem);
   const [showAccountDetailView, setShowAccountDetailView] = useState<boolean>(false);
@@ -259,31 +260,6 @@ export const ManageAccounts = () => {
     };
   }, [showAccountDetailView]);
 
-  useEffect(() => {
-    const table = tableRef.current;
-
-    const handleResize = debounce((): void => {
-      if (table) {
-        const tableHeight = table.clientHeight + 375;
-        const viewportHeight = globalThis.innerHeight;
-        setIsTableTooTall(tableHeight > viewportHeight);
-      }
-    }, 100);
-
-    if (table && !resizeObserverRef.current) {
-      const observer = new ResizeObserver(handleResize);
-      resizeObserverRef.current = observer;
-      observer.observe(table);
-    }
-
-    return () => {
-      if (resizeObserverRef.current) {
-        resizeObserverRef.current.disconnect();
-        resizeObserverRef.current = null;
-      }
-    };
-  }, []);
-
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
     setSearchString(e.target.value);
     setOffset(0);
@@ -405,11 +381,7 @@ export const ManageAccounts = () => {
                 </div>
               )}
               {accountList.length !== 0 && (
-                <div
-                  className={styles.pagingSticky}
-                  style={{ bottom: isTableTooTall ? '0' : '-4rem' }}
-                >
-                  <ScrollContainer isVisible={isTableTooTall} />
+                <div className={styles.pagingSticky} style={{ bottom: '-4rem' }}>
                   <div className={styles.pagingBar}>
                     <div className={styles.pagingSide}>
                       <Paging
