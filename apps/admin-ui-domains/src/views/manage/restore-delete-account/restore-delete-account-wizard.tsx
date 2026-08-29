@@ -9,7 +9,7 @@ import { type TFunction } from 'i18next';
 import { type FC, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type RestoreAccountRequestParams } from './restore-delete-account';
+import { type RestoreAccountRequestParams } from '../../../services/restore-delete-account-service';
 import RestoreAccountConfigSection from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';

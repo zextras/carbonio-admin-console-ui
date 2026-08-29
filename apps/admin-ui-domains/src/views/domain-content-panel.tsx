@@ -47,7 +47,7 @@ import { DomainAddressBook } from './manage/address-book/domain-address-book';
 import { ManageDelegates } from './manage/delegates/manage-delegates';
 import DomainMailingList from './manage/mailing-list/domain-mailing-list';
 import DomainResources from './manage/resources/domain-resources';
-import RestoreAccount from './manage/restore-delete-account/restore-delete-account';
+import { RestoreDeleteAccount } from './manage/restore-delete-account/restore-delete-account';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();
@@ -121,7 +121,7 @@ export const DomainContentPanel = () => (
         <Route path={DELEGATES_DOMAIN_ADMINS} element={<ManageDelegates />} />
         <Route path={DISTRIBUTION_LIST} element={<DomainMailingList />} />
         <Route path={RESOURCES} element={<DomainResources />} />
-        <Route path={RESTORE_ACCOUNT} element={<RestoreAccount />} />
+        <Route path={RESTORE_ACCOUNT} element={<RestoreDeleteAccount />} />
         <Route path={DISCLAIMER} element={<DomainDisclaimer />} />
         <Route path="*" element={null} />
       </Route>

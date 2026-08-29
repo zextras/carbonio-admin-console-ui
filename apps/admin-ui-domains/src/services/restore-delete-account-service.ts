@@ -6,15 +6,61 @@
 
 import { fetchExternalSoap } from '@zextras/ui-shared';
 
+export type RestoreAccountRequestParams = {
+	id: string;
+	createDate: string;
+	copyAccount: string;
+	dateTime: string | null;
+	hsmApply: boolean;
+	notificationReceiver: string;
+	isEmailNotificationEnable: boolean;
+	copyDomain: string;
+	serverName: string;
+};
+
+export type RestoreDeletedAccountBody = {
+	srcAccountName: string;
+	obeyHSM: boolean;
+	notificationMails?: Array<string>;
+	dstAccountName?: string;
+	date?: number | string;
+};
+
+export type RestoreDeletedAccountResponse = {
+	operationId?: string;
+	status?: number;
+	error?: { message?: string; details?: { cause?: string } };
+};
+
+export function buildRestoreDeletedAccountBody(
+	params: RestoreAccountRequestParams
+): RestoreDeletedAccountBody {
+	const body: RestoreDeletedAccountBody = {
+		srcAccountName: params.id,
+		obeyHSM: params.hsmApply
+	};
+	if (params.notificationReceiver !== '' && params.isEmailNotificationEnable) {
+		body.notificationMails = [params.notificationReceiver];
+	}
+	if (params.copyAccount !== '') {
+		body.dstAccountName = `${params.copyAccount.split('@')[0]}@${params.copyDomain}`;
+	}
+	if (params.dateTime) {
+		body.date = new Date(params.dateTime).getTime();
+		if (body.date < Number(params.createDate)) {
+			body.date = params.createDate;
+		}
+	}
+	return body;
+}
+
 export const doRestoreDeleteAccount = async (
-	dataItem: unknown,
+	body: RestoreDeletedAccountBody,
 	targetServers: string
-): Promise<any> => {
-	const data: any = dataItem;
-	return fetchExternalSoap(
+): Promise<RestoreDeletedAccountResponse> =>
+	fetchExternalSoap<RestoreDeletedAccountBody, RestoreDeletedAccountResponse>(
 		`/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${targetServers}`,
 		{
-			...data
+			...body
 		}
 	);
-};
