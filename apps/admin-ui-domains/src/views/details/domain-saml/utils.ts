@@ -10,6 +10,16 @@ export type SamlAttribute = { attribute: string; value: unknown };
 
 export type SpEndpoints = { entityId: string; serviceUrl: string };
 
+export function samlAttributeValueToString(value: unknown): string {
+  if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+    return String(value);
+  }
+  if (Array.isArray(value)) {
+    return value.map((item) => samlAttributeValueToString(item)).join(',');
+  }
+  return '';
+}
+
 type DomainAttribute = { n: string; _content?: string };
 
 export function getSamlAttributes(

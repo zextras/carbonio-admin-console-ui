@@ -29,7 +29,12 @@ import { useSamlMutation } from '../../services/use-saml-mutation';
 import { download } from '../utility/utils';
 import styles from './domain-saml.module.css';
 import { SamlBanner } from './domain-saml/saml-banner';
-import { getSamlAttributes, getSpEndpoints, type SamlAttribute } from './domain-saml/utils';
+import {
+  getSamlAttributes,
+  getSpEndpoints,
+  samlAttributeValueToString,
+  type SamlAttribute,
+} from './domain-saml/utils';
 
 const SNACKBAR_TIMEOUT = 3000;
 
@@ -230,7 +235,7 @@ export const DomainSaml = () => {
 
   function openSamlValue(item: SamlAttribute): void {
     setSamlAttrKey(item.attribute);
-    setSamlAttrValue(String(item.value ?? ''));
+    setSamlAttrValue(samlAttributeValueToString(item.value));
   }
 
   const samlTableRows = samlAttributes.map((item) => ({
@@ -253,7 +258,7 @@ export const DomainSaml = () => {
         onClick={() => openSamlValue(item)}
       >
         <ds-text as="span" size="small" weight="light" color="gray0">
-          {String(item.value ?? '')}
+          {samlAttributeValueToString(item.value)}
         </ds-text>
       </button>,
     ],
