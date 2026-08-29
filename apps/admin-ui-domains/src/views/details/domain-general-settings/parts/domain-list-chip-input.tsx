@@ -55,11 +55,10 @@ export const DomainListChipInput = ({
     );
   };
 
-  const carbonioSearchAllDomainsByFeature = config.filter(
-    (item: { n?: string; _content?: string }) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
-  );
   const isEnableSearchAllDomainsByFeature =
-    carbonioSearchAllDomainsByFeature[0]?._content === TRUE;
+    config.find(
+      (item: { n?: string }) => item?.n === CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE,
+    )?._content === TRUE;
 
   return (
     <Tooltip
