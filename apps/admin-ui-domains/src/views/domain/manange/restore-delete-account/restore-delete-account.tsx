@@ -27,7 +27,6 @@ export type RestoreAccountRequestParams = {
 const RestoreDeleteAccount: FC = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
-  const [isRequestWorkInProgress, setIsRequestWorkInProgress] = useState<any>();
   const [wizardKey, setWizardKey] = useState(0);
 
   // Remounts the wizard (resetting its internal state to the first step) without
@@ -65,7 +64,6 @@ const RestoreDeleteAccount: FC = () => {
     if (body?.date < createDate) {
       body.date = createDate;
     }
-    setIsRequestWorkInProgress(true);
     doRestoreDeleteAccount(body, serverName)
       .then((data) => {
         let error = data?.error?.details?.cause || data?.error?.message;
@@ -73,7 +71,6 @@ const RestoreDeleteAccount: FC = () => {
         if (error === undefined && data?.status !== 200) {
           error = t('label.something_wrong_error_msg', 'Something went wrong. Please try again.');
         }
-        setIsRequestWorkInProgress(false);
         if (error) {
           createSnackbar({
             key: 'error',
@@ -131,7 +128,6 @@ const RestoreDeleteAccount: FC = () => {
             key={wizardKey}
             setShowRestoreAccountWizard={noop}
             restoreAccountRequest={restoreAccountRequest}
-            isRequestWorkInProgress={isRequestWorkInProgress}
             onReset={resetWizard}
           />
         </Container>

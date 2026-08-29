@@ -19,7 +19,7 @@ import {
 } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
 import { debounce } from 'lodash-es';
-import { ChangeEvent, type ReactElement,useEffect, useState } from 'react';
+import { ChangeEvent, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
@@ -139,14 +139,10 @@ export const SendInviteAccounts = ({
   }
 
   const searchMemberCall = debounce((mem: string) => {
-    getSearchMemberList(mem);
-  }, 700);
-
-  useEffect(() => {
-    if (newSentInviteValue !== '') {
-      searchMemberCall(newSentInviteValue);
+    if (mem !== '') {
+      getSearchMemberList(mem);
     }
-  }, [newSentInviteValue]);
+  }, 700);
 
   const searchMemberItems = searchMemberResult.map((item) => ({
     id: item.id,
@@ -198,6 +194,7 @@ export const SendInviteAccounts = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setNewSentInviteValue(e.target.value);
                   setSendInviteAddBtnDisabled(!isValidEmail(e.target.value));
+                  searchMemberCall(e.target.value);
                 }}
                 inputValue={newSentInviteValue}
                 isCustomIcon={false}

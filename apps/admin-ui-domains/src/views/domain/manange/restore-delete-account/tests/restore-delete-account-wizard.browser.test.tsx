@@ -27,9 +27,8 @@ describe('RestoreDeleteAccountWizard', () => {
 		setupBrowserTest(
 			<RestoreDeleteAccountWizard
 				setShowRestoreAccountWizard={vi.fn()}
-				restoreAccountRequest={vi.fn()}
-				isRequestWorkInProgress={undefined}
-				onReset={onReset}
+			restoreAccountRequest={vi.fn()}
+			onReset={onReset}
 			/>,
 		);
 

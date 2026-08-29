@@ -5,7 +5,7 @@
  */
 
 import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement, useEffect, useState } from 'react';
+import { type FC, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { type RestoreAccountRequestParams } from './restore-delete-account';
@@ -51,9 +51,8 @@ interface AccountDetailObj {
 const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
   restoreAccountRequest: (params: RestoreAccountRequestParams) => void;
-  isRequestWorkInProgress: any;
   onReset: () => void;
-}> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress, onReset }) => {
+}> = ({ setShowRestoreAccountWizard, restoreAccountRequest, onReset }) => {
   const { t } = useTranslation();
   const [isStartClicked, setIsStartClicked] = useState<boolean>();
   const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
@@ -72,25 +71,23 @@ const RestoreDeleteAccountWizard: FC<{
     serverName: '',
   });
 
-  const isRequestInProgress = isRequestWorkInProgress === false ? undefined : isStartClicked;
-
-  useEffect(() => {
-    setTimeout(() => {
-      if (!!isRequestInProgress && isRequestInProgress) {
-        restoreAccountRequest({
-          id: restoreAccountDetail?.id,
-          createDate: restoreAccountDetail?.createDate,
-          copyAccount: restoreAccountDetail?.copyAccount,
-          dateTime: restoreAccountDetail?.dateTime,
-          hsmApply: restoreAccountDetail?.hsmApply,
-          notificationReceiver: restoreAccountDetail?.notificationReceiver,
-          isEmailNotificationEnable: restoreAccountDetail?.isEmailNotificationEnable,
-          copyDomain: restoreAccountDetail?.copyDomain,
-          serverName: restoreAccountDetail?.serverName,
-        });
-      }
-    }, 500);
-  }, [isRequestInProgress, restoreAccountDetail, restoreAccountRequest]);
+  function startRestoreAccount(): void {
+    if (isStartClicked !== undefined) {
+      return;
+    }
+    setIsStartClicked(true);
+    restoreAccountRequest({
+      id: restoreAccountDetail.id,
+      createDate: restoreAccountDetail.createDate,
+      copyAccount: restoreAccountDetail.copyAccount,
+      dateTime: restoreAccountDetail.dateTime,
+      hsmApply: restoreAccountDetail.hsmApply,
+      notificationReceiver: restoreAccountDetail.notificationReceiver,
+      isEmailNotificationEnable: restoreAccountDetail.isEmailNotificationEnable,
+      copyDomain: restoreAccountDetail.copyDomain,
+      serverName: restoreAccountDetail.serverName,
+    });
+  }
 
   const wizardSteps = [
     {
@@ -189,11 +186,7 @@ const RestoreDeleteAccountWizard: FC<{
           label={t('label.restore_account', 'Restore Account')}
           icon="PowerOutline"
           iconPlacement="right"
-          onClick={(): void => {
-            if (isStartClicked === undefined) {
-              setIsStartClicked(true);
-            }
-          }}
+          onClick={startRestoreAccount}
           disabled={restoreAccountDetail?.name === '' || restoreAccountDetail?.copyAccount === ''}
         />
       ),
