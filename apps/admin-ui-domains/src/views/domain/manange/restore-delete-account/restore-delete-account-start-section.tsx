@@ -5,25 +5,27 @@
  */
 import { Container, LabeledValue, ListRow, Row } from '@zextras/ui-components';
 import { format } from 'date-fns';
-import { FC, useContext, useMemo } from 'react';
+import { FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
+
+function formatRestoreDateTime(dateTime: string | null | undefined, createDate: string): string {
+  if (!dateTime) return '';
+
+  const selectedDate = dateTime > createDate ? dateTime : createDate;
+
+  return format(new Date(selectedDate), 'd MMMM yyyy | hh:mm:ss a');
+}
 
 const RestoreDeleteAccountStartSection: FC<any> = () => {
   const { t } = useTranslation();
   const context = useContext(RestoreDeleteAccountContext);
   const { restoreAccountDetail } = context;
-  const restoreDateTimeValue = useMemo(() => {
-    if (!restoreAccountDetail?.dateTime) return '';
-
-    const selectedDate =
-      restoreAccountDetail.dateTime > restoreAccountDetail.createDate
-        ? restoreAccountDetail.dateTime
-        : restoreAccountDetail.createDate;
-
-    return format(new Date(selectedDate), 'd MMMM yyyy | hh:mm:ss a');
-  }, [restoreAccountDetail?.createDate, restoreAccountDetail?.dateTime]);
+  const restoreDateTimeValue = formatRestoreDateTime(
+    restoreAccountDetail?.dateTime,
+    restoreAccountDetail?.createDate,
+  );
   return (
     <Container
       orientation="column"
