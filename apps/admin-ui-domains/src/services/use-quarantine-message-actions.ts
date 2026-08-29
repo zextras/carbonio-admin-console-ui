@@ -6,6 +6,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
+import { modifyConfigAttributes } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import type { IncompleteMessage } from '../views/global/global-quarantine/quarantine-types';
@@ -16,7 +17,6 @@ import { deleteAccount } from './delete-account-service';
 import { domainQueryKeys } from './domain-query-keys';
 import { getAccountRequest } from './get-account';
 import { msgActionRequest } from './message-action';
-import { modifyConfig } from './modify-config';
 import { removeAttachmentsRequest } from './remove-attachments';
 
 const SNACKBAR_OPTS = {
@@ -136,7 +136,7 @@ export const useRecreateQuarantineAccount = () => {
           t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
         );
       }
-      await modifyConfig([{ n: 'zimbraAmavisQuarantineAccount', _content: newName }]);
+      await modifyConfigAttributes([{ n: 'zimbraAmavisQuarantineAccount', _content: newName }]);
       if (previousAccountName) {
         const res = await getAccountRequest('', previousAccountName, 0);
         const previousId = res?.account?.[0]?.id;

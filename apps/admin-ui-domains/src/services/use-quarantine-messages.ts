@@ -5,13 +5,13 @@
  */
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
+import { batchService } from '@zextras/ui-shared';
 
 import {
   buildGetMsgBatch,
   normalizeMessage,
 } from '../views/global/global-quarantine/quarantine-message-normalizer';
 import type { IncompleteMessage } from '../views/global/global-quarantine/quarantine-types';
-import { batchService } from './batch-service';
 import { domainQueryKeys } from './domain-query-keys';
 import { getQuarantineMessages } from './get-quarantine-messages-service';
 
@@ -25,7 +25,7 @@ export const useQuarantineMessages = (accountId: string | undefined) =>
         GetMsgRequest: buildGetMsgBatch(searchResults),
         _jsns: 'urn:zimbra',
       });
-      return (msgBatchData?.GetMsgResponse ?? [])
+      return ((msgBatchData?.GetMsgResponse as Array<unknown> | undefined) ?? [])
         .map((item: unknown) =>
           normalizeMessage(
             (item as { m?: Array<Parameters<typeof normalizeMessage>[0]> })?.m?.[0] as Parameters<

@@ -38,6 +38,7 @@ export type { ResponsiveContainerOptions } from './hooks/responsive-container';
 export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 export type { ConfigAttribute } from './react-query/use-modify-config';
+export type { BatchRequest } from './services/batch-service';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -97,7 +98,7 @@ import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
-import { useModifyConfig } from './react-query/use-modify-config';
+import { modifyConfigAttributes, useModifyConfig } from './react-query/use-modify-config';
 import {
 	type Notification,
 	notificationsQueryKeys,
@@ -127,6 +128,7 @@ import {
   useVersion,
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
+import { batchService } from './services/batch-service';
 import {
   type CosAttribute,
   type CosEntry,
@@ -219,6 +221,7 @@ export {
   ACTION_TYPES,
   addRoute,
   BASENAME,
+  batchService,
   buildPath,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
@@ -253,6 +256,7 @@ export {
   LOGIN_V3_CONFIG_PATH,
   loginConfig,
   logout,
+  modifyConfigAttributes,
   normalizeRoute,
   notificationsQueryKeys,
   OPEN_TICKET_URL,

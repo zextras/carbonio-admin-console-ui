@@ -10,7 +10,8 @@ import { page } from 'vitest/browser';
 const mockBatchService = vi.hoisted(() => vi.fn());
 const mockAccountListDirectory = vi.hoisted(() => vi.fn());
 
-vi.mock('../../../services/batch-service', () => ({
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@zextras/ui-shared')>()),
 	batchService: mockBatchService,
 }));
 vi.mock('../../../services/account-list-directory-service', () => ({

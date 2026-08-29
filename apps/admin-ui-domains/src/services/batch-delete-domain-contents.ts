@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { DirectoryEntry } from '@zextras/ui-shared';
+import { batchService, type DirectoryEntry } from '@zextras/ui-shared';
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
-import { batchService } from './batch-service';
 
 type AccountDeleteRequest = { id: string; _jsns: string };
 type DistributionListDeleteRequest = { id: { _content: string }; _jsns: string };

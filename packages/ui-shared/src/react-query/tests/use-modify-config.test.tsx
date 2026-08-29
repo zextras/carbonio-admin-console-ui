@@ -8,7 +8,7 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { useModifyConfig } from '../use-modify-config';
+import { modifyConfigAttributes,useModifyConfig } from '../use-modify-config';
 
 vi.mock('../../hooks/useSnackbar', () => ({
   useSnackbar: vi.fn(),
@@ -88,5 +88,18 @@ describe('useModifyConfig', () => {
     expect(customFn).toHaveBeenCalledWith({ some: 'payload' });
     expect(soapFetch).not.toHaveBeenCalled();
     expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: ['all-config'] });
+  });
+});
+
+describe('modifyConfigAttributes', () => {
+  it('sends the attributes as a ModifyConfig SOAP request', async () => {
+    vi.mocked(soapFetch).mockResolvedValue({});
+
+    await modifyConfigAttributes([{ n: 'zimbraAmavisQuarantineAccount', _content: 'virus-quarantine' }]);
+
+    expect(soapFetch).toHaveBeenCalledWith('ModifyConfig', {
+      _jsns: 'urn:zimbraAdmin',
+      a: [{ n: 'zimbraAmavisQuarantineAccount', _content: 'virus-quarantine' }],
+    });
   });
 });

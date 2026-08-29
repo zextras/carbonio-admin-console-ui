@@ -16,7 +16,7 @@ const mocks = vi.hoisted(() => ({
   createAccount: vi.fn(),
   deleteAccount: vi.fn(),
   getAccount: vi.fn(),
-  modifyConfig: vi.fn(),
+  modifyConfigAttributes: vi.fn(),
   msgAction: vi.fn(),
   removeAttachments: vi.fn(),
 }));
@@ -34,7 +34,10 @@ vi.mock('../create-account', () => ({ createAccountRequest: mocks.createAccount 
 vi.mock('../delete-account-service', () => ({ deleteAccount: mocks.deleteAccount }));
 vi.mock('../get-account', () => ({ getAccountRequest: mocks.getAccount }));
 vi.mock('../message-action', () => ({ msgActionRequest: mocks.msgAction }));
-vi.mock('../modify-config', () => ({ modifyConfig: mocks.modifyConfig }));
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@zextras/ui-shared')>()),
+	modifyConfigAttributes: mocks.modifyConfigAttributes,
+}));
 vi.mock('../remove-attachments', () => ({ removeAttachmentsRequest: mocks.removeAttachments }));
 vi.mock('../../views/utility/utils', () => ({ generateRandomString: () => 'abc123' }));
 
@@ -217,7 +220,7 @@ describe('useRecreateQuarantineAccount', () => {
     mocks.createAccount.mockResolvedValue({
       account: [{ name: 'virus-quarantine.abc123@example.com' }],
     });
-    mocks.modifyConfig.mockResolvedValue({});
+    mocks.modifyConfigAttributes.mockResolvedValue({});
     mocks.getAccount.mockResolvedValue({ account: [{ id: 'prev-id' }] });
     mocks.deleteAccount.mockResolvedValue({});
 
@@ -241,7 +244,7 @@ describe('useRecreateQuarantineAccount', () => {
       'virus-quarantine.abc123@example.com',
       '',
     );
-    expect(mocks.modifyConfig).toHaveBeenCalledWith([
+    expect(mocks.modifyConfigAttributes).toHaveBeenCalledWith([
       { n: 'zimbraAmavisQuarantineAccount', _content: 'virus-quarantine.abc123@example.com' },
     ]);
     expect(mocks.getAccount).toHaveBeenCalledWith('', 'virus-quarantine@old.com', 0);
@@ -262,7 +265,7 @@ describe('useRecreateQuarantineAccount', () => {
     mocks.createAccount.mockResolvedValue({
       account: [{ name: 'virus-quarantine.abc123@example.com' }],
     });
-    mocks.modifyConfig.mockResolvedValue({});
+    mocks.modifyConfigAttributes.mockResolvedValue({});
 
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useRecreateQuarantineAccount(), { wrapper });
@@ -278,7 +281,7 @@ describe('useRecreateQuarantineAccount', () => {
     mocks.createAccount.mockResolvedValue({
       account: [{ name: 'virus-quarantine.abc123@example.com' }],
     });
-    mocks.modifyConfig.mockResolvedValue({});
+    mocks.modifyConfigAttributes.mockResolvedValue({});
     mocks.getAccount.mockResolvedValue({});
 
     const { wrapper } = createWrapper();
@@ -295,7 +298,7 @@ describe('useRecreateQuarantineAccount', () => {
     expect(result.current.data).toBe('virus-quarantine.abc123@example.com');
   });
 
-  it('should show an error snackbar and skip modifyConfig when the response has no name', async () => {
+  it('should show an error snackbar and skip modifyConfigAttributes when the response has no name', async () => {
     mocks.createAccount.mockResolvedValue({});
 
     const { wrapper } = createWrapper();
@@ -313,7 +316,7 @@ describe('useRecreateQuarantineAccount', () => {
         label: 'Something went wrong. Please try again.',
       }),
     );
-    expect(mocks.modifyConfig).not.toHaveBeenCalled();
+    expect(mocks.modifyConfigAttributes).not.toHaveBeenCalled();
   });
 
   it('should show an error snackbar when createAccountRequest rejects', async () => {

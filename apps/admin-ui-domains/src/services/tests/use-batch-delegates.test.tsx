@@ -9,11 +9,12 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../batch-service', () => ({
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@zextras/ui-shared')>()),
 	batchService: vi.fn(),
 }));
 
-import { batchService } from '../batch-service';
+import { batchService } from '@zextras/ui-shared';
 import { domainQueryKeys } from '../domain-query-keys';
 import { useBatchDelegates } from '../use-batch-delegates';
 

@@ -6,10 +6,10 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
+import { batchService } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
-import { batchService } from './batch-service';
 import { mtaQueryKeys } from './mta-query-keys';
 
 type BatchMailQueueActionInput = {

@@ -13,7 +13,7 @@ import { soapFetch } from '../network/fetch';
 
 export type ConfigAttribute = { n: string; _content?: string };
 
-const modifyConfigRequest = (a: Array<ConfigAttribute>): Promise<unknown> =>
+export const modifyConfigAttributes = (a: Array<ConfigAttribute>): Promise<unknown> =>
   soapFetch('ModifyConfig', {
     _jsns: ZIMBRA_ADMIN_URN,
     a,
@@ -33,7 +33,7 @@ export function useModifyConfig<TVariables = Array<ConfigAttribute>>(
 
   return useMutation<unknown, Error, TVariables>({
     mutationFn: (variables) =>
-      mutationFn ? mutationFn(variables) : modifyConfigRequest(variables as Array<ConfigAttribute>),
+      mutationFn ? mutationFn(variables) : modifyConfigAttributes(variables as Array<ConfigAttribute>),
     onSuccess: () => {
       createSnackbar({
         key: 'success',

@@ -5,8 +5,8 @@
  */
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { batchService } from '@zextras/ui-shared';
 
-import { batchService } from './batch-service';
 import { domainQueryKeys } from './domain-query-keys';
 
 type BatchDelegatesVars = {
