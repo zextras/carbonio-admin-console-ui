@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Input, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { FC, useCallback, useContext, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { getDomainList } from '../../../../services/search-domain-service';
@@ -20,34 +20,27 @@ const RestoreDeleteAccountConfigSection: FC = () => {
   );
   const [searchDomainName, setSearchDomainName] = useState('');
 
-  const handleChange = useCallback((domainNameInput: string | any) => {
+  const handleChange = (domainNameInput: string | any) => {
     setSearchDomainNameInput(domainNameInput);
     setSearchDomainName('');
-  }, []);
-
-  const getDomainLists = useCallback(
-    (domain: string): any => {
-      getDomainList(domain, 0)
-        .then((data: any) => {
-          const searchResponse: any = data;
-          if (!!searchResponse && searchResponse?.searchTotal > 0) {
-            // do nothing if domain found
-          } else {
-            const errorSnack = generateSnackbarFromError(data, t);
-            createSnackbar(errorSnack);
-          }
-        })
-        .catch((error) => {
-          const errorSnack = generateSnackbarFromError(error, t);
-          createSnackbar(errorSnack);
-        });
-    },
-    [createSnackbar, t],
-  );
+  };
 
   useEffect(() => {
-    getDomainLists(searchDomainName);
-  }, [searchDomainName, getDomainLists, setSearchDomainNameInput, createSnackbar, t]);
+    getDomainList(searchDomainName, 0)
+      .then((data: any) => {
+        const searchResponse: any = data;
+        if (!!searchResponse && searchResponse?.searchTotal > 0) {
+          // do nothing if domain found
+        } else {
+          const errorSnack = generateSnackbarFromError(data, t);
+          createSnackbar(errorSnack);
+        }
+      })
+      .catch((error) => {
+        const errorSnack = generateSnackbarFromError(error, t);
+        createSnackbar(errorSnack);
+      });
+  }, [searchDomainName, createSnackbar, t]);
 
   return (
     <Container
