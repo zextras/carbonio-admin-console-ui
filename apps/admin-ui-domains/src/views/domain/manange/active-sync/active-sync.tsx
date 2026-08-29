@@ -14,8 +14,9 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
+import { useDebouncedValue } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { type ChangeEvent, type ReactElement, type ReactNode, useEffect, useState } from 'react';
+import { type ChangeEvent, type ReactElement, type ReactNode, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../../assets/gardian.svg';
@@ -68,24 +69,11 @@ export const ActiveSync = () => {
   const removeDevice = useRemoveDevice();
 
   const [searchString, setSearchString] = useState('');
-  const [filteredDevices, setFilteredDevices] = useState<Array<MobileDevice>>([]);
   const [checkedFirstSeen, setCheckedFirstSeen] = useState<number | null>(null);
   const [detailDevice, setDetailDevice] = useState<MobileDevice | null>(null);
 
-  useEffect(() => {
-    if (!searchString) {
-      setFilteredDevices(devices);
-      return;
-    }
-    const handle = setTimeout(() => {
-      setFilteredDevices(filterDevices(devices, searchString));
-    }, 700);
-    return () => clearTimeout(handle);
-  }, [searchString, devices]);
-
-  useEffect(() => {
-    setCheckedFirstSeen(null);
-  }, [searchString]);
+  const debouncedSearch = useDebouncedValue(searchString, 700);
+  const filteredDevices = filterDevices(devices, debouncedSearch);
 
   const checkedDevice =
     checkedFirstSeen === null
@@ -192,6 +180,7 @@ export const ActiveSync = () => {
                 backgroundColor="gray5"
                 onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setSearchString(e.target.value);
+                  setCheckedFirstSeen(null);
                 }}
                 CustomIcon={SearchFunnelIcon}
               />

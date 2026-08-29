@@ -15,7 +15,7 @@ import {
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RESET_DEVICE, WIPE_DEVICE } from '../../../../constants';
@@ -68,14 +68,12 @@ export const ActiveDeviceDetail = ({
 
   const [abqStatus, setAbqStatus] = useState<SelectOption>(abqStatusOptions[0]);
   const [status, setStatus] = useState<SelectOption>(statusOptions[0]);
+  const [prevDeviceStatus, setPrevDeviceStatus] = useState<number | undefined>(undefined);
 
-  useEffect(() => {
-    if (mobileDeviceDetail?.status === 1) {
-      setStatus(statusOptions[0]);
-    } else if (mobileDeviceDetail) {
-      setStatus(statusOptions[1]);
-    }
-  }, [mobileDeviceDetail]);
+  if (mobileDeviceDetail?.status !== prevDeviceStatus) {
+    setPrevDeviceStatus(mobileDeviceDetail?.status);
+    setStatus(mobileDeviceDetail?.status === 1 ? statusOptions[0] : statusOptions[1]);
+  }
 
   function closeConfirm(): void {
     setOperationType('');

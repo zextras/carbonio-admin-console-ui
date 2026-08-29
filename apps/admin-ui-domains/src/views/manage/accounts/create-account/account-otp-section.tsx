@@ -7,7 +7,7 @@ import { useSelector } from '@tanstack/react-store';
 import { Button, ChipInput, Container, Padding, Row, Switch } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
@@ -18,8 +18,8 @@ import staticCodesStyles from './account-otp-section.module.css';
 import { useCreateAccountFormContext } from './create-account-form-context';
 import { emailContent } from './email-content';
 const AccountOtpSection: FC<{
-  setToggleNextBtn: (newValue: boolean) => void;
-}> = ({ setToggleNextBtn }) => {
+  setToggleNextBtn?: (newValue: boolean) => void;
+}> = () => {
   const { form } = useCreateAccountFormContext();
   const accountDetail = useSelector(form.store, (s) => s.values);
   const { data: domain } = useSelectedDomain();
@@ -27,14 +27,6 @@ const AccountOtpSection: FC<{
   const [sendEmailTo, setSendEmailTo] = useState<any>('');
   const [t] = useTranslation();
   const sendOtpEmail = useSendOtpEmail();
-
-  useEffect(() => {
-    if (accountDetail?.generateOTP || accountDetail?.administrationRigths) {
-      setToggleNextBtn(true);
-    } else {
-      setToggleNextBtn(false);
-    }
-  }, [accountDetail?.administrationRigths, accountDetail?.generateOTP, setToggleNextBtn]);
 
   return (
     <Container

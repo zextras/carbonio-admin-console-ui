@@ -8,6 +8,7 @@ import {
   HorizontalWizard,
   WizardInSection,
 } from '@zextras/ui-components';
+import { useSelector } from '@tanstack/react-store';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 import { ComponentProps, ComponentType, ReactElement } from 'react';
@@ -26,7 +27,7 @@ type WizardStep = {
   name: string;
   label: string;
   icon: string;
-  view: ComponentType<{ setToggleNextBtn: (newValue: boolean) => void }>;
+  view: ComponentType<{ setToggleNextBtn?: (newValue: boolean) => void }>;
   clickDisabled?: boolean;
   CancelButton: (buttonProps?: WizardStepButtonProps) => ReactElement;
   PrevButton: () => ReactElement;
@@ -40,6 +41,7 @@ type WizardStepsFactoryDeps = {
   onNextClick: () => void;
   onCreateAnotherClick: () => void;
   isAdminRightsEnabled: boolean;
+  otpToggleNextBtn: boolean;
 };
 
 function createWizardSteps({
@@ -49,6 +51,7 @@ function createWizardSteps({
   onNextClick,
   onCreateAnotherClick,
   isAdminRightsEnabled,
+  otpToggleNextBtn,
 }: WizardStepsFactoryDeps): Array<WizardStep> {
   const DetailsCancelButton = (buttonProps?: WizardStepButtonProps): ReactElement => (
     <Button
@@ -87,9 +90,8 @@ function createWizardSteps({
 
   const OtpNextButton = (buttonProps?: WizardStepButtonProps): ReactElement => (
     <Button
-      label={
-        buttonProps?.toggleNextBtn ? t('commons.next', 'NEXT') : t('commons.close', 'CLOSE')
-      }
+      {...buttonProps}
+      label={otpToggleNextBtn ? t('commons.next', 'NEXT') : t('commons.close', 'CLOSE')}
       onClick={onNextClick}
     />
   );
@@ -130,6 +132,8 @@ const CreateAccount = (props: CreateAccountProps) => {
     handleCreateAnotherAccount,
   } = useCreateAccountForm(props);
 
+  const accountValues = useSelector(form.store, (s) => s.values);
+
   const wizardSteps = createWizardSteps({
     t,
     onCancel: (): void => {
@@ -138,7 +142,8 @@ const CreateAccount = (props: CreateAccountProps) => {
     onCreateClick: handleCreateClick,
     onNextClick: handleNextClick,
     onCreateAnotherClick: handleCreateAnotherAccount,
-    isAdminRightsEnabled: form.state.values.administrationRigths,
+    isAdminRightsEnabled: !!accountValues.administrationRigths,
+    otpToggleNextBtn: !!accountValues.generateOTP || !!accountValues.administrationRigths,
   });
 
   const onComplete = (): void => {
