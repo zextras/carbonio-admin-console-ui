@@ -15,13 +15,17 @@ import {
 	Table,
 } from '@zextras/ui-components';
 import { getSoapFetchRequest, useDebouncedValue } from '@zextras/ui-shared';
-import { FC, useContext, useState } from 'react';
+import { type FC, type ReactElement, useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { getFormatedShortDate } from '../../utility/utils';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
+
+const SearchFilterIcon = (): ReactElement => (
+	<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
 
 const ACCOUNT_LIMIT = 10;
 
@@ -235,9 +239,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 									setAccountOffset(0);
 								}}
 								label={t('label.filter_account_list', 'Filter Account List')}
-								CustomIcon={(): any => (
-									<ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-								)}
+								CustomIcon={SearchFilterIcon}
 							/>
 						</Container>
 						<ListRow>
