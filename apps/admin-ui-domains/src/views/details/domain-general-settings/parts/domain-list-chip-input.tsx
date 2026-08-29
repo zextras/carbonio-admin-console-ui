@@ -4,15 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ChipInput, type ChipInputProps, type DropdownItem, Row, Tooltip } from '@zextras/ui-components';
-import { useAllConfig } from '@zextras/ui-shared';
+import { ChipInput, type ChipInputProps, type DropdownItem, Tooltip } from '@zextras/ui-components';
+import { useAllConfig, useDebouncedValue } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DomainsByFeature } from '../../../../../types';
 import { CARBONIO_SEARCH_ALL_DOMAINS_BY_FEATURE, TRUE } from '../../../../constants';
-import { getDomainList } from '../../../../services/search-domain-service';
-import { ZimbraDomainResponse } from '../../../global/global-domain-list/global-domain-list';
+import { useDomainSearch } from '../../../../services/use-domain-search';
 
 type DomainListChipInputProps = {
   domainName: string;
@@ -27,24 +26,25 @@ export const DomainListChipInput = ({
 }: DomainListChipInputProps) => {
   const [t] = useTranslation();
   const { data: config = [] } = useAllConfig();
-  const [domainOption, setDomainOption] = useState<Array<DropdownItem>>([]);
+  const [searchValue, setSearchValue] = useState('');
+  const debouncedSearchValue = useDebouncedValue(searchValue, 700);
 
-  function getAllDomainList(searchQuery: string): void {
-    getDomainList(searchQuery, 0, 10).then((data) => {
-      const domainListResponse: ZimbraDomainResponse = data?.domain || [];
-      if (domainListResponse && Array.isArray(domainListResponse)) {
-        const domainListArr = domainListResponse.map((domain) => ({
-          label: domain.name,
-          id: domain.name,
-        }));
+  const { data } = useDomainSearch({
+    searchQuery: debouncedSearchValue,
+    limit: 10,
+    offset: 0,
+    enabled: debouncedSearchValue !== '',
+  });
 
-        setDomainOption(domainListArr.filter((domain) => domain.id !== domainName));
-      }
-    });
-  }
+  const domainOption: Array<DropdownItem> = (data?.domain ?? [])
+    .filter((domain) => domain.name !== domainName)
+    .map((domain) => ({
+      label: domain.name,
+      id: domain.name,
+    }));
 
   const onInputType: NonNullable<ChipInputProps['onInputType']> = (event) => {
-    getAllDomainList(event.textContent ?? '');
+    setSearchValue(event.textContent ?? '');
   };
 
   const onChange: NonNullable<ChipInputProps['onChange']> = (domainChipList) => {
@@ -69,7 +69,7 @@ export const DomainListChipInput = ({
       )}
       disabled={!isEnableSearchAllDomainsByFeature}
     >
-      <Row width={'fill'}>
+      <div className="w-full">
         <ChipInput
           data-testid={'domain-input'}
           disableOptions
@@ -84,7 +84,7 @@ export const DomainListChipInput = ({
           disabled={isEnableSearchAllDomainsByFeature}
           style={{ pointerEvents: isEnableSearchAllDomainsByFeature ? 'none' : 'auto' }}
         />
-      </Row>
+      </div>
     </Tooltip>
   );
 };
