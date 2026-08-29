@@ -21,9 +21,7 @@ import { sortedUniq, uniq } from 'lodash-es';
 import {
 	type ChangeEvent,
 	type FC,
-	useCallback,
 	useContext,
-	useMemo,
 	useState
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -42,56 +40,47 @@ export const SendingOptionsSection: FC = () => {
 	const [selectedGrantEmail, setSelectedGrantEmail] = useState<Array<any>>([]);
 	const grantEmailsList = mailingListDetail?.ownerGrantEmails ?? [];
 
-	const grantEmailHeaders: any[] = useMemo(
-		() => [
-			{
-				id: 'grantEmail',
-				label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const grantEmailHeaders: any[] = [
+		{
+			id: 'grantEmail',
+			label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
+			width: '100%',
+			bold: true
+		}
+	];
 
-	const grantTypeOptions: any[] = useMemo(
-		() => [
-			{
-				label: t('label.everyone', 'Everyone'),
-				value: PUB
-			},
-			{
-				label: t('label.members_only', 'Members only'),
-				value: GRP
-			},
-			{
-				label: t('label.internal_users_only', 'Internal Users only'),
-				value: ALL
-			},
-			{
-				label: t('label.only_there_users', 'Only these users'),
-				value: EMAIL
-			}
-		],
-		[t]
-	);
-
-	const onGrantTypeChange = useCallback(
-		(v: any): any => {
-			const it = grantTypeOptions.find((item: any) => item.value === v);
-
-			setMailingListDetail((prev: any) => ({
-				...prev,
-				ownerGrantEmailType: it
-			}));
+	const grantTypeOptions: any[] = [
+		{
+			label: t('label.everyone', 'Everyone'),
+			value: PUB
 		},
-		[grantTypeOptions, setMailingListDetail]
-	);
+		{
+			label: t('label.members_only', 'Members only'),
+			value: GRP
+		},
+		{
+			label: t('label.internal_users_only', 'Internal Users only'),
+			value: ALL
+		},
+		{
+			label: t('label.only_there_users', 'Only these users'),
+			value: EMAIL
+		}
+	];
+
+	const onGrantTypeChange = (v: any): any => {
+		const it = grantTypeOptions.find((item: any) => item.value === v);
+
+		setMailingListDetail((prev: any) => ({
+			...prev,
+			ownerGrantEmailType: it
+		}));
+	};
 
 	const { searchValue: grantEmailItem, setSearchValue: setGrantEmailItem, items: grantItems } =
 		useGalEmailSearch();
 
-	const onAddGrantEmail = useCallback(() => {
+	const onAddGrantEmail = (): void => {
 		if (grantEmailItem === '') return;
 		const parsed = parseEmailInput(grantEmailItem);
 		if (parsed.type === 'undefined') {
@@ -124,9 +113,9 @@ export const SendingOptionsSection: FC = () => {
 			...prev,
 			ownerGrantEmails: uniq((prev.ownerGrantEmails ?? []).concat(sortedList))
 		}));
-	}, [createSnackbar, grantEmailItem, t, setGrantEmailItem, setMailingListDetail]);
+	};
 
-	const onDeleteFromGrantEmail = useCallback(() => {
+	const onDeleteFromGrantEmail = (): void => {
 		if (selectedGrantEmail.length > 0) {
 			setMailingListDetail((prev: any) => ({
 				...prev,
@@ -136,7 +125,7 @@ export const SendingOptionsSection: FC = () => {
 			}));
 			setSelectedGrantEmail([]);
 		}
-	}, [selectedGrantEmail, setMailingListDetail]);
+	};
 
 	const grantEmailTableRows: Array<any> = (grantEmailsList ?? []).map((item: any) => ({
 		id: item,

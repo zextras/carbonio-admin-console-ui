@@ -16,13 +16,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { uniq } from 'lodash-es';
-import React, {
-	type FC,
-	useCallback,
-	useContext,
-	useMemo,
-	useState
-} from 'react';
+import React, { type FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -53,17 +47,14 @@ const MembersSection: FC<any> = () => {
 	const { searchValue: member, setSearchValue: setMember, items } =
 		useDirectoryEmailSearch(WIZARD_MEMBER_SEARCH_CONFIG);
 
-	const memberHeaders: any[] = useMemo(
-		() => [
-			{
-				id: 'members',
-				label: t('label.accounts', 'Accounts'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const memberHeaders: any[] = [
+		{
+			id: 'members',
+			label: t('label.accounts', 'Accounts'),
+			width: '100%',
+			bold: true
+		}
+	];
 
 	const dlmTableRows: Array<any> = (dlm ?? []).map((item: any) => ({
 		id: item,
@@ -84,7 +75,7 @@ const MembersSection: FC<any> = () => {
 		]
 	}));
 
-	const onAdd = useCallback((): void => {
+	const onAdd = (): void => {
 		if (member === '') return;
 		const parsed = parseEmailInput(member);
 		if (parsed.type === 'undefined') {
@@ -117,9 +108,9 @@ const MembersSection: FC<any> = () => {
 			members: uniq((prev.members ?? []).concat(sortedList))
 		}));
 		setMember('');
-	}, [member, createSnackbar, t, setMailingListDetail, setMember]);
+	};
 
-	const onDeleteFromList = useCallback((): void => {
+	const onDeleteFromList = (): void => {
 		if (selectedDistributionListMember.length > 0) {
 			setMailingListDetail((prev: any) => ({
 				...prev,
@@ -129,7 +120,7 @@ const MembersSection: FC<any> = () => {
 			}));
 			setSelectedDistributionListMember([]);
 		}
-	}, [selectedDistributionListMember, setMailingListDetail]);
+	};
 
 	return (
 		<Container mainAlignment="flex-start">

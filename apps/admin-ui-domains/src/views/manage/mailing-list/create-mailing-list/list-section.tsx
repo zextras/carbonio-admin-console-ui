@@ -23,9 +23,7 @@ import {
 	type ChangeEvent,
 	createContext,
 	type FC,
-	useCallback,
 	useContext,
-	useMemo,
 	useState
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -77,48 +75,36 @@ const ListSection: FC<any> = () => {
 	// filtering
 	const [filterMember, setFilterMember] = useState<string>('');
 
-	const setValueByName = useCallback(
-		(name: string, value: any) => {
-			setMailingListDetail((prev: any) => ({ ...prev, [name]: value }));
-		},
-		[setMailingListDetail]
-	);
+	const setValueByName = (name: string, value: any) => {
+		setMailingListDetail((prev: any) => ({ ...prev, [name]: value }));
+	};
 
-	const changeLdapDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			const newValue = e.target.value;
-			let isValid = false;
-			if (newValue.startsWith(LDAP)) {
-				setValueByName(e.target.name, newValue);
-				isValid = isValidLdapQuery(newValue);
-			} else {
-				setValueByName(e.target.name, LDAP);
-			}
-			setIsValidQuery(isValid);
-			setIsShowLdapQueryMessage(!isValid);
-		},
-		[setValueByName]
-	);
-	const changeResourceDetail = useCallback(
-		(e: ChangeEvent<HTMLInputElement>) => {
-			setValueByName(e.target.name, e.target.value);
-		},
-		[setValueByName]
-	);
+	const changeLdapDetail = (e: ChangeEvent<HTMLInputElement>) => {
+		const newValue = e.target.value;
+		let isValid = false;
+		if (newValue.startsWith(LDAP)) {
+			setValueByName(e.target.name, newValue);
+			isValid = isValidLdapQuery(newValue);
+		} else {
+			setValueByName(e.target.name, LDAP);
+		}
+		setIsValidQuery(isValid);
+		setIsShowLdapQueryMessage(!isValid);
+	};
+	const changeResourceDetail = (e: ChangeEvent<HTMLInputElement>) => {
+		setValueByName(e.target.name, e.target.value);
+	};
 
-	const memberHeaders: any[] = useMemo(
-		() => [
-			{
-				id: 'members',
-				label: t('label.accounts', 'Accounts'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const memberHeaders: any[] = [
+		{
+			id: 'members',
+			label: t('label.accounts', 'Accounts'),
+			width: '100%',
+			bold: true
+		}
+	];
 
-	const getMemberFromLdapQuery = useCallback(() => {
+	const getMemberFromLdapQuery = () => {
 		const query = mailingListDetail?.memberURL.replace('ldap:///??sub?', '');
 		searchDirectory({
 			attr: 'cn,description,name,zimbraId',
@@ -164,7 +150,7 @@ const ListSection: FC<any> = () => {
 				const snackbarConfig = generateSnackbarFromError(error, t);
 				createSnackbar(snackbarConfig);
 			});
-	}, [createSnackbar, mailingListDetail?.memberURL, t, setMailingListDetail]);
+	};
 
 	const dynamicListMemberRows: Array<any> = (
 		filterMember

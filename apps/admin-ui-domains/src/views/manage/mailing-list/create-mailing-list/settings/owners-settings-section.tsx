@@ -17,7 +17,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash-es';
-import { type FC, useCallback, useContext, useMemo, useState } from 'react';
+import { type FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useGalEmailSearch } from '../../edit-distribution-list/use-gal-email-search';
@@ -34,17 +34,14 @@ export const OwnersSettingsSection: FC = () => {
 		[]
 	);
 
-	const ownerHeaders: any[] = useMemo(
-		() => [
-			{
-				id: 'members',
-				label: t('label.accounts_that_are_owners', 'Accounts that are owners'),
-				width: '100%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const ownerHeaders: any[] = [
+		{
+			id: 'members',
+			label: t('label.accounts_that_are_owners', 'Accounts that are owners'),
+			width: '100%',
+			bold: true
+		}
+	];
 
 	const { searchValue: member, setSearchValue: setMember, items } = useGalEmailSearch();
 
@@ -66,7 +63,7 @@ export const OwnersSettingsSection: FC = () => {
 		]
 	}));
 
-	const onAdd = useCallback((): void => {
+	const onAdd = (): void => {
 		if (member === '') return;
 		const parsed = parseEmailInput(member);
 		if (parsed.type === 'undefined') {
@@ -99,9 +96,9 @@ export const OwnersSettingsSection: FC = () => {
 			...prev,
 			owners: uniq((prev.owners ?? []).concat(sortedList))
 		}));
-	}, [member, createSnackbar, t, setMember, setMailingListDetail]);
+	};
 
-	const onDeleteFromList = useCallback((): void => {
+	const onDeleteFromList = (): void => {
 		if (selectedDistributionListOwner.length > 0) {
 			setMailingListDetail((prev: any) => ({
 				...prev,
@@ -111,7 +108,7 @@ export const OwnersSettingsSection: FC = () => {
 			}));
 			setSelectedDistributionListOwner([]);
 		}
-	}, [selectedDistributionListOwner, setMailingListDetail]);
+	};
 
 	return (
 		<>

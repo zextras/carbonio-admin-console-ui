@@ -13,7 +13,7 @@ import {
   Row,
   Table,
 } from '@zextras/ui-components';
-import { type FC, useContext, useMemo } from 'react';
+import { type FC, useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
@@ -24,41 +24,32 @@ const CreateSummarySection: FC<any> = () => {
   const context = useContext(MailingListContext);
   const { mailingListDetail } = context;
 
-  const tableHeader: any[] = useMemo(
-    () => [
-      {
-        id: 'members',
-        label: t('label.accounts', 'Accounts'),
-        width: '100%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const tableHeader: any[] = [
+    {
+      id: 'members',
+      label: t('label.accounts', 'Accounts'),
+      width: '100%',
+      bold: true,
+    },
+  ];
 
-  const ownerTableHeader: any[] = useMemo(
-    () => [
-      {
-        id: 'members',
-        label: t('label.accounts_that_are_owners', 'Accounts that are owners'),
-        width: '100%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const ownerTableHeader: any[] = [
+    {
+      id: 'members',
+      label: t('label.accounts_that_are_owners', 'Accounts that are owners'),
+      width: '100%',
+      bold: true,
+    },
+  ];
 
-  const grantEmailHeaders: any[] = useMemo(
-    () => [
-      {
-        id: 'grantEmail',
-        label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
-        width: '100%',
-        bold: true,
-      },
-    ],
-    [t],
-  );
+  const grantEmailHeaders: any[] = [
+    {
+      id: 'grantEmail',
+      label: t('label.who_can_send_mails_to_list ', 'Who can send mails TO this list?'),
+      width: '100%',
+      bold: true,
+    },
+  ];
 
   const memberList: Array<any> = (mailingListDetail?.members ?? []).map((item: any) => ({
     id: item,

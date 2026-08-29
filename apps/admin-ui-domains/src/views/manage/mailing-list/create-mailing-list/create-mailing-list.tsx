@@ -10,9 +10,7 @@ import {
 	createContext,
 	type FC,
 	type ReactElement,
-	useCallback,
 	useContext,
-	useMemo,
 	useState
 } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -152,56 +150,53 @@ const CreateMailingList: FC<{
 		ownerGrantEmails: []
 	});
 
-	const onCreate = useCallback(() => {
+	const onCreate = (): void => {
 		createList(mailingListDetail);
-	}, [createList, mailingListDetail]);
+	};
 
-	const steps = useMemo(() => {
-		const detailsStep = {
-			name: 'details',
-			label: t('label.distribution_list', 'Distribution List'),
-			icon: 'ListOutline',
-			view: ListSection,
-			CancelButton: WizardCancelButton,
-			PrevButton: WizardNoButton,
-			NextButton: WizardNextButton
-		};
-		const membersStep = {
-			name: 'members',
-			label: t('label.members', 'Members'),
-			icon: 'PeopleOutline',
-			view: MembersSection,
-			CancelButton: WizardCancelButton,
-			PrevButton: WizardPrevButton,
-			NextButton: WizardNextButton
-		};
-		const settingsStep = {
-			name: 'settings',
-			label: t('label.settings', 'Settings'),
-			icon: 'OptionsOutline',
-			view: SettingsSection,
-			CancelButton: WizardCancelButton,
-			PrevButton: WizardPrevButton,
-			NextButton: WizardNextButton
-		};
-		const createStep = {
-			name: 'create',
-			label: t('label.create', 'Create'),
-			icon: 'PowerOutline',
-			view: CreateSummarySection,
-			CancelButton: WizardCancelButton,
-			PrevButton: WizardPrevButton,
-			NextButton: WizardCreateButton
-		};
+	const detailsStep = {
+		name: 'details',
+		label: t('label.distribution_list', 'Distribution List'),
+		icon: 'ListOutline',
+		view: ListSection,
+		CancelButton: WizardCancelButton,
+		PrevButton: WizardNoButton,
+		NextButton: WizardNextButton
+	};
+	const membersStep = {
+		name: 'members',
+		label: t('label.members', 'Members'),
+		icon: 'PeopleOutline',
+		view: MembersSection,
+		CancelButton: WizardCancelButton,
+		PrevButton: WizardPrevButton,
+		NextButton: WizardNextButton
+	};
+	const settingsStep = {
+		name: 'settings',
+		label: t('label.settings', 'Settings'),
+		icon: 'OptionsOutline',
+		view: SettingsSection,
+		CancelButton: WizardCancelButton,
+		PrevButton: WizardPrevButton,
+		NextButton: WizardNextButton
+	};
+	const createStep = {
+		name: 'create',
+		label: t('label.create', 'Create'),
+		icon: 'PowerOutline',
+		view: CreateSummarySection,
+		CancelButton: WizardCancelButton,
+		PrevButton: WizardPrevButton,
+		NextButton: WizardCreateButton
+	};
+	const steps = mailingListDetail?.dynamic
+		? [detailsStep, settingsStep, createStep]
+		: [detailsStep, membersStep, settingsStep, createStep];
 
-		return mailingListDetail?.dynamic
-			? [detailsStep, settingsStep, createStep]
-			: [detailsStep, membersStep, settingsStep, createStep];
-	}, [t, mailingListDetail?.dynamic]);
-
-	const onComplete = useCallback(() => {
+	const onComplete = (): void => {
 		setShowCreateMailingListView(false);
-	}, [setShowCreateMailingListView]);
+	};
 
 	return (
 		<>
