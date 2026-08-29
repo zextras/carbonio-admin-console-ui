@@ -8,7 +8,7 @@ import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 
 import type { AccountListEntry } from '../../../services/use-account-list-directory';
-import { getAccountStatusColors } from '../../constants/account-status-colors';
+import { getStatusDisplay } from '../../../utils/status';
 
 export type AccountRowItem = AccountListEntry & Record<string, unknown>;
 
@@ -62,10 +62,10 @@ export function buildAccountRow(
   onSelect: (account: AccountRowItem) => void,
 ): AccountRow {
   const accountItem = flattenAccountAttributes(item);
-  const statusColors = getAccountStatusColors(t);
   const mailAddresses = (accountItem.mail as Array<string> | undefined) ?? [];
   const aliasCount = Math.max(mailAddresses.length - 1, 0);
   const status = accountItem.zimbraAccountStatus as string | undefined;
+  const { color: statusColor, label: statusLabel } = getStatusDisplay(status ?? '', t);
 
   const openAccount = (): void => {
     onSelect(accountItem);
@@ -137,10 +137,10 @@ export function buildAccountRow(
       size="small"
       weight="light"
       key={`${item.id}-status`}
-      color={statusColors[status ?? '']?.color}
+      color={statusColor}
       onClick={openAccount}
     >
-      {statusColors[status ?? '']?.label}
+      {statusLabel}
     </ds-text>,
     <Tooltip key={`${item.id}-description`} label={(accountItem.description as string) || '\u00a0'}>
       <ds-text

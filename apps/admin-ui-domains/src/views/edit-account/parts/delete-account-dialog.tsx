@@ -11,7 +11,6 @@ import { Trans, useTranslation } from 'react-i18next';
 import { CLOSED } from '../../../constants';
 import { useDeleteAccount } from '../../../services/use-delete-account';
 import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
-import { getAccountStatusColors } from '../../constants/account-status-colors';
 import { getUserTypeFromAttrs } from '../user-type-utils';
 
 type DeleteAccountDialogProps = {
@@ -30,7 +29,6 @@ export const DeleteAccountDialog = ({
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const userSetting = useUserSettings();
-  const STATUS_COLOR = getAccountStatusColors(t);
   const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>(false);
 
   const modifyAccount = useModifyAccountAttributes();
@@ -130,10 +128,7 @@ export const DeleteAccountDialog = ({
             label={t('label.close_the_account', 'Close the account')}
             color="primary"
             onClick={onDisableAccount}
-            disabled={
-              isRequestInProgress ||
-              STATUS_COLOR[account?.zimbraAccountStatus]?.label === STATUS_COLOR?.closed?.label
-            }
+            disabled={isRequestInProgress || account?.zimbraAccountStatus === CLOSED}
           />
         </div>
       }

@@ -6,7 +6,7 @@
 import { Button, Modal } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { getAccountStatusColors } from '../../constants/account-status-colors';
+import { CLOSED } from '../../../constants';
 
 type DeleteAccountHintModalProps = {
   account: { id: string; name: string; [key: string]: any };
@@ -15,7 +15,6 @@ type DeleteAccountHintModalProps = {
 
 export const DeleteAccountHintModal = ({ account, onClose }: DeleteAccountHintModalProps) => {
   const { t } = useTranslation();
-  const STATUS_COLOR = getAccountStatusColors(t);
 
   return (
     <Modal
@@ -28,9 +27,7 @@ export const DeleteAccountHintModal = ({ account, onClose }: DeleteAccountHintMo
             label={t('label.close', 'Close')}
             color="primary"
             onClick={onClose}
-            disabled={
-              STATUS_COLOR[account?.zimbraAccountStatus]?.label === STATUS_COLOR?.closed?.label
-            }
+            disabled={account?.zimbraAccountStatus === CLOSED}
           />
         </div>
       }
