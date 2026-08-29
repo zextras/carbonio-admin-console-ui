@@ -5,7 +5,7 @@
  */
 import { Container, InheritedSwitch, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
-import { FC, useCallback } from 'react';
+import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 export const Features: FC<{
@@ -28,15 +28,12 @@ export const Features: FC<{
 	const [t] = useTranslation();
 	const isAdvanced = useIsAdvanced();
 
-	const changeSwitchOption = useCallback(
-		(key: string): void => {
-			setFeaturesDetail((prev: Record<string, string>) => ({
-				...prev,
-				[key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
-			}));
-		},
-		[featuresDetail, setFeaturesDetail]
-	);
+	const changeSwitchOption = (key: string): void => {
+		setFeaturesDetail((prev: Record<string, string>) => ({
+			...prev,
+			[key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
+		}));
+	};
 
 	return (
 		<Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
