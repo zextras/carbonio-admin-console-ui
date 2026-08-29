@@ -8,7 +8,7 @@ import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { domainByIdKey } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 
 import type { themeConfigStore } from '../../../../../types/domain';
 import { ZIMBRA_ADMIN_URN } from '../../../../constants';
@@ -16,7 +16,6 @@ import { useModifyDomain } from '../../../../services/use-modify-domain';
 import {
   buildDomainResetValues,
   buildDomainWhiteLabelResetAttributes,
-  pickThemeValues,
 } from '../../../theme/white-label-defaults';
 import { whiteLabelSchema } from '../../../theme/white-label-schema';
 
@@ -24,18 +23,14 @@ type UseDomainThemeFormArgs = {
   defaultValues: themeConfigStore;
   zimbraId: string;
   savedValues: themeConfigStore;
-  domainInformation: Array<{ n: string; _content?: string }> | undefined;
 };
 
 export function useDomainThemeForm({
   defaultValues,
   zimbraId,
   savedValues,
-  domainInformation,
 }: UseDomainThemeFormArgs) {
   const saveInFlightRef = useRef(false);
-  const savedValuesRef = useRef(savedValues);
-  savedValuesRef.current = savedValues;
 
   const queryClient = useQueryClient();
   const modifyDomainMutation = useModifyDomain(zimbraId);
@@ -47,10 +42,8 @@ export function useDomainThemeForm({
       onSubmit: whiteLabelSchema,
     },
     onSubmit: async ({ value, formApi }) => {
-      const baseline = savedValuesRef.current as Record<string, unknown>;
-      const modified = Object.entries(value).filter(
-        ([key, val]) => !isEqual(val, baseline[key]),
-      );
+      const baseline = savedValues as Record<string, unknown>;
+      const modified = Object.entries(value).filter(([key, val]) => !isEqual(val, baseline[key]));
       if (modified.length === 0) {
         return;
       }
@@ -75,16 +68,6 @@ export function useDomainThemeForm({
       }
     },
   });
-
-  useEffect(() => {
-    if (!domainInformation) {
-      return;
-    }
-    if (form.state.isTouched || form.state.isDirty) {
-      return;
-    }
-    form.reset(pickThemeValues(domainInformation), { keepDefaultValues: false });
-  }, [domainInformation, form]);
 
   function handleSave(): void {
     if (saveInFlightRef.current) return;

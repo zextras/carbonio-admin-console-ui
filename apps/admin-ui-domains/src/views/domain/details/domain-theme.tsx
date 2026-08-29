@@ -33,7 +33,6 @@ export const DomainTheme = () => {
     defaultValues: domainValues,
     zimbraId,
     savedValues: domainValues,
-    domainInformation,
   });
 
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
