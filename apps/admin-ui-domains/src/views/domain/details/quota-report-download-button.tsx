@@ -5,7 +5,7 @@
  */
 
 import { Button } from '@zextras/ui-components';
-import React, { useCallback } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { STORAGES_API_BASE_URL } from '../../../constants';
@@ -19,9 +19,9 @@ const QuotaReportDownloadButton = ({
 }: QuotaReportDownloadButtonProps): React.JSX.Element => {
   const [t] = useTranslation();
 
-  const downloadQuotaReport = useCallback(() => {
+  const downloadQuotaReport = () => {
     window.location.href = `${STORAGES_API_BASE_URL}/quota/domain/report/${domainName}`;
-  }, [domainName]);
+  };
 
   return (
     <>
