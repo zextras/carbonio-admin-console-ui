@@ -20,18 +20,16 @@ const QuotaReportDownloadButton = ({
   const [t] = useTranslation();
 
   const downloadQuotaReport = () => {
-    window.location.href = `${STORAGES_API_BASE_URL}/quota/domain/report/${domainName}`;
+    globalThis.location.href = `${STORAGES_API_BASE_URL}/quota/domain/report/${domainName}`;
   };
 
   return (
-    <>
-      <Button
-        type="outlined"
-        label={t('label.download_quota_Report', 'Download Quota Report')}
-        color="primary"
-        onClick={downloadQuotaReport}
-      />
-    </>
+    <Button
+      type="outlined"
+      label={t('label.download_quota_Report', 'Download Quota Report')}
+      color="primary"
+      onClick={downloadQuotaReport}
+    />
   );
 };
 
