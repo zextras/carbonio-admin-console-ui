@@ -20,92 +20,90 @@ const DelegateAddSection: FC = () => {
   const accountDetail = values;
 
   return (
-    <>
-      <Container
-        mainAlignment="flex-start"
-        padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-      >
-        <Row mainAlignment="flex-start" width="100%">
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <ds-text size="small" color="gray0" weight="bold" as="h3">
-              {t('account_details.abstract', `Abstract`)}
-            </ds-text>
-          </Row>
+    <Container
+      mainAlignment="flex-start"
+      padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
+    >
+      <Row mainAlignment="flex-start" width="100%">
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+          <ds-text size="small" color="gray0" weight="bold" as="h3">
+            {t('account_details.abstract', `Abstract`)}
+          </ds-text>
         </Row>
-        <Row mainAlignment="flex-start" width="100%">
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-            <ds-text size="small" color="gray0" weight="bold" as="h3">
-              {
-                <Trans
-                  i18nKey="account_details.deligate_abstract_text"
-                  defaults="The user {{granteeEmail}} will be able to send mails {{right}} {{targetEmail}}"
-                  values={{
-                    granteeEmail: deligateDetail?.grantee[0]?.name,
-                    targetEmail: accountDetail?.zimbraMailDeliveryAddress,
-                    right:
-                      deligateDetail?.right?.[0]?._content === 'sendAs'
-                        ? t('account_details.as', 'as')
-                        : t('account_details.on_behalf_of', 'on behalf of'),
-                  }}
-                />
-              }
-            </ds-text>
-          </Row>
+      </Row>
+      <Row mainAlignment="flex-start" width="100%">
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+          <ds-text size="small" color="gray0" weight="bold" as="h3">
+            {
+              <Trans
+                i18nKey="account_details.deligate_abstract_text"
+                defaults="The user {{granteeEmail}} will be able to send mails {{right}} {{targetEmail}}"
+                values={{
+                  granteeEmail: deligateDetail?.grantee[0]?.name,
+                  targetEmail: accountDetail?.zimbraMailDeliveryAddress,
+                  right:
+                    deligateDetail?.right?.[0]?._content === 'sendAs'
+                      ? t('account_details.as', 'as')
+                      : t('account_details.on_behalf_of', 'on behalf of'),
+                }}
+              />
+            }
+          </ds-text>
         </Row>
-        <Row width="100%" padding={{ top: "medium" }}>
-          <ds-divider></ds-divider>
+      </Row>
+      <Row width="100%" padding={{ top: 'medium' }}>
+        <ds-divider></ds-divider>
+      </Row>
+      <Row mainAlignment="flex-start" width="100%">
+        <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+          <LabeledValue
+            label={t('account_details.delegate_rights', 'Delegate`s rights')}
+            backgroundColor="gray5"
+            value={
+              DELEGETES_RIGHTS_TYPE.find(
+                (item: any) => item.value === deligateDetail?.delegeteRights,
+              )?.label
+            }
+          />
         </Row>
+      </Row>
+      {deligateDetail?.delegeteRights === READ_MAILS_ONLY ? (
+        <></>
+      ) : (
         <Row mainAlignment="flex-start" width="100%">
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
             <LabeledValue
-              label={t('account_details.delegate_rights', 'Delegate`s rights')}
+              label={t('account_details.sendin_options', 'Sending Options')}
               backgroundColor="gray5"
-              value={
-                DELEGETES_RIGHTS_TYPE.find(
-                  (item: any) => item.value === deligateDetail?.delegeteRights,
-                )?.label
-              }
+              defaultValue={t(
+                'account_details.send_recipients_see_the_mail',
+                'Send {{right}} (recipients will display this sender email {{targetEmail}})',
+                {
+                  granteeEmail: deligateDetail?.grantee?.[0]?.name,
+                  targetEmail: accountDetail?.zimbraMailDeliveryAddress,
+                  right:
+                    deligateDetail?.right?.[0]?._content === 'sendAs'
+                      ? t('account_details.as', 'as')
+                      : t('account_details.on_behalf_of', 'on behalf of'),
+                },
+              )}
+              value={t(
+                'account_details.send_recipients_see_the_mail',
+                'Send {{right}} (recipients will display this sender email {{targetEmail}})',
+                {
+                  granteeEmail: deligateDetail?.grantee?.[0]?.name,
+                  targetEmail: accountDetail?.zimbraMailDeliveryAddress,
+                  right:
+                    deligateDetail?.right?.[0]?._content === 'sendAs'
+                      ? t('account_details.as', 'as')
+                      : t('account_details.on_behalf_of', 'on behalf of'),
+                },
+              )}
             />
           </Row>
         </Row>
-        {deligateDetail?.delegeteRights === READ_MAILS_ONLY ? (
-          <></>
-        ) : (
-          <Row mainAlignment="flex-start" width="100%">
-            <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-              <LabeledValue
-                label={t('account_details.sendin_options', 'Sending Options')}
-                backgroundColor="gray5"
-                defaultValue={t(
-                  'account_details.send_recipients_see_the_mail',
-                  'Send {{right}} (recipients will display this sender email {{targetEmail}})',
-                  {
-                    granteeEmail: deligateDetail?.grantee?.[0]?.name,
-                    targetEmail: accountDetail?.zimbraMailDeliveryAddress,
-                    right:
-                      deligateDetail?.right?.[0]?._content === 'sendAs'
-                        ? t('account_details.as', 'as')
-                        : t('account_details.on_behalf_of', 'on behalf of'),
-                  },
-                )}
-                value={t(
-                  'account_details.send_recipients_see_the_mail',
-                  'Send {{right}} (recipients will display this sender email {{targetEmail}})',
-                  {
-                    granteeEmail: deligateDetail?.grantee?.[0]?.name,
-                    targetEmail: accountDetail?.zimbraMailDeliveryAddress,
-                    right:
-                      deligateDetail?.right?.[0]?._content === 'sendAs'
-                        ? t('account_details.as', 'as')
-                        : t('account_details.on_behalf_of', 'on behalf of'),
-                  },
-                )}
-              />
-            </Row>
-          </Row>
-        )}
-      </Container>
-    </>
+      )}
+    </Container>
   );
 };
 
