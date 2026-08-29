@@ -128,7 +128,6 @@ export const ManageAccounts = () => {
   const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 
   const tableRef = useRef<HTMLTableElement>(null);
-  const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   const accountStatusFilter = [
     {
