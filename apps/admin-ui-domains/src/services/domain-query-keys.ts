@@ -104,4 +104,6 @@ export const domainQueryKeys = {
   distributionListMembership: (listId: string) =>
     [...domainQueryKeys.distributionList(listId), 'membership'] as const,
   galSearch: (keyword: string) => [...domainQueryKeys.all, 'gal-search', keyword] as const,
+  checkRight: (target: string, grantee: string, right: string) =>
+    [...domainQueryKeys.all, 'check-right', target, grantee, right] as const,
 } as const;

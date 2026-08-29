@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
-import { useQueryClient } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   flushCache,
   setCoreAttributes,
@@ -195,7 +195,6 @@ export function useAccountFormProvider({
   const userSetting = useUserSettings();
   const currentUser = useUserAccount();
   const [isSaving, setIsSaving] = useState(false);
-  const [allowedDeletePassword, setAllowedDeletePassword] = useState(false);
   const [folderList, setFolderList] = useState<Array<any>>([]);
   const [folderListSeed, setFolderListSeed] = useState<Array<any> | undefined>(undefined);
   const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
@@ -378,19 +377,16 @@ export function useAccountFormProvider({
     form.reset(quotaValues as AccountFormValues, { keepDefaultValues: false });
   }, [accountQuota, form]);
 
-  useEffect(() => {
-    let cancelled = false;
-    checkRightRequest(account.name, currentUser?.name ?? '', 'set.account.userPassword')
-      .then((data: { allow?: boolean }) => {
-        if (!cancelled) {
-          setAllowedDeletePassword(!!data?.allow);
-        }
-      })
-      .catch(() => {});
-    return () => {
-      cancelled = true;
-    };
-  }, [account.name, currentUser?.name]);
+  const { data: deletePasswordRight } = useQuery({
+    queryKey: domainQueryKeys.checkRight(
+      account.name,
+      currentUser?.name ?? '',
+      'set.account.userPassword',
+    ),
+    queryFn: () =>
+      checkRightRequest(account.name, currentUser?.name ?? '', 'set.account.userPassword'),
+  });
+  const allowedDeletePassword = !!deletePasswordRight?.allow;
 
   const grantsFolderList = grants?.folderList;
   if (grantsFolderList !== folderListSeed) {

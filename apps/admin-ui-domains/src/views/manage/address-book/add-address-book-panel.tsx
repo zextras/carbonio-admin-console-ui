@@ -15,8 +15,8 @@ import {
   Row,
   Select,
 } from '@zextras/ui-components';
-import { debounce } from 'lodash-es';
-import { type ChangeEvent, type ReactNode, useEffect, useRef, useState } from 'react';
+import { useDebouncedValue } from '@zextras/ui-shared';
+import { type ChangeEvent, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry } from '../../../../types';
@@ -64,7 +64,6 @@ export const AddAddressBookPanel = ({
 }: Readonly<AddAddressBookPanelProps>) => {
   const [t] = useTranslation();
   const addAddressBookMutation = useAddAddressBook();
-  const [searchKeyword, setSearchKeyword] = useState('');
   const [accountTouched, setAccountTouched] = useState(false);
   const [folderTouched, setFolderTouched] = useState(false);
 
@@ -108,31 +107,14 @@ export const AddAddressBookPanel = ({
     !allAlreadySharedError &&
     hasValidSelectedAccount &&
     !isLoadingFolders;
+  const searchKeyword = useDebouncedValue(
+    account !== '' && account !== selectedAccount ? account : '',
+    700,
+  );
   const searchQuery = useAddressBookAccountSearch(
     domainName,
     account !== '' && account !== selectedAccount ? searchKeyword : '',
   );
-
-  const searchAccountCallRef = useRef(
-    debounce((searchValue: string) => {
-      setSearchKeyword(searchValue);
-    }, 700),
-  );
-
-  useEffect(() => {
-    const searchAccountCall = searchAccountCallRef.current;
-    return () => {
-      searchAccountCall.cancel();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (account !== '' && account !== selectedAccount) {
-      searchAccountCallRef.current(account);
-    } else {
-      searchAccountCallRef.current.cancel();
-    }
-  }, [account, selectedAccount]);
 
   function selectAccount(accountName: string): void {
     form.setFieldValue('account', accountName);
@@ -141,7 +123,6 @@ export const AddAddressBookPanel = ({
     form.setFieldValue('folderId', '');
     setAccountTouched(true);
     setFolderTouched(false);
-    setSearchKeyword('');
   }
 
   function onAccountInputChange(value: string): void {
@@ -151,9 +132,6 @@ export const AddAddressBookPanel = ({
       form.setFieldValue('selectedAccount', '');
       form.setFieldValue('folderId', '');
       form.setFieldValue('folderMode', 'all');
-    }
-    if (value === '') {
-      setSearchKeyword('');
     }
   }
 

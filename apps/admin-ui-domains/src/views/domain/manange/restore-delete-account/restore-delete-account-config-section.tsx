@@ -3,17 +3,22 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Padding, Row, useSnackbar } from '@zextras/ui-components';
-import { FC, useContext, useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Container, Input, Padding, Row } from '@zextras/ui-components';
+import { FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useQueryErrorSnackbar } from '../../../../hooks/use-query-error-snackbar';
 import { getDomainList } from '../../../../services/search-domain-service';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
+
+const restoreDomainListQueryKeys = {
+  all: ['restore-delete-account-domain-list'] as const,
+  search: (search: string) => [...restoreDomainListQueryKeys.all, search] as const,
+};
 
 const RestoreDeleteAccountConfigSection: FC = () => {
   const { t } = useTranslation();
-  const createSnackbar = useSnackbar();
   const { restoreAccountDetail } = useContext(RestoreDeleteAccountContext);
   const [searchDomainNameInput, setSearchDomainNameInput] = useState(
     restoreAccountDetail?.copyDomain || '',
@@ -25,22 +30,16 @@ const RestoreDeleteAccountConfigSection: FC = () => {
     setSearchDomainName('');
   };
 
-  useEffect(() => {
-    getDomainList(searchDomainName, 0)
-      .then((data: any) => {
-        const searchResponse: any = data;
-        if (!!searchResponse && searchResponse?.searchTotal > 0) {
-          // do nothing if domain found
-        } else {
-          const errorSnack = generateSnackbarFromError(data, t);
-          createSnackbar(errorSnack);
-        }
-      })
-      .catch((error) => {
-        const errorSnack = generateSnackbarFromError(error, t);
-        createSnackbar(errorSnack);
-      });
-  }, [searchDomainName, createSnackbar, t]);
+  const { data: domainSearchData, error: domainSearchError, isPending } = useQuery({
+    queryKey: restoreDomainListQueryKeys.search(searchDomainName),
+    queryFn: () => getDomainList(searchDomainName, 0),
+  });
+
+  const noDomainFoundError =
+    !isPending && (domainSearchData?.searchTotal ?? 0) === 0
+      ? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
+      : null;
+  useQueryErrorSnackbar(domainSearchError ?? noDomainFoundError);
 
   return (
     <Container

@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   HorizontalWizard,
   WizardInSection,
 } from '@zextras/ui-components';
-import { useSelector } from '@tanstack/react-store';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 import { ComponentProps, ComponentType, ReactElement } from 'react';
