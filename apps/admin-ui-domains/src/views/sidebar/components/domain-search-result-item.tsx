@@ -5,7 +5,7 @@
  */
 import { Row } from '@zextras/ui-components';
 
-import type { SoapEntity } from '../../../services/search-domain-service';
+import type { SoapEntity } from '@zextras/ui-shared';
 
 type DomainSearchResultItemProps = {
   domain: SoapEntity;

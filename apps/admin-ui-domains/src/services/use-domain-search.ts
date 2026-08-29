@@ -3,9 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useDomainSearch as useDomainSearchQuery } from '@zextras/ui-shared';
-
-import { getDomainListNew } from './search-domain-service';
+import { getDomainList, useDomainSearch as useDomainSearchQuery } from '@zextras/ui-shared';
 
 type UseDomainSearchOptions = {
   searchQuery: string;
@@ -25,5 +23,5 @@ export const useDomainSearch = ({
     limit,
     offset,
     enabled,
-    queryFn: () => getDomainListNew(searchQuery || undefined, offset, limit),
+    queryFn: () => getDomainList(searchQuery || undefined, offset, limit),
   });

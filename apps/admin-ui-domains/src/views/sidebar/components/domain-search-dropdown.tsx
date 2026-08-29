@@ -10,7 +10,7 @@ import { useTranslation } from 'react-i18next';
 
 import { GENERAL_SETTINGS, MAX_DOMAIN_DISPLAY } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import type { SoapEntity } from '../../../services/search-domain-service';
+import type { SoapEntity } from '@zextras/ui-shared';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import type { Domain } from '../../../store/types';
 import { DomainOverflowMessage } from './domain-overflow-message';

@@ -6,7 +6,7 @@
 import type { ReactElement } from 'react';
 
 import type { Attribute } from '../../../../types';
-import { SoapEntity } from '../../../services/search-domain-service';
+import type { SoapEntity } from '@zextras/ui-shared';
 import { parseDomainAttributes } from '../../../utils/attributes';
 import { getStatusDisplay } from '../../../utils/status';
 

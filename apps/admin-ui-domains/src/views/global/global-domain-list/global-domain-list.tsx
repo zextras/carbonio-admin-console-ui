@@ -20,7 +20,7 @@ import { Trans, useTranslation } from 'react-i18next';
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import { SoapEntity } from '../../../services/search-domain-service';
+import type { SoapEntity } from '@zextras/ui-shared';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
 

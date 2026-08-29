@@ -9,7 +9,7 @@ import { ChangeEvent, FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import { getDomainList } from '../../../services/search-domain-service';
+import { getDomainList } from '@zextras/ui-shared';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const restoreDomainListQueryKeys = {

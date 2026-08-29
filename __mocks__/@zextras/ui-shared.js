@@ -18,6 +18,8 @@ export { SnackbarManagerContext } from '../../packages/ui-shared/src/hooks/useSn
 export { cosQuotaQueryKey, useCosQuota } from '../../packages/ui-shared/src/react-query/use-cos-quota';
 export { modifyConfigAttributes,useModifyConfig } from '../../packages/ui-shared/src/react-query/use-modify-config';
 export { batchService } from '../../packages/ui-shared/src/services/batch-service';
+export { getDomainList } from '../../packages/ui-shared/src/services/domain-search-service';
+export { fetchAccount } from '../../packages/ui-shared/src/services/get-account-service';
 export { getCosQuota } from '../../packages/ui-shared/src/services/get-cos-quota';
 
 export const useDomainInformation = vi.fn();

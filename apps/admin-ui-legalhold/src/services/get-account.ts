@@ -4,35 +4,20 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { soapFetch } from '@zextras/ui-shared';
+import { fetchAccount } from '@zextras/ui-shared';
 
-import type { DirectoryAccount, GetAccountResponse, ServiceResult } from '../../types';
-import { ZIMBRA_ADMIN_URN } from '../constants';
-
-type GetAccountRequest = {
-  _jsns: string;
-  account: {
-    by: string;
-    _content: string;
-  };
-};
+import type { DirectoryAccount, ServiceResult } from '../../types';
 
 export type GetAccountResult = ServiceResult<{ account: DirectoryAccount | null }>;
 
 export async function getAccount(accountName: string): Promise<GetAccountResult> {
-  try {
-    const data = await soapFetch<GetAccountRequest, GetAccountResponse>(`GetAccount`, {
-      _jsns: ZIMBRA_ADMIN_URN,
-      account: {
-        by: 'name',
-        _content: accountName,
-      },
-    });
-    return { type: 'success', account: data.account?.[0] ?? null };
-  } catch (error) {
-    return {
-      type: 'error',
-      error: error instanceof Error ? error.message : String(error),
-    };
-  }
+	try {
+		const data = await fetchAccount('name', accountName);
+		return { type: 'success', account: (data.account?.[0] ?? null) as DirectoryAccount | null };
+	} catch (error) {
+		return {
+			type: 'error',
+			error: error instanceof Error ? error.message : String(error),
+		};
+	}
 }

@@ -40,6 +40,12 @@ export { default as I18nFactory } from './i18n/i18n-factory';
 export type { ConfigAttribute } from './react-query/use-modify-config';
 export type { BatchRequest } from './services/batch-service';
 export type {
+	SearchDomainsResponse,
+	SoapAttribute,
+	SoapEntity,
+} from './services/domain-search-service';
+export type { GetAccountSoapResponse, SoapAccount } from './services/get-account-service';
+export type {
 	ComputedLimit,
 	GetCosQuotaRawResponse,
 	GetCosQuotaResponse,
@@ -144,16 +150,16 @@ import {
   getCosGeneralInformation,
   type GetCosResponse,
 } from './services/cos-general-information-service';
+import { getDomainList } from './services/domain-search-service';
 import { flushCache } from './services/flush-cache-service';
+import { fetchAccount } from './services/get-account-service';
 import {
   type CoreAttributeRequest,
   type CoreAttributeValue,
   getCoreAttributes,
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
-import {
-	getCosQuota,
-} from './services/get-cos-quota';
+import { getCosQuota } from './services/get-cos-quota';
 import { getDomainInformation } from './services/get-domain-information';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
@@ -244,6 +250,7 @@ export {
   CONTENT,
   cosQuotaQueryKey,
   domainByIdKey,
+  fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
   flushCache,
@@ -257,6 +264,7 @@ export {
   getCosList,
   getCosQuota,
   getDomainInformation,
+  getDomainList,
   getLocale,
   getResponsiveContainerStyle,
   getResponsiveMaxWidth,

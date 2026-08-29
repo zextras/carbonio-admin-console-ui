@@ -5,9 +5,9 @@
  */
 
 import { useQuery } from '@tanstack/react-query';
+import { getDomainList } from '@zextras/ui-shared';
 
 import { domainQueryKeys } from './domain-query-keys';
-import { getDomainList } from './search-domain-service';
 
 export const useDomainList = () => {
   return useQuery({
@@ -23,7 +23,7 @@ export const useDomainList = () => {
       while (hasMore) {
         const response = await getDomainList('', offset);
         if (response?.domain?.length) {
-          allDomains.push(...response.domain);
+          allDomains.push(...(response.domain as typeof allDomains));
         }
         hasMore = response?.more ?? false;
         offset += 50;
