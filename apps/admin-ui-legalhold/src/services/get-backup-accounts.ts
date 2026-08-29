@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getSoapFetchRequest } from '@zextras/ui-shared';
+import { getBackupAccounts as fetchBackupAccounts } from '@zextras/ui-shared';
 
-import type { BackupAccountsApiResponse, ServiceResult } from '../../types';
-import { parseBackupAccountsResponse, type ParsedBackupAccounts } from './parse-backup-accounts';
+import type { BackupAccountItem, ServiceResult } from '../../types';
 
 export type GetBackupAccountsParams = {
   domain: string;
@@ -17,7 +16,10 @@ export type GetBackupAccountsParams = {
   pageSize: number;
 };
 
-export type GetBackupAccountsResult = ServiceResult<ParsedBackupAccounts>;
+export type GetBackupAccountsResult = ServiceResult<{
+  accounts: Array<BackupAccountItem>;
+  maxPage: number;
+}>;
 
 export async function getBackupAccounts({
   domain,
@@ -26,15 +28,22 @@ export async function getBackupAccounts({
   page,
   pageSize,
 }: GetBackupAccountsParams): Promise<GetBackupAccountsResult> {
-  const url = `/service/extension/zextras_admin/backup/getBackupAccounts?page=${page}&pageSize=${pageSize}&domains=${domain}&filter=${filter}&legalHold=${legalHold}`;
-
   try {
-    const data = await getSoapFetchRequest<BackupAccountsApiResponse>(url);
-    const errorMessage = data.all_server?.error?.message;
-    if (errorMessage) {
-      return { type: 'error', error: errorMessage };
+    const data = await fetchBackupAccounts({
+      page,
+      pageSize,
+      domains: domain,
+      filter,
+      legalHold,
+    });
+    if (data.allServerError) {
+      return { type: 'error', error: data.allServerError };
     }
-    return { type: 'success', ...parseBackupAccountsResponse(data) };
+    return {
+      type: 'success',
+      accounts: data.accounts as Array<BackupAccountItem>,
+      maxPage: data.maxPage,
+    };
   } catch (error) {
     return {
       type: 'error',

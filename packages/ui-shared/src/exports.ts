@@ -38,6 +38,14 @@ export type { ResponsiveContainerOptions } from './hooks/responsive-container';
 export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
 export type { ConfigAttribute } from './react-query/use-modify-config';
+export type {
+	BackupAccountItem,
+	GetBackupAccountsParams,
+	GetBackupAccountsResult,
+	ParsedBackupAccounts,
+	RestoreAccountBody,
+	RestoreAccountRawResponse,
+} from './services/backup-account-service';
 export type { BatchRequest } from './services/batch-service';
 export type {
 	SearchDomainsResponse,
@@ -143,6 +151,11 @@ import {
   useVersion,
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
+import {
+	doRestoreOnNewAccount,
+	getBackupAccounts,
+	parseBackupAccountsResponse,
+} from './services/backup-account-service';
 import { batchService } from './services/batch-service';
 import {
   type CosAttribute,
@@ -250,6 +263,7 @@ export {
   CONTENT,
   cosQuotaQueryKey,
   domainByIdKey,
+  doRestoreOnNewAccount,
   fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
@@ -259,6 +273,7 @@ export {
   getAllNotifications,
   getAllRights,
   getApp,
+  getBackupAccounts,
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
@@ -282,6 +297,7 @@ export {
   normalizeRoute,
   notificationsQueryKeys,
   OPEN_TICKET_URL,
+  parseBackupAccountsResponse,
   postSoapFetchRequest,
   queryClient,
   queryFnIsAdvancedSupported,

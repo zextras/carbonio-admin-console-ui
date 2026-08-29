@@ -4,17 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fetchExternalSoap } from '@zextras/ui-shared';
+import { doRestoreOnNewAccount } from '@zextras/ui-shared';
 
-import type { RestoreRawResponse, ServiceResult } from '../../types';
-
-type RestoreRequest = {
-  srcAccountName: string;
-  dstAccountName: string;
-  date: number;
-  undelete: boolean;
-  undeleteStartDate: number | null;
-};
+import type { ServiceResult } from '../../types';
 
 export type RestoreLegalHoldResult = ServiceResult<{ operationId: string }>;
 
@@ -27,8 +19,7 @@ export async function doRestoreOnNewLegalHoldAccount(
   targetServers: string,
 ): Promise<RestoreLegalHoldResult> {
   try {
-    const rawData = await fetchExternalSoap<RestoreRequest, RestoreRawResponse>(
-      `/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${targetServers}`,
+    const rawData = await doRestoreOnNewAccount(
       {
         srcAccountName,
         dstAccountName,
@@ -36,6 +27,7 @@ export async function doRestoreOnNewLegalHoldAccount(
         undelete: unDelete,
         undeleteStartDate: undeleteDate,
       },
+      targetServers,
     );
 
     if (rawData.error) {
@@ -44,7 +36,7 @@ export async function doRestoreOnNewLegalHoldAccount(
 
     const parsedData = rawData.operationId
       ? rawData
-      : (JSON.parse(rawData.Body?.response?.content || '{}') as RestoreRawResponse);
+      : (JSON.parse(rawData.Body?.response?.content || '{}') as typeof rawData);
     const message = parsedData.error?.message || parsedData.message;
     if (message) {
       return { type: 'error', error: message };

@@ -8,64 +8,71 @@ import { describe, expect, it, vi } from 'vitest';
 
 import { getBackupAccounts } from '../get-backup-accounts';
 
-vi.mock('@zextras/ui-shared', () => ({
-  getSoapFetchRequest: vi.fn(),
+vi.mock('@zextras/ui-shared', async (importOriginal) => ({
+	...(await importOriginal<typeof import('@zextras/ui-shared')>()),
+	getBackupAccounts: vi.fn(),
 }));
 
-const { getSoapFetchRequest } = await import('@zextras/ui-shared');
+const { getBackupAccounts: fetchBackupAccounts } = await import('@zextras/ui-shared');
 
 const params = {
-  domain: 'test.com',
-  filter: 'admin',
-  legalHold: false,
-  page: 0,
-  pageSize: 10,
+	domain: 'test.com',
+	filter: 'admin',
+	legalHold: false,
+	page: 0,
+	pageSize: 10,
 };
 
 describe('getBackupAccounts', () => {
-  it('should call getSoapFetchRequest with the backup accounts URL', async () => {
-    vi.mocked(getSoapFetchRequest).mockResolvedValue({ accounts: [], maxPage: 0 });
+	it('should forward the params to the shared backup accounts service', async () => {
+		vi.mocked(fetchBackupAccounts).mockResolvedValue({ accounts: [], maxPage: 0 });
 
-    await getBackupAccounts(params);
+		await getBackupAccounts(params);
 
-    expect(getSoapFetchRequest).toHaveBeenCalledWith(
-      '/service/extension/zextras_admin/backup/getBackupAccounts?page=0&pageSize=10&domains=test.com&filter=admin&legalHold=false',
-    );
-  });
+		expect(fetchBackupAccounts).toHaveBeenCalledWith({
+			page: 0,
+			pageSize: 10,
+			domains: 'test.com',
+			filter: 'admin',
+			legalHold: false,
+		});
+	});
 
-  it('should return success with parsed accounts', async () => {
-    const accounts = [
-      {
-        id: 'acc-1',
-        name: 'admin@test.com',
-        status: 'active',
-        legalHold: 'false',
-        serverName: 'mailstore1.test.com',
-        creationTimestamp: 1,
-      },
-    ];
-    vi.mocked(getSoapFetchRequest).mockResolvedValue({ accounts, maxPage: 2 });
+	it('should return success with parsed accounts', async () => {
+		const accounts = [
+			{
+				id: 'acc-1',
+				name: 'admin@test.com',
+				status: 'active',
+				legalHold: 'false',
+				serverName: 'mailstore1.test.com',
+				creationTimestamp: 1,
+			},
+		];
+		vi.mocked(fetchBackupAccounts).mockResolvedValue({ accounts, maxPage: 2 });
 
-    const result = await getBackupAccounts(params);
+		const result = await getBackupAccounts(params);
 
-    expect(result).toEqual({ type: 'success', accounts, maxPage: 2 });
-  });
+		expect(result).toEqual({ type: 'success', accounts, maxPage: 2 });
+	});
 
-  it('should return error when all_server contains an error message', async () => {
-    vi.mocked(getSoapFetchRequest).mockResolvedValue({
-      all_server: { error: { message: 'Backup unavailable' } },
-    });
+	it('should return error when all_server contains an error message', async () => {
+		vi.mocked(fetchBackupAccounts).mockResolvedValue({
+			accounts: [],
+			maxPage: 0,
+			allServerError: 'Backup unavailable',
+		});
 
-    const result = await getBackupAccounts(params);
+		const result = await getBackupAccounts(params);
 
-    expect(result).toEqual({ type: 'error', error: 'Backup unavailable' });
-  });
+		expect(result).toEqual({ type: 'error', error: 'Backup unavailable' });
+	});
 
-  it('should return error when getSoapFetchRequest rejects', async () => {
-    vi.mocked(getSoapFetchRequest).mockRejectedValue(new Error('Network error'));
+	it('should return error when the shared service rejects', async () => {
+		vi.mocked(fetchBackupAccounts).mockRejectedValue(new Error('Network error'));
 
-    const result = await getBackupAccounts(params);
+		const result = await getBackupAccounts(params);
 
-    expect(result).toEqual({ type: 'error', error: 'Network error' });
-  });
+		expect(result).toEqual({ type: 'error', error: 'Network error' });
+	});
 });

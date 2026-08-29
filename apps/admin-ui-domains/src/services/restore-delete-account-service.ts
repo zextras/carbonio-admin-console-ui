@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fetchExternalSoap } from '@zextras/ui-shared';
+import {
+	doRestoreOnNewAccount,
+	type RestoreAccountBody,
+	type RestoreAccountRawResponse,
+} from '@zextras/ui-shared';
 
 export type RestoreAccountRequestParams = {
 	id: string;
@@ -18,19 +22,9 @@ export type RestoreAccountRequestParams = {
 	serverName: string;
 };
 
-export type RestoreDeletedAccountBody = {
-	srcAccountName: string;
-	obeyHSM: boolean;
-	notificationMails?: Array<string>;
-	dstAccountName?: string;
-	date?: number | string;
-};
+export type RestoreDeletedAccountBody = RestoreAccountBody;
 
-export type RestoreDeletedAccountResponse = {
-	operationId?: string;
-	status?: number;
-	error?: { message?: string; details?: { cause?: string } };
-};
+export type RestoreDeletedAccountResponse = RestoreAccountRawResponse;
 
 export function buildRestoreDeletedAccountBody(
 	params: RestoreAccountRequestParams
@@ -57,10 +51,4 @@ export function buildRestoreDeletedAccountBody(
 export const doRestoreDeleteAccount = async (
 	body: RestoreDeletedAccountBody,
 	targetServers: string
-): Promise<RestoreDeletedAccountResponse> =>
-	fetchExternalSoap<RestoreDeletedAccountBody, RestoreDeletedAccountResponse>(
-		`/service/extension/zextras_admin/backup/doRestoreOnNewAccount?targetServers=${targetServers}`,
-		{
-			...body
-		}
-	);
+): Promise<RestoreDeletedAccountResponse> => doRestoreOnNewAccount(body, targetServers);

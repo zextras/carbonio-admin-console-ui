@@ -14,7 +14,7 @@ import {
 	Row,
 	Table,
 } from '@zextras/ui-components';
-import { getSoapFetchRequest, useDebouncedValue } from '@zextras/ui-shared';
+import { getBackupAccounts, useDebouncedValue } from '@zextras/ui-shared';
 import { type FC, type ReactElement, useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -35,39 +35,6 @@ const backupAccountsQueryKeys = {
 		[...backupAccountsQueryKeys.all, domainName, filter, page] as const,
 };
 
-function extractBackupAccounts(data: any): {
-	accounts: Array<any>;
-	maxPage: number | undefined;
-} {
-	let backupAccounts = data?.accounts;
-	let page = data?.maxPage;
-
-	/* Take account list and maxPage from multiserver environment  */
-	if (backupAccounts === undefined && !!data) {
-		const allServers = Object.keys(data);
-		let allServerAccounts: Array<any> = [];
-		const maxPageList: Array<any> = [];
-		allServers.forEach((item: string) => {
-			if (data[item]?.response?.accounts) {
-				allServerAccounts = allServerAccounts.concat(data[item]?.response?.accounts);
-			}
-			if (data[item]?.response?.maxPage) {
-				maxPageList.push(data[item]?.response?.maxPage);
-			}
-		});
-		if (allServerAccounts && allServerAccounts.length > 0) {
-			backupAccounts = allServerAccounts;
-			if (maxPageList && maxPageList.length > 0) {
-				const max = Math.max(...maxPageList);
-				if (max) {
-					page = max;
-				}
-			}
-		}
-	}
-	return { accounts: Array.isArray(backupAccounts) ? backupAccounts : [], maxPage: page };
-}
-
 const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
@@ -82,17 +49,19 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { data, isFetching, isError } = useQuery({
 		queryKey: backupAccountsQueryKeys.list(domainName, debouncedSearchString, accountOffset),
 		queryFn: () =>
-			getSoapFetchRequest(
-				`/service/extension/zextras_admin/backup/getBackupAccounts?page=${accountOffset}&pageSize=${ACCOUNT_LIMIT}&domains=${domainName}&filter=${debouncedSearchString}`,
-			),
+			getBackupAccounts({
+				page: accountOffset,
+				pageSize: ACCOUNT_LIMIT,
+				domains: domainName ?? '',
+				filter: debouncedSearchString,
+			}),
 		placeholderData: keepPreviousData,
 	});
 
-	const { accounts, maxPage } = extractBackupAccounts(data);
-	const totalItem = maxPage ? maxPage * ACCOUNT_LIMIT : 1;
+	const accounts: Array<any> = data?.accounts ?? [];
+	const totalItem = data?.maxPage ? data.maxPage * ACCOUNT_LIMIT : 1;
 
-	const responseError = (data as any)?.all_server?.error?.message;
-	useQueryErrorSnackbar(responseError);
+	useQueryErrorSnackbar(data?.allServerError);
 
 	const accountHeader: Array<any> = [
 		{
