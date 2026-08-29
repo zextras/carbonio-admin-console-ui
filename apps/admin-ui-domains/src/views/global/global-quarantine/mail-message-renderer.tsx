@@ -39,12 +39,15 @@ const bannerContainerStyle: React.CSSProperties = {
 const _CI_REGEX = /^<(.*)>$/;
 const _CI_SRC_REGEX = /^cid:(.*)$/;
 const LINK_REGEX =
-  /(?:https?:\/\/|www\.)+(?![^\s]*?")([\w.,@?!^=%&amp;:()/~+#-]*[\w@?!^=%&amp;()/~+#-])?/gi;
+  /(?:https?:\/\/|www\.)+(?![^\s]*?")([\w.,@?!^=%&:()/~+#-]*[\w@?!^=%&:()/~+#-])?/gi;
 const LINE_BREAK_REGEX = /(?:\r\n|\r|\n)/g;
 
 const plainTextToHTML = (str: string): string => {
   if (str !== undefined && str !== null) {
-    return str.replaceAll('<', '&lt;').replaceAll('>', '&gt;').replaceAll(LINE_BREAK_REGEX, '<br />');
+    return str
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll(LINE_BREAK_REGEX, '<br />');
   }
   return '';
 };
@@ -53,7 +56,7 @@ const replaceLinkToAnchor = (content: string): string => {
   if (content === '' || content === undefined) {
     return '';
   }
-  return content.replace(LINK_REGEX, (url) => {
+  return content.replaceAll(LINK_REGEX, (url) => {
     const wrap = document.createElement('div');
     const anchor = document.createElement('a');
     let href = url.replaceAll('&amp;', '&');
@@ -76,22 +79,41 @@ const hasExternalImagesIn = (htmlContent: string): boolean => {
   return some(images, (i) => i.hasAttribute('dfsrc'));
 };
 
+function isAvailableInTrusteeList(
+  trusteeList: string | number | Array<number | string>,
+  address: string,
+): boolean {
+  let trusteeAddress: Array<string> = [];
+  if (trusteeList) {
+    if (isArray(trusteeList)) {
+      trusteeAddress = trusteeList as string[];
+    } else if (typeof trusteeList === 'string') {
+      trusteeAddress = trusteeList.split(',');
+    } else {
+      trusteeAddress = [`${trusteeList}`];
+    }
+  }
+  if (trusteeAddress.length === 0) {
+    return false;
+  }
+  const domainName = address.substring(address.lastIndexOf('@') + 1);
+  return trusteeAddress.some((ta) => ta === domainName || ta === address);
+}
+
 const TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
-  const orignalText = body.content; // getOriginalContent(body.content, false);
+  const orignalText = body.content;
 
   const convertedHTML = replaceLinkToAnchor(plainTextToHTML(orignalText));
   return (
-    <>
-      <ds-text
-        as="span"
-        overflow="break-word"
-        color="text"
-        style={{ fontFamily: 'monospace' }}
-        dangerouslySetInnerHTML={{
-          __html: convertedHTML,
-        }}
-      />
-    </>
+    <ds-text
+      as="span"
+      overflow="break-word"
+      color="text"
+      style={{ fontFamily: 'monospace' }}
+      dangerouslySetInnerHTML={{
+        __html: convertedHTML,
+      }}
+    />
   );
 };
 
@@ -115,40 +137,14 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
   const [imagesShownManually, setImagesShownManually] = useState(false);
   const [displayBanner, setDisplayBanner] = useState(true);
 
-  const orignalText = body.content; // getOriginalContent(body.content, false);
+  const orignalText = body.content;
 
   const hasExternalImages = hasExternalImagesIn(orignalText);
-  const isAvailableInTrusteeList = (
-    trusteeList: string | number | Array<number | string>,
-    address: string,
-  ): boolean => {
-    let trusteeAddress: Array<string> = [];
-    let availableInTrusteeList = false;
-    if (trusteeList) {
-      trusteeAddress = isArray(trusteeList)
-        ? (trusteeList as string[])
-        : typeof trusteeList === 'string'
-        ? trusteeList?.split(',')
-        : [`${trusteeList}`];
-    }
-    if (trusteeAddress.length > 0) {
-      const domainName = address.substring(address.lastIndexOf('@') + 1);
-      trusteeAddress.forEach((ta) => {
-        if (ta === domainName || ta === address) {
-          availableInTrusteeList = true;
-        }
-      });
-    }
-    return availableInTrusteeList;
-  };
-  const showBanner =
-    hasExternalImages &&
-    !isAvailableInTrusteeList(settingsPref.zimbraPrefMailTrustedSenderList ?? '', from) &&
-    displayBanner;
   const isTrustedSender = isAvailableInTrusteeList(
     settingsPref.zimbraPrefMailTrustedSenderList ?? '',
     from,
   );
+  const showBanner = hasExternalImages && !isTrustedSender && displayBanner;
   const showExternalImage = isTrustedSender || imagesShownManually;
 
   const calculateHeight = (): void => {
@@ -163,10 +159,9 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
   const showImage = showExternalImage && displayBanner;
 
   useLayoutEffect(() => {
-    if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
-      iframeRef.current.contentDocument.open();
-      iframeRef.current.contentDocument.write(orignalText);
-      iframeRef.current.contentDocument.close();
+    const iframeDoc = iframeRef.current?.contentDocument;
+    if (iframeDoc) {
+      iframeDoc.documentElement.innerHTML = orignalText;
     }
     const styleTag = document.createElement('style');
     const styles = `
@@ -198,8 +193,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 			}
 		`;
     styleTag.textContent = styles;
-    if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument))
-      iframeRef.current.contentDocument.head.append(styleTag);
+    iframeDoc?.head.append(styleTag);
 
     calculateHeight();
 
@@ -214,10 +208,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
       {} as any,
     );
 
-    const images =
-      iframeRef.current &&
-      iframeRef.current.contentDocument &&
-      iframeRef.current.contentDocument.body.getElementsByTagName('img');
+    const images = iframeDoc?.body?.getElementsByTagName('img');
     if (images)
       forEach(images, (p: HTMLImageElement) => {
         if (p.hasAttribute('dfsrc') && showImage) {
@@ -233,7 +224,9 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
       });
 
     const resizeObserver = new ResizeObserver(calculateHeight);
-    divRef.current && resizeObserver.observe(divRef.current);
+    if (divRef.current) {
+      resizeObserver.observe(divRef.current);
+    }
 
     return () => resizeObserver.disconnect();
   }, [msgId, orignalText, parts, showImage]);
@@ -323,7 +316,10 @@ const EmptyBody: FC = () => {
   const [t] = useTranslation();
   return (
     <Container padding={{ bottom: 'medium' }}>
-      <ds-text as="p">{`(${t('messages.no_content', 'This message has no text content')}.)`}</ds-text>
+      <ds-text as="p">{`(${t(
+        'messages.no_content',
+        'This message has no text content',
+      )}.)`}</ds-text>
     </Container>
   );
 };
