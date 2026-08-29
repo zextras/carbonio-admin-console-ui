@@ -4,27 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import {
-  Button,
-  Container,
-  Link,
-  Padding,
-  Row,
-  Tooltip,
-} from '@zextras/ui-components';
-import { filter, find, includes, isNil, map, uniqBy } from 'lodash-es';
+import { Button, Container, Link, Padding, Row, Tooltip } from '@zextras/ui-components';
+import { filter, find, map, uniqBy } from 'lodash-es';
 import { FC, ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useRemoveQuarantineAttachment } from '../../../services/use-quarantine-message-actions';
 import styles from './attachments-block.module.css';
 import { AttachmentPart, EditorAttachmentFiles, IncompleteMessage } from './quarantine-types';
-
-type OpenEmlPreviewType = (
-  parentMessageId: string,
-  attachmentName: string,
-  emlMessage: IncompleteMessage,
-) => void;
 
 type IconColors = Array<{
   color: string;
@@ -34,14 +21,12 @@ type IconColors = Array<{
 type AttachmentType = {
   filename?: string;
   size: number;
-  link: string;
   downloadlink: string;
   message: IncompleteMessage;
   isExternalMessage?: boolean;
   part: string;
   iconColors: IconColors;
   att: EditorAttachmentFiles;
-  openEmlPreview?: OpenEmlPreviewType;
   onClose: () => void;
 };
 
@@ -50,150 +35,83 @@ type GetAttachmentsDownloadLinkProps = {
   messageSubject: string;
   attachments: Array<string | undefined>;
 };
-type GetAttachmentsLinkProps = {
-  messageId: string;
-  messageSubject: string;
-  attachments: Array<string | undefined>;
-  attachmentType: string | undefined;
+
+type FileExtension = { value: string; displayName?: string };
+
+const FILE_EXTENSIONS_BY_CONTENT_TYPE: Record<string, FileExtension> = {
+  'text/html': { value: 'html' },
+  'text/css': { value: 'css' },
+  'text/xml': { value: 'xml' },
+  'image/gif': { value: 'gif' },
+  'image/jpeg': { value: 'jpg' },
+  'application/x-javascript': { value: 'js' },
+  'application/atom+xml': { value: 'atom' },
+  'application/rss+xml': { value: 'rss' },
+  'text/mathml': { value: 'mml' },
+  'text/plain': { value: 'txt' },
+  'text/vnd.sun.jme.app-descriptor': { value: 'jad' },
+  'text/vnd.wap.wml': { value: 'wml' },
+  'text/x-component': { value: 'htc' },
+  'image/png': { value: 'png' },
+  'image/tiff': { value: 'tif,tiff', displayName: 'tif' },
+  'image/vnd.wap.wbmp': { value: 'wbmp' },
+  'image/x-icon': { value: 'ico' },
+  'image/x-jng': { value: 'jng' },
+  'image/x-ms-bmp': { value: 'bmp' },
+  'image/svg+xml': { value: 'svg' },
+  'image/webp': { value: 'webp' },
+  'application/java-archive': { value: 'jar,war,ear' },
+  'application/mac-binhex': { value: 'hqx' },
+  'application/msword': { value: 'doc' },
+  'application/pdf': { value: 'pdf' },
+  'application/postscript': { value: 'ps,eps,ai' },
+  'application/rtf': { value: 'rtf' },
+  'application/vnd.ms-excel': { value: 'xls' },
+  'application/vnd.ms-powerpoint': { value: 'ppt' },
+  'application/vnd.wap.wmlc': { value: 'wmlc' },
+  'application/vnd.google-earth.kml+xml': { value: 'kml' },
+  'application/vnd.google-earth.kmz': { value: 'kmz' },
+  'application/x-z-compressed': { value: 'z' },
+  'application/x-cocoa': { value: 'cco' },
+  'application/x-java-archive-diff': { value: 'jardiff' },
+  'application/x-java-jnlp-file': { value: 'jnlp' },
+  'application/x-makeself': { value: 'run' },
+  'application/x-perl': { value: 'pl,pm' },
+  'application/x-pilot': { value: 'prc,pdb' },
+  'application/x-rar-compressed': { value: 'rar' },
+  'application/x-redhat-package-manager': { value: 'rpm' },
+  'application/x-sea': { value: 'sea' },
+  'application/x-shockwave-flash': { value: 'swf' },
+  'application/x-stuffit': { value: 'sit' },
+  'application/x-tcl': { value: 'tcl' },
+  'application/x-x-ca-cert': { value: 'der' },
+  'application/x-xpinstall': { value: 'xpi' },
+  'application/xhtml+xml': { value: 'xhtml' },
+  'application/zip': { value: 'zip' },
+  'audio/midi': { value: 'midi' },
+  'audio/mpeg': { value: 'mp' },
+  'audio/ogg': { value: 'ogg' },
+  'audio/x-realaudio': { value: 'ra' },
+  'video/gpp': { value: 'gp' },
+  'video/mpeg': { value: 'mpeg' },
+  'video/quicktime': { value: 'mov' },
+  'video/x-flv': { value: 'flv' },
+  'video/x-mng': { value: 'mng' },
+  'video/x-ms-asf': { value: 'asf' },
+  'video/x-ms-wmv': { value: 'wmv' },
+  'video/x-msvideo': { value: 'avi' },
+  'video/mp': { value: 'mp' },
+  'message/rfc822': { value: 'EML' },
 };
+
 const FileExtensionRegex = /^.+\.([^.]+)$/;
-const getFileExtension = (
-  file: EditorAttachmentFiles | AttachmentPart,
-): { value: string; displayName?: string } => {
-  switch (file.contentType) {
-    case 'text/html':
-      return { value: 'html' };
-    case 'text/css':
-      return { value: 'css' };
-    case 'text/xml':
-      return { value: 'xml' };
-    case 'image/gif':
-      return { value: 'gif' };
-    case 'image/jpeg':
-      return { value: 'jpg' };
-    case 'application/x-javascript':
-      return { value: 'js' };
-    case 'application/atom+xml':
-      return { value: 'atom' };
-    case 'application/rss+xml':
-      return { value: 'rss' };
-    case 'text/mathml':
-      return { value: 'mml' };
-    case 'text/plain':
-      return { value: 'txt' };
-    case 'text/vnd.sun.jme.app-descriptor':
-      return { value: 'jad' };
-    case 'text/vnd.wap.wml':
-      return { value: 'wml' };
-    case 'text/x-component':
-      return { value: 'htc' };
-    case 'image/png':
-      return { value: 'png' };
-    case 'image/tiff':
-      return { value: 'tif,tiff', displayName: 'tif' };
-    case 'image/vnd.wap.wbmp':
-      return { value: 'wbmp' };
-    case 'image/x-icon':
-      return { value: 'ico' };
-    case 'image/x-jng':
-      return { value: 'jng' };
-    case 'image/x-ms-bmp':
-      return { value: 'bmp' };
-    case 'image/svg+xml':
-      return { value: 'svg' };
-    case 'image/webp':
-      return { value: 'webp' };
-    case 'application/java-archive':
-      return { value: 'jar,war,ear' };
-    case 'application/mac-binhex':
-      return { value: 'hqx' };
-    case 'application/msword':
-      return { value: 'doc' };
-    case 'application/pdf':
-      return { value: 'pdf' };
-    case 'application/postscript':
-      return { value: 'ps,eps,ai' };
-    case 'application/rtf':
-      return { value: 'rtf' };
-    case 'application/vnd.ms-excel':
-      return { value: 'xls' };
-    case 'application/vnd.ms-powerpoint':
-      return { value: 'ppt' };
-    case 'application/vnd.wap.wmlc':
-      return { value: 'wmlc' };
-    case 'application/vnd.google-earth.kml+xml':
-      return { value: 'kml' };
-    case 'application/vnd.google-earth.kmz':
-      return { value: 'kmz' };
-    case 'application/x-z-compressed':
-      return { value: 'z' };
-    case 'application/x-cocoa':
-      return { value: 'cco' };
-    case 'application/x-java-archive-diff':
-      return { value: 'jardiff' };
-    case 'application/x-java-jnlp-file':
-      return { value: 'jnlp' };
-    case 'application/x-makeself':
-      return { value: 'run' };
-    case 'application/x-perl':
-      return { value: 'pl,pm' };
-    case 'application/x-pilot':
-      return { value: 'prc,pdb' };
-    case 'application/x-rar-compressed':
-      return { value: 'rar' };
-    case 'application/x-redhat-package-manager':
-      return { value: 'rpm' };
-    case 'application/x-sea':
-      return { value: 'sea' };
-    case 'application/x-shockwave-flash':
-      return { value: 'swf' };
-    case 'application/x-stuffit':
-      return { value: 'sit' };
-    case 'application/x-tcl':
-      return { value: 'tcl' };
-    case 'application/x-x-ca-cert':
-      return { value: 'der' };
-    case 'application/x-xpinstall':
-      return { value: 'xpi' };
-    case 'application/xhtml+xml':
-      return { value: 'xhtml' };
-    case 'application/zip':
-      return { value: 'zip' };
-    case 'audio/midi':
-      return { value: 'midi' };
-    case 'audio/mpeg':
-      return { value: 'mp' };
-    case 'audio/ogg':
-      return { value: 'ogg' };
-    case 'audio/x-realaudio':
-      return { value: 'ra' };
-    case 'video/gpp':
-      return { value: 'gp' };
-    case 'video/mpeg':
-      return { value: 'mpeg' };
-    case 'video/quicktime':
-      return { value: 'mov' };
-    case 'video/x-flv':
-      return { value: 'flv' };
-    case 'video/x-mng':
-      return { value: 'mng' };
-    case 'video/x-ms-asf':
-      return { value: 'asf' };
-    case 'video/x-ms-wmv':
-      return { value: 'wmv' };
-    case 'video/x-msvideo':
-      return { value: 'avi' };
-    case 'video/mp':
-      return { value: 'mp' };
-    case 'message/rfc822':
-      return { value: 'EML' };
-    default:
-      return {
-        value: isNil(FileExtensionRegex.exec(file?.filename ?? ''))
-          ? '?'
-          : FileExtensionRegex.exec(file?.filename ?? '')?.[1] ?? '',
-      };
+const getFileExtension = (file: EditorAttachmentFiles | AttachmentPart): FileExtension => {
+  const byContentType = FILE_EXTENSIONS_BY_CONTENT_TYPE[file.contentType ?? ''];
+  if (byContentType) {
+    return byContentType;
   }
+  const match = FileExtensionRegex.exec(file?.filename ?? '');
+  return { value: match === null ? '?' : match?.[1] ?? '' };
 };
 const calcColor = (label: string): string => {
   let sum = 0;
@@ -203,53 +121,7 @@ const calcColor = (label: string): string => {
 
   return `var(--color-avatar-${(sum % 50) + 1})`;
 };
-const getLocationOrigin = (): string => window.location.origin;
-const getAttachmentsLink = ({
-  messageId,
-  messageSubject,
-  attachments,
-  attachmentType,
-}: GetAttachmentsLinkProps): string => {
-  if (attachments.length > 1) {
-    return `${getLocationOrigin()}/service/home/~/?auth=co&id=${messageId}&filename=${messageSubject}&charset=UTF-8&part=${attachments.join(
-      ',',
-    )}&disp=a&fmt=zip`;
-  }
-  if (includes(['image/gif', 'image/png', 'image/jpeg', 'image/jpg'], attachmentType)) {
-    return `${getLocationOrigin()}/service/preview/image/${messageId}/${
-      attachments[0]
-    }/0x0/?quality=high`;
-  }
-  if (includes(['application/pdf'], attachmentType)) {
-    return `${getLocationOrigin()}/service/preview/pdf/${messageId}/${
-      attachments[0]
-    }/?first_page=1`;
-  }
-  if (
-    includes(
-      [
-        'text/csv',
-        'text/plain',
-        'application/msword',
-        'application/vnd.ms-excel',
-        'application/vnd.ms-powerpoint',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        'application/vnd.oasis.opendocument.spreadsheet',
-        'application/vnd.oasis.opendocument.presentation',
-        'application/vnd.oasis.opendocument.text',
-      ],
-      attachmentType,
-    )
-  ) {
-    return `${getLocationOrigin()}/service/preview/document/${messageId}/${attachments.join(',')}`;
-  }
-  return `${getLocationOrigin()}/service/home/~/?auth=co&id=${messageId}&part=${attachments.join(
-    ',',
-  )}&disp=a`;
-};
-
+const getLocationOrigin = (): string => globalThis.location.origin;
 const getAttachmentsDownloadLink = ({
   messageId,
   messageSubject,
@@ -422,10 +294,13 @@ const Attachment: FC<AttachmentType> = ({
         ref={inputRef2}
         target="_blank"
         href={`${getLocationOrigin()}/service/home/~/?auth=co&id=${message.id}&part=${part}`}
-        aria-label={filename ?? t('label.attachment_unknown', {
-          mimeType: att?.contentType,
-          defaultValue: 'Unknown <{{mimeType}}>',
-        })}
+        aria-label={
+          filename ??
+          t('label.attachment_unknown', {
+            mimeType: att?.contentType,
+            defaultValue: 'Unknown <{{mimeType}}>',
+          })
+        }
       />
       <a
         className={styles.attachmentLink}
@@ -442,13 +317,8 @@ const Attachment: FC<AttachmentType> = ({
 const AttachmentsBlock: FC<{
   message: IncompleteMessage;
   isExternalMessage?: boolean;
-  openEmlPreview?: OpenEmlPreviewType;
   onClose: () => void;
-}> = ({
-  message,
-  isExternalMessage = false /* openEmlPreview */,
-  onClose,
-}): ReactElement => {
+}> = ({ message, isExternalMessage = false, onClose }): ReactElement => {
   const [t] = useTranslation();
   const [expanded, setExpanded] = useState(false);
   const attachments = filter(message?.attachments, { cd: 'attachment' });
@@ -469,12 +339,6 @@ const AttachmentsBlock: FC<{
             key={`att-${att.filename}-${index}`}
             filename={att?.filename}
             size={att?.size ?? 0}
-            link={getAttachmentsLink({
-              messageId: message.id,
-              messageSubject: message.subject,
-              attachments: [att.name],
-              attachmentType: att.contentType,
-            })}
             downloadlink={getAttachmentsDownloadLink({
               messageId: message.id,
               messageSubject: message.subject,
@@ -493,7 +357,10 @@ const AttachmentsBlock: FC<{
       <Row mainAlignment="flex-start" padding={{ top: 'extrasmall', bottom: 'medium' }}>
         <Padding right="small">
           {attachmentsCount === 1 && (
-            <ds-text as="span" color="gray1">{`1 ${t('label.attachment_one', 'Attachment')}`}</ds-text>
+            <ds-text as="span" color="gray1">{`1 ${t(
+              'label.attachment_one',
+              'Attachment',
+            )}`}</ds-text>
           )}
           {attachmentsCount === 2 && (
             <ds-text as="span" color="gray1">
