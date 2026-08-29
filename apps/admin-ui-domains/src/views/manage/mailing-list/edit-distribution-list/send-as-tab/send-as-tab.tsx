@@ -18,7 +18,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { sortedUniq, uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useMemo, useState } from 'react';
+import { type ChangeEvent, type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
@@ -103,32 +103,29 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 	const { searchValue: sendEmailItem, setSearchValue: setSendEmailItem, items: sendItems } =
 		useGalEmailSearch();
 
-	const sendEmailHeaders: Array<any> = useMemo(
-		() => [
-			{
-				id: 'sendEmail',
-				label: t('domain.distributionList.sendAs.authorizedSenders', 'Authorized senders'),
-				width: '50%',
-				bold: true
-			},
-			{
-				id: 'sendAcl',
-				label: t('domain.distributionList.sendAs.permissionLevel', 'Permission level'),
-				width: '30%',
-				bold: true
-			},
-			{
-				id: 'actions',
-				label: t('label.actions', 'Actions'),
-				width: '20%',
-				bold: true
-			}
-		],
-		[t]
-	);
+	const sendEmailHeaders: Array<any> = [
+		{
+			id: 'sendEmail',
+			label: t('domain.distributionList.sendAs.authorizedSenders', 'Authorized senders'),
+			width: '50%',
+			bold: true
+		},
+		{
+			id: 'sendAcl',
+			label: t('domain.distributionList.sendAs.permissionLevel', 'Permission level'),
+			width: '30%',
+			bold: true
+		},
+		{
+			id: 'actions',
+			label: t('label.actions', 'Actions'),
+			width: '20%',
+			bold: true
+		}
+	];
 
 
-	const onAddSendEmail = useCallback(() => {
+	const onAddSendEmail = () => {
 		const resolution = resolveNewMembers(
 			sendEmailItem,
 			sendEmailsList.map((item: any) => item?.name)
@@ -234,25 +231,14 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 				});
 				setIsRequestInProgress(false);
 			});
-	}, [
-		sendEmailItem,
-		createSnackbar,
-		t,
-		sendEmailsList,
-		radioPermisionValue,
-		selectedMailingList?.id,
-		form,
-		setIsRequestInProgress,
-		actionMutation,
-		setSendEmailItem
-	]);
+	};
 
-	const closeDeleteSendEmailHandler = useCallback(() => {
+	const closeDeleteSendEmailHandler = () => {
 		setIsOpenDeleteSendEmailDialog(false);
 		setSendEmailToDelete(null);
-	}, []);
+	};
 
-	const onDeleteSendEmailConfirm = useCallback(() => {
+	const onDeleteSendEmailConfirm = () => {
 		if (!sendEmailToDelete) return;
 		setIsRequestInProgress(true);
 		actionMutation
@@ -322,23 +308,13 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 				setIsRequestInProgress(false);
 				closeDeleteSendEmailHandler();
 			});
-	}, [
-		sendEmailToDelete,
-		selectedMailingList?.id,
-		sendEmailsList,
-		createSnackbar,
-		t,
-		closeDeleteSendEmailHandler,
-		form,
-		setIsRequestInProgress,
-		actionMutation
-	]);
+	};
 
-	const closeEditPermissionHandler = useCallback(() => {
+	const closeEditPermissionHandler = () => {
 		setIsOpenEditPermissionDialog(false);
-	}, []);
+	};
 
-	const onEditPermissionSaveChanges = useCallback((): void => {
+	const onEditPermissionSaveChanges = (): void => {
 		if (!editingEmailItem) {
 			return;
 		}
@@ -432,17 +408,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
 				});
 				setIsRequestInProgress(false);
 			});
-	}, [
-		editingEmailItem,
-		editPermissionValue,
-		sendEmailsList,
-		selectedMailingList?.id,
-		createSnackbar,
-		t,
-		form,
-		setIsRequestInProgress,
-		actionMutation
-	]);
+	};
 
 	return (
 		<>

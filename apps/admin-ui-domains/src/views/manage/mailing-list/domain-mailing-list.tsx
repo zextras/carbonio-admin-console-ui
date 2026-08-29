@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button, Container, ModalOverlay, Padding, Row } from '@zextras/ui-components';
-import { type FC, useCallback, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
@@ -43,29 +43,26 @@ const DomainMailingList: FC = () => {
     setShowCreateMailingListView(false);
   });
 
-  const doClickAction = useCallback((): void => {
+  const doClickAction = (): void => {
     setShowMailingListDetailView(true);
-  }, []);
+  };
 
-  const doDoubleClickAction = useCallback((): void => {
+  const doDoubleClickAction = (): void => {
     setShowMailingListDetailView(true);
-  }, []);
+  };
 
-  const handleClick = useCallback(
-    (event: any) => {
-      event.stopPropagation();
-      if (cellClickTimer) {
-        clearTimeout(cellClickTimer);
-      }
-      if (event.detail === 1) {
-        setCellClickTimer(setTimeout(doClickAction, 300));
-      } else if (event.detail === 2) {
-        setCellClickTimer(null);
-        doDoubleClickAction();
-      }
-    },
-    [cellClickTimer, doClickAction, doDoubleClickAction],
-  );
+  const handleClick = (event: any) => {
+    event.stopPropagation();
+    if (cellClickTimer) {
+      clearTimeout(cellClickTimer);
+    }
+    if (event.detail === 1) {
+      setCellClickTimer(setTimeout(doClickAction, 300));
+    } else if (event.detail === 2) {
+      setCellClickTimer(null);
+      doDoubleClickAction();
+    }
+  };
 
   const rows: Array<any> = lists.map((item: any) =>
     buildDistributionListRow(item, {

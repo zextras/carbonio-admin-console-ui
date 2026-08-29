@@ -16,7 +16,7 @@ import {
 } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
 import { format, isValid } from 'date-fns';
-import { type FC, useEffect, useMemo, useState } from 'react';
+import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DL, EMAIL, GRP } from '../../../../constants';
@@ -51,6 +51,14 @@ import { SendToTab } from './send-to-tab/send-to-tab';
 import { TabDirtyGuardModal } from './tab-dirty-guard-modal';
 import type { EditDistributionListFormValues } from './types';
 
+function formatDlCreateDate(timestamp: string | undefined): string {
+  if (!timestamp || timestamp === '') {
+    return '';
+  }
+  const date = getDateTimeFromStr(timestamp);
+  return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
+}
+
 const EditDistributionList: FC<any> = ({
   selectedMailingList,
   setShowMailingListDetailView,
@@ -62,37 +70,18 @@ const EditDistributionList: FC<any> = ({
   );
   const grantsQuery = useDistributionListGrants(selectedMailingList?.id);
 
-  const parsedDetail = useMemo(
-    () => parseDistributionListDetail(detailQuery.data, selectedMailingList?.name),
-    [detailQuery.data, selectedMailingList?.name],
-  );
-  const membership = useMemo(
-    () => parseDistributionListMembership(membershipQuery.data),
-    [membershipQuery.data],
-  );
-  const parsedGrants = useMemo(
-    () => parseDistributionListGrants(grantsQuery.data, selectedMailingList?.id),
-    [grantsQuery.data, selectedMailingList?.id],
-  );
+  const parsedDetail = parseDistributionListDetail(detailQuery.data, selectedMailingList?.name);
+  const membership = parseDistributionListMembership(membershipQuery.data);
+  const parsedGrants = parseDistributionListGrants(grantsQuery.data, selectedMailingList?.id);
 
-  const formValues = useMemo(
-    () => mapToFormValues(parsedDetail, membership, parsedGrants, selectedMailingList),
-    [parsedDetail, membership, parsedGrants, selectedMailingList],
-  );
+  const formValues = mapToFormValues(parsedDetail, membership, parsedGrants, selectedMailingList);
 
   const isReady =
     Boolean(parsedDetail) &&
     (Boolean(selectedMailingList?.dynamic) || membershipQuery.data !== undefined) &&
     grantsQuery.data !== undefined;
 
-  const dlCreateDate = useMemo(() => {
-    const timestamp = parsedDetail?.createTimestamp;
-    if (!timestamp || timestamp === '') {
-      return '';
-    }
-    const date = getDateTimeFromStr(timestamp);
-    return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
-  }, [parsedDetail?.createTimestamp]);
+  const dlCreateDate = formatDlCreateDate(parsedDetail?.createTimestamp);
 
   if (!isReady) {
     return (

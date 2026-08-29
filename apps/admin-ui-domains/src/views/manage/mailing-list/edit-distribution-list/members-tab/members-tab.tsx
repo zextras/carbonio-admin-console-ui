@@ -17,7 +17,7 @@ import {
 	useSnackbar
 } from '@zextras/ui-components';
 import { uniq } from 'lodash';
-import { type ChangeEvent, type FC, useCallback, useState } from 'react';
+import { type ChangeEvent, type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
@@ -118,7 +118,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 			: [];
 	const DLMPagedRows = pageRows(dlmTableRows, offset, limit);
 
-	const onAdd = useCallback((): void => {
+	const onAdd = (): void => {
 		const resolution = resolveNewMembers(searchMember, dlm);
 		switch (resolution.type) {
 			case 'blank':
@@ -207,17 +207,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 				});
 				setIsRequestInProgress(false);
 			});
-	}, [
-		searchMember,
-		t,
-		dlm,
-		selectedMailingList?.id,
-		createSnackbar,
-		form,
-		setSearchMember,
-		setIsRequestInProgress,
-		addMemberMutation
-	]);
+	};
 
 	const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
 		setFilterMember(e.target.value);
@@ -225,12 +215,12 @@ export const MembersTab: FC<MembersTabProps> = ({
 		setOffset(0);
 	};
 
-	const closeDeleteMemberHandler = useCallback(() => {
+	const closeDeleteMemberHandler = () => {
 		setIsOpenDeleteMemberDialog(false);
 		setMemberToDelete(null);
-	}, []);
+	};
 
-	const onDeleteMemberConfirm = useCallback(() => {
+	const onDeleteMemberConfirm = () => {
 		if (!memberToDelete) return;
 		setIsRequestInProgress(true);
 		removeMemberMutation
@@ -283,18 +273,7 @@ export const MembersTab: FC<MembersTabProps> = ({
 				setIsRequestInProgress(false);
 				closeDeleteMemberHandler();
 			});
-	}, [
-		memberToDelete,
-		selectedMailingList?.id,
-		dlm,
-		DLMPagedRows,
-		createSnackbar,
-		t,
-		closeDeleteMemberHandler,
-		form,
-		setIsRequestInProgress,
-		removeMemberMutation
-	]);
+	};
 
 	return (
 		<>
