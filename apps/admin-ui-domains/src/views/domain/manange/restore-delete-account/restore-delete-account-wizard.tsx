@@ -5,7 +5,7 @@
  */
 
 import { Button, Container, HorizontalWizard, Section } from '@zextras/ui-components';
-import { type FC, type ReactElement, useCallback, useEffect, useMemo, useState } from 'react';
+import { type FC, type ReactElement, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { type RestoreAccountRequestParams } from './restore-delete-account';
@@ -32,6 +32,22 @@ const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection
 	);
 };
 
+interface AccountDetailObj {
+  name: string;
+  id: string;
+  createDate: string;
+  status: string;
+  copyAccount: string;
+  dateTime: string | null;
+  lastAvailableStatus: boolean;
+  hsmApply: boolean;
+  dataSource: boolean;
+  isEmailNotificationEnable: boolean;
+  notificationReceiver: string;
+  copyDomain: string;
+  serverName: string;
+}
+
 const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
   restoreAccountRequest: (params: RestoreAccountRequestParams) => void;
@@ -39,22 +55,7 @@ const RestoreDeleteAccountWizard: FC<{
   onReset: () => void;
 }> = ({ setShowRestoreAccountWizard, restoreAccountRequest, isRequestWorkInProgress, onReset }) => {
   const { t } = useTranslation();
-  const [isRequestInProgress, setIsRequestInProgress] = useState<boolean>();
-  interface AccountDetailObj {
-    name: string;
-    id: string;
-    createDate: string;
-    status: string;
-    copyAccount: string;
-    dateTime: string | null;
-    lastAvailableStatus: boolean;
-    hsmApply: boolean;
-    dataSource: boolean;
-    isEmailNotificationEnable: boolean;
-    notificationReceiver: string;
-    copyDomain: string;
-    serverName: string;
-  }
+  const [isStartClicked, setIsStartClicked] = useState<boolean>();
   const [restoreAccountDetail, setRestoreAccountDetail] = useState<AccountDetailObj>({
     name: '',
     id: '',
@@ -71,152 +72,133 @@ const RestoreDeleteAccountWizard: FC<{
     serverName: '',
   });
 
-  const onRestoreAccount = useCallback(() => {
-    restoreAccountRequest({
-      id: restoreAccountDetail?.id,
-      createDate: restoreAccountDetail?.createDate,
-      copyAccount: restoreAccountDetail?.copyAccount,
-      dateTime: restoreAccountDetail?.dateTime,
-      hsmApply: restoreAccountDetail?.hsmApply,
-      notificationReceiver: restoreAccountDetail?.notificationReceiver,
-      isEmailNotificationEnable: restoreAccountDetail?.isEmailNotificationEnable,
-      copyDomain: restoreAccountDetail?.copyDomain,
-      serverName: restoreAccountDetail?.serverName,
-    });
-  }, [restoreAccountDetail, restoreAccountRequest]);
-
-  useEffect(() => {
-    if (isRequestWorkInProgress === false) {
-      setIsRequestInProgress(undefined);
-    }
-  }, [isRequestWorkInProgress]);
-
-  const wizardSteps = useMemo(
-    () => [
-      {
-        name: 'details',
-        label: t('label.select_an_account', 'Select An Account'),
-        icon: 'AtOutline',
-        view: RestoreSelectAccountSection,
-        canGoNext: (): any => restoreAccountDetail?.id !== '',
-        CancelButton: (props: any): ReactElement => (
-          <Button
-            {...props}
-            type="outlined"
-            key="wizard-cancel"
-            label={t('label.cancel', 'Cancel')}
-            color="secondary"
-            icon="CloseOutline"
-            iconPlacement="right"
-            onClick={onReset}
-          />
-        ),
-        PrevButton: () => <></>,
-        NextButton: (props: any) => (
-          <Button
-            {...props}
-            label={t('label.next', 'NEXT')}
-            icon="ChevronRightOutline"
-            iconPlacement="right"
-          />
-        ),
-      },
-      {
-        name: 'members',
-        label: t('label.config', 'Config'),
-        icon: 'OptionsOutline',
-        view: RestoreAccountConfigSection,
-        canGoNext: (): any => restoreAccountDetail?.copyAccount && restoreAccountDetail?.copyDomain,
-        CancelButton: (props: any): ReactElement => (
-          <Button
-            {...props}
-            type="outlined"
-            key="wizard-cancel"
-            label={t('label.cancel', 'Cancel')}
-            color="secondary"
-            icon="CloseOutline"
-            iconPlacement="right"
-            onClick={onReset}
-          />
-        ),
-        PrevButton: (props: any) => (
-          <Button
-            {...props}
-            label={t('label.back', 'BACK')}
-            icon="ChevronLeftOutline"
-            color="secondary"
-            iconPlacement="left"
-          />
-        ),
-        NextButton: (props: any) => (
-          <Button
-            {...props}
-            label={t('label.next', 'NEXT')}
-            icon="ChevronRightOutline"
-            iconPlacement="right"
-          />
-        ),
-      },
-      {
-        name: 'create',
-        label: t('label.start', 'start'),
-        icon: 'PowerOutline',
-        view: RestoreAccountStartSection,
-        CancelButton: (props: any): ReactElement => (
-          <Button
-            {...props}
-            type="outlined"
-            key="wizard-cancel"
-            label={t('label.cancel', 'Cancel')}
-            color="secondary"
-            icon="CloseOutline"
-            iconPlacement="right"
-            onClick={onReset}
-          />
-        ),
-        PrevButton: (props: any) => (
-          <Button
-            {...props}
-            label={t('label.back', 'BACK')}
-            icon="ChevronLeftOutline"
-            color="secondary"
-            iconPlacement="left"
-          />
-        ),
-        NextButton: (props: any) => (
-          <Button
-            {...props}
-            label={t('label.restore_account', 'Restore Account')}
-            icon="PowerOutline"
-            iconPlacement="right"
-            onClick={(): void => {
-              if (isRequestInProgress === undefined) {
-                setIsRequestInProgress(true);
-              }
-            }}
-            disabled={restoreAccountDetail?.name === '' || restoreAccountDetail?.copyAccount === ''}
-          />
-        ),
-      },
-    ],
-    [
-      t,
-      restoreAccountDetail?.id,
-      restoreAccountDetail?.copyAccount,
-      restoreAccountDetail?.copyDomain,
-      restoreAccountDetail?.name,
-      onReset,
-      isRequestInProgress,
-    ],
-  );
+  const isRequestInProgress = isRequestWorkInProgress === false ? undefined : isStartClicked;
 
   useEffect(() => {
     setTimeout(() => {
       if (!!isRequestInProgress && isRequestInProgress) {
-        onRestoreAccount();
+        restoreAccountRequest({
+          id: restoreAccountDetail?.id,
+          createDate: restoreAccountDetail?.createDate,
+          copyAccount: restoreAccountDetail?.copyAccount,
+          dateTime: restoreAccountDetail?.dateTime,
+          hsmApply: restoreAccountDetail?.hsmApply,
+          notificationReceiver: restoreAccountDetail?.notificationReceiver,
+          isEmailNotificationEnable: restoreAccountDetail?.isEmailNotificationEnable,
+          copyDomain: restoreAccountDetail?.copyDomain,
+          serverName: restoreAccountDetail?.serverName,
+        });
       }
     }, 500);
-  }, [isRequestInProgress, onRestoreAccount]);
+  }, [isRequestInProgress, restoreAccountDetail, restoreAccountRequest]);
+
+  const wizardSteps = [
+    {
+      name: 'details',
+      label: t('label.select_an_account', 'Select An Account'),
+      icon: 'AtOutline',
+      view: RestoreSelectAccountSection,
+      canGoNext: (): any => restoreAccountDetail?.id !== '',
+      CancelButton: (props: any): ReactElement => (
+        <Button
+          {...props}
+          type="outlined"
+          key="wizard-cancel"
+          label={t('label.cancel', 'Cancel')}
+          color="secondary"
+          icon="CloseOutline"
+          iconPlacement="right"
+          onClick={onReset}
+        />
+      ),
+      PrevButton: () => <></>,
+      NextButton: (props: any) => (
+        <Button
+          {...props}
+          label={t('label.next', 'NEXT')}
+          icon="ChevronRightOutline"
+          iconPlacement="right"
+        />
+      ),
+    },
+    {
+      name: 'members',
+      label: t('label.config', 'Config'),
+      icon: 'OptionsOutline',
+      view: RestoreAccountConfigSection,
+      canGoNext: (): any => restoreAccountDetail?.copyAccount && restoreAccountDetail?.copyDomain,
+      CancelButton: (props: any): ReactElement => (
+        <Button
+          {...props}
+          type="outlined"
+          key="wizard-cancel"
+          label={t('label.cancel', 'Cancel')}
+          color="secondary"
+          icon="CloseOutline"
+          iconPlacement="right"
+          onClick={onReset}
+        />
+      ),
+      PrevButton: (props: any) => (
+        <Button
+          {...props}
+          label={t('label.back', 'BACK')}
+          icon="ChevronLeftOutline"
+          color="secondary"
+          iconPlacement="left"
+        />
+      ),
+      NextButton: (props: any) => (
+        <Button
+          {...props}
+          label={t('label.next', 'NEXT')}
+          icon="ChevronRightOutline"
+          iconPlacement="right"
+        />
+      ),
+    },
+    {
+      name: 'create',
+      label: t('label.start', 'start'),
+      icon: 'PowerOutline',
+      view: RestoreAccountStartSection,
+      CancelButton: (props: any): ReactElement => (
+        <Button
+          {...props}
+          type="outlined"
+          key="wizard-cancel"
+          label={t('label.cancel', 'Cancel')}
+          color="secondary"
+          icon="CloseOutline"
+          iconPlacement="right"
+          onClick={onReset}
+        />
+      ),
+      PrevButton: (props: any) => (
+        <Button
+          {...props}
+          label={t('label.back', 'BACK')}
+          icon="ChevronLeftOutline"
+          color="secondary"
+          iconPlacement="left"
+        />
+      ),
+      NextButton: (props: any) => (
+        <Button
+          {...props}
+          label={t('label.restore_account', 'Restore Account')}
+          icon="PowerOutline"
+          iconPlacement="right"
+          onClick={(): void => {
+            if (isStartClicked === undefined) {
+              setIsStartClicked(true);
+            }
+          }}
+          disabled={restoreAccountDetail?.name === '' || restoreAccountDetail?.copyAccount === ''}
+        />
+      ),
+    },
+  ];
 
   return (
     <Container background="gray5" mainAlignment="flex-start">
