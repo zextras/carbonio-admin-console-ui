@@ -7,7 +7,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { searchDirectory } from '@zextras/ui-shared';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
@@ -67,90 +67,84 @@ export function useDistributionListsSearch(domainName: string | undefined) {
 		placeholderData: keepPreviousData
 	});
 
-	const mailingListStatusFilter: Array<{ label: string; value: string }> = useMemo(
-		() => [
-			{
-				label: t('domain.mailingList.canReceive', 'Can Receive'),
-				value: '(&(zimbraMailStatus=enabled))'
-			},
-			{
-				label: t('domain.mailingList.cantReceive', "Can't Receive"),
-				value: '(&(zimbraMailStatus=disabled))'
-			}
-		],
-		[t]
-	);
+	const mailingListStatusFilter: Array<{ label: string; value: string }> = [
+		{
+			label: t('domain.mailingList.canReceive', 'Can Receive'),
+			value: '(&(zimbraMailStatus=enabled))'
+		},
+		{
+			label: t('domain.mailingList.cantReceive', "Can't Receive"),
+			value: '(&(zimbraMailStatus=disabled))'
+		}
+	];
 
-	const headers: Array<any> = useMemo(
-		() => [
-			{
-				id: 'displayName',
-				label: t('label.display_name', 'DisplayName'),
-				width: '20%',
-				bold: true,
-				sortable: true,
-				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-					setSortOrder(order);
-					setSortedColumn(id);
-				}
-			},
-			{
-				id: 'name',
-				label: t('label.address', 'Address'),
-				width: '20%',
-				bold: true,
-				sortable: true,
-				onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
-					setSortOrder(order);
-					setSortedColumn(id);
-				}
-			},
-			{
-				id: 'status',
-				label: t('label.status', 'Status'),
-				width: '15%',
-				i18nAllLabel: t('label.all', 'All'),
-				bold: true,
-				items: [
-					{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
-					{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
-				],
-				onChange: (e: any) => {
-					if (e?.length > 0) {
-						let statusQuery = '';
-						e.forEach((item: { value: string }) => {
-							statusQuery += item.value;
-						});
-						if (e?.length > 1) {
-							statusQuery = `(|${statusQuery})`;
-						}
-						setStatusFilter(statusQuery);
-					} else {
-						setStatusFilter('');
-					}
-				}
-			},
-			{
-				id: 'dynamic',
-				label: t('label.dynamic', 'Dynamic'),
-				width: '7%',
-				bold: true
-			},
-			{
-				id: 'gal',
-				label: t('label.gal', 'GAL'),
-				width: '7%',
-				bold: true
-			},
-			{
-				id: 'description',
-				label: t('label.description', 'Description'),
-				width: '15%',
-				bold: true
+	const headers: Array<any> = [
+		{
+			id: 'displayName',
+			label: t('label.display_name', 'DisplayName'),
+			width: '20%',
+			bold: true,
+			sortable: true,
+			onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+				setSortOrder(order);
+				setSortedColumn(id);
 			}
-		],
-		[mailingListStatusFilter, t]
-	);
+		},
+		{
+			id: 'name',
+			label: t('label.address', 'Address'),
+			width: '20%',
+			bold: true,
+			sortable: true,
+			onSortChange: (id: string, order: typeof ASC | typeof DESC): void => {
+				setSortOrder(order);
+				setSortedColumn(id);
+			}
+		},
+		{
+			id: 'status',
+			label: t('label.status', 'Status'),
+			width: '15%',
+			i18nAllLabel: t('label.all', 'All'),
+			bold: true,
+			items: [
+				{ label: mailingListStatusFilter[0].label, value: mailingListStatusFilter[0].value },
+				{ label: mailingListStatusFilter[1].label, value: mailingListStatusFilter[1].value }
+			],
+			onChange: (e: any) => {
+				if (e?.length > 0) {
+					let statusQuery = '';
+					e.forEach((item: { value: string }) => {
+						statusQuery += item.value;
+					});
+					if (e?.length > 1) {
+						statusQuery = `(|${statusQuery})`;
+					}
+					setStatusFilter(statusQuery);
+				} else {
+					setStatusFilter('');
+				}
+			}
+		},
+		{
+			id: 'dynamic',
+			label: t('label.dynamic', 'Dynamic'),
+			width: '7%',
+			bold: true
+		},
+		{
+			id: 'gal',
+			label: t('label.gal', 'GAL'),
+			width: '7%',
+			bold: true
+		},
+		{
+			id: 'description',
+			label: t('label.description', 'Description'),
+			width: '15%',
+			bold: true
+		}
+	];
 
 	return {
 		lists: listsQuery.data?.dl ?? [],
