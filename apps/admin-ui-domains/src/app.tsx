@@ -79,7 +79,7 @@ const App: FC = () => {
 
   useEffect(() => {
     const actionConfig = {
-      action: (): any => ({
+      action: () => ({
         id: 'new-domain',
         label: t('label.create_new_domain', 'Create New Domain'),
         icon: '',

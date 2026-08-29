@@ -5,7 +5,7 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { Container, Input, Padding, Row } from '@zextras/ui-components';
-import { FC, useContext, useState } from 'react';
+import { ChangeEvent, FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useQueryErrorSnackbar } from '../../../../hooks/use-query-error-snackbar';
@@ -25,12 +25,16 @@ const RestoreDeleteAccountConfigSection: FC = () => {
   );
   const [searchDomainName, setSearchDomainName] = useState('');
 
-  const handleChange = (domainNameInput: string | any) => {
+  const handleChange = (domainNameInput: ChangeEvent<HTMLDivElement, Element>) => {
     setSearchDomainNameInput(domainNameInput);
     setSearchDomainName('');
   };
 
-  const { data: domainSearchData, error: domainSearchError, isPending } = useQuery({
+  const {
+    data: domainSearchData,
+    error: domainSearchError,
+    isPending,
+  } = useQuery({
     queryKey: restoreDomainListQueryKeys.search(searchDomainName),
     queryFn: () => getDomainList(searchDomainName, 0),
   });
