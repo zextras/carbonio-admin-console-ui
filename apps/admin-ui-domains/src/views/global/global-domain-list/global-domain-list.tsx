@@ -49,6 +49,10 @@ const DOMAIN_LIST_HEADERS = [
   },
 ] as const;
 
+const DomainSearchFilterIcon = (): React.ReactElement => (
+  <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
+);
+
 export const GlobalDomainList = () => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -145,9 +149,7 @@ export const GlobalDomainList = () => {
                     setSearchString(e.target.value);
                     setOffset(0);
                   }}
-                  CustomIcon={(): React.ReactElement => (
-                    <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
-                  )}
+                  CustomIcon={DomainSearchFilterIcon}
                 />
               </Container>
             </Row>
