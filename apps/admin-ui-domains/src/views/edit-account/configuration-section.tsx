@@ -24,7 +24,15 @@ import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import { chipsToValue, useChipList } from './use-chip-list';
 
-function createMailTransportTooltipIcon(label: string): React.ComponentType {
+type MailTransportTooltipIconProps = {
+  hasError: boolean;
+  hasFocus: boolean;
+  disabled: boolean;
+};
+
+function createMailTransportTooltipIcon(
+  label: string,
+): React.ComponentType<MailTransportTooltipIconProps> {
   return function MailTransportTooltipIcon() {
     return (
       <Tooltip placement="top" label={label}>
