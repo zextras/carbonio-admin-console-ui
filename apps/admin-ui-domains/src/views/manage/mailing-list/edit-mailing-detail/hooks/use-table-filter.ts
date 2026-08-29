@@ -18,15 +18,15 @@ export function useTableFilter(sourceRows: Array<any>): UseTableFilterReturn {
 
   const handleFilterChange = (e: ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value;
-    if (value !== '') {
+    if (value === '') {
+      setFilterValue('');
+      setFilteredRows(sourceRows);
+    } else {
       setFilterValue(value);
       const filtered = sourceRows.filter((item: any) =>
         item?.id?.toLowerCase().includes(value.toLowerCase()),
       );
       setFilteredRows(filtered);
-    } else {
-      setFilterValue('');
-      setFilteredRows(sourceRows);
     }
   };
 
