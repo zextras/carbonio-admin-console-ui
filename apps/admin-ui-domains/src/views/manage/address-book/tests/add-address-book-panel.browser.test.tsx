@@ -336,7 +336,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		await userEvent.click(page.getByRole('button', { name: 'Add' }));
 
 		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
-		expect(onClose).toHaveBeenCalledOnce();
+		await expect.poll(() => onClose.mock.calls.length).toBe(1);
 		await expect
 			.poll(() =>
 				capturedActions.some((action) => action.action === 'AddAddressBookCommand'),
