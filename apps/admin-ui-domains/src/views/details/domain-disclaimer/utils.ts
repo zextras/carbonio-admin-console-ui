@@ -27,7 +27,7 @@ type DomainAttribute = { n: string; _content?: string };
 const LONG_LINE_REGEX = /(.{997})/g;
 
 function wrapLongLines(content: string): string {
-  return content.replace(LONG_LINE_REGEX, '$1\n');
+  return content.replaceAll(LONG_LINE_REGEX, '$1\n');
 }
 
 export function normalizeDisclaimerText(text: string): string {
