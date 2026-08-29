@@ -24,6 +24,18 @@ import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import { chipsToValue, useChipList } from './use-chip-list';
 
+function createMailTransportTooltipIcon(label: string): React.ComponentType {
+  return function MailTransportTooltipIcon() {
+    return (
+      <Tooltip placement="top" label={label}>
+        <ds-text as="span">
+          <ds-icon icon="InfoOutline" size="large" color="secondary"></ds-icon>
+        </ds-text>
+      </Tooltip>
+    );
+  };
+}
+
 export const EditAccountConfigurationSection = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
   const setAccountValues = useSetAccountValues();
@@ -204,18 +216,11 @@ export const EditAccountConfigurationSection = () => {
             label={t('label.mail_transport_map', 'Mail Transport Map')}
             backgroundColor="gray5"
             value={values?.zimbraMailTransport || ''}
-            CustomIcon={(): React.ReactElement => (
-              <Tooltip
-                placement="top"
-                label={`${t('label.format', 'Format')} :  ${t(
-                  'label.protocol_server_port',
-                  'protocol:server:port',
-                )}${` | `}:${` lmtp:server.demo.zextras.io:7025`}`}
-              >
-                <ds-text as="span">
-                  <ds-icon icon="InfoOutline" size="large" color="secondary"></ds-icon>
-                </ds-text>
-              </Tooltip>
+            CustomIcon={createMailTransportTooltipIcon(
+              `${t('label.format', 'Format')} :  ${t(
+                'label.protocol_server_port',
+                'protocol:server:port',
+              )} | : lmtp:server.demo.zextras.io:7025`,
             )}
           />
         </Row>
