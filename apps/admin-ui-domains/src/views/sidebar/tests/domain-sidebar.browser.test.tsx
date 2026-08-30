@@ -309,6 +309,35 @@ describe('DomainSidebar', () => {
     });
   });
 
+  describe('Global section toggling', () => {
+    it('should collapse global items when Global header is clicked', async () => {
+      await setupBrowserTest(<DomainSidebar />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await expect.element(page.getByText('Settings', { exact: true })).toBeVisible();
+
+      await page.getByText('Global', { exact: true }).click();
+
+      expect(page.getByText('Settings', { exact: true }).elements()).toHaveLength(0);
+    });
+
+    it('should restore global items when Global header is clicked again', async () => {
+      await setupBrowserTest(<DomainSidebar />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
+      });
+
+      await page.getByText('Global', { exact: true }).click();
+      expect(page.getByText('Settings', { exact: true }).elements()).toHaveLength(0);
+
+      await page.getByText('Global', { exact: true }).click();
+      await expect.element(page.getByText('Settings', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Administrators')).toBeVisible();
+    });
+  });
+
   describe('Domain search', () => {
     it('should populate the search input with the domain name on initial load', async () => {
       queryClient.setQueryData(['domain', 'by-id', DOMAIN_ID, 1], {
