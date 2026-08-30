@@ -9,8 +9,8 @@ import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import { RestoreDeleteAccountContext } from '../restore-delete-account-context';
 import { RestoreDeleteAccountConfigSection } from '../restore-delete-account-config-section';
+import { RestoreDeleteAccountContext } from '../restore-delete-account-context';
 
 type SearchDirectoryParams = { query?: { _content?: string } };
 
@@ -33,7 +33,7 @@ const ConfigSectionHarness = () => {
 };
 
 function setupSearchDirectoryInterceptor(searchTotal: number): Promise<SearchDirectoryParams> {
-	return createBrowserSoapAPIInterceptor<SearchDirectoryParams>('SearchDirectory', {
+	return createBrowserSoapAPIInterceptor('SearchDirectory', {
 		domain: [{ id: 'd1', name: 'example.com', a: [] }],
 		searchTotal,
 		more: false
