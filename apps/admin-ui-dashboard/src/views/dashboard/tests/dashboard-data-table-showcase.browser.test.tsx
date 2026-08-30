@@ -66,4 +66,18 @@ describe('DashboardDataTableShowcase', () => {
     await expect.element(page.getByRole('cell', { name: 'Error' })).toBeVisible();
     await expect.element(page.getByRole('cell', { name: 'Warning' })).toBeVisible();
   });
+
+  it('opens the notification detail modal with the message when a row is clicked', async () => {
+    await setupShowcaseTest();
+    await userEvent.click(
+      page.getByRole('cell', { name: 'Mailbox quota exceeded', exact: true }),
+    );
+    await expect
+      .element(page.getByRole('heading', { name: /Notification Details/ }))
+      .toBeVisible();
+    await userEvent.click(page.getByTestId('icon: CloseOutline'));
+    expect((await page.getByRole('heading', { name: /Notification Details/ }).all()).length).toBe(
+      0,
+    );
+  });
 });
