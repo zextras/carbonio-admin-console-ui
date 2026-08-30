@@ -61,6 +61,7 @@ const DataTable = <TData extends RowData,>({
 	onColumnPinningChange,
 	onRowPinningChange,
 	onExpandedChange,
+	onGroupingChange,
 	onCellSelectionChange,
 	manualPagination,
 	manualSorting,
@@ -125,6 +126,7 @@ const DataTable = <TData extends RowData,>({
 			onColumnPinningChange,
 			onRowPinningChange,
 			onExpandedChange,
+			onGroupingChange,
 			onCellSelectionChange,
 			onRowSelectionChange:
 				onRowSelectionChange || onSelectionChange

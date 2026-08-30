@@ -29,6 +29,7 @@ import {
 } from '../../constants';
 import { useServerVersion } from '../../hooks/use-server-version';
 import { CarbonioVersionInformation } from './carbonio-version-information-view';
+import { DashboardDataTableShowcase } from './dashboard-data-table-showcase';
 import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
 import styles from './dashboard-view.module.css';
@@ -94,6 +95,11 @@ export const Dashboard = () => {
             <ListRow>
               <div className={styles.notificationCol}>
                 <DashboardNotification goToMailNotification={goToMailNotification} />
+              </div>
+            </ListRow>
+            <ListRow>
+              <div className={styles.notificationCol}>
+                <DashboardDataTableShowcase />
               </div>
             </ListRow>
           </div>
