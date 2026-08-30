@@ -29,7 +29,7 @@ import {
 import { useTranslation } from 'react-i18next';
 
 import { LDAP, LDAP_QUERY, TRUE } from '../../../../constants';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../../utils/generate-snackbar-error';
 import { isValidLdapQuery } from '../../../utility/utils';
 import { FilterColumnIcon } from '../filter-column-icon';
 import { MailingListContext } from './mailinglist-context';

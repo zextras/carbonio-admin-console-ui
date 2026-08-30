@@ -1,13 +1,13 @@
-import { type CreateSnackbarFnArgs } from '@zextras/ui-components';
-import { TFunction } from 'i18next';
-
-import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
-
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { type CreateSnackbarFnArgs } from '@zextras/ui-components';
+import { TFunction } from 'i18next';
+
+import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../constants';
+
 export function resolveErrorLabel(error: unknown, t: TFunction, fallback?: string): string {
 	const message = typeof error === 'string' ? error : (error as Error | undefined)?.message;
 

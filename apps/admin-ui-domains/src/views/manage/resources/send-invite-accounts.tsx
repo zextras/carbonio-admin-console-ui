@@ -24,7 +24,7 @@ import { useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../utils/generate-snackbar-error';
 import { isValidEmail } from '../../utility/utils';
 
 type SendInviteItem = { id: string; n: string; _content: string };

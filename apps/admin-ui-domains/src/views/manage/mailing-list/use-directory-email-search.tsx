@@ -11,7 +11,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../utils/generate-snackbar-error';
 import { useDebouncedValue } from './edit-mailing-detail/hooks/use-debounced-value';
 
 export type DirectorySearchConfig = {

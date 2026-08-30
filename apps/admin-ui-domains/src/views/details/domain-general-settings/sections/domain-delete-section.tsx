@@ -23,7 +23,7 @@ import { useBatchDeleteDomainContents } from '../../../../services/use-batch-del
 import { useCollectDomainDirectories } from '../../../../services/use-collect-domain-directories';
 import { useDeleteDomain } from '../../../../services/use-delete-domain';
 import { useModifyDomain } from '../../../../services/use-modify-domain';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../../utils/generate-snackbar-error';
 
 type DomainDeleteSectionProps = {
   domainId: string;

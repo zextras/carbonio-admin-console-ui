@@ -12,7 +12,7 @@ import type { TFunction } from 'i18next';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { resolveErrorLabel } from '../views/error/generate-snackbar-error';
+import { resolveErrorLabel } from '../utils/generate-snackbar-error';
 
 type UseQueryErrorSnackbarOptions = {
   /** Snackbar key; defaults to 'error' */

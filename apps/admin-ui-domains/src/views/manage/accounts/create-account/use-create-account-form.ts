@@ -14,7 +14,7 @@ import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import type { TotpGenerateResponse } from '../../../../services/otp-service';
 import { useCreateAccount } from '../../../../services/use-create-account';
 import { useGenerateTotp } from '../../../../services/use-otp-mutations';
-import { generateSnackbarFromError } from '../../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../../utils/generate-snackbar-error';
 import type { AccountRowItem } from '../account-row';
 import { getEffectiveUserName } from './auto-fill-utils';
 import { CREATE_ACCOUNT_DEFAULT_VALUES } from './create-account-constants';

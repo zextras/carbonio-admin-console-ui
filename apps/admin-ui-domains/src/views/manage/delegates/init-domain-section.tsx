@@ -13,7 +13,7 @@ import { parseCosMaxAccounts } from '../../../services/grant-cos-rights';
 import { useGrantAllCosRights } from '../../../services/use-grant-cos-rights';
 import { useInitDomainForDelegation } from '../../../services/use-init-domain-for-delegation';
 import { useInitializedDomains } from '../../../services/use-initialized-domains';
-import { generateSnackbarFromError } from '../../error/generate-snackbar-error';
+import { generateSnackbarFromError } from '../../../utils/generate-snackbar-error';
 import styles from './delegates.module.css';
 
 type InitDomainSectionProps = {

@@ -7,7 +7,7 @@
 import { type TFunction } from 'i18next';
 import { describe, expect, it } from 'vitest';
 
-import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../../constants';
+import { TOO_MANY_SEARCH_RESULTS_ERROR } from '../../constants';
 import { generateSnackbarFromError, resolveErrorLabel } from '../generate-snackbar-error';
 
 const t = ((_key: string, fallback?: string) => fallback ?? _key) as TFunction;
