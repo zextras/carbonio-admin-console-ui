@@ -16,9 +16,9 @@ function getStickyColumnStyle<TData extends RowData>(
 	if (!pinnedPosition) {
 		return {};
 	}
-	return pinnedPosition === 'left'
-		? { left: column.getStart('left') }
-		: { right: column.getAfter('right') };
+	return pinnedPosition === 'start'
+		? { left: column.getStart('start') }
+		: { right: column.getAfter('end') };
 }
 
 export { getStickyColumnStyle };
