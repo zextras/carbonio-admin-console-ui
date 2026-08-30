@@ -58,11 +58,13 @@ export function buildAdminGroupRows(
 	}));
 }
 
+/** Tags the add/remove member mutations so `useIsMutating` can track them. */
+export const ADMIN_RIGHTS_MUTATION_SCOPE = 'admin-rights';
+
 type AdminRightsSectionProps = {
 	accountId: string;
 	accountName: string;
 	adminGroups: Array<AdminGroup>;
-	onLoadingChange: (isLoading: boolean) => void;
 };
 
 /**
@@ -74,7 +76,6 @@ export const AdminRightsSection = ({
 	accountId,
 	accountName,
 	adminGroups,
-	onLoadingChange,
 }: AdminRightsSectionProps) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -85,8 +86,8 @@ export const AdminRightsSection = ({
 	const [sendSelectedRows, setSendSelectedRows] = useState<Array<string>>([]);
 	const [distributionList, setDistributionList] = useState<any>([]);
 
-	const addMutation = useAddDistributionListMember(accountId);
-	const removeMutation = useRemoveDistributionListMember(accountId);
+	const addMutation = useAddDistributionListMember(accountId, ADMIN_RIGHTS_MUTATION_SCOPE);
+	const removeMutation = useRemoveDistributionListMember(accountId, ADMIN_RIGHTS_MUTATION_SCOPE);
 
 	const debouncedDomain = useDebouncedValue(searchDomainName, 700);
 	const { data: domainsData } = useInitializedDomains(debouncedDomain ?? '', !isDomainSelect);
@@ -175,7 +176,6 @@ export const AdminRightsSection = ({
 	}));
 
 	const onAdd = (): void => {
-		onLoadingChange(true);
 		addMutation.mutateAsync(
 			{
 				listId: selectedOption.value,
@@ -189,11 +189,9 @@ export const AdminRightsSection = ({
 							'Changes have been saved successfully',
 						),
 					);
-					onLoadingChange(false);
 				},
 				onError: (): void => {
 					errorSnackbar();
-					onLoadingChange(false);
 				},
 			},
 		);
@@ -201,7 +199,6 @@ export const AdminRightsSection = ({
 
 	const onDeleteFromList = (lists: any, type: string): void => {
 		if (lists?.length > 0) {
-			onLoadingChange(true);
 			const entries = lists.map((item: any) =>
 				type === 'all'
 					? { listId: item.id, member: accountName }
@@ -215,11 +212,9 @@ export const AdminRightsSection = ({
 							'Right for selected user deleted successfully',
 						),
 					);
-					onLoadingChange(false);
 				})
 				.catch(() => {
 					errorSnackbar();
-					onLoadingChange(false);
 				});
 		}
 		setSendSelectedRows([]);

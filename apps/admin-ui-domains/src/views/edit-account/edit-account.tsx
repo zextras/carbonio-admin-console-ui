@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useIsMutating } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Button, RouteLeavingGuard, TabBar } from '@zextras/ui-components';
 import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
@@ -24,6 +25,7 @@ import { useDomainQuota } from '../../services/use-domain-quota';
 import { AccountFormContext } from './account-form-context';
 import { useAccountFormProvider } from './account-form-provider';
 import { EditAccountAdministrationSection } from './administration-section';
+import { ADMIN_RIGHTS_MUTATION_SCOPE } from './administration-section/admin-rights-section';
 import { EditAccountConfigurationSection } from './configuration-section';
 import EditAccountContactsSection from './contacts-section';
 import { EditAccountDelegatesSection } from './delegates-section/delegates-section';
@@ -73,7 +75,14 @@ export const EditAccount = ({
   const [showModal, setShowModal] = useState(false);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
   const [isOpenDeleteHintModel, setIsOpenDeleteHintModel] = useState(false);
-  const [isSectionLoading, setIsSectionLoading] = useState(false);
+
+  const adminRightsAddPending = useIsMutating({
+    mutationKey: ['distribution-list-member-add', ADMIN_RIGHTS_MUTATION_SCOPE],
+  });
+  const adminRightsRemovePending = useIsMutating({
+    mutationKey: ['distribution-list-member-remove', ADMIN_RIGHTS_MUTATION_SCOPE],
+  });
+  const isSectionLoading = adminRightsAddPending + adminRightsRemovePending > 0;
 
   const { domainId } = useParams();
   const { data: quotaData } = useDomainQuota(domainId);
@@ -226,7 +235,7 @@ export const EditAccount = ({
           {change === SECURITY && <EditAccountSecuritySection />}
           {change === DELEGATES && <EditAccountDelegatesSection />}
           {change === ADMINISTRATION && (
-            <EditAccountAdministrationSection onLoadingChange={setIsSectionLoading} />
+            <EditAccountAdministrationSection />
           )}
         </div>
       </div>

@@ -17,13 +17,7 @@ import {
 	filterAdminGroups,
 } from './administration-section/admin-rights-section';
 
-type EditAccountAdministrationSectionProps = {
-  onLoadingChange: (isLoading: boolean) => void;
-};
-
-export const EditAccountAdministrationSection = ({
-  onLoadingChange,
-}: EditAccountAdministrationSectionProps) => {
+export const EditAccountAdministrationSection = () => {
   const { form, account, savedValues } = useAccountForm();
   const setAccountValues = useSetAccountValues();
   const toggleAccountValue = useToggleAccountValue();
@@ -102,7 +96,6 @@ export const EditAccountAdministrationSection = ({
             accountId={account.id}
             accountName={accountDetail?.name}
             adminGroups={adminGroups}
-            onLoadingChange={onLoadingChange}
           />
         )}
       </Row>
