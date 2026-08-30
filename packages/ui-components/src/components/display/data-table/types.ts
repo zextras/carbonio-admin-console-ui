@@ -14,6 +14,7 @@ import type {
 	ExpandedState,
 	OnChangeFn,
 	PaginationState,
+	Row,
 	RowData,
 	RowPinningState,
 	RowSelectionState,
@@ -38,7 +39,7 @@ type DataTableProps<TData extends RowData> = Omit<
 	enableColumnFilters?: boolean;
 	enableGlobalFilter?: boolean;
 	enablePagination?: boolean;
-	enableRowSelection?: boolean | ((row: TData) => boolean);
+	enableRowSelection?: boolean | ((row: Row<DataTableFeatures, TData>) => boolean);
 	enableMultiRowSelection?: boolean;
 	enableSubRowSelection?: boolean;
 	enableExpanding?: boolean;
@@ -46,9 +47,7 @@ type DataTableProps<TData extends RowData> = Omit<
 	enableColumnPinning?: boolean;
 	enableRowPinning?: boolean;
 	enableColumnResizing?: boolean;
-	enableColumnOrdering?: boolean;
 	enableColumnVisibility?: boolean;
-	enableFaceting?: boolean;
 	enableCellSelection?: boolean;
 	enableCellSpanning?: boolean;
 	getRowId?: (row: TData, index: number) => string;
