@@ -11,7 +11,7 @@ const DataTableFooter = () => {
 	const table = useDataTableContext();
 
 	return (
-		<table.Subscribe>
+		<table.Subscribe selector={(state) => state}>
 			{() => {
 				const hasFooters = table
 					.getAllLeafColumns()

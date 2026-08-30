@@ -8,10 +8,9 @@ import type { RowData } from '@tanstack/react-table';
 
 import { createDataTableColumnHelper } from './create-data-table';
 import styles from './data-table.module.css';
+import type { DataTableColumnDef } from './types';
 
 const SELECTION_COLUMN_ID = 'data-table-select';
-
-const helper = createDataTableColumnHelper();
 
 function setIndeterminate(element: HTMLInputElement | null, indeterminate: boolean): void {
 	if (element) {
@@ -22,7 +21,8 @@ function setIndeterminate(element: HTMLInputElement | null, indeterminate: boole
 function buildSelectionColumn<TData extends RowData>(i18n?: {
 	selectAllLabel?: string;
 	selectRowLabel?: string;
-}) {
+}): DataTableColumnDef<TData> {
+	const helper = createDataTableColumnHelper<TData>();
 	return helper.display({
 		id: SELECTION_COLUMN_ID,
 		size: 40,
