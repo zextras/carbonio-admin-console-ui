@@ -19,7 +19,8 @@ const SORT_ICONS = {
 const SortIndicator = ({ direction }: SortIndicatorProps) => (
 	<ds-icon
 		icon={direction ? SORT_ICONS[direction] : SORT_ICONS.none}
-		size="small"
+		size="large"
+		color={direction ? 'primary' : 'gray1'}
 		aria-hidden="true"
 	/>
 );
