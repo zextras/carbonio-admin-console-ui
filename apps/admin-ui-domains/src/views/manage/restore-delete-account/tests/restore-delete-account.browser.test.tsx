@@ -36,6 +36,8 @@ import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { RestoreDeleteAccount } from '../restore-delete-account';
+import { RestoreDeleteAccountContext } from '../restore-delete-account-context';
+import RestoreDeleteAccountStartSection from '../restore-delete-account-start-section';
 
 function mockRestoreEndpoint(response: Record<string, unknown>): void {
 	worker.use(
@@ -70,5 +72,87 @@ describe('RestoreDeleteAccount (browser)', () => {
 		await page.getByRole('button', { name: 'Trigger restore' }).click();
 
 		await expect.element(page.getByText('backup server unreachable')).toBeVisible();
+	});
+});
+
+describe('RestoreDeleteAccountStartSection (browser)', () => {
+	const fullRestoreAccountDetail = {
+		name: 'deleted@example.com',
+		createDate: '2025-06-15T10:00:00',
+		copyAccount: 'restored@example.com',
+		copyDomain: 'backup-example.com',
+		dateTime: '2026-01-20T15:30:10',
+		lastAvailableStatus: true,
+		hsmApply: true,
+		notificationReceiver: 'admin@example.com',
+		isEmailNotificationEnable: true,
+		serverName: 'server-1',
+	};
+
+	const emptyRestoreAccountDetail = {
+		name: '',
+		createDate: '',
+		copyAccount: '',
+		copyDomain: '',
+		dateTime: null,
+		lastAvailableStatus: false,
+		hsmApply: false,
+		notificationReceiver: '',
+		isEmailNotificationEnable: false,
+		serverName: '',
+	};
+
+	function renderStartSection(restoreAccountDetail: Record<string, unknown> | null) {
+		return setupBrowserTest(
+			<RestoreDeleteAccountContext.Provider
+				value={{ restoreAccountDetail, setRestoreAccountDetail: vi.fn() }}
+			>
+				<RestoreDeleteAccountStartSection />
+			</RestoreDeleteAccountContext.Provider>,
+		);
+	}
+
+	async function expectSummaryLabelsVisible(): Promise<void> {
+		await expect.element(page.getByText('Account', { exact: true })).toBeVisible();
+		await expect.element(page.getByText('Destination Account')).toBeVisible();
+		await expect.element(page.getByText('Use last available status')).toBeVisible();
+		await expect.element(page.getByText('Date & Hour')).toBeVisible();
+		await expect
+			.element(page.getByText('Apply HSM Policies after the restore'))
+			.toBeVisible();
+		await expect.element(page.getByText('Email Notifications')).toBeVisible();
+	}
+
+	it('renders all the summary labels when the detail is fully populated', async () => {
+		await renderStartSection(fullRestoreAccountDetail);
+
+		await expectSummaryLabelsVisible();
+	});
+
+	it('renders the summary with the wizard default empty detail', async () => {
+		await renderStartSection(emptyRestoreAccountDetail);
+
+		await expectSummaryLabelsVisible();
+	});
+
+	it('renders without crashing when the detail is missing', async () => {
+		await renderStartSection(null);
+
+		await expectSummaryLabelsVisible();
+	});
+
+	it('falls back to the account creation date when the selected date is earlier', async () => {
+		await renderStartSection({
+			...fullRestoreAccountDetail,
+			dateTime: '2024-01-01T00:00:00',
+		});
+
+		await expectSummaryLabelsVisible();
+	});
+
+	it('renders the summary when no date and hour is selected', async () => {
+		await renderStartSection({ ...fullRestoreAccountDetail, dateTime: null });
+
+		await expectSummaryLabelsVisible();
 	});
 });
