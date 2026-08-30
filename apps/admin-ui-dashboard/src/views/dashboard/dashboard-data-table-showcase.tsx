@@ -204,53 +204,49 @@ export const DashboardDataTableShowcase = () => {
 						columnPinning: { start: ['subject'], end: [] },
 					}}
 					toolbar={
-						<div className={styles.toolbarRows}>
-							<div className={styles.toolbarRow}>
-								<DataTableGlobalFilter />
-								<Select
-									className={styles.levelFilter}
-									items={[
-										{ label: t('notification.all', 'ALL'), value: NOTIFICATION_ALL },
-										{ label: t('notification.information', 'INFORMATION'), value: 'Information' },
-										{ label: t('notification.warning', 'WARNING'), value: 'Warning' },
-										{ label: t('notification.error', 'ERROR'), value: 'Error' },
-									]}
-									defaultSelection={{
-										label: t('notification.all', 'ALL'),
-										value: NOTIFICATION_ALL,
-									}}
-									background="gray5"
-									showCheckbox={false}
-									itemTextSize="medium"
-									aria-label={t('label.filter_by_type', 'Filter by type')}
-									onChange={(value) => {
-										setColumnFilters(
-											value && value !== NOTIFICATION_ALL
-												? [{ id: 'level', value }]
-												: [],
-										);
-									}}
-								/>
-								<Button
-									type="ghost"
-									color="primary"
-									size="medium"
-									label={t('label.group_by_type', 'Group by type')}
-									onClick={() => {
-										setGrouping(grouping.length > 0 ? [] : ['level']);
-									}}
-								/>
-								<div className={styles.toolbarSpacer} />
-								{selectedCount > 0 && (
-									<span className={styles.selectedChip}>
-										{t('label.n_selected', '{{count}} selected', { count: selectedCount })}
-									</span>
-								)}
-								<DataTableColumnVisibility />
-							</div>
-							<div className={styles.toolbarRow}>
-								<DataTablePagination />
-							</div>
+						<div className={styles.toolbarRow}>
+							<DataTableGlobalFilter />
+							<Select
+								className={styles.levelFilter}
+								items={[
+									{ label: t('notification.all', 'ALL'), value: NOTIFICATION_ALL },
+									{ label: t('notification.information', 'INFORMATION'), value: 'Information' },
+									{ label: t('notification.warning', 'WARNING'), value: 'Warning' },
+									{ label: t('notification.error', 'ERROR'), value: 'Error' },
+								]}
+								defaultSelection={{
+									label: t('notification.all', 'ALL'),
+									value: NOTIFICATION_ALL,
+								}}
+								background="gray5"
+								showCheckbox={false}
+								itemTextSize="medium"
+								aria-label={t('label.filter_by_type', 'Filter by type')}
+								onChange={(value) => {
+									setColumnFilters(
+										value && value !== NOTIFICATION_ALL
+											? [{ id: 'level', value }]
+											: [],
+									);
+								}}
+							/>
+							<Button
+								type="ghost"
+								color="primary"
+								size="medium"
+								label={t('label.group_by_type', 'Group by type')}
+								onClick={() => {
+									setGrouping(grouping.length > 0 ? [] : ['level']);
+								}}
+							/>
+							<div className={styles.toolbarSpacer} />
+							{selectedCount > 0 && (
+								<span className={styles.selectedChip}>
+									{t('label.n_selected', '{{count}} selected', { count: selectedCount })}
+								</span>
+							)}
+							<DataTableColumnVisibility />
+							<DataTablePagination />
 						</div>
 					}
 				/>
