@@ -339,7 +339,7 @@ const findAttachments = (
     },
     acc,
   );
-const MailMessageRenderer: FC<{ mailMsg: IncompleteMessage }> = ({ mailMsg }) => {
+export const MailMessageRenderer: FC<{ mailMsg: IncompleteMessage }> = ({ mailMsg }) => {
   const parts = findAttachments(mailMsg.parts ?? [], []);
 
   if (!mailMsg.body?.content?.length && !mailMsg.fragment) {
@@ -362,4 +362,3 @@ const MailMessageRenderer: FC<{ mailMsg: IncompleteMessage }> = ({ mailMsg }) =>
   }
   return <EmptyBody />;
 };
-export default MailMessageRenderer;

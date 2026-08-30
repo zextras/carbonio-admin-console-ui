@@ -14,9 +14,9 @@ import type { TFunction } from 'i18next';
 import { ComponentProps, ComponentType, ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import CreateOtpSectionView from './account-otp-section';
+import { AccountOtpSection } from './account-otp-section';
 import styles from './create-account.module.css';
-import CreateAccountDetailSection from './create-account-detail-section';
+import { CreateAccountDetailSection } from './create-account-detail-section';
 import { CreateAccountFormContext } from './create-account-form-context';
 import type { CreateAccountProps } from './create-account-types';
 import { useCreateAccountForm } from './use-create-account-form';
@@ -110,7 +110,7 @@ function createWizardSteps({
       name: 'otp',
       label: t('label.otp', 'OTP'),
       icon: 'KeyOutline',
-      view: CreateOtpSectionView,
+      view: AccountOtpSection,
       clickDisabled: true,
       CancelButton: EmptyButton,
       PrevButton: OtpPrevButton,
@@ -119,7 +119,7 @@ function createWizardSteps({
   ];
 }
 
-const CreateAccount = (props: CreateAccountProps) => {
+export const CreateAccount = (props: CreateAccountProps) => {
   const { t } = useTranslation();
   const isAdvanced = useIsAdvanced();
   const {
@@ -179,4 +179,3 @@ const CreateAccount = (props: CreateAccountProps) => {
     </>
   );
 };
-export default CreateAccount;

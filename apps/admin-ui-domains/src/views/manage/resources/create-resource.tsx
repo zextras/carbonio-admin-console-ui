@@ -232,5 +232,3 @@ export const CreateResource = ({ onClose }: CreateResourceProps) => {
     </Container>
   );
 };
-
-export default CreateResource;

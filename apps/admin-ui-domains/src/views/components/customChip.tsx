@@ -10,7 +10,7 @@ const copyClipboard = (label: string): any => {
 	navigator.clipboard.writeText(label);
 };
 
-const CustomChip = (props: any): any => {
+export const CustomChip = (props: any): any => {
 	const label = props?.label;
 	const actions = props?.actions
 		? props?.actions
@@ -23,5 +23,3 @@ const CustomChip = (props: any): any => {
 			];
 	return <Chip {...props} actions={actions} color="black"></Chip>;
 };
-
-export default CustomChip;

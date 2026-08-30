@@ -17,7 +17,7 @@ import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import DomainMailingList from '../domain-mailing-list';
+import { DomainMailingList } from '../domain-mailing-list';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';

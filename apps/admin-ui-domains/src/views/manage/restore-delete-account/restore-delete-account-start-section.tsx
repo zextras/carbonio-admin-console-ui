@@ -18,7 +18,7 @@ function formatRestoreDateTime(dateTime: string | null | undefined, createDate: 
   return format(new Date(selectedDate), 'd MMMM yyyy | hh:mm:ss a');
 }
 
-const RestoreDeleteAccountStartSection: FC<any> = () => {
+export const RestoreDeleteAccountStartSection: FC<any> = () => {
   const { t } = useTranslation();
   const context = useContext(RestoreDeleteAccountContext);
   const { restoreAccountDetail } = context;
@@ -118,4 +118,3 @@ const RestoreDeleteAccountStartSection: FC<any> = () => {
     </Container>
   );
 };
-export default RestoreDeleteAccountStartSection;

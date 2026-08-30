@@ -22,7 +22,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { useSendOtpEmail } from '../../../services/use-send-otp-email';
-import CustomChip from '../../components/customChip';
+import { CustomChip } from '../../components/customChip';
 import { emailContent } from '../../manage/accounts/create-account/email-content';
 import { isValidEmail } from '../../utility/utils';
 import { useAccountForm } from '../account-form-context';

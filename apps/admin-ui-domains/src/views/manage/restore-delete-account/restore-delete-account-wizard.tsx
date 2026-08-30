@@ -12,8 +12,8 @@ import { useTranslation } from 'react-i18next';
 import { type RestoreAccountRequestParams } from '../../../services/restore-delete-account-service';
 import { RestoreDeleteAccountConfigSection } from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
-import RestoreSelectAccountSection from './restore-delete-account-select-section';
-import RestoreAccountStartSection from './restore-delete-account-start-section';
+import { RestoreDeleteInheritedSelectSection } from './restore-delete-account-select-section';
+import { RestoreDeleteAccountStartSection } from './restore-delete-account-start-section';
 
 const WizardInSection: FC<any> = ({ wizard, wizardFooter, setToggleWizardSection }) => {
 	const { t } = useTranslation();
@@ -110,7 +110,7 @@ function createRestoreWizardButtons({
   return { CancelButton, EmptyPrevButton, BackPrevButton, NextButton, RestoreNextButton };
 }
 
-const RestoreDeleteAccountWizard: FC<{
+export const RestoreDeleteAccountWizard: FC<{
   setShowRestoreAccountWizard: any;
   restoreAccountRequest: (params: RestoreAccountRequestParams) => void;
   onReset: () => void;
@@ -165,7 +165,7 @@ const RestoreDeleteAccountWizard: FC<{
       name: 'details',
       label: t('label.select_an_account', 'Select An Account'),
       icon: 'AtOutline',
-      view: RestoreSelectAccountSection,
+      view: RestoreDeleteInheritedSelectSection,
       canGoNext: (): any => restoreAccountDetail?.id !== '',
       CancelButton,
       PrevButton: EmptyPrevButton,
@@ -185,7 +185,7 @@ const RestoreDeleteAccountWizard: FC<{
       name: 'create',
       label: t('label.start', 'start'),
       icon: 'PowerOutline',
-      view: RestoreAccountStartSection,
+      view: RestoreDeleteAccountStartSection,
       CancelButton,
       PrevButton: BackPrevButton,
       NextButton: RestoreNextButton,
@@ -206,5 +206,3 @@ const RestoreDeleteAccountWizard: FC<{
     </Container>
   );
 };
-
-export default RestoreDeleteAccountWizard;

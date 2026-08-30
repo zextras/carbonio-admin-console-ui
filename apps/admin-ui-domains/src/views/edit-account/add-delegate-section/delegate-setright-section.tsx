@@ -19,7 +19,7 @@ import {
 import { delegateRightsType } from '../../utility/utils';
 import { useAccountForm } from '../account-form-context';
 
-const DelegateSetRightsSection: FC = () => {
+export const DelegateSetRightsSection: FC = () => {
   const [t] = useTranslation();
   const sendingOption = '';
   const DELEGETES_RIGHTS_TYPE = delegateRightsType(t);
@@ -191,5 +191,3 @@ const DelegateSetRightsSection: FC = () => {
     </Container>
   );
 };
-
-export default DelegateSetRightsSection;

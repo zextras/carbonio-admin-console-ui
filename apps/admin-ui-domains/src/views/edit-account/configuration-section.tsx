@@ -18,7 +18,7 @@ import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../wsc/wsc-settings';
-import CustomChip from '../components/customChip';
+import { CustomChip } from '../components/customChip';
 import { Features } from '../cos/features';
 import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
@@ -266,4 +266,3 @@ export const EditAccountConfigurationSection = () => {
     </Container>
   );
 };
-

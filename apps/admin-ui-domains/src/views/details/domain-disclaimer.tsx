@@ -8,7 +8,7 @@ import { FormPageLayout, Switch, TextArea } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import Composer from '../../composer/composer';
+import { Composer } from '../../composer/composer';
 import { useSelectedDomain } from '../../hooks/use-selected-domain';
 import styles from './domain-disclaimer.module.css';
 import { useDomainDisclaimerForm } from './domain-disclaimer/use-domain-disclaimer-form';

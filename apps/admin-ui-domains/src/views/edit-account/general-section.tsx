@@ -15,7 +15,7 @@ import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../hooks/use-selected-domain';
-import CustomChip from '../components/customChip';
+import { CustomChip } from '../components/customChip';
 import { useAccountForm, useSetAccountValues } from './account-form-context';
 import { AccountInfoFields } from './general-section/account-info-fields';
 import { AccountStatusFlags } from './general-section/account-status-flags';

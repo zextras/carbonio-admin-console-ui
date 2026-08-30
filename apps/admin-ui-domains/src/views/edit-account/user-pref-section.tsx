@@ -11,7 +11,7 @@ import { ContactOptions } from './user-pref-section/contact-options';
 import { EmailPreferences } from './user-pref-section/email-preferences';
 import { SendingOptions } from './user-pref-section/sending-options';
 
-const EditAccountUserPreferencesSection = () => (
+export const EditAccountUserPreferencesSection = () => (
   <Container
     mainAlignment="flex-start"
     padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
@@ -23,5 +23,3 @@ const EditAccountUserPreferencesSection = () => (
     <CalendarOptionsSection />
   </Container>
 );
-
-export default EditAccountUserPreferencesSection;

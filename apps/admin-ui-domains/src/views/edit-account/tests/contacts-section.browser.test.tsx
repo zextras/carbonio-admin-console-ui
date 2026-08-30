@@ -9,7 +9,7 @@ import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { useAccountForm } from '../account-form-context';
-import EditAccountContactsSection from '../contacts-section';
+import { EditAccountContactsSection } from '../contacts-section';
 import { AccountFormTestProvider } from './account-form-test-provider';
 
 const ContactsStoreProbe = () => {

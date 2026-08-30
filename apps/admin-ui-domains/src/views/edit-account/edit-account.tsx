@@ -27,7 +27,7 @@ import { useAccountFormProvider } from './account-form-provider';
 import { EditAccountAdministrationSection } from './administration-section';
 import { ADMIN_RIGHTS_MUTATION_SCOPE } from './administration-section/admin-rights-section';
 import { EditAccountConfigurationSection } from './configuration-section';
-import EditAccountContactsSection from './contacts-section';
+import { EditAccountContactsSection } from './contacts-section';
 import { EditAccountDelegatesSection } from './delegates-section/delegates-section';
 import styles from './edit-account.module.css';
 import { EditAccountGeneralSection } from './general-section';
@@ -42,8 +42,8 @@ import {
 } from './parts/quota-utils';
 import { ReusedDefaultTabBar } from './parts/reused-default-tab-bar';
 import { UnsavedChangesModal } from './parts/unsaved-changes-modal';
-import EditAccountSecuritySection from './security-section';
-import EditAccountUserPreferencesSection from './user-pref-section';
+import { EditAccountSecuritySection } from './security-section';
+import { EditAccountUserPreferencesSection } from './user-pref-section';
 import { getUserTypeFromAttrs } from './user-type-utils';
 
 export type EditAccountProps = {

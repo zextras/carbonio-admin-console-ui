@@ -19,8 +19,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
-import CreateAccount from '../create-account';
-import CreateAccountDetailSection from '../create-account-detail-section';
+import { CreateAccount } from '../create-account';
+import { CreateAccountDetailSection } from '../create-account-detail-section';
 import { CreateAccountFormTestProvider } from './create-account-form-test-provider';
 
 const DOMAIN_ID = 'domain-123';

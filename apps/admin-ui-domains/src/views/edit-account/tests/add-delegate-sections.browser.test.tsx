@@ -14,8 +14,8 @@ import {
 	SEND_MAILS_ONLY,
 	SEND_READ_MANAGE_MAILS,
 } from '../../../constants';
-import DelegateAddSection from '../add-delegate-section/delegate-add-section';
-import DelegateSetRightsSection from '../add-delegate-section/delegate-setright-section';
+import { DelegateAddSection } from '../add-delegate-section/delegate-add-section';
+import { DelegateSetRightsSection } from '../add-delegate-section/delegate-setright-section';
 import { AccountFormTestProvider } from './account-form-test-provider';
 
 const VALUES = {

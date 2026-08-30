@@ -40,5 +40,3 @@ export const ResourceSharingSection = () => {
     </Container>
   );
 };
-
-export default ResourceSharingSection;

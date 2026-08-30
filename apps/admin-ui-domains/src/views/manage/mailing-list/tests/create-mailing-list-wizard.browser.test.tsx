@@ -17,7 +17,7 @@ import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
-import DomainMailingList from '../domain-mailing-list';
+import { DomainMailingList } from '../domain-mailing-list';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';

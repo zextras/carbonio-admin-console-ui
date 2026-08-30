@@ -19,7 +19,7 @@ const hoisted = vi.hoisted(() => ({
 }));
 
 vi.mock('../restore-delete-account-wizard', () => ({
-	default: ({
+	RestoreDeleteAccountWizard: ({
 		restoreAccountRequest,
 	}: {
 		restoreAccountRequest: (params: typeof hoisted.restoreParams) => void;
@@ -37,7 +37,7 @@ import { page } from 'vitest/browser';
 
 import { RestoreDeleteAccount } from '../restore-delete-account';
 import { RestoreDeleteAccountContext } from '../restore-delete-account-context';
-import RestoreDeleteAccountStartSection from '../restore-delete-account-start-section';
+import { RestoreDeleteAccountStartSection } from '../restore-delete-account-start-section';
 
 function mockRestoreEndpoint(response: Record<string, unknown>): void {
 	worker.use(

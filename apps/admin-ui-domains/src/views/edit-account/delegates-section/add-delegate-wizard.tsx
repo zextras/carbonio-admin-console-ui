@@ -6,9 +6,9 @@
 import { HorizontalWizard, WizardInSection } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import DelegateAddSection from '../add-delegate-section/delegate-add-section';
+import { DelegateAddSection } from '../add-delegate-section/delegate-add-section';
 import { DelegateSelectModeSection } from '../add-delegate-section/delegate-selectmode-section';
-import DelegateSetRightsSection from '../add-delegate-section/delegate-setright-section';
+import { DelegateSetRightsSection } from '../add-delegate-section/delegate-setright-section';
 import { createWizardStepButtons } from './wizard-step-buttons';
 
 type AddDelegateWizardProps = {

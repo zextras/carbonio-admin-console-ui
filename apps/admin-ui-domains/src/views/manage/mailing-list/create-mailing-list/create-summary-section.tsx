@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 import { ALL, EMAIL, GRP, PUB } from '../../../../constants';
 import { MailingListContext } from './mailinglist-context';
 
-const CreateSummarySection: FC<any> = () => {
+export const CreateSummarySection: FC<any> = () => {
   const { t } = useTranslation();
   const context = useContext(MailingListContext);
   const { mailingListDetail } = context;
@@ -320,5 +320,3 @@ const CreateSummarySection: FC<any> = () => {
     </Container>
   );
 };
-
-export default CreateSummarySection;

@@ -111,5 +111,3 @@ export const ActiveDeviceConfirmation = ({
     </Modal>
   );
 };
-
-export default ActiveDeviceConfirmation;

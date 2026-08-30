@@ -13,7 +13,7 @@ import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { RestoreDeleteAccountContext } from '../restore-delete-account-context';
-import RestoreDeleteInheritedSelectSection from '../restore-delete-account-select-section';
+import { RestoreDeleteInheritedSelectSection } from '../restore-delete-account-select-section';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';

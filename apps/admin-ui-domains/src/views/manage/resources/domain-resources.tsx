@@ -395,5 +395,3 @@ export const DomainResources = () => {
     </Container>
   );
 };
-
-export default DomainResources;

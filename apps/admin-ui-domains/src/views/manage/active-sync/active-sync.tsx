@@ -273,5 +273,3 @@ export const ActiveSync = () => {
     </Container>
   );
 };
-
-export default ActiveSync;

@@ -10,7 +10,7 @@ import { useState } from 'react';
 
 import { type RestoreAccountRequestParams } from '../../../services/restore-delete-account-service';
 import { useRestoreDeleteAccount } from '../../../services/use-restore-delete-account';
-import RestoreAccountWizard from './restore-delete-account-wizard';
+import { RestoreDeleteAccountWizard } from './restore-delete-account-wizard';
 
 export const RestoreDeleteAccount = () => {
   const [wizardKey, setWizardKey] = useState(0);
@@ -41,7 +41,7 @@ export const RestoreDeleteAccount = () => {
           crossAlignment="flex-start"
           mainAlignment="flex-start"
         >
-          <RestoreAccountWizard
+          <RestoreDeleteAccountWizard
             key={wizardKey}
             setShowRestoreAccountWizard={noop}
             restoreAccountRequest={restoreAccountRequest}

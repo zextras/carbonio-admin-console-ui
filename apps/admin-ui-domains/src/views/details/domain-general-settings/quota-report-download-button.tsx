@@ -14,7 +14,7 @@ interface QuotaReportDownloadButtonProps {
   domainName: string;
 }
 
-const QuotaReportDownloadButton = ({
+export const QuotaReportDownloadButton = ({
   domainName,
 }: QuotaReportDownloadButtonProps): React.JSX.Element => {
   const [t] = useTranslation();
@@ -32,5 +32,3 @@ const QuotaReportDownloadButton = ({
     />
   );
 };
-
-export default QuotaReportDownloadButton;

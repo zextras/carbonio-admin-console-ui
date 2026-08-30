@@ -42,11 +42,11 @@ import { DomainDetailPanel } from './domain-detail-panel';
 import { DomainOperationsLayout } from './domain-operations-layout';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 import { ManageAccounts } from './manage/accounts/manage-accounts';
-import ActiveSync from './manage/active-sync/active-sync';
+import { ActiveSync } from './manage/active-sync/active-sync';
 import { DomainAddressBook } from './manage/address-book/domain-address-book';
 import { ManageDelegates } from './manage/delegates/manage-delegates';
-import DomainMailingList from './manage/mailing-list/domain-mailing-list';
-import DomainResources from './manage/resources/domain-resources';
+import { DomainMailingList } from './manage/mailing-list/domain-mailing-list';
+import { DomainResources } from './manage/resources/domain-resources';
 import { RestoreDeleteAccount } from './manage/restore-delete-account/restore-delete-account';
 
 const EmptyState: FC = () => {

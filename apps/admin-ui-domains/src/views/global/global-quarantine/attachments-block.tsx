@@ -314,7 +314,7 @@ const Attachment: FC<AttachmentType> = ({
   );
 };
 
-const AttachmentsBlock: FC<{
+export const AttachmentsBlock: FC<{
   message: IncompleteMessage;
   isExternalMessage?: boolean;
   onClose: () => void;
@@ -413,4 +413,3 @@ const AttachmentsBlock: FC<{
     <></>
   );
 };
-export default AttachmentsBlock;

@@ -23,7 +23,7 @@ vi.mock('../../../services/modify-signature-service', () => ({
 // TinyMCE is out of scope: stub the composer with a plain textarea driving
 // the same onEditorChange([_, content]) contract
 vi.mock('../../../composer/composer', () => ({
-  default: ({
+  Composer: ({
     onEditorChange,
   }: {
     onEditorChange: (ev: Array<unknown>) => void;

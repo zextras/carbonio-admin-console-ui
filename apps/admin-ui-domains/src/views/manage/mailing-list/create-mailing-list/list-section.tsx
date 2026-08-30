@@ -53,7 +53,7 @@ const LdapQueryIcon = (): React.ReactElement => {
 	);
 };
 
-const ListSection: FC<any> = () => {
+export const ListSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
 	const createSnackbar = useSnackbar();
@@ -414,5 +414,3 @@ const ListSection: FC<any> = () => {
 		</Container>
 	);
 };
-
-export default ListSection;

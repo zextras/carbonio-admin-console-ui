@@ -331,5 +331,3 @@ export const ActiveDeviceDetail = ({
     </Container>
   );
 };
-
-export default ActiveDeviceDetail;

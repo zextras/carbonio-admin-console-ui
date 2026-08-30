@@ -24,8 +24,8 @@ import {
   useDeleteQuarantineMessage,
   useDeliverQuarantineMessage,
 } from '../../../services/use-quarantine-message-actions';
-import AttachmentsBlock from './attachments-block';
-import MailMessageRenderer from './mail-message-renderer';
+import { AttachmentsBlock } from './attachments-block';
+import { MailMessageRenderer } from './mail-message-renderer';
 import { getScoreColor } from './quarantine-message-normalizer';
 import type { IncompleteMessage } from './quarantine-types';
 

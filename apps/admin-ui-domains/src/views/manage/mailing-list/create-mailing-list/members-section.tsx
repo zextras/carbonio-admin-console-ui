@@ -35,7 +35,7 @@ const WIZARD_MEMBER_SEARCH_CONFIG: DirectorySearchConfig = {
 		`(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`
 };
 
-const MembersSection: FC<any> = () => {
+export const MembersSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const context = useContext(MailingListContext);
 	const { mailingListDetail, setMailingListDetail } = context;
@@ -215,5 +215,3 @@ const MembersSection: FC<any> = () => {
 		</Container>
 	);
 };
-
-export default MembersSection;

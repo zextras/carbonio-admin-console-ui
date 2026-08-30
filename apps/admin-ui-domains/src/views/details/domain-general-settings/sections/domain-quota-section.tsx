@@ -8,7 +8,7 @@ import { useSelector } from '@tanstack/react-store';
 import { Container, getFieldErrorProps, Input, ListRow, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import QuotaReportDownloadButton from '../quota-report-download-button';
+import { QuotaReportDownloadButton } from '../quota-report-download-button';
 import { DOMAIN_GENERAL_VALIDATION_MESSAGES } from '../schema';
 import type { DomainGeneralSettingsFormApi } from '../use-domain-general-form';
 

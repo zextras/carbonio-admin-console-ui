@@ -20,7 +20,7 @@ import { PasswordPolicies } from './security-section/password-policies';
 import { TwoFactorSettings } from './security-section/two-factor-settings';
 import { ServicesPassphrase } from './services-passphrase';
 
-const EditAccountSecuritySection = () => {
+export const EditAccountSecuritySection = () => {
   const { form } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const { data: domain } = useSelectedDomain();
@@ -92,5 +92,3 @@ const EditAccountSecuritySection = () => {
     </Container>
   );
 };
-
-export default EditAccountSecuritySection;

@@ -14,7 +14,7 @@ import {
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
-import Composer from '../../../composer/composer';
+import { Composer } from '../../../composer/composer';
 import styles from './signature-detail.module.css';
 
 type SignatureEditorDialogProps = {

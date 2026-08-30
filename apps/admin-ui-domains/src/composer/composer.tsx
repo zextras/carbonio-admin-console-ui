@@ -64,7 +64,7 @@ type ComposerProps = EditorProps & {
   customInitOptions?: Partial<EditorProps['init']>;
 };
 
-const Composer = ({
+export const Composer = ({
   onEditorChange,
   inline = false,
   value,
@@ -134,5 +134,3 @@ const Composer = ({
     </Container>
   );
 };
-
-export default Composer;

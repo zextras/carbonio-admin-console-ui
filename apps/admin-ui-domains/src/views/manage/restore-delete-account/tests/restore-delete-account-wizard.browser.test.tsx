@@ -8,17 +8,17 @@ vi.mock('../restore-delete-account-config-section', () => ({
 	RestoreDeleteAccountConfigSection: () => <div data-testid="config-section">config</div>,
 }));
 vi.mock('../restore-delete-account-select-section', () => ({
-	default: () => <div data-testid="select-section">select</div>,
+	RestoreDeleteInheritedSelectSection: () => <div data-testid="select-section">select</div>,
 }));
 vi.mock('../restore-delete-account-start-section', () => ({
-	default: () => <div data-testid="start-section">start</div>,
+	RestoreDeleteAccountStartSection: () => <div data-testid="start-section">start</div>,
 }));
 
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import RestoreDeleteAccountWizard from '../restore-delete-account-wizard';
+import { RestoreDeleteAccountWizard } from '../restore-delete-account-wizard';
 
 describe('RestoreDeleteAccountWizard', () => {
 	it('calls onReset when the Cancel button is clicked', async () => {

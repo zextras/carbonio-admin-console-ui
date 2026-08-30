@@ -17,11 +17,11 @@ import { useTranslation } from 'react-i18next';
 
 import { LDAP, PUB } from '../../../../constants';
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
-import CreateSummarySection from './create-summary-section';
-import ListSection from './list-section';
+import { CreateSummarySection } from './create-summary-section';
+import { ListSection } from './list-section';
 import { MailingListContext } from './mailinglist-context';
-import MembersSection from './members-section';
-import SettingsSection from './settings/settings-section';
+import { MembersSection } from './members-section';
+import { SettingsSection } from './settings/settings-section';
 
 type MailingListDetailObj = {
 	name: string;
@@ -119,7 +119,7 @@ const WizardCreateButton = (props: any): ReactElement => {
 
 const WizardNoButton = (): ReactElement => <></>;
 
-const CreateMailingList: FC<{
+export const CreateMailingList: FC<{
 	setShowCreateMailingListView: any;
 	createList: (detail: any) => void;
 	isLoading: boolean;
@@ -240,5 +240,3 @@ const CreateMailingList: FC<{
 		</>
 	);
 };
-
-export default CreateMailingList;

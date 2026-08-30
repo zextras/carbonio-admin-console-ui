@@ -8,7 +8,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import EditAccountUserPreferencesSection from '../user-pref-section';
+import { EditAccountUserPreferencesSection } from '../user-pref-section';
 import { AccountFormTestProvider } from './account-form-test-provider';
 
 // Suppress MSW cleanup errors that occur when tests finish

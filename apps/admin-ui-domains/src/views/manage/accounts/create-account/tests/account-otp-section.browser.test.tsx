@@ -9,7 +9,7 @@ import { HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
-import AccountOtpSection from '../account-otp-section';
+import { AccountOtpSection } from '../account-otp-section';
 import type { CreateAccountFormValues } from '../create-account-types';
 import { CreateAccountFormTestProvider } from './create-account-form-test-provider';
 

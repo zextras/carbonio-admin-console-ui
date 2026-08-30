@@ -54,7 +54,7 @@ export const ExternalLdapField = (): ReactElement => {
   );
 };
 
-const CreateAccountDetailSection = (): ReactElement => {
+export const CreateAccountDetailSection = (): ReactElement => {
   const { data: domain } = useSelectedDomain();
   const extLdapAuth = hasExternalLdapUrl(domain?.a);
 
@@ -71,5 +71,3 @@ const CreateAccountDetailSection = (): ReactElement => {
     </div>
   );
 };
-
-export default CreateAccountDetailSection;

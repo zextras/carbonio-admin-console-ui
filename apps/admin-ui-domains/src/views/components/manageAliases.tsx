@@ -19,9 +19,9 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { useDomainList } from '../../services/use-domain-list';
-import CustomChip from './customChip';
+import { CustomChip } from './customChip';
 
-const ManageAliases: FC<{
+export const ManageAliases: FC<{
   listAliases: Array<{ label: string }>;
   setListAliases: (arg: Array<{ label: string }>) => void;
   setAliasChange: (arg: Array<{ label: string }>) => void;
@@ -251,5 +251,3 @@ const ManageAliases: FC<{
     </>
   );
 };
-
-export default ManageAliases;

@@ -19,7 +19,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useAccountListDirectory } from '../../../services/use-account-list-directory';
 import { useBatchDelegates } from '../../../services/use-batch-delegates';
-import CustomChip from '../../components/customChip';
+import { CustomChip } from '../../components/customChip';
 import { isValidEmail } from '../../utility/utils';
 import { useAccountForm } from '../account-form-context';
 import {

@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { TwoFactorPolicy } from '../../../../types';
-import CustomChip from '../../components/customChip';
+import { CustomChip } from '../../components/customChip';
 import { isValidIpRange, twoFactorWhatToTrust } from '../../utility/utils';
 import styles from './global-two-factor-auth.module.css';
 import { ServicePolicyRow } from './service-policy-row';

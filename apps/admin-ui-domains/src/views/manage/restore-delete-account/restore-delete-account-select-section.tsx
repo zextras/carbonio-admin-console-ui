@@ -35,7 +35,7 @@ const backupAccountsQueryKeys = {
 		[...backupAccountsQueryKeys.all, domainName, filter, page] as const,
 };
 
-const RestoreDeleteInheritedSelectSection: FC<any> = () => {
+export const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
 	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
 	const [accountOffset, setAccountOffset] = useState<number>(0);
@@ -260,4 +260,3 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 		</Container>
 	);
 };
-export default RestoreDeleteInheritedSelectSection;

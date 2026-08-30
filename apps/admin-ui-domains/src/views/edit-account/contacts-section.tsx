@@ -11,7 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { isValidPhoneNumber } from '../utility/utils';
 import { useAccountForm, useSetAccountValues } from './account-form-context';
 
-const EditAccountContactsSection: React.FC = () => {
+export const EditAccountContactsSection: React.FC = () => {
   const { form } = useAccountForm();
   const setAccountValues = useSetAccountValues();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
@@ -250,5 +250,3 @@ const EditAccountContactsSection: React.FC = () => {
     </Container>
   );
 };
-
-export default EditAccountContactsSection;

@@ -17,7 +17,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
-import EditDistributionList from '../edit-distribution-list/edit-distribution-list';
+import { EditDistributionList } from '../edit-distribution-list/edit-distribution-list';
 
 const DOMAIN_ID = 'test-domain-id';
 const DOMAIN_NAME = 'example.com';

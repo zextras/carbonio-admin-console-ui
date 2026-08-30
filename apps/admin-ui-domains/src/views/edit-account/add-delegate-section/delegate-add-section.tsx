@@ -12,7 +12,7 @@ import { READ_MAILS_ONLY } from '../../../constants';
 import { delegateRightsType } from '../../utility/utils';
 import { useAccountForm } from '../account-form-context';
 
-const DelegateAddSection: FC = () => {
+export const DelegateAddSection: FC = () => {
   const [t] = useTranslation();
   const DELEGETES_RIGHTS_TYPE = delegateRightsType(t);
   const { form, deligateDetail } = useAccountForm();
@@ -106,5 +106,3 @@ const DelegateAddSection: FC = () => {
     </Container>
   );
 };
-
-export default DelegateAddSection;

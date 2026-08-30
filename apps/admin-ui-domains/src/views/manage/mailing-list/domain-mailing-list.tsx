@@ -8,14 +8,14 @@ import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import CreateMailingList from './create-mailing-list/create-mailing-list';
+import { CreateMailingList } from './create-mailing-list/create-mailing-list';
 import { useCreateMailingListFlow } from './create-mailing-list/use-create-mailing-list-flow';
 import { buildDistributionListRow } from './distribution-list-row';
 import { DistributionListTable } from './distribution-list-table';
-import EditDistributionList from './edit-distribution-list/edit-distribution-list';
+import { EditDistributionList } from './edit-distribution-list/edit-distribution-list';
 import { useDistributionListsSearch } from './use-distribution-lists-search';
 
-const DomainMailingList: FC = () => {
+export const DomainMailingList: FC = () => {
   const [t] = useTranslation();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
@@ -158,5 +158,3 @@ const DomainMailingList: FC = () => {
     </Container>
   );
 };
-
-export default DomainMailingList;

@@ -853,5 +853,3 @@ const ResourceEditForm = ({
     </Container>
   );
 };
-
-export default ResourceEditDetailView;

@@ -8,7 +8,7 @@ import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { useUserSettings } from '@zextras/ui-shared';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import MailMessageRenderer from '../mail-message-renderer';
+import { MailMessageRenderer } from '../mail-message-renderer';
 
 vi.mock('@zextras/ui-shared', async () => {
   const actual = await vi.importActual<typeof import('@zextras/ui-shared')>('@zextras/ui-shared');

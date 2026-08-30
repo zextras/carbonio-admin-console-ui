@@ -12,12 +12,12 @@ import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { useSendOtpEmail } from '../../../../services/use-send-otp-email';
-import CustomChip from '../../../components/customChip';
+import { CustomChip } from '../../../components/customChip';
 import { isValidEmail } from '../../../utility/utils';
 import staticCodesStyles from './account-otp-section.module.css';
 import { useCreateAccountFormContext } from './create-account-form-context';
 import { emailContent } from './email-content';
-const AccountOtpSection: FC<{
+export const AccountOtpSection: FC<{
   setToggleNextBtn?: (newValue: boolean) => void;
 }> = () => {
   const { form } = useCreateAccountFormContext();
@@ -286,5 +286,3 @@ const AccountOtpSection: FC<{
     </Container>
   );
 };
-
-export default AccountOtpSection;

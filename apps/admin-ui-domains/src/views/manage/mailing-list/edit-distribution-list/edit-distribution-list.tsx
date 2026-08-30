@@ -59,7 +59,7 @@ function formatDlCreateDate(timestamp: string | undefined): string {
   return date && isValid(date) ? format(date, 'dd MMM yyyy - HH:mm') : '';
 }
 
-const EditDistributionList: FC<any> = ({
+export const EditDistributionList: FC<any> = ({
   selectedMailingList,
   setShowMailingListDetailView,
 }) => {
@@ -551,5 +551,3 @@ function EditDistributionListContent({
     </>
   );
 }
-
-export default EditDistributionList;

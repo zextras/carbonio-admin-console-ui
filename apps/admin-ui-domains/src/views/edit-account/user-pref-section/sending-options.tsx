@@ -9,7 +9,7 @@ import { ChipInput, InheritedSwitch, Row } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
-import CustomChip from '../../components/customChip';
+import { CustomChip } from '../../components/customChip';
 import { isValidEmail } from '../../utility/utils';
 import {
   useAccountForm,

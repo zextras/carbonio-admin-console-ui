@@ -137,12 +137,12 @@ vi.mock('../details/virtual-hosts-certificates/domain-virtual-hosts', () => ({
   DomainVirtualHosts: MockDomainVirtualHosts,
 }));
 vi.mock('../manage/accounts/manage-accounts', () => ({ ManageAccounts: MockManageAccounts }));
-vi.mock('../manage/active-sync/active-sync', () => ({ default: MockActiveSync }));
+vi.mock('../manage/active-sync/active-sync', () => ({ ActiveSync: MockActiveSync }));
 vi.mock('../manage/delegates/manage-delegates', () => ({ ManageDelegates: MockManageDelegates }));
 vi.mock('../manage/mailing-list/domain-mailing-list', () => ({
-  default: MockDomainMailingList,
+  DomainMailingList: MockDomainMailingList,
 }));
-vi.mock('../manage/resources/domain-resources', () => ({ default: MockDomainResources }));
+vi.mock('../manage/resources/domain-resources', () => ({ DomainResources: MockDomainResources }));
 vi.mock('../manage/restore-delete-account/restore-delete-account', () => ({
   RestoreDeleteAccount: MockRestoreAccount,
 }));

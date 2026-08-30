@@ -11,7 +11,7 @@ import { MainSettingsSection } from './main-settings-section';
 import { OwnersSettingsSection } from './owners-settings-section';
 import { SendingOptionsSection } from './sending-options-section';
 
-const SettingsSection: FC = () => (
+export const SettingsSection: FC = () => (
 	<Container mainAlignment="flex-start">
 		<Container
 			mainAlignment="flex-start"
@@ -26,5 +26,3 @@ const SettingsSection: FC = () => (
 		</Container>
 	</Container>
 );
-
-export default SettingsSection;

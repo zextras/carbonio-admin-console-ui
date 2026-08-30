@@ -19,7 +19,7 @@ import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TRUE_FALSE } from '../../../../constants';
-import ManageAliases from '../../../components/manageAliases';
+import { ManageAliases } from '../../../components/manageAliases';
 import type { EditDistributionListFormApi } from '../edit-distribution-list/types';
 
 type GeneralTabProps = {

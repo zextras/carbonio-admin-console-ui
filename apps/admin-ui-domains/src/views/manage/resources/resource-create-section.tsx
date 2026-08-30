@@ -249,5 +249,3 @@ export const ResourceCreateSection = () => {
     </Container>
   );
 };
-
-export default ResourceCreateSection;

@@ -350,5 +350,3 @@ export const ResourceDetailSection = () => {
     </Container>
   );
 };
-
-export default ResourceDetailSection;

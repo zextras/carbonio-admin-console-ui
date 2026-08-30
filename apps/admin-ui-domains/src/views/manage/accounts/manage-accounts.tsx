@@ -32,7 +32,7 @@ import { useCountAccount } from '../../../services/use-count-account';
 import { EditAccount } from '../../edit-account/edit-account';
 import { AccountRowItem, buildAccountRow } from './account-row';
 import styles from './accounts.module.css';
-import CreateAccount from './create-account/create-account';
+import { CreateAccount } from './create-account/create-account';
 
 const SearchFilterIcon = (): ReactElement => (
   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
