@@ -13,12 +13,15 @@ import { domainQueryKeys } from './domain-query-keys';
  * Adds `member` as a member of a distribution list. `accountId` is the account
  * whose membership view must refresh (edit-account callers) and is optional;
  * the mutation vars carry `listId`, whose distribution list detail/membership
- * queries are also invalidated. Snackbars stay at the call site via
- * `mutate(vars, { onSuccess, onError })` (recorded repo convention).
+ * queries are also invalidated. `mutationScope` optionally tags the mutation
+ * with a key so `useIsMutating` can track it from unrelated components.
+ * Snackbars stay at the call site via `mutate(vars, { onSuccess, onError })`
+ * (recorded repo convention).
  */
-export const useAddDistributionListMember = (accountId?: string) => {
+export const useAddDistributionListMember = (accountId?: string, mutationScope?: string) => {
 	const queryClient = useQueryClient();
 	return useMutation({
+		mutationKey: mutationScope ? ['distribution-list-member-add', mutationScope] : undefined,
 		mutationFn: ({ listId, member }: { listId: string; member: string }) =>
 			addDistributionListMember(
 				{ n: 'id', _content: listId },
