@@ -40,4 +40,4 @@ function buildExpanderColumn<TData extends RowData>(i18n?: {
 	});
 }
 
-export { EXPANDER_COLUMN_ID, buildExpanderColumn };
+export { buildExpanderColumn,EXPANDER_COLUMN_ID };

@@ -7,8 +7,7 @@
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../../basic/button/Button';
-import { Dropdown } from '../../../display/Dropdown';
-import type { DropdownItem } from '../../../display/Dropdown';
+import { Dropdown, type DropdownItem } from '../../../display/Dropdown';
 import { useDataTableContext } from '../data-table-contexts';
 
 const DataTableColumnVisibility = () => {

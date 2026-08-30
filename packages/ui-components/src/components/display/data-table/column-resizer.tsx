@@ -7,8 +7,8 @@
 import type { Header, RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
 
-import type { DataTableFeatures } from './features';
 import styles from './data-table.module.css';
+import type { DataTableFeatures } from './features';
 
 type ColumnResizerProps<TData extends RowData> = {
 	header: Header<DataTableFeatures, TData, any>;

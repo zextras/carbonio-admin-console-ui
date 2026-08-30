@@ -58,4 +58,4 @@ function buildSelectionColumn<TData extends RowData>(i18n?: {
 	});
 }
 
-export { SELECTION_COLUMN_ID, buildSelectionColumn };
+export { buildSelectionColumn,SELECTION_COLUMN_ID };

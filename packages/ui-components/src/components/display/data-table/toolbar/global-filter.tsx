@@ -7,8 +7,8 @@
 import { useTranslation } from 'react-i18next';
 
 import { Input } from '../../../inputs/Input';
-import { useDataTableContext } from '../data-table-contexts';
 import styles from '../data-table.module.css';
+import { useDataTableContext } from '../data-table-contexts';
 
 type DataTableGlobalFilterProps = {
 	label?: string;
