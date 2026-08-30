@@ -4,18 +4,17 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { functionalUpdate } from '@tanstack/react-table';
-import type { RowData } from '@tanstack/react-table';
+import { functionalUpdate, type RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
 
 import { useDataTable } from './create-data-table';
+import styles from './data-table.module.css';
 import { buildExpanderColumn } from './expander-column';
 import { buildSelectionColumn } from './selection-column';
 import { DataTableBody } from './table-body';
 import { DataTableFooter } from './table-footer';
 import { DataTableHeader } from './table-header';
 import type { DataTableColumnDef, DataTableProps } from './types';
-import styles from './data-table.module.css';
 
 function defaultGetRowId<TData extends RowData>(row: TData, index: number): string {
 	const maybeId = (row as { id?: unknown }).id;

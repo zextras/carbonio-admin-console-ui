@@ -93,6 +93,7 @@ export * from './components/custom/track-number-per-page';
 
 /** display components */
 export * from './components/display/Chip';
+export * from './components/display/data-table';
 export * from './components/display/Dropdown';
 export * from './components/display/List/List';
 export * from './components/display/ListItem';

@@ -8,8 +8,8 @@ import type { RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
 import type { ReactNode } from 'react';
 
-import { useDataTableContext } from './data-table-contexts';
 import styles from './data-table.module.css';
+import { useDataTableContext } from './data-table-contexts';
 import { getStickyColumnStyle } from './sticky';
 import { DataTableStateRow } from './table-states';
 

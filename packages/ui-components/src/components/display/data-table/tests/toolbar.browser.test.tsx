@@ -6,9 +6,9 @@
 
 import '../../../../web-components';
 
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
-import { describe, expect, it } from 'vitest';
 
 import { createDataTableColumnHelper, useDataTable } from '../create-data-table';
 import { DataTableBody } from '../table-body';

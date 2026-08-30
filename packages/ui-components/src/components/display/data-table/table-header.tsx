@@ -5,10 +5,10 @@
  */
 
 import { ColumnResizer } from './column-resizer';
-import { useDataTableContext } from './data-table-contexts';
 import styles from './data-table.module.css';
-import { getStickyColumnStyle } from './sticky';
+import { useDataTableContext } from './data-table-contexts';
 import { SortIndicator } from './sort-indicator';
+import { getStickyColumnStyle } from './sticky';
 
 const DataTableHeader = () => {
 	const table = useDataTableContext();

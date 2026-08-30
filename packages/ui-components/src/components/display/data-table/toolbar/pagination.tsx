@@ -8,8 +8,8 @@ import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../../basic/button/Button';
 import { Select } from '../../../inputs/Select';
-import { useDataTableContext } from '../data-table-contexts';
 import styles from '../data-table.module.css';
+import { useDataTableContext } from '../data-table-contexts';
 
 const PAGE_SIZE_ITEMS = [10, 25, 50, 100].map((value) => ({
 	label: String(value),
