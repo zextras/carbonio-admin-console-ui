@@ -452,7 +452,17 @@ describe('EditDistributionList (browser)', () => {
     });
 
     it('edits the permission level of an authorized sender', async () => {
-      const editAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      type DistributionListActionRequest = {
+        Body?: { DistributionListActionRequest?: { action?: Record<string, unknown> } };
+      };
+      const actions: Array<Record<string, unknown>> = [];
+      worker.use(
+        http.post('/service/admin/soap/DistributionListActionRequest', async ({ request }) => {
+          const body = (await request.json()) as DistributionListActionRequest;
+          actions.push(body?.Body?.DistributionListActionRequest?.action ?? {});
+          return HttpResponse.json({ Body: { DistributionListActionResponse: {} } });
+        }),
+      );
       await setupEditView();
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
@@ -461,22 +471,20 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('Edit permission level')).toBeInTheDocument();
       await page.getByTestId('modal').getByText('Send on behalf of', { exact: true }).click();
       await page.getByRole('button', { name: 'SAVE CHANGES' }).click();
-      const revokeParams = (await editAction) as { action: Record<string, unknown> };
-      expect(revokeParams.action).toMatchObject({
-        op: 'revokeRights',
-        right: { right: 'sendAsDistList' },
-      });
-      // the edit flow revokes the old right first, then grants the new one
-      const grantAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
-      const grantParams = (await grantAction) as { action: Record<string, unknown> };
-      expect(grantParams.action).toMatchObject({
-        op: 'grantRights',
-        right: { right: 'sendOnBehalfOfDistList' },
-      });
       await expect
         .element(page.getByText('Permission level has been updated successfully'))
         .toBeInTheDocument();
-    });
+      // the edit flow revokes the old right first, then grants the new one
+      expect(actions).toHaveLength(2);
+      expect(actions[0]).toMatchObject({
+        op: 'revokeRights',
+        right: { right: 'sendAsDistList' },
+      });
+      expect(actions[1]).toMatchObject({
+        op: 'grantRights',
+        right: { right: 'sendOnBehalfOfDistList' },
+      });
+    }, 20_000);
 
     it('adds an authorized sender with the selected permission level', async () => {
       const grantAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
@@ -516,6 +524,185 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('to-new@example.com')).toBeInTheDocument();
       await page.getByRole('button', { name: 'Delete', exact: true }).click();
       await expect.element(page.getByText('to-new@example.com')).not.toBeInTheDocument();
+    });
+  });
+
+  describe('Send-as tab validation', () => {
+    it('shows the blank email error when adding without typing an email', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      await expect
+        .element(page.getByText('Please enter at least one email address'))
+        .toBeInTheDocument();
+    });
+
+    it('shows the invalid email error for a malformed address', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await userEvent.type(page.getByLabelText('Add senders by email address'), 'not-an-email');
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      await expect
+        .element(
+          page.getByText('The account does not exist. Please check the spelling and try again.'),
+        )
+        .toBeInTheDocument();
+    });
+
+    it('shows the already-in-list error for an existing sender', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await userEvent.type(
+        page.getByLabelText('Add senders by email address'),
+        'sender@example.com',
+      );
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      await expect
+        .element(page.getByText('The Distribution List / User is already in the list'))
+        .toBeInTheDocument();
+    });
+  });
+
+  describe('Send-as tab table', () => {
+    it('filters the authorized senders by the search input', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
+      await userEvent.type(page.getByLabelText('Search senders'), 'nomatch');
+      await expect.element(page.getByText('sender@example.com')).not.toBeInTheDocument();
+      await userEvent.clear(page.getByLabelText('Search senders'));
+      await userEvent.type(page.getByLabelText('Search senders'), 'sender');
+      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
+    });
+
+    it('selects a sender row when its address is clicked', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await page.getByText('sender@example.com', { exact: true }).click();
+      // the permission-level cell of the row is the last 'Send As' text on the tab
+      await page.getByText('Send As', { exact: true }).last().click();
+      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
+    });
+  });
+
+  describe('Send-as tab empty state', () => {
+    it('shows the empty state when the list has no authorized senders', async () => {
+      createBrowserSoapAPIInterceptor('GetDistributionList', {
+        dl: [
+          {
+            id: DL_ID,
+            name: DL_EMAIL,
+            dlm: [{ _content: 'user1@example.com' }],
+            a: [
+              { n: 'zimbraHideInGal', _content: 'FALSE' },
+              { n: 'zimbraNotes', _content: '' },
+              { n: 'description', _content: 'Team mailing list' },
+              { n: 'zimbraMailStatus', _content: 'enabled' },
+              { n: 'zimbraMailAlias', _content: DL_EMAIL },
+              { n: 'zimbraMailAlias', _content: 'alias1@example.com' },
+            ],
+          },
+        ],
+      });
+      createBrowserSoapAPIInterceptor('GetDistributionListMembership', {
+        dl: [{ id: 'dl-2', name: 'other@example.com' }],
+      });
+      createBrowserSoapAPIInterceptor('GetGrants', {
+        grant: [
+          {
+            right: [{ _content: 'ownDistList' }],
+            grantee: [{ id: 'owner-1', name: 'owner@example.com', type: 'usr' }],
+          },
+        ],
+      });
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          { id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] },
+        ],
+      });
+      const queryClient = getQueryClient();
+      queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+        id: DOMAIN_ID,
+        name: DOMAIN_NAME,
+        a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+      });
+      queryClient.setQueryData(domainQueryKeys.list(), [
+        { name: DOMAIN_NAME, id: DOMAIN_ID, a: [] },
+      ]);
+      await _setupBrowserTest(
+        <EditDistributionList
+          selectedMailingList={SELECTED_MAILING_LIST}
+          setShowMailingListDetailView={vi.fn()}
+        />,
+        {
+          queryClient,
+          withDomainIdRoute: true,
+          initialRouterEntry: `/${DOMAIN_ID}`,
+        },
+      );
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await expect
+        .element(page.getByText("There aren't members here."))
+        .toBeInTheDocument();
+      await expect
+        .element(page.getByText('Search for a user and click on the ADD button.'))
+        .toBeInTheDocument();
+    });
+  });
+
+  describe('Send-as tab failures', () => {
+    it('shows an error snackbar when granting a sender fails with a fault', async () => {
+      createBrowserSoapAPIInterceptor('DistributionListAction', {
+        Fault: { Reason: { Text: 'Grant failed' } },
+      });
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await userEvent.type(page.getByLabelText('Add senders by email address'), 'as-new@example.com');
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      await expect.element(page.getByText('Grant failed')).toBeInTheDocument();
+      await expect.element(page.getByText('as-new@example.com')).not.toBeInTheDocument();
+    });
+
+    it('shows an error snackbar when the grant request rejects', async () => {
+      worker.use(
+        http.post('/service/admin/soap/DistributionListActionRequest', () =>
+          HttpResponse.json(
+            { Body: { Fault: { Reason: { Text: 'Network error' } } } },
+            { status: 500 },
+          ),
+        ),
+      );
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await userEvent.type(page.getByLabelText('Add senders by email address'), 'as-new@example.com');
+      await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
+      await expect.element(page.getByText('Network error')).toBeInTheDocument();
+      await expect.element(page.getByText('as-new@example.com')).not.toBeInTheDocument();
+    });
+
+    it('closes the edit modal without requests when the permission is unchanged', async () => {
+      let actionRequested = false;
+      createBrowserSoapAPIInterceptor('DistributionListAction', {}).then((params) => {
+        actionRequested = true;
+        return params;
+      });
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await page.getByRole('button', { name: 'Edit', exact: true }).click();
+      await expect.element(page.getByText('Edit permission level')).toBeInTheDocument();
+      await page.getByRole('button', { name: 'SAVE CHANGES' }).click();
+      await expect.element(page.getByText('Edit permission level')).not.toBeInTheDocument();
+      await new Promise((resolve) => setTimeout(resolve, 500));
+      expect(actionRequested).toBe(false);
     });
   });
 });

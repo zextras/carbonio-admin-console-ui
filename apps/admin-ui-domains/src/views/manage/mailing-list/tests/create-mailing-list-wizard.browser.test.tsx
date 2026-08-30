@@ -11,7 +11,7 @@ import {
 	setupBrowserTest as _setupBrowserTest,
 	worker,
 } from 'admin-ui-test-utils';
-import { http, HttpResponse } from 'msw';
+import { type DefaultBodyType, http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
@@ -164,5 +164,133 @@ describe('CreateMailingList wizard (browser)', () => {
 		await page.getByRole('button', { name: 'NEXT', exact: true }).click();
 		await page.getByRole('button', { name: 'CREATE', exact: true }).click();
 		await expect.element(page.getByText('Email address announce@example.com already exists')).toBeInTheDocument();
+	});
+});
+
+const LIST_DL = {
+	name: 'team@example.com',
+	id: 'dl-1',
+	dynamic: false,
+	a: [{ n: 'displayName', _content: 'Team List' }]
+};
+
+const LDAP_QUERY_SUFFIX = '??sub?(&(objectClass=inetOrgPerson)(mail=*@domain.tld))';
+
+function interceptLdapMembersSearch(memberResponder: () => HttpResponse<DefaultBodyType>): void {
+	worker.use(
+		http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
+			const body = (await request.json()) as {
+				Body?: { SearchDirectoryRequest?: { query?: string } };
+			};
+			const query = body?.Body?.SearchDirectoryRequest?.query ?? '';
+			if (query.includes('objectClass')) {
+				return memberResponder();
+			}
+			return HttpResponse.json({
+				Body: { SearchDirectoryResponse: { dl: [LIST_DL], searchTotal: 1, more: false } },
+			});
+		}),
+	);
+}
+
+async function setupListView(userAttrs: Record<string, string> = {}): Promise<void> {
+	const queryClient = getQueryClient();
+	queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+		id: DOMAIN_ID,
+		name: DOMAIN_NAME,
+		a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+	});
+	queryClient.setQueryData(domainQueryKeys.list(), [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }]);
+	queryClient.setQueryDefaults(['account', 'settings'], { gcTime: Infinity });
+	queryClient.setQueryData(['account', 'settings'], { prefs: {}, attrs: userAttrs, props: [] });
+	const ui: ReactElement = <DomainMailingList />;
+	await _setupBrowserTest(ui, {
+		queryClient,
+		withDomainIdRoute: true,
+		initialRouterEntry: `/${DOMAIN_ID}`,
+	});
+}
+
+async function enableDynamicModeAndLoadMembers(): Promise<void> {
+	await page.getByText('Dynamic Mode', { exact: true }).click();
+	await expect.element(page.getByLabelText("Distribution List's URL")).toBeInTheDocument();
+	await userEvent.type(page.getByLabelText("Distribution List's URL"), LDAP_QUERY_SUFFIX);
+	await page.getByTestId('icon: CheckmarkOutline').click();
+}
+
+describe('CreateMailingList wizard list section (browser)', () => {
+	it('enables dynamic mode, loads the ldap members and filters them', async () => {
+		interceptLdapMembersSearch(() =>
+			HttpResponse.json({
+				Body: {
+					SearchDirectoryResponse: {
+						dl: [{ id: 'm-dl', name: 'board@example.com' }],
+						account: [
+							{ id: 'm-acc-1', name: 'user1@example.com' },
+							{ id: 'm-acc-2', name: 'user2@example.com' }
+						],
+						alias: [{ id: 'm-alias', name: 'alias@example.com' }],
+						calresource: [{ id: 'm-res', name: 'room@example.com' }]
+					}
+				}
+			})
+		);
+		await setupListView();
+		await openWizard();
+		await enableDynamicModeAndLoadMembers();
+
+		await expect.element(page.getByText('board@example.com')).toBeInTheDocument();
+		await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+		await expect.element(page.getByText('user2@example.com')).toBeInTheDocument();
+		await expect.element(page.getByText('alias@example.com')).toBeInTheDocument();
+		await expect.element(page.getByText('room@example.com')).toBeInTheDocument();
+
+		await userEvent.type(page.getByLabelText('Filter Address'), 'user1');
+		await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+		await expect.element(page.getByText('user2@example.com')).not.toBeInTheDocument();
+		await expect.element(page.getByText('board@example.com')).not.toBeInTheDocument();
+	});
+
+	it('shows the not-valid message when the ldap member search returns a fault', async () => {
+		interceptLdapMembersSearch(() =>
+			HttpResponse.json({
+				Body: {
+					SearchDirectoryResponse: { Body: { Fault: { Reason: { Text: 'bad query' } } } }
+				}
+			})
+		);
+		await setupListView();
+		await openWizard();
+		await enableDynamicModeAndLoadMembers();
+
+		await expect.element(page.getByText('Query is not valid')).toBeInTheDocument();
+	});
+
+	it('shows an error snackbar when loading the ldap members fails', async () => {
+		interceptLdapMembersSearch(() =>
+			HttpResponse.json(
+				{ Body: { Fault: { Reason: { Text: 'Load failed' } } } },
+				{ status: 500 }
+			)
+		);
+		await setupListView();
+		await openWizard();
+		await enableDynamicModeAndLoadMembers();
+
+		await expect.element(page.getByText('Load failed')).toBeInTheDocument();
+	});
+
+	it('hides the dynamic mode switch for delegated admins', async () => {
+		interceptLdapMembersSearch(() =>
+			HttpResponse.json({
+				Body: { SearchDirectoryResponse: { dl: [LIST_DL], searchTotal: 1, more: false } }
+			})
+		);
+		await setupListView({ zimbraIsDelegatedAdminAccount: 'TRUE' });
+		await openWizard();
+
+		await expect
+			.element(page.getByText('Dynamic Mode', { exact: true }))
+			.not.toBeInTheDocument();
 	});
 });

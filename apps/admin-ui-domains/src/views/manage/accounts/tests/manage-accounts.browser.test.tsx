@@ -114,6 +114,33 @@ function setupCountAccountInterceptor(totalAccounts = 3): Promise<unknown> {
     });
 }
 
+type ExtendedAccountEntry = Omit<AccountEntry, 'a'> & {
+    a: Array<{ n: string; _content: string; pd?: boolean }>;
+};
+
+function buildAccountWithAliases(
+    email: string,
+    id: string,
+    aliases: Array<string>,
+): ExtendedAccountEntry {
+    const base = buildAccount(email, id, { displayName: 'Aliased User' });
+    const mailAttrs = [email, ...aliases].map((address) => ({ n: 'mail', _content: address }));
+    return {
+        ...base,
+        a: [...mailAttrs, ...base.a.filter((attr) => attr.n !== 'mail')],
+    };
+}
+
+function buildPdFlagAdminAccount(email: string, id: string): ExtendedAccountEntry {
+    const base = buildAccount(email, id, { displayName: 'Pd Admin User' });
+    return {
+        ...base,
+        a: base.a.map((attr) =>
+            attr.n === 'zimbraIsAdminAccount' ? { ...attr, _content: '', pd: true } : attr,
+        ),
+    };
+}
+
 describe('ManageAccounts (browser)', () => {
     beforeEach(async () => {
         await advancedSupportedApiForBrowser.withAdvancedNotSupported();
@@ -526,6 +553,117 @@ describe('ManageAccounts (browser)', () => {
             await setupBrowserTest(<ManageAccounts />);
             const params = await countInterceptor;
             expect(params).toHaveProperty('domain');
+        });
+    });
+
+    describe('Aliases', () => {
+        it('should display the alias count for accounts with aliases', async () => {
+            const aliasedAccounts = [
+                buildAccountWithAliases('user@example.com', 'acc-aliases', [
+                    'alias1@example.com',
+                    'alias2@example.com',
+                ]),
+            ];
+            setupSearchDirectoryInterceptor(aliasedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+
+            await expect.element(page.getByText('user@example.com')).toBeInTheDocument();
+            await expect.element(page.getByText('2', { exact: true })).toBeVisible();
+        });
+
+        it('should show the alias addresses in a tooltip when hovering the alias count', async () => {
+            const aliasedAccounts = [
+                buildAccountWithAliases('user@example.com', 'acc-aliases', [
+                    'alias1@example.com',
+                    'alias2@example.com',
+                ]),
+            ];
+            setupSearchDirectoryInterceptor(aliasedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+
+            await page.getByText('2', { exact: true }).hover();
+
+            await expect.element(page.getByText('alias1@example.com')).toBeVisible();
+            await expect.element(page.getByText('alias2@example.com')).toBeVisible();
+        });
+    });
+
+    describe('Attribute flattening', () => {
+        it('should display Admin type when zimbraIsAdminAccount has pd set to true', async () => {
+            const pdAdminAccounts = [buildPdFlagAdminAccount('pd-admin@example.com', 'acc-pd')];
+            setupSearchDirectoryInterceptor(pdAdminAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+
+            await expect
+                .element(page.getByText('Admin', { exact: true }).first())
+                .toBeInTheDocument();
+        });
+    });
+
+    describe('Row interactions', () => {
+        function setupEditAccountInterceptors(): void {
+            createBrowserSoapAPIInterceptor('GetAccount', {
+                account: [
+                    {
+                        id: 'acc-1',
+                        name: 'user1@example.com',
+                        a: [
+                            { n: 'mail', _content: 'user1@example.com' },
+                            { n: 'displayName', _content: 'User One' },
+                            { n: 'zimbraAccountStatus', _content: 'active' },
+                            { n: 'zimbraId', _content: 'acc-1' },
+                            { n: 'zimbraCOSId', _content: 'cos-default-id' },
+                            { n: 'zimbraIsAdminAccount', _content: 'FALSE' },
+                            { n: 'zimbraIsDelegatedAdminAccount', _content: 'FALSE' },
+                            { n: 'zimbraIsSystemAccount', _content: 'FALSE' },
+                            { n: 'zimbraIsExternalVirtualAccount', _content: 'FALSE' },
+                            { n: 'description', _content: 'Primary mailbox for User One' },
+                        ],
+                    },
+                ],
+            });
+            createBrowserSoapAPIInterceptor('GetAccountMembership', { dl: [] });
+            createBrowserSoapAPIInterceptor('GetGrants', {});
+            createBrowserSoapAPIInterceptor('GetFolder', {});
+        }
+
+        it('should open the account edit view when the account email is clicked', async () => {
+            setupEditAccountInterceptors();
+            setupSearchDirectoryInterceptor();
+            setupCountAccountInterceptor();
+            await setupBrowserTest(<ManageAccounts />);
+
+            await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+            await page.getByText('user1@example.com').click();
+
+            await expect
+                .element(page.getByRole('heading', { name: 'user1@example.com' }))
+                .toBeVisible();
+        });
+
+        it('should open the account edit view when the description cell is clicked', async () => {
+            setupEditAccountInterceptors();
+            const describedAccounts = [
+                buildAccount('user1@example.com', 'acc-1', {
+                    displayName: 'User One',
+                    description: 'Primary mailbox for User One',
+                }),
+            ];
+            setupSearchDirectoryInterceptor(describedAccounts);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+
+            await expect
+                .element(page.getByText('Primary mailbox for User One'))
+                .toBeInTheDocument();
+            await page.getByText('Primary mailbox for User One').click();
+
+            await expect
+                .element(page.getByRole('heading', { name: 'user1@example.com' }))
+                .toBeVisible();
         });
     });
 });

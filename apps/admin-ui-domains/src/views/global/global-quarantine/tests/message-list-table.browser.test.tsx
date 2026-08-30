@@ -87,4 +87,35 @@ describe('MessageListTable', () => {
 
     await expect.element(page.getByText('This list is empty.')).toBeVisible();
   });
+
+  describe('Column interactions', () => {
+    it('calls onOpenMessage when clicking the date, sender, score and reason columns', async () => {
+      const onOpenMessage = vi.fn();
+      await setupBrowserTest(
+        <MessageListTable
+          messages={[createMessage()]}
+          isFetching={false}
+          onOpenMessage={onOpenMessage}
+        />,
+      );
+
+      await page.getByText('15/06/25 14:30').click();
+      await page.getByText('spammer@example.com').click();
+      await page.getByText('42', { exact: true }).click();
+      await page.getByText('bad content').click();
+
+      expect(onOpenMessage).toHaveBeenCalledTimes(4);
+      expect(onOpenMessage).toHaveBeenCalledWith(expect.objectContaining({ id: 'msg-1' }));
+    });
+
+    it('falls back to an empty sender cell when envelopeFrom is missing', async () => {
+      const message = { ...createMessage(), envelopeFrom: undefined };
+      const onOpenMessage = vi.fn();
+      await setupBrowserTest(
+        <MessageListTable messages={[message]} isFetching={false} onOpenMessage={onOpenMessage} />,
+      );
+
+      await expect.element(page.getByText('Spam subject')).toBeVisible();
+    });
+  });
 });

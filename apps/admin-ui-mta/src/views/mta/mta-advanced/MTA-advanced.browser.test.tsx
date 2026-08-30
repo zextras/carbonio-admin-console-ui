@@ -425,4 +425,16 @@ describe('MTAAdvanced', () => {
     await expect.element(saveButton).toBeVisible();
     await saveButton.click();
   }, 20000);
+
+  describe('Empty configuration', () => {
+    it('should show a spinner instead of the form when no config is returned', async () => {
+      createBrowserSoapAPIInterceptor('GetAllConfig', {});
+
+      await setupBrowserTest(<MTAAdvanced />, { grantRights: 'config' });
+
+      await expect.element(page.getByRole('status')).toBeVisible();
+      expect(page.getByText('Logging', { exact: true }).elements()).toHaveLength(0);
+      expect(page.getByText('Advanced', { exact: true }).elements()).toHaveLength(0);
+    });
+  });
 });

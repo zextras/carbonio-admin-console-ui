@@ -4,10 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useSelector } from '@tanstack/react-store';
 import { setupBrowserTest } from 'admin-ui-test-utils';
+import { format } from 'date-fns';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { useAccountForm } from '../account-form-context';
 import {
   computeGracePeriodDefaultDate,
   GracePeriodDatePicker,
@@ -96,5 +99,93 @@ describe('GracePeriodDatePicker (browser)', () => {
     await expect
       .element(page.getByRole('textbox', { name: /set grace period expiration date/i }))
       .toBeEnabled();
+  });
+});
+
+const GracePeriodStoreProbe = () => {
+  const { form } = useAccountForm();
+  const values = useSelector(form.store, (s) => s.values as Record<string, string>);
+  return <p>{`probe-grace:${values?.carbonioOtpGracePeriodEndingTime ?? ''}`}</p>;
+};
+
+function buildGentime(date: Date): string {
+  return `${date.getUTCFullYear()}${String(date.getUTCMonth() + 1).padStart(2, '0')}${String(
+    date.getUTCDate(),
+  ).padStart(2, '0')}${String(date.getUTCHours()).padStart(2, '0')}${String(
+    date.getUTCMinutes(),
+  ).padStart(2, '0')}${String(date.getUTCSeconds()).padStart(2, '0')}Z`;
+}
+
+describe('GracePeriodDatePicker interactions (browser)', () => {
+  it('defaults to one month ahead and stores a gentime when the user picks a date', async () => {
+    const nextMonth = new Date();
+    nextMonth.setMonth(nextMonth.getMonth() + 1);
+
+    setupBrowserTest(
+      <AccountFormTestProvider values={GRACE_FLAGS}>
+        <>
+          <GracePeriodDatePicker />
+          <GracePeriodStoreProbe />
+        </>
+      </AccountFormTestProvider>,
+    );
+
+    const input = page.getByRole('textbox', { name: /set grace period expiration date/i });
+    await expect.element(input).toBeVisible();
+    const initialValue = (input.element() as HTMLInputElement).value;
+    expect(initialValue).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+    await expect.element(page.getByText('probe-grace:', { exact: true })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Calendar' }).click();
+    await expect.element(page.getByRole('grid')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Go to the Next Month' }).click();
+    await expect
+      .element(page.getByRole('grid', { name: format(nextMonth, 'LLLL yyyy') }))
+      .toBeVisible();
+    await page.getByRole('gridcell').filter({ hasText: '10' }).click();
+
+    await expect.element(page.getByText(/^probe-grace:\d{14}Z$/)).toBeVisible();
+    const pickedValue = (input.element() as HTMLInputElement).value;
+    expect(pickedValue).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+  });
+
+  it('clears the stored ending time when the selected day is toggled off', async () => {
+    const target = new Date();
+    target.setMonth(target.getMonth() + 2);
+    target.setDate(15);
+    const gentime = buildGentime(target);
+
+    setupBrowserTest(
+      <AccountFormTestProvider
+        values={{ ...GRACE_FLAGS, carbonioOtpGracePeriodEndingTime: gentime }}
+      >
+        <>
+          <GracePeriodDatePicker />
+          <GracePeriodStoreProbe />
+        </>
+      </AccountFormTestProvider>,
+    );
+
+    const input = page.getByRole('textbox', { name: /set grace period expiration date/i });
+    await expect.element(input).toHaveValue(format(target, 'dd/MM/yyyy'));
+    await expect.element(page.getByText(`probe-grace:${gentime}`)).toBeVisible();
+
+    await page.getByRole('button', { name: 'Calendar' }).click();
+    await expect.element(page.getByRole('grid')).toBeVisible();
+
+    const nextMonthButton = page.getByRole('button', { name: 'Go to the Next Month' });
+    await nextMonthButton.click();
+    await nextMonthButton.click();
+    await expect
+      .element(page.getByRole('grid', { name: format(target, 'LLLL yyyy') }))
+      .toBeVisible();
+
+    await page.getByRole('gridcell').filter({ hasText: '15' }).click();
+
+    await expect.element(page.getByText('probe-grace:', { exact: true })).toBeVisible();
+    const fallbackMonth = new Date();
+    fallbackMonth.setMonth(fallbackMonth.getMonth() + 1);
+    await expect.element(input).toHaveValue(format(fallbackMonth, 'dd/MM/yyyy'));
   });
 });

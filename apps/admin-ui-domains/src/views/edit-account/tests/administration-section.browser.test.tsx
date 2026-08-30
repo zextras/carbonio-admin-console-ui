@@ -55,7 +55,7 @@ function setupTest(): void {
 				zimbraIsDelegatedAdminAccount: 'TRUE',
 			}}
 		>
-			<EditAccountAdministrationSection onLoadingChange={vi.fn()} />
+			<EditAccountAdministrationSection />
 		</AccountFormTestProvider>,
 		{ queryClient },
 	);

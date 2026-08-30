@@ -4,9 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { createBrowserAPIInterceptor, setupBrowserTest } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import AccountOtpSection from '../account-otp-section';
 import type { CreateAccountFormValues } from '../create-account-types';
@@ -170,6 +171,79 @@ describe('AccountOtpSection – QRCodeSVG', () => {
         .toBeVisible();
       await expect.element(page.getByText('Create OTP code')).toBeVisible();
       await expect.element(page.getByText('Add Administration rights')).toBeVisible();
+    });
+  });
+
+  describe('Send OTP email', () => {
+    beforeEach(() => {
+      vi.clearAllMocks();
+    });
+
+    it('should add a valid recipient as a chip', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
+          <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
+        </CreateAccountFormTestProvider>,
+      );
+
+      const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+      await otpEmailInput.fill('recipient@example.com');
+      await userEvent.keyboard('{Tab}');
+
+      await expect.element(page.getByText('recipient@example.com')).toBeVisible();
+    });
+
+    it('should discard invalid email addresses', async () => {
+      setupBrowserTest(
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
+          <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
+        </CreateAccountFormTestProvider>,
+      );
+
+      const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+      await otpEmailInput.fill('not-a-valid-email');
+      await userEvent.keyboard('{Tab}');
+
+      await expect.element(page.getByText('not-a-valid-email')).not.toBeInTheDocument();
+    });
+
+    it('should send the OTP email to the selected recipients and clear the chips on success', async () => {
+      const apiInterceptor = await createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/zextras',
+        () =>
+          HttpResponse.json({
+            Body: { response: { content: JSON.stringify({ ok: true }) } },
+          }),
+      );
+
+      setupBrowserTest(
+        <CreateAccountFormTestProvider values={baseAccountDetail}>
+          <AccountOtpSection setToggleNextBtn={mockSetToggleNextBtn} />
+        </CreateAccountFormTestProvider>,
+      );
+
+      const otpEmailInput = page.getByPlaceholder('Send the OTP to');
+      await otpEmailInput.fill('recipient@example.com');
+      await userEvent.keyboard('{Tab}');
+      await expect.element(page.getByText('recipient@example.com')).toBeVisible();
+
+      await page.getByRole('button', { name: 'SEND', exact: true }).click();
+
+      await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+
+      const capturedRequest = apiInterceptor.getLastRequest();
+      const capturedRequestBody = (await capturedRequest.json()) as {
+        Body: { SendMsgRequest: { m: { e: Array<{ t: string; a: string }> } } };
+      };
+
+      expect(capturedRequestBody.Body.SendMsgRequest.m.e).toEqual(
+        expect.arrayContaining([
+          expect.objectContaining({ t: 't', a: 'recipient@example.com' }),
+        ]),
+      );
+
+      await expect.element(page.getByText('recipient@example.com')).not.toBeInTheDocument();
     });
   });
 });

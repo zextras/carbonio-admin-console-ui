@@ -6,8 +6,10 @@
 
 import { domainByIdKey } from '@zextras/ui-shared';
 import {
+  advancedSupportedApiForBrowser,
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
+  createBrowserZextrasActionInterceptor,
   getQueryClient,
   setupBrowserTest as _setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -469,5 +471,305 @@ describe('CreateAccount API Integration (browser)', () => {
       setTimeout(resolve, 500);
     });
     expect(requestSeen).toBe(false);
+  });
+});
+
+describe('CreateAccountDetailSection – External LDAP (browser)', () => {
+  function setupExternalLdapDomainTest(
+    ldapUrlContent: string,
+    values?: { zimbraAuthLdapExternalDn?: string },
+  ): Promise<RenderResult> {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+      id: DOMAIN_ID,
+      name: DOMAIN_NAME,
+      a: [
+        { n: 'zimbraDomainStatus', _content: 'active' },
+        { n: 'zimbraAuthLdapURL', _content: ldapUrlContent },
+      ],
+    });
+    return _setupBrowserTest(
+      <CreateAccountFormTestProvider values={values}>
+        <CreateAccountDetailSection />
+      </CreateAccountFormTestProvider>,
+      {
+        queryClient,
+        withDomainIdRoute: true,
+        initialRouterEntry: `/${DOMAIN_ID}`,
+      },
+    );
+  }
+
+  beforeEach(() => {
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
+        { name: 'Default COS', id: 'default-cos-id' },
+        { name: 'Premium COS', id: 'premium-cos-id' },
+      ],
+    });
+    vi.clearAllMocks();
+  });
+
+  it('should render the External LDAP section when the domain has an external LDAP URL', async () => {
+    setupExternalLdapDomainTest('ldap://ldap.example.com:389');
+
+    await expect.element(page.getByText('External LDAP', { exact: true })).toBeVisible();
+    await expect
+      .element(page.getByLabelText('External LDAP Reference for Authentication'))
+      .toBeVisible();
+  });
+
+  it('should render the external LDAP reference value from the form state', async () => {
+    setupExternalLdapDomainTest('ldap://ldap.example.com:389', {
+      zimbraAuthLdapExternalDn: 'uid=john,ou=people,dc=example,dc=com',
+    });
+
+    await expect
+      .element(page.getByLabelText('External LDAP Reference for Authentication'))
+      .toHaveValue('uid=john,ou=people,dc=example,dc=com');
+  });
+
+  it('should not render the External LDAP section when the URL attribute is empty', async () => {
+    setupExternalLdapDomainTest('');
+
+    await expect
+      .element(page.getByText('External LDAP', { exact: true }))
+      .not.toBeInTheDocument();
+  });
+});
+
+describe('CreateAccount OTP Step (browser)', () => {
+  const wizardProps = {
+    setShowCreateAccountView: vi.fn(),
+    getAccountList: vi.fn(),
+    setShowEditAccountView: vi.fn(),
+    openDetailView: vi.fn(),
+    setShowAccountDetailView: vi.fn(),
+    setIsAccountCreated: vi.fn(),
+    setDefaultTab: vi.fn(),
+  };
+
+  beforeEach(async () => {
+    await advancedSupportedApiForBrowser.withAdvancedSupported();
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
+        { name: 'Default COS', id: 'default-cos-id' },
+        { name: 'Premium COS', id: 'premium-cos-id' },
+      ],
+    });
+    vi.clearAllMocks();
+  });
+
+  function mockCreateAccountSuccess() {
+    return createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateAccountRequest',
+      () =>
+        HttpResponse.json({
+          Body: {
+            CreateAccountResponse: {
+              account: [{ id: 'new-account-otp', name: 'john.doe@test-domain.com' }],
+            },
+          },
+        }),
+    );
+  }
+
+  async function fillDetailsAndCreate(): Promise<void> {
+    await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
+    await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
+    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
+
+    await expect
+      .element(page.getByText('The account has been successfully created'))
+      .toBeVisible();
+  }
+
+  it('should show the OTP options step after creating an account in advanced mode', async () => {
+    mockCreateAccountSuccess();
+    setupBrowserTest(<CreateAccount {...wizardProps} />);
+
+    await fillDetailsAndCreate();
+
+    await expect.element(page.getByRole('switch', { name: 'Create OTP code' })).toBeVisible();
+    await expect
+      .element(page.getByRole('switch', { name: 'Add Administration rights' }))
+      .toBeVisible();
+    await expect
+      .element(page.getByText('The account has been created successfully'))
+      .toBeVisible();
+  });
+
+  it('should generate the OTP secret and pin codes when Create OTP code is enabled', async () => {
+    mockCreateAccountSuccess();
+    createBrowserZextrasActionInterceptor('totp_generate_command', () =>
+      HttpResponse.json({
+        Body: {
+          response: {
+            content: JSON.stringify({
+              ok: true,
+              response: {
+                label: 'john.doe@test-domain.com',
+                secret: 'OTPSECRET123456',
+                issuer: 'Carbonio',
+                algorithm: 'SHA1',
+                digits_length: '6',
+                period: '30',
+                static_otp_codes: [{ code: '12345678' }, { code: '87654321' }],
+              },
+            }),
+          },
+        },
+      }),
+    );
+    setupBrowserTest(<CreateAccount {...wizardProps} />);
+
+    await fillDetailsAndCreate();
+
+    await page.getByRole('switch', { name: 'Create OTP code' }).click();
+    await page.getByRole('button', { name: 'CLOSE', exact: true }).click();
+
+    await expect.element(page.getByText('OTPSECRET123456')).toBeVisible();
+    await expect.element(page.getByText('12345678')).toBeVisible();
+    await expect.element(page.getByText('87654321')).toBeVisible();
+  });
+
+  it('should keep the wizard on the details step and show an error snackbar when creation fails', async () => {
+    createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateAccountRequest',
+      () =>
+        HttpResponse.json({
+          Body: {
+            Fault: { Reason: { Text: 'an account with that name already exists' } },
+          },
+        }),
+    );
+    setupBrowserTest(<CreateAccount {...wizardProps} />);
+
+    await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
+    await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
+    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
+
+    await expect
+      .element(page.getByText('an account with that name already exists'))
+      .toBeVisible();
+    await expect
+      .element(page.getByText('The account has been successfully created'))
+      .not.toBeInTheDocument();
+  });
+
+  it('should close the wizard when CLOSE is clicked without selecting any OTP option', async () => {
+    mockCreateAccountSuccess();
+    setupBrowserTest(<CreateAccount {...wizardProps} />);
+
+    await fillDetailsAndCreate();
+
+    await page.getByRole('button', { name: 'CLOSE', exact: true }).click();
+
+    expect(wizardProps.setShowCreateAccountView).toHaveBeenCalledWith(false);
+    expect(wizardProps.setIsAccountCreated).toHaveBeenCalledWith(true);
+  });
+
+  it('should open the administration tab of the edit view when administration rights are enabled', async () => {
+    mockCreateAccountSuccess();
+    setupBrowserTest(<CreateAccount {...wizardProps} />);
+
+    await fillDetailsAndCreate();
+
+    await page.getByRole('switch', { name: 'Add Administration rights' }).click();
+    await page.getByRole('button', { name: 'CLOSE', exact: true }).click();
+
+    expect(wizardProps.setShowCreateAccountView).toHaveBeenCalledWith(false);
+    expect(wizardProps.openDetailView).toHaveBeenCalledWith(
+      expect.objectContaining({ sn: 'Doe', givenName: 'John' }),
+    );
+    expect(wizardProps.setShowAccountDetailView).toHaveBeenCalledWith(false);
+    expect(wizardProps.setShowEditAccountView).toHaveBeenCalledWith(true);
+    expect(wizardProps.setDefaultTab).toHaveBeenCalledWith('administration');
+  });
+
+  it('should reset the form and return to the details step when CREATE ANOTHER ACCOUNT is clicked', async () => {
+    mockCreateAccountSuccess();
+    setupBrowserTest(<CreateAccount {...wizardProps} />);
+
+    await fillDetailsAndCreate();
+
+    await page.getByRole('button', { name: 'CREATE ANOTHER ACCOUNT' }).click();
+
+    await expect
+      .element(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }))
+      .toBeVisible();
+    await expect.element(page.getByLabelText('Name', { exact: true })).toHaveValue('');
+    await expect.element(page.getByLabelText('Surname')).toHaveValue('');
+  });
+});
+
+describe('CreateAccount COS Selection (browser)', () => {
+  const selectionProps = {
+    setShowCreateAccountView: vi.fn(),
+    getAccountList: vi.fn(),
+    setShowEditAccountView: vi.fn(),
+    openDetailView: vi.fn(),
+    setShowAccountDetailView: vi.fn(),
+    setIsAccountCreated: vi.fn(),
+    setDefaultTab: vi.fn(),
+  };
+
+  beforeEach(() => {
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
+        { name: 'Default COS', id: 'default-cos-id' },
+        { name: 'Premium COS', id: 'premium-cos-id' },
+      ],
+    });
+    vi.clearAllMocks();
+  });
+
+  it('should send the selected COS id and the must-change password flag', async () => {
+    const apiInterceptor = await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/CreateAccountRequest',
+      () =>
+        HttpResponse.json({
+          Body: {
+            CreateAccountResponse: {
+              account: [{ id: 'new-account-cos', name: 'john.doe@test-domain.com' }],
+            },
+          },
+        }),
+    );
+
+    setupBrowserTest(<CreateAccount {...selectionProps} />);
+
+    await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
+    await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
+    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
+    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+
+    await page.getByRole('switch', { name: 'Default COS' }).click();
+    await page.getByText('Default Class of Service', { exact: true }).click();
+    await page.getByText('Premium COS').click();
+    await page.getByRole('switch', { name: /User will change password on next login/i }).click();
+
+    await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
+
+    await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+
+    const capturedRequest = apiInterceptor.getLastRequest();
+    const capturedRequestBody = (await capturedRequest.json()) as {
+      Body: { CreateAccountRequest: { a: Array<{ n: string; _content: string }> } };
+    };
+
+    expect(capturedRequestBody.Body.CreateAccountRequest.a).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ n: 'zimbraCOSId', _content: 'premium-cos-id' }),
+        expect.objectContaining({ n: 'zimbraPasswordMustChange', _content: 'TRUE' }),
+      ]),
+    );
   });
 });
