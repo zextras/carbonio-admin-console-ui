@@ -6,6 +6,7 @@
 import {
   Button,
   Container,
+  CustomChip,
   Input,
   LabeledValue,
   Modal,
@@ -18,8 +19,7 @@ import React, { FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { useDomainList } from '../../services/use-domain-list';
-import { CustomChip } from './customChip';
+import { useDomainList } from '../services/use-domain-list';
 
 export const ManageAliases: FC<{
   listAliases: Array<{ label: string }>;

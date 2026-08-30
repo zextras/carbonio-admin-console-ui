@@ -8,6 +8,7 @@ import { useSelector } from '@tanstack/react-store';
 import {
   ChipInput,
   Container,
+  CustomChip,
   InheritedSwitch,
   Input,
   Row,
@@ -18,7 +19,6 @@ import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../wsc/wsc-settings';
-import { CustomChip } from '../components/customChip';
 import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import { Features } from './features';

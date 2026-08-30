@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Button, ChipInput, Container, Padding, Row, Switch } from '@zextras/ui-components';
+import { Button, ChipInput, Container, CustomChip, Padding, Row, Switch } from '@zextras/ui-components';
 import { map } from 'lodash-es';
 import { QRCodeSVG } from 'qrcode.react';
 import { FC, useState } from 'react';
@@ -12,7 +12,6 @@ import { useTranslation } from 'react-i18next';
 
 import { useSelectedDomain } from '../../../../hooks/use-selected-domain';
 import { useSendOtpEmail } from '../../../../services/use-send-otp-email';
-import { CustomChip } from '../../../components/customChip';
 import { isValidEmail } from '../../../utility/utils';
 import staticCodesStyles from './account-otp-section.module.css';
 import { useCreateAccountFormContext } from './create-account-form-context';

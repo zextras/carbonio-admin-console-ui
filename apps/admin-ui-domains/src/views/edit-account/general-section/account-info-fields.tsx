@@ -10,7 +10,7 @@ import { map } from 'lodash-es';
 import { ChangeEvent, ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ManageAliases } from '../../components/manageAliases';
+import { ManageAliases } from '../../../components/manageAliases';
 import { useAccountForm, useSetAccountValues } from '../account-form-context';
 import { EditAccountQuotaBar } from '../parts/edit-account-quota-bar';
 import { DomainRenameFields } from './domain-rename-fields';

@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Chip } from '@zextras/ui-components';
-import type { ComponentProps } from 'react';
+import { Chip, type ChipProps } from './Chip';
 
-type CustomChipProps = ComponentProps<typeof Chip> & { value?: unknown };
+type CustomChipProps = ChipProps & { value?: unknown };
 
 function copyClipboard(label: string): void {
   navigator.clipboard.writeText(label);
@@ -15,7 +14,7 @@ function copyClipboard(label: string): void {
 
 export const CustomChip = (props: Readonly<CustomChipProps>) => {
   const label = typeof props?.label === 'string' ? props.label : '';
-  const actions: ComponentProps<typeof Chip>['actions'] = props?.actions ?? [
+  const actions: ChipProps['actions'] = props?.actions ?? [
     {
       id: 'copy-to-clipboard',
       type: 'button' as const,
@@ -24,4 +23,4 @@ export const CustomChip = (props: Readonly<CustomChipProps>) => {
     },
   ];
   return <Chip {...props} actions={actions} color="black"></Chip>;
-}
+};

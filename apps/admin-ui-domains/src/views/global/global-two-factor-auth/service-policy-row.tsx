@@ -5,10 +5,9 @@
  */
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { ChipInput, type ChipItem, Select, type SelectItem } from '@zextras/ui-components';
+import { ChipInput, type ChipItem, CustomChip, Select, type SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { CustomChip } from '../../components/customChip';
 import { isValidIpRange } from '../../utility/utils';
 import styles from './global-two-factor-auth.module.css';
 import type { TwoFactorPoliciesFormValues } from './two-factor-policies-schema';
