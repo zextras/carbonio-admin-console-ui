@@ -5,7 +5,12 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { getDomainAttributeValue, getSamlAttributes, getSpEndpoints } from './utils';
+import {
+  getDomainAttributeValue,
+  getSamlAttributes,
+  getSpEndpoints,
+  samlAttributeValueToString,
+} from './utils';
 
 describe('getSamlAttributes', () => {
   it('maps config entries to attribute objects', () => {
@@ -70,5 +75,37 @@ describe('getSpEndpoints', () => {
 
   it('returns empty endpoints when the public service hostname is missing', () => {
     expect(getSpEndpoints([], 'example.com')).toEqual({ entityId: '', serviceUrl: '' });
+  });
+});
+
+describe('samlAttributeValueToString', () => {
+  it('returns the value itself when it is a string', () => {
+    expect(samlAttributeValueToString('https://idp.example.com')).toBe('https://idp.example.com');
+  });
+
+  it('converts a number to a string', () => {
+    expect(samlAttributeValueToString(42)).toBe('42');
+  });
+
+  it('converts a boolean to a string', () => {
+    expect(samlAttributeValueToString(true)).toBe('true');
+    expect(samlAttributeValueToString(false)).toBe('false');
+  });
+
+  it('joins array values with a comma', () => {
+    expect(samlAttributeValueToString(['one', 'two'])).toBe('one,two');
+  });
+
+  it('recursively flattens nested arrays', () => {
+    expect(samlAttributeValueToString(['one', ['two', 'three'], 4, true])).toBe(
+      'one,two,three,4,true',
+    );
+  });
+
+  it('returns an empty string for unsupported values', () => {
+    expect(samlAttributeValueToString(null)).toBe('');
+    expect(samlAttributeValueToString(undefined)).toBe('');
+    expect(samlAttributeValueToString({ key: 'value' })).toBe('');
+    expect(samlAttributeValueToString([{ key: 'value' }, { key: 'other' }])).toBe(',');
   });
 });
