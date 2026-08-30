@@ -21,6 +21,20 @@ import { useParams } from 'react-router';
 
 import { useDomainList } from '../services/use-domain-list';
 
+function createEditAliasesIcon(onOpenModal: () => void): () => React.ReactElement {
+  return function EditAliasesIcon() {
+    return (
+      <ds-icon
+        icon="EditAsNewOutline"
+        onClick={onOpenModal}
+        style={{ cursor: 'pointer' }}
+        size="large"
+        onChange={noop}
+      ></ds-icon>
+    );
+  };
+}
+
 export const ManageAliases: FC<{
   listAliases: Array<{ label: string }>;
   setListAliases: (arg: Array<{ label: string }>) => void;
@@ -59,12 +73,12 @@ export const ManageAliases: FC<{
                   maxWidth="44rem"
                   style={{ gap: '0.5rem' }}
                 >
-                  {listAliases?.map(
-                    (ele, index) =>
-                      (aliasType !== 'accounts' || index > 0) && (
-                        <CustomChip key={`chip${index}`} label={ele?.label} />
-                      ),
-                  )}
+              {listAliases?.map(
+                (ele, index) =>
+                  (aliasType !== 'accounts' || index > 0) && (
+                    <CustomChip key={ele.label} label={ele?.label} />
+                  ),
+              )}
                   <Row width="100%" padding={{ top: 'medium' }}>
                     <ds-divider></ds-divider>
                   </Row>
@@ -84,15 +98,7 @@ export const ManageAliases: FC<{
           <LabeledValue
             label={t('account_details.aliases', 'Aliases')}
             value={(listAliases?.length || 1) - 1}
-            CustomIcon={() => (
-              <ds-icon
-                icon="EditAsNewOutline"
-                onClick={(): void => setShowManageAliesModal(true)}
-                style={{ cursor: 'pointer' }}
-                size="large"
-                onChange={noop}
-              ></ds-icon>
-            )}
+            CustomIcon={createEditAliasesIcon((): void => setShowManageAliesModal(true))}
           />
         )}
       </Row>
@@ -206,7 +212,7 @@ export const ManageAliases: FC<{
                   (ele, index) =>
                     (aliasType !== 'accounts' || index > 0) && (
                       <CustomChip
-                        key={`chip${index}`}
+                        key={ele.label}
                         label={ele.label}
                         onClose={(): void => {
                           const aliaes = cloneDeep(listAliases);
