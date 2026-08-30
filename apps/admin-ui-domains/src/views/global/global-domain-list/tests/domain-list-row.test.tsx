@@ -64,7 +64,7 @@ describe('buildDomainRow', () => {
     expect(onSelect).toHaveBeenCalledWith(row.item);
   });
 
-  it('falls back to the Active label for an unknown status', () => {
+  it('falls back to the raw status string for an unknown status', () => {
     const row = buildDomainRow(
       {
         name: 'weird.com',
@@ -77,6 +77,6 @@ describe('buildDomainRow', () => {
 
     render(<>{row.columns}</>);
 
-    expect(screen.getByText('Active')).toBeTruthy();
+    expect(screen.getByText('totally-unknown-status')).toBeTruthy();
   });
 });
