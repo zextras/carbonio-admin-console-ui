@@ -13,9 +13,16 @@ import {
 	DataTableGlobalFilter,
 	DataTablePagination,
 	type IconName,
+	ModalOverlay,
+	NotificationDetail,
 	Select,
 } from '@zextras/ui-components';
-import { type Notification, useAllNotifications, useSnackbar } from '@zextras/ui-shared';
+import {
+	type Notification,
+	useAllNotifications,
+	useReadUnreadNotification,
+	useSnackbar,
+} from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -75,13 +82,37 @@ export const DashboardDataTableShowcase = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 	const { data: notificationList = [], isPending } = useAllNotifications();
+	const readUnreadMutation = useReadUnreadNotification();
 
 	const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
 	const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
 	const [grouping, setGrouping] = useState<GroupingState>([]);
+	const [selectedNotificationId, setSelectedNotificationId] = useState<string | null>(null);
 
 	const data = notificationList.length > 0 ? notificationList : DEMO_NOTIFICATIONS;
 	const selectedCount = Object.keys(rowSelection).length;
+	const selectedNotification = data.find((item) => item.id === selectedNotificationId) ?? null;
+
+	function copyNotificationOperation(notificationSelected: Notification): void {
+		const notificationItem = `
+			${t('label.date', 'Date')} : ${format(notificationSelected?.date, 'dd-MM-yyyy - HH:mm a')} \n
+			${t('label.type', 'Type')} : ${notificationSelected?.level} \n
+			${t('label.what_inside', "What's inside?")} : ${notificationSelected?.subject} \n
+			${t('label.content', 'Content')} : ${notificationSelected?.text}
+		`;
+		navigator.clipboard.writeText(notificationItem);
+		createSnackbar({
+			key: 'success',
+			severity: 'success',
+			label: t(
+				'notification.copy_notification_successfully',
+				'Notification copied successfully',
+			),
+			autoHideTimeout: 3000,
+			hideButton: true,
+			replace: true,
+		});
+	}
 	const columns = columnHelper.columns([
 		columnHelper.accessor('subject', {
 			header: t('label.what_inside', "What's inside?"),
@@ -159,14 +190,10 @@ export const DashboardDataTableShowcase = () => {
 					enableColumnPinning
 					enableRowPinning
 					onRowClick={(row) => {
-						createSnackbar({
-							key: 'showcase-row-click',
-							severity: 'info',
-							label: row.subject,
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true,
-						});
+						setSelectedNotificationId(row.id);
+						if (!row.ack) {
+							readUnreadMutation.mutate({ notification: row, showMessage: false });
+						}
 					}}
 					state={{ rowSelection, columnFilters, grouping }}
 					onRowSelectionChange={setRowSelection}
@@ -228,6 +255,23 @@ export const DashboardDataTableShowcase = () => {
 					}
 				/>
 			</div>
+			{selectedNotification && (
+				<ModalOverlay open={selectedNotification != null}>
+					<NotificationDetail
+						notification={selectedNotification}
+						setShowNotificationDetail={(open: boolean) => {
+							if (!open) {
+								setSelectedNotificationId(null);
+							}
+						}}
+						copyNotificationOperation={copyNotificationOperation}
+						markAsReadUnread={(notification: Notification) => {
+							readUnreadMutation.mutate({ notification });
+						}}
+						isRequestInProgress={readUnreadMutation.isPending}
+					/>
+				</ModalOverlay>
+			)}
 		</div>
 	);
 };
