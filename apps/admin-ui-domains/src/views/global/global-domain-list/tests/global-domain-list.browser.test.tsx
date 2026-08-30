@@ -154,12 +154,14 @@ describe('GlobalDomainList (browser)', () => {
       await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
     });
 
-    it('falls back to Active for an unknown status without crashing', async () => {
+    it('falls back to the raw status string for an unknown status without crashing', async () => {
       interceptDomains([buildDomain('weird.com', 'domain-x', 'totally-unknown-status')]);
       setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('weird.com')).toBeVisible();
-      await expect.element(page.getByText('Active', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('totally-unknown-status', { exact: true }))
+        .toBeVisible();
     });
   });
 
