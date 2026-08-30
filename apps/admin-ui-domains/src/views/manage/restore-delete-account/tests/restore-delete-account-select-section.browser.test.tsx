@@ -8,6 +8,7 @@ import { domainByIdKey } from '@zextras/ui-shared';
 import { getQueryClient, setupBrowserTest as _setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { noop } from 'lodash-es';
 import { http, HttpResponse } from 'msw';
+import { useState } from 'react';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
@@ -88,6 +89,18 @@ function renderWithContext(): ReturnType<typeof _setupBrowserTest> {
         },
     );
 }
+
+const SelectSectionHarness = () => {
+    const [detail, setDetail] = useState<Record<string, unknown> | null>(null);
+    return (
+        <RestoreDeleteAccountContext.Provider
+            value={{ restoreAccountDetail: detail, setRestoreAccountDetail: setDetail }}
+        >
+            <RestoreDeleteInheritedSelectSection />
+            <ds-text as="p">Selected: {(detail?.copyAccount as string) ?? ''}</ds-text>
+        </RestoreDeleteAccountContext.Provider>
+    );
+};
 
 describe('RestoreDeleteAccountSelectSection (browser)', () => {
     describe('Rendering', () => {
@@ -244,6 +257,29 @@ describe('RestoreDeleteAccountSelectSection (browser)', () => {
             const filterInput = page.getByLabelText('Filter Account List');
             await userEvent.type(filterInput, 'bob');
             await expect.element(filterInput).toHaveValue('bob');
+        });
+    });
+
+    describe('Selection', () => {
+        it('should seed copyAccount from the selected backup account', async () => {
+            setupGetBackupAccountsInterceptor();
+            const queryClient = getQueryClient();
+            queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
+                id: DOMAIN_ID,
+                name: DOMAIN_NAME,
+                a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+            });
+            await _setupBrowserTest(<SelectSectionHarness />, {
+                queryClient,
+                withDomainIdRoute: true,
+                initialRouterEntry: `/${DOMAIN_ID}`,
+            });
+
+            await page.getByText('alice@example.com').first().click();
+
+            await expect
+                .element(page.getByText('Selected: alice@example.com', { exact: true }))
+                .toBeInTheDocument();
         });
     });
 });

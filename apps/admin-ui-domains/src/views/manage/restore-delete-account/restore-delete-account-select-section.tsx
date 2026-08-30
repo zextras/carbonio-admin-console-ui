@@ -101,6 +101,7 @@ const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 		if (item?.id) {
 			setRestoreAccountDetail(() => ({
 				name: item?.name,
+				copyAccount: item?.name,
 				id: item?.id,
 				status: item?.status,
 				createDate: item?.creationTimestamp,
