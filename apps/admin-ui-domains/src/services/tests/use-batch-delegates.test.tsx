@@ -15,6 +15,7 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => ({
 }));
 
 import { batchService } from '@zextras/ui-shared';
+
 import { domainQueryKeys } from '../domain-query-keys';
 import { useBatchDelegates } from '../use-batch-delegates';
 

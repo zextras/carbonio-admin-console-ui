@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, DropDownInput, Padding, Row } from '@zextras/ui-components';
-import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
+import { replaceHistory, type SoapEntity, useDebouncedValue } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { GENERAL_SETTINGS, MAX_DOMAIN_DISPLAY } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import type { SoapEntity } from '@zextras/ui-shared';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import type { Domain } from '../../../store/types';
 import { DomainOverflowMessage } from './domain-overflow-message';
@@ -80,9 +79,7 @@ export const DomainSearchDropdown = ({
       : domainList.map((domain) => ({
           id: domain.id,
           label: domain.name,
-          customComponent: (
-            <DomainSearchResultItem domain={domain} onSelect={handleDomainSelect} />
-          ),
+          customComponent: <DomainSearchResultItem domain={domain} onSelect={handleDomainSelect} />,
         }));
 
   return (

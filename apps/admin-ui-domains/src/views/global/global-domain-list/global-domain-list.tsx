@@ -13,14 +13,13 @@ import {
   Table,
   TrackNumberPerPage,
 } from '@zextras/ui-components';
-import { replaceHistory, useDebouncedValue } from '@zextras/ui-shared';
+import { replaceHistory, type SoapEntity, useDebouncedValue } from '@zextras/ui-shared';
 import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
 import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import type { SoapEntity } from '@zextras/ui-shared';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
 

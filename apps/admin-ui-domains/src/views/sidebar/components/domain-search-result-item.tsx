@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Row } from '@zextras/ui-components';
-
 import type { SoapEntity } from '@zextras/ui-shared';
 
 type DomainSearchResultItemProps = {

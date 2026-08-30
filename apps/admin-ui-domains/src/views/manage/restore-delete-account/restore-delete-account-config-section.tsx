@@ -5,11 +5,11 @@
  */
 import { useQuery } from '@tanstack/react-query';
 import { Container, Input, Padding, Row } from '@zextras/ui-components';
+import { getDomainList } from '@zextras/ui-shared';
 import { ChangeEvent, FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import { getDomainList } from '@zextras/ui-shared';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 const restoreDomainListQueryKeys = {

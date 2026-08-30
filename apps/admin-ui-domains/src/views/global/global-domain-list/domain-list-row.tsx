@@ -3,10 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { SoapEntity } from '@zextras/ui-shared';
 import type { ReactElement } from 'react';
 
 import type { Attribute } from '../../../../types';
-import type { SoapEntity } from '@zextras/ui-shared';
 import { parseDomainAttributes } from '../../../utils/attributes';
 import { getStatusDisplay } from '../../../utils/status';
 
