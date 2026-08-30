@@ -1,0 +1,173 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.tableContainer {
+	position: relative;
+	display: block;
+	width: 100%;
+}
+
+.toolbar {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: space-between;
+	gap: var(--padding-size-small);
+	padding: 0 0 var(--padding-size-small) 0;
+}
+
+.toolbarGroup {
+	display: flex;
+	align-items: center;
+	gap: var(--padding-size-small);
+}
+
+.globalFilter {
+	flex: 0 1 16rem;
+	min-width: 10rem;
+}
+
+.table {
+	border-collapse: collapse;
+	table-layout: fixed;
+	width: 100%;
+}
+
+.table thead {
+	background-color: var(--color-gray3-regular);
+}
+
+.table th {
+	background-color: var(--color-gray3-regular);
+	position: sticky;
+	top: 0;
+	z-index: 2;
+	height: 1.875rem;
+	padding: 0 0.5rem;
+	text-align: left;
+	font-weight: bold;
+}
+
+.table td {
+	height: 1.875rem;
+	padding: 0 0.5rem;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.bodyRow {
+	transition: background-color 0.2s ease-out;
+}
+
+.bodyRow:nth-child(odd) {
+	background-color: var(--color-gray6-regular);
+}
+
+.bodyRow:nth-child(odd):hover {
+	background-color: var(--color-gray6-hover);
+}
+
+.bodyRow:nth-child(even) {
+	background-color: var(--color-gray5-regular);
+}
+
+.bodyRow:nth-child(even):hover {
+	background-color: var(--color-gray5-hover);
+}
+
+.bodyRow[data-selected='true'] {
+	background-color: var(--color-highlight-regular) !important;
+}
+
+.bodyRow[data-pinned='top'],
+.bodyRow[data-pinned='bottom'] {
+	background-color: var(--color-gray4-regular) !important;
+}
+
+.clickable {
+	cursor: pointer;
+}
+
+th[data-pinned='left'],
+td[data-pinned='left'] {
+	position: sticky;
+	z-index: 1;
+	box-shadow: 4px 0 6px -4px rgb(0 0 0 / 25%);
+}
+
+th[data-pinned='left'] {
+	z-index: 3;
+}
+
+th[data-pinned='right'],
+td[data-pinned='right'] {
+	position: sticky;
+	z-index: 1;
+	box-shadow: -4px 0 6px -4px rgb(0 0 0 / 25%);
+}
+
+th[data-pinned='right'] {
+	z-index: 3;
+}
+
+td[data-cell-selected='true'] {
+	background-color: var(--color-highlight-regular);
+	outline: 1px solid var(--color-primary-regular);
+}
+
+.sortButton {
+	display: flex;
+	align-items: center;
+	gap: 0.25rem;
+	width: 100%;
+	padding: 0;
+	background: none;
+	border: none;
+	font: inherit;
+	font-weight: bold;
+	color: inherit;
+	text-align: inherit;
+	cursor: pointer;
+}
+
+.resizer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 4px;
+	height: 100%;
+	cursor: col-resize;
+	user-select: none;
+	touch-action: none;
+	background: transparent;
+}
+
+.resizer:hover,
+.resizerActive {
+	background: var(--color-primary-regular);
+}
+
+.selectCheckbox {
+	accent-color: var(--color-primary-regular);
+	cursor: pointer;
+}
+
+.stateCell {
+	text-align: center;
+	color: var(--color-gray1-regular);
+	padding: var(--padding-size-large) 0 !important;
+	height: auto;
+}
+
+.paginationInfo {
+	min-width: 3rem;
+	text-align: center;
+}
+
+.pageSizeLabel {
+	font-size: var(--font-size-small);
+}
