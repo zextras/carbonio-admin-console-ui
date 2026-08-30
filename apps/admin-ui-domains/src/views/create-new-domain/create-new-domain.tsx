@@ -20,7 +20,7 @@ export const CreateDomain = () => {
     currentStep,
     mailServerItems,
     cosItems,
-    isCosListLoading,
+    isCosListPending,
     isSubmitting,
     handleCancel,
     handleBack,
@@ -52,7 +52,7 @@ export const CreateDomain = () => {
 
   return (
     <>
-      {(isSubmitting || isCosListLoading) && <ds-spinner></ds-spinner>}
+      {(isSubmitting || isCosListPending) && <ds-spinner></ds-spinner>}
       <div className={styles.outer}>
         <div className={styles.stepperColumn}>
           <ds-stepper steps={stepperSteps} current={currentStep}></ds-stepper>

@@ -67,7 +67,7 @@ export function useCreateDomainForm() {
   const { data: allMailStoreList = [] } = useMailstoreServers();
   const {
     data: cosData,
-    isLoading: isCosListLoading,
+    isPending: isCosListPending,
     error: cosError,
   } = useCosList({
     searchQuery: '',
@@ -203,7 +203,7 @@ export function useCreateDomainForm() {
     currentStep,
     mailServerItems,
     cosItems,
-    isCosListLoading,
+    isCosListPending,
     isSubmitting,
     handleCancel,
     handleBack,
