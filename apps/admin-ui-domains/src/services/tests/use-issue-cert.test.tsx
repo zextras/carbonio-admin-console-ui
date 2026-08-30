@@ -102,3 +102,90 @@ describe('certificate mutation hooks', () => {
     );
   });
 });
+
+describe('useVerifyCertKey', () => {
+  beforeEach(() => {
+    vi.mocked(useSnackbar).mockReturnValue(mockCreateSnackbar);
+    mockCreateSnackbar.mockClear();
+  });
+
+  it('should show an error snackbar when verifyResult is invalid', async () => {
+    vi.mocked(verifyCertKey).mockResolvedValue({ verifyResult: 'invalid' });
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useVerifyCertKey(), { wrapper });
+
+    result.current.mutate({ ca: 'ca', cert: 'cert', privkey: 'key' });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(mockCreateSnackbar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'error',
+        label: 'The certificate is invalid , please try with other certificate',
+      }),
+    );
+  });
+
+  it('should show a warning snackbar when verifyResult is false', async () => {
+    vi.mocked(verifyCertKey).mockResolvedValue({ verifyResult: false });
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useVerifyCertKey(), { wrapper });
+
+    result.current.mutate({ ca: 'ca', cert: 'cert', privkey: 'key' });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(mockCreateSnackbar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'warning',
+        label: "The certificate is valid but it's either expired or exists a non trusted CA",
+      }),
+    );
+  });
+
+  it('should show a warning snackbar when verifyResult is missing', async () => {
+    vi.mocked(verifyCertKey).mockResolvedValue({});
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useVerifyCertKey(), { wrapper });
+
+    result.current.mutate({ ca: 'ca', cert: 'cert', privkey: 'key' });
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(mockCreateSnackbar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'warning',
+        label: "The certificate is valid but it's either expired or exists a non trusted CA",
+      }),
+    );
+  });
+
+  it('should show an error snackbar with the failure message on mutation error', async () => {
+    vi.mocked(verifyCertKey).mockRejectedValue(new Error('VerifyCertKey failed'));
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useVerifyCertKey(), { wrapper });
+
+    result.current.mutate({ ca: 'ca', cert: 'cert', privkey: 'key' });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(mockCreateSnackbar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'error',
+        label: 'VerifyCertKey failed',
+      }),
+    );
+  });
+
+  it('should show the fallback error snackbar when the error has no message', async () => {
+    vi.mocked(verifyCertKey).mockRejectedValue(new Error(''));
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useVerifyCertKey(), { wrapper });
+
+    result.current.mutate({ ca: 'ca', cert: 'cert', privkey: 'key' });
+
+    await waitFor(() => expect(result.current.isError).toBe(true));
+    expect(mockCreateSnackbar).toHaveBeenCalledWith(
+      expect.objectContaining({
+        severity: 'error',
+        label: 'Something went wrong. Please try again.',
+      }),
+    );
+  });
+});
