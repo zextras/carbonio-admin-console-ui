@@ -20,7 +20,7 @@ import {
   SECURITY,
   USER_PREFERENCES,
 } from '../../constants';
-import { ComputedLimit } from '../../services/get-account-quota';
+import { ComputedLimit } from '../../services/account-quota';
 import { useDomainQuota } from '../../services/use-domain-quota';
 import { AccountFormContext } from './account-form-context';
 import { useAccountFormProvider } from './account-form-provider';

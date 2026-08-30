@@ -17,7 +17,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback ?? key],
 }));
 
-vi.mock('../unset-domain-quota', () => ({
+vi.mock('../domain-quota', () => ({
   unsetDomainQuota: vi.fn(),
 }));
 
@@ -29,7 +29,7 @@ import { useSnackbar } from '@zextras/ui-components';
 import { domainByIdKey } from '@zextras/ui-shared';
 
 import { domainQueryKeys } from '../domain-query-keys';
-import { unsetDomainQuota } from '../unset-domain-quota';
+import { unsetDomainQuota } from '../domain-quota';
 import { useUnsetDomainQuota } from '../use-unset-domain-quota';
 
 const mockCreateSnackbar = vi.fn();

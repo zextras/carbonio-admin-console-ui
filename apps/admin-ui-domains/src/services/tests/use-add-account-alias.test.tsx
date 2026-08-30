@@ -9,11 +9,11 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../add-account-alias', () => ({
+vi.mock('../account-alias', () => ({
 	addAccountAliasRequest: vi.fn(),
 }));
 
-import { addAccountAliasRequest } from '../add-account-alias';
+import { addAccountAliasRequest } from '../account-alias';
 import { domainQueryKeys } from '../domain-query-keys';
 import { useAddAccountAlias } from '../use-add-account-alias';
 

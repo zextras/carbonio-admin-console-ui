@@ -21,3 +21,21 @@ export const addDistributionListMember = async (id: objectType, dlm?: objectType
 		...request
 	});
 };
+
+export const removeDistributionListMember = async (
+	id: { n: string; _content: string },
+	dlm: { n: string; _content: string },
+): Promise<any> => {
+	const request: any = {
+		_jsns: 'urn:zimbraAdmin',
+		id
+	};
+
+	if (dlm) {
+		request.dlm = dlm;
+	}
+
+	return soapFetch(`RemoveDistributionListMember`, {
+		...request
+	});
+};

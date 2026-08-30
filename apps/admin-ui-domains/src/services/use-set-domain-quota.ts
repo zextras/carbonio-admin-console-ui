@@ -10,7 +10,7 @@ import { domainByIdKey } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { domainQueryKeys } from './domain-query-keys';
-import { setDomainQuota } from './set-domain-quota';
+import { setDomainQuota } from './domain-quota';
 
 export function useSetDomainQuota(domainId: string | undefined) {
   const [t] = useTranslation();

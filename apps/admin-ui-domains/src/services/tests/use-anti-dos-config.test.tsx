@@ -10,23 +10,11 @@ import { type ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mocks = vi.hoisted(() => ({
-	getEnabled: vi.fn(),
-	getJailDuration: vi.fn(),
-	getMaxRequests: vi.fn(),
-	getTimeWindow: vi.fn(),
+	get: vi.fn(),
 }));
 
-vi.mock('../get-mobile-anti-dos-service', () => ({
-	getMobileAntiDosService: mocks.getEnabled,
-}));
-vi.mock('../get-mobile-anti-dos-service-jail-duration', () => ({
-	getMobileAntiDosServiceJailDuration: mocks.getJailDuration,
-}));
-vi.mock('../get-mobile-anti-dos-service-max-requests', () => ({
-	getMobileAntiDosServiceMaxRequests: mocks.getMaxRequests,
-}));
-vi.mock('../get-mobile-anti-dos-service-time-window', () => ({
-	getMobileAntiDosServiceTimeWindow: mocks.getTimeWindow,
+vi.mock('../mobile-anti-dos-service', () => ({
+	getMobileAntiDosService: mocks.get,
 }));
 
 import { parseAntiDosEnabled, parseAntiDosValue, useAntiDosConfig } from '../use-anti-dos-config';
@@ -68,10 +56,18 @@ describe('useAntiDosConfig', () => {
 	});
 
 	it('should combine the four config gets into one object', async () => {
-		mocks.getEnabled.mockResolvedValue(makeValueResponse(true));
-		mocks.getJailDuration.mockResolvedValue(makeValueResponse(30));
-		mocks.getMaxRequests.mockResolvedValue(makeValueResponse(undefined, 100));
-		mocks.getTimeWindow.mockResolvedValue(makeValueResponse(60000));
+		mocks.get.mockImplementation(async (attribute: string) => {
+			switch (attribute) {
+				case 'mobileAntiDosServiceEnabled':
+					return makeValueResponse(true);
+				case 'mobileAntiDosServiceJailDuration':
+					return makeValueResponse(30);
+				case 'mobileAntiDosServiceMaxRequests':
+					return makeValueResponse(undefined, 100);
+				case 'mobileAntiDosServiceTimeWindow':
+					return makeValueResponse(60000);
+			}
+		});
 
 		const { result } = renderHook(() => useAntiDosConfig(), {
 			wrapper: QueryWrapper,
@@ -88,10 +84,12 @@ describe('useAntiDosConfig', () => {
 	});
 
 	it('should expose the error when any get rejects', async () => {
-		mocks.getEnabled.mockResolvedValue(makeValueResponse(true));
-		mocks.getJailDuration.mockRejectedValue(new Error('boom'));
-		mocks.getMaxRequests.mockResolvedValue(makeValueResponse(1));
-		mocks.getTimeWindow.mockResolvedValue(makeValueResponse(1));
+		mocks.get.mockImplementation(async (attribute: string) => {
+			if (attribute === 'mobileAntiDosServiceJailDuration') {
+				throw new Error('boom');
+			}
+			return makeValueResponse(1);
+		});
 
 		const { result } = renderHook(() => useAntiDosConfig(), {
 			wrapper: QueryWrapper,

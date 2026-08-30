@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { ComputedLimit } from '../../../services/get-account-quota';
+import { ComputedLimit } from '../../../services/account-quota';
 import { BytesToGB, GbToBytes } from '../../utility/utils';
 
 /** Plain limit representation used by the quota inputs. */

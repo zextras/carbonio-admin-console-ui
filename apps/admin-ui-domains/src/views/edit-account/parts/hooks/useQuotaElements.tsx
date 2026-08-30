@@ -7,7 +7,7 @@ import { Container, Tooltip } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ComputedLimit } from '../../../../services/get-account-quota';
+import { ComputedLimit } from '../../../../services/account-quota';
 import { QuotaBarEntry } from '../quota-bar';
 import { QuotaLegendEntry } from '../quota-legend-entry';
 import { getExactPercentage, humanFileSize } from '../size-utils';

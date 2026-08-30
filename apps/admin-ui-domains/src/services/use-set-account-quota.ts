@@ -6,10 +6,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { type ComputedLimit, setAccountQuota, unsetAccountQuota } from './account-quota';
 import { domainQueryKeys } from './domain-query-keys';
-import { ComputedLimit } from './get-account-quota';
-import { setAccountQuota } from './set-account-quota';
-import { unsetAccountQuota } from './unset-account-quota';
 
 type SetAccountQuotaVars = {
   accountId: string;

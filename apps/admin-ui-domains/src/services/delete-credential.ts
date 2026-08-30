@@ -6,7 +6,7 @@
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import type { AddCredentialResponse } from './add-credential';
-import { fetchSoap } from './generateOTP-service';
+import { fetchSoap } from './zextras-fetch';
 
 export const deleteCredential = async (
 	account: string,

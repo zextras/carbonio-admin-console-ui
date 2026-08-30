@@ -6,8 +6,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+import { removeDistributionListMember } from './distribution-list-member';
 import { domainQueryKeys } from './domain-query-keys';
-import { removeDistributionListMember } from './remove-distributionlist-member-service';
 
 /**
  * Removes `member` from a distribution list. `accountId` is the account whose

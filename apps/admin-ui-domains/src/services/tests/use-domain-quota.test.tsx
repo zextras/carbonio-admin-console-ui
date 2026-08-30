@@ -11,7 +11,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockGetDomainQuota = vi.hoisted(() => vi.fn());
 
-vi.mock('../get-domain-quota', () => ({
+vi.mock('../domain-quota', () => ({
   getDomainQuota: mockGetDomainQuota,
 }));
 

@@ -6,7 +6,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { addDistributionListMember } from './add-distributionlist-member-service';
+import { addDistributionListMember } from './distribution-list-member';
 import { domainQueryKeys } from './domain-query-keys';
 
 /**

@@ -6,7 +6,7 @@
 import { Banner } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { QuotaStatus } from '../../../services/get-account-quota';
+import { QuotaStatus } from '../../../services/account-quota';
 
 export const EditAccountQuotaWarnings = ({
   status,

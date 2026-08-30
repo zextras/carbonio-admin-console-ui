@@ -7,7 +7,7 @@
 import { AnyColor, Container } from '@zextras/ui-components';
 import React from 'react';
 
-import { ComputedLimit } from '../../../services/get-account-quota';
+import { ComputedLimit } from '../../../services/account-quota';
 import { useQuotaElements } from './hooks/useQuotaElements';
 
 export interface QuotaBarEntry {

@@ -18,7 +18,7 @@ import React, { ComponentProps, Dispatch, SetStateAction, useState } from 'react
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { ComputedLimit, QuotaSource } from '../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource } from '../../../services/account-quota';
 import { useDomainQuota } from '../../../services/use-domain-quota';
 import { AccountDetail, CosDetail } from '../../manage/accounts/account-detail-types';
 import { BytesToGB, GbToBytes } from '../../utility/utils';

@@ -13,7 +13,7 @@ import {
   ComputedLimit,
   QuotaSource,
   QuotaStatus,
-} from '../../../services/get-account-quota';
+} from '../../../services/account-quota';
 import { useAccountForm } from '../account-form-context';
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';

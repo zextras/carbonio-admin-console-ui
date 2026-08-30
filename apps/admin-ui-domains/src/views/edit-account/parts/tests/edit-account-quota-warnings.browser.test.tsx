@@ -7,7 +7,7 @@
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { page } from 'vitest/browser';
 
-import { QuotaStatus } from '../../../../services/get-account-quota';
+import { QuotaStatus } from '../../../../services/account-quota';
 import { EditAccountQuotaWarnings } from '../edit-account-quota-warnings';
 
 const MB = 1024 * 1024;

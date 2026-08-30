@@ -5,7 +5,7 @@
  */
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
-import { fetchSoap } from './generateOTP-service';
+import { fetchSoap } from './zextras-fetch';
 
 export type AddCredentialResponse = {
 	ok?: boolean;

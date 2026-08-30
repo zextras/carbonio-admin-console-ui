@@ -6,8 +6,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { addMailingListAliasRequest } from './add-mailing-list-alias';
 import { domainQueryKeys } from './domain-query-keys';
+import { addMailingListAliasRequest } from './mailing-list-alias';
 
 /**
  * Adds an alias to a distribution list. The hook owns cache invalidation

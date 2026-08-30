@@ -8,9 +8,9 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { addDistributionListMember } from '../../../../services/add-distributionlist-member-service';
 import { createMailingList } from '../../../../services/create-mailing-list-service';
 import { distributionListAction } from '../../../../services/distribution-list-action-service';
+import { addDistributionListMember } from '../../../../services/distribution-list-member';
 import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { useGalContactTypeResolver } from '../edit-distribution-list/gal-contact-type-resolver';
 import { buildCreateGrantAction } from './build-create-grant-action';

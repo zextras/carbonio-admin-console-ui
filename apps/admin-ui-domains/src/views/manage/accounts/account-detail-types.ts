@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { ComputedLimit, QuotaSource, QuotaStatus } from '../../../services/get-account-quota';
+import { ComputedLimit, QuotaSource, QuotaStatus } from '../../../services/account-quota';
 
 export type AccountDetail = Record<string, any> & {
   carbonioFeatureWscEnabled?: string;

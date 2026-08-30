@@ -28,10 +28,8 @@ vi.mock('../delete-distribution-list', () => ({
 vi.mock('../distribution-list-action-service', () => ({
 	distributionListAction: mockDistributionListAction,
 }));
-vi.mock('../add-mailing-list-alias', () => ({
+vi.mock('../mailing-list-alias', () => ({
 	addMailingListAliasRequest: mockAddMailingListAliasRequest,
-}));
-vi.mock('../delete-mailing-list-alias', () => ({
 	deleteMailingListAliasRequest: mockDeleteMailingListAliasRequest,
 }));
 

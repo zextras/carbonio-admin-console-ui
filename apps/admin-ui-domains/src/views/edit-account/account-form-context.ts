@@ -7,7 +7,7 @@ import type { AnyFormApi } from '@tanstack/react-form';
 import { isEqual } from 'lodash-es';
 import { createContext, useContext } from 'react';
 
-import type { ComputedLimit } from '../../services/get-account-quota';
+import type { ComputedLimit } from '../../services/account-quota';
 
 export type AccountFormValues = {
   [key: string]: any;

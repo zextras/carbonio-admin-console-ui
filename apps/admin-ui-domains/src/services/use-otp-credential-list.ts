@@ -8,7 +8,7 @@ import { useIsAdvanced } from '@zextras/ui-shared';
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { domainQueryKeys } from './domain-query-keys';
-import { fetchSoap } from './listOTP-service';
+import { fetchSoap } from './zextras-fetch';
 
 const QUERY_OPTS = { staleTime: 30_000, retry: 1, refetchOnWindowFocus: false } as const;
 

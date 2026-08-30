@@ -31,9 +31,9 @@ import {
   TOTAL_QUOTA_USED_BY_MODULE,
   TRUE,
 } from '../../constants';
+import { type GetAccountQuotaResponse } from '../../services/account-quota';
 import { checkRightRequest } from '../../services/check-right';
 import { domainQueryKeys } from '../../services/domain-query-keys';
-import { type GetAccountQuotaResponse } from '../../services/get-account-quota';
 import {
   type AccountCoreAttributes,
   useAccountCoreAttributes,

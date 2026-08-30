@@ -7,10 +7,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { domainQueryKeys } from './domain-query-keys';
-import { getMobileAntiDosService } from './get-mobile-anti-dos-service';
-import { getMobileAntiDosServiceJailDuration } from './get-mobile-anti-dos-service-jail-duration';
-import { getMobileAntiDosServiceMaxRequests } from './get-mobile-anti-dos-service-max-requests';
-import { getMobileAntiDosServiceTimeWindow } from './get-mobile-anti-dos-service-time-window';
+import { getMobileAntiDosService } from './mobile-anti-dos-service';
 
 export type AntiDosConfig = {
 	enabled: boolean;
@@ -38,10 +35,10 @@ export const useAntiDosConfig = () =>
 		queryKey: domainQueryKeys.antiDosConfig(),
 		queryFn: async (): Promise<AntiDosConfig> => {
 			const [enabledRes, jailRes, maxRes, windowRes] = await Promise.all([
-				getMobileAntiDosService(),
-				getMobileAntiDosServiceJailDuration(),
-				getMobileAntiDosServiceMaxRequests(),
-				getMobileAntiDosServiceTimeWindow(),
+				getMobileAntiDosService('mobileAntiDosServiceEnabled'),
+				getMobileAntiDosService('mobileAntiDosServiceJailDuration'),
+				getMobileAntiDosService('mobileAntiDosServiceMaxRequests'),
+				getMobileAntiDosService('mobileAntiDosServiceTimeWindow'),
 			]);
 			return {
 				enabled: parseAntiDosEnabled(enabledRes),

@@ -6,8 +6,8 @@
 
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../generateOTP-service', async (importOriginal) => {
-	const original = await importOriginal<typeof import('../generateOTP-service')>();
+vi.mock('../zextras-fetch', async (importOriginal) => {
+	const original = await importOriginal<typeof import('../zextras-fetch')>();
 	return {
 		...original,
 		fetchSoap: vi.fn(),
@@ -15,12 +15,12 @@ vi.mock('../generateOTP-service', async (importOriginal) => {
 });
 
 import { ZIMBRA_ADMIN_URN } from '../../constants';
-import { fetchSoap } from '../generateOTP-service';
 import {
 	deleteTotp,
 	generateTotp,
 	restoreTotp,
 } from '../otp-service';
+import { fetchSoap } from '../zextras-fetch';
 
 describe('otp-service', () => {
 	beforeEach(() => {

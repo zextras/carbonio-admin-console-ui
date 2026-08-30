@@ -19,10 +19,8 @@ vi.mock('../../../services/get-account-membership', () => ({
 vi.mock('../../../services/get-initialized-domains', () => ({
 	getInitializedDomains: mockGetInitializedDomains,
 }));
-vi.mock('../../../services/add-distributionlist-member-service', () => ({
+vi.mock('../../../services/distribution-list-member', () => ({
 	addDistributionListMember: mockAddDistributionListMember,
-}));
-vi.mock('../../../services/remove-distributionlist-member-service', () => ({
 	removeDistributionListMember: mockRemoveDistributionListMember,
 }));
 vi.mock('@zextras/ui-shared', async (importOriginal) => ({

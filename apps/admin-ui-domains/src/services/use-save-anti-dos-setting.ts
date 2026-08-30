@@ -8,10 +8,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { assertNoFault } from './assert-no-fault';
 import { domainQueryKeys } from './domain-query-keys';
-import { setAntiDosServiceEnabled } from './set-mobile-anti-dos-service';
-import { setAntiDosServiceJailDuration } from './set-mobile-anti-dos-service-jail-duration';
-import { setAntiDosServiceMaxRequests } from './set-mobile-anti-dos-service-max-requests';
-import { setAntiDosServiceTimeWindow } from './set-mobile-anti-dos-service-time-window';
+import { type MobileAntiDosAttribute, setMobileAntiDosService } from './mobile-anti-dos-service';
 
 export type SaveAntiDosSettingInput =
 	| { field: 'enabled'; value: boolean }
@@ -19,36 +16,21 @@ export type SaveAntiDosSettingInput =
 	| { field: 'maxRequests'; value: number }
 	| { field: 'timeWindow'; value: number };
 
+const ANTI_DOS_ATTRIBUTE_BY_FIELD: Record<SaveAntiDosSettingInput['field'], MobileAntiDosAttribute> = {
+	enabled: 'mobileAntiDosServiceEnabled',
+	jailDuration: 'mobileAntiDosServiceJailDuration',
+	maxRequests: 'mobileAntiDosServiceMaxRequests',
+	timeWindow: 'mobileAntiDosServiceTimeWindow'
+};
+
 export const useSaveAntiDosSetting = () => {
 	const queryClient = useQueryClient();
 	return useMutation({
 		mutationFn: async (input: SaveAntiDosSettingInput): Promise<void> => {
-			switch (input.field) {
-				case 'enabled':
-					assertNoFault(
-						await setAntiDosServiceEnabled(input.value),
-						'anti-dos setting save failed',
-					);
-					return;
-				case 'jailDuration':
-					assertNoFault(
-						await setAntiDosServiceJailDuration(input.value),
-						'anti-dos setting save failed',
-					);
-					return;
-				case 'maxRequests':
-					assertNoFault(
-						await setAntiDosServiceMaxRequests(input.value),
-						'anti-dos setting save failed',
-					);
-					return;
-				case 'timeWindow':
-					assertNoFault(
-						await setAntiDosServiceTimeWindow(input.value),
-						'anti-dos setting save failed',
-					);
-					return;
-			}
+			assertNoFault(
+				await setMobileAntiDosService(ANTI_DOS_ATTRIBUTE_BY_FIELD[input.field], input.value),
+				'anti-dos setting save failed'
+			);
 		},
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });

@@ -7,7 +7,7 @@
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { domainQueryKeys } from './domain-query-keys';
-import { getDomainQuota } from './get-domain-quota';
+import { getDomainQuota } from './domain-quota';
 
 export const useDomainQuota = (domainId: string | undefined, enabled = true) => {
   return useQuery({

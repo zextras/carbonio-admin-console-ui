@@ -93,3 +93,84 @@ export const getAccountQuota = async (accountId: string): Promise<GetAccountQuot
       } satisfies GetAccountQuotaResponse;
     });
 };
+
+type SetAccountQuotaResponse =
+  | {
+      type: 'success';
+    }
+  | {
+      type: 'error';
+      error: string;
+    };
+
+/**
+ * Sets the quota limit for a specific account.
+ * @param accountId The ID of the account.
+ * @param limit The quota limit to be set for the account.
+ * @returns The result of the quota update operation.
+ */
+export const setAccountQuota = async (accountId: string, limit: ComputedLimit): Promise<SetAccountQuotaResponse> => {
+  const url = `${STORAGES_API_BASE_URL}/quota/config/accounts/${accountId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    [STORAGES_API_VERSION_HEADER]: STORAGES_API_VERSION,
+  };
+
+  return fetch(url, { method: 'PUT', headers, body: JSON.stringify({ limit }) })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+    })
+    .then(() => {
+      return {
+        type: 'success',
+      } satisfies SetAccountQuotaResponse;
+    })
+    .catch((error) => {
+      return {
+        type: 'error',
+        error: error.message,
+      } satisfies SetAccountQuotaResponse;
+    });
+};
+
+type UnsetAccountQuotaResponse =
+  | {
+      type: 'success';
+    }
+  | {
+      type: 'error';
+      error: string;
+    };
+
+/**
+ * Unsets the quota limit for a specific account.
+ * @param accountId The ID of the account.
+ * @returns The result of the quota update operation.
+ */
+export const unsetAccountQuota = async (accountId: string): Promise<UnsetAccountQuotaResponse> => {
+  const url = `${STORAGES_API_BASE_URL}/quota/config/accounts/${accountId}`;
+  const headers = {
+    'Content-Type': 'application/json',
+    [STORAGES_API_VERSION_HEADER]: STORAGES_API_VERSION,
+  };
+
+  return fetch(url, { method: 'DELETE', headers })
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(response.statusText);
+      }
+    })
+    .then(() => {
+      return {
+        type: 'success',
+      } satisfies UnsetAccountQuotaResponse;
+    })
+    .catch((error) => {
+      return {
+        type: 'error',
+        error: error.message,
+      } satisfies UnsetAccountQuotaResponse;
+    });
+};

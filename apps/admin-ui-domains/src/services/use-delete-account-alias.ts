@@ -6,7 +6,7 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { deleteAccountAliasRequest } from './delete-account-alias';
+import { deleteAccountAliasRequest } from './account-alias';
 import { domainQueryKeys } from './domain-query-keys';
 
 type AccountAliasVars = {

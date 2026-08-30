@@ -6,8 +6,8 @@
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
-import { deleteMailingListAliasRequest } from './delete-mailing-list-alias';
 import { domainQueryKeys } from './domain-query-keys';
+import { deleteMailingListAliasRequest } from './mailing-list-alias';
 
 /**
  * Removes an alias from a distribution list. The hook owns cache invalidation

@@ -9,17 +9,13 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../set-account-quota', () => ({
+vi.mock('../account-quota', () => ({
 	setAccountQuota: vi.fn(),
-}));
-
-vi.mock('../unset-account-quota', () => ({
 	unsetAccountQuota: vi.fn(),
 }));
 
+import { setAccountQuota, unsetAccountQuota } from '../account-quota';
 import { domainQueryKeys } from '../domain-query-keys';
-import { setAccountQuota } from '../set-account-quota';
-import { unsetAccountQuota } from '../unset-account-quota';
 import { useSetAccountQuota } from '../use-set-account-quota';
 
 function createWrapper() {

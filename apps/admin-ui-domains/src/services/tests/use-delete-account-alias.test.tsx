@@ -9,11 +9,11 @@ import { renderHook, waitFor } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../delete-account-alias', () => ({
+vi.mock('../account-alias', () => ({
 	deleteAccountAliasRequest: vi.fn(),
 }));
 
-import { deleteAccountAliasRequest } from '../delete-account-alias';
+import { deleteAccountAliasRequest } from '../account-alias';
 import { domainQueryKeys } from '../domain-query-keys';
 import { useDeleteAccountAlias } from '../use-delete-account-alias';
 

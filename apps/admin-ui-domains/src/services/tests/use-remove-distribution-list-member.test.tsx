@@ -11,7 +11,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const mockRemoveDistributionListMember = vi.hoisted(() => vi.fn());
 
-vi.mock('../remove-distributionlist-member-service', () => ({
+vi.mock('../distribution-list-member', () => ({
 	removeDistributionListMember: mockRemoveDistributionListMember,
 }));
 

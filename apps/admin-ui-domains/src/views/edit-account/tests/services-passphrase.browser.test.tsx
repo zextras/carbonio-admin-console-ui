@@ -9,8 +9,8 @@ import { page } from 'vitest/browser';
 
 const mockFetchSoap = vi.hoisted(() => vi.fn());
 
-vi.mock('../../../services/generateOTP-service', async (importOriginal) => ({
-	...(await importOriginal<typeof import('../../../services/generateOTP-service')>()),
+vi.mock('../../../services/zextras-fetch', async (importOriginal) => ({
+	...(await importOriginal<typeof import('../../../services/zextras-fetch')>()),
 	fetchSoap: mockFetchSoap,
 }));
 vi.mock('../../../hooks/use-selected-domain', () => ({

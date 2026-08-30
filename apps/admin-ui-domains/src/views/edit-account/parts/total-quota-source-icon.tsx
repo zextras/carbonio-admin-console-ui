@@ -7,7 +7,7 @@ import { Tooltip } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { QuotaSource } from '../../../services/get-account-quota';
+import type { QuotaSource } from '../../../services/account-quota';
 
 type TotalQuotaSourceIconProps = {
   source: QuotaSource;

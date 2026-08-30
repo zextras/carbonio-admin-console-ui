@@ -6,8 +6,8 @@
 
 import { useQuery } from '@tanstack/react-query';
 
+import { getAccountQuota } from './account-quota';
 import { domainQueryKeys } from './domain-query-keys';
-import { getAccountQuota } from './get-account-quota';
 
 export const useAccountQuota = (accountId: string | undefined, enabled = true) =>
 	useQuery({
