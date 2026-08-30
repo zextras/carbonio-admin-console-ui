@@ -266,4 +266,97 @@ describe('DomainVirtualHosts (browser)', () => {
     await expect.element(page.getByText('Upload and Verify Certificate')).toBeVisible();
     expect(modifyDomainCalled).toBe(false);
   });
+
+  describe('Delete certificate modal', () => {
+    it('should open the delete certificates modal when Remove is clicked', async () => {
+      await setupBrowserTest(<DomainVirtualHosts />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      await page.getByRole('button', { name: /^remove$/i }).click();
+
+      await expect.element(page.getByText('Delete Certificates?')).toBeVisible();
+      await expect
+        .element(page.getByText('You are deleting All Certificates.'))
+        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
+      await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();
+    });
+
+    it('should close the modal without calling ModifyDomain when NO is clicked', async () => {
+      let modifyDomainCalled = false;
+      worker.use(
+        http.post('/service/admin/soap/ModifyDomainRequest', () => {
+          modifyDomainCalled = true;
+          return HttpResponse.json({ Body: { ModifyDomainResponse: { domain: [] } } });
+        }),
+      );
+
+      await setupBrowserTest(<DomainVirtualHosts />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      await page.getByRole('button', { name: /^remove$/i }).click();
+      await page.getByRole('button', { name: 'NO' }).click();
+
+      await expect.element(page.getByText('Delete Certificates?')).not.toBeInTheDocument();
+      expect(modifyDomainCalled).toBe(false);
+    });
+
+    it('should clear the certificate via ModifyDomain when DELETE is confirmed', async () => {
+      const modifyInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+        domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: domainAttributes }],
+      });
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+
+      await setupBrowserTest(<DomainVirtualHosts />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      await page.getByRole('button', { name: /^remove$/i }).click();
+      await page.getByRole('button', { name: 'DELETE' }).click();
+
+      const requestParams = (await modifyInterceptor) as {
+        id?: string;
+        a?: Array<{ n: string; _content?: string }>;
+      };
+      expect(requestParams.id).toBe(DOMAIN_ID);
+      expect(requestParams.a).toContainEqual({ n: 'zimbraSSLCertificate', _content: '' });
+      expect(requestParams.a).toContainEqual({ n: 'zimbraSSLPrivateKey', _content: '' });
+
+      await expect
+        .element(page.getByText('The certificates has been removed'))
+        .toBeVisible();
+      await expect.element(page.getByText('Delete Certificates?')).not.toBeInTheDocument();
+    });
+
+    it('should keep the modal open and show an error snackbar when deletion fails', async () => {
+      worker.use(
+        http.post('/service/admin/soap/ModifyDomainRequest', () =>
+          HttpResponse.json(
+            { Body: { Fault: { Reason: { Text: 'Delete certificate failed' } } } },
+            { status: 500 },
+          ),
+        ),
+      );
+
+      await setupBrowserTest(<DomainVirtualHosts />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      await page.getByRole('button', { name: /^remove$/i }).click();
+      await page.getByRole('button', { name: 'DELETE' }).click();
+
+      await expect.element(page.getByText('Delete certificate failed')).toBeVisible();
+      await expect.element(page.getByText('Delete Certificates?')).toBeVisible();
+    });
+  });
 });
