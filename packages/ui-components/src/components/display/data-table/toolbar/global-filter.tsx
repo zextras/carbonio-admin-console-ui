@@ -5,21 +5,23 @@
  */
 
 import { useTranslation } from 'react-i18next';
+import clsx from 'clsx';
 
 import { Input } from '../../../inputs/Input';
-import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
+import styles from '../data-table.module.css';
 
 type DataTableGlobalFilterProps = {
 	label?: string;
+	className?: string;
 };
 
-const DataTableGlobalFilter = ({ label }: DataTableGlobalFilterProps) => {
+const DataTableGlobalFilter = ({ label, className }: DataTableGlobalFilterProps) => {
 	const table = useDataTableContext();
 	const { t } = useTranslation();
 
 	return (
-		<div className={styles.globalFilter}>
+		<div className={clsx(styles.globalFilter, className)}>
 			<table.Subscribe selector={(state) => state.globalFilter}>
 				{(globalFilter) => (
 					<Input
