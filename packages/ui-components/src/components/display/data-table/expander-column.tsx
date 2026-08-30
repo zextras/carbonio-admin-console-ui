@@ -8,15 +8,15 @@ import type { RowData } from '@tanstack/react-table';
 
 import { Button } from '../../basic/button/Button';
 import { createDataTableColumnHelper } from './create-data-table';
+import type { DataTableColumnDef } from './types';
 
 const EXPANDER_COLUMN_ID = 'data-table-expander';
-
-const helper = createDataTableColumnHelper();
 
 function buildExpanderColumn<TData extends RowData>(i18n?: {
 	expandLabel?: string;
 	collapseLabel?: string;
-}) {
+}): DataTableColumnDef<TData> {
+	const helper = createDataTableColumnHelper<TData>();
 	return helper.display({
 		id: EXPANDER_COLUMN_ID,
 		size: 40,

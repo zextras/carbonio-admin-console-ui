@@ -14,7 +14,7 @@ const DataTableHeader = () => {
 	const table = useDataTableContext();
 
 	return (
-		<table.Subscribe>
+		<table.Subscribe selector={(state) => state}>
 			{() => (
 				<thead>
 					{table.getHeaderGroups().map((headerGroup) => (

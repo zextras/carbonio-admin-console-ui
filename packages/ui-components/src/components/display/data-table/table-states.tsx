@@ -27,7 +27,7 @@ const DataTableStateRow = ({
 	const { t } = useTranslation();
 	if (errorState !== undefined) {
 		return (
-			<tr>
+			<tr data-state="error">
 				<td colSpan={colSpan} className={styles.stateCell}>
 					{errorState}
 				</td>
@@ -36,7 +36,7 @@ const DataTableStateRow = ({
 	}
 	if (!hasRows && isLoading) {
 		return (
-			<tr>
+			<tr data-state="loading">
 				<td colSpan={colSpan} className={styles.stateCell}>
 					<ds-spinner />
 				</td>
@@ -45,7 +45,7 @@ const DataTableStateRow = ({
 	}
 	if (!hasRows) {
 		return (
-			<tr>
+			<tr data-state="empty">
 				<td colSpan={colSpan} className={styles.stateCell}>
 					{emptyState ?? t('label.empty_table', 'Empty Table')}
 				</td>

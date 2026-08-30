@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { ReactNode, RowData } from '@tanstack/react-table';
+import type { RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 
 import { useDataTableContext } from './data-table-contexts';
 import styles from './data-table.module.css';
@@ -28,7 +29,7 @@ const DataTableBody = <TData extends RowData,>({
 	const table = useDataTableContext<TData>();
 
 	return (
-		<table.Subscribe>
+		<table.Subscribe selector={(state) => state}>
 			{() => {
 				const rows = table.getRowModel().rows;
 				const columnCount = table.getVisibleLeafColumns().length;

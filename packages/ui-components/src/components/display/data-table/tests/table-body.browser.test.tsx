@@ -25,11 +25,11 @@ const data: Array<Person> = [
 
 const helper = createDataTableColumnHelper<Person>();
 
-const columns = [
+const columns = helper.columns([
 	buildSelectionColumn<Person>(),
 	helper.accessor('name', { header: 'Name' }),
 	helper.accessor('age', { header: 'Age' }),
-];
+]);
 
 function BodyHarness({
 	options,
@@ -92,6 +92,8 @@ describe('DataTableBody', () => {
 
 	it('renders a spinner row when loading without rows', async () => {
 		render(<BodyHarness options={{ data: [] }} isLoading />);
-		await expect.element(page.getByRole('row').first().locator('ds-spinner')).toBeVisible();
+		await expect
+			.element(page.getByRole('row').first())
+			.toHaveAttribute('data-state', 'loading');
 	});
 });
