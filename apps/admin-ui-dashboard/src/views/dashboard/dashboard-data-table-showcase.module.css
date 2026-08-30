@@ -56,8 +56,13 @@
   flex: 1 1 auto;
 }
 
+.searchFilter {
+  flex: 0 1 9rem;
+  min-width: 8rem;
+}
+
 .levelFilter {
-  min-width: 10rem;
+  min-width: 6.5rem;
 }
 
 .selectedChip {

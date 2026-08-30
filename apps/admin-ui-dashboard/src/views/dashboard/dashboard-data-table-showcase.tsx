@@ -205,7 +205,7 @@ export const DashboardDataTableShowcase = () => {
 					}}
 					toolbar={
 						<div className={styles.toolbarRow}>
-							<DataTableGlobalFilter />
+							<DataTableGlobalFilter className={styles.searchFilter} />
 							<Select
 								className={styles.levelFilter}
 								items={[

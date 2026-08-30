@@ -52,11 +52,11 @@
 }
 
 .table td {
-	height: 1.875rem;
-	padding: 0 0.5rem;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	white-space: nowrap;
+  height: 2.75rem;
+  padding: 0 0.5rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .bodyRow {
@@ -164,10 +164,6 @@ td[data-cell-selected='true'] {
 }
 
 .paginationInfo {
-	min-width: 3rem;
-	text-align: center;
-}
-
-.pageSizeLabel {
-	font-size: var(--font-size-small);
+  min-width: 3rem;
+  text-align: center;
 }

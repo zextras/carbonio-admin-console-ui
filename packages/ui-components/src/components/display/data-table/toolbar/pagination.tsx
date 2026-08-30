@@ -38,9 +38,6 @@ const DataTablePagination = () => {
 								table.setPageSize(Number(value ?? 10));
 							}}
 						/>
-						<span className={styles.pageSizeLabel}>
-							{t('label.items_per_page', 'items per page')}
-						</span>
 						<Button
 							type="ghost"
 							size="medium"
