@@ -11,13 +11,13 @@ import { isEqual } from 'lodash-es';
 import { useRef } from 'react';
 
 import type { themeConfigStore } from '../../../../types/domain';
-import { ZIMBRA_ADMIN_URN } from '../../../constants';
-import { useModifyDomain } from '../../../services/use-modify-domain';
 import {
   buildDomainResetValues,
   buildDomainWhiteLabelResetAttributes,
-} from '../../theme/white-label-defaults';
-import { whiteLabelSchema } from '../../theme/white-label-schema';
+} from '../../../components/theme/white-label-defaults';
+import { whiteLabelSchema } from '../../../components/theme/white-label-schema';
+import { ZIMBRA_ADMIN_URN } from '../../../constants';
+import { useModifyDomain } from '../../../services/use-modify-domain';
 
 type UseDomainThemeFormArgs = {
   defaultValues: themeConfigStore;

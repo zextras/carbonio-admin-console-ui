@@ -10,10 +10,10 @@ import { useAllConfig } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { ThemeConfigs } from '../../../components/theme/theme-configs';
+import { ResetTheme } from '../../../components/theme/theme-reset';
+import { pickThemeValues } from '../../../components/theme/white-label-defaults';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import { ThemeConfigs } from '../../theme/theme-configs';
-import { ResetTheme } from '../../theme/theme-reset';
-import { pickThemeValues } from '../../theme/white-label-defaults';
 import { useDomainThemeForm } from './use-domain-theme-form';
 
 export const DomainTheme = () => {

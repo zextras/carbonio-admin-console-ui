@@ -5,7 +5,7 @@
  */
 import { z } from 'zod';
 
-import { isValidHexColor, isValidHttpsUrl } from '../utility/utils';
+import { isValidHexColor, isValidHttpsUrl } from '../../views/utility/utils';
 
 export const HTTPS_URL_ERROR_LABEL = 'label.use_https_protocol_message';
 export const LIGHT_PRIMARY_COLOR_ERROR_LABEL = 'label.invalid_primary_color_light_mode';

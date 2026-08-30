@@ -11,14 +11,14 @@ import { type ConfigAttribute, useAllConfig, useModifyConfig } from '@zextras/ui
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { ThemeConfigs } from '../../theme/theme-configs';
-import { ResetTheme } from '../../theme/theme-reset';
+import { ThemeConfigs } from '../../../components/theme/theme-configs';
+import { ResetTheme } from '../../../components/theme/theme-reset';
 import {
   buildGlobalResetValues,
   buildWhiteLabelConfig,
   buildWhiteLabelResetAttributes,
-} from '../../theme/white-label-defaults';
-import { whiteLabelSchema } from '../../theme/white-label-schema';
+} from '../../../components/theme/white-label-defaults';
+import { whiteLabelSchema } from '../../../components/theme/white-label-schema';
 import styles from './global-white-label.module.css';
 
 /**
