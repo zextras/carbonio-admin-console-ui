@@ -92,25 +92,25 @@
 	cursor: pointer;
 }
 
-th[data-pinned='left'],
-td[data-pinned='left'] {
+th[data-pinned='start'],
+td[data-pinned='start'] {
 	position: sticky;
 	z-index: 1;
 	box-shadow: 4px 0 6px -4px rgb(0 0 0 / 25%);
 }
 
-th[data-pinned='left'] {
+th[data-pinned='start'] {
 	z-index: 3;
 }
 
-th[data-pinned='right'],
-td[data-pinned='right'] {
+th[data-pinned='end'],
+td[data-pinned='end'] {
 	position: sticky;
 	z-index: 1;
 	box-shadow: -4px 0 6px -4px rgb(0 0 0 / 25%);
 }
 
-th[data-pinned='right'] {
+th[data-pinned='end'] {
 	z-index: 3;
 }
 

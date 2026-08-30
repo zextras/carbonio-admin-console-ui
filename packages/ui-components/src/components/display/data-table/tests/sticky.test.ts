@@ -9,15 +9,15 @@ import { describe, expect, it } from 'vitest';
 import { getStickyColumnStyle } from '../sticky';
 
 const unpinnedColumn = { getIsPinned: () => false } as never;
-const leftColumn = {
-	getIsPinned: () => 'left' as const,
-	getStart: (position?: string) => (position === 'left' ? 120 : 0),
+const startColumn = {
+	getIsPinned: () => 'start' as const,
+	getStart: (position?: string) => (position === 'start' ? 120 : 0),
 	getAfter: () => 0,
 } as never;
-const rightColumn = {
-	getIsPinned: () => 'right' as const,
+const endColumn = {
+	getIsPinned: () => 'end' as const,
 	getStart: () => 0,
-	getAfter: (position?: string) => (position === 'right' ? 80 : 0),
+	getAfter: (position?: string) => (position === 'end' ? 80 : 0),
 } as never;
 
 describe('getStickyColumnStyle', () => {
@@ -25,11 +25,11 @@ describe('getStickyColumnStyle', () => {
 		expect(getStickyColumnStyle(unpinnedColumn)).toEqual({});
 	});
 
-	it('returns the start offset for left-pinned columns', () => {
-		expect(getStickyColumnStyle(leftColumn)).toEqual({ left: 120 });
+	it('returns the start offset for start-pinned columns', () => {
+		expect(getStickyColumnStyle(startColumn)).toEqual({ left: 120 });
 	});
 
-	it('returns the after offset for right-pinned columns', () => {
-		expect(getStickyColumnStyle(rightColumn)).toEqual({ right: 80 });
+	it('returns the after offset for end-pinned columns', () => {
+		expect(getStickyColumnStyle(endColumn)).toEqual({ right: 80 });
 	});
 });
