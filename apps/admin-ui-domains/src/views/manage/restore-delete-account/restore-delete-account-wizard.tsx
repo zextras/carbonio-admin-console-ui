@@ -10,7 +10,7 @@ import { type FC, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { type RestoreAccountRequestParams } from '../../../services/restore-delete-account-service';
-import RestoreAccountConfigSection from './restore-delete-account-config-section';
+import { RestoreDeleteAccountConfigSection } from './restore-delete-account-config-section';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import RestoreSelectAccountSection from './restore-delete-account-select-section';
 import RestoreAccountStartSection from './restore-delete-account-start-section';
@@ -175,7 +175,7 @@ const RestoreDeleteAccountWizard: FC<{
       name: 'members',
       label: t('label.config', 'Config'),
       icon: 'OptionsOutline',
-      view: RestoreAccountConfigSection,
+      view: RestoreDeleteAccountConfigSection,
       canGoNext: (): any => restoreAccountDetail?.copyAccount && restoreAccountDetail?.copyDomain,
       CancelButton,
       PrevButton: BackPrevButton,

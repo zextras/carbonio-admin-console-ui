@@ -1,77 +1,67 @@
 /*
- * SPDX-FileCopyrightText: 2025 Zextras <https://www.zextras.com>
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useQuery } from '@tanstack/react-query';
 import { Container, Input, Padding, Row } from '@zextras/ui-components';
-import { getDomainList } from '@zextras/ui-shared';
-import { ChangeEvent, FC, useContext, useState } from 'react';
+import { useDebouncedValue } from '@zextras/ui-shared';
+import { useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
+import { useDomainSearch } from '../../../services/use-domain-search';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
-const restoreDomainListQueryKeys = {
-  all: ['restore-delete-account-domain-list'] as const,
-  search: (search: string) => [...restoreDomainListQueryKeys.all, search] as const,
+export const RestoreDeleteAccountConfigSection = () => {
+	const { t } = useTranslation();
+	const { restoreAccountDetail, setRestoreAccountDetail } = useContext(RestoreDeleteAccountContext);
+	const [searchDomainName, setSearchDomainName] = useState(restoreAccountDetail?.copyDomain || '');
+	const debouncedSearchDomainName = useDebouncedValue(searchDomainName, 700);
+
+	const {
+		data: domainSearchData,
+		error: domainSearchError,
+		isPending
+	} = useDomainSearch({
+		searchQuery: debouncedSearchDomainName,
+		limit: 50,
+		offset: 0,
+		enabled: debouncedSearchDomainName !== ''
+	});
+
+	const noDomainFoundError =
+		!isPending && debouncedSearchDomainName !== '' && (domainSearchData?.searchTotal ?? 0) === 0
+			? t('label.not_found_check_the_text_and_try_again', 'Not found - check the text and try again')
+			: null;
+	useQueryErrorSnackbar(domainSearchError ?? noDomainFoundError);
+
+	const handleChange = (ev: React.ChangeEvent<HTMLInputElement>): void => {
+		setSearchDomainName(ev.target.value);
+		setRestoreAccountDetail((prev: Record<string, unknown>) => ({
+			...prev,
+			copyDomain: ev.target.value
+		}));
+	};
+
+	return (
+		<Container background="gray5" padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+			<Container background="gray5" padding={{ top: 'large' }} width="100%">
+				<Row>
+					<Padding right="large">
+						<ds-text as="h3" size="small" weight="bold">
+							{t('label.domain', 'Domain')}
+						</ds-text>
+					</Padding>
+					<Padding left="large">
+						<Input
+							isRequired
+							label={t('label.search', 'Search')}
+							value={searchDomainName}
+							onChange={handleChange}
+						/>
+					</Padding>
+				</Row>
+			</Container>
+		</Container>
+	);
 };
-
-const RestoreDeleteAccountConfigSection: FC = () => {
-  const { t } = useTranslation();
-  const { restoreAccountDetail } = useContext(RestoreDeleteAccountContext);
-  const [searchDomainNameInput, setSearchDomainNameInput] = useState(
-    restoreAccountDetail?.copyDomain || '',
-  );
-  const [searchDomainName, setSearchDomainName] = useState('');
-
-  const handleChange = (domainNameInput: ChangeEvent<HTMLDivElement, Element>) => {
-    setSearchDomainNameInput(domainNameInput);
-    setSearchDomainName('');
-  };
-
-  const {
-    data: domainSearchData,
-    error: domainSearchError,
-    isPending,
-  } = useQuery({
-    queryKey: restoreDomainListQueryKeys.search(searchDomainName),
-    queryFn: () => getDomainList(searchDomainName, 0),
-  });
-
-  const noDomainFoundError =
-    !isPending && (domainSearchData?.searchTotal ?? 0) === 0
-      ? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.')
-      : null;
-  useQueryErrorSnackbar(domainSearchError ?? noDomainFoundError);
-
-  return (
-    <Container
-      background="gray5"
-      padding={{ top: 'large' }}
-      mainAlignment="flex-start"
-      width="100%"
-    >
-      <Container background="gray5" padding={{ top: 'large' }} width="100%">
-        <Row>
-          <Padding right="large">
-            <ds-text as="h3" size="small" weight="bold">
-              {t('label.domain', 'Domain')}
-            </ds-text>
-          </Padding>
-          <Padding left="large">
-            <Input
-              isRequired
-              label={t('label.search', 'Search')}
-              value={searchDomainNameInput}
-              onChange={handleChange}
-              inputName={searchDomainName}
-            />
-          </Padding>
-        </Row>
-      </Container>
-    </Container>
-  );
-};
-
-export default RestoreDeleteAccountConfigSection;

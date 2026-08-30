@@ -5,7 +5,7 @@
  */
 
 vi.mock('../restore-delete-account-config-section', () => ({
-	default: () => <div data-testid="config-section">config</div>,
+	RestoreDeleteAccountConfigSection: () => <div data-testid="config-section">config</div>,
 }));
 vi.mock('../restore-delete-account-select-section', () => ({
 	default: () => <div data-testid="select-section">select</div>,
