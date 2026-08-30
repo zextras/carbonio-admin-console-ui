@@ -142,9 +142,9 @@ export const ResourceEditDetailView = ({
   selectedResource,
   onClose,
 }: ResourceEditDetailViewProps) => {
-  const { data: rawResource, isLoading } = useCalResource(selectedResource.id);
+  const { data: rawResource, isPending } = useCalResource(selectedResource.id);
 
-  if (isLoading || !rawResource) {
+  if (isPending || !rawResource) {
     return (
       <Container
         background="gray5"

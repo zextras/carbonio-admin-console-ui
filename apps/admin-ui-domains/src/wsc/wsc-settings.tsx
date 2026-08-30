@@ -42,7 +42,7 @@ export const WscSettings: FC<{
 
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-  const { data: licenseData, isLoading, error } = useLicenseInfo();
+  const { data: licenseData, isPending, isFetching, error } = useLicenseInfo();
 
   const wscFeature = licenseData?.response?.features?.find(
     (feature) => feature.name === 'wsc_basic',
@@ -101,7 +101,7 @@ export const WscSettings: FC<{
     { value: '30m', label: `30 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
   ];
 
-  if (requiresLicenseCheck && isLoading) {
+  if (requiresLicenseCheck && isPending) {
     return (
       <Container height="fit" padding="large" style={{ userSelect: 'none' }}>
         <ds-spinner />
@@ -111,7 +111,7 @@ export const WscSettings: FC<{
 
   return (
     <Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-      {requiresLicenseCheck && !isLoading && !isLicensed && !error && isGlobalAdmin && (
+      {requiresLicenseCheck && !isFetching && !isLicensed && !error && isGlobalAdmin && (
         <Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
       )}
       <BoxLayout
