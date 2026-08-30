@@ -19,9 +19,9 @@ import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../wsc/wsc-settings';
 import { CustomChip } from '../components/customChip';
-import { Features } from '../cos/features';
 import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
+import { Features } from './features';
 import { chipsToValue, useChipList } from './use-chip-list';
 
 type MailTransportTooltipIconProps = {
