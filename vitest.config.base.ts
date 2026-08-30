@@ -46,6 +46,7 @@ function getOptimizeDepsInclude(): Array<string> {
     'ua-parser-js',
     'i18next-http-backend',
     'lodash-es',
+    '@tanstack/react-table',
     // date-fns locales
     'date-fns/locale/zh-CN',
     'date-fns/locale/nl',
