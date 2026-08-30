@@ -353,6 +353,223 @@ describe('DomainGeneralSettings (browser)', () => {
     });
   });
 
+  describe('Delete Domain with contents', () => {
+    function setupDirectoryWithContents(
+      overrides: Record<string, unknown> = {},
+    ): void {
+      createBrowserSoapAPIInterceptor('SearchDirectory', {
+        searchTotal: 2,
+        more: false,
+        account: [
+          {
+            name: 'user1@example.com',
+            id: 'acc-1',
+            a: [{ n: 'zimbraIsSystemAccount', _content: 'FALSE' }],
+          },
+          {
+            name: 'user2@example.com',
+            id: 'acc-2',
+            a: [{ n: 'zimbraIsSystemAccount', _content: 'FALSE' }],
+          },
+        ],
+        dl: [{ name: 'group@example.com', id: 'dl-1', a: [] }],
+        alias: [],
+        calresource: [],
+        ...overrides,
+      });
+    }
+
+    async function openDeleteConfirmDialog(): Promise<void> {
+      const deleteButton = page.getByRole('button', { name: /delete domain/i });
+      await deleteButton.click();
+      await expect.element(page.getByText(/is not empty and contains/i)).toBeVisible();
+    }
+
+    it('should keep Force Delete disabled until the exact domain name is typed', async () => {
+      setupDirectoryWithContents();
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await openDeleteConfirmDialog();
+
+      const forceDeleteButton = page.getByRole('button', { name: /force delete/i });
+      await expect.element(forceDeleteButton).toBeDisabled();
+
+      const confirmInput = page.getByRole('textbox').last();
+      await userEvent.fill(confirmInput, 'wrong-name.com');
+      await expect.element(forceDeleteButton).toBeDisabled();
+
+      await userEvent.fill(confirmInput, DOMAIN_NAME);
+      await expect.element(forceDeleteButton).toBeEnabled();
+    });
+
+    it('should delete contents and domain via Batch and DeleteDomain when Force Delete is confirmed', async () => {
+      setupDirectoryWithContents();
+      const batchInterceptor = createBrowserSoapAPIInterceptor('Batch', {});
+      createBrowserSoapAPIInterceptor('DeleteDomain', {});
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await openDeleteConfirmDialog();
+
+      await userEvent.fill(page.getByRole('textbox').last(), DOMAIN_NAME);
+      await page.getByRole('button', { name: /force delete/i }).click();
+
+      const batchParams = (await batchInterceptor) as {
+        DeleteAccountRequest?: Array<{ id?: string }>;
+        DeleteDistributionListRequest?: Array<{ id?: { _content?: string } }>;
+      };
+      const deletedAccountIds = (batchParams.DeleteAccountRequest ?? []).map(
+        (request) => request.id,
+      );
+      expect(deletedAccountIds).toContain('acc-1');
+      expect(deletedAccountIds).toContain('acc-2');
+      const deletedDlIds = (batchParams.DeleteDistributionListRequest ?? []).map(
+        (request) => request.id?._content,
+      );
+      expect(deletedDlIds).toContain('dl-1');
+
+      await expect
+        .element(page.getByText('Domain has been deleted successfully'))
+        .toBeVisible();
+    });
+
+    it('should show error snackbars and keep the dialog when the batch delete returns faults', async () => {
+      setupDirectoryWithContents();
+      createBrowserSoapAPIInterceptor('Batch', {
+        Fault: [{ Reason: { Text: 'Cannot delete account' } }],
+      });
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await openDeleteConfirmDialog();
+
+      await userEvent.fill(page.getByRole('textbox').last(), DOMAIN_NAME);
+      await page.getByRole('button', { name: /force delete/i }).click();
+
+      await expect.element(page.getByText('Cannot delete account')).toBeVisible();
+      await expect.element(page.getByText(/is not empty and contains/i)).toBeVisible();
+    });
+
+    it('should close the dialog and change the domain status when CLOSE DOMAIN is clicked', async () => {
+      setupDirectoryWithContents();
+      const modifyInterceptor = createBrowserSoapAPIInterceptor('ModifyDomain', {
+        domain: [],
+      });
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await openDeleteConfirmDialog();
+
+      await page.getByRole('button', { name: /close domain/i }).click();
+
+      const requestParams = (await modifyInterceptor) as {
+        id?: string;
+        a?: Array<{ n: string; _content?: string }>;
+      };
+      expect(requestParams.id).toBe(DOMAIN_ID);
+      expect(requestParams.a).toContainEqual({
+        n: 'zimbraDomainStatus',
+        _content: 'closed',
+      });
+
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect
+        .element(page.getByText(/is not empty and contains/i))
+        .not.toBeInTheDocument();
+    });
+
+    it('should hide the CLOSE DOMAIN action when the domain is already closed', async () => {
+      const closedQueryClient = setupDomainStore([
+        { n: 'zimbraDomainStatus', _content: 'closed' },
+      ]);
+      setupDirectoryWithContents();
+
+      setupBrowserTest(<DomainGeneralSettings />, {
+        queryClient: closedQueryClient,
+        initialRouterEntry: `/${DOMAIN_ID}/general-settings`,
+        withDomainIdRoute: true,
+      });
+
+      await openDeleteConfirmDialog();
+
+      await expect
+        .element(page.getByRole('button', { name: /close domain/i }))
+        .not.toBeInTheDocument();
+      await expect
+        .element(page.getByText(/permanently remove all the accounts and domain objects/i))
+        .toBeVisible();
+    });
+
+    it('should list system accounts, aliases and resources in the confirmation dialog', async () => {
+      setupDirectoryWithContents({
+        searchTotal: 6,
+        account: [
+          {
+            name: 'user1@example.com',
+            id: 'acc-1',
+            a: [{ n: 'zimbraIsSystemAccount', _content: 'TRUE' }],
+          },
+          {
+            name: 'user2@example.com',
+            id: 'acc-2',
+            a: [{ n: 'zimbraIsSystemAccount', _content: 'FALSE' }],
+          },
+        ],
+        alias: [
+          { name: 'alias1@example.com', id: 'alias-1', a: [] },
+          { name: 'alias2@example.com', id: 'alias-2', a: [] },
+        ],
+        calresource: [{ name: 'room@example.com', id: 'res-1', a: [] }],
+      });
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await openDeleteConfirmDialog();
+
+      await expect.element(page.getByText(/1 System Accounts/)).toBeVisible();
+      await expect.element(page.getByText(/2 Aliases/)).toBeVisible();
+      await expect.element(page.getByText(/1 Resources/)).toBeVisible();
+    });
+
+    it('should close the confirmation dialog when CANCEL is clicked', async () => {
+      setupDirectoryWithContents();
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await openDeleteConfirmDialog();
+
+      await page.getByRole('button', { name: 'CANCEL' }).click();
+
+      await expect
+        .element(page.getByText(/is not empty and contains/i))
+        .not.toBeInTheDocument();
+    });
+
+    it('should show an error snackbar when collecting the domain directories fails', async () => {
+      worker.use(
+        http.post('/service/admin/soap/SearchDirectoryRequest', () =>
+          HttpResponse.json(
+            { Body: { Fault: { Reason: { Text: 'Search directory failed' } } } },
+            { status: 500 },
+          ),
+        ),
+      );
+
+      setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+      await page.getByRole('button', { name: /delete domain/i }).click();
+
+      await expect.element(page.getByText('Search directory failed')).toBeVisible();
+      await expect
+        .element(page.getByText(/is not empty and contains/i))
+        .not.toBeInTheDocument();
+    });
+  });
+
   describe('Quota (advanced + global admin)', () => {
     function setupAdvancedGlobalAdmin(): ReturnType<typeof getQueryClient> {
       const qc = setupDomainStore();
