@@ -1,0 +1,92 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-start;
+  background: var(--color-gray6-regular);
+  border-radius: 0.5rem;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--padding-size-extrasmall);
+  padding: var(--padding-size-extralarge);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-size-small);
+}
+
+.icon {
+  width: 2.2rem;
+}
+
+.subtitle {
+  color: var(--color-gray1-regular);
+}
+
+.tableWrap {
+  padding: 0 var(--padding-size-extralarge) var(--padding-size-extralarge);
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.toolbarRows {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-small);
+  width: 100%;
+}
+
+.toolbarRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--padding-size-small);
+}
+
+.toolbarSpacer {
+  flex: 1 1 auto;
+}
+
+.levelFilter {
+  min-width: 10rem;
+}
+
+.selectedChip {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--padding-size-small);
+  border-radius: var(--border-radius);
+  background: var(--color-highlight-regular);
+  color: var(--color-gray0-regular);
+  font-size: var(--font-size-small);
+}
+
+.levelCell {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.unread {
+  font-weight: 500;
+}
+
+.read {
+  color: var(--color-gray1-regular);
+}

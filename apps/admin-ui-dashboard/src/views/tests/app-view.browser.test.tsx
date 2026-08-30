@@ -171,15 +171,15 @@ describe('AppView', () => {
       await expect.element(page.getByText(/Go to notification/i)).toBeVisible();
 
       // Notification tabs
-      await expect.element(page.getByText(/ALL/i)).toBeVisible();
-      await expect.element(page.getByText(/INFORMATION/i)).toBeVisible();
-      await expect.element(page.getByText(/WARNING/i)).toBeVisible();
-      await expect.element(page.getByText(/ERROR/i)).toBeVisible();
+      await expect.element(page.getByText('ALL (0)')).toBeVisible();
+      await expect.element(page.getByText(/INFORMATION/i).first()).toBeVisible();
+      await expect.element(page.getByText(/WARNING/i).first()).toBeVisible();
+      await expect.element(page.getByText(/ERROR/i).first()).toBeVisible();
 
       // Table headers
-      await expect.element(page.getByText(/Server/i)).toBeVisible();
-      await expect.element(page.getByText(/Date/i)).toBeVisible();
-      await expect.element(page.getByText(/Type/i)).toBeVisible();
+      await expect.element(page.getByText(/Server/i).first()).toBeVisible();
+      await expect.element(page.getByText(/Date/i).first()).toBeVisible();
+      await expect.element(page.getByText(/Type/i).first()).toBeVisible();
     });
   });
 

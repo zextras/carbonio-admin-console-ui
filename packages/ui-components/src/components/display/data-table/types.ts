@@ -12,6 +12,7 @@ import type {
 	ColumnPinningState,
 	ColumnVisibilityState,
 	ExpandedState,
+	GroupingState,
 	OnChangeFn,
 	PaginationState,
 	Row,
@@ -64,9 +65,10 @@ type DataTableProps<TData extends RowData> = Omit<
 	onColumnOrderChange?: OnChangeFn<ColumnOrderState>;
 	onColumnVisibilityChange?: OnChangeFn<ColumnVisibilityState>;
 	onColumnPinningChange?: OnChangeFn<ColumnPinningState>;
-	onRowPinningChange?: OnChangeFn<RowPinningState>;
-	onExpandedChange?: OnChangeFn<ExpandedState>;
-	onCellSelectionChange?: OnChangeFn<CellSelectionState>;
+  onRowPinningChange?: OnChangeFn<RowPinningState>;
+  onExpandedChange?: OnChangeFn<ExpandedState>;
+  onGroupingChange?: OnChangeFn<GroupingState>;
+  onCellSelectionChange?: OnChangeFn<CellSelectionState>;
 	manualPagination?: boolean;
 	manualSorting?: boolean;
 	manualFiltering?: boolean;
