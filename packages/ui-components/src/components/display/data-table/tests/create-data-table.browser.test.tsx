@@ -17,10 +17,12 @@ type Person = { id: string; name: string };
 
 const helper = createDataTableColumnHelper<Person>();
 
+const columns = helper.columns([helper.accessor('name', { header: 'Name' })]);
+
 function HookProbe() {
 	const table = useDataTable({
 		data: [{ id: '1', name: 'Ada' }],
-		columns: [helper.accessor('name', { header: 'Name' })],
+		columns,
 	});
 	return (
 		<div data-table-id={table.options.data.length}>{table.getRowModel().rows[0]?.id}</div>
