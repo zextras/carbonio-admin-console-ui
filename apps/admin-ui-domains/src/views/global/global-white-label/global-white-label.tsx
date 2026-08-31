@@ -19,14 +19,17 @@ import {
   buildWhiteLabelResetAttributes,
 } from '../../../components/theme/white-label-defaults';
 import { whiteLabelSchema } from '../../../components/theme/white-label-schema';
-import styles from './global-white-label.module.css';
 
 /**
  * Global white-label view: global whitelabel settings (logos, colors,
  * login URLs), saved via ModifyConfig.
  */
 export const GlobalWhiteLabel = () => {
-  const { data: configInformation = [], isPending, invalidate } = useAllConfig({
+  const {
+    data: configInformation = [],
+    isPending,
+    invalidate,
+  } = useAllConfig({
     placeholderData: keepPreviousData,
   });
 
@@ -34,9 +37,7 @@ export const GlobalWhiteLabel = () => {
     return <ds-spinner></ds-spinner>;
   }
 
-  return (
-    <GlobalWhiteLabelContent configInformation={configInformation} invalidate={invalidate} />
-  );
+  return <GlobalWhiteLabelContent configInformation={configInformation} invalidate={invalidate} />;
 };
 
 const GlobalWhiteLabelContent = ({
@@ -97,16 +98,14 @@ const GlobalWhiteLabelContent = ({
   return (
     <>
       {modifyConfigMutation.isPending && <ds-spinner></ds-spinner>}
-      <div className={styles.page}>
-        <FormPageLayout
-          title={t('label.whitelabel_settings', 'Whitelabel Settings')}
-          unsavedChanges={isDirty}
-          onCancel={onCancel}
-          onSave={onSave}
-        >
-          <ThemeConfigs form={form} isGlobalTheme onResetTheme={onResetTheme} />
-        </FormPageLayout>
-      </div>
+      <FormPageLayout
+        title={t('label.whitelabel_settings', 'Whitelabel Settings')}
+        unsavedChanges={isDirty}
+        onCancel={onCancel}
+        onSave={onSave}
+      >
+        <ThemeConfigs form={form} isGlobalTheme onResetTheme={onResetTheme} />
+      </FormPageLayout>
       {isOpenResetDialog && (
         <ResetTheme
           title={t('label.reset_global_whitelabel_settings', 'Reset global whitelabel settings')}
