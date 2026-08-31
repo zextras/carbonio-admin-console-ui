@@ -116,7 +116,7 @@ export const DeleteAccountDialog = ({
       })}
       open
       customFooter={
-        <div className="flex justify-end gap-4">
+        <div className="flex justify-center gap-4">
           <Button
             label={t('label.delete_it_instead', 'Delete it instead')}
             color="error"
@@ -135,7 +135,7 @@ export const DeleteAccountDialog = ({
       showCloseIcon
       onClose={onClose}
     >
-      <div>
+      <div className="text-center">
         {userType === 'Admin' &&
           (accountUserType(account) === 'System' ||
             accountUserType(account) === 'DelegatedAdmin') && (
@@ -176,7 +176,7 @@ export const DeleteAccountDialog = ({
             />
           </ds-text>
         </div>
-        <div className="pb-lg">
+        <div className="flex justify-center pb-lg">
           <ds-icon
             icon="AlertTriangleOutline"
             size="large"
