@@ -106,6 +106,10 @@ export async function saveRemainingAttributes(
     modifiedData[ele] = values[ele];
   });
 
+  if (values.defaultCOS && modifiedKeys.includes('zimbraCOSId')) {
+    modifiedData.zimbraCOSId = '';
+  }
+
   if (modifiedKeys.length === 0) {
     if (isPasswordChange) {
       ctx.successSnackbar(ctx.t('account_details.user_password_set', 'User password set successfully'));

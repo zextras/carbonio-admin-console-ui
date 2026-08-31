@@ -9,11 +9,22 @@ import {
   getQueryClient,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { useAccountForm } from '../account-form-context';
 import { EditAccountGeneralSection } from '../general-section';
+import { SettingsFields } from '../general-section/settings-fields';
 import { AccountFormTestProvider } from './account-form-test-provider';
+
+function CancelHarness() {
+  const { resetToSaved } = useAccountForm();
+  return (
+    <button type="button" onClick={resetToSaved}>
+      Cancel
+    </button>
+  );
+}
 
 function buildMockAccountDetail(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
@@ -90,5 +101,75 @@ describe('EditAccountGeneralSection (browser)', () => {
       const lastLogonDate = page.getByText(/20 Mar 2026 | 03:30:00 PM/);
       await expect.element(lastLogonDate).toBeVisible();
     });
+  });
+});
+
+describe('EditAccountGeneralSection Default COS (browser)', () => {
+  beforeEach(() => {
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [
+        { name: 'default', id: 'default-cos-id' },
+        { name: 'Premium COS', id: 'premium-cos-id' },
+      ],
+    });
+  });
+
+  it('re-enables the COS select after cancel when Default COS was toggled on', async () => {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['advanced-supported'], { supported: true });
+    const accountDetail = buildMockAccountDetail({ zimbraCOSId: 'premium-cos-id' });
+
+    await setupBrowserTest(
+      <AccountFormTestProvider values={accountDetail}>
+        <>
+          <SettingsFields />
+          <CancelHarness />
+        </>
+      </AccountFormTestProvider>,
+      { queryClient },
+    );
+
+    const defaultCosSwitch = page.getByRole('switch', { name: 'Default COS' });
+    const cosSelect = page.getByText('Default Class of Service', { exact: true });
+
+    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+
+    await defaultCosSwitch.click();
+    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
+
+    await cosSelect.click();
+    await expect.element(page.getByTestId('dropdown-popper-list')).not.toBeInTheDocument();
+
+    await page.getByRole('button', { name: 'Cancel' }).click();
+    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+
+    await cosSelect.click();
+    await page.getByTestId('dropdown-popper-list').getByText('Premium COS').click();
+    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+  });
+
+  it('turns off Default COS and enables the select when default COS is first in the list', async () => {
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['advanced-supported'], { supported: true });
+    const accountDetail = buildMockAccountDetail({ zimbraCOSId: 'default-cos-id' });
+
+    await setupBrowserTest(
+      <AccountFormTestProvider values={accountDetail}>
+        <SettingsFields />
+      </AccountFormTestProvider>,
+      { queryClient },
+    );
+
+    const defaultCosSwitch = page.getByRole('switch', { name: 'Default COS' });
+    const cosSelect = page.getByText('Default Class of Service', { exact: true });
+
+    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
+
+    await defaultCosSwitch.click();
+    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(page.getByText('default', { exact: true })).toBeVisible();
+
+    await cosSelect.click();
+    await expect.element(page.getByTestId('dropdown-popper-list')).toBeVisible();
   });
 });

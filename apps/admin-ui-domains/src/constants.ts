@@ -121,6 +121,7 @@ export const SHORT = 'short';
 export const DOMAIN_NAME = 'domainName';
 export const UID = 'uid';
 export const CHANGE_NAME_BOOLEAN = 'changeNameBool';
+export const DEFAULT_COS_BOOLEAN = 'defaultCOS';
 export const IS_DEFAULT_USER_NAME = 'isDefaultUserName';
 export const CHANGE_DISPLAY_NAME_BOOLEAN = 'changeDisplayNameBool';
 export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';

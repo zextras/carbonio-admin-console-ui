@@ -23,6 +23,7 @@ import {
   BACKUP_SELF_UNDELETE_ALLOWED,
   CHANGE_DISPLAY_NAME_BOOLEAN,
   CHANGE_NAME_BOOLEAN,
+  DEFAULT_COS_BOOLEAN,
   IS_DEFAULT_USER_NAME,
   TOTAL_COMPUTED_QUOTA_LIMIT,
   TOTAL_QUOTA_SOURCE,
@@ -311,6 +312,7 @@ export function useAccountFormProvider({
         remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
         remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
         remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
+        remove(modifiedKeys, (ele) => ele === DEFAULT_COS_BOOLEAN);
 
         if (!values.sn?.trim()) {
           errorSnackbar(t('label.surname_required', 'Surname is required'));
