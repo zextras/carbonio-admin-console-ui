@@ -59,6 +59,7 @@ import { useSetPassword } from '../../services/use-set-password';
 import { useSignatures } from '../../services/use-signatures';
 import { useUserSessions } from '../../services/use-user-sessions';
 import { type AccountFormContextValue, type AccountFormValues } from './account-form-context';
+import { invalidateAccountFormQueries } from './invalidate-account-form-queries';
 import { saveAliases } from './save/save-aliases';
 import {
   saveAdministrationRights,
@@ -291,12 +292,7 @@ export function useAccountFormProvider({
           values: values as AccountFormValues,
         });
         onSaved();
-        void queryClient.invalidateQueries({
-          queryKey: domainQueryKeys.accountDetail(account.id),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: domainQueryKeys.accountCoreAttributes(account.id),
-        });
+        invalidateAccountFormQueries(queryClient, account.id);
       };
 
       setIsSaving(true);
