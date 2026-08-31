@@ -6,7 +6,6 @@
 import { useSelector } from '@tanstack/react-store';
 import { InheritedSelect, Row, Select, Switch } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { DEFAULT } from '../../../constants';
@@ -24,21 +23,17 @@ export const SettingsFields = () => {
   const { data: cosData } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
   const localeZone = localeList(t);
   const ACCOUNT_STATUS: Array<{ value: string; label: string }> = AccountStatus(t);
-  const [defaultCOS, setDefaultCOS] = useState<boolean>(false);
-  const [cosDefaultStateSet, setCosDefaultStateSet] = useState<boolean>(false);
 
   const cosItems = (cosData?.cos ?? []).map((item: any) => ({
     label: item.name,
     value: item.id,
   }));
   const defaultCosId = cosItems.find((item: any) => item.label === DEFAULT)?.value;
-
-  if (!cosDefaultStateSet && values?.zimbraCOSId && values.zimbraCOSId === defaultCosId) {
-    setCosDefaultStateSet(true);
-    setDefaultCOS(true);
-  }
-
-  const selection = cosItems.find((item: any) => item.value === values?.zimbraCOSId);
+  const isDefaultCos =
+    values.defaultCOS ??
+    (!values?.zimbraCOSId || values?.zimbraCOSId === defaultCosId);
+  const displayCosId = isDefaultCos ? defaultCosId : values?.zimbraCOSId;
+  const selection = cosItems.find((item: any) => item.value === displayCosId);
 
   const onAccountStatusChange = (v: any): any => {
     form.setFieldValue('zimbraAccountStatus', v);
@@ -50,12 +45,11 @@ export const SettingsFields = () => {
     form.setFieldValue('zimbraCOSId', v);
   };
   const onCOSSwitchChanges = (): void => {
-    if (defaultCOS) {
-      form.setFieldValue('zimbraCOSId', cosItems[0]?.value);
-    } else {
+    const nextDefaultCos = !isDefaultCos;
+    form.setFieldValue('defaultCOS', nextDefaultCos);
+    if (nextDefaultCos) {
       form.setFieldValue('zimbraCOSId', defaultCosId);
     }
-    setDefaultCOS(!defaultCOS);
   };
 
   const setEmptyValue = (keyName: string) => {
@@ -110,17 +104,16 @@ export const SettingsFields = () => {
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="15.5%" mainAlignment="flex-start">
           <Switch
-            defaultChecked={defaultCOS}
             onClick={onCOSSwitchChanges}
             label={t('account_details.default_COS', 'Default COS')}
             iconColor="primary"
-            value={defaultCOS}
+            value={isDefaultCos}
           />
         </Row>
         <Row width="84.5%" mainAlignment="flex-start">
           {cosItems?.length ? (
             <Select
-              disabled={defaultCOS}
+              disabled={isDefaultCos}
               items={cosItems}
               background="gray5"
               label={t('label.default_class_of_service', 'Default Class of Service')}

@@ -118,7 +118,7 @@ export const CalendarOptionsSection = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <div className={styles.headerRow}>
         <ds-text size="small" color="gray0" weight="bold" as="h2">
           {t('label.calendar_options', 'Calendar Options')}

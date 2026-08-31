@@ -23,6 +23,7 @@ import {
   BACKUP_SELF_UNDELETE_ALLOWED,
   CHANGE_DISPLAY_NAME_BOOLEAN,
   CHANGE_NAME_BOOLEAN,
+  DEFAULT_COS_BOOLEAN,
   IS_DEFAULT_USER_NAME,
   TOTAL_COMPUTED_QUOTA_LIMIT,
   TOTAL_QUOTA_SOURCE,
@@ -58,6 +59,7 @@ import { useSetPassword } from '../../services/use-set-password';
 import { useSignatures } from '../../services/use-signatures';
 import { useUserSessions } from '../../services/use-user-sessions';
 import { type AccountFormContextValue, type AccountFormValues } from './account-form-context';
+import { invalidateAccountFormQueries } from './invalidate-account-form-queries';
 import { saveAliases } from './save/save-aliases';
 import {
   saveAdministrationRights,
@@ -290,12 +292,7 @@ export function useAccountFormProvider({
           values: values as AccountFormValues,
         });
         onSaved();
-        void queryClient.invalidateQueries({
-          queryKey: domainQueryKeys.accountDetail(account.id),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: domainQueryKeys.accountCoreAttributes(account.id),
-        });
+        invalidateAccountFormQueries(queryClient, account.id);
       };
 
       setIsSaving(true);
@@ -311,6 +308,7 @@ export function useAccountFormProvider({
         remove(modifiedKeys, (ele) => ele === CHANGE_NAME_BOOLEAN);
         remove(modifiedKeys, (ele) => ele === CHANGE_DISPLAY_NAME_BOOLEAN);
         remove(modifiedKeys, (ele) => ele === IS_DEFAULT_USER_NAME);
+        remove(modifiedKeys, (ele) => ele === DEFAULT_COS_BOOLEAN);
 
         if (!values.sn?.trim()) {
           errorSnackbar(t('label.surname_required', 'Surname is required'));

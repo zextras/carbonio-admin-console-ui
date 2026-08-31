@@ -32,7 +32,9 @@ export const AccountFormTestProvider = ({
   const contextValue: AccountFormContextValue = {
     form,
     account: { id: values?.zimbraId ?? 'mock-zimbra-id', name: values?.name ?? '' },
-    resetToSaved: () => {},
+    resetToSaved: () => {
+      form.reset(values, { keepDefaultValues: true });
+    },
     isSaving: false,
     savedValues: values,
     cosDetail: {},
