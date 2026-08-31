@@ -156,13 +156,7 @@ const GlobalDetailPanelContent = ({
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
-    <Container
-      height="calc(100vh - 105px)"
-      background="gray6"
-      crossAlignment="flex-start"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'auto' }}
-    >
+    <Container background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
       <FormPageLayout
         title={t('label.settings', 'Settings')}
         unsavedChanges={isDirty}
@@ -173,7 +167,12 @@ const GlobalDetailPanelContent = ({
           });
         }}
       >
-        <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'small' }}>
+        <Row
+          mainAlignment="flex-start"
+          width="100%"
+          background="gray6"
+          padding={{ top: 'extralarge' }}
+        >
           <ds-text as="h2" size="small" weight="bold" color="gray0">
             {t('label.domain_system_notifications', 'Domain System Notifications')}
           </ds-text>
