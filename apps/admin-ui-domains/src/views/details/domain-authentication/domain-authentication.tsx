@@ -34,13 +34,7 @@ export const DomainAuthentication = () => {
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
-    <Container
-      height="calc(100vh - 105px)"
-      background="gray6"
-      crossAlignment="flex-start"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'auto' }}
-    >
+    <Container background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
       <FormPageLayout
         title={t('label.authentication', 'Authentication')}
         unsavedChanges={isDirty}
