@@ -36,12 +36,15 @@ export const DomainListChipInput = ({
     enabled: debouncedSearchValue !== '',
   });
 
-  const domainOption: Array<DropdownItem> = (data?.domain ?? [])
-    .filter((domain) => domain.name !== domainName)
-    .map((domain) => ({
-      label: domain.name,
-      id: domain.name,
-    }));
+  const domainOption: Array<DropdownItem> =
+    debouncedSearchValue === ''
+      ? []
+      : (data?.domain ?? [])
+          .filter((domain) => domain.name !== domainName)
+          .map((domain) => ({
+            label: domain.name,
+            id: domain.name,
+          }));
 
   const onInputType: NonNullable<ChipInputProps['onInputType']> = (event) => {
     setSearchValue(event.textContent ?? '');

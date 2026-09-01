@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { setupBrowserTest, worker } from 'admin-ui-test-utils';
+import { getQueryClient, setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { type DefaultBodyType,http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
@@ -77,5 +77,21 @@ describe('DomainListChipInput (browser)', () => {
     });
 
     expect(queries.filter((query) => query.includes('exa'))).toHaveLength(1);
+  });
+
+  it('should not open the dropdown on mount when the domain list cache is warm and no search is typed', async () => {
+    // Simulate arriving from the domain list page, which has already fetched
+    // the same query key (['domain', 'search-list', '', 10, 0])
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['domain', 'search-list', '', 10, 0], SEARCH_DIRECTORY_RESPONSE);
+
+    await setupBrowserTest(
+      <DomainListChipInput domainName={DOMAIN_NAME} domainList={[]} setDomainList={() => {}} />,
+      { queryClient },
+    );
+
+    await expect.element(page.getByPlaceholder('Search Domain')).toBeVisible();
+
+    await expect.element(page.getByText('example.org')).not.toBeInTheDocument();
   });
 });
