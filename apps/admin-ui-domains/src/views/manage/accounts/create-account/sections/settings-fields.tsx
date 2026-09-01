@@ -51,7 +51,7 @@ export const SettingsFields = (): ReactElement => {
           />
         </div>
       </div>
-      <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
+      <div className="flex w-full flex-wrap items-center justify-between pt-lg pl-lg">
         <div className="flex w-[20%] flex-wrap justify-start">
           <Switch
             value={defaultCOSField.state.value}

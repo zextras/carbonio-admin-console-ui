@@ -59,7 +59,7 @@ export const CreateAccountDetailSection = (): ReactElement => {
   const extLdapAuth = hasExternalLdapUrl(domain?.a);
 
   return (
-    <div className="flex max-h-full w-full flex-col flex-nowrap items-center justify-start overflow-auto pl-lg pr-xl pb-lg transition-[left] duration-200 ease-in-out">
+    <div className="flex max-h-full w-full flex-col flex-nowrap items-center justify-start pl-lg pr-xl pb-lg transition-[left] duration-200 ease-in-out">
       <AccountInfoFields />
       <div className="w-full pt-md">
         <ds-divider></ds-divider>
