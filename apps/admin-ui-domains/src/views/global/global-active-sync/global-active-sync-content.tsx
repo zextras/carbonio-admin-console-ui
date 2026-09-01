@@ -215,6 +215,7 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
           crossAlignment="flex-start"
           mainAlignment="flex-start"
           width="100%"
+          padding={{ top: 'extralarge' }}
         >
           <Row mainAlignment="flex-end" width="100%">
             <Padding right="large">
