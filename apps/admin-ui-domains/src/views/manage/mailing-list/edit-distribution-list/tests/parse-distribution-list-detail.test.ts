@@ -28,6 +28,7 @@ describe('parse-distribution-list-detail', () => {
 							id: LIST_ID,
 							dlm: [{ _content: 'user1@example.com' }, { _content: 'user2@example.com' }],
 							a: [
+								{ n: 'displayName', _content: 'Team List' },
 								{ n: 'zimbraHideInGal', _content: 'TRUE' },
 								{ n: 'zimbraNotes', _content: 'notes' },
 								{ n: 'description', _content: 'desc' },
@@ -47,6 +48,7 @@ describe('parse-distribution-list-detail', () => {
 
 			expect(parsed).toEqual({
 				dlId: LIST_ID,
+				displayName: 'Team List',
 				dlm: ['user1@example.com', 'user2@example.com'],
 				zimbraHideInGal: true,
 				zimbraNotes: 'notes',
@@ -63,6 +65,7 @@ describe('parse-distribution-list-detail', () => {
 		it('excludes the list own address from aliases and defaults missing attributes', () => {
 			const parsed = parseDistributionListDetail({ dl: [{ id: LIST_ID, a: [] }] }, LIST_NAME);
 			expect(parsed?.aliases).toEqual([]);
+			expect(parsed?.displayName).toBe('');
 			expect(parsed?.zimbraHideInGal).toBe(false);
 			expect(parsed?.mailStatusEnabled).toBe(false);
 			expect(parsed?.memberURL).toBeUndefined();

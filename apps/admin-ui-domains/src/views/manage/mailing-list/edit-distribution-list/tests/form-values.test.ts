@@ -20,6 +20,7 @@ const SELECTED_MAILING_LIST = {
 
 const DETAIL: DistributionListDetail = {
 	dlId: 'dl-1',
+	displayName: 'Team List',
 	dlm: ['user1@example.com'],
 	zimbraHideInGal: true,
 	zimbraNotes: 'notes',
@@ -81,9 +82,23 @@ describe('mapToFormValues', () => {
 
 	it('defaults the display name to empty when the list has no displayName attribute', () => {
 		expect(
-			mapToFormValues(DETAIL, [], GRANTS, { id: 'dl-1', name: 'x@example.com', a: [] })
-				.displayName
+			mapToFormValues({ ...DETAIL, displayName: '' }, [], GRANTS, {
+				id: 'dl-1',
+				name: 'x@example.com',
+				a: [],
+			}).displayName,
 		).toBe('');
+	});
+
+	it('prefers displayName from detail over stale selectedMailingList', () => {
+		const detail = { ...DETAIL, displayName: 'Fresh From Detail' };
+		const staleRow = {
+			...SELECTED_MAILING_LIST,
+			a: [{ n: 'displayName', _content: 'Stale Row Name' }],
+		};
+		expect(mapToFormValues(detail, MEMBERSHIP, GRANTS, staleRow).displayName).toBe(
+			'Fresh From Detail',
+		);
 	});
 });
 

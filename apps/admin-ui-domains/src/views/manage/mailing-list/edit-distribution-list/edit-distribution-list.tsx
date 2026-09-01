@@ -234,8 +234,8 @@ function EditDistributionListContent({
             hideButton: true,
             replace: true,
           });
+          form.reset(finalValue, { keepDefaultValues: true });
         }
-        form.reset(finalValue, { keepDefaultValues: true });
       } catch (error: any) {
         createSnackbar({
           key: 'error',

@@ -11,6 +11,7 @@ type SoapGrantee = { id?: string; name?: string; type?: string };
 
 export type DistributionListDetail = {
 	dlId: string;
+	displayName: string;
 	dlm: Array<string>;
 	zimbraHideInGal: boolean;
 	zimbraNotes: string;
@@ -55,6 +56,7 @@ export function parseDistributionListDetail(
 
 	return {
 		dlId: distributionList.id ?? '',
+		displayName: findAttributeContent(attributes, 'displayName') || '',
 		dlm: distributionList.dlm?.map((item) => item?._content ?? '') ?? [],
 		zimbraHideInGal: findAttributeContent(attributes, 'zimbraHideInGal') === 'TRUE',
 		zimbraNotes: findAttributeContent(attributes, 'zimbraNotes') || '',

@@ -44,6 +44,7 @@ async function setupEditView(): Promise<EditViewSetup> {
         name: DL_EMAIL,
         dlm: [{ _content: 'user1@example.com' }, { _content: 'user2@example.com' }],
         a: [
+          { n: 'displayName', _content: DL_DISPLAY_NAME },
           { n: 'zimbraHideInGal', _content: 'FALSE' },
           { n: 'zimbraNotes', _content: '' },
           { n: 'description', _content: 'Team mailing list' },
@@ -297,6 +298,49 @@ describe('EditDistributionList (browser)', () => {
       await makeDirty();
       await page.getByRole('button', { name: 'Save', exact: true }).click();
       await expect.element(page.getByText('Server error')).toBeInTheDocument();
+    });
+
+    it('keeps the updated display name after save when the detail query refetches', async () => {
+      let detailDisplayName = DL_DISPLAY_NAME;
+      await setupEditView();
+      worker.use(
+        http.post('/service/admin/soap/ModifyDistributionListRequest', () => {
+          detailDisplayName = 'Team List Updated';
+          return HttpResponse.json({ Body: { ModifyDistributionListResponse: {} } });
+        }),
+        http.post('/service/admin/soap/GetDistributionListRequest', () =>
+          HttpResponse.json({
+            Body: {
+              GetDistributionListResponse: {
+                dl: [
+                  {
+                    id: DL_ID,
+                    dlm: [{ _content: 'user1@example.com' }, { _content: 'user2@example.com' }],
+                    a: [
+                      { n: 'displayName', _content: detailDisplayName },
+                      { n: 'zimbraHideInGal', _content: 'FALSE' },
+                      { n: 'zimbraNotes', _content: '' },
+                      { n: 'description', _content: 'Team mailing list' },
+                      { n: 'zimbraMailStatus', _content: 'enabled' },
+                      { n: 'zimbraMailAlias', _content: DL_EMAIL },
+                      { n: 'zimbraMailAlias', _content: 'alias1@example.com' },
+                    ],
+                  },
+                ],
+              },
+            },
+          }),
+        ),
+      );
+      await waitForLoad();
+      await makeDirty();
+      await page.getByRole('button', { name: 'Save', exact: true }).click();
+      await expect
+        .element(page.getByText('The changes have been saved'))
+        .toBeInTheDocument();
+      await expect
+        .element(page.getByLabelText('Display Name'))
+        .toHaveValue('Team List Updated');
     });
   });
 

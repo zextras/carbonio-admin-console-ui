@@ -50,7 +50,8 @@ export function mapToFormValues(
 	selectedMailingList: any
 ): EditDistributionListFormValues {
 	const displayName =
-		selectedMailingList?.a?.find((attribute: any) => attribute?.n === 'displayName')?._content ??
+		detail?.displayName ||
+		selectedMailingList?.a?.find((attribute: any) => attribute?.n === 'displayName')?._content ||
 		'';
 
 	return {
