@@ -127,6 +127,9 @@ export const SendingOptions = () => {
         signatureList={signatureList}
         accountId={accountDetail?.zimbraId}
       />
+      <Row width="100%" padding={{ top: 'medium' }}>
+        <ds-divider></ds-divider>
+      </Row>
     </>
   );
 };
