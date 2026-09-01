@@ -7,6 +7,8 @@
 import { Container, Padding, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import styles from './alert-banner.module.css';
+
 type AlertBannerProps = {
   onClose: () => void;
 };
@@ -41,8 +43,13 @@ export const AlertBanner = ({ onClose }: AlertBannerProps) => {
             </ds-text>
           </Padding>
         </Row>
-        <button type="button" aria-label={t('label.close', 'Close')} onClick={onClose}>
-          <ds-icon icon="CloseOutline" size="large" style={{ cursor: 'pointer' }}></ds-icon>
+        <button
+          type="button"
+          aria-label={t('label.close', 'Close')}
+          onClick={onClose}
+          className={styles.closeButton}
+        >
+          <ds-icon icon="CloseOutline" size="large"></ds-icon>
         </button>
       </Row>
     </Container>
