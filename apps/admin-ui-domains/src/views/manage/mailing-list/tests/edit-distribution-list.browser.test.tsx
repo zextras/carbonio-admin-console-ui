@@ -110,6 +110,30 @@ async function makeDirty(): Promise<void> {
     .toBeInTheDocument();
 }
 
+async function expectHeaderSaveCancelVisible(): Promise<void> {
+  await expect
+    .element(page.getByRole('button', { name: 'Save', exact: true }))
+    .toBeInTheDocument();
+  await expect
+    .element(page.getByRole('button', { name: 'Cancel', exact: true }))
+    .toBeInTheDocument();
+}
+
+async function expectHeaderSaveCancelHidden(): Promise<void> {
+  await expect
+    .element(page.getByRole('button', { name: 'Save', exact: true }))
+    .not.toBeInTheDocument();
+  await expect
+    .element(page.getByRole('button', { name: 'Cancel', exact: true }))
+    .not.toBeInTheDocument();
+}
+
+async function expectHeaderDeleteVisible(): Promise<void> {
+  await expect
+    .element(page.getByRole('button', { name: 'delete', exact: true }))
+    .toBeInTheDocument();
+}
+
 describe('EditDistributionList (browser)', () => {
   describe('Rendering', () => {
     it('renders the header with the list address and type', async () => {
@@ -703,6 +727,69 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('Edit permission level')).not.toBeInTheDocument();
       await new Promise((resolve) => setTimeout(resolve, 500));
       expect(actionRequested).toBe(false);
+    });
+  });
+
+  describe('Header Save/Cancel visibility', () => {
+    it('does not show Save/Cancel after removing a member and keeps Delete visible', async () => {
+      createBrowserSoapAPIInterceptor('RemoveDistributionListMember', {});
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('MEMBERS', { exact: true }).click();
+      await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
+      await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
+      await expect.element(page.getByText('user1@example.com')).not.toBeInTheDocument();
+      await expectHeaderSaveCancelHidden();
+      await expectHeaderDeleteVisible();
+    });
+
+    it('does not show Save/Cancel after adding an owner', async () => {
+      createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      createBrowserSoapAPIInterceptor('SearchGal', {
+        cn: [{ id: 'gal-1', _attrs: { email: 'newowner@example.com', type: 'account' } }],
+      });
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('OWNERS', { exact: true }).click();
+      await userEvent.type(
+        page.getByLabelText('Add owners by email address'),
+        'newowner@example.com',
+      );
+      await new Promise((resolve) => setTimeout(resolve, 900));
+      await page.getByRole('button', { name: 'Add Owners' }).click();
+      await expect
+        .element(page.getByText('Owner has been added successfully'))
+        .toBeInTheDocument();
+      await expectHeaderSaveCancelHidden();
+      await expectHeaderDeleteVisible();
+    });
+
+    it('does not show Save/Cancel after removing an authorized sender', async () => {
+      createBrowserSoapAPIInterceptor('DistributionListAction', {});
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND AS', { exact: true }).click();
+      await page.getByRole('button', { name: 'Delete', exact: true }).click();
+      await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
+      await expect.element(page.getByText('sender@example.com')).not.toBeInTheDocument();
+      await expectHeaderSaveCancelHidden();
+      await expectHeaderDeleteVisible();
+    });
+
+    it('shows Save/Cancel on the general tab when deferred fields are dirty', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await makeDirty();
+      await expectHeaderSaveCancelVisible();
+    });
+
+    it('shows Save/Cancel on the send-to tab when the grant type changes', async () => {
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('SEND TO', { exact: true }).click();
+      await page.getByText('Everyone').click();
+      await page.getByText('Members only').click();
+      await expectHeaderSaveCancelVisible();
     });
   });
 });

@@ -37,7 +37,7 @@ import { GeneralTab } from '../edit-mailing-detail/general-tab';
 import { ReusedDefaultTabBar } from '../edit-mailing-detail/reused-default-tab-bar';
 import { type SaveOperation } from './build-save-operations';
 import { DeleteDistributionListModal } from './delete-distribution-list-modal';
-import { buildFormSaveOperations, mapToFormValues } from './form-values';
+import { buildFormSaveOperations, isDeferredSaveDirty, mapToFormValues } from './form-values';
 import { MembersTab } from './members-tab/members-tab';
 import { OwnersTab } from './owners-tab/owners-tab';
 import {
@@ -254,17 +254,35 @@ function EditDistributionListContent({
   /* Keep the form baseline in sync with (re)fetched query data, but never
      re-baseline underneath unsaved user edits */
   useEffect(() => {
-    if (form.state.isTouched || form.state.isDirty) {
+    if (
+      form.state.isTouched ||
+      isDeferredSaveDirty(
+        form.state.values as EditDistributionListFormValues,
+        formValues,
+      )
+    ) {
       return;
     }
     form.reset(formValues, { keepDefaultValues: false });
   }, [formValues, form]);
 
-  const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
+  const deferredSaveDirty = useSelector(form.store, (state) => {
+    if (state.isDefaultValue) {
+      return false;
+    }
+    return isDeferredSaveDirty(
+      state.values as EditDistributionListFormValues,
+      formValues,
+    );
+  });
   const isLoading = useSelector(form.store, (state) => state.isSubmitting);
   const values = useSelector(form.store, (state) => state.values);
 
   const [selectedTab, setSelectedTab] = useState<string>('general');
+  const DEFERRED_SAVE_TABS = new Set(['general', 'sendto']);
+  const showSaveCancel =
+    deferredSaveDirty &&
+    (DEFERRED_SAVE_TABS.has(selectedTab) || (dynamic && selectedTab === 'members'));
   const [pendingTab, setPendingTab] = useState<string | null>(null);
   const [isOpenUnsavedDialog, setIsOpenUnsavedDialog] = useState<boolean>(false);
   const [isOpenDeleteDialog, setIsOpenDeleteDialog] = useState<boolean>(false);
@@ -388,7 +406,7 @@ function EditDistributionListContent({
             </ds-text>
           </Row>
           <Row>
-            {!isDirty && (
+            {!showSaveCancel && (
               <Row padding={{ right: 'medium' }}>
                 <Button
                   size="medium"
@@ -400,7 +418,7 @@ function EditDistributionListContent({
                 />
               </Row>
             )}
-            {isDirty && (
+            {showSaveCancel && (
               <Container
                 orientation="horizontal"
                 mainAlignment="flex-end"
@@ -449,7 +467,7 @@ function EditDistributionListContent({
             selected={selectedTab}
             onChange={(ev: unknown, selectedId: string): void => {
               if (
-                isDirty &&
+                deferredSaveDirty &&
                 (selectedTab === 'general' || selectedTab === 'sendto') &&
                 selectedId !== selectedTab
               ) {
@@ -536,7 +554,7 @@ function EditDistributionListContent({
           />
         )}
 
-        <RouteLeavingGuard when={isDirty} onSave={(): void => void form.handleSubmit()} />
+        <RouteLeavingGuard when={deferredSaveDirty} onSave={(): void => void form.handleSubmit()} />
         {isOpenDeleteDialog && (
           <DeleteDistributionListModal
             open={isOpenDeleteDialog}

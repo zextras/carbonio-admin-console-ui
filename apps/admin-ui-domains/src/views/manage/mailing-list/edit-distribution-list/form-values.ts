@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { isEqual } from 'lodash-es';
+
 import { PUB, TRUE_FALSE } from '../../../../constants';
 import {
 	buildSaveOperations,
@@ -16,6 +18,25 @@ import type {
 	DistributionListMemberOf
 } from './parse-distribution-list-detail';
 import type { EditDistributionListFormValues } from './types';
+
+const IMMEDIATE_SAVE_FIELD_KEYS = ['dlm', 'ownersList', 'sendEmails'] as const;
+
+export function omitImmediateSaveFields(
+	values: EditDistributionListFormValues,
+): Omit<EditDistributionListFormValues, (typeof IMMEDIATE_SAVE_FIELD_KEYS)[number]> {
+	const { dlm, ownersList, sendEmails, ...deferred } = values;
+	return deferred;
+}
+
+export function isDeferredSaveDirty(
+	values: EditDistributionListFormValues | undefined,
+	defaults: EditDistributionListFormValues | undefined,
+): boolean {
+	if (!values || !defaults) {
+		return false;
+	}
+	return !isEqual(omitImmediateSaveFields(values), omitImmediateSaveFields(defaults));
+}
 
 /**
  * Maps the parsed query data (detail / membership / grants) plus the selected

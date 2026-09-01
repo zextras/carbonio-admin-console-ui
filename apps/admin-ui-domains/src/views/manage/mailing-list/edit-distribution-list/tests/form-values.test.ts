@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { mapToFormValues } from '../form-values';
+import { isDeferredSaveDirty, mapToFormValues } from '../form-values';
 import type {
 	DistributionListDetail,
 	DistributionListGrants,
@@ -84,5 +84,41 @@ describe('mapToFormValues', () => {
 			mapToFormValues(DETAIL, [], GRANTS, { id: 'dl-1', name: 'x@example.com', a: [] })
 				.displayName
 		).toBe('');
+	});
+});
+
+describe('isDeferredSaveDirty', () => {
+	const defaults = mapToFormValues(DETAIL, MEMBERSHIP, GRANTS, SELECTED_MAILING_LIST);
+
+	it('returns false when only immediate-save fields differ', () => {
+		expect(
+			isDeferredSaveDirty(
+				{
+					...defaults,
+					dlm: ['user1@example.com', 'new@example.com'],
+					ownersList: [{ id: 'owner-2', name: 'newowner@example.com' }],
+					sendEmails: [{ name: 'new@example.com', sendAcl: 'sendAsDistList' }],
+				},
+				defaults,
+			),
+		).toBe(false);
+	});
+
+	it('returns true when a deferred-save field differs', () => {
+		expect(
+			isDeferredSaveDirty({ ...defaults, displayName: 'Updated Name' }, defaults),
+		).toBe(true);
+		expect(
+			isDeferredSaveDirty({ ...defaults, grantTypeValue: 'pub' }, defaults),
+		).toBe(true);
+	});
+
+	it('returns false when values match defaults', () => {
+		expect(isDeferredSaveDirty(defaults, defaults)).toBe(false);
+	});
+
+	it('returns false when values or defaults are undefined', () => {
+		expect(isDeferredSaveDirty(undefined, defaults)).toBe(false);
+		expect(isDeferredSaveDirty(defaults, undefined)).toBe(false);
 	});
 });
