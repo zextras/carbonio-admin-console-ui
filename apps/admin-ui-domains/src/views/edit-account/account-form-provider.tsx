@@ -120,6 +120,18 @@ function buildCoreAttrValues(coreAttrs: AccountCoreAttributes): Record<string, u
   };
 }
 
+export function buildSyncedAccountFormValues(
+  detail: FlattenedAccount,
+  quota?: SuccessfulAccountQuota,
+  coreAttrs?: AccountCoreAttributes,
+): AccountFormValues {
+  return {
+    ...buildAccountFormValues(detail),
+    ...(quota ? buildQuotaValues(quota) : {}),
+    ...(coreAttrs ? buildCoreAttrValues(coreAttrs) : {}),
+  };
+}
+
 type SavedValuesBaseline = {
   detail: FlattenedAccount | undefined;
   quota: SuccessfulAccountQuota | undefined;
@@ -146,18 +158,15 @@ function computeNextBaseline({
     return null;
   }
   if (accountDetailData !== undefined && accountDetailData !== baseline?.detail) {
-    const quotaIsNew = accountQuota !== undefined && accountQuota !== baseline?.quota;
-    const coreAttrsAreNew =
-      accountCoreAttributes !== undefined && accountCoreAttributes !== baseline?.coreAttrs;
     return {
       detail: accountDetailData,
       quota: accountQuota,
       coreAttrs: accountCoreAttributes,
-      values: {
-        ...buildAccountFormValues(accountDetailData),
-        ...(quotaIsNew ? buildQuotaValues(accountQuota) : {}),
-        ...(coreAttrsAreNew ? buildCoreAttrValues(accountCoreAttributes) : {}),
-      },
+      values: buildSyncedAccountFormValues(
+        accountDetailData,
+        accountQuota,
+        accountCoreAttributes,
+      ),
     };
   }
   if (accountQuota !== undefined && accountQuota !== baseline?.quota) {
@@ -339,7 +348,7 @@ export function useAccountFormProvider({
     },
   });
 
-  const formUntouched = !form.state.isTouched && !form.state.isDirty;
+  const formUntouched = !form.state.isTouched;
   const nextBaseline = computeNextBaseline({
     formUntouched,
     accountDetailData,
@@ -355,25 +364,14 @@ export function useAccountFormProvider({
     if (!accountDetailData) {
       return;
     }
-    if (form.state.isTouched || form.state.isDirty) {
+    if (form.state.isTouched) {
       return;
     }
-    form.reset(buildAccountFormValues(accountDetailData), { keepDefaultValues: false });
-  }, [accountDetailData, form]);
-
-  useEffect(() => {
-    if (!accountQuota) {
-      return;
-    }
-    if (form.state.isTouched || form.state.isDirty) {
-      return;
-    }
-    const quotaValues = {
-      ...form.state.values,
-      ...buildQuotaValues(accountQuota),
-    };
-    form.reset(quotaValues as AccountFormValues, { keepDefaultValues: false });
-  }, [accountQuota, form]);
+    form.reset(
+      buildSyncedAccountFormValues(accountDetailData, accountQuota, accountCoreAttributes),
+      { keepDefaultValues: false },
+    );
+  }, [accountDetailData, accountQuota, accountCoreAttributes, isAdvanced, form]);
 
   const { data: deletePasswordRight } = useQuery({
     queryKey: domainQueryKeys.checkRight(

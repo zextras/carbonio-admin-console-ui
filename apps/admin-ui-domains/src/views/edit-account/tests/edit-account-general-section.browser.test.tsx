@@ -12,6 +12,7 @@ import {
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { useAccountForm } from '../account-form-context';
 import { EditAccountGeneralSection } from '../general-section';
 import { SettingsFields } from '../general-section/settings-fields';
@@ -100,6 +101,39 @@ describe('EditAccountGeneralSection (browser)', () => {
       // Must show last logon (Mar 2026), not creation date (Jan 2025)
       const lastLogonDate = page.getByText(/20 Mar 2026 | 03:30:00 PM/);
       await expect.element(lastLogonDate).toBeVisible();
+    });
+  });
+
+  describe('Storage usage', () => {
+    it('shows Storage usage on initial load when quota data is available', async () => {
+      const queryClient = getQueryClient();
+      queryClient.setQueryData(['advanced-supported'], { supported: true });
+      queryClient.setQueryData(domainQueryKeys.accountQuota('mock-zimbra-id'), {
+        type: 'success',
+        totalComputedLimit: { type: 'limited', value: 10737418240 },
+        totalLimitSource: 'account',
+        totalStatus: 'UNDERQUOTA',
+        totalUsed: 5368709120,
+        usedByModules: {
+          mailbox: 4000000000,
+          files: 1000000000,
+          wsc: 368709120,
+        },
+      });
+
+      createBrowserSoapAPIInterceptor('SearchDirectory', {
+        searchTotal: 1,
+        domain: [{ id: 'domain-123', name: 'test-domain.com' }],
+      });
+
+      await setupBrowserTest(
+        <AccountFormTestProvider values={buildMockAccountDetail()}>
+          <EditAccountGeneralSection onNavigateToAdministration={vi.fn()} />
+        </AccountFormTestProvider>,
+        { queryClient },
+      );
+
+      await expect.element(page.getByText('Storage usage')).toBeVisible();
     });
   });
 });

@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useSelector } from '@tanstack/react-store';
 import { Container } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import React from 'react';
@@ -14,6 +13,7 @@ import {
   QuotaSource,
   QuotaStatus,
 } from '../../../services/account-quota';
+import { useAccountQuota } from '../../../services/use-account-quota';
 import { useAccountForm } from '../account-form-context';
 import { EditAccountQuotaWarnings } from './edit-account-quota-warnings';
 import { QuotaBar, QuotaBarEntry } from './quota-bar';
@@ -103,42 +103,20 @@ export const QuotaBarBreakdown = ({
 
 export const EditAccountQuotaBar = (): React.JSX.Element | null => {
   const isAdvanced = useIsAdvanced();
+  const { account } = useAccountForm();
+  const { data: accountQuota } = useAccountQuota(isAdvanced ? account.id : undefined);
 
-  const { form } = useAccountForm();
-  const {
-    totalQuotaUsed,
-    totalComputedQuotaLimit,
-    totalQuotaUsedByModule,
-    totalQuotaSource,
-    totalQuotaStatus,
-  } = useSelector(
-    form.store,
-    (s) =>
-      s.values as {
-        totalQuotaUsed?: number;
-        totalComputedQuotaLimit?: any;
-        totalQuotaUsedByModule?: Record<string, number>;
-        totalQuotaSource?: any;
-        totalQuotaStatus?: any;
-      },
-  );
-  const dataMissing =
-    totalQuotaUsed === undefined ||
-    totalComputedQuotaLimit === undefined ||
-    totalQuotaUsedByModule === undefined ||
-    totalQuotaSource === undefined ||
-    totalQuotaStatus === undefined;
-
-  if (!isAdvanced || dataMissing) {
+  if (!isAdvanced || accountQuota?.type !== 'success') {
     return null;
   }
+
   return (
     <QuotaBarBreakdown
-      used={totalQuotaUsed}
-      limit={totalComputedQuotaLimit}
-      usedByModule={totalQuotaUsedByModule}
-      source={totalQuotaSource}
-      status={totalQuotaStatus}
+      used={accountQuota.totalUsed}
+      limit={accountQuota.totalComputedLimit}
+      usedByModule={accountQuota.usedByModules}
+      source={accountQuota.totalLimitSource}
+      status={accountQuota.totalStatus}
     />
   );
 };
