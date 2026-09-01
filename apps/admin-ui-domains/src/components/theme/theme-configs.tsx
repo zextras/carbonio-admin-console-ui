@@ -124,7 +124,7 @@ export const ThemeConfigs = ({
           <ListRow>
             <Padding vertical="large" horizontal="small" width="100%">
               <ds-text as="h3" size="small" color="gray0" weight="bold">
-                {t('label.apperance', 'Apperance')}
+                {t('label.appearance', 'Appearance')}
               </ds-text>
             </Padding>
           </ListRow>
