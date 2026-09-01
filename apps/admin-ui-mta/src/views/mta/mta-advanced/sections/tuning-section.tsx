@@ -148,6 +148,7 @@ export const TuningSection = ({
               value={!!field.state.value}
               onClick={() => field.handleChange(!field.state.value)}
               disabled={!allowSetMTA}
+              iconColor="primary"
             />
           )}
         </form.Field>
