@@ -286,12 +286,7 @@ export const DomainSaml = () => {
           crossAlignment="center"
           padding={{ all: 'large' }}
         >
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="vertical"
-            width="16%"
-          >
+          <Container width="16%">
             <Switch
               value={isAllowUnsecure}
               label={t('label.allow_unsecure', 'Allow Unsecure')}
@@ -299,12 +294,7 @@ export const DomainSaml = () => {
               onClick={() => setIsAllowUnsecure(!isAllowUnsecure)}
             />
           </Container>
-          <Container
-            mainAlignment="flex-start"
-            crossAlignment="flex-start"
-            orientation="vertical"
-            width="72%"
-          >
+          <Container mainAlignment="flex-start" width="72%">
             <Input
               label={t(
                 'label.import_saml_metadata_from_idp',
