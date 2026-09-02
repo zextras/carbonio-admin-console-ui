@@ -46,6 +46,7 @@ export const DomainDisclaimer = () => {
                 'label.enable_disclaimers_for_this_domain',
                 'Enable disclaimers for this domain',
               )}
+              iconColor="primary"
               value={field.state.value}
               onClick={() => {
                 field.handleChange(!field.state.value);

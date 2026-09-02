@@ -83,6 +83,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
                   field.handleChange(field.state.value === TRUE ? FALSE : TRUE);
                 }}
                 label={t('label.user_ssl', 'Use SSL')}
+                iconColor="primary"
                 value={field.state.value === TRUE}
               />
             )}
