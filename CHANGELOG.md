@@ -1,3 +1,5 @@
+## [0.18.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.17.0...v0.18.0) (2026-09-02)
+
 ## [0.17.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.8...v0.17.0) (2026-08-27)
 
 ## [0.16.8](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.7...v0.16.8) (2026-08-18)
