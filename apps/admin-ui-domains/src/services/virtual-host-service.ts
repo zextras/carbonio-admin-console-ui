@@ -6,12 +6,20 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const IssueCertiRequest = async (
-	domain: string | undefined,
-	chainType: string
-): Promise<any> =>
-	soapFetch(`IssueCert`, {
-		_jsns: 'urn:zimbraAdmin',
-		domain,
-		chainType
-	});
+import { ZIMBRA_ADMIN_URN } from '../constants';
+
+export type IssueCertResponse = Record<string, unknown>;
+
+export function issueCert(
+  domain: string | undefined,
+  chainType: string,
+): Promise<IssueCertResponse> {
+  return soapFetch('IssueCert', {
+    _jsns: ZIMBRA_ADMIN_URN,
+    domain,
+    chainType,
+  });
+}
+
+/** @deprecated Use issueCert */
+export const IssueCertiRequest = issueCert;

@@ -15,6 +15,7 @@ This file provides guidance for agentic coding assistants working in this reposi
 - `pnpm lint:fix` - Auto-fix ESLint issues
 - `pnpm type-lint` - Type check + lint combined
 - `pnpm reset` - Full clean reinstall (removes node_modules, lock file, cache)
+- `pnpm sonarlint` - Fetch the SonarQube report for the current PR (see "SonarLint-sensitive patterns" below; do not re-run it to verify fixes — it caches results and shows stale output)
 
 ### App/Package Specific
 - `pnpm build` - SDK build (within app directory)
@@ -91,6 +92,16 @@ Year is auto-updated by eslint. The header is required in all files except:
 - Do not use `FC` — use arrow function consts with an explicit props type, directly exported
 - Return type is inferred; do not annotate it explicitly
 - Example: `export const ComponentName = ({ title }: ComponentNameProps) => { ... };`
+- **Visibility belongs to the parent** — a component must not receive an `isDirty`/`isVisible`/`shouldRender`-style flag and return `null` from it. That hides the rendered structure from the call site and produces a component that lies about its own purpose. Conditionally render at the usage site instead:
+  ```tsx
+  // Don't — component internally decides to render nothing
+  <AccountSaveCancelActions isDirty={isDirty} ... />
+  // (inside the component: if (!isDirty) return null;)
+
+  // Do — parent owns the decision, JSX reads truthfully
+  {isDirty && <AccountSaveCancelActions ... />}
+  ```
+  Legit internal nulls are ones the component derives itself (e.g. no data after its own query), never a mirrored parent condition passed as a prop.
 
 #### Typing Component Props
 - `children?: React.ReactNode` — accepts everything React can render (preferred over `JSX.Element`)
@@ -152,6 +163,45 @@ Year is auto-updated by eslint. The header is required in all files except:
 - **Conditional props** (one or the other, not both): use `never` — `{ foo: string; bar?: never } | { bar: string; foo?: never }`
 - **Discriminated unions** for props that vary by type: `{ type: 'button'; onClick: () => void } | { type: 'link'; href: string }`
 
+### Deprecated Layout Components
+`Container`, `Row`, and `Padding` from `@zextras/ui-components` (and their `*Props` types) are **deprecated**. Do not add new usages, including in tests. They are thin wrappers over `<div>` that compile layout props into inline styles at runtime (unoverrideable without `!important`). Use a plain `<div>` with CSS modules instead:
+
+```tsx
+// Don't
+<Row mainAlignment="space-between" padding={{ all: 'small' }}>...</Row>
+
+// Do
+import styles from './my-component.module.css';
+
+<div className={styles.header}>...</div>
+```
+
+```css
+/* my-component.module.css */
+.header {
+  display: flex;
+  justify-content: space-between;
+  padding: var(--padding-size-small);
+}
+```
+
+Theme tokens are plain CSS variables and work directly in stylesheets:
+- Colors: `var(--color-<name>-regular)` / `var(--color-<name>-<state>)`, e.g. `var(--color-gray3-regular)`
+- Padding sizes: `var(--padding-size-extrasmall | small | medium | large | extralarge)`
+- Border radius: `var(--border-radius)`
+
+### Tailwind Utilities
+Tailwind v4 utilities are available in every app **and in browser tests** (the vitest pipeline compiles them via `@tailwindcss/vite` in `vitest.config.base.ts` + root `tailwind.css` imported by `vitest-browser-setup.ts`; the production shell compiles the same utilities via `apps/admin-ui-bootstrap/src/index.css`).
+
+- For tiny one-off styles (a single padding/margin/gap/color), prefer a Tailwind class over creating a `.module.css` file, e.g. `<div className="pr-md">` instead of a whole CSS module
+- For anything multi-rule, keep using CSS modules (theme tokens work directly in them, see above)
+- Theme tokens are mapped to Tailwind utilities by `packages/ui-components/src/theme/tailwind-theme.css`:
+  - Spacing: `--spacing-xs|sm|md|lg|xl` → `--padding-size-extrasmall|small|medium|large|extralarge` (e.g. `p-sm` = `var(--padding-size-small)`)
+  - Colors: `text-primary`, `bg-gray5`, … resolve to `var(--color-<name>-regular)`
+- Never import `tailwindcss/preflight` — it would globally reset styles and shift screenshot baselines
+
+Existing call sites (~3,300) are migrated incrementally. When modifying a file that still uses these components, migrate it opportunistically.
+
 ### Testing
 - Always add timeout instruction when running tests: `testTimeout: 10_000` (default) or `20_000` for CI
 - **Never** remove `.test.only` or `it.only` - they are intentional
@@ -210,6 +260,22 @@ placeholderData: keepPreviousData,
 - React Query hooks wrap service functions with caching and refetching
 - Error handling: use snackbar feedback for user-facing errors
 
+### SonarLint-sensitive patterns
+`pnpm sonarlint` reports these rules on PRs — write code that avoids them from the start:
+- **No component definitions inside components** (S6478): define subcomponents at module level. When they must capture parent data (handlers, values), use a module-level *factory* (`function createXButtons(dep) { return function XButton() {...} }`) or pass data as props. This applies to `CustomIcon`-style render props too.
+- **No array-index keys** (S6479): key by a stable id (`item.id ?? item.label`), never `` `list${index}` ``.
+- **`.find(…)` over `.filter(…)[0]`** (S7750).
+- **Combine consecutive multi-argument calls** (S7778): `Array#push`/`unshift`, `classList.add`/`remove`, and `importScripts` accept multiple args — merge consecutive calls on the same target (`arr.push(1); arr.push(2)` → `arr.push(1, 2)`; `el.classList.add('a'); el.classList.add('b')` → `el.classList.add('a', 'b')`).
+- **No negated conditions with an else branch** (S7735): `if (!a) { … } else { … }` and `!a ? x : y` are harder to read — invert the condition and swap the branches (`if (a) { … } else { … }`, `a ? y : x`). Negation without an else (`if (!a) { … }`) is fine.
+- **`??` over undefined-check ternaries** (S6606).
+- **`replaceAll()` / regex literals** over `new RegExp(...)` + `replace` (S6325/S7781).
+- **Real `<button type="button">`** instead of `div role="button"` + manual `onKeyDown` (S6819) — native buttons get keyboard activation for free (add button-reset CSS).
+- **Alias repeated union types** (S4323): `type QuotaLimitValue = number | 'unlimited' | undefined;` once, use everywhere.
+- **`globalThis` over `window`** (S7764).
+- **Cognitive complexity ≤ 15 per function** (S3776): extract duplicated if/else branches into module-level pure helpers with lookup tables; keep components as thin orchestrators.
+- **Destructure `useState` into matching names** (S6754): value and setter must share their name stem (`x` / `setX`).
+- **No single-child fragments** (S6749) and **no identical duplicate functions** (S4144 — merge them).
+
 ### Formatting (Prettier)
 - Print width: 100
 - Single quotes: true
@@ -222,6 +288,7 @@ Key enforced rules:
 - `react-hooks/rules-of-hooks` - Proper hooks usage
 - `@typescript-eslint/no-explicit-any` - Warn, avoid `any`
 - `no-console` - Error (allow `console.error` only)
+- **Never use `eslint-disable` comments** (line, block, or file level) — not even in tests or type declarations. A disable is a symptom of a bigger problem: solve the root cause instead (fix the dependency array, restructure the effect, derive the state, or type it properly). If a rule feels impossible to satisfy, escalate the design rather than suppressing the lint.
 
 ### Naming Conventions
 - Components: PascalCase (`MyComponent`)

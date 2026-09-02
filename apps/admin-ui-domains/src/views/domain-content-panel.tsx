@@ -29,25 +29,25 @@ import {
   VIRTUAL_HOSTS,
   WHITELABEL_SETTINGS,
 } from '../constants';
-import CreateDomain from './domain/create-new-domain';
-import DomainTwoFactorAuthentication from './domain/details/domain-2fa';
-import DomainAuthentication from './domain/details/domain-authentication';
-import DomainDisclaimer from './domain/details/domain-disclaimer';
-import DomainGalSettings from './domain/details/domain-gal-settings';
-import DomainGeneralSettings from './domain/details/domain-general-settings';
-import DomainSaml from './domain/details/domain-saml';
-import DomainTheme from './domain/details/domain-theme';
-import { DomainVirtualHosts } from './domain/details/virtual-hosts-certificates/domain-virtual-hosts';
-import { DomainDetailPanel } from './domain/domain-detail-panel';
-import { DomainOperationsLayout } from './domain/domain-operations-layout';
-import ManageAccounts from './domain/manange/accounts/manage-accounts';
-import ActiveSync from './domain/manange/active-sync/active-sync';
-import { DomainAddressBook } from './domain/manange/address-book/domain-address-book';
-import ManageDelegates from './domain/manange/delegates/manage-delegates';
-import DomainMailingList from './domain/manange/mailing-list/domain-mailing-list';
-import DomainResources from './domain/manange/resources/domain-resources';
-import RestoreAccount from './domain/manange/restore-delete-account/restore-delete-account';
+import { CreateDomain } from './create-new-domain/create-new-domain';
+import { DomainTwoFactorAuthentication } from './details/domain-2fa/domain-2fa';
+import { DomainAuthentication } from './details/domain-authentication/domain-authentication';
+import { DomainDisclaimer } from './details/domain-disclaimer';
+import { DomainGalSettings } from './details/domain-gal-settings/domain-gal-settings';
+import { DomainGeneralSettings } from './details/domain-general-settings/domain-general-settings';
+import { DomainSaml } from './details/domain-saml';
+import { DomainTheme } from './details/domain-theme/domain-theme';
+import { DomainVirtualHosts } from './details/virtual-hosts-certificates/domain-virtual-hosts';
+import { DomainDetailPanel } from './domain-detail-panel';
+import { DomainOperationsLayout } from './domain-operations-layout';
 import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
+import { ManageAccounts } from './manage/accounts/manage-accounts';
+import { ActiveSync } from './manage/active-sync/active-sync';
+import { DomainAddressBook } from './manage/address-book/domain-address-book';
+import { ManageDelegates } from './manage/delegates/manage-delegates';
+import { DomainMailingList } from './manage/mailing-list/domain-mailing-list';
+import { DomainResources } from './manage/resources/domain-resources';
+import { RestoreDeleteAccount } from './manage/restore-delete-account/restore-delete-account';
 
 const EmptyState: FC = () => {
   const [t] = useTranslation();
@@ -121,7 +121,7 @@ export const DomainContentPanel = () => (
         <Route path={DELEGATES_DOMAIN_ADMINS} element={<ManageDelegates />} />
         <Route path={DISTRIBUTION_LIST} element={<DomainMailingList />} />
         <Route path={RESOURCES} element={<DomainResources />} />
-        <Route path={RESTORE_ACCOUNT} element={<RestoreAccount />} />
+        <Route path={RESTORE_ACCOUNT} element={<RestoreDeleteAccount />} />
         <Route path={DISCLAIMER} element={<DomainDisclaimer />} />
         <Route path="*" element={null} />
       </Route>

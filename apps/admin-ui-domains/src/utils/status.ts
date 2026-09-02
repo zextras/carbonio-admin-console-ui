@@ -29,8 +29,11 @@ type StatusDisplay = {
 
 export function getStatusDisplay(status: string, t: TFunc): StatusDisplay {
   const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
+  if (!config) {
+    return { color: 'gray1', label: status };
+  }
   return {
-    color: config?.color ?? 'gray1',
-    label: t(config?.labelKey ?? 'label.active', config?.labelDefault ?? 'Active'),
+    color: config.color,
+    label: t(config.labelKey, config.labelDefault),
   };
 }

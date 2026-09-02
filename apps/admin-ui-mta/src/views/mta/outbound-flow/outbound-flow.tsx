@@ -6,7 +6,13 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { type ChipItem, Container, FormPageLayout } from '@zextras/ui-components';
-import { useAllConfig, useCurrentUserRights, useMtaServers } from '@zextras/ui-shared';
+import {
+  type ConfigAttribute,
+  useAllConfig,
+  useCurrentUserRights,
+  useModifyConfig,
+  useMtaServers,
+} from '@zextras/ui-shared';
 import { find, join, map, some, split, trim } from 'lodash-es';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -30,7 +36,6 @@ import {
   ZIMBRA_SMTP_SEND_ADD_AUTHENTICATED_USER,
   ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
 } from '../../../constants';
-import { useModifyConfig } from '../../../services/use-modify-config';
 import { validateIpAddress } from '../../utility/utils';
 import { GeneralSection } from './sections/general-section';
 import { InstancesSection } from './sections/instances-section';
@@ -134,7 +139,7 @@ const MTAOutBoundFlowForm = ({ configInformation }: MTAOutBoundFlowFormProps) =>
   const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
-      const attributes: Array<Record<string, string>> = [];
+      const attributes: Array<ConfigAttribute> = [];
       attributes.push({
         n: ZIMBRA_SMTP_SEND_ADD_ORIGINATING_IP,
         _content: value.zimbraSmtpSendAddOriginatingIP ? TRUE : FALSE,

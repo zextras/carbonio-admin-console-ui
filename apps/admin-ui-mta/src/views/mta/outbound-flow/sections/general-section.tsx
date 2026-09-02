@@ -7,6 +7,7 @@ import {
   ChipInput,
   type ChipItem,
   Container,
+  CustomChip,
   Input,
   Select,
   Switch,
@@ -16,7 +17,6 @@ import { some } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
 import { IpRangeValue } from '../../../../../types';
-import { CustomChip } from '../../../components/customChip';
 import type { OutboundFlowFormApi } from '../types';
 
 type GeneralSectionProps = {

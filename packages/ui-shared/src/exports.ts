@@ -37,6 +37,30 @@ export type { ThemeExtension } from '../types/theme';
 export type { ResponsiveContainerOptions } from './hooks/responsive-container';
 export type { Breakpoint } from './hooks/use-breakpoint';
 export { default as I18nFactory } from './i18n/i18n-factory';
+export type { ConfigAttribute } from './react-query/use-modify-config';
+export type {
+	BackupAccountItem,
+	GetBackupAccountsParams,
+	GetBackupAccountsResult,
+	ParsedBackupAccounts,
+	RestoreAccountBody,
+	RestoreAccountRawResponse,
+} from './services/backup-account-service';
+export type { BatchRequest } from './services/batch-service';
+export type {
+	SearchDomainsResponse,
+	SoapAttribute,
+	SoapEntity,
+} from './services/domain-search-service';
+export type { GetAccountSoapResponse, SoapAccount } from './services/get-account-service';
+export type {
+	ComputedLimit,
+	GetCosQuotaRawResponse,
+	GetCosQuotaResponse,
+	LimitedComputedLimit,
+	QuotaSource,
+	UnlimitedComputedLimit,
+} from './services/get-cos-quota';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -89,6 +113,7 @@ import { useUserAccount, useUserAccounts, useUserSettings } from './react-query/
 import { useBackupServers } from './react-query/use-backup-servers';
 import { useAllConfig, useConfigAttribute } from './react-query/use-config';
 import { useCosList } from './react-query/use-cos-list';
+import { cosQuotaQueryKey, useCosQuota } from './react-query/use-cos-quota';
 import { domainByIdKey, useDomainById } from './react-query/use-domain-by-id';
 import { useDomainInformation } from './react-query/use-domain-information';
 import { useDomainSearch } from './react-query/use-domain-search';
@@ -96,6 +121,7 @@ import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
+import { modifyConfigAttributes, useModifyConfig } from './react-query/use-modify-config';
 import {
 	type Notification,
 	notificationsQueryKeys,
@@ -126,18 +152,27 @@ import {
 } from './react-query/use-subscription';
 import { fetchAccountSettings } from './services/account-api';
 import {
+	doRestoreOnNewAccount,
+	getBackupAccounts,
+	parseBackupAccountsResponse,
+} from './services/backup-account-service';
+import { batchService } from './services/batch-service';
+import {
   type CosAttribute,
   type CosEntry,
   getCosGeneralInformation,
   type GetCosResponse,
 } from './services/cos-general-information-service';
+import { getDomainList } from './services/domain-search-service';
 import { flushCache } from './services/flush-cache-service';
+import { fetchAccount } from './services/get-account-service';
 import {
   type CoreAttributeRequest,
   type CoreAttributeValue,
   getCoreAttributes,
   type GetCoreAttributesResponse,
 } from './services/get-core-attributes';
+import { getCosQuota } from './services/get-cos-quota';
 import { getDomainInformation } from './services/get-domain-information';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
@@ -217,6 +252,7 @@ export {
   ACTION_TYPES,
   addRoute,
   BASENAME,
+  batchService,
   buildPath,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
@@ -225,7 +261,10 @@ export {
   CARBONIO_LOGO_URL,
   CONFIG,
   CONTENT,
+  cosQuotaQueryKey,
   domainByIdKey,
+  doRestoreOnNewAccount,
+  fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
   flushCache,
@@ -234,10 +273,13 @@ export {
   getAllNotifications,
   getAllRights,
   getApp,
+  getBackupAccounts,
   getCoreAttributes,
   getCosGeneralInformation,
   getCosList,
+  getCosQuota,
   getDomainInformation,
+  getDomainList,
   getLocale,
   getResponsiveContainerStyle,
   getResponsiveMaxWidth,
@@ -251,9 +293,11 @@ export {
   LOGIN_V3_CONFIG_PATH,
   loginConfig,
   logout,
+  modifyConfigAttributes,
   normalizeRoute,
   notificationsQueryKeys,
   OPEN_TICKET_URL,
+  parseBackupAccountsResponse,
   postSoapFetchRequest,
   queryClient,
   queryFnIsAdvancedSupported,
@@ -286,6 +330,7 @@ export {
   useConfigAttribute,
   useContextBridge,
   useCosList,
+  useCosQuota,
   useCurrentRoute,
   useCurrentUserRights,
   useDebouncedValue,
@@ -305,6 +350,7 @@ export {
   useLoginConfigStore,
   useMailstoreServers,
   useMediaQuery,
+  useModifyConfig,
   useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,

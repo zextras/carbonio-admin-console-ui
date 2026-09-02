@@ -6,7 +6,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, SelectItem } from '@zextras/ui-components';
-import { useAllConfig, useLocalStorage } from '@zextras/ui-shared';
+import { type ConfigAttribute, useAllConfig, useLocalStorage, useModifyConfig } from '@zextras/ui-shared';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -32,7 +32,6 @@ import {
   ZIMBRA_MTA_POST_SCREEN_PIPE_LINING_TTL,
   ZIMBRA_POST_SCREEN_PIPE_LINING_ACTION,
 } from '../../../constants';
-import { useModifyConfig } from '../../../services/use-modify-config';
 import { BlacklistingSection } from './sections/blacklisting-section';
 import { DnsBlacklistingSection } from './sections/dns-blacklisting-section';
 import { TuningSection } from './sections/tuning-section';
@@ -96,7 +95,7 @@ const MTAPostScreenTuningForm = ({ configInformation }: MTAPostScreenTuningFormP
   const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
-      const attrs: Array<Record<string, string>> = [];
+      const attrs: Array<ConfigAttribute> = [];
 
       const pushIfExists = (key: string, val: string | undefined) => {
         if (val) attrs.push({ n: key, _content: val });

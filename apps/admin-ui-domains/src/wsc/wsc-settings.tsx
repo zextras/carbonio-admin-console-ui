@@ -15,11 +15,11 @@ import {
   SettingLayout,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
-import { ChangeEvent, Dispatch, FC, SetStateAction, useCallback, useMemo } from 'react';
+import { ChangeEvent, Dispatch, FC, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
-import { AccountDetail } from '../views/domain/manange/accounts/account-context';
+import { AccountDetail } from '../views/manage/accounts/account-detail-types';
 
 export const WscSettings: FC<{
   featuresDetail: AccountDetail;
@@ -40,12 +40,9 @@ export const WscSettings: FC<{
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
 
-  const isGlobalAdmin = useMemo(
-    () => userSetting?.attrs?.zimbraIsAdminAccount === TRUE,
-    [userSetting?.attrs?.zimbraIsAdminAccount],
-  );
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-  const { data: licenseData, isLoading, error } = useLicenseInfo();
+  const { data: licenseData, isPending, isFetching, error } = useLicenseInfo();
 
   const wscFeature = licenseData?.response?.features?.find(
     (feature) => feature.name === 'wsc_basic',
@@ -58,79 +55,53 @@ export const WscSettings: FC<{
     "These settings can't be changed because your Chats license is not valid.",
   );
 
-  const changeSwitchOption = useCallback(
-    (key: keyof AccountDetail): void => {
+  const changeSwitchOption = (key: keyof AccountDetail): void => {
+    setFeaturesDetail((prev) => ({
+      ...prev,
+      [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+    }));
+  };
+
+  const changeSelectOption = (key: keyof AccountDetail) =>
+    (value: string): void => {
       setFeaturesDetail((prev) => ({
         ...prev,
-        [key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE',
+        [key]: value,
       }));
-    },
-    [featuresDetail, setFeaturesDetail],
-  );
+    };
 
-  const changeSelectOption = useCallback(
-    (key: keyof AccountDetail) =>
-      (value: string): void => {
+  const changeInputOption = (key: keyof AccountDetail) =>
+    (ev: ChangeEvent<HTMLInputElement>): void => {
+      let inputValue = ev.target.value || '0';
+      if (/^\d*$/.test(inputValue)) {
+        inputValue = inputValue.replace(/^0+/, '') || '0';
         setFeaturesDetail((prev) => ({
           ...prev,
-          [key]: value,
+          [key]: inputValue.toString(),
         }));
-      },
-    [setFeaturesDetail],
-  );
+      }
+    };
 
-  const changeInputOption = useCallback(
-    (key: keyof AccountDetail) =>
-      (ev: ChangeEvent<HTMLInputElement>): void => {
-        let inputValue = ev.target.value || '0';
-        if (/^\d*$/.test(inputValue)) {
-          inputValue = inputValue.replace(/^0+/, '') || '0';
-          setFeaturesDetail((prev) => ({
-            ...prev,
-            [key]: inputValue.toString(),
-          }));
-        }
-      },
-    [setFeaturesDetail],
-  );
+  const disableWscSettings =
+    featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' ||
+    readonlyFeatures ||
+    (requiresLicenseCheck && !isLicensed);
 
-  const disableWscSettings = useMemo(
-    () =>
-      featuresDetail?.carbonioFeatureWscEnabled === 'FALSE' ||
-      readonlyFeatures ||
-      (requiresLicenseCheck && !isLicensed),
-    [featuresDetail?.carbonioFeatureWscEnabled, readonlyFeatures, isLicensed, requiresLicenseCheck],
-  );
+  const deleteMessageOptions = [
+    { value: '0m', label: t('wsc.section.content.select.deleteLimit.zero', 'User cannot delete sent messages') },
+    { value: '5m', label: `5 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
+    { value: '10m', label: `10 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
+    { value: '30m', label: `30 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
+  ];
 
-  const deleteMessageOptions = useMemo(() => {
-    const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
-    const userCannotDelete = t(
-      'wsc.section.content.select.deleteLimit.zero',
-      'User cannot delete sent messages',
-    );
-    return [
-      { value: '0m', label: userCannotDelete },
-      { value: '5m', label: `5 ${timeLimitLabel}` },
-      { value: '10m', label: `10 ${timeLimitLabel}` },
-      { value: '30m', label: `30 ${timeLimitLabel}` },
-    ];
-  }, [t]);
+  const editMessageOptions = [
+    { value: '0m', label: t('wsc.section.content.select.zero.editLimit', 'User cannot edit sent messages') },
+    { value: '5m', label: `5 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
+    { value: '10m', label: `10 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
+    { value: '30m', label: `30 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
+  ];
 
-  const editMessageOptions = useMemo(() => {
-    const timeLimitLabel = t('wsc.section.content.select.timeLimit', 'minute time limit');
-    const userCannotEdit = t(
-      'wsc.section.content.select.zero.editLimit',
-      'User cannot edit sent messages',
-    );
-    return [
-      { value: '0m', label: userCannotEdit },
-      { value: '5m', label: `5 ${timeLimitLabel}` },
-      { value: '10m', label: `10 ${timeLimitLabel}` },
-      { value: '30m', label: `30 ${timeLimitLabel}` },
-    ];
-  }, [t]);
-
-  if (requiresLicenseCheck && isLoading) {
+  if (requiresLicenseCheck && isPending) {
     return (
       <Container height="fit" padding="large" style={{ userSelect: 'none' }}>
         <ds-spinner />
@@ -140,7 +111,7 @@ export const WscSettings: FC<{
 
   return (
     <Container height="fit" gap="2rem" padding="large" style={{ userSelect: 'none' }}>
-      {requiresLicenseCheck && !isLoading && !isLicensed && !error && isGlobalAdmin && (
+      {requiresLicenseCheck && !isFetching && !isLicensed && !error && isGlobalAdmin && (
         <Banner description={wscLicenseDisabledWarningLabel} severity="warning" />
       )}
       <BoxLayout

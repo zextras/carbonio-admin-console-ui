@@ -38,7 +38,7 @@ import 'tinymce/plugins/wordcount';
 import { Editor, type IAllProps as EditorProps } from '@tinymce/tinymce-react';
 import { Container } from '@zextras/ui-components';
 import { getLocale } from '@zextras/ui-shared';
-import React, { useCallback, useMemo } from 'react';
+import React from 'react';
 
 import {
   DEFAULT_FONT_SIZE_FORMATS,
@@ -64,7 +64,7 @@ type ComposerProps = EditorProps & {
   customInitOptions?: Partial<EditorProps['init']>;
 };
 
-const Composer = ({
+export const Composer = ({
   onEditorChange,
   inline = false,
   value,
@@ -72,59 +72,49 @@ const Composer = ({
   customInitOptions,
   ...rest
 }: ComposerProps): React.JSX.Element => {
-  const isControlledMode = useMemo(() => !!onEditorChange, [onEditorChange]);
+  const isControlledMode = !!onEditorChange;
 
-  const _onEditorChange = useCallback<NonNullable<EditorProps['onEditorChange']>>(
-    (_, editor) => {
-      onEditorChange?.([
-        editor.getContent({ format: 'text' }),
-        editor.getContent({ format: 'html' }),
-      ]);
-    },
-    [onEditorChange],
-  );
+  const _onEditorChange: NonNullable<EditorProps['onEditorChange']> = (_, editor) => {
+    onEditorChange?.([
+      editor.getContent({ format: 'text' }),
+      editor.getContent({ format: 'html' }),
+    ]);
+  };
 
   const locale = getLocale();
-  const language = useMemo(() => {
-    const localeObj =
-      locale in SUPPORTED_LOCALES && SUPPORTED_LOCALES[locale as keyof typeof SUPPORTED_LOCALES];
-    return (
-      (localeObj &&
-        (('tinymceLocale' in localeObj && localeObj?.tinymceLocale) || localeObj?.value)) ||
-      locale
-    );
-  }, [locale]);
+  const localeObj =
+    locale in SUPPORTED_LOCALES && SUPPORTED_LOCALES[locale as keyof typeof SUPPORTED_LOCALES];
+  const language =
+    (localeObj &&
+      (('tinymceLocale' in localeObj && localeObj?.tinymceLocale) || localeObj?.value)) ||
+    locale;
 
-  const editorInitConfig = useMemo<EditorProps['init']>(
-    () => ({
-      language_url: `${BASE_PATH}tinymce/langs/${language}.js`,
-      language,
-      min_height: 350,
-      auto_focus: true,
-      menubar: false,
-      statusbar: false,
-      branding: false,
-      resize: true,
-      inline,
-      font_size_formats: DEFAULT_FONT_SIZE_FORMATS,
-      object_resizing: 'img',
-      style_formats: DEFAULT_STYLE_FORMATS,
-      plugins: DEFAULT_PLUGINS,
-      toolbar: generateToolbarConfig(),
-      contextmenu: [''],
-      toolbar_mode: 'wrap',
-      visualblocks_default_state: false,
-      end_container_on_empty_block: true,
-      relative_urls: false,
-      remove_script_host: false,
-      newline_behavior: 'default',
-      browser_spellcheck: true,
-      convert_unsafe_embeds: true,
-      ...customInitOptions,
-    }),
-
-    [language, inline, customInitOptions],
-  );
+  const editorInitConfig: EditorProps['init'] = {
+    language_url: `${BASE_PATH}tinymce/langs/${language}.js`,
+    language,
+    min_height: 350,
+    auto_focus: true,
+    menubar: false,
+    statusbar: false,
+    branding: false,
+    resize: true,
+    inline,
+    font_size_formats: DEFAULT_FONT_SIZE_FORMATS,
+    object_resizing: 'img',
+    style_formats: DEFAULT_STYLE_FORMATS,
+    plugins: DEFAULT_PLUGINS,
+    toolbar: generateToolbarConfig(),
+    contextmenu: [''],
+    toolbar_mode: 'wrap',
+    visualblocks_default_state: false,
+    end_container_on_empty_block: true,
+    relative_urls: false,
+    remove_script_host: false,
+    newline_behavior: 'default',
+    browser_spellcheck: true,
+    convert_unsafe_embeds: true,
+    ...customInitOptions,
+  };
 
   return (
     <Container
@@ -144,5 +134,3 @@ const Composer = ({
     </Container>
   );
 };
-
-export default Composer;

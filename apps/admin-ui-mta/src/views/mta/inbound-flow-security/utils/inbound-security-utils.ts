@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { type ConfigAttribute } from '@zextras/ui-shared';
+
 import { MtaInboundSecurity } from '../../../../../types';
 import {
   FALSE,
@@ -39,7 +41,7 @@ const RESTRICTION_FLAGS = [
 
 function buildRestrictionAttributes(
   detail: MtaInboundSecurity | undefined,
-): Array<Record<string, string>> {
+): Array<ConfigAttribute> {
   const restrictions = RESTRICTION_FLAGS.filter(({ flag }) => detail?.[flag]).map(({ content }) => ({
     n: ZIMBRA_MTA_RESTRICTION,
     _content: content,
@@ -51,8 +53,8 @@ function buildRestrictionAttributes(
 
 export function buildSaveAttributes(
   mtaInboundSecurityDetail: MtaInboundSecurity | undefined,
-): Array<Record<string, string>> {
-  const attributes: Array<Record<string, string>> = [
+): Array<ConfigAttribute> {
+  const attributes: Array<ConfigAttribute> = [
     ...buildRestrictionAttributes(mtaInboundSecurityDetail),
   ];
 

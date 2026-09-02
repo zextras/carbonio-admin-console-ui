@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 
 import { domainQueryKeys } from './domain-query-keys';
-import { getDomainQuota } from './get-domain-quota';
+import { getDomainQuota } from './domain-quota';
 
 export const useDomainQuota = (domainId: string | undefined, enabled = true) => {
   return useQuery({
@@ -21,6 +21,7 @@ export const useDomainQuota = (domainId: string | undefined, enabled = true) => 
     },
     enabled: !!domainId && enabled,
     staleTime: 30_000,
+    placeholderData: keepPreviousData,
     retry: 1,
     refetchOnWindowFocus: false,
   });

@@ -6,7 +6,7 @@
 
 import { soapFetch } from '@zextras/ui-shared';
 
-export const getGrant = async (body: JSON): Promise<any> =>
+export const getGrant = async (body: Record<string, unknown>): Promise<any> =>
 	soapFetch(`GetGrants`, {
 		_jsns: 'urn:zimbraAdmin',
 		...body

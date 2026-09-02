@@ -6,14 +6,11 @@
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, waitFor } from '@testing-library/react';
+import { SnackbarManagerContext } from '@zextras/ui-shared';
 import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useModifyPrivacyConfig } from '../use-modify-privacy-config';
-
-vi.mock('@zextras/ui-components', () => ({
-  useSnackbar: vi.fn(),
-}));
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback ?? key],
@@ -22,8 +19,6 @@ vi.mock('react-i18next', () => ({
 vi.mock('../modify-privacy-config', () => ({
   modifyPrivacyConfig: vi.fn(),
 }));
-
-import { useSnackbar } from '@zextras/ui-components';
 
 import { modifyPrivacyConfig } from '../modify-privacy-config';
 
@@ -34,7 +29,9 @@ function createWrapper() {
     defaultOptions: { queries: { retry: false } },
   });
   const Wrapper = ({ children }: { children: ReactNode }) => (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <SnackbarManagerContext.Provider value={mockCreateSnackbar}>
+      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    </SnackbarManagerContext.Provider>
   );
   Wrapper.displayName = 'Wrapper';
   return {
@@ -51,7 +48,6 @@ const input = {
 
 describe('useModifyPrivacyConfig', () => {
   beforeEach(() => {
-    vi.mocked(useSnackbar).mockReturnValue(mockCreateSnackbar);
     mockCreateSnackbar.mockClear();
   });
 

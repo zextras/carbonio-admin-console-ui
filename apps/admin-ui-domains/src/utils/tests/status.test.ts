@@ -26,10 +26,10 @@ describe('getStatusDisplay', () => {
     },
   );
 
-  it('falls back gracefully for an unknown status without throwing', () => {
+  it('falls back to the raw status string for an unknown status without throwing', () => {
     expect(getStatusDisplay('totally-unknown-status', t)).toEqual({
       color: 'gray1',
-      label: 'Active',
+      label: 'totally-unknown-status',
     });
   });
 

@@ -1,0 +1,323 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { Container, InheritedSwitch, Row } from '@zextras/ui-components';
+import { useIsAdvanced } from '@zextras/ui-shared';
+import { FC } from 'react';
+import { useTranslation } from 'react-i18next';
+
+export const Features: FC<{
+	featuresDetail: Record<string, string>;
+	setFeaturesDetail: CallableFunction;
+	cosDetail?: Record<string, string>;
+	accSpecificDetail?: Record<string, string>;
+	setEmptyValue?: CallableFunction;
+	readonlyFeatures?: boolean;
+	cosLevelFeatures?: boolean;
+}> = ({
+	featuresDetail,
+	setFeaturesDetail,
+	cosDetail,
+	accSpecificDetail,
+	setEmptyValue,
+	readonlyFeatures = false,
+	cosLevelFeatures = false
+}) => {
+	const [t] = useTranslation();
+	const isAdvanced = useIsAdvanced();
+
+	const changeSwitchOption = (key: string): void => {
+		setFeaturesDetail((prev: Record<string, string>) => ({
+			...prev,
+			[key]: featuresDetail[key] === 'TRUE' ? 'FALSE' : 'TRUE'
+		}));
+	};
+
+	return (
+		<Container mainAlignment="flex-start" width="100%" height="auto" orientation="vertical">
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<ds-text as="h3" weight="bold">
+						{t('label.general_lbl', 'General')}
+					</ds-text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							subValue={featuresDetail?.zimbraFeatureOptionsEnabled}
+							onChange={changeSwitchOption}
+							label={t('label.can_access_settings', 'Can access Settings')}
+							iconColor="primary"
+							inheritedValue={cosDetail?.zimbraFeatureOptionsEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureOptionsEnabled}
+							inputName={'zimbraFeatureOptionsEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureOptionsEnabled')}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+					{isAdvanced && (
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
+								onChange={changeSwitchOption}
+								label={t('cos.features.active_sync_access', 'Active Sync Access')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
+								inputName={'zimbraFeatureMobileSyncEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					)}
+				</Container>
+				{cosLevelFeatures && (
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<ds-text as="h3" weight="bold">
+							{t('label.two_factor_auth', 'Second Factor Authentication')}
+						</ds-text>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.one_time_password_management', 'One Time Password management')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioFeatureOTPMgmtEnabled}
+								fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
+								inputName={'carbonioFeatureOTPMgmtEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureOTPMgmtEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+				)}
+			</Row>
+			<Container
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				orientation="vertical"
+				width="100%"
+			>
+				<Row
+					mainAlignment="flex-start"
+					width="100%"
+					padding={{ top: 'large', right: 'large', left: 'large' }}
+				>
+					<ds-text as="h3" weight="bold">
+						{t('label.mail', 'Mail')}
+					</ds-text>
+				</Row>
+				<Row
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+					width="100%"
+				>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<Row width="100%" mainAlignment="flex-start">
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.mail_signatures', 'Mail Signatures')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureSignaturesEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
+								inputName={'zimbraFeatureSignaturesEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureSignaturesEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
+								inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureOutOfOfficeReplyEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<Row width="100%" mainAlignment="flex-start">
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureImportFolderEnabled}
+								onChange={changeSwitchOption}
+								label={t(
+									'label.allow_user_to_import_external_mailbox',
+									'Allow user to import external mailbox'
+								)}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureImportFolderEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureImportFolderEnabled}
+								inputName={'zimbraFeatureImportFolderEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureImportFolderEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.zimbraFeatureExportFolderEnabled}
+								onChange={changeSwitchOption}
+								label={t(
+									'label.allow_user_to_export_their_mailbox',
+									'Allow user to export their mailbox'
+								)}
+								iconColor="primary"
+								inheritedValue={cosDetail?.zimbraFeatureExportFolderEnabled}
+								fromSubValue={accSpecificDetail?.zimbraFeatureExportFolderEnabled}
+								inputName={'zimbraFeatureExportFolderEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureExportFolderEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+					<ds-divider></ds-divider>
+				</Row>
+			</Container>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<ds-text as="h3" weight="bold">
+						{t('label.contacts', 'Contacts')}
+					</ds-text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							subValue={featuresDetail?.zimbraFeatureContactsEnabled}
+							onChange={changeSwitchOption}
+							label={t('label.allow_access_to_contacts', 'Allow access to Contacts')}
+							iconColor="primary"
+							inheritedValue={cosDetail?.zimbraFeatureContactsEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureContactsEnabled}
+							inputName={'zimbraFeatureContactsEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureContactsEnabled')}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+				</Container>
+				<Container
+					mainAlignment="flex-start"
+					width="50%"
+					crossAlignment="flex-start"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<ds-text as="h3" weight="bold">
+						{t('label.calendar', 'Calendar')}
+					</ds-text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
+							onChange={changeSwitchOption}
+							label={t('label.allow_access_to_calendars', 'Allow access to Calendars')}
+							iconColor="primary"
+							inheritedValue={cosDetail?.zimbraFeatureCalendarEnabled}
+							fromSubValue={accSpecificDetail?.zimbraFeatureCalendarEnabled}
+							inputName={'zimbraFeatureCalendarEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('zimbraFeatureCalendarEnabled')}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+				</Container>
+				<ds-divider></ds-divider>
+			</Row>
+			<Row
+				mainAlignment="flex-start"
+				crossAlignment="flex-start"
+				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
+				width="100%"
+			>
+				<Container
+					mainAlignment="flex-start"
+					crossAlignment="flex-start"
+					width="50%"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<ds-text as="h3" weight="bold">
+						{t('label.files', 'Files')}
+					</ds-text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							subValue={featuresDetail?.carbonioFeatureFilesEnabled}
+							onChange={changeSwitchOption}
+							label={t('label.allow_access_to_files', 'Allow access to Files')}
+							iconColor="primary"
+							inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
+							inputName={'carbonioFeatureFilesEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesEnabled')}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+				</Container>
+				<Container
+					mainAlignment="flex-start"
+					width="50%"
+					crossAlignment="flex-start"
+					orientation="vertical"
+					padding={{ bottom: 'large' }}
+				>
+					<ds-text as="h3" weight="bold">
+						{t('label.tasks', 'Tasks')}
+					</ds-text>
+					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+						<InheritedSwitch
+							subValue={featuresDetail?.carbonioFeatureTasksEnabled}
+							onChange={changeSwitchOption}
+							label={t('label.allow_access_to_tasks', 'Allow access to Tasks')}
+							iconColor="primary"
+							inheritedValue={cosDetail?.carbonioFeatureTasksEnabled}
+							fromSubValue={accSpecificDetail?.carbonioFeatureTasksEnabled}
+							inputName={'carbonioFeatureTasksEnabled'}
+							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureTasksEnabled')}
+							disabled={readonlyFeatures}
+						/>
+					</Row>
+				</Container>
+			</Row>
+		</Container>
+	);
+};

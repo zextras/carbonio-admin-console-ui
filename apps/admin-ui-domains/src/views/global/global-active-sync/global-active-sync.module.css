@@ -1,0 +1,13 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.page {
+  box-sizing: border-box;
+  width: 100%;
+  height: calc(100vh - 105px);
+  overflow-y: auto;
+  background: var(--color-gray6-regular);
+}

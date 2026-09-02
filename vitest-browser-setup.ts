@@ -5,6 +5,9 @@
  */
 import 'vitest-browser-react';
 
+// Tailwind utilities for browser tests (no preflight, no global resets — see tailwind.css)
+import './tailwind.css';
+
 import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 

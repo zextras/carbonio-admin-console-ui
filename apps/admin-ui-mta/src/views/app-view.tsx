@@ -31,8 +31,7 @@ export const AppView = () => {
   const segmentAfterBase = relativeSegments[0] || undefined;
   const deeperSegment = relativeSegments[1] || undefined;
 
-  const isServerRoute =
-    Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
+  const isServerRoute = Boolean(deeperSegment) && serverRoutes.some((r) => r.id === deeperSegment);
   const isTopLevelSection = topLevelSections.some((s) => s.path === pathname);
 
   const serverSectionMenu =
@@ -43,13 +42,12 @@ export const AppView = () => {
   const sectionMenu = serverSectionMenu ?? topLevelSectionMenu;
 
   const crumbMenus = sectionMenu ? { [pathname]: sectionMenu } : undefined;
-  const nonNavigableSegments =
-    isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
+  const nonNavigableSegments = isServerRoute && segmentAfterBase ? [segmentAfterBase] : undefined;
   const labelOverrides =
     isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
 
   return (
-    <Container height={'fit'}>
+    <Container>
       <PageHeader
         crumbMenus={crumbMenus}
         labelOverrides={labelOverrides}
@@ -66,9 +64,7 @@ export const AppView = () => {
                 </Suspense>
               </Container>
               <Container style={{ maxWidth: '100%' }}>
-                <Container
-                  style={{ maxWidth: detailViewMaxWidth, transition: 'max-width 300ms' }}
-                >
+                <Container style={{ maxWidth: detailViewMaxWidth, transition: 'max-width 300ms' }}>
                   <Suspense fallback={<ds-spinner />}>
                     <MTADetailPanel />
                   </Suspense>
@@ -80,4 +76,4 @@ export const AppView = () => {
       </Routes>
     </Container>
   );
-}
+};

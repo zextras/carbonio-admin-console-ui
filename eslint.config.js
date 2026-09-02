@@ -11,7 +11,7 @@ import typescriptParser from '@typescript-eslint/parser';
 
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
 import { fileURLToPath } from 'url';
-import { dirname, resolve } from 'path';
+import { dirname } from 'path';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -93,21 +93,19 @@ export default tseslint.config(
   // once all of them will be here, we can remove the ovrerrides and make the strict config default
   {
     files: [
-      'apps/admin-ui-domains/src/views/domain/domain-list/**',
       'packages/ui-components/src/components/custom/breadcrumb.tsx',
-      'apps/admin-ui-domains/src/views/domain/domain-list-panel.tsx',
-      'apps/admin-ui-domains/src/views/domain/global-list-panel.tsx',
+      'apps/admin-ui-domains/**',
       'apps/admin-ui-dashboard/**',
       'apps/admin-ui-legalhold/**',
       'apps/admin-ui-bootstrap/**',
-      'apps/admin-ui-privacy/**/*',
+      'apps/admin-ui-privacy/**',
       'apps/admin-ui-operations/**',
-      'apps/admin-ui-mta/**/*',
-      'apps/admin-ui-cos/**/*',
+      'apps/admin-ui-mta/**',
+      'apps/admin-ui-cos/**',
       'apps/admin-ui-notifications/**',
       'apps/admin-ui-backup/**',
       'apps/admin-ui-subscription/**',
-      'apps/admin-ui-storage/**/*',
+      'apps/admin-ui-storage/**',
     ],
     plugins: {
       'react-compiler': reactCompiler,

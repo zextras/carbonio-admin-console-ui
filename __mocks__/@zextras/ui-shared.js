@@ -12,6 +12,21 @@ export {
   soapFetch,
 } from '@zextras/ui-shared';
 
+// Real implementations, imported via relative path so the project-wide
+// '@zextras/ui-shared' alias does not resolve back to this mock file.
+export { SnackbarManagerContext } from '../../packages/ui-shared/src/hooks/useSnackbar/snackbar-context';
+export { cosQuotaQueryKey, useCosQuota } from '../../packages/ui-shared/src/react-query/use-cos-quota';
+export { modifyConfigAttributes,useModifyConfig } from '../../packages/ui-shared/src/react-query/use-modify-config';
+export {
+  doRestoreOnNewAccount,
+  getBackupAccounts,
+  parseBackupAccountsResponse,
+} from '../../packages/ui-shared/src/services/backup-account-service';
+export { batchService } from '../../packages/ui-shared/src/services/batch-service';
+export { getDomainList } from '../../packages/ui-shared/src/services/domain-search-service';
+export { fetchAccount } from '../../packages/ui-shared/src/services/get-account-service';
+export { getCosQuota } from '../../packages/ui-shared/src/services/get-cos-quota';
+
 export const useDomainInformation = vi.fn();
 export const DASHBOARD_ROUTE_ID = 'dashboard';
 export const addRoute = vi.fn();

@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ComputedLimit } from '@zextras/ui-shared';
+
 import {
   STORAGES_API_BASE_URL,
   STORAGES_API_VERSION,
   STORAGES_API_VERSION_HEADER,
 } from '../constants';
-import { ComputedLimit } from './get-cos-quota';
 
 type SetCosQuotaResponse =
   | {

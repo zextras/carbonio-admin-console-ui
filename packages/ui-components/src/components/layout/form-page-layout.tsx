@@ -37,7 +37,7 @@ export const FormPageLayout = ({
     >
       <div className={styles.stickyHeader}>
         <div className={styles.header}>
-          <ds-text as="strong" weight="bold" color="gray0" className={styles.title}>
+          <ds-text as="h2" weight="bold" color="gray0" className={styles.title}>
             {title}
           </ds-text>
           {unsavedChanges && (
@@ -46,11 +46,22 @@ export const FormPageLayout = ({
                 <Button
                   label={t('label.cancel', 'Cancel')}
                   color="secondary"
-                  onClick={onCancel}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onCancel();
+                  }}
                 />
               )}
               {onSave && (
-                <Button label={t('label.save', 'Save')} color="primary" onClick={onSave} />
+                <Button
+                  label={t('label.save', 'Save')}
+                  color="primary"
+                  htmlType="submit"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onSave();
+                  }}
+                />
               )}
             </div>
           )}

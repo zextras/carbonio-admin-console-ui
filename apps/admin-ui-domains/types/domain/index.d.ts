@@ -62,7 +62,7 @@ export interface DomainDataType {
 }
 
 export type themeConfigStore = {
-	carbonioWebUiDarkMode?: boolean;
+	carbonioWebUiDarkMode?: string;
 	carbonioWebUiLoginLogo?: string;
 	carbonioWebUiDarkLoginLogo?: string;
 	carbonioWebUiLoginBackground?: string;
@@ -125,12 +125,6 @@ type DomainResponse = {
 	more: boolean;
 	searchTotal: number;
 	_jsns: string;
-};
-
-export type DomainDisclaimerType = {
-	zimbraDomainMandatoryMailSignatureEnabled: boolean;
-	zimbraAmavisDomainDisclaimerText: string;
-	zimbraAmavisDomainDisclaimerHTML: string;
 };
 
 type SelectItem<T = string> = {

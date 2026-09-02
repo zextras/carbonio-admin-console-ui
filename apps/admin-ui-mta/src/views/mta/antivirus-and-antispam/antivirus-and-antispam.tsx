@@ -6,7 +6,7 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, SelectItem, useSnackbar } from '@zextras/ui-components';
-import { useAllConfig, useCurrentUserRights, useIsAdvanced } from '@zextras/ui-shared';
+import { type ConfigAttribute, useAllConfig, useCurrentUserRights, useIsAdvanced, useModifyConfig } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -32,7 +32,6 @@ import {
   ZIMBRA_VIRUS_WARN_ADMIN,
   ZIMBRA_VIRUS_WARN_RECIPIENT,
 } from '../../../constants';
-import { useModifyConfig } from '../../../services/use-modify-config';
 import { isSpaceAvailableInString, isValidHostname } from '../../utility/utils';
 import { AntispamSection } from './sections/antispam-section';
 import { AntivirusDefinitionsSection } from './sections/antivirus-definitions-section';
@@ -103,7 +102,7 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
   const form = useForm({
     defaultValues: buildInitialState(configInformation),
     onSubmit: async ({ value }) => {
-      const attrs: Array<Record<string, string>> = [];
+      const attrs: Array<ConfigAttribute> = [];
 
       const pushMulti = (key: string, val: string | undefined) => {
         if (val) val.split(',').forEach((item) => attrs.push({ n: key, _content: item.trim() }));

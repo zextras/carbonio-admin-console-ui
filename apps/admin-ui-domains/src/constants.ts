@@ -121,6 +121,7 @@ export const SHORT = 'short';
 export const DOMAIN_NAME = 'domainName';
 export const UID = 'uid';
 export const CHANGE_NAME_BOOLEAN = 'changeNameBool';
+export const DEFAULT_COS_BOOLEAN = 'defaultCOS';
 export const IS_DEFAULT_USER_NAME = 'isDefaultUserName';
 export const CHANGE_DISPLAY_NAME_BOOLEAN = 'changeDisplayNameBool';
 export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';
@@ -199,10 +200,13 @@ export const TOTAL_QUOTA_SOURCE = 'totalQuotaSource';
 export const TOTAL_QUOTA_STATUS = 'totalQuotaStatus';
 export const MAILBOX_QUOTA_USED = 'mailboxQuotaUsed';
 export const TOO_MANY_SEARCH_RESULTS_ERROR = 'too many search results returned';
-export const SYSTEM_ACCOUNT_FLAG = 'systemAccount';
-export const ADMIN_GROUP_FLAG = 'adminGroup';
 export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
+
+export const TRUE_FALSE = {
+	TRUE: 'TRUE',
+	FALSE: 'FALSE'
+} as const;
 
 // Storages API constants\
 export const STORAGES_API_BASE_URL = '/services/storages/admin';

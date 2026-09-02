@@ -1,0 +1,26 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { useQuery } from '@tanstack/react-query';
+
+import { domainQueryKeys } from './domain-query-keys';
+import { getSamlConfig } from './get-saml-configurations';
+
+export const useSamlConfig = (domain: string) =>
+	useQuery({
+		queryKey: domainQueryKeys.samlConfig(domain),
+		queryFn: async () => {
+			const data = await getSamlConfig(domain, true);
+			if (data?.error) {
+				throw new Error(data.error);
+			}
+			return data;
+		},
+		enabled: !!domain,
+		staleTime: 30_000,
+		retry: 1,
+		refetchOnWindowFocus: false,
+	});

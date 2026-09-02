@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedInput, InheritedSwitch, Tooltip } from '@zextras/ui-components';
+import { Container, CustomChip, InheritedInput, InheritedSwitch, Tooltip } from '@zextras/ui-components';
 import { some } from 'lodash-es';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,7 +16,6 @@ import {
   ZIMBRA_MTA_RELAY_HOST,
   ZIMBRA_MTA_SASL_AUTH_ENABLED,
 } from '../../../../../constants';
-import { CustomChip } from '../../../../components/customChip';
 import { InheritedChipInput } from '../../../../utility/inherited-components/inherited-chip-input';
 import {
   ConfigItem,

@@ -3,10 +3,9 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, ChipInput, Container, Switch, Tooltip } from '@zextras/ui-components';
+import { Button, ChipInput, Container, CustomChip, Switch, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { CustomChip } from '../../../components/customChip';
 import { MtaInboundFormApi } from '../types';
 
 type SettingsSectionProps = {

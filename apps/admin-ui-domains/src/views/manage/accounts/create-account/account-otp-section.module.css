@@ -1,0 +1,19 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.staticCodesWrapper {
+  box-sizing: border-box;
+  position: relative;
+  width: 100%;
+  column-count: 2;
+  padding: 16px;
+}
+
+.staticCode {
+  display: block;
+  font-family: monospace;
+  padding: 4.95px 0;
+}

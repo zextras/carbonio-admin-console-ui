@@ -1,0 +1,36 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+/* Faithful port of the extracted Container/Row layout:
+   Row defaults = flex + wrap; section header stacked its padding (2x large top). */
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  padding: calc(2 * var(--padding-size-large)) 0 0 var(--padding-size-large);
+}
+
+.optionsRow {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  width: 100%;
+  padding: var(--padding-size-large) 0 0 var(--padding-size-large);
+}
+
+.lastRow {
+  composes: optionsRow;
+  padding-bottom: var(--padding-size-large);
+}
+
+.optionCol {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  width: 48%;
+}

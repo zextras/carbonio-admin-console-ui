@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container,PageHeader } from '@zextras/ui-components';
+import { Container, PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { Suspense } from 'react';
 import { Route, Routes } from 'react-router';
@@ -14,7 +14,7 @@ import { NotificationsListPanel } from './notifications/notifications-list-panel
 export const AppView = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
-    <Container height={'fit'}>
+    <Container>
       <PageHeader />
       <Routes>
         <Route

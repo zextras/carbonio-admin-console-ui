@@ -7,23 +7,29 @@
 import { Container } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { FC, Suspense } from 'react';
+import { useLocation } from 'react-router';
 
-import { DomainListPanel } from './domain/domain-list-panel';
+import { CREATE_NEW_DOMAIN_ROUTE_ID } from '../constants';
 import { DomainContentPanel } from './domain-content-panel';
 import { DomainPageHeader } from './domain-page-header';
+import { DomainSidebar } from './sidebar/domain-sidebar';
 
 export const AppView: FC = () => {
   const detailViewMaxWidth = useDetailViewMaxWidth();
+  const { pathname } = useLocation();
+  const isCreateNewDomain = pathname.includes(CREATE_NEW_DOMAIN_ROUTE_ID);
 
   return (
-    <Container height={'fit'}>
+    <Container>
       <DomainPageHeader />
-      <Container orientation="horizontal" mainAlignment="flex-start" height="calc(100vh - 105px)">
-        <Container style={{ maxWidth: '265px' }}>
-          <Suspense fallback={<ds-spinner />}>
-            <DomainListPanel />
-          </Suspense>
-        </Container>
+      <Container orientation="horizontal" mainAlignment="flex-start" style={{ overflow: 'hidden' }}>
+        {!isCreateNewDomain && (
+          <Container style={{ maxWidth: '265px' }}>
+            <Suspense fallback={<ds-spinner />}>
+              <DomainSidebar />
+            </Suspense>
+          </Container>
+        )}
         <Container style={{ maxWidth: '100%' }}>
           <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>
             <DomainContentPanel />

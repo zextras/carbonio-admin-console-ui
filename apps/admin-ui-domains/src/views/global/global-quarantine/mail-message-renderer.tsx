@@ -1,0 +1,364 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Button, Container, Padding, Row } from '@zextras/ui-components';
+import { useUserSettings } from '@zextras/ui-shared';
+import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
+import { FC, useLayoutEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+
+import {
+  EditorAttachmentFiles,
+  IncompleteMessage,
+  MailMessagePart,
+  Participant,
+  ParticipantRole,
+} from './quarantine-types';
+
+export type {
+  AttachmentPart,
+  EditorAttachmentFiles,
+  IncompleteMessage,
+  MailMessagePart,
+  Participant,
+} from './quarantine-types';
+
+const bannerContainerStyle: React.CSSProperties = {
+  borderBottom: '0.0625rem solid #f7a538',
+  padding: '0.5rem 1rem',
+  display: 'flex',
+  flexDirection: 'row',
+  alignItems: 'center',
+  height: '3.625rem',
+  borderRadius: '0.125rem 0.125rem 0 0',
+};
+
+const _CI_REGEX = /^<(.*)>$/;
+const _CI_SRC_REGEX = /^cid:(.*)$/;
+const LINK_REGEX =
+  /(?:https?:\/\/|www\.)+(?![^\s]*?")([\w.,@?!^=%&:()/~+#-]*[\w@?!^=%&:()/~+#-])?/gi;
+const LINE_BREAK_REGEX = /(?:\r\n|\r|\n)/g;
+
+const plainTextToHTML = (str: string): string => {
+  if (str !== undefined && str !== null) {
+    return str
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll(LINE_BREAK_REGEX, '<br />');
+  }
+  return '';
+};
+
+const replaceLinkToAnchor = (content: string): string => {
+  if (content === '' || content === undefined) {
+    return '';
+  }
+  return content.replaceAll(LINK_REGEX, (url) => {
+    const wrap = document.createElement('div');
+    const anchor = document.createElement('a');
+    let href = url.replaceAll('&amp;', '&');
+    if (!url.startsWith('http') && !url.startsWith('https')) {
+      href = `http://${url}`;
+    }
+    anchor.href = href.replaceAll('&#64;', '@').replaceAll('&#61;', '=');
+    anchor.target = '_blank';
+    anchor.innerHTML = url;
+    wrap.appendChild(anchor);
+    return wrap.innerHTML;
+  });
+};
+
+const hasExternalImagesIn = (htmlContent: string): boolean => {
+  const parser = new DOMParser();
+  const htmlDoc = parser.parseFromString(htmlContent, 'text/html');
+  const images = htmlDoc.body.getElementsByTagName('img');
+
+  return some(images, (i) => i.hasAttribute('dfsrc'));
+};
+
+function isAvailableInTrusteeList(
+  trusteeList: string | number | Array<number | string>,
+  address: string,
+): boolean {
+  let trusteeAddress: Array<string> = [];
+  if (trusteeList) {
+    if (isArray(trusteeList)) {
+      trusteeAddress = trusteeList as string[];
+    } else if (typeof trusteeList === 'string') {
+      trusteeAddress = trusteeList.split(',');
+    } else {
+      trusteeAddress = [`${trusteeList}`];
+    }
+  }
+  if (trusteeAddress.length === 0) {
+    return false;
+  }
+  const domainName = address.substring(address.lastIndexOf('@') + 1);
+  return trusteeAddress.some((ta) => ta === domainName || ta === address);
+}
+
+const TextMessageRenderer: FC<{ body: { content: string; contentType: string } }> = ({ body }) => {
+  const orignalText = body.content;
+
+  const convertedHTML = replaceLinkToAnchor(plainTextToHTML(orignalText));
+  return (
+    <ds-text
+      as="span"
+      overflow="break-word"
+      color="text"
+      style={{ fontFamily: 'monospace' }}
+      dangerouslySetInnerHTML={{
+        __html: convertedHTML,
+      }}
+    />
+  );
+};
+
+type _HtmlMessageRendererType = {
+  msgId: string;
+  body: { content: string; contentType: string };
+  parts: MailMessagePart[];
+  participants: Participant[] | undefined;
+};
+const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
+  msgId,
+  body,
+  parts,
+  participants,
+}) => {
+  const divRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+
+  const settingsPref = useUserSettings()?.prefs;
+  const from = filter(participants, { type: ParticipantRole.FROM })[0]?.address;
+  const [imagesShownManually, setImagesShownManually] = useState(false);
+  const [displayBanner, setDisplayBanner] = useState(true);
+
+  const orignalText = body.content;
+
+  const hasExternalImages = hasExternalImagesIn(orignalText);
+  const isTrustedSender = isAvailableInTrusteeList(
+    settingsPref.zimbraPrefMailTrustedSenderList ?? '',
+    from,
+  );
+  const showBanner = hasExternalImages && !isTrustedSender && displayBanner;
+  const showExternalImage = isTrustedSender || imagesShownManually;
+
+  const calculateHeight = (): void => {
+    if (!isNull(iframeRef.current)) {
+      iframeRef.current.style.height = '0';
+      iframeRef.current.style.height = `${
+        (iframeRef?.current?.contentDocument?.body?.scrollHeight || 0) / 16 + 24 / 16
+      }rem`;
+    }
+  };
+
+  const showImage = showExternalImage && displayBanner;
+
+  useLayoutEffect(() => {
+    const iframeDoc = iframeRef.current?.contentDocument;
+    if (iframeDoc) {
+      iframeDoc.documentElement.innerHTML = orignalText;
+    }
+    const styleTag = document.createElement('style');
+    const styles = `
+			max-width: 100% !important;
+			body {
+				max-width: 100% !important;
+				margin: 0;
+				overflow-y: hidden;
+				font-family: Roboto, sans-serif;
+				font-size: 0.875rem;
+				${/* visibility: ${darkMode && darkMode !== 'disabled' ? 'hidden' : 'visible'}; */ ''}
+				background-color: #ffffff;
+			}
+			body pre, body pre * {
+				white-space: pre-wrap;
+				word-wrap: anywhere !important;
+				text-wrap: suppress !important;
+			}
+			img {
+				max-width: 100%
+			}
+			tbody{position:relative !important}
+			td{
+				max-width: 100% !important;
+				overflow-wrap: anywhere !important;
+			}
+			#bodyTable {
+				height: fit-content
+			}
+		`;
+    styleTag.textContent = styles;
+    iframeDoc?.head.append(styleTag);
+
+    calculateHeight();
+
+    const imgMap = reduce(
+      parts,
+      (r, v) => {
+        if (!_CI_REGEX.test(v.ci ?? '')) return r;
+
+        r[_CI_REGEX.exec(v.ci ?? '')?.[1] ?? ''] = v;
+        return r;
+      },
+      {} as any,
+    );
+
+    const images = iframeDoc?.body?.getElementsByTagName('img');
+    if (images)
+      forEach(images, (p: HTMLImageElement) => {
+        if (p.hasAttribute('dfsrc') && showImage) {
+          p.setAttribute('src', p.getAttribute('dfsrc') ?? '');
+        }
+        if (!_CI_SRC_REGEX.test(p.src)) return;
+        const ci = _CI_SRC_REGEX.exec(p.getAttribute('src') ?? '')?.[1] ?? '';
+        if (imgMap[ci]) {
+          const part = imgMap[ci];
+          p.setAttribute('pnsrc', p.getAttribute('src') ?? '');
+          p.setAttribute('src', `/service/home/~/?auth=co&id=${msgId}&part=${part.name}`);
+        }
+      });
+
+    const resizeObserver = new ResizeObserver(calculateHeight);
+    if (divRef.current) {
+      resizeObserver.observe(divRef.current);
+    }
+
+    return () => resizeObserver.disconnect();
+  }, [msgId, orignalText, parts, showImage]);
+  const [t] = useTranslation();
+  return (
+    <div ref={divRef} className="force-white-bg" style={{ width: '100%' }}>
+      {showBanner && !showExternalImage && (
+        <Container
+          style={bannerContainerStyle}
+          orientation="horizontal"
+          mainAlignment="space-between"
+          crossAlignment="center"
+          padding={{ all: 'large' }}
+          height="3.625rem"
+          background="#FFF7DE"
+          width="100%"
+        >
+          <Row
+            height="fit"
+            orientation="vertical"
+            display="flex"
+            wrap="nowrap"
+            mainAlignment="flex-start"
+            style={{
+              flexGrow: 1,
+              flexDirection: 'row',
+            }}
+          >
+            <Padding right="large">
+              <ds-icon icon="AlertTriangleOutline" color="warning" size="large"></ds-icon>
+            </Padding>
+            <ds-text as="p" overflow="break-word" size="small">
+              {t(
+                'message.external_images_blocked',
+                'External images have been blocked to protect you against potential spam',
+              )}
+            </ds-text>
+          </Row>
+          <Row
+            height="fit"
+            orientation="vertical"
+            display="flex"
+            wrap="nowrap"
+            mainAlignment="flex-end"
+            padding={{ left: 'small' }}
+            style={{
+              flexGrow: 1,
+              flexDirection: 'row',
+            }}
+          >
+            <Button
+              backgroundColor="transparent"
+              type="outlined"
+              label={t('quarantine.show_images', 'Show Images')}
+              color="warning"
+              onClick={(): void => {
+                setImagesShownManually(true);
+              }}
+            />
+            <Button
+              type="ghost"
+              color={'text'}
+              icon="CloseOutline"
+              onClick={(): void => setDisplayBanner(false)}
+              size="small"
+            />
+          </Row>
+        </Container>
+      )}
+      <iframe
+        data-testid="message-renderer-iframe"
+        title={msgId}
+        ref={iframeRef}
+        onLoad={calculateHeight}
+        style={{
+          border: 'none',
+          width: '100%',
+          display: 'block',
+          maxWidth: '100%',
+        }}
+      />
+    </div>
+  );
+};
+
+const EmptyBody: FC = () => {
+  const [t] = useTranslation();
+  return (
+    <Container padding={{ bottom: 'medium' }}>
+      <ds-text as="p">{`(${t(
+        'messages.no_content',
+        'This message has no text content',
+      )}.)`}</ds-text>
+    </Container>
+  );
+};
+const findAttachments = (
+  parts: MailMessagePart[],
+  acc: Array<EditorAttachmentFiles>,
+): Array<EditorAttachmentFiles> =>
+  reduce(
+    parts,
+    (found, part: any) => {
+      if (part && (part.disposition === 'attachment' || part.disposition === 'inline')) {
+        // removed condition from above If "&& part.ci"
+        found.push(part);
+      }
+      if (part.parts) return findAttachments(part.parts, found);
+      return acc;
+    },
+    acc,
+  );
+export const MailMessageRenderer: FC<{ mailMsg: IncompleteMessage }> = ({ mailMsg }) => {
+  const parts = findAttachments(mailMsg.parts ?? [], []);
+
+  if (!mailMsg.body?.content?.length && !mailMsg.fragment) {
+    return <EmptyBody />;
+  }
+
+  if (mailMsg.body?.contentType === 'text/html') {
+    return (
+      <HtmlMessageRenderer
+        msgId={mailMsg.id}
+        body={mailMsg.body}
+        // @ts-expect-error - needs a fix
+        parts={parts}
+        participants={mailMsg.participants}
+      />
+    );
+  }
+  if (mailMsg.body?.contentType === 'text/plain') {
+    return <TextMessageRenderer body={mailMsg.body} />;
+  }
+  return <EmptyBody />;
+};

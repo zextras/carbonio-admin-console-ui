@@ -202,6 +202,7 @@ function ServerAdvancedContent({
 export const ServerAdvanced = () => {
   const { server } = useParams();
   const { data: allServers = [] } = useAllServers();
+  const [t] = useTranslation();
 
   const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
   const serverId = selectedServer?.id ?? '';
@@ -226,7 +227,7 @@ export const ServerAdvanced = () => {
                   crossAlignment="flex-start"
                 >
                   <ds-text as="h2" size="medium" weight="bold" color="gray0">
-                    Advanced
+                    {t('label.advanced', 'Advanced')}
                   </ds-text>
                 </Row>
               </Row>
