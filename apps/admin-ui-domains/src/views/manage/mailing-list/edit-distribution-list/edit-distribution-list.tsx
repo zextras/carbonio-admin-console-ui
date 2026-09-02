@@ -254,13 +254,7 @@ function EditDistributionListContent({
   /* Keep the form baseline in sync with (re)fetched query data, but never
      re-baseline underneath unsaved user edits */
   useEffect(() => {
-    if (
-      form.state.isTouched ||
-      isDeferredSaveDirty(
-        form.state.values as EditDistributionListFormValues,
-        formValues,
-      )
-    ) {
+    if (form.state.isTouched || isDeferredSaveDirty(form.state.values, formValues)) {
       return;
     }
     form.reset(formValues, { keepDefaultValues: false });
@@ -270,10 +264,7 @@ function EditDistributionListContent({
     if (state.isDefaultValue) {
       return false;
     }
-    return isDeferredSaveDirty(
-      state.values as EditDistributionListFormValues,
-      formValues,
-    );
+    return isDeferredSaveDirty(state.values, formValues);
   });
   const isLoading = useSelector(form.store, (state) => state.isSubmitting);
   const values = useSelector(form.store, (state) => state.values);
