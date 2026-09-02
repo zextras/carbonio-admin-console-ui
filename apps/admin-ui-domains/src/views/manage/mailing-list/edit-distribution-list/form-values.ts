@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { isEqual } from 'lodash-es';
+import { isEqual, omit } from 'lodash-es';
 
 import { PUB, TRUE_FALSE } from '../../../../constants';
 import {
@@ -24,8 +24,7 @@ const IMMEDIATE_SAVE_FIELD_KEYS = ['dlm', 'ownersList', 'sendEmails'] as const;
 export function omitImmediateSaveFields(
 	values: EditDistributionListFormValues,
 ): Omit<EditDistributionListFormValues, (typeof IMMEDIATE_SAVE_FIELD_KEYS)[number]> {
-	const { dlm, ownersList, sendEmails, ...deferred } = values;
-	return deferred;
+	return omit(values, ...IMMEDIATE_SAVE_FIELD_KEYS);
 }
 
 export function isDeferredSaveDirty(
