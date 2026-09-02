@@ -19,7 +19,7 @@ import { buildDomainAttrMap, getDefaultAuthFormValues } from './utils';
 
 export const DomainAuthentication = () => {
   const [t] = useTranslation();
-  const { data: domain } = useSelectedDomain();
+  const { data: domain, isPending, isPlaceholderData } = useSelectedDomain();
   const isAdvanced = useIsAdvanced();
   const domainAttrMap = buildDomainAttrMap(domain?.a);
   const zimbraId = domainAttrMap.zimbraId ?? '';
@@ -32,6 +32,10 @@ export const DomainAuthentication = () => {
   });
 
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+
+  if (isPending || isPlaceholderData) {
+    return <ds-page-shimmer></ds-page-shimmer>;
+  }
 
   return (
     <Container background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">

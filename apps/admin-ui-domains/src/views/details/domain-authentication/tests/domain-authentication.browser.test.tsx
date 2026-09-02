@@ -13,7 +13,7 @@ import {
     worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { DomainAuthentication } from '../domain-authentication';
@@ -180,6 +180,28 @@ describe('DomainAuthentication (browser)', () => {
             await expect
                 .element(page.getByRole('button', { name: /cancel/i }))
                 .not.toBeInTheDocument();
+        });
+    });
+
+    describe('Loading state', () => {
+        it('should show page shimmer while domain data is loading', async () => {
+            queryClient.removeQueries({ queryKey: domainByIdKey(DOMAIN_ID, 1) });
+            worker.use(
+                http.post('/service/admin/soap/GetDomainRequest', async () => {
+                    await new Promise((resolve) => setTimeout(resolve, 5000));
+                    return HttpResponse.json({ Body: {} });
+                }),
+            );
+
+            setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
+
+            await vi.waitFor(
+                () => {
+                    expect(document.querySelector('ds-page-shimmer')).not.toBeNull();
+                },
+                { timeout: 3000 },
+            );
+            await expect.element(page.getByText('Authentication')).not.toBeInTheDocument();
         });
     });
 
