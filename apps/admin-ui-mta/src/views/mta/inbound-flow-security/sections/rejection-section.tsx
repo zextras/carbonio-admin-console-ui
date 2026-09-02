@@ -50,6 +50,7 @@ export const RejectionSection = ({ form, allowSetMTA }: Readonly<RejectionSectio
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
+                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -71,6 +72,7 @@ export const RejectionSection = ({ form, allowSetMTA }: Readonly<RejectionSectio
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
+                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -95,6 +97,7 @@ export const RejectionSection = ({ form, allowSetMTA }: Readonly<RejectionSectio
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
+                  iconColor="primary"
                 />
               </Tooltip>
             )}
