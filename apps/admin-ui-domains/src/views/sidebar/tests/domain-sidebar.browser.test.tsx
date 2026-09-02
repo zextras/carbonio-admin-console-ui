@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useAppStore } from '@zextras/ui-shared';
+import { replaceHistory, useAppStore } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
@@ -15,7 +15,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DOMAINS_ROUTE_ID, MANAGE_APP_ID } from '../../../constants';
+import { DOMAINS_ROUTE_ID, GENERAL_SETTINGS, MANAGE_APP_ID } from '../../../constants';
 import { DomainSidebar } from '../domain-sidebar';
 
 type DomainEntry = {
@@ -46,6 +46,12 @@ function setupSearchDirectoryInterceptor(domains: Array<DomainEntry> = DOMAINS):
     domain: domains,
     searchTotal: domains.length,
     more: false,
+  });
+}
+
+function setupGetDomainInterceptor(domain: DomainEntry): Promise<unknown> {
+  return createBrowserSoapAPIInterceptor('GetDomain', {
+    domain: [domain],
   });
 }
 
@@ -192,6 +198,8 @@ describe('DomainSidebar', () => {
     });
 
     it('should populate the input with the domain name when a domain is clicked', async () => {
+      setupGetDomainInterceptor(DOMAINS[1]);
+
       await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
@@ -369,6 +377,8 @@ describe('DomainSidebar', () => {
     });
 
     it('should replace typed text with domain name when selecting from dropdown', async () => {
+      setupGetDomainInterceptor(DOMAINS[1]);
+
       await setupBrowserTest(<DomainSidebar />, {
         queryClient,
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
@@ -397,6 +407,29 @@ describe('DomainSidebar', () => {
       });
 
       await expect.element(page.getByPlaceholder('Type the exact domain name')).toHaveValue('');
+    });
+
+    it('should populate the input when the same domain is re-selected after returning to the global list', async () => {
+      setupGetDomainInterceptor(DOMAINS[0]);
+
+      await setupBrowserTest(<DomainSidebar />, {
+        queryClient,
+        initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/${GENERAL_SETTINGS}`,
+      });
+
+      const domainInput = page.getByPlaceholder('I want to see this domain');
+      await expect.element(domainInput).toHaveValue('example.com');
+
+      // Same as clicking "Domains" in the global section: leave the domain page
+      replaceHistory('/global/domains');
+      await expect
+        .element(page.getByPlaceholder('Type the exact domain name'))
+        .toHaveValue('');
+
+      // Same as clicking the domain row in the table (global-domain-list.tsx)
+      replaceHistory(`/${DOMAIN_ID}/${GENERAL_SETTINGS}`);
+
+      await expect.element(domainInput).toHaveValue('example.com');
     });
   });
 });

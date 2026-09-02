@@ -70,6 +70,7 @@ export const DomainSidebar = () => {
       )}
 
       <DomainSearchDropdown
+        key={selectedDomainId || 'global'}
         isDomainSelect={isDomainSelect}
         domainInformation={domainInformation}
       />

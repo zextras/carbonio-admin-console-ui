@@ -26,7 +26,7 @@ export const DomainSearchDropdown = ({
 }: DomainSearchDropdownProps) => {
   const [t] = useTranslation();
   const [isDomainListExpand, setIsDomainListExpand] = useState(false);
-  const [searchDomainName, setSearchDomainName] = useState('');
+  const [searchText, setSearchText] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebouncedValue(searchQuery, 700);
 
@@ -40,34 +40,19 @@ export const DomainSearchDropdown = ({
 
   useQueryErrorSnackbar(error, { key: 'domain-list-error', timeout: 5000, hideButton: false });
 
-  const [prevDomainId, setPrevDomainId] = useState<string | undefined>(undefined);
-  const [prevIsDomainSelect, setPrevIsDomainSelect] = useState(isDomainSelect);
-  if (domainInformation?.id !== prevDomainId) {
-    setPrevDomainId(domainInformation?.id);
-    if (domainInformation?.name) {
-      setSearchDomainName(domainInformation.name);
-      setSearchQuery('');
-      setIsDomainListExpand(false);
-    }
-  }
-  if (isDomainSelect !== prevIsDomainSelect) {
-    setPrevIsDomainSelect(isDomainSelect);
-    if (!isDomainSelect) {
-      setSearchDomainName('');
-      setSearchQuery('');
-    }
-  }
+  const selectedDomainName = isDomainSelect ? (domainInformation?.name ?? '') : '';
+  const inputValue = searchText ?? selectedDomainName;
 
   const customIconDetail = {
     onClick: (): void => {
       setIsDomainListExpand(!isDomainListExpand);
     },
     size: '1.25rem',
-    icon: searchDomainName === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
+    icon: inputValue === '' ? ('GlobeOutline' as const) : ('CloseOutline' as const),
   };
 
   const handleDomainSelect = (domain: SoapEntity): void => {
-    setSearchDomainName(domain?.name);
+    setSearchText(null);
     setSearchQuery('');
     setIsDomainListExpand(false);
     replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
@@ -94,10 +79,10 @@ export const DomainSearchDropdown = ({
           }
           hasError={isShowError}
           onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-            setSearchDomainName(ev.target.value);
+            setSearchText(ev.target.value);
             setSearchQuery(ev.target.value);
           }}
-          inputValue={searchDomainName}
+          inputValue={inputValue}
           isCustomIcon
           customIconDetail={customIconDetail}
         />
