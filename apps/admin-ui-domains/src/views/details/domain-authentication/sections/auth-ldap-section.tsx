@@ -12,7 +12,6 @@ import {
   ListRow,
   Padding,
   PasswordInput,
-  Switch,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
@@ -131,24 +130,6 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
-              />
-            )}
-          </form.Field>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Padding vertical="small" horizontal="small" width="100%">
-          <form.Field name="zimbraAuthLdapStartTlsEnabled">
-            {(field) => (
-              <Switch
-                data-testid="enable-secure-connection"
-                value={field.state.value}
-                label={t(
-                  'label.enable_secure_connection',
-                  'Enable Secure Connection (StartTLS/SSL)',
-                )}
-                onClick={(): void => field.handleChange(!field.state.value)}
-                iconColor="primary"
               />
             )}
           </form.Field>

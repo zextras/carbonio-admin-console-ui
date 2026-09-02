@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { AuthLdapSection } from './sections/auth-ldap-section';
 import { AuthMethodSection } from './sections/auth-method-section';
-import { AuthResetPasswordSection } from './sections/auth-reset-password-section';
+import { AuthOptionsSection } from './sections/auth-options-section';
 import { AuthVerifySection } from './sections/auth-verify-section';
 import { useDomainAuthForm } from './use-domain-auth-form';
 import { buildDomainAttrMap, getDefaultAuthFormValues } from './utils';
@@ -49,7 +49,7 @@ export const DomainAuthentication = () => {
           <AuthMethodSection form={form} isAdvanced={isAdvanced} />
           <AuthLdapSection form={form} />
           <AuthVerifySection form={form} />
-          {isAdvanced && <AuthResetPasswordSection form={form} />}
+          <AuthOptionsSection form={form} isAdvanced={isAdvanced} />
         </Padding>
       </FormPageLayout>
     </Container>

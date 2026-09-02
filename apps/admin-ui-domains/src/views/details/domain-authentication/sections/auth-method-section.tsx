@@ -5,18 +5,9 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import {
-  Input,
-  ListRow,
-  Padding,
-  Select,
-  type SelectItem,
-  Switch,
-  Tooltip,
-} from '@zextras/ui-components';
+import { ListRow, Padding, Select, type SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { isValidLdapBaseUrl } from '../../../utility/utils';
 import type { DomainAuthenticationFormApi } from '../use-domain-auth-form';
 import { getAuthMethodItems } from '../utils';
 
@@ -29,9 +20,7 @@ export const AuthMethodSection = ({ form, isAdvanced }: AuthMethodSectionProps) 
   const [t] = useTranslation();
   const items = getAuthMethodItems(t);
   const authMech = useSelector(form.store, (s) => s.values.zimbraAuthMech);
-  const ldapUrl = useSelector(form.store, (s) => s.values.zimbraAuthLdapURL);
   const selected = items.find((item) => item.value === authMech) ?? items[0];
-  const canEnforceExternalAuth = isValidLdapBaseUrl(ldapUrl);
 
   function handleAuthMethodChange(value: Array<SelectItem> | string | null): void {
     if (typeof value !== 'string') return;
@@ -63,58 +52,6 @@ export const AuthMethodSection = ({ form, isAdvanced }: AuthMethodSectionProps) 
               {isAdvanced ? selected.info_label : selected.info_label_ce}
             </ds-text>
           </Padding>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Padding vertical="small" horizontal="small" width="100%">
-          <Tooltip
-            label={
-              canEnforceExternalAuth
-                ? t(
-                    'label.enable_global_enforce_external_auth_ldap',
-                    'You must enable the Global Enforce External Auth (LDAP/AD) first',
-                  )
-                : t(
-                    'label.please_add_ldap_url_endpoint_first',
-                    'To enable this, please add a ldap URL endpoint first',
-                  )
-            }
-            disabled={canEnforceExternalAuth}
-          >
-            <form.Field name="zimbraAuthFallbackToLocal">
-              {(field) => (
-                <Switch
-                  value={field.state.value && canEnforceExternalAuth}
-                  label={t('label.enforce_external_auth', 'Enforce External Auth (LDAP/AD)')}
-                  onClick={(): void => {
-                    if (!canEnforceExternalAuth) return;
-                    field.handleChange(!field.state.value);
-                  }}
-                  iconColor="primary"
-                  disabled={!canEnforceExternalAuth}
-                />
-              )}
-            </form.Field>
-          </Tooltip>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Padding vertical="small" horizontal="small" width="100%">
-          <form.Field name="zimbraPasswordChangeListener">
-            {(field) => (
-              <Input
-                label={t(
-                  'label.external_password_change_listener',
-                  'Endpoint to be used for password change',
-                )}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                  field.handleChange(e.target.value);
-                }}
-              />
-            )}
-          </form.Field>
         </Padding>
       </ListRow>
     </>
