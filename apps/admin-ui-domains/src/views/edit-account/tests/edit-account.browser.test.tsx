@@ -13,7 +13,7 @@ import { HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { SECURITY, GENERAL_SECTION } from '../../../constants';
+import { GENERAL_SECTION, SECURITY } from '../../../constants';
 import type { GetAccountQuotaRawResponse } from '../../../services/account-quota';
 import { EditAccount } from '../edit-account';
 
