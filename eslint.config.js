@@ -60,8 +60,9 @@ export default tseslint.config(
     settings: { react: { version: 'detect' } },
     rules: {
       'no-console': ['error', { allow: ['error'] }],
+      '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'no-duplicate-imports': 'error',
