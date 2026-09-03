@@ -9,7 +9,7 @@
  * Strips branch coverage data (BRDA/BRF/BRH records) from every lcov.info
  * file found under the workspace.
  *
- * The React Compiler (babel-plugin-react-compiler) auto-generates memoization
+ * The React Compiler (oxc-transform-react) auto-generates memoization
  * guards that istanbul/V8 count as branches. These guards are structurally
  * uncoverable in normal test runs (the "skip" path only fires on specific
  * re-render conditions) and inflate branch counts by ~95% on new component

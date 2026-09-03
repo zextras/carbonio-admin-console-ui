@@ -9,16 +9,16 @@ import { playwright } from '@vitest/browser-playwright';
 import svgr from 'vite-plugin-svgr';
 import tailwindcss from '@tailwindcss/vite';
 import babel from '@rolldown/plugin-babel';
-import react, { reactCompilerPreset } from '@vitejs/plugin-react';
+import react from '@vitejs/plugin-react';
 
 const isCI = !!process.env.CI;
 
 function getPlugins() {
   return [
-    react(),
+    react({ compiler: true }),
     tailwindcss(),
     babel({
-      presets: [reactCompilerPreset({ panicThreshold: 'none' })],
+      include: /web-components\/.*\.[jt]sx?$/,
       plugins: [['@babel/plugin-proposal-decorators', { version: '2023-11' }]],
     }),
     svgr({
