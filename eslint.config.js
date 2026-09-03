@@ -16,6 +16,10 @@ import { dirname } from 'path';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
+function toWarnings(rules) {
+  return Object.fromEntries(Object.keys(rules).map((rule) => [rule, 'warn']));
+}
+
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -37,8 +41,8 @@ export default tseslint.config(
       '**/fileTransformer.js',
     ],
   },
+  // default strict config
   {
-    files: ['apps/**'],
     plugins: {
       'react-compiler': reactCompiler,
       'jsx-a11y': jsxA11y,
@@ -60,7 +64,6 @@ export default tseslint.config(
       'unused-imports/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
       'no-duplicate-imports': 'error',
       '@typescript-eslint/ban-ts-comment': [
         'error',
@@ -81,20 +84,18 @@ export default tseslint.config(
       'notice/notice': 'off',
     },
   },
-  // weak eslint config
+  // weak eslint config for packages, to be tightened incrementally
   {
     files: ['packages/**'],
-    plugins: {
-      'react-compiler': reactCompiler,
-      'jsx-a11y': jsxA11y,
-      'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
-    },
     rules: {
-      '@typescript-eslint/no-explicit-any': 'warn',
+      'no-console': ['error', { allow: ['error', 'warn'] }],
+      'no-duplicate-imports': 'warn',
+      'react/prop-types': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-unused-expressions': 'warn',
-      'react/prop-types': 'off',
+      ...toWarnings(reactYouMightNotNeedAnEffect.configs.strict.rules),
+      ...toWarnings(jsxA11y.configs.recommended.rules),
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/set-state-in-render': 'warn',
       'react-hooks/refs': 'warn',
