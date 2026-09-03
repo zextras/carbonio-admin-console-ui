@@ -25,3 +25,4 @@ allowBuilds:
   esbuild: true
   msw: true
   protobufjs: true
+  unrs-resolver: true

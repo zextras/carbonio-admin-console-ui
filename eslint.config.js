@@ -1,3 +1,4 @@
+import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
@@ -6,41 +7,35 @@ import reactCompiler from 'eslint-plugin-react-compiler';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import testingLibrary from 'eslint-plugin-testing-library';
+import importX from 'eslint-plugin-import-x';
 import noticeConfig from './notice.config.js';
-import typescriptParser from '@typescript-eslint/parser';
 
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-function toWarnings(rules) {
-  return Object.fromEntries(Object.keys(rules).map((rule) => [rule, 'warn']));
+function toSeverity(rules, severity) {
+  return Object.fromEntries(Object.keys(rules).map((rule) => [rule, severity]));
 }
 
-export default tseslint.config(
+export default defineConfig(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooks.configs.flat.recommended,
-  {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/dist-types/**',
-      '**/build/**',
-      '**/coverage/**',
-      'package/**',
-      '**/*vitest*',
-      '**/*.config.*',
-      '**/.prettierrc.js',
-      '**/.reuse/template.js',
-      '**/fileTransformer.js',
-    ],
-  },
+  globalIgnores([
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/dist-types/**',
+    '**/build/**',
+    '**/coverage/**',
+    'package/**',
+    '**/*vitest*',
+    '**/*.config.*',
+    '**/.prettierrc.js',
+    '**/.reuse/template.js',
+    '**/fileTransformer.js',
+  ]),
   // default strict config
   {
     plugins: {
@@ -49,14 +44,9 @@ export default tseslint.config(
       'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
+      'import-x': importX,
     },
-    languageOptions: {
-      parser: typescriptParser,
-      parserOptions: {
-        project: './tsconfig.eslint.json',
-        tsconfigRootDir: __dirname,
-      },
-    },
+    linterOptions: { reportUnusedDisableDirectives: 'error' },
     settings: { react: { version: 'detect' } },
     rules: {
       'no-console': ['error', { allow: ['error'] }],
@@ -65,7 +55,7 @@ export default tseslint.config(
       'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
-      'no-duplicate-imports': 'error',
+      'import-x/no-duplicates': 'error',
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {
@@ -77,6 +67,17 @@ export default tseslint.config(
       ...jsxA11y.configs.recommended.rules,
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
     },
+  },
+  // testing-library rules on unit tests, warn until existing findings are addressed
+  {
+    files: ['**/*.test.*', '**/tests/**'],
+    plugins: { 'testing-library': testingLibrary },
+    rules: toSeverity(testingLibrary.configs['flat/react'].rules, 'warn'),
+  },
+  // browser tests use the vitest/browser page API instead of testing-library
+  {
+    files: ['**/*.browser.test.*'],
+    rules: toSeverity(testingLibrary.configs['flat/react'].rules, 'off'),
   },
   noticeConfig,
   {
@@ -90,13 +91,12 @@ export default tseslint.config(
     files: ['packages/**'],
     rules: {
       'no-console': ['error', { allow: ['error', 'warn'] }],
-      'no-duplicate-imports': 'warn',
       'react/prop-types': 'off',
       '@typescript-eslint/no-unsafe-function-type': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-unused-expressions': 'warn',
-      ...toWarnings(reactYouMightNotNeedAnEffect.configs.strict.rules),
-      ...toWarnings(jsxA11y.configs.recommended.rules),
+      ...toSeverity(reactYouMightNotNeedAnEffect.configs.strict.rules, 'warn'),
+      ...toSeverity(jsxA11y.configs.recommended.rules, 'warn'),
       'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/set-state-in-render': 'warn',
       'react-hooks/refs': 'warn',
@@ -104,7 +104,6 @@ export default tseslint.config(
       'react-hooks/preserve-manual-memoization': 'warn',
       'react-hooks/use-memo': 'warn',
       'react-hooks/static-components': 'warn',
-      'react-hooks/exhaustive-deps': 'warn',
       'react-compiler/react-compiler': 'warn',
     },
   },
