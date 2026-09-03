@@ -15,7 +15,7 @@ import {
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DOMAINS_ROUTE_ID, GENERAL_SETTINGS, MANAGE_APP_ID } from '../../../constants';
+import { ACCOUNTS, DOMAINS_ROUTE_ID, GENERAL_SETTINGS, MANAGE_APP_ID } from '../../../constants';
 import { DomainSidebar } from '../domain-sidebar';
 
 type DomainEntry = {
@@ -427,7 +427,7 @@ describe('DomainSidebar', () => {
         .toHaveValue('');
 
       // Same as clicking the domain row in the table (global-domain-list.tsx)
-      replaceHistory(`/${DOMAIN_ID}/${GENERAL_SETTINGS}`);
+      replaceHistory(`/${DOMAIN_ID}/${ACCOUNTS}`);
 
       await expect.element(domainInput).toHaveValue('example.com');
     });

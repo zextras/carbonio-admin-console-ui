@@ -8,7 +8,7 @@ import { replaceHistory, type SoapEntity, useDebouncedValue } from '@zextras/ui-
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { GENERAL_SETTINGS, MAX_DOMAIN_DISPLAY } from '../../../constants';
+import { ACCOUNTS, MAX_DOMAIN_DISPLAY } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import type { Domain } from '../../../store/types';
@@ -55,7 +55,7 @@ export const DomainSearchDropdown = ({
     setSearchText(null);
     setSearchQuery('');
     setIsDomainListExpand(false);
-    replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
+    replaceHistory(`/${domain?.id}/${ACCOUNTS}`);
   };
 
   const items =

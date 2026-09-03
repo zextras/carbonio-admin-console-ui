@@ -245,7 +245,7 @@ describe('GlobalDomainList (browser)', () => {
 
       await page.getByText('example.com').click();
 
-      expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/general_settings');
+      expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/accounts');
     });
   });
 

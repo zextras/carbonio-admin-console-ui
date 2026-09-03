@@ -18,7 +18,7 @@ import React, { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import { GENERAL_SETTINGS, RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { ACCOUNTS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { buildDomainRow, type ZimbraDomain } from './domain-list-row';
@@ -76,7 +76,7 @@ export const GlobalDomainList = () => {
   useQueryErrorSnackbar(error);
 
   const onDomainSelect = (domain: SoapEntity): void => {
-    replaceHistory(`/${domain?.id}/${GENERAL_SETTINGS}`);
+    replaceHistory(`/${domain?.id}/${ACCOUNTS}`);
   };
 
   const rawDomains = data?.domain ?? [];
