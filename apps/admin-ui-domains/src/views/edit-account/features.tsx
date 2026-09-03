@@ -27,6 +27,7 @@ export const Features: FC<{
 }) => {
 	const [t] = useTranslation();
 	const isAdvanced = useIsAdvanced();
+	const isWorkspaceEdition = cosDetail?.edition === 'workspace';
 
 	const changeSwitchOption = (key: string): void => {
 		setFeaturesDetail((prev: Record<string, string>) => ({
@@ -269,30 +270,32 @@ export const Features: FC<{
 				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 				width="100%"
 			>
-				<Container
-					mainAlignment="flex-start"
-					crossAlignment="flex-start"
-					width="50%"
-					orientation="vertical"
-					padding={{ bottom: 'large' }}
-				>
-					<ds-text as="h3" weight="bold">
-						{t('label.files', 'Files')}
-					</ds-text>
-					<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
-						<InheritedSwitch
-							subValue={featuresDetail?.carbonioFeatureFilesEnabled}
-							onChange={changeSwitchOption}
-							label={t('label.allow_access_to_files', 'Allow access to Files')}
-							iconColor="primary"
-							inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
-							fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
-							inputName={'carbonioFeatureFilesEnabled'}
-							onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesEnabled')}
-							disabled={readonlyFeatures}
-						/>
-					</Row>
-				</Container>
+				{isWorkspaceEdition && (
+					<Container
+						mainAlignment="flex-start"
+						crossAlignment="flex-start"
+						width="50%"
+						orientation="vertical"
+						padding={{ bottom: 'large' }}
+					>
+						<ds-text as="h3" weight="bold">
+							{t('label.files', 'Files')}
+						</ds-text>
+						<Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+							<InheritedSwitch
+								subValue={featuresDetail?.carbonioFeatureFilesEnabled}
+								onChange={changeSwitchOption}
+								label={t('label.allow_access_to_files', 'Allow access to Files')}
+								iconColor="primary"
+								inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
+								fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
+								inputName={'carbonioFeatureFilesEnabled'}
+								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesEnabled')}
+								disabled={readonlyFeatures}
+							/>
+						</Row>
+					</Container>
+				)}
 				<Container
 					mainAlignment="flex-start"
 					width="50%"
