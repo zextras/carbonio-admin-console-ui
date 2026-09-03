@@ -32,12 +32,12 @@ export default {
         presetConfig: {
           // see https://github.com/conventional-changelog/conventional-changelog-config-spec/blob/master/versions/2.2.0/README.md#types
           types: [
-            { type: 'feat', section: 'Features', effect: 'bump' },
-            { type: 'fix', section: 'Bug Fixes', effect: 'bump' },
-            { type: 'refactor', section: 'Other changes', effect: 'changelog' },
-            { type: 'perf', section: 'Other changes', effect: 'bump' },
-            { type: 'build', section: 'Other changes', effect: 'changelog' },
-            { type: 'ci', section: 'Other changes', effect: 'changelog' },
+            { type: 'feat', section: 'Features', hidden: false },
+            { type: 'fix', section: 'Bug Fixes', hidden: false },
+            { type: 'refactor', section: 'Other changes', hidden: false },
+            { type: 'perf', section: 'Other changes', hidden: false },
+            { type: 'build', section: 'Other changes', hidden: false },
+            { type: 'ci', section: 'Other changes', hidden: false },
           ],
         },
       },
