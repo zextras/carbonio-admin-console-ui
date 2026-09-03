@@ -25,7 +25,6 @@ export type AdvancedVolumeFormValues = {
 	compressionThreshold: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AdvancedVolumeFormApi = ReactFormExtendedApi<
 	AdvancedVolumeFormValues,
 	any,

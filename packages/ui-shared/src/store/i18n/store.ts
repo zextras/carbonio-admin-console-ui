@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 /*
  * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
  *

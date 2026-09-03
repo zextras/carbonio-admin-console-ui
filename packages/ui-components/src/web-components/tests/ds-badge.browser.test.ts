@@ -9,7 +9,6 @@ import { LitElement } from 'lit';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-// eslint-disable-next-line no-duplicate-imports
 import type { DsBadge } from '../ds-badge';
 
 let element: DsBadge;

@@ -19,7 +19,9 @@ const INITIAL_INVITES: Array<InviteItem> = [
   { id: '2', n: 'zimbraPrefCalendarForwardInvitesTo', _content: 'bob@example.com' },
 ];
 
-const EditableHarness = ({ initialList = [] as Array<InviteItem> }) => {
+type EditableHarnessProps = { initialList?: Array<InviteItem> };
+
+const EditableHarness = ({ initialList = [] }: EditableHarnessProps) => {
   const [list, setList] = useState<Array<InviteItem>>(initialList);
   return (
     <SendInviteAccounts

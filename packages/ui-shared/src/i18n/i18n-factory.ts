@@ -3,7 +3,6 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-/* eslint-disable no-console */
 
 import i18next, { i18n } from 'i18next';
 import Backend from 'i18next-http-backend';

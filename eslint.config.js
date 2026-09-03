@@ -1,3 +1,4 @@
+import { defineConfig, globalIgnores } from 'eslint/config';
 import js from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import react from 'eslint-plugin-react';
@@ -6,59 +7,55 @@ import reactCompiler from 'eslint-plugin-react-compiler';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import unusedImports from 'eslint-plugin-unused-imports';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
+import testingLibrary from 'eslint-plugin-testing-library';
+import importX from 'eslint-plugin-import-x';
 import noticeConfig from './notice.config.js';
-import typescriptParser from '@typescript-eslint/parser';
 
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+function toSeverity(rules, severity) {
+  return Object.fromEntries(Object.keys(rules).map((rule) => [rule, severity]));
+}
 
-export default tseslint.config(
+export default defineConfig(
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooks.configs.flat.recommended,
-  // reactYouMightNotNeedAnEffect.configs.strict,
-  {
-    ignores: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/dist-types/**',
-      '**/build/**',
-      '**/coverage/**',
-      'package/**',
-      '**/*vitest*',
-      '**/*.config.*',
-      '**/.prettierrc.js',
-      '**/.reuse/template.js',
-      '**/fileTransformer.js',
-    ],
-  },
+  globalIgnores([
+    '**/node_modules/**',
+    '**/dist/**',
+    '**/dist-types/**',
+    '**/build/**',
+    '**/coverage/**',
+    'package/**',
+    '**/*vitest*',
+    '**/*.config.*',
+    '**/.prettierrc.js',
+    '**/.reuse/template.js',
+    '**/fileTransformer.js',
+  ]),
+  // default strict config
   {
     plugins: {
+      'react-compiler': reactCompiler,
+      'jsx-a11y': jsxA11y,
+      'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
       'simple-import-sort': simpleImportSort,
       'unused-imports': unusedImports,
+      'import-x': importX,
     },
-    languageOptions: {
-      parser: typescriptParser,
-      parserOptions: {
-        project: './tsconfig.eslint.json',
-        tsconfigRootDir: __dirname,
-      },
-    },
+    linterOptions: { reportUnusedDisableDirectives: 'error' },
     settings: { react: { version: 'detect' } },
     rules: {
       'no-console': ['error', { allow: ['error'] }],
+      '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
-      'unused-imports/no-unused-vars': ['warn', { argsIgnorePattern: '^_' }],
+      'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
-      '@typescript-eslint/no-unused-vars': 'error',
-      'no-duplicate-imports': 'error',
+      'import-x/no-duplicates': 'error',
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {
@@ -67,20 +64,20 @@ export default tseslint.config(
         },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
-      'react/no-children-prop': 'warn',
-      '@typescript-eslint/no-unused-expressions': 'warn',
-      '@typescript-eslint/no-require-imports': 'warn',
-      '@typescript-eslint/no-unsafe-function-type': 'warn',
-      '@typescript-eslint/no-empty-object-type': 'warn',
-      'react/prop-types': 'off',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/set-state-in-render': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/use-memo': 'warn',
-      'react-hooks/static-components': 'warn',
+      ...jsxA11y.configs.recommended.rules,
+      ...reactYouMightNotNeedAnEffect.configs.strict.rules,
     },
+  },
+  // testing-library rules on unit tests, warn until existing findings are addressed
+  {
+    files: ['**/*.test.*', '**/tests/**'],
+    plugins: { 'testing-library': testingLibrary },
+    rules: toSeverity(testingLibrary.configs['flat/react'].rules, 'warn'),
+  },
+  // browser tests use the vitest/browser page API instead of testing-library
+  {
+    files: ['**/*.browser.test.*'],
+    rules: toSeverity(testingLibrary.configs['flat/react'].rules, 'off'),
   },
   noticeConfig,
   {
@@ -89,41 +86,45 @@ export default tseslint.config(
       'notice/notice': 'off',
     },
   },
-  // this is the stricter eslint config we should be enforcing for all apps and packages
-  // once all of them will be here, we can remove the ovrerrides and make the strict config default
+  // ui-components: targeted downgrades only, to be tightened incrementally
   {
-    files: [
-      'packages/ui-components/src/components/custom/breadcrumb.tsx',
-      'apps/admin-ui-domains/**',
-      'apps/admin-ui-dashboard/**',
-      'apps/admin-ui-legalhold/**',
-      'apps/admin-ui-bootstrap/**',
-      'apps/admin-ui-privacy/**',
-      'apps/admin-ui-operations/**',
-      'apps/admin-ui-mta/**',
-      'apps/admin-ui-cos/**',
-      'apps/admin-ui-notifications/**',
-      'apps/admin-ui-backup/**',
-      'apps/admin-ui-subscription/**',
-      'apps/admin-ui-storage/**',
-    ],
-    plugins: {
-      'react-compiler': reactCompiler,
-      'jsx-a11y': jsxA11y,
-      'react-you-might-not-need-an-effect': reactYouMightNotNeedAnEffect,
-    },
+    files: ['packages/ui-components/**'],
     rules: {
-      'react-hooks/set-state-in-effect': 'error',
-      'react-hooks/set-state-in-render': 'error',
-      'react-hooks/refs': 'error',
-      'react-hooks/immutability': 'error',
-      'react-hooks/preserve-manual-memoization': 'error',
-      'react-hooks/use-memo': 'error',
-      'react-hooks/static-components': 'error',
-      'react-hooks/exhaustive-deps': 'error',
-      'react-compiler/react-compiler': 'error',
-      ...jsxA11y.configs.recommended.rules,
-      ...reactYouMightNotNeedAnEffect.configs.strict.rules,
+      'react/prop-types': 'off',
+      '@typescript-eslint/no-unused-expressions': 'warn',
+      'react-you-might-not-need-an-effect/no-event-handler': 'warn',
+      'react-you-might-not-need-an-effect/no-adjust-state-on-prop-change': 'warn',
+      'react-you-might-not-need-an-effect/no-chain-state-updates': 'warn',
+      'react-you-might-not-need-an-effect/no-derived-state': 'warn',
+      'react-you-might-not-need-an-effect/no-pass-live-state-to-parent': 'warn',
+      'react-you-might-not-need-an-effect/no-pass-data-to-parent': 'warn',
+      'react-you-might-not-need-an-effect/no-external-store-subscription': 'warn',
+      'jsx-a11y/no-noninteractive-tabindex': 'warn',
+      'jsx-a11y/no-autofocus': 'warn',
+      'jsx-a11y/no-static-element-interactions': 'warn',
+      'jsx-a11y/click-events-have-key-events': 'warn',
+      'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
+      'react-hooks/immutability': 'warn',
+      'react-hooks/preserve-manual-memoization': 'warn',
+      'react-compiler/react-compiler': 'warn',
+    },
+  },
+  // ui-shared: only logging and minor type-lint downgrades
+  {
+    files: ['packages/ui-shared/**'],
+    rules: {
+      'no-console': ['error', { allow: ['error', 'warn'] }],
+      '@typescript-eslint/no-unused-expressions': 'warn',
+      '@typescript-eslint/no-empty-object-type': 'warn',
+      '@typescript-eslint/no-unsafe-function-type': 'warn',
+    },
+  },
+  // test-utils: strict, keeps react-compiler diagnostics visible
+  {
+    files: ['packages/test-utils/**'],
+    rules: {
+      'react-compiler/react-compiler': 'warn',
     },
   },
 );

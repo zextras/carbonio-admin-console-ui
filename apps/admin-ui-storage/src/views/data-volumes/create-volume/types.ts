@@ -16,7 +16,6 @@ export type VolumeCreateFormValues = {
   volumeAllocation: number;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type VolumeCreateFormApi = ReactFormExtendedApi<
   VolumeCreateFormValues,
   any,
