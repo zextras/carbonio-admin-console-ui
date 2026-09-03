@@ -211,7 +211,7 @@ function buildDefaultValues(cosInformation: Array<Attribute> | undefined): Gener
     cn: fromServer.cn ?? '',
     description: fromServer.description ?? '',
     zimbraNotes: fromServer.zimbraNotes ?? '',
-    edition: fromServer.edition ?? '',
+    edition: fromServer.edition === 'workspace' ? 'workspace' : 'mail',
   };
 }
 

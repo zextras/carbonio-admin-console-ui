@@ -44,7 +44,10 @@ const mockCosDetail = {
     {
       id: FIRST_COS_ID,
       name: 'firstCOS',
-      a: [{ n: 'zimbraId', _content: FIRST_COS_ID }],
+      a: [
+        { n: 'zimbraId', _content: FIRST_COS_ID },
+        { n: 'edition', _content: 'workspace' },
+      ],
     },
   ],
 };
@@ -89,7 +92,8 @@ describe('CosListPanel', () => {
     await expect.element(page.getByText('Details')).toBeVisible();
     await expect.element(page.getByText('General Information')).toBeVisible();
     await expect.element(page.getByText('Features')).toBeVisible();
-    await expect.element(page.getByText('Chat')).toBeVisible();
+    // Chat requires a workspace-edition COS; with no COS selected the edition is unknown.
+    await expect.element(page.getByText('Chat')).not.toBeInTheDocument();
     await expect.element(page.getByText('Preferences')).toBeVisible();
     await expect.element(page.getByText('Server Pools')).toBeVisible();
     await expect.element(page.getByText('Advanced')).toBeVisible();
@@ -100,7 +104,7 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Features')).toHaveStyle({ opacity: '0.5' });
-    await expect.element(page.getByText('Chat')).toHaveStyle({ opacity: '0.5' });
+    await expect.element(page.getByText('Chat')).not.toBeInTheDocument();
     await expect.element(page.getByText('Preferences')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Server Pools')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Advanced')).toHaveStyle({ opacity: '0.5' });

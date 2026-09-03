@@ -5,7 +5,7 @@
  */
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 
-export type CosEdition = 'mail' | 'workspace';
+import type { CosEdition } from '../../../../types/cos';
 
 export type CreateCosFormValues = {
   cn: string;
