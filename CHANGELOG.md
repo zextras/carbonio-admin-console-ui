@@ -1,3 +1,18 @@
+## [0.19.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.18.0...v0.19.0) (2026-09-03)
+
+### Features
+
+* **admin-ui-domains:** navigate to accounts view on domain select ([#1373](https://github.com/zextras/carbonio-admin-console-ui/issues/1373)) ([f985861](https://github.com/zextras/carbonio-admin-console-ui/commit/f98586127173be8b5587e1478260de30199bc46a))
+
+### Bug Fixes
+
+* **release:** pin conventional-changelog-conventionalcommits to 9.3.1 ([#1375](https://github.com/zextras/carbonio-admin-console-ui/issues/1375)) ([fc428e9](https://github.com/zextras/carbonio-admin-console-ui/commit/fc428e98eb0c583e1b9ed1626ea9e923c64e4e16))
+
+### Other changes
+
+* **ci:** bump jenkins-lib-common to v4.10.2 ([#1372](https://github.com/zextras/carbonio-admin-console-ui/issues/1372)) ([3bf52a4](https://github.com/zextras/carbonio-admin-console-ui/commit/3bf52a4ec1c4a35ac7104251fb11277ef1c5a109))
+* switch to native oxc React Compiler and scope babel to lit components ([#1369](https://github.com/zextras/carbonio-admin-console-ui/issues/1369)) ([e35972e](https://github.com/zextras/carbonio-admin-console-ui/commit/e35972e0b6d33f6902c4d1998cba6efc7c565a42))
+
 ## [0.18.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.17.0...v0.18.0) (2026-09-02)
 
 ## [0.17.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.16.8...v0.17.0) (2026-08-27)
