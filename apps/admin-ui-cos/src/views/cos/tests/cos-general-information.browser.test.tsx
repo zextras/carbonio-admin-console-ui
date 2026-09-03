@@ -722,10 +722,15 @@ describe('CosGeneralInformation', () => {
       await expectEditionValue('Workspace');
     });
 
-    it('renders Not assigned value when edition attribute is missing', async () => {
+    it('renders Email value when edition attribute is missing (defensive fallback)', async () => {
       await setupAdvancedGeneralInfoTest();
 
-      await expectEditionValue('Not assigned');
+      await expect.element(page.getByText('Associated edition')).toBeVisible();
+      await expect.element(page.getByText('Not assigned')).not.toBeInTheDocument();
+
+      await page.getByText('Email').first().click();
+      await expect.element(page.getByText('Workspace')).toBeVisible();
+      await expect.element(page.getByText('Not assigned')).not.toBeInTheDocument();
     });
 
     it('does not render the Associated edition field when advanced mode is disabled', async () => {
@@ -741,14 +746,6 @@ describe('CosGeneralInformation', () => {
 
       await expect.element(page.getByText('Workspace')).toBeVisible();
       await expect.element(page.getByText('Not assigned')).not.toBeInTheDocument();
-    });
-
-    it('shows Email and Workspace options in dropdown when edition is not assigned', async () => {
-      await setupAdvancedGeneralInfoTest();
-
-      await page.getByText('Not assigned').click();
-
-      await expect.element(page.getByText('Workspace')).toBeVisible();
     });
 
     it('should show Save and Cancel when edition is changed', async () => {

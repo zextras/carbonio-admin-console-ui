@@ -18,20 +18,16 @@ import { useIsAdvanced } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { CosEdition } from '../../../../types/cos';
+
 export type GeneralInfoFormValues = {
   cn: string;
   description: string;
   zimbraNotes: string;
-  edition: string;
+  edition: CosEdition;
 };
 
-const EDITION_ITEMS_FULL: Array<SelectItem<string>> = [
-  { label: 'Not assigned', value: '' },
-  { label: 'Email', value: 'mail' },
-  { label: 'Workspace', value: 'workspace' },
-];
-
-const EDITION_ITEMS_ASSIGNED: Array<SelectItem<string>> = [
+const EDITION_ITEMS: Array<SelectItem<string>> = [
   { label: 'Email', value: 'mail' },
   { label: 'Workspace', value: 'workspace' },
 ];
@@ -138,16 +134,18 @@ export const CosInfoFields = ({
             <Container padding={{ all: 'small' }}>
               <form.Field name="edition">
                 {(field) => {
-                  const items = field.state.value ? EDITION_ITEMS_ASSIGNED : EDITION_ITEMS_FULL;
                   return (
                     <Select
-                      items={items}
+                      items={EDITION_ITEMS}
                       label={t('label.associated_edition', 'Associated edition')}
                       background="gray5"
                       showCheckbox={false}
-                      selection={items.find((item) => item.value === field.state.value) ?? items[0]}
+                      selection={
+                        EDITION_ITEMS.find((item) => item.value === field.state.value) ??
+                        EDITION_ITEMS[0]
+                      }
                       onChange={(value): void => {
-                        field.handleChange(value ?? '');
+                        field.handleChange(value === 'workspace' ? 'workspace' : 'mail');
                       }}
                       disabled={readonlyCOS}
                     />

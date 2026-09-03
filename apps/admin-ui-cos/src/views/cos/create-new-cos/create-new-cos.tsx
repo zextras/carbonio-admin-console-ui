@@ -11,6 +11,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Attribute } from '../../../../types/attribute';
+import type { CosEdition } from '../../../../types/cos';
 import { GENERAL_INFORMATION } from '../../../constants';
 import { useCreateCos } from '../../../services/use-create-cos';
 import styles from './create-new-cos.module.css';
@@ -18,7 +19,7 @@ import { CreateNewCosStep1 } from './parts/step-1';
 import { StepTwoEmailEdition } from './parts/step-2-email-edition';
 import { StepTwoWorkspaceEdition } from './parts/step-2-workspace-edition';
 import { createCosSchema } from './schema';
-import type { CosEdition, CreateCosFormValues } from './types';
+import type { CreateCosFormValues } from './types';
 
 const FEATURE_FIELDS: Array<keyof CreateCosFormValues> = [
   'carbonioFeatureMailsAppEnabled',

@@ -6,6 +6,8 @@
 
 import { Attribute } from '../attribute';
 
+export type CosEdition = 'mail' | 'workspace';
+
 export type Cos = {
   id?: string;
   name?: string;
