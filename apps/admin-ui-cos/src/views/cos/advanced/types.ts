@@ -12,7 +12,6 @@ export type CosAdvancedFormValues = AccountType & {
   backupSelfUndeleteAllowed: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CosFormApi = ReactFormExtendedApi<
   CosAdvancedFormValues,
   any,

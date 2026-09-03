@@ -19,7 +19,6 @@ export type BackupConfigFormValues = {
   keepDeletedAccountsInBackup: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type BackupConfigFormApi = ReactFormExtendedApi<
   BackupConfigFormValues,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

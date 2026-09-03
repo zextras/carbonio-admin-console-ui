@@ -8,7 +8,6 @@ import '../ds-tag-icon';
 import { LitElement } from 'lit';
 import { describe, expect, it } from 'vitest';
 
-// eslint-disable-next-line no-duplicate-imports
 import type { DsTagIcon } from '../ds-tag-icon';
 
 let element: DsTagIcon;

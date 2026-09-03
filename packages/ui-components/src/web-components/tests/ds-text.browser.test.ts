@@ -9,7 +9,6 @@ import './../../theme/theme.css';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-// eslint-disable-next-line no-duplicate-imports
 import type { DsText } from '../ds-text';
 import { dsTextVars } from '../ds-text.styles';
 

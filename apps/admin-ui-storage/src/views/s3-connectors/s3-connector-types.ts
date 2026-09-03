@@ -18,7 +18,6 @@ export type S3ConnectorFormValues = {
   acceptUntrustedSSL: boolean;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type S3ConnectorFormApi = ReactFormExtendedApi<
   S3ConnectorFormValues,
   any,

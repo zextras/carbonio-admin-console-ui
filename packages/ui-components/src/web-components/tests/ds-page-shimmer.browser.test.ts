@@ -8,7 +8,6 @@ import '../ds-page-shimmer';
 import { LitElement } from 'lit';
 import { afterEach, describe, expect, it } from 'vitest';
 
-// eslint-disable-next-line no-duplicate-imports
 import type { DsPageShimmer } from '../ds-page-shimmer';
 
 let element: DsPageShimmer;

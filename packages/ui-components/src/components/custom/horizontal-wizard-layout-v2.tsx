@@ -183,7 +183,6 @@ export const HorizontalWizardLayoutV2 = ({
 		],
 	);
 
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	const [NextButton, PrevButton, CancelButton] = useMemo(
 		() =>
 			[

@@ -18,7 +18,6 @@ export type ModifyVolumeFormValues = {
   infrequentAccessThreshold: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type ModifyVolumeFormApi = ReactFormExtendedApi<
   ModifyVolumeFormValues,
   any,

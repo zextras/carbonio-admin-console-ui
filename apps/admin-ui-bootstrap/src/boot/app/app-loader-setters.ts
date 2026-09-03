@@ -13,7 +13,13 @@ import {
   useIntegrationsStore,
 } from '@zextras/ui-shared';
 
-export const getAppSetters = (pkg: CarbonioModule): Record<string, Function> => {
+type AppSetters = {
+  addRoute: (route: Partial<AppRouteDescriptor>) => string;
+  removeRoute: (routeId: string) => void;
+  registerActions: ReturnType<typeof useIntegrationsStore.getState>['registerActions'];
+};
+
+export const getAppSetters = (pkg: CarbonioModule): AppSetters => {
   const appSetters = useAppStore.getState().setters;
   const integrations = useIntegrationsStore.getState();
   return {

@@ -9,7 +9,6 @@ import type { CosPrefAttributes } from '../../../../types/cos';
 
 export type CosPreferencesFormValues = CosPrefAttributes;
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type CosPreferencesFormApi = ReactFormExtendedApi<
   CosPreferencesFormValues,
   any,

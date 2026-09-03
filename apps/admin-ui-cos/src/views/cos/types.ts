@@ -26,7 +26,6 @@ type CosFeaturesFormValues = {
   mobileCalendarFeatureSync: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type CosFeaturesFormApi = ReactFormExtendedApi<
   CosFeaturesFormValues,
   any,

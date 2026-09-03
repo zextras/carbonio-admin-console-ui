@@ -22,7 +22,6 @@ type WscCosFormValues = {
 	carbonioWscMaxAttachmentSize: string;
 };
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 type WscCosFormApi = ReactFormExtendedApi<
 	WscCosFormValues,
 	any,
