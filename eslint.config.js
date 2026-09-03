@@ -86,24 +86,44 @@ export default defineConfig(
       'notice/notice': 'off',
     },
   },
-  // weak eslint config for packages, to be tightened incrementally
+  // ui-components: targeted downgrades only, to be tightened incrementally
   {
-    files: ['packages/**'],
+    files: ['packages/ui-components/**'],
     rules: {
-      'no-console': ['error', { allow: ['error', 'warn'] }],
       'react/prop-types': 'off',
-      '@typescript-eslint/no-unsafe-function-type': 'warn',
-      '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-unused-expressions': 'warn',
-      ...toSeverity(reactYouMightNotNeedAnEffect.configs.strict.rules, 'warn'),
-      ...toSeverity(jsxA11y.configs.recommended.rules, 'warn'),
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/set-state-in-render': 'warn',
+      'react-you-might-not-need-an-effect/no-event-handler': 'warn',
+      'react-you-might-not-need-an-effect/no-adjust-state-on-prop-change': 'warn',
+      'react-you-might-not-need-an-effect/no-chain-state-updates': 'warn',
+      'react-you-might-not-need-an-effect/no-derived-state': 'warn',
+      'react-you-might-not-need-an-effect/no-pass-live-state-to-parent': 'warn',
+      'react-you-might-not-need-an-effect/no-pass-data-to-parent': 'warn',
+      'react-you-might-not-need-an-effect/no-external-store-subscription': 'warn',
+      'jsx-a11y/no-noninteractive-tabindex': 'warn',
+      'jsx-a11y/no-autofocus': 'warn',
+      'jsx-a11y/no-static-element-interactions': 'warn',
+      'jsx-a11y/click-events-have-key-events': 'warn',
       'react-hooks/refs': 'warn',
+      'react-hooks/set-state-in-effect': 'warn',
       'react-hooks/immutability': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',
-      'react-hooks/use-memo': 'warn',
-      'react-hooks/static-components': 'warn',
+      'react-compiler/react-compiler': 'warn',
+    },
+  },
+  // ui-shared: only logging and minor type-lint downgrades
+  {
+    files: ['packages/ui-shared/**'],
+    rules: {
+      'no-console': ['error', { allow: ['error', 'warn'] }],
+      '@typescript-eslint/no-unused-expressions': 'warn',
+      '@typescript-eslint/no-empty-object-type': 'warn',
+      '@typescript-eslint/no-unsafe-function-type': 'warn',
+    },
+  },
+  // test-utils: strict, keeps react-compiler diagnostics visible
+  {
+    files: ['packages/test-utils/**'],
+    rules: {
       'react-compiler/react-compiler': 'warn',
     },
   },
