@@ -48,7 +48,7 @@ describe('useIsWorkspaceEdition', () => {
 		expect(result.current).toBe(false);
 	});
 
-	it('returns true when edition is empty', () => {
+	it('returns false when edition is empty', () => {
 		vi.mocked(useCosDetail).mockReturnValue({
 			data: {
 				cos: [
@@ -62,10 +62,10 @@ describe('useIsWorkspaceEdition', () => {
 		} as never);
 
 		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
-		expect(result.current).toBe(true);
+		expect(result.current).toBe(false);
 	});
 
-	it('returns true when edition attribute is absent', () => {
+	it('returns false when edition attribute is absent', () => {
 		vi.mocked(useCosDetail).mockReturnValue({
 			data: {
 				cos: [
@@ -79,21 +79,21 @@ describe('useIsWorkspaceEdition', () => {
 		} as never);
 
 		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
-		expect(result.current).toBe(true);
+		expect(result.current).toBe(false);
 	});
 
-	it('returns true when data is still loading', () => {
+	it('returns false when data is still loading', () => {
 		vi.mocked(useCosDetail).mockReturnValue({ data: undefined } as never);
 
 		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
-		expect(result.current).toBe(true);
+		expect(result.current).toBe(false);
 	});
 
-	it('returns true when cosEntry is undefined', () => {
+	it('returns false when cosEntry is undefined', () => {
 		vi.mocked(useCosDetail).mockReturnValue({ data: { cos: [] } } as never);
 
 		const { result } = renderHook(() => useIsWorkspaceEdition('test-cos-id'));
-		expect(result.current).toBe(true);
+		expect(result.current).toBe(false);
 	});
 
 	it('passes cosId to useCosDetail', () => {

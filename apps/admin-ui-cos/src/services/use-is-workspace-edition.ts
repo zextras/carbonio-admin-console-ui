@@ -8,6 +8,5 @@ import { useCosDetail } from './use-cos-detail';
 
 export const useIsWorkspaceEdition = (cosId: string | undefined): boolean => {
   const { data: cosDetailData } = useCosDetail(cosId);
-  const edition = cosDetailData?.cos?.[0]?._attrs?.edition;
-  return edition === 'workspace' || edition === '' || edition === undefined;
+  return cosDetailData?.cos?.[0]?._attrs?.edition === 'workspace';
 };

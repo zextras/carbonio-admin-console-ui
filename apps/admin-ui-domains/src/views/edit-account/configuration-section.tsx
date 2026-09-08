@@ -50,6 +50,7 @@ export const EditAccountConfigurationSection = () => {
   const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
+  const isWorkspaceEdition = cosDetail?.edition === 'workspace';
   const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useChipList(
     values?.zimbraPrefMailForwardingAddress,
   );
@@ -247,21 +248,25 @@ export const EditAccountConfigurationSection = () => {
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}
         />
-        <Row width="100%" padding={{ top: 'medium' }}>
-          <ds-divider></ds-divider>
-        </Row>
-        <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-          <ds-text size="small" color="gray0" weight="bold" as="h2">
-            {t('label.wsc', 'Chat')}
-          </ds-text>
-        </Row>
-        <WscSettings
-          featuresDetail={values}
-          setFeaturesDetail={setAccountValues}
-          cosDetail={cosDetail}
-          accSpecificDetail={accSpecificDetail}
-          setEmptyValue={setEmptyValue}
-        />
+        {isWorkspaceEdition && (
+          <>
+            <Row width="100%" padding={{ top: 'medium' }}>
+              <ds-divider></ds-divider>
+            </Row>
+            <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
+              <ds-text size="small" color="gray0" weight="bold" as="h2">
+                {t('label.wsc', 'Chat')}
+              </ds-text>
+            </Row>
+            <WscSettings
+              featuresDetail={values}
+              setFeaturesDetail={setAccountValues}
+              cosDetail={cosDetail}
+              accSpecificDetail={accSpecificDetail}
+              setEmptyValue={setEmptyValue}
+            />
+          </>
+        )}
       </Row>
     </Container>
   );

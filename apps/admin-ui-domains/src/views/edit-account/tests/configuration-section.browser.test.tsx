@@ -11,10 +11,14 @@ import {
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import type { AccountFormContextValue } from '../account-form-context';
 import { EditAccountConfigurationSection } from '../configuration-section';
 import { AccountFormTestProvider } from './account-form-test-provider';
 
-function setupTest(values: Record<string, unknown> = {}) {
+function setupTest(
+  values: Record<string, unknown> = {},
+  contextOverrides?: Partial<AccountFormContextValue>,
+) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
 
@@ -24,7 +28,7 @@ function setupTest(values: Record<string, unknown> = {}) {
   });
 
   return setupBrowserTest(
-    <AccountFormTestProvider values={values}>
+    <AccountFormTestProvider values={values} contextOverrides={contextOverrides}>
       <EditAccountConfigurationSection />
     </AccountFormTestProvider>,
     { queryClient },
@@ -85,5 +89,41 @@ describe('EditAccountConfigurationSection (browser)', () => {
     await expect
       .element(page.getByText('fwd-user1@example.com', { exact: true }))
       .not.toBeInTheDocument();
+  });
+
+  describe('Chat section visibility', () => {
+    it('hides the whole Chat section when the COS edition is mail', async () => {
+      setupTest({}, { cosDetail: { edition: 'mail' } });
+
+      // Anchor: wait for always-rendered content before asserting absence.
+      await expect
+        .element(page.getByRole('switch', { name: 'Allow access to Tasks' }))
+        .toBeVisible();
+      await expect.element(page.getByText('Chat', { exact: true })).not.toBeInTheDocument();
+      await expect.element(page.getByText('General Settings')).not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable Chat' }))
+        .not.toBeInTheDocument();
+    });
+
+    it('hides the whole Chat section when the COS has no edition attribute', async () => {
+      setupTest({}, { cosDetail: {} });
+
+      // Anchor: wait for always-rendered content before asserting absence.
+      await expect
+        .element(page.getByRole('switch', { name: 'Allow access to Tasks' }))
+        .toBeVisible();
+      await expect.element(page.getByText('Chat', { exact: true })).not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('switch', { name: 'Enable Chat' }))
+        .not.toBeInTheDocument();
+    });
+
+    it('shows the Chat section when the COS edition is workspace', async () => {
+      setupTest({}, { cosDetail: { edition: 'workspace' } });
+
+      await expect.element(page.getByText('Chat', { exact: true })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable Chat' })).toBeVisible();
+    });
   });
 });

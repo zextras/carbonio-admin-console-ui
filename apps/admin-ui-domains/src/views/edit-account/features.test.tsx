@@ -146,3 +146,37 @@ describe('Features - Mail section', () => {
     expect(screen.queryByTestId('reset-zimbraFeatureImportFolderEnabled')).toBeNull();
   });
 });
+
+describe('Features - Files section visibility', () => {
+  it('hides the Files heading and the Allow access to Files switch when the COS edition is mail', () => {
+    renderFeatures({ cosDetail: { edition: 'mail' } });
+
+    expect(screen.queryByText('Files', { exact: true })).toBeNull();
+    expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+  });
+
+  it('keeps the Allow access to Tasks switch visible when the COS edition is mail', () => {
+    renderFeatures({ cosDetail: { edition: 'mail' } });
+
+    expect(screen.getByRole('switch', { name: 'Allow access to Tasks' })).toBeTruthy();
+  });
+
+  it('shows the Files heading and switch when the COS edition is workspace', () => {
+    renderFeatures({ cosDetail: { edition: 'workspace' } });
+
+    expect(screen.getByText('Files', { exact: true })).toBeTruthy();
+    expect(screen.getByRole('switch', { name: 'Allow access to Files' })).toBeTruthy();
+  });
+
+  it('hides the Allow access to Files switch when the COS has no edition attribute', () => {
+    renderFeatures({ cosDetail: { zimbraFeatureContactsEnabled: 'TRUE' } });
+
+    expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+  });
+
+  it('hides the Allow access to Files switch when the COS edition is empty', () => {
+    renderFeatures({ cosDetail: { edition: '' } });
+
+    expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+  });
+});
