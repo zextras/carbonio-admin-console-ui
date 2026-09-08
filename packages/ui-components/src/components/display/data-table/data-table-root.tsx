@@ -357,7 +357,7 @@ const DataTableRootShell = <TData extends RowData>({
   // all prop-change paths). Pinning stays derived in the controlled `state`
   // merge below; layout pinning is Root-owned — parts must not call pinning
   // APIs (see the `state` prop JSDoc).
-  const table = useDataTable<TData>(
+  const table = useDataTable<TData, null>(
     stripUndefinedKeys({
       data,
       columns: tableColumns,
