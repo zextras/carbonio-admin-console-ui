@@ -20,8 +20,10 @@ import {
   getCellDisplayValue,
   navigatePeekRowId,
 } from './data-table-row-chrome';
+import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
 import { isEditableTarget } from './models/event-target';
 import { DataTableDecoratedCell } from './row-ui/decorated-cell';
+import { ROW_MODEL_SLICES } from './table-selectors';
 import { DataTableEmptyState, DataTableErrorState, DataTableSkeletonRows } from './table-states';
 import { useTableUi } from './table-ui-store';
 import type {
@@ -32,7 +34,6 @@ import type {
 } from './types';
 
 const DEFAULT_SKELETON_ROWS = 5;
-const PRIMARY_COLUMN_OFFSET = '3.25rem';
 
 export type DataTableTableBodyProps<TData extends RowData> = {
   status: DataTableStatus;
@@ -151,7 +152,6 @@ export const DataTableTableBody = <TData extends RowData>({
   const setEditing = useTableUi((s) => s.setEditing);
   const announce = useTableUi((s) => s.announce);
 
-  const pageRows = table.getRowModel().rows;
   const isRowInteractive = enablePeek || onRowClick !== undefined;
 
   useEffect(() => {
@@ -168,7 +168,9 @@ export const DataTableTableBody = <TData extends RowData>({
         !isEditableTarget(event.target)
       ) {
         event.preventDefault();
-        const pageIds = pageRows.map((row) => row.id);
+        // Read at event time: this listener outlives Subscribe re-renders,
+        // so a page captured in the effect closure could be stale.
+        const pageIds = table.getRowModel().rows.map((row) => row.id);
         setPeekRowId(
           navigatePeekRowId(pageIds, peekRowId, event.key === 'ArrowDown' ? 'down' : 'up'),
         );
@@ -178,7 +180,7 @@ export const DataTableTableBody = <TData extends RowData>({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [enablePeek, peekRowId, pageRows, setPeekRowId]);
+  }, [enablePeek, peekRowId, table, setPeekRowId]);
 
   async function handleCopy(value: string, row: TData, columnId: string): Promise<void> {
     const ok = await copyTextToClipboard(value);
@@ -189,8 +191,11 @@ export const DataTableTableBody = <TData extends RowData>({
   }
 
   return (
-    <table.Subscribe selector={(state) => state.rowSelection}>
+    <table.Subscribe selector={ROW_MODEL_SLICES}>
       {() => {
+        // Read inside the subscription callback: the part component itself
+        // does not re-render on table state changes, only this callback does.
+        const pageRows = table.getRowModel().rows;
         const stateColSpan = table.getVisibleLeafColumns().length;
         return (
           <tbody>

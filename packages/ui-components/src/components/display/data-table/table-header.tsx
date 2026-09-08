@@ -9,7 +9,9 @@ import clsx from 'clsx';
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
 import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './data-table-customize-model';
+import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
 import { SortableHeaderCell } from './sortable-header-cell';
+import { COLUMN_LAYOUT_SLICES } from './table-selectors';
 import { useTableUi } from './table-ui-store';
 import type { DataTableColumnMeta } from './types';
 
@@ -46,9 +48,7 @@ export const DataTableTableHeader = ({
   const scrollEdge = useTableUi((s) => s.scrollEdge);
 
   return (
-    <table.Subscribe
-      selector={(state) => [state.columnOrder, state.columnVisibility, state.sorting] as const}
-    >
+    <table.Subscribe selector={COLUMN_LAYOUT_SLICES}>
       {() => (
         <thead>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -76,7 +76,11 @@ export const DataTableTableHeader = ({
                       width: meta?.width,
                       textAlign: meta?.align,
                       left:
-                        isPrimary && enableRowSelection ? '3.25rem' : pinnedStart ? 0 : undefined,
+                        isPrimary && enableRowSelection
+                          ? PRIMARY_COLUMN_OFFSET
+                          : pinnedStart
+                          ? 0
+                          : undefined,
                     }}
                     aria-sort={resolveAriaSort(
                       header.column.getCanSort(),

@@ -5,6 +5,7 @@
  */
 
 import styles from './data-table.module.css';
+import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
 
 type EmptyStateProps = {
   colSpan: number;
@@ -71,7 +72,7 @@ export const DataTableSkeletonRows = ({
         <td
           key={`skeleton-${rowIndex}-${colIndex}`}
           className={`${styles.td}${colIndex === 0 ? ` ${styles.pinnedLeft}` : ''}`}
-          style={colIndex === 0 && showSelection ? { left: '3.25rem' } : undefined}
+          style={colIndex === 0 && showSelection ? { left: PRIMARY_COLUMN_OFFSET } : undefined}
         >
           <div
             className={styles.skeleton}
