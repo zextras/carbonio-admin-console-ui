@@ -275,7 +275,7 @@ describe('ManageAccounts (browser)', () => {
                 .toBeInTheDocument();
         });
 
-        it('should disable search input when list is empty', async () => {
+        it('should keep the search input available when the list is empty', async () => {
             setupSearchDirectoryInterceptor([]);
             setupCountAccountInterceptor(0);
             await setupBrowserTest(<ManageAccounts />);
@@ -283,7 +283,8 @@ describe('ManageAccounts (browser)', () => {
                 .element(page.getByText('This list is empty.'))
                 .toBeInTheDocument();
             const searchInput = page.getByLabelText("I'm looking for this account…");
-            await expect.element(searchInput).toHaveAttribute('disabled');
+            await expect.element(searchInput).toBeVisible();
+            await expect.element(searchInput).not.toHaveAttribute('disabled');
         });
     });
 
@@ -294,6 +295,7 @@ describe('ManageAccounts (browser)', () => {
             await setupBrowserTest(<ManageAccounts />);
             const searchInput = page.getByLabelText("I'm looking for this account…");
             await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
+            await expect.element(searchInput).toBeVisible();
             await expect.element(searchInput).not.toHaveAttribute('disabled');
         });
 
@@ -630,7 +632,7 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetFolder', {});
         }
 
-        it('should open the account edit view when the account email is clicked', async () => {
+        it('should open the account edit view from peek Edit account', async () => {
             setupEditAccountInterceptors();
             setupSearchDirectoryInterceptor();
             setupCountAccountInterceptor();
@@ -638,13 +640,17 @@ describe('ManageAccounts (browser)', () => {
 
             await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
             await page.getByText('user1@example.com').click();
+            await expect
+                .element(page.getByRole('complementary', { name: 'Details: user1@example.com' }))
+                .toBeVisible();
+            await page.getByRole('button', { name: 'Edit account' }).click();
 
             await expect
                 .element(page.getByRole('heading', { name: 'user1@example.com' }))
                 .toBeVisible();
         });
 
-        it('should open the account edit view when the description cell is clicked', async () => {
+        it('should open the account edit view from row actions', async () => {
             setupEditAccountInterceptors();
             const describedAccounts = [
                 buildAccount('user1@example.com', 'acc-1', {
@@ -659,7 +665,8 @@ describe('ManageAccounts (browser)', () => {
             await expect
                 .element(page.getByText('Primary mailbox for User One'))
                 .toBeInTheDocument();
-            await page.getByText('Primary mailbox for User One').click();
+            await page.getByRole('button', { name: /Actions for user1@example.com/ }).click();
+            await page.getByRole('menuitem', { name: 'Edit account' }).click();
 
             await expect
                 .element(page.getByRole('heading', { name: 'user1@example.com' }))
