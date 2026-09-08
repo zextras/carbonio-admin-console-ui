@@ -349,13 +349,14 @@ const DataTableRootShell = <TData extends RowData>({
 
   const resolvedRowCount = manualFiltering ? rowCountProp ?? data.length : undefined;
 
-  // No narrow selector: Root renders no table state of its own, and the former
-  // `state.columnPinning` subscription produced no render output — its only
-  // effect was reverting out-of-contract internal pinning writes. Pinning
-  // stays derived in the controlled `state` merge below: it is re-published
-  // (and any internal write reverted) on every Root render, which is
-  // acceptable because layout pinning is Root-owned — parts must not call
-  // pinning APIs (see the `state` prop JSDoc).
+  // Constant root selector: Root renders no table state of its own, and a
+  // never-changing selection keeps it from re-rendering on every table state
+  // change (selection, sort, filter) — which would churn the AppTable context
+  // value and re-render every `useDataTableContext` consumer. Controlled state
+  // is still published on every Root commit (parent/density/peek renders cover
+  // all prop-change paths). Pinning stays derived in the controlled `state`
+  // merge below; layout pinning is Root-owned — parts must not call pinning
+  // APIs (see the `state` prop JSDoc).
   const table = useDataTable<TData>(
     stripUndefinedKeys({
       data,
@@ -386,6 +387,7 @@ const DataTableRootShell = <TData extends RowData>({
       onColumnVisibilityChange,
       onColumnOrderChange,
     }),
+    () => null,
   );
 
   return (
