@@ -84,7 +84,8 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
             label={t('label.user_name', 'User Name')}
             value={verifyUserName}
             backgroundColor="gray5"
-            inputName="user"
+            inputName="verifyAuthUser"
+            autoComplete="new-password"
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setVerifyUserName(e.target.value);
               setIsVerified(false);
@@ -96,6 +97,7 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
             label={t('label.password', 'Password')}
             backgroundColor="gray5"
             inputName="verifyAuthPassword"
+            autoComplete="new-password"
             value={verifyPassword}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setVerifyPassword(e.target.value);

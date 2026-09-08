@@ -111,7 +111,8 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
                 label={t('domain.authentication.search_bind_user', 'Search Bind User')}
                 value={field.state.value}
                 backgroundColor="gray5"
-                inputName="user"
+                inputName="searchBindUser"
+                autoComplete="new-password"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
@@ -126,6 +127,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
                 label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
                 backgroundColor="gray5"
                 inputName="zimbraQuotaWarnInterval"
+                autoComplete="new-password"
                 value={field.state.value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
