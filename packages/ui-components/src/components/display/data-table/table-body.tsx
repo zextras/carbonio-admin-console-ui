@@ -1,0 +1,337 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import type { RowData } from '@tanstack/react-table';
+import clsx from 'clsx';
+import { useEffect } from 'react';
+
+import styles from './data-table.module.css';
+import { useDataTableContext } from './data-table-contexts';
+import {
+  ACTIONS_COLUMN_ID,
+  resolveColumnLabel,
+  SELECT_COLUMN_ID,
+} from './data-table-customize-model';
+import {
+  copyTextToClipboard,
+  getCellDisplayValue,
+  navigatePeekRowId,
+} from './data-table-row-chrome';
+import { isEditableTarget } from './models/event-target';
+import { DataTableDecoratedCell } from './row-ui/decorated-cell';
+import { DataTableEmptyState, DataTableErrorState, DataTableSkeletonRows } from './table-states';
+import { useTableUi } from './table-ui-store';
+import type {
+  DataTableCellEditCommit,
+  DataTableColumnDef,
+  DataTableColumnMeta,
+  DataTableStatus,
+} from './types';
+
+const DEFAULT_SKELETON_ROWS = 5;
+const PRIMARY_COLUMN_OFFSET = '3.25rem';
+
+export type DataTableTableBodyProps<TData extends RowData> = {
+  status: DataTableStatus;
+  onRetry?: () => void;
+  onRowClick?: (row: TData) => void;
+  enablePeek?: boolean;
+  skeletonRowCount?: number;
+  emptyTitle: string;
+  emptyDescription: string;
+  errorTitle: string;
+  errorDescription: string;
+  retryLabel: string;
+  /** User-facing columns (without the internal select/actions columns). */
+  columns: Array<DataTableColumnDef<TData>>;
+  /** Column id pinned sticky on the left (identity / primary column). */
+  primaryColumnId?: string;
+  /** Whether the leading selection column shifts the primary column offset. */
+  enableRowSelection?: boolean;
+  onCellEditCommit?: (commit: DataTableCellEditCommit<TData>) => void;
+  editRequiredMessage: string;
+  editSaveLabel: string;
+  editCancelLabel: string;
+  onCopyCell?: (value: string, row: TData, columnId: string) => void;
+  copiedAnnounceLabel: string;
+};
+
+function resolveRowLabel<TData extends RowData>(
+  original: TData,
+  rowId: string,
+  primaryColumnId: string | undefined,
+): string {
+  if (primaryColumnId) {
+    return getCellDisplayValue((original as Record<string, unknown>)[primaryColumnId]);
+  }
+  return rowId;
+}
+
+function buildRowClassName(options: {
+  isSelected: boolean;
+  isPeeking: boolean;
+  isRowInteractive: boolean;
+}): string {
+  return clsx(
+    styles.bodyRow,
+    options.isSelected && styles.bodyRowSelected,
+    options.isPeeking && styles.bodyRowPeek,
+    options.isRowInteractive && styles.bodyRowClickable,
+  );
+}
+
+function buildCellClassName(options: {
+  isSelect: boolean;
+  isActions: boolean;
+  isPrimary: boolean;
+  pinnedStart: boolean;
+  pinnedEnd: boolean;
+  scrollEdgeStart: boolean;
+  scrollEdgeEnd: boolean;
+}): string {
+  return clsx(
+    styles.td,
+    options.isSelect && styles.tdSelect,
+    options.isActions && styles.tdActions,
+    options.pinnedStart && styles.pinnedLeft,
+    options.pinnedEnd && styles.pinnedRight,
+    options.pinnedStart && options.isPrimary && !options.scrollEdgeStart && styles.pinnedShadow,
+    options.pinnedEnd && !options.scrollEdgeEnd && styles.pinnedRightShadow,
+  );
+}
+
+function buildCellStyle(options: {
+  meta: DataTableColumnMeta | undefined;
+  isPrimary: boolean;
+  enableRowSelection: boolean;
+  pinnedStart: boolean;
+}): React.CSSProperties {
+  return {
+    width: options.meta?.width,
+    textAlign: options.meta?.align,
+    left:
+      options.isPrimary && options.enableRowSelection
+        ? PRIMARY_COLUMN_OFFSET
+        : options.pinnedStart
+        ? 0
+        : undefined,
+  };
+}
+
+export const DataTableTableBody = <TData extends RowData>({
+  status,
+  onRetry,
+  onRowClick,
+  enablePeek = false,
+  skeletonRowCount = DEFAULT_SKELETON_ROWS,
+  emptyTitle,
+  emptyDescription,
+  errorTitle,
+  errorDescription,
+  retryLabel,
+  columns,
+  primaryColumnId,
+  enableRowSelection = false,
+  onCellEditCommit,
+  editRequiredMessage,
+  editSaveLabel,
+  editCancelLabel,
+  onCopyCell,
+  copiedAnnounceLabel,
+}: DataTableTableBodyProps<TData>) => {
+  const table = useDataTableContext<TData>();
+  const peekRowId = useTableUi((s) => s.peekRowId);
+  const editing = useTableUi((s) => s.editing);
+  const selectAllMatching = useTableUi((s) => s.selectAllMatching);
+  const scrollEdge = useTableUi((s) => s.scrollEdge);
+  const setPeekRowId = useTableUi((s) => s.setPeekRowId);
+  const setEditing = useTableUi((s) => s.setEditing);
+  const announce = useTableUi((s) => s.announce);
+
+  const pageRows = table.getRowModel().rows;
+  const isRowInteractive = enablePeek || onRowClick !== undefined;
+
+  useEffect(() => {
+    if (!enablePeek || peekRowId === null) {
+      return undefined;
+    }
+    function handleKeyDown(event: KeyboardEvent): void {
+      if (event.key === 'Escape') {
+        setPeekRowId(null);
+        return;
+      }
+      if (
+        (event.key === 'ArrowDown' || event.key === 'ArrowUp') &&
+        !isEditableTarget(event.target)
+      ) {
+        event.preventDefault();
+        const pageIds = pageRows.map((row) => row.id);
+        setPeekRowId(
+          navigatePeekRowId(pageIds, peekRowId, event.key === 'ArrowDown' ? 'down' : 'up'),
+        );
+      }
+    }
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [enablePeek, peekRowId, pageRows, setPeekRowId]);
+
+  async function handleCopy(value: string, row: TData, columnId: string): Promise<void> {
+    const ok = await copyTextToClipboard(value);
+    if (ok) {
+      announce(copiedAnnounceLabel);
+    }
+    onCopyCell?.(value, row, columnId);
+  }
+
+  return (
+    <table.Subscribe selector={(state) => state.rowSelection}>
+      {() => {
+        const stateColSpan = table.getVisibleLeafColumns().length;
+        return (
+          <tbody>
+            {status === 'loading' && (
+              <DataTableSkeletonRows
+                rowCount={skeletonRowCount}
+                columnCount={columns.length}
+                showSelection={enableRowSelection}
+              />
+            )}
+            {status === 'empty' && (
+              <DataTableEmptyState
+                colSpan={stateColSpan}
+                title={emptyTitle}
+                description={emptyDescription}
+              />
+            )}
+            {status === 'error' && (
+              <DataTableErrorState
+                colSpan={stateColSpan}
+                title={errorTitle}
+                description={errorDescription}
+                retryLabel={retryLabel}
+                onRetry={onRetry}
+              />
+            )}
+            {status === 'idle' &&
+              pageRows.map((row) => {
+                const isSelected = row.getIsSelected() || selectAllMatching;
+                const isPeeking = enablePeek && peekRowId === row.id;
+                const rowLabel = resolveRowLabel(row.original, row.id, primaryColumnId);
+                return (
+                  <tr
+                    key={row.id}
+                    className={buildRowClassName({ isSelected, isPeeking, isRowInteractive })}
+                    data-selected={isSelected || undefined}
+                    tabIndex={isRowInteractive ? 0 : undefined}
+                    onClick={
+                      isRowInteractive
+                        ? (): void => {
+                            if (enablePeek) {
+                              setPeekRowId(row.id);
+                            }
+                            onRowClick?.(row.original);
+                          }
+                        : undefined
+                    }
+                    onKeyDown={
+                      isRowInteractive
+                        ? (e): void => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              if (enablePeek) {
+                                setPeekRowId(row.id);
+                              }
+                              onRowClick?.(row.original);
+                            }
+                          }
+                        : undefined
+                    }
+                  >
+                    {row.getVisibleCells().map((cell) => {
+                      const meta = cell.column.columnDef.meta as DataTableColumnMeta | undefined;
+                      const pinnedStart = cell.column.getIsPinned() === 'start';
+                      const pinnedEnd = cell.column.getIsPinned() === 'end';
+                      const isSelect = cell.column.id === SELECT_COLUMN_ID;
+                      const isActions = cell.column.id === ACTIONS_COLUMN_ID;
+                      const isPrimary = cell.column.id === primaryColumnId;
+                      const columnLabel = resolveColumnLabel(
+                        cell.column.columnDef as DataTableColumnDef<TData>,
+                        cell.column.id,
+                      );
+                      const displayValue = getCellDisplayValue(cell.getValue());
+                      const isEditingCell =
+                        editing !== null &&
+                        editing.rowId === row.id &&
+                        editing.columnId === cell.column.id;
+                      return (
+                        <td
+                          key={cell.id}
+                          className={buildCellClassName({
+                            isSelect,
+                            isActions,
+                            isPrimary,
+                            pinnedStart,
+                            pinnedEnd,
+                            scrollEdgeStart: scrollEdge.start,
+                            scrollEdgeEnd: scrollEdge.end,
+                          })}
+                          style={buildCellStyle({
+                            meta,
+                            isPrimary,
+                            enableRowSelection,
+                            pinnedStart,
+                          })}
+                        >
+                          {isActions || isSelect ? (
+                            <table.FlexRender cell={cell} />
+                          ) : (
+                            <DataTableDecoratedCell
+                              displayValue={displayValue}
+                              columnLabel={columnLabel}
+                              rowLabel={rowLabel}
+                              editable={meta?.editable === true}
+                              copyable={meta?.copyable === true}
+                              isEditing={isEditingCell}
+                              editInitialValue={displayValue}
+                              requiredMessage={editRequiredMessage}
+                              saveLabel={editSaveLabel}
+                              cancelLabel={editCancelLabel}
+                              onStartEdit={() => {
+                                setEditing({ rowId: row.id, columnId: cell.column.id });
+                              }}
+                              onCommitEdit={(value) => {
+                                onCellEditCommit?.({
+                                  rowId: row.id,
+                                  columnId: cell.column.id,
+                                  value,
+                                  row: row.original,
+                                });
+                                setEditing(null);
+                              }}
+                              onCancelEdit={() => {
+                                setEditing(null);
+                              }}
+                              onCopy={() => {
+                                void handleCopy(displayValue, row.original, cell.column.id);
+                              }}
+                            >
+                              <table.FlexRender cell={cell} />
+                            </DataTableDecoratedCell>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                );
+              })}
+          </tbody>
+        );
+      }}
+    </table.Subscribe>
+  );
+};
