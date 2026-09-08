@@ -80,3 +80,4 @@ dist
 /.worktrees
 /new-translations.txt
 /new translations.txt
+.pnpm-store/*
