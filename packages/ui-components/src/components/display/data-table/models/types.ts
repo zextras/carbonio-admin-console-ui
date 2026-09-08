@@ -74,6 +74,8 @@ export type DataTableEditingState = {
 } | null;
 
 export type DataTablePeekField = {
+  /** Stable key; defaults to `label` when omitted on custom fields */
+  id?: string;
   label: string;
   value: ReactNode;
 };

@@ -88,6 +88,7 @@ export function buildDefaultPeekFields<TData extends RowData>(
     const value = getCellDisplayValue(raw);
     return [
       {
+        id,
         label: resolveColumnLabel(column, id),
         value: value === '' ? '—' : value,
       },

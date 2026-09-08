@@ -31,6 +31,14 @@ export const ROW_MODEL_SLICES = (state: DataTableState) =>
   ] as const;
 
 /**
+ * State slices the peek panel depends on: only row MEMBERSHIP changes (which
+ * rows are on the current page and in which order) — selection, column
+ * order/visibility/pinning do not affect the resolved peek row.
+ */
+export const PEEK_ROW_SLICES = (state: DataTableState) =>
+  [state.pagination, state.sorting, state.columnFilters, state.globalFilter] as const;
+
+/**
  * State slices the header layout depends on: which columns render, in which
  * order, their sort state and their pinning. Row-model slices (pagination,
  * filtering, selection) do not affect the header.

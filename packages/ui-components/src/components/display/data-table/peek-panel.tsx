@@ -12,7 +12,7 @@ import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
 import { buildDefaultPeekFields } from './models/row-ui';
 import { type DataTableTableConfig, useTableConfig } from './table-config-context';
-import { ROW_MODEL_SLICES } from './table-selectors';
+import { PEEK_ROW_SLICES } from './table-selectors';
 import { useTableUi } from './table-ui-store';
 
 /** One label/value line of the peek field list. */
@@ -87,7 +87,7 @@ export const DataTablePeekPanel = <TData extends RowData>({
   const { t } = useTranslation();
 
   return (
-    <table.Subscribe selector={ROW_MODEL_SLICES}>
+    <table.Subscribe selector={PEEK_ROW_SLICES}>
       {() => {
         const row =
           peekRowId === null
