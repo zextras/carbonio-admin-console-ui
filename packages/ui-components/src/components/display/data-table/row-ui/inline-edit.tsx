@@ -7,7 +7,7 @@
 import { useEffect, useId, useRef, useState } from 'react';
 
 import styles from '../data-table.module.css';
-import { validateEditValue } from '../data-table-row-chrome';
+import { validateEditValue } from '../models/row-ui';
 import { stopEventPropagation } from './stop-propagation';
 
 type DataTableInlineEditProps = {

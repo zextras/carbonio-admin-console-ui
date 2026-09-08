@@ -10,18 +10,10 @@ import { useEffect } from 'react';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
-import {
-  ACTIONS_COLUMN_ID,
-  resolveColumnLabel,
-  SELECT_COLUMN_ID,
-} from './data-table-customize-model';
-import {
-  copyTextToClipboard,
-  getCellDisplayValue,
-  navigatePeekRowId,
-} from './data-table-row-chrome';
 import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
+import { ACTIONS_COLUMN_ID, resolveColumnLabel, SELECT_COLUMN_ID } from './models/customize-model';
 import { isEditableTarget } from './models/event-target';
+import { copyTextToClipboard, getCellDisplayValue, navigatePeekRowId } from './models/row-ui';
 import { DataTableDecoratedCell } from './row-ui/decorated-cell';
 import { ROW_MODEL_SLICES } from './table-selectors';
 import { DataTableEmptyState, DataTableErrorState, DataTableSkeletonRows } from './table-states';

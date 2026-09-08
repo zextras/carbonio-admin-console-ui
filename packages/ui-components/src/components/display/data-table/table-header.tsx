@@ -8,8 +8,8 @@ import clsx from 'clsx';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
-import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './data-table-customize-model';
 import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
+import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './models/customize-model';
 import { SortableHeaderCell } from './sortable-header-cell';
 import { COLUMN_LAYOUT_SLICES } from './table-selectors';
 import { useTableUi } from './table-ui-store';

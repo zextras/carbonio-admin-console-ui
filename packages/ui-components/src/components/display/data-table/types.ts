@@ -18,28 +18,45 @@ import type { ReactNode } from 'react';
 
 import type { DataTableFeatures } from './data-table-features';
 
-export type DataTableStatus = 'idle' | 'loading' | 'empty' | 'error';
+/**
+ * Pure model types live in `./models/types` (canonical home). They are
+ * re-exported here so the legacy orchestrator and its direct imports keep
+ * compiling until they are deleted.
+ */
+export type {
+  DataTableBulkAction,
+  DataTableBulkJobState,
+  DataTableBulkVariant,
+  DataTableCellEditCommit,
+  DataTableColumnMeta,
+  DataTableDateFilterValue,
+  DataTableEnumFilterValue,
+  DataTableFilterChip,
+  DataTableFilterDef,
+  DataTableFilterOption,
+  DataTableFiltersState,
+  DataTableFilterValue,
+  DataTableRangeFilterValue,
+  DataTableRowAction,
+  DataTableStatus,
+} from './models/types';
+
+import type {
+  DataTableBulkAction,
+  DataTableBulkJobState,
+  DataTableBulkVariant,
+  DataTableCellEditCommit,
+  DataTableFilterDef,
+  DataTableFiltersState,
+  DataTableRowAction,
+  DataTableStatus,
+} from './models/types';
 
 /**
  * @deprecated Moved to `table-ui-store.tsx`; kept only for the legacy
  * orchestrator, removed when the orchestrator is deleted.
  */
 export type DataTableDensity = 'comfortable' | 'compact';
-
-export type DataTableColumnMeta = {
-  width?: string | number;
-  align?: 'left' | 'center' | 'right';
-  /** Marks the sticky primary / identity column when `primaryColumnId` is not set */
-  primary?: boolean;
-  /** Cannot hide or reorder; primary column is always locked */
-  locked?: boolean;
-  /** Show inline edit affordance on hover */
-  editable?: boolean;
-  /** Show copy-to-clipboard affordance on hover */
-  copyable?: boolean;
-  /** Omit from default peek field list */
-  excludeFromPeek?: boolean;
-};
 
 /**
  * @deprecated Legacy orchestrator type (carries the inline draft value).
@@ -52,25 +69,6 @@ export type DataTableEditingState = {
   value: string;
   error: string | null;
 } | null;
-
-export type DataTableRowAction = {
-  id: string;
-  label: string;
-  danger?: boolean;
-};
-
-/** A = replace toolbar when selecting; B = keep toolbar and show bulk bar below. */
-export type DataTableBulkVariant = 'A' | 'B';
-
-export type DataTableBulkAction = {
-  id: string;
-  label: string;
-  danger?: boolean;
-  /** When true (or when `danger`), show the confirm dialog before invoking `onBulkAction`. */
-  requireConfirm?: boolean;
-  /** Hint for consumers; reversible actions typically return an undo payload. */
-  reversible?: boolean;
-};
 
 export type DataTableBulkActionContext = {
   action: DataTableBulkAction;
@@ -86,13 +84,6 @@ export type DataTableBulkActionResult = {
   };
 } | void;
 
-export type DataTableBulkJobState = {
-  label: string;
-  done: number;
-  total: number;
-  result: { ok: number; failed: number } | null;
-} | null;
-
 /**
  * @deprecated Moved to `table-ui-store.tsx` (new shape carries an `id` so the
  * toast remounts and its timer restarts); removed with the orchestrator.
@@ -101,13 +92,6 @@ export type DataTableUndoToastState = {
   message: string;
   onUndo: () => void;
 } | null;
-
-export type DataTableCellEditCommit<TData> = {
-  rowId: string;
-  columnId: string;
-  value: string;
-  row: TData;
-};
 
 export type DataTablePeekField = {
   label: string;
@@ -119,58 +103,6 @@ export type DataTableColumnDef<TData extends RowData> = ColumnDef<
   TData,
   unknown
 >;
-
-export type DataTableFilterOption = {
-  label: string;
-  value: string;
-};
-
-export type DataTableFilterDef =
-  | {
-      id: string;
-      label: string;
-      type: 'enum';
-      options: Array<DataTableFilterOption>;
-    }
-  | {
-      id: string;
-      label: string;
-      type: 'range';
-      minPlaceholder?: string;
-      maxPlaceholder?: string;
-    }
-  | {
-      id: string;
-      label: string;
-      type: 'date';
-    };
-
-export type DataTableEnumFilterValue = Array<string>;
-
-export type DataTableRangeFilterValue = {
-  min: number | null;
-  max: number | null;
-};
-
-export type DataTableDateFilterValue = {
-  from: string | null;
-  to: string | null;
-};
-
-export type DataTableFilterValue =
-  | DataTableEnumFilterValue
-  | DataTableRangeFilterValue
-  | DataTableDateFilterValue;
-
-export type DataTableFiltersState = Record<string, DataTableFilterValue>;
-
-export type DataTableFilterChip = {
-  key: string;
-  filterId: string;
-  label: string;
-  /** Present for enum chips so a single value can be removed */
-  enumValue?: string;
-};
 
 export type DataTableProps<TData extends RowData> = {
   data: Array<TData>;
