@@ -5,6 +5,7 @@
  */
 
 import type { Row, RowData } from '@tanstack/react-table';
+import { filterFn_arrHas } from '@tanstack/react-table';
 import { describe, expect, it } from 'vitest';
 
 import type { DataTableFeatures } from '../data-table-features';
@@ -124,6 +125,24 @@ describe('buildFilterChips', () => {
   it('renders open-ended date chips without inventing bounds', () => {
     const chips = buildFilterChips({ created: { from: null, to: '2026-01-31' } }, [dateDef]);
     expect(chips[0]?.label).toBe('Created: …–2026-01-31');
+  });
+
+  it('carries the raw bounds on range chips for locale-aware formatting', () => {
+    const maxOnly = buildFilterChips({ size: { min: null, max: 50 } }, [rangeDef]);
+    expect(maxOnly[0]?.bounds).toEqual({ max: 50 });
+    const minOnly = buildFilterChips({ size: { min: 10, max: null } }, [rangeDef]);
+    expect(minOnly[0]?.bounds).toEqual({ min: 10 });
+    const bounded = buildFilterChips({ size: { min: 10, max: 50 } }, [rangeDef]);
+    expect(bounded[0]?.bounds).toEqual({ min: 10, max: 50 });
+  });
+
+  it('carries the raw bounds on date chips', () => {
+    const chips = buildFilterChips({ created: { from: '2026-01-01', to: '2026-01-31' } }, [
+      dateDef,
+    ]);
+    expect(chips[0]?.bounds).toEqual({ min: '2026-01-01', max: '2026-01-31' });
+    const toOnly = buildFilterChips({ created: { from: null, to: '2026-01-31' } }, [dateDef]);
+    expect(toOnly[0]?.bounds).toEqual({ max: '2026-01-31' });
   });
 
   it('renders a max-only range chip without a false 0 lower bound', () => {
@@ -279,6 +298,11 @@ describe('matchesNumberRange', () => {
     expect(matchesNumberRange(100, { min: 10, max: null })).toBe(true);
     expect(matchesNumberRange(5, { min: 10, max: null })).toBe(false);
   });
+
+  it('matches cells exactly on either bound (inclusive)', () => {
+    expect(matchesNumberRange(10, { min: 10, max: 50 })).toBe(true);
+    expect(matchesNumberRange(50, { min: 10, max: 50 })).toBe(true);
+  });
 });
 
 describe('matchesDateRange', () => {
@@ -312,6 +336,21 @@ describe('matchesDateRange', () => {
     expect(matchesDateRange(null, { from: '2026-01-01', to: null })).toBe(false);
   });
 
+  it('never matches NaN or infinite timestamp cells', () => {
+    expect(matchesDateRange(Number.NaN, { from: '2026-01-01', to: null })).toBe(false);
+    expect(matchesDateRange(Number.POSITIVE_INFINITY, { from: null, to: '2026-12-31' })).toBe(
+      false,
+    );
+  });
+
+  it('matches cells exactly on either bound (inclusive)', () => {
+    expect(
+      matchesDateRange('2026-01-01T00:00:00.000Z', { from: '2026-01-01', to: '2026-01-31' }),
+    ).toBe(true);
+    expect(
+      matchesDateRange('2026-01-31T00:00:00.000Z', { from: '2026-01-01', to: '2026-01-31' }),
+    ).toBe(true);
+  });
   it('treats null bounds as open-ended', () => {
     expect(matchesDateRange('2025-06-15', { from: null, to: '2026-01-31' })).toBe(true);
     expect(matchesDateRange('2026-06-15', { from: '2026-01-01', to: null })).toBe(true);
@@ -330,6 +369,18 @@ describe('numberRangeFilterFn', () => {
     expect(numberRangeFilterFn(rowWithValue(70), 'col', [null, 50])).toBe(false);
     expect(numberRangeFilterFn(rowWithValue(70), 'col', [10, null])).toBe(true);
   });
+
+  it('swaps reversed bounds so they still match rows in between', () => {
+    const resolved = numberRangeFilterFn.resolveFilterValue?.([50, 10]) ?? [50, 10];
+    expect(resolved).toEqual([10, 50]);
+    expect(numberRangeFilterFn(rowWithValue(25), 'col', resolved)).toBe(true);
+  });
+
+  it('keeps a 0 bound when deciding whether to auto-remove the filter', () => {
+    expect(numberRangeFilterFn.autoRemove?.(0)).toBe(false);
+    expect(numberRangeFilterFn.autoRemove?.([0, 50])).toBe(false);
+    expect(numberRangeFilterFn.autoRemove?.([null, null])).toBe(true);
+  });
 });
 
 describe('dateRangeFilterFn', () => {
@@ -345,13 +396,46 @@ describe('dateRangeFilterFn', () => {
     );
     expect(dateRangeFilterFn(rowWithValue('not-a-date'), 'col', ['2026-01-01', null])).toBe(false);
   });
+
+  it('includes the whole end day for a date-only to bound', () => {
+    const resolved = dateRangeFilterFn.resolveFilterValue?.(['2026-01-01', '2026-01-31']) ?? [
+      '2026-01-01',
+      '2026-01-31',
+    ];
+    expect(resolved[1]).toBe(new Date('2026-01-31T23:59:59.999Z').getTime());
+    expect(dateRangeFilterFn(rowWithValue('2026-01-31T10:00:00.000Z'), 'col', resolved)).toBe(true);
+  });
+
+  it('keeps a date-only from bound at the start of that day', () => {
+    const resolved = dateRangeFilterFn.resolveFilterValue?.(['2026-01-01', null]) ?? [
+      '2026-01-01',
+      null,
+    ];
+    expect(resolved[0]).toBe(new Date('2026-01-01T00:00:00.000Z').getTime());
+    expect(dateRangeFilterFn(rowWithValue('2026-01-01T00:00:00.000Z'), 'col', resolved)).toBe(true);
+  });
+
+  it('swaps reversed bounds so they still match rows in between', () => {
+    const resolved = dateRangeFilterFn.resolveFilterValue?.(['2026-01-31', '2026-01-05']) ?? [
+      '2026-01-31',
+      '2026-01-05',
+    ];
+    expect(resolved[0]).toBeLessThan(resolved[1] ?? Number.POSITIVE_INFINITY);
+    expect(dateRangeFilterFn(rowWithValue('2026-01-15T12:00:00.000Z'), 'col', resolved)).toBe(true);
+  });
+
+  it('keeps a 0 (epoch) bound when deciding whether to auto-remove the filter', () => {
+    expect(dateRangeFilterFn.autoRemove?.(0)).toBe(false);
+    expect(dateRangeFilterFn.autoRemove?.([0, null])).toBe(false);
+    expect(dateRangeFilterFn.autoRemove?.([null, null])).toBe(true);
+  });
 });
 
 describe('enrichColumnsWithFilterFns', () => {
-  it('assigns the built-in enum filter fn by name', () => {
+  it('assigns the built-in enum filter fn', () => {
     const columns: Array<DataTableColumnDef<RowData>> = [{ id: 'status', header: 'Status' }];
     const enriched = enrichColumnsWithFilterFns(columns, [enumDef]);
-    expect(enriched[0]?.filterFn).toBe('arrHas');
+    expect(enriched[0]?.filterFn).toBe(filterFn_arrHas);
   });
 
   it('assigns coercing range and date filter fns', () => {

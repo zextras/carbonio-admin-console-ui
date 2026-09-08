@@ -30,12 +30,14 @@ export type {
   DataTableCellEditCommit,
   DataTableColumnMeta,
   DataTableDateFilterValue,
+  DataTableEditingState,
   DataTableEnumFilterValue,
   DataTableFilterChip,
   DataTableFilterDef,
   DataTableFilterOption,
   DataTableFiltersState,
   DataTableFilterValue,
+  DataTablePeekField,
   DataTableRangeFilterValue,
   DataTableRowAction,
   DataTableStatus,
@@ -46,8 +48,10 @@ import type {
   DataTableBulkJobState,
   DataTableBulkVariant,
   DataTableCellEditCommit,
+  DataTableEditingState,
   DataTableFilterDef,
   DataTableFiltersState,
+  DataTablePeekField,
   DataTableRowAction,
   DataTableStatus,
 } from './models/types';
@@ -57,18 +61,6 @@ import type {
  * orchestrator, removed when the orchestrator is deleted.
  */
 export type DataTableDensity = 'comfortable' | 'compact';
-
-/**
- * @deprecated Legacy orchestrator type (carries the inline draft value).
- * New parts use `DataTableEditingTarget` from `table-ui-store.tsx`;
- * removed together with the orchestrator.
- */
-export type DataTableEditingState = {
-  rowId: string;
-  columnId: string;
-  value: string;
-  error: string | null;
-} | null;
 
 export type DataTableBulkActionContext = {
   action: DataTableBulkAction;
@@ -92,11 +84,6 @@ export type DataTableUndoToastState = {
   message: string;
   onUndo: () => void;
 } | null;
-
-export type DataTablePeekField = {
-  label: string;
-  value: ReactNode;
-};
 
 export type DataTableColumnDef<TData extends RowData> = ColumnDef<
   DataTableFeatures,

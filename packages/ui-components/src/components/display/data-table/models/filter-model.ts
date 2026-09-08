@@ -5,9 +5,10 @@
  */
 
 import type { ColumnFiltersState, RowData } from '@tanstack/react-table';
-import { constructFilterFn } from '@tanstack/react-table';
+import { constructFilterFn, filterFn_arrHas } from '@tanstack/react-table';
 
 import type { DataTableColumnDef } from '../types';
+import { resolveColumnId } from './customize-model';
 import type {
   DataTableDateFilterValue,
   DataTableFilterChip,
@@ -58,7 +59,7 @@ function coerceDateTimestamp(value: unknown): number | null {
     return Number.isNaN(time) ? null : time;
   }
   if (typeof value === 'number') {
-    return value;
+    return Number.isFinite(value) ? value : null;
   }
   if (typeof value === 'string' && value.trim() !== '') {
     const time = new Date(value).getTime();
@@ -97,7 +98,7 @@ export function matchesNumberRange(
  */
 export function matchesDateRange(
   value: unknown,
-  bounds: { from: string | null; to: string | null },
+  bounds: { from: string | number | null; to: string | number | null },
 ): boolean {
   const time = coerceDateTimestamp(value);
   if (time === null) {
@@ -132,6 +133,33 @@ function isRangeFilterAutoRemovable(val: unknown): boolean {
   return false;
 }
 
+const DATE_ONLY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
+
+function resolveRangeEndpoints(val: unknown): Array<number | null> {
+  const [unsafeMin, unsafeMax] = Array.isArray(val) ? val : [undefined, undefined];
+  const min = coerceNumber(unsafeMin);
+  const max = coerceNumber(unsafeMax);
+  if (min !== null && max !== null && min > max) {
+    return [max, min];
+  }
+  return [min, max];
+}
+
+function resolveDateEndpoints(val: unknown): Array<number | null> {
+  const [unsafeFrom, unsafeTo] = Array.isArray(val) ? val : [undefined, undefined];
+  const from = coerceDateTimestamp(unsafeFrom);
+  let to = coerceDateTimestamp(unsafeTo);
+  if (typeof unsafeTo === 'string' && DATE_ONLY_PATTERN.test(unsafeTo.trim())) {
+    // A date-only `to` bound means "through that day": a bare `YYYY-MM-DD`
+    // parses to UTC midnight and would otherwise exclude the rest of the day.
+    to = new Date(`${unsafeTo.trim()}T23:59:59.999Z`).getTime();
+  }
+  if (from !== null && to !== null && from > to) {
+    return [to, from];
+  }
+  return [from, to];
+}
+
 /** Coercing `inNumberRange` replacement (review finding #9). */
 export const numberRangeFilterFn = constructFilterFn({
   filter: (dataValue: unknown, filterValue: Array<number | null>) =>
@@ -139,16 +167,18 @@ export const numberRangeFilterFn = constructFilterFn({
       min: filterValue[0] ?? null,
       max: filterValue[1] ?? null,
     }),
+  resolveFilterValue: resolveRangeEndpoints,
   autoRemove: isRangeFilterAutoRemovable,
 });
 
 /** Coercing `inDateRange` replacement (review finding #9). */
 export const dateRangeFilterFn = constructFilterFn({
-  filter: (dataValue: unknown, filterValue: Array<string | null>) =>
+  filter: (dataValue: unknown, filterValue: Array<string | number | null>) =>
     matchesDateRange(dataValue, {
       from: filterValue[0] ?? null,
       to: filterValue[1] ?? null,
     }),
+  resolveFilterValue: resolveDateEndpoints,
   autoRemove: isRangeFilterAutoRemovable,
 });
 
@@ -237,31 +267,50 @@ export function buildFilterChips(
       return;
     }
     if (def.type === 'range' && isRangeValue(value)) {
-      if (value.min === null && value.max === null) {
+      const bounds: DataTableFilterChip['bounds'] = {};
+      if (value.min !== null) {
+        bounds.min = value.min;
+      }
+      if (value.max !== null) {
+        bounds.max = value.max;
+      }
+      if (bounds.min === undefined && bounds.max === undefined) {
         return;
       }
       let rangeLabel: string;
-      if (value.min !== null && value.max !== null) {
-        rangeLabel = `${value.min}–${value.max}`;
-      } else if (value.max !== null) {
-        rangeLabel = `≤ ${value.max}`;
+      if (bounds.min !== undefined && bounds.max !== undefined) {
+        rangeLabel = `${bounds.min}–${bounds.max}`;
+      } else if (bounds.max !== undefined) {
+        rangeLabel = `≤ ${bounds.max}`;
       } else {
-        rangeLabel = `≥ ${value.min}`;
+        rangeLabel = `≥ ${bounds.min}`;
       }
       chips.push({
         key: def.id,
         filterId: def.id,
         label: `${def.label}: ${rangeLabel}`,
+        bounds,
       });
       return;
     }
     if (def.type === 'date' && isDateValue(value)) {
+      const bounds: DataTableFilterChip['bounds'] = {};
+      if (value.from) {
+        bounds.min = value.from;
+      }
+      if (value.to) {
+        bounds.max = value.to;
+      }
+      if (bounds.min === undefined && bounds.max === undefined) {
+        return;
+      }
       const fromLabel = value.from ?? '…';
       const toLabel = value.to ?? '…';
       chips.push({
         key: def.id,
         filterId: def.id,
         label: `${def.label}: ${fromLabel}–${toLabel}`,
+        bounds,
       });
     }
   });
@@ -319,18 +368,6 @@ export function toColumnFilters(
   return columnFilters;
 }
 
-function resolveColumnId<TData extends RowData>(
-  column: DataTableColumnDef<TData>,
-): string | undefined {
-  if (column.id) {
-    return column.id;
-  }
-  if ('accessorKey' in column && column.accessorKey !== undefined) {
-    return String(column.accessorKey);
-  }
-  return undefined;
-}
-
 export function enrichColumnsWithFilterFns<TData extends RowData>(
   columns: Array<DataTableColumnDef<TData>>,
   filterDefs: Array<DataTableFilterDef>,
@@ -346,7 +383,7 @@ export function enrichColumnsWithFilterFns<TData extends RowData>(
       return column;
     }
     if (def.type === 'enum') {
-      return { ...column, filterFn: 'arrHas' };
+      return { ...column, filterFn: filterFn_arrHas };
     }
     if (def.type === 'range') {
       return { ...column, filterFn: numberRangeFilterFn };

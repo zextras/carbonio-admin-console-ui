@@ -6,9 +6,9 @@
 
 import type { RowData } from '@tanstack/react-table';
 
-import type { DataTableColumnDef, DataTableEditingState, DataTablePeekField } from '../types';
+import type { DataTableColumnDef } from '../types';
 import { resolveColumnId, resolveColumnLabel } from './customize-model';
-import type { DataTableColumnMeta } from './types';
+import type { DataTableColumnMeta, DataTableEditingState, DataTablePeekField } from './types';
 
 export function getCellDisplayValue(value: unknown): string {
   if (value === null || value === undefined) {

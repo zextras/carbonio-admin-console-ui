@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ReactNode } from 'react';
+
 export type DataTableStatus = 'idle' | 'loading' | 'empty' | 'error';
 
 export type DataTableColumnMeta = {
@@ -52,6 +54,22 @@ export type DataTableCellEditCommit<TData> = {
   columnId: string;
   value: string;
   row: TData;
+};
+
+/**
+ * Inline-edit draft: the cell being edited, its current draft value and a
+ * validation error message once a commit attempt fails.
+ */
+export type DataTableEditingState = {
+  rowId: string;
+  columnId: string;
+  value: string;
+  error: string | null;
+} | null;
+
+export type DataTablePeekField = {
+  label: string;
+  value: ReactNode;
 };
 
 export type DataTableFilterOption = {
@@ -104,4 +122,10 @@ export type DataTableFilterChip = {
   label: string;
   /** Present for enum chips so a single value can be removed */
   enumValue?: string;
+  /**
+   * Raw bounds for range and date chips (`min` is the lower/from bound,
+   * `max` the upper/to bound), so the chip component can format them
+   * locale-aware; `label` remains the plain display fallback.
+   */
+  bounds?: { min?: number | string; max?: number | string };
 };
