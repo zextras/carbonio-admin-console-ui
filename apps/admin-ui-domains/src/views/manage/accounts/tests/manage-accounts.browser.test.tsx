@@ -673,4 +673,40 @@ describe('ManageAccounts (browser)', () => {
                 .toBeVisible();
         });
     });
+
+    describe('Inline display name edit', () => {
+        it('saves the display name via ModifyAccount and refreshes the list', async () => {
+            setupSearchDirectoryInterceptor([
+                buildAccount('user1@example.com', 'acc-1', { displayName: 'User One' }),
+            ]);
+            setupCountAccountInterceptor(1);
+            await setupBrowserTest(<ManageAccounts />);
+
+            await expect.element(page.getByText('User One')).toBeInTheDocument();
+
+            const modifyAccountParams = createBrowserSoapAPIInterceptor<
+                { id?: string; a?: Array<{ n: string; _content: string }> },
+                unknown
+            >('ModifyAccount', { account: [{}] });
+            setupSearchDirectoryInterceptor([
+                buildAccount('user1@example.com', 'acc-1', { displayName: 'Renamed User' }),
+            ]);
+
+            await userEvent.hover(page.getByText('User One'));
+            await userEvent.click(
+                page.getByRole('button', { name: /Edit name for user1@example.com/ }).first(),
+            );
+            const input = page.getByRole('textbox', { name: 'Name' });
+            await userEvent.clear(input);
+            await userEvent.fill(input, 'Renamed User');
+            await userEvent.keyboard('{Enter}');
+
+            const params = await modifyAccountParams;
+            expect(params.id).toBe('acc-1');
+            expect(params.a).toContainEqual({ n: 'displayName', _content: 'Renamed User' });
+
+            await expect.element(page.getByText('Display name saved: Renamed User')).toBeVisible();
+            await expect.element(page.getByText('Renamed User')).toBeVisible();
+        });
+    });
 });

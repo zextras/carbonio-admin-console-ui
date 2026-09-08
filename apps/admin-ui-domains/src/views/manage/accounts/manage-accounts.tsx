@@ -7,6 +7,8 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
   Button,
   DataTable,
+  type DataTableBulkAction,
+  type DataTableBulkActionContext,
   type DataTableColumnDef,
   type DataTableFilterDef,
   type DataTableFiltersState,
@@ -14,6 +16,7 @@ import {
   type DataTableStatus,
   ModalOverlay,
   Tooltip,
+  useSnackbar,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { useEffect, useState } from 'react';
@@ -28,9 +31,10 @@ import {
   parseAccountListDirectory,
   useAccountListDirectory,
 } from '../../../services/use-account-list-directory';
-import { useCountAccount } from '../../../services/use-count-account';
+import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
 import { getStatusDisplay } from '../../../utils/status';
 import { EditAccount } from '../../edit-account/edit-account';
+import { somethingWrongSnackbarConfig } from '../../edit-account/general-section/utils';
 import {
   AccountRowItem,
   flattenAccountAttributes,
@@ -165,6 +169,7 @@ function sortingToAccountParams(sorting: AccountSortState): {
 
 export const ManageAccounts = () => {
   const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
   const { data: domain } = useSelectedDomain();
   const domainName = domain?.name;
@@ -202,7 +207,7 @@ export const ManageAccounts = () => {
     !!domainName,
   );
 
-  const { data: totalAccountCreated } = useCountAccount(domainName);
+  const modifyAccountAttributes = useModifyAccountAttributes();
 
   useQueryErrorSnackbar(error);
 
@@ -269,6 +274,44 @@ export const ManageAccounts = () => {
     { id: 'edit', label: t('label.edit_account', 'Edit account') },
   ];
 
+  const bulkActions: Array<DataTableBulkAction> = [
+    { id: 'enable', label: t('label.enable', 'Enable'), reversible: true },
+    { id: 'disable', label: t('label.disable', 'Disable'), reversible: true },
+    { id: 'delete', label: t('label.delete', 'Delete'), danger: true },
+  ];
+
+  function handleBulkAction({
+    action,
+    selectedCount,
+  }: DataTableBulkActionContext): { undo: { message: string; onUndo: () => void } } | void {
+    const message = t('label.bulk_action_done', '{{count}} accounts: {{action}}', {
+      count: selectedCount,
+      action: action.label,
+    });
+    if (action.danger) {
+      createSnackbar({
+        key: `bulk-${action.id}`,
+        severity: 'success',
+        label: message,
+        hideButton: true,
+      });
+      return;
+    }
+    return {
+      undo: {
+        message,
+        onUndo: () => {
+          createSnackbar({
+            key: `bulk-undo-${action.id}`,
+            severity: 'info',
+            label: t('label.undone', 'Undone'),
+            hideButton: true,
+          });
+        },
+      },
+    };
+  }
+
   const columns: Array<DataTableColumnDef<AccountRowItem>> = [
     {
       id: 'name',
@@ -287,7 +330,7 @@ export const ManageAccounts = () => {
       accessorFn: (row) => (row.displayName as string | undefined) ?? '',
       header: t('label.person_name', 'Name'),
       enableSorting: true,
-      meta: { width: '15%' },
+      meta: { width: '15%', editable: true },
       cell: ({ row }) => (
         <ds-text as="span" size="small" color="gray0" weight="light">
           {(row.original.displayName as string | undefined) || '\u00a0'}
@@ -380,9 +423,6 @@ export const ManageAccounts = () => {
               </ds-text>
             </div>
             <div className={styles.headerSide}>
-              <ds-text as="p" size="medium" overflow="break-word">
-                {t('domain.accounts.totalAccounts', 'Total Accounts')} : {totalAccountCreated ?? 0}
-              </ds-text>
             </div>
             <div className={styles.headerActions}>
               <Button
@@ -517,7 +557,36 @@ export const ManageAccounts = () => {
                 rowCount={totalAccount}
                 paginationThreshold={RECORD_DISPLAY_LIMIT}
                 pageSizeOptions={[10, 25, 50, 100]}
-                enableRowSelection={false}
+                enableRowSelection
+                enableSelectAllMatching
+                totalMatchingCount={totalAccount}
+                bulkVariant="A"
+                bulkActions={bulkActions}
+                onBulkAction={handleBulkAction}
+                onCellEditCommit={({ columnId, value, row }) => {
+                  if (columnId !== 'displayName') {
+                    return;
+                  }
+                  void modifyAccountAttributes
+                    .mutateAsync({
+                      id: row.id,
+                      modifiedData: { displayName: value },
+                    })
+                    .then(() => {
+                      createSnackbar({
+                        key: `edit-display-name-${row.id}`,
+                        severity: 'success',
+                        label: t('label.display_name_saved', 'Display name saved: {{value}}', {
+                          value,
+                        }),
+                        hideButton: true,
+                      });
+                      refreshAccountList();
+                    })
+                    .catch((error: { message?: string }) => {
+                      createSnackbar(somethingWrongSnackbarConfig(error, t));
+                    });
+                }}
               />
               {showEditAccountView && (
                 <ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
