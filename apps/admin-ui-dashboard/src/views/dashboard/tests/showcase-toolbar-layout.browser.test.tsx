@@ -5,8 +5,8 @@
  */
 
 import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
-import { page } from 'vitest/browser';
 import { describe, expect, it } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { DashboardDataTableShowcase } from '../dashboard-data-table-showcase';
 

@@ -73,6 +73,6 @@ describe('DataTableHeader', () => {
 
 	it('renders a resize handle for resizable columns', async () => {
 		render(<HeaderHarness />);
-		await expect.element(page.getByRole('separator', { name: 'Resize name' })).toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'Resize name' })).toBeVisible();
 	});
 });

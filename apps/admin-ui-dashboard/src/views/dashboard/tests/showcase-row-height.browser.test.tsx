@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import { NotificationView } from '@zextras/ui-components';
-import { page } from 'vitest/browser';
+import { getQueryClient, setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it } from 'vitest';
+import { page } from 'vitest/browser';
 
 import { DashboardDataTableShowcase } from '../dashboard-data-table-showcase';
 
