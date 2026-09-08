@@ -23,13 +23,13 @@
 - Modify: `types.ts` (remove `DataTableDensity`, `DataTableEditingState`, `DataTableUndoToastState` — they move)
 - Test: `table-ui-store.test.tsx`
 
-- [ ] **Step 1: Add zustand to ui-components**
+- [x] **Step 1: Add zustand to ui-components**
 
 ```bash
 pnpm add zustand --filter @zextras/ui-components
 ```
 
-- [ ] **Step 2: Write failing test**
+- [x] **Step 2: Write failing test**
 
 `table-ui-store.test.tsx`:
 
@@ -90,12 +90,12 @@ describe('table UI store', () => {
 });
 ```
 
-- [ ] **Step 3: Run test to verify it fails**
+- [x] **Step 3: Run test to verify it fails**
 
 Run: `pnpm vitest run packages/ui-components/src/components/display/data-table/table-ui-store.test.tsx`
 Expected: FAIL — cannot resolve `./table-ui-store`
 
-- [ ] **Step 4: Implement `table-ui-store.tsx`**
+- [x] **Step 4: Implement `table-ui-store.tsx`**
 
 ```tsx
 /*
@@ -205,14 +205,15 @@ export function useTableUi<T>(selector: (state: DataTableUiState) => T): T {
 
 Note: `editing` intentionally holds only `{rowId, columnId}` — the draft value/error live inside the `InlineEdit` component (Task 3) so keystrokes never re-render the body.
 
-- [ ] **Step 5: Run test to verify it passes**
+- [x] **Step 5: Run test to verify it passes**
 
 Run: `pnpm vitest run packages/ui-components/src/components/display/data-table/table-ui-store.test.tsx`
 Expected: PASS
 
-- [ ] **Step 6: Remove moved types from `types.ts`** — delete `DataTableDensity`, `DataTableEditingState`, `DataTableUndoToastState` exports (they now come from `table-ui-store.tsx`); leave the rest untouched until Task 10.
+- [x] **Step 6: DEVIATION (per review)** — do NOT modify `types.ts` during Tasks 1–9; old orchestrator types were instead marked `@deprecated` (see commit). Original step text follows:
+    Remove moved types from `types.ts`** — delete `DataTableDensity`, `DataTableEditingState`, `DataTableUndoToastState` exports (they now come from `table-ui-store.tsx`); leave the rest untouched until Task 10.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/ui-components/src/components/display/data-table/table-ui-store.tsx packages/ui-components/src/components/display/data-table/table-ui-store.test.tsx packages/ui-components/src/components/display/data-table/types.ts packages/ui-components/package.json pnpm-lock.yaml

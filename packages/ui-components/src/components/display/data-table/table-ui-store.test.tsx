@@ -56,4 +56,19 @@ describe('table ui store', () => {
     expect(store.getState().openPanel).toBe('filters');
     expect(store.getState().selectAllMatching).toBe(true);
   });
+
+  it('updates state through the remaining slice setters', () => {
+    const store = createDataTableUiStore();
+    const onUndo = (): void => {};
+    act(() => {
+      store.getState().setEditing({ rowId: 'row-1', columnId: 'name' });
+      store.getState().announce('Copied to clipboard');
+      store.getState().setScrollEdge({ start: false, end: true });
+      store.getState().setUndoToast({ id: 1, message: 'Deleted', onUndo });
+    });
+    expect(store.getState().editing).toEqual({ rowId: 'row-1', columnId: 'name' });
+    expect(store.getState().liveMessage).toBe('Copied to clipboard');
+    expect(store.getState().scrollEdge).toEqual({ start: false, end: true });
+    expect(store.getState().undoToast).toEqual({ id: 1, message: 'Deleted', onUndo });
+  });
 });

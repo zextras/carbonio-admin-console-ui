@@ -86,11 +86,17 @@ export const TableUiProvider = ({ children }: { children: ReactNode }) => {
 export function useTableUiStore(): DataTableUiStore {
   const store = useContext(TableUiStoreContext);
   if (!store) {
-    throw new Error('useTableUi must be used within DataTableRoot');
+    throw new Error('useTableUi/useTableUiStore must be used within TableUiProvider');
   }
   return store;
 }
 
+/**
+ * Subscribe to a slice of the table UI store. Selectors must return stable
+ * references (primitives or whole state slices); constructing a new object
+ * per call (e.g. `(s) => ({ a: s.x, b: s.y })`) will re-render on every store
+ * update.
+ */
 export function useTableUi<T>(selector: (state: DataTableUiState) => T): T {
   return useStore(useTableUiStore(), selector);
 }

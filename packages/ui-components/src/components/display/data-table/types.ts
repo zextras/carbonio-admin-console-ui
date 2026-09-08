@@ -20,6 +20,10 @@ import type { DataTableFeatures } from './data-table-features';
 
 export type DataTableStatus = 'idle' | 'loading' | 'empty' | 'error';
 
+/**
+ * @deprecated Moved to `table-ui-store.tsx`; kept only for the legacy
+ * orchestrator, removed when the orchestrator is deleted.
+ */
 export type DataTableDensity = 'comfortable' | 'compact';
 
 export type DataTableColumnMeta = {
@@ -37,6 +41,11 @@ export type DataTableColumnMeta = {
   excludeFromPeek?: boolean;
 };
 
+/**
+ * @deprecated Legacy orchestrator type (carries the inline draft value).
+ * New parts use `DataTableEditingTarget` from `table-ui-store.tsx`;
+ * removed together with the orchestrator.
+ */
 export type DataTableEditingState = {
   rowId: string;
   columnId: string;
@@ -84,6 +93,10 @@ export type DataTableBulkJobState = {
   result: { ok: number; failed: number } | null;
 } | null;
 
+/**
+ * @deprecated Moved to `table-ui-store.tsx` (new shape carries an `id` so the
+ * toast remounts and its timer restarts); removed with the orchestrator.
+ */
 export type DataTableUndoToastState = {
   message: string;
   onUndo: () => void;
