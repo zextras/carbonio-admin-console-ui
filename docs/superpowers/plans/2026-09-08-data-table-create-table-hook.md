@@ -772,7 +772,7 @@ Implementation: toast keyed by `id` (incrementing counter in bulk-bar when setti
 - Modify: `apps/admin-ui-domains/src/views/global/global-domain-list/global-domain-list.tsx` (+ module css if needed)
 - Create: `apps/admin-ui-domains/src/views/global/global-domain-list/use-domain-table-state.ts`
 
-- [ ] **Step 1: Extract `use-domain-table-state.ts`** — the reset/clamp effects implementing fixes #4/#5:
+- [x] **Step 1: Extract `use-domain-table-state.ts`** — the reset/clamp effects implementing fixes #4/#5:
 
 ```ts
 export function useDomainTableState(rowCount: number) {
@@ -805,13 +805,21 @@ export function useDomainTableState(rowCount: number) {
 }
 ```
 
-- [ ] **Step 2: Rewrite the view** — same React Query usage (`useDomainSearch` + SOAP service untouched); replace `<DataTable …100 props…>` with Root + parts composition exactly like the spec's example; move English label props out (parts now i18n themselves); keep the current no-op bulk handler.
+- [x] **Step 2: Rewrite the view** — same React Query usage (`useDomainSearch` + SOAP service untouched); replace `<DataTable …100 props…>` with Root + parts composition exactly like the spec's example; move English label props out (parts now i18n themselves); keep the current no-op bulk handler.
 
-- [ ] **Step 3: Run domain tests** — `pnpm vitest run apps/admin-ui-domains` — existing unit tests for the view must still pass (update imports only).
+- [x] **Step 3: Run domain tests** — `pnpm vitest run apps/admin-ui-domains` — existing unit tests for the view must still pass (update imports only).
 
-- [ ] **Step 4: Commit** — `git commit -m "refactor(admin-ui-domains): global domain list on composable DataTable"`
+- [x] **Step 4: Commit** — `git commit -m "refactor(admin-ui-domains): global domain list on composable DataTable"`
 
 ---
+
+**Task 11 review outcomes (recorded):**
+- `use-server-table-state.ts` (apps/admin-ui-domains/src/hooks): render-time resets (repo lint forbids set-state-in-effect); `totalRowCount` option + view-side `clampPaginationToRowCount`; `initialSorting` option. Task 12 REUSES this hook with `resetKey={domainId}`.
+- BulkBar clears `selectAllMatching` when selection empties (loop-safe, tested + browser regression).
+- Clamp residual gap documented: clamped page data NOT refetched until next interaction.
+- Barrel exports already added (Task 10 only deletes legacy now). Pagination controls currently = legacy component exported as stopgap — Task 10 owes the context-connected part.
+- bulkVariant A/B toolbar-swap = view-side workaround (accepted API decision). Column helper TValue variance vs Root unknown slot — Task 10 polish.
+
 
 ### Task 12: Migrate `manage-accounts.tsx` + dead code (#1, #14) + shared helpers (#15)
 
