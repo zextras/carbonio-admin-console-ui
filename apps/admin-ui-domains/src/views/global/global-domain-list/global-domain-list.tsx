@@ -5,11 +5,14 @@
  */
 import {
   DataTable,
+  type DataTableBulkAction,
+  type DataTableBulkActionContext,
   type DataTableColumnDef,
   type DataTableFilterDef,
   type DataTableFiltersState,
   type DataTableRowAction,
   type DataTableStatus,
+  useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory, type SoapEntity, useDebouncedValue } from '@zextras/ui-shared';
 import { useState } from 'react';
@@ -65,6 +68,7 @@ function openDomainAccounts(domainId: string): void {
 
 export const GlobalDomainList = () => {
   const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
 
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(RECORD_DISPLAY_LIMIT);
@@ -105,6 +109,43 @@ export const GlobalDomainList = () => {
   const rowActions: Array<DataTableRowAction> = [
     { id: 'open', label: t('label.open_domain', 'Open domain') },
   ];
+
+  const bulkActions: Array<DataTableBulkAction> = [
+    { id: 'suspend', label: t('label.suspend', 'Suspend'), reversible: true },
+    { id: 'delete', label: t('label.delete', 'Delete'), danger: true },
+  ];
+
+  function handleBulkAction({
+    action,
+    selectedCount,
+  }: DataTableBulkActionContext): { undo: { message: string; onUndo: () => void } } | void {
+    const message = t('label.bulk_action_done', '{{count}} domains: {{action}}', {
+      count: selectedCount,
+      action: action.label,
+    });
+    if (action.danger) {
+      createSnackbar({
+        key: `bulk-domain-${action.id}`,
+        severity: 'success',
+        label: message,
+        hideButton: true,
+      });
+      return;
+    }
+    return {
+      undo: {
+        message,
+        onUndo: () => {
+          createSnackbar({
+            key: `bulk-domain-undo-${action.id}`,
+            severity: 'info',
+            label: t('label.undone', 'Undone'),
+            hideButton: true,
+          });
+        },
+      },
+    };
+  }
 
   const columns: Array<DataTableColumnDef<SoapEntity>> = [
     {
@@ -249,7 +290,12 @@ export const GlobalDomainList = () => {
             rowCount={totalDomain}
             paginationThreshold={RECORD_DISPLAY_LIMIT}
             pageSizeOptions={[10, 25, 50, 100]}
-            enableRowSelection={false}
+            enableRowSelection
+            enableSelectAllMatching
+            totalMatchingCount={totalDomain}
+            bulkVariant="A"
+            bulkActions={bulkActions}
+            onBulkAction={handleBulkAction}
           />
         </div>
       </div>
