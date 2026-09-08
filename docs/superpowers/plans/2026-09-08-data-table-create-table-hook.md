@@ -261,7 +261,7 @@ git commit -m "feat(data-table): port createTableHook binding and contexts from 
 - Create: `row-ui/selection-checkbox.tsx`, `row-ui/copy-cell.tsx`, `row-ui/inline-edit.tsx`, `row-ui/row-actions.tsx`, `row-ui/decorated-cell.tsx`
 - Source material: current `selection-checkbox.tsx`, `data-table-copy-cell.tsx`, `data-table-inline-edit.tsx`, `data-table-row-actions.tsx`, `data-table-body-cell.tsx` (carry JSX over; changes below)
 
-- [ ] **Step 1: Move + fix `selection-checkbox.tsx` → `row-ui/`**
+- [x] **Step 1: Move + fix `selection-checkbox.tsx` → `row-ui/`**
 
 Carry the component over unchanged except: add keydown stopPropagation so row-level Enter/Space cannot hijack it (fix #3):
 
@@ -280,9 +280,9 @@ Carry the component over unchanged except: add keydown stopPropagation so row-le
 </span>
 ```
 
-- [ ] **Step 2: Move + fix `copy-cell.tsx`** — carry `data-table-copy-cell.tsx`; on the trigger button add `onKeyDown={(e) => { e.stopPropagation(); }}` next to the existing `onClick` stopPropagation. Same for `row-actions.tsx` kebab button (its document-level menu keydown handler already exists at `data-table-row-actions.tsx:91-101` — keep it, it is the correct Escape pattern).
+- [x] **Step 2: Move + fix `copy-cell.tsx`** — carry `data-table-copy-cell.tsx`; on the trigger button add `onKeyDown={(e) => { e.stopPropagation(); }}` next to the existing `onClick` stopPropagation. Same for `row-actions.tsx` kebab button (its document-level menu keydown handler already exists at `data-table-row-actions.tsx:91-101` — keep it, it is the correct Escape pattern).
 
-- [ ] **Step 3: Split `inline-edit.tsx`** — carry `data-table-inline-edit.tsx` but change it to own its draft value locally (the UI store `editing` is only `{rowId, columnId}`):
+- [x] **Step 3: Split `inline-edit.tsx`** — carry `data-table-inline-edit.tsx` but change it to own its draft value locally (the UI store `editing` is only `{rowId, columnId}`):
 
 ```tsx
 export const InlineEdit = ({
@@ -302,16 +302,16 @@ export const InlineEdit = ({
 
 `onSave(value)` validates required-ness locally (reuse `validateEditValue` from `models/row-ui.ts`) and calls up; the parent `decorated-cell` invokes `onCellEditCommit`.
 
-- [ ] **Step 4: Move `decorated-cell.tsx`** — carry `data-table-body-cell.tsx` logic: pencil/copy affordances; `editable`/`copyable` come from column meta; when `editing?.rowId === row.id && editing.columnId === column.id` render `InlineEdit`. Props become `(displayValue, columnLabel, rowLabel, editable, copyable, isEditing, onStartEdit, onCommitEdit(value), onCancelEdit, onCopy, labels via i18n, children)`.
+- [x] **Step 4: Move `decorated-cell.tsx`** — carry `data-table-body-cell.tsx` logic: pencil/copy affordances; `editable`/`copyable` come from column meta; when `editing?.rowId === row.id && editing.columnId === column.id` render `InlineEdit`. Props become `(displayValue, columnLabel, rowLabel, editable, copyable, isEditing, onStartEdit, onCommitEdit(value), onCancelEdit, onCopy, labels via i18n, children)`.
 
-- [ ] **Step 5: i18n** — replace each hardcoded English string in these five files with `const { t } = useTranslation();` + `t('data_table.<key>', '<english default>')` following explore's `toolbar/pagination.tsx` pattern (keys: `save`, `cancel`, `required`, `copied_to_clipboard`, `edit`, `copy`, `row_actions`, …).
+- [x] **Step 5: i18n** — replace each hardcoded English string in these five files with `const { t } = useTranslation();` + `t('data_table.<key>', '<english default>')` following explore's `toolbar/pagination.tsx` pattern (keys: `save`, `cancel`, `required`, `copied_to_clipboard`, `edit`, `copy`, `row_actions`, …).
 
-- [ ] **Step 6: Lint + type-check**
+- [x] **Step 6: Lint + type-check**
 
 Run: `pnpm lint -- --filter @zextras/ui-components && pnpm -F @zextras/ui-components exec tsc --noEmit`
 Expected: clean
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/ui-components/src/components/display/data-table/row-ui/
@@ -319,6 +319,12 @@ git commit -m "feat(data-table): row-ui primitives with local edit state and key
 ```
 
 ---
+
+**Tracked follow-ups from review (do in later tasks):**
+- Row-actions menu keyboard navigation (roving arrows, focus into menu on open, focus restore) — legacy behavior, not a regression; defer to a dedicated a11y follow-up after Task 13
+- Rename `.tdActionsMenuOpen` CSS class to `.rowActionsMenuOpen` on next CSS touch
+- Repoint `validateEditValue` import from `../data-table-row-chrome` to `models/row-ui.ts` when Task 5 lands the models
+
 
 ### Task 4: Table parts (header, body, footer, states, live region)
 
