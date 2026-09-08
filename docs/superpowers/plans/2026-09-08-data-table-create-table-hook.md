@@ -582,11 +582,11 @@ git commit -m "feat(data-table): DataTableRoot compound shell on createTableHook
 - Create: `toolbar/toolbar.tsx`, `toolbar/search.tsx`, `toolbar/filters.tsx`, `toolbar/customize.tsx`, `toolbar/filter-chips.tsx`
 - Source material: `data-table-toolbar.tsx`, `data-table-filters-panel.tsx`, `data-table-customize-panel.tsx`, `data-table-filter-chips.tsx`
 
-- [ ] **Step 1: `toolbar/toolbar.tsx`** — plain layout `<div className={styles.toolbarWrap}>{children}</div>`.
+- [x] **Step 1: `toolbar/toolbar.tsx`** — plain layout `<div className={styles.toolbarWrap}>{children}</div>`.
 
-- [ ] **Step 2: `toolbar/search.tsx`** — carries search input; **local input state**, pushing via `onSearchChange` prop on change; hides when `!enableSearch` (render decision belongs to the composing view, so the part itself never takes an `isVisible` flag — the view just doesn't render it). Subscribes to nothing (value comes from prop).
+- [x] **Step 2: `toolbar/search.tsx`** — carries search input; **local input state**, pushing via `onSearchChange` prop on change; hides when `!enableSearch` (render decision belongs to the composing view, so the part itself never takes an `isVisible` flag — the view just doesn't render it). Subscribes to nothing (value comes from prop).
 
-- [ ] **Step 3: `toolbar/filters.tsx`** — button + panel:
+- [x] **Step 3: `toolbar/filters.tsx`** — button + panel:
 
 ```tsx
 export const DataTableFilters = <TData extends RowData,>({
@@ -606,13 +606,20 @@ export const DataTableFilters = <TData extends RowData,>({
 
 Draft state lives here (part-local). The mutual exclusion with customize comes free from `openPanel`. All labels i18n'd.
 
-- [ ] **Step 4: `toolbar/customize.tsx`** — same shape: `openPanel === 'customize'`, `useId()`, carries density + column order/visibility UI; writes go to `table.setColumnVisibility/setColumnOrder` (via `useDataTableContext`) and `setDensity` to the UI store. Reset button uses `models/customize-model.ts` helpers.
+- [x] **Step 4: `toolbar/customize.tsx`** — same shape: `openPanel === 'customize'`, `useId()`, carries density + column order/visibility UI; writes go to `table.setColumnVisibility/setColumnOrder` (via `useDataTableContext`) and `setDensity` to the UI store. Reset button uses `models/customize-model.ts` helpers.
 
-- [ ] **Step 5: `toolbar/filter-chips.tsx`** — carries `data-table-filter-chips.tsx`; chips from `models/filter-model.ts` `buildFilterChips(filters, filterDefs)`; remove chip / clear all call `onFiltersChange` + `onApplyResetSelection()` (view supplies the reset — this is where #4's contract is enforced; see Task 12).
+- [x] **Step 5: `toolbar/filter-chips.tsx`** — carries `data-table-filter-chips.tsx`; chips from `models/filter-model.ts` `buildFilterChips(filters, filterDefs)`; remove chip / clear all call `onFiltersChange` + `onApplyResetSelection()` (view supplies the reset — this is where #4's contract is enforced; see Task 12).
 
-- [ ] **Step 6: Lint + type-check + commit** — `git commit -m "feat(data-table): composable toolbar parts with instance-scoped panel ids"`
+- [x] **Step 6: Lint + type-check + commit** — `git commit -m "feat(data-table): composable toolbar parts with instance-scoped panel ids"`
 
 ---
+
+**Task 7 review outcomes (recorded):**
+- Chip numeric bounds format with the APP language (`i18n.resolvedLanguage ?? i18n.language`), not browser locale. Dates fall back to model labels (documented limitation).
+- Multi-instance + isolation probe tests lock #11 and the "typing/opening re-renders only the part" contract. Probes increment in `useEffect` and must be named without the substring "render" (lint quirk — relevant for Task 13).
+- Task 12 views MUST echo `onSearchChange` into their `value` state for programmatic resets to reach the input (key-remount is the escape hatch).
+- Deferred (tracked a11y follow-up): Escape-to-close + focus management on filters/customize dialogs.
+
 
 ### Task 8: Bulk parts (bar, select-all-matching, confirm #7, undo #6/#8, job)
 
