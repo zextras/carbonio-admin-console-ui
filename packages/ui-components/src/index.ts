@@ -105,6 +105,28 @@ export {
   type THeaderProps,
   type TRow,
 } from './components/display/Table';
+export {
+  DataTable,
+  dataTableFeatures,
+  type DataTableCellEditCommit,
+  type DataTableColumnDef,
+  type DataTableColumnMeta,
+  type DataTableDateFilterValue,
+  type DataTableDensity,
+  type DataTableEditingState,
+  type DataTableEnumFilterValue,
+  type DataTableFeatures,
+  type DataTableFilterChip,
+  type DataTableFilterDef,
+  type DataTableFilterOption,
+  type DataTableFiltersState,
+  type DataTableFilterValue,
+  type DataTablePeekField,
+  type DataTableProps,
+  type DataTableRangeFilterValue,
+  type DataTableRowAction,
+  type DataTableStatus,
+} from './components/display/data-table';
 export * from './components/display/Tooltip';
 
 /** Feedback components */
