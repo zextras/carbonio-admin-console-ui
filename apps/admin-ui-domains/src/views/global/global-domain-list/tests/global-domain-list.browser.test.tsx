@@ -68,9 +68,11 @@ function interceptDynamicDomains(
   worker.use(
     http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
       const body = await request.clone().json();
-      const params = (body as any).Body?.SearchDirectoryRequest ?? {};
+      const params =
+        (body as { Body?: { SearchDirectoryRequest?: SearchDirectoryParams } }).Body
+          ?.SearchDirectoryRequest ?? {};
       return HttpResponse.json({
-        Body: { SearchDirectoryResponse: handler(params as SearchDirectoryParams) },
+        Body: { SearchDirectoryResponse: handler(params) },
       });
     }),
   );
@@ -237,25 +239,40 @@ describe('GlobalDomainList (browser)', () => {
   });
 
   describe('Navigation', () => {
-    it('navigates to domain details when clicking a domain row', async () => {
+    it('navigates to domain details from peek Open domain', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
       setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
 
       await page.getByText('example.com').click();
+      await expect
+        .element(page.getByRole('complementary', { name: 'Details: example.com' }))
+        .toBeVisible();
+      await page.getByRole('button', { name: 'Open domain' }).click();
+
+      expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/accounts');
+    });
+
+    it('navigates to domain details from row actions', async () => {
+      interceptDomains(SAMPLE_DOMAINS, 2);
+      setup(<GlobalDomainList />);
+
+      await expect.element(page.getByText('example.com')).toBeVisible();
+      await page.getByRole('button', { name: /Actions for example.com/ }).click();
+      await page.getByRole('menuitem', { name: 'Open domain' }).click();
 
       expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/accounts');
     });
   });
 
   describe('Pagination', () => {
-    it('shows pagination footer when domains exist', async () => {
+    it('shows a result count when below the pagination threshold', async () => {
       interceptDomains(SAMPLE_DOMAINS, 2);
       setup(<GlobalDomainList />);
 
       await expect.element(page.getByText('example.com')).toBeVisible();
-      await expect.element(page.getByText(/of \d+/)).toBeVisible();
+      await expect.element(page.getByText('2 results')).toBeVisible();
     });
 
     it('loads next page of domains when clicking next page', async () => {
@@ -277,7 +294,7 @@ describe('GlobalDomainList (browser)', () => {
 
       await expect.element(page.getByText('alpha-1.com')).toBeVisible();
 
-      await page.getByTestId('next-page').click();
+      await page.getByRole('button', { name: 'Next page' }).click();
 
       await expect.element(page.getByText('beta-11.com')).toBeVisible();
     }, 15_000);
