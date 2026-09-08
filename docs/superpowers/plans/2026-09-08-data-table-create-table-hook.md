@@ -228,7 +228,7 @@ git commit -m "feat(data-table): add per-instance table UI store for cross-part 
 - Create: `create-data-table.ts`, `data-table-contexts.tsx`
 - Modify: `data-table-features.ts` (no change expected — already `tableFeatures({...})`; verify it compiles with `createTableHook`)
 
-- [ ] **Step 1: Port the two files verbatim from `tanstack-table-explore`**
+- [x] **Step 1: Port the two files verbatim from `tanstack-table-explore`**
 
 ```bash
 git show tanstack-table-explore:packages/ui-components/src/components/display/data-table/create-data-table.tsx > packages/ui-components/src/components/display/data-table/create-data-table.ts
@@ -237,16 +237,16 @@ git show tanstack-table-explore:packages/ui-components/src/components/display/da
 
 Both files are self-contained (verified: `create-data-table.tsx` imports only `@tanstack/react-table` + `./data-table-contexts` + `./features`; the current branch's features file is named `data-table-features.ts`, so fix that one import to `'./data-table-features'` and drop the `DataTableColumnMeta` import if unused). Fix SPDX year to 2026 if stale; fix indentation to tabs if the file arrived with tabs (explore uses tabs — this branch uses tabs too, keep as-is).
 
-- [ ] **Step 2: Verify exports**
+- [x] **Step 2: Verify exports**
 
 `create-data-table.ts` must export `useDataTable`, `createDataTableColumnHelper`; `data-table-contexts.tsx` must export `dataTableContexts`, `useDataTableContext`.
 
-- [ ] **Step 3: Type-check**
+- [x] **Step 3: Type-check**
 
 Run: `pnpm type-check -- --filter @zextras/ui-components 2>&1 | tail -5` (or `pnpm -F @zextras/ui-components exec tsc --noEmit`)
 Expected: no errors in the data-table directory (old orchestrator still compiles on its own).
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 git add packages/ui-components/src/components/display/data-table/create-data-table.ts packages/ui-components/src/components/display/data-table/data-table-contexts.tsx
