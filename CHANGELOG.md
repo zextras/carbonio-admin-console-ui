@@ -1,3 +1,9 @@
+## [0.19.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.0...v0.19.1) (2026-09-08)
+
+### Bug Fixes
+
+* update input names and add autoComplete for LDAP and verification sections ([#1371](https://github.com/zextras/carbonio-admin-console-ui/issues/1371)) ([7e28c3c](https://github.com/zextras/carbonio-admin-console-ui/commit/7e28c3c4a9f3c787c477e3543c3a1de3f29e5f76))
+
 ## [0.19.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.18.0...v0.19.0) (2026-09-03)
 
 ### Features
