@@ -37,3 +37,12 @@ export const ROW_MODEL_SLICES = (state: DataTableState) =>
  */
 export const COLUMN_LAYOUT_SLICES = (state: DataTableState) =>
   [state.columnOrder, state.columnVisibility, state.sorting, state.columnPinning] as const;
+
+/**
+ * State slices that change the horizontal scroll layout: hidden, reordered
+ * or re-pinned columns can turn overflow on or off without a scroll event
+ * ever firing. Consumed by the scroll-edge re-measure effect in the table
+ * part.
+ */
+export const SCROLL_LAYOUT_SLICES = (state: DataTableState) =>
+  [state.columnVisibility, state.columnOrder, state.columnPinning] as const;

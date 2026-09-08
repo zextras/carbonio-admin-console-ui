@@ -17,6 +17,7 @@ import type {
 } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from './create-data-table';
 import styles from './data-table.module.css';
@@ -31,6 +32,7 @@ import { getCellDisplayValue } from './models/row-ui';
 import type { DataTableRowAction, DataTableState } from './models/types';
 import { DataTableRowActions } from './row-ui/row-actions';
 import { SelectionCheckbox } from './row-ui/selection-checkbox';
+import { type DataTableTableConfig, TableConfigProvider } from './table-config-context';
 import { TableUiProvider, useTableUi } from './table-ui-store';
 import type { DataTableColumnDef, DataTableColumnMeta } from './types';
 
@@ -63,6 +65,12 @@ export type DataTableRootProps<TData extends RowData> = {
   searchColumnIds?: Array<string>;
   /** Column id to pin sticky on the left (identity / primary column). */
   primaryColumnId?: string;
+  /**
+   * Controlled table state slices. NOTE: `columnPinning` is derived from the
+   * selection/actions/primary configuration and is Root-owned — a consumer
+   * supplied `columnPinning` is ignored, and parts must not call pinning
+   * APIs (layout pinning is Root's responsibility).
+   */
   state?: Partial<DataTableState>;
   initialState?: Partial<DataTableState>;
   onSortingChange?: OnChangeFn<SortingState>;
@@ -99,7 +107,10 @@ function defaultGetRowId<TData extends RowData>(row: TData, index: number): stri
   return id != null ? String(id) : String(index);
 }
 
-function buildSelectColumn<TData extends RowData>(): DataTableColumnDef<TData> {
+function buildSelectColumn<TData extends RowData>(options: {
+  selectAllLabel: string;
+  selectRowLabel: string;
+}): DataTableColumnDef<TData> {
   return {
     id: SELECT_COLUMN_ID,
     enableSorting: false,
@@ -107,7 +118,7 @@ function buildSelectColumn<TData extends RowData>(): DataTableColumnDef<TData> {
     enableHiding: false,
     header: ({ table }) => (
       <SelectionCheckbox
-        aria-label="Select all rows on this page"
+        aria-label={options.selectAllLabel}
         checked={table.getIsAllPageRowsSelected()}
         indeterminate={table.getIsSomePageRowsSelected()}
         onChange={table.getToggleAllPageRowsSelectedHandler()}
@@ -115,7 +126,7 @@ function buildSelectColumn<TData extends RowData>(): DataTableColumnDef<TData> {
     ),
     cell: ({ row }) => (
       <SelectionCheckbox
-        aria-label="Select row"
+        aria-label={options.selectRowLabel}
         checked={row.getIsSelected()}
         disabled={!row.getCanSelect()}
         onChange={row.getToggleSelectedHandler()}
@@ -172,7 +183,10 @@ function buildActionsColumn<TData extends RowData>(options: {
     enableSorting: false,
     enableColumnFilter: false,
     enableHiding: false,
-    header: () => <span className={styles.actionsHeaderLabel}>{options.headerLabel}</span>,
+    header: () =>
+      options.headerLabel === '' ? null : (
+        <span className={styles.actionsHeaderLabel}>{options.headerLabel}</span>
+      ),
     cell: ({ row }) => (
       <RowActionsCell
         row={row.original}
@@ -188,19 +202,24 @@ function buildActionsColumn<TData extends RowData>(options: {
  * Merges internally derived state slices with consumer-controlled ones.
  * Entries with an `undefined` value are dropped so their table-internal atoms
  * stay the uncontrolled owners (an explicit `undefined` would otherwise reset
- * the slice to `initialState` on every commit). Consumer values win.
+ * the slice to `initialState` on every commit). Consumer values win, except
+ * for `reservedKeys`, whose internally derived value is Root-owned and cannot
+ * be overridden.
  */
 function mergeStateOptions(
   internal: Partial<DataTableState>,
   consumer: Partial<DataTableState> | undefined,
+  reservedKeys: Array<keyof DataTableState> = [],
 ): Partial<DataTableState> {
   const merged: Record<string, unknown> = { ...internal };
+  const reserved = new Set<string>(reservedKeys);
   const consumerRecord = consumer as Record<string, unknown> | undefined;
   if (consumerRecord) {
     Object.keys(consumerRecord).forEach((key) => {
-      if (consumerRecord[key] !== undefined) {
-        merged[key] = consumerRecord[key];
+      if (reserved.has(key) || consumerRecord[key] === undefined) {
+        return;
       }
+      merged[key] = consumerRecord[key];
     });
   }
   return merged as Partial<DataTableState>;
@@ -212,6 +231,12 @@ function mergeStateOptions(
  * feature-installed default (`makeStateUpdater`, which writes the table's
  * internal atoms) and break the uncontrolled backing. Omitting the key keeps
  * that default; a consumer-provided handler still wins.
+ *
+ * Caveat: keys are omitted rather than written as `undefined`, so a handler
+ * that disappears between renders (defined → undefined) leaves the previous
+ * merge's value in place — the shallow merge retains earlier keys. Toggling
+ * handlers mid-lifetime is therefore not supported; keep each handler prop
+ * consistently defined or consistently absent.
  */
 function stripUndefinedKeys<T extends Record<string, unknown>>(options: T): T {
   const defined: Record<string, unknown> = {};
@@ -250,6 +275,7 @@ const DataTableRootShell = <TData extends RowData>({
   primaryColumnId: primaryColumnIdProp,
   children,
 }: DataTableRootProps<TData>) => {
+  const { t } = useTranslation();
   const density = useTableUi((s) => s.density);
   const peekOpen = useTableUi((s) => s.peekRowId !== null);
 
@@ -277,6 +303,13 @@ const DataTableRootShell = <TData extends RowData>({
     return resolvedGetRowId(row, 0);
   }
 
+  const tableConfig: DataTableTableConfig<TData> = {
+    primaryColumnId,
+    enableRowSelection,
+    columns,
+    getRowLabel: resolveRowLabel,
+  };
+
   const actionsColumn = enableRowActions
     ? buildActionsColumn<TData>({
         actions: resolvedRowActions,
@@ -290,7 +323,13 @@ const DataTableRootShell = <TData extends RowData>({
 
   let tableColumns: Array<DataTableColumnDef<TData>> = columns;
   if (enableRowSelection) {
-    tableColumns = [buildSelectColumn<TData>(), ...tableColumns];
+    tableColumns = [
+      buildSelectColumn<TData>({
+        selectAllLabel: t('data_table.select_all_page', 'Select all rows on this page'),
+        selectRowLabel: t('data_table.select_row', 'Select row'),
+      }),
+      ...tableColumns,
+    ];
   }
   if (actionsColumn) {
     tableColumns = [...tableColumns, actionsColumn];
@@ -310,7 +349,14 @@ const DataTableRootShell = <TData extends RowData>({
 
   const resolvedRowCount = manualFiltering ? rowCountProp ?? data.length : undefined;
 
-  const table = useDataTable<TData, ColumnPinningState>(
+  // No narrow selector: Root renders no table state of its own, and the former
+  // `state.columnPinning` subscription produced no render output — its only
+  // effect was reverting out-of-contract internal pinning writes. Pinning
+  // stays derived in the controlled `state` merge below: it is re-published
+  // (and any internal write reverted) on every Root render, which is
+  // acceptable because layout pinning is Root-owned — parts must not call
+  // pinning APIs (see the `state` prop JSDoc).
+  const table = useDataTable<TData>(
     stripUndefinedKeys({
       data,
       columns: tableColumns,
@@ -332,7 +378,7 @@ const DataTableRootShell = <TData extends RowData>({
         }
         return true;
       },
-      state: mergeStateOptions({ columnPinning }, stateProp),
+      state: mergeStateOptions({ columnPinning }, stateProp, ['columnPinning']),
       initialState: mergeStateOptions({ columnOrder: defaultColumnOrder }, initialStateProp),
       onSortingChange,
       onPaginationChange,
@@ -340,7 +386,6 @@ const DataTableRootShell = <TData extends RowData>({
       onColumnVisibilityChange,
       onColumnOrderChange,
     }),
-    (state) => state.columnPinning,
   );
 
   return (
@@ -352,7 +397,9 @@ const DataTableRootShell = <TData extends RowData>({
       )}
       data-density={density}
     >
-      <table.AppTable>{children}</table.AppTable>
+      <TableConfigProvider value={tableConfig}>
+        <table.AppTable>{children}</table.AppTable>
+      </TableConfigProvider>
     </div>
   );
 };

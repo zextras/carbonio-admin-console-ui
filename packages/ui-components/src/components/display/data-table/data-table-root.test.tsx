@@ -8,6 +8,7 @@ import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { DataTableRoot } from './data-table-root';
+import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
 import { DataTableTable } from './table';
 import type { DataTableColumnDef, DataTableRowAction } from './types';
 
@@ -48,6 +49,8 @@ type RootHarnessProps = {
   rowActions?: Array<DataTableRowAction>;
   getRowLabel?: (row: TestRow) => string;
   manualSorting?: boolean;
+  /** Explicit DataTableTable override of the config published by Root. */
+  tableEnableRowSelection?: boolean;
 };
 
 function RootHarness({
@@ -55,6 +58,7 @@ function RootHarness({
   rowActions: rowActionsProp,
   getRowLabel,
   manualSorting = true,
+  tableEnableRowSelection,
 }: RootHarnessProps) {
   return (
     <DataTableRoot<TestRow>
@@ -66,17 +70,20 @@ function RootHarness({
       getRowLabel={getRowLabel}
       manualSorting={manualSorting}
     >
-      <DataTableTable<TestRow>
-        aria-label="People"
-        columns={columns}
-        enableRowSelection={enableRowSelection}
-      />
+      {/* Deliberately omits enableRowSelection/columns/getRowLabel so the
+          config published by Root is what reaches the table part. */}
+      <DataTableTable<TestRow> aria-label="People" enableRowSelection={tableEnableRowSelection} />
     </DataTableRoot>
   );
 }
 
 function firstBodyCell(): string {
   return screen.getAllByRole('cell')[0]?.textContent ?? '';
+}
+
+/** Cells of the first body row: [select?] name, email [, actions?]. */
+function bodyCells(): Array<HTMLElement> {
+  return screen.getAllByRole('cell');
 }
 
 describe('DataTableRoot + DataTableTable shell', () => {
@@ -94,6 +101,28 @@ describe('DataTableRoot + DataTableTable shell', () => {
     render(<RootHarness enableRowSelection />);
     expect(screen.getByLabelText('Select all rows on this page')).toBeTruthy();
     expect(screen.getAllByLabelText('Select row')).toHaveLength(3);
+  });
+
+  it('applies the primary column offset from the published config', () => {
+    render(<RootHarness enableRowSelection />);
+    // Config flows: Table omits enableRowSelection, yet the select column is
+    // rendered AND the pinned primary cell shifts by the select column width.
+    expect(screen.getAllByLabelText('Select row')).toHaveLength(3);
+    const cells = bodyCells();
+    expect(cells).toHaveLength(9); // [select, name, email] × 3 rows
+    const primaryCell = cells[1];
+    expect(primaryCell.style.left).toBe(PRIMARY_COLUMN_OFFSET);
+    expect(primaryCell.textContent).toBe('Carol');
+  });
+
+  it('lets an explicit DataTableTable prop override the published config', () => {
+    render(<RootHarness enableRowSelection tableEnableRowSelection={false} />);
+    // The select column still exists (Root injected it into the table
+    // instance), but the offset prop no longer shifts the primary column.
+    const cells = bodyCells();
+    const primaryCell = cells[1];
+    expect(primaryCell.style.left).not.toBe(PRIMARY_COLUMN_OFFSET);
+    expect(primaryCell.style.left).toBe('0px');
   });
 
   it('omits the selection column by default', () => {
@@ -118,6 +147,9 @@ describe('DataTableRoot + DataTableTable shell', () => {
     render(<RootHarness rowActions={rowActions} getRowLabel={(row) => row.email} />);
     expect(screen.getByRole('button', { name: 'Actions for alice@example.com' })).toBeTruthy();
     expect(screen.queryByRole('button', { name: /^Actions for (Carol|Alice|Bob)$/ })).toBeNull();
+    // The same resolver reaches the body through the published config, so
+    // inline-edit affordances are labelled with the view-supplied row label.
+    expect(screen.getByRole('button', { name: 'Edit email for carol@example.com' })).toBeTruthy();
   });
 
   it('reorders rows when a sortable header is clicked in client mode', () => {
