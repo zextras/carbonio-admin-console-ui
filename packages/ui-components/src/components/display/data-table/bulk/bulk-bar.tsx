@@ -155,6 +155,7 @@ export const DataTableBulkBar = <TData extends RowData>({
   const undoToast = useTableUi((s) => s.undoToast);
   const [pendingConfirm, setPendingConfirm] = useState<DataTableBulkAction | null>(null);
   const undoIdRef = useRef(0);
+  const busyRef = useRef(false);
 
   const resolvedActions = actions ?? [];
   const labels = {
@@ -191,32 +192,50 @@ export const DataTableBulkBar = <TData extends RowData>({
   }
 
   async function executeBulkAction(action: DataTableBulkAction): Promise<void> {
-    const selectAll = uiStore.getState().selectAllMatching;
-    const selectedRowIds = selectAll ? [] : selectedRowIdsFromState(table.atoms.rowSelection.get());
-    const result = await onBulkAction?.({
-      action,
-      selectedRowIds,
-      selectAllMatching: selectAll,
-      selectedCount: selectAll ? currentTotalMatching() : selectedRowIds.length,
-    });
-    if (result?.undo) {
-      undoIdRef.current += 1;
-      uiStore.getState().setUndoToast({
-        id: undoIdRef.current,
-        message: result.undo.message,
-        onUndo: () => {
-          result.undo?.onUndo();
-          uiStore.getState().setUndoToast(null);
-          uiStore.getState().announce(t('data_table.undone', 'Undone'));
-        },
+    busyRef.current = true;
+    try {
+      const selectAll = uiStore.getState().selectAllMatching;
+      const selectedRowIds = selectAll
+        ? []
+        : selectedRowIdsFromState(table.atoms.rowSelection.get());
+      const result = await onBulkAction?.({
+        action,
+        selectedRowIds,
+        selectAllMatching: selectAll,
+        selectedCount: selectAll ? currentTotalMatching() : selectedRowIds.length,
       });
-    }
-    if (!bulkJob) {
-      clearSelection();
+      if (result?.undo) {
+        undoIdRef.current += 1;
+        uiStore.getState().setUndoToast({
+          id: undoIdRef.current,
+          message: result.undo.message,
+          onUndo: () => {
+            result.undo?.onUndo();
+            uiStore.getState().setUndoToast(null);
+            uiStore.getState().announce(t('data_table.undone', 'Undone'));
+          },
+        });
+      }
+      if (!bulkJob) {
+        clearSelection();
+      }
+    } catch (error) {
+      // A rejecting consumer handler must not surface as an unhandled
+      // rejection: log it, tell the user, and keep the selection so the
+      // action can be retried.
+      console.error(error);
+      uiStore
+        .getState()
+        .announce(t('data_table.bulk_action_failed', 'The action failed. Please try again.'));
+    } finally {
+      busyRef.current = false;
     }
   }
 
   function handleBulkAction(action: DataTableBulkAction): void {
+    if (busyRef.current) {
+      return;
+    }
     if (action.danger || action.requireConfirm) {
       setPendingConfirm(action);
       return;

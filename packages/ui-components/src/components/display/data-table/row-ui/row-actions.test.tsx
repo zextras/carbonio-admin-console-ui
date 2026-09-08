@@ -5,9 +5,10 @@
  */
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { TableUiProvider, useTableUi } from '../table-ui-store';
 import type { DataTableRowAction } from '../types';
 import { DataTableRowActions } from './row-actions';
 
@@ -60,12 +61,25 @@ const RowActionsHarness = ({ onSelect }: RowActionsHarnessProps) => {
 
 function setupRowActions() {
   const onSelect = vi.fn();
-  render(<RowActionsHarness onSelect={onSelect} />);
+  render(
+    <TableUiProvider>
+      <RowActionsHarness onSelect={onSelect} />
+    </TableUiProvider>,
+  );
   return { onSelect };
 }
 
 function getKebab(): HTMLElement {
   return screen.getByRole('button', { name: 'Actions for Row 1' });
+}
+
+/** Publishes a modal flag into the UI store, like an open confirm dialog. */
+function ModalFlag({ value }: { value: boolean }) {
+  const setModalOpen = useTableUi((s) => s.setModalOpen);
+  useEffect(() => {
+    setModalOpen(value);
+  }, [setModalOpen, value]);
+  return null;
 }
 
 describe('DataTableRowActions', () => {
@@ -97,6 +111,40 @@ describe('DataTableRowActions', () => {
     expect(onSelect).toHaveBeenCalledWith(
       expect.objectContaining({ id: 'delete', label: 'Delete', danger: true }),
     );
+    await waitFor(() => {
+      expect(screen.queryByRole('menu')).toBeNull();
+    });
+  });
+
+  it('keeps the menu open on Escape while a modal is open', async () => {
+    render(
+      <TableUiProvider>
+        <RowActionsHarness onSelect={vi.fn()} />
+        <ModalFlag value />
+      </TableUiProvider>,
+    );
+    fireEvent.click(getKebab());
+    await screen.findByRole('menu');
+    fireEvent.keyDown(getKebab(), { key: 'Escape' });
+    expect(screen.getByRole('menu')).toBeTruthy();
+  });
+
+  it('closes the menu on Escape once the modal is gone', async () => {
+    const { rerender } = render(
+      <TableUiProvider>
+        <RowActionsHarness onSelect={vi.fn()} />
+        <ModalFlag value />
+      </TableUiProvider>,
+    );
+    fireEvent.click(getKebab());
+    await screen.findByRole('menu');
+    rerender(
+      <TableUiProvider>
+        <RowActionsHarness onSelect={vi.fn()} />
+        <ModalFlag value={false} />
+      </TableUiProvider>,
+    );
+    fireEvent.keyDown(getKebab(), { key: 'Escape' });
     await waitFor(() => {
       expect(screen.queryByRole('menu')).toBeNull();
     });

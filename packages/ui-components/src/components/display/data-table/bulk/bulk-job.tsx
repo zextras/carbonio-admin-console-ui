@@ -87,7 +87,10 @@ export const DataTableBulkJob = ({
     <div className={styles.bulkJob}>
       <div role="status" className={styles.bulkJobResult}>
         <span>
-          ✓ {job.result.ok.toLocaleString(locale)} succeeded · {job.result.failed} failed
+          {t('data_table.job_result', '✓ {{ok}} succeeded · {{failed}} failed', {
+            ok: job.result.ok.toLocaleString(locale),
+            failed: job.result.failed.toLocaleString(locale),
+          })}
         </span>
         {job.result.failed > 0 && (
           <button type="button" className={styles.bulkJobRetry} onClick={onRetryFailed}>

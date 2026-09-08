@@ -7,6 +7,7 @@
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { TableUiProvider } from '../table-ui-store';
 import { DataTableConfirmDialog } from './confirm-dialog';
 
 const dialogProps = {
@@ -22,14 +23,18 @@ function FocusHarness({ open }: { open: boolean }) {
   return (
     <>
       <button type="button">Trigger</button>
-      {open && <DataTableConfirmDialog {...dialogProps} />}
+      <TableUiProvider>{open && <DataTableConfirmDialog {...dialogProps} />}</TableUiProvider>
     </>
   );
 }
 
 describe('DataTableConfirmDialog', () => {
   it('renders a modal dialog named by its title', () => {
-    render(<DataTableConfirmDialog {...dialogProps} />);
+    render(
+      <TableUiProvider>
+        <DataTableConfirmDialog {...dialogProps} />
+      </TableUiProvider>,
+    );
     expect(screen.getByRole('dialog', { name: 'Are you sure?' })).toBeTruthy();
     expect(screen.getByText('Delete 3 items? This cannot be undone.')).toBeTruthy();
   });
@@ -46,13 +51,21 @@ describe('DataTableConfirmDialog', () => {
   });
 
   it('cancels on Escape at the document level (no focus needed)', () => {
-    render(<DataTableConfirmDialog {...dialogProps} />);
+    render(
+      <TableUiProvider>
+        <DataTableConfirmDialog {...dialogProps} />
+      </TableUiProvider>,
+    );
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(dialogProps.onCancel).toHaveBeenCalledTimes(1);
   });
 
   it('cancels on backdrop press but not on dialog content interaction', () => {
-    render(<DataTableConfirmDialog {...dialogProps} />);
+    render(
+      <TableUiProvider>
+        <DataTableConfirmDialog {...dialogProps} />
+      </TableUiProvider>,
+    );
     const dialog = screen.getByRole('dialog');
     fireEvent.click(dialog);
     fireEvent.pointerDown(dialog);
@@ -65,7 +78,11 @@ describe('DataTableConfirmDialog', () => {
   });
 
   it('cycles focus between the two actions with Tab/Shift+Tab', () => {
-    render(<DataTableConfirmDialog {...dialogProps} />);
+    render(
+      <TableUiProvider>
+        <DataTableConfirmDialog {...dialogProps} />
+      </TableUiProvider>,
+    );
     const cancel = screen.getByRole('button', { name: 'Cancel' });
     const confirm = screen.getByRole('button', { name: 'Confirm' });
     cancel.focus();
@@ -76,7 +93,11 @@ describe('DataTableConfirmDialog', () => {
   });
 
   it('invokes the matching handler on button click', () => {
-    render(<DataTableConfirmDialog {...dialogProps} />);
+    render(
+      <TableUiProvider>
+        <DataTableConfirmDialog {...dialogProps} />
+      </TableUiProvider>,
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Confirm' }));
     expect(dialogProps.onConfirm).toHaveBeenCalledTimes(1);
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));

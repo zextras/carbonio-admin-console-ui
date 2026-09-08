@@ -7,6 +7,7 @@
 import { useEffect, useId, useRef } from 'react';
 
 import styles from '../data-table.module.css';
+import { useTableUi } from '../table-ui-store';
 
 export type DataTableConfirmDialogProps = {
   title: string;
@@ -42,9 +43,11 @@ function cycleTabFocus(
  * handled at the DOCUMENT level so it works no matter where focus sits
  * (the legacy overlay-only handler missed keys outside the overlay);
  * backdrop dismissal is a document-level press whose target is the overlay
- * itself, so the non-interactive elements carry no handlers. Focus starts
- * on the safe action (cancel) and is restored to the previously focused
- * element on close.
+ * itself, so the non-interactive elements carry no handlers. While open,
+ * the modal flag in the UI store makes sibling document-level handlers
+ * (peek navigation, row action menus) bail out so Escape acts only here.
+ * Focus starts on the safe action (cancel) and is restored to the
+ * previously focused element on close.
  */
 export const DataTableConfirmDialog = ({
   title,
@@ -59,15 +62,26 @@ export const DataTableConfirmDialog = ({
   const cancelRef = useRef<HTMLButtonElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<Element | null>(null);
+  const onCancelRef = useRef(onCancel);
+  const onConfirmRef = useRef(onConfirm);
+  const setModalOpen = useTableUi((s) => s.setModalOpen);
+
+  // Latest-callback refs: the document listeners below read through them,
+  // so their setup runs once and never re-binds on parent re-renders.
+  useEffect(() => {
+    onCancelRef.current = onCancel;
+    onConfirmRef.current = onConfirm;
+  });
 
   useEffect(() => {
     const overlay = overlayRef.current;
     previouslyFocused.current = document.activeElement;
     cancelRef.current?.focus();
+    setModalOpen(true);
     function handleKeyDown(event: KeyboardEvent): void {
       if (event.key === 'Escape') {
         event.stopPropagation();
-        onCancel();
+        onCancelRef.current();
         return;
       }
       if (event.key === 'Tab') {
@@ -76,7 +90,7 @@ export const DataTableConfirmDialog = ({
     }
     function handlePointerDown(event: PointerEvent): void {
       if (event.target === overlay) {
-        onCancel();
+        onCancelRef.current();
       }
     }
     document.addEventListener('keydown', handleKeyDown);
@@ -84,11 +98,12 @@ export const DataTableConfirmDialog = ({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
       document.removeEventListener('pointerdown', handlePointerDown);
+      setModalOpen(false);
       if (previouslyFocused.current instanceof HTMLElement) {
         previouslyFocused.current.focus();
       }
     };
-  }, [onCancel]);
+  }, [setModalOpen]);
 
   return (
     <div ref={overlayRef} className={styles.confirmOverlay} role="presentation">
@@ -103,14 +118,23 @@ export const DataTableConfirmDialog = ({
         </h2>
         <p className={styles.confirmMessage}>{message}</p>
         <div className={styles.confirmActions}>
-          <button type="button" ref={cancelRef} className={styles.confirmCancel} onClick={onCancel}>
+          <button
+            type="button"
+            ref={cancelRef}
+            className={styles.confirmCancel}
+            onClick={() => {
+              onCancelRef.current();
+            }}
+          >
             {cancelLabel}
           </button>
           <button
             type="button"
             ref={confirmRef}
             className={styles.confirmPrimary}
-            onClick={onConfirm}
+            onClick={() => {
+              onConfirmRef.current();
+            }}
           >
             {confirmLabel}
           </button>

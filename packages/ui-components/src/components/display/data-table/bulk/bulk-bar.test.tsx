@@ -12,7 +12,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { useDataTable } from '../create-data-table';
 import { DataTableLiveRegion } from '../live-region';
 import type { DataTableBulkAction } from '../models/types';
-import { TableUiProvider } from '../table-ui-store';
+import { DataTableTableBody } from '../table-body';
+import { type DataTableUiStore, TableUiProvider, useTableUiStore } from '../table-ui-store';
 import { DataTableBulkBar } from './bulk-bar';
 
 vi.mock('react-i18next', () => ({
@@ -52,10 +53,34 @@ const actions: Array<DataTableBulkAction> = [
 
 type HarnessProps = {
   onTable: (table: TestTable) => void;
+  onStore?: (store: DataTableUiStore) => void;
+  withPeekBody?: boolean;
   barProps?: Record<string, unknown>;
 };
 
-function BulkBarHarness({ onTable, barProps = {} }: HarnessProps) {
+const bodyProps = {
+  status: 'idle' as const,
+  columns,
+  emptyTitle: 'No results',
+  emptyDescription: 'Adjust your filters.',
+  errorTitle: 'Something went wrong',
+  errorDescription: 'Try again.',
+  retryLabel: 'Retry',
+  editRequiredMessage: 'Required',
+  editSaveLabel: 'Save',
+  editCancelLabel: 'Cancel',
+  copiedAnnounceLabel: 'Copied to clipboard',
+};
+
+function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
+  const store = useTableUiStore();
+  useEffect(() => {
+    onStore(store);
+  }, [store, onStore]);
+  return null;
+}
+
+function BulkBarHarness({ onTable, onStore, withPeekBody = false, barProps = {} }: HarnessProps) {
   const table = useDataTable<TestRow, RowSelectionState>(
     {
       data: rows,
@@ -76,21 +101,38 @@ function BulkBarHarness({ onTable, barProps = {} }: HarnessProps) {
     <TableUiProvider>
       <table.AppTable>
         <DataTableLiveRegion />
+        {withPeekBody && <DataTableTableBody {...bodyProps} enablePeek />}
         <DataTableBulkBar actions={actions} {...barProps} />
+        {onStore && <StoreProbe onStore={onStore} />}
       </table.AppTable>
     </TableUiProvider>
   );
 }
 
-function renderHarness(barProps: Record<string, unknown> = {}): {
+function renderHarness(
+  barProps: Record<string, unknown> = {},
+  options: { withPeekBody?: boolean } = {},
+): {
   getTable: () => TestTable | undefined;
+  getStore: () => DataTableUiStore | undefined;
 } {
   let table: TestTable | undefined;
+  let store: DataTableUiStore | undefined;
   const onTable = (instance: TestTable): void => {
     table = instance;
   };
-  render(<BulkBarHarness onTable={onTable} barProps={barProps} />);
-  return { getTable: () => table };
+  const onStore = (instance: DataTableUiStore): void => {
+    store = instance;
+  };
+  render(
+    <BulkBarHarness
+      onTable={onTable}
+      onStore={onStore}
+      withPeekBody={options.withPeekBody}
+      barProps={barProps}
+    />,
+  );
+  return { getTable: () => table, getStore: () => store };
 }
 
 async function selectRows(getTable: () => TestTable | undefined, count: number): Promise<void> {
@@ -268,5 +310,59 @@ describe('DataTableBulkBar', () => {
     await act(async () => {});
     expect(onBulkAction).toHaveBeenCalledTimes(1);
     expect(screen.getByRole('toolbar', { name: 'Bulk actions, 2 selected' })).toBeTruthy();
+  });
+
+  it('announces failures and keeps the selection when onBulkAction rejects', async () => {
+    const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const onBulkAction = vi.fn().mockRejectedValue(new Error('boom'));
+    const { getTable } = renderHarness({ onBulkAction });
+    await selectRows(getTable, 2);
+    fireEvent.click(screen.getByRole('button', { name: 'Archive' }));
+    await act(async () => {});
+    expect(onBulkAction).toHaveBeenCalledTimes(1);
+    expect(screen.getByText('The action failed. Please try again.')).toBeTruthy();
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 2 selected' })).toBeTruthy();
+    expect(getTable()?.atoms.rowSelection.get()).toEqual({
+      'row-1': true,
+      'row-2': true,
+    });
+    consoleSpy.mockRestore();
+  });
+
+  it('ignores further action clicks while one is in flight', async () => {
+    let resolveAction: (value: unknown) => void = () => {};
+    const onBulkAction = vi.fn().mockImplementation(
+      () =>
+        new Promise((resolve) => {
+          resolveAction = resolve;
+        }),
+    );
+    const { getTable } = renderHarness({ onBulkAction });
+    await selectRows(getTable, 1);
+    const button = screen.getByRole('button', { name: 'Archive' });
+    fireEvent.click(button);
+    fireEvent.click(button);
+    expect(onBulkAction).toHaveBeenCalledTimes(1);
+    await act(async () => {
+      resolveAction(undefined);
+    });
+    expect(onBulkAction).toHaveBeenCalledTimes(1);
+  });
+
+  it('Escape closes only the confirm dialog, not the open peek', async () => {
+    const onBulkAction = vi.fn();
+    const { getTable, getStore } = renderHarness({ onBulkAction }, { withPeekBody: true });
+    // Open the peek on the first row (row click with enablePeek).
+    fireEvent.click(screen.getAllByRole('row')[0]);
+    expect(getStore()?.getState().peekRowId).toBe('row-1');
+    await selectRows(getTable, 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    expect(screen.getByRole('dialog', { name: 'Are you sure?' })).toBeTruthy();
+    expect(getStore()?.getState().modalOpen).toBe(true);
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(screen.queryByRole('dialog')).toBeNull();
+    expect(getStore()?.getState().modalOpen).toBe(false);
+    expect(getStore()?.getState().peekRowId).toBe('row-1');
+    expect(onBulkAction).not.toHaveBeenCalled();
   });
 });

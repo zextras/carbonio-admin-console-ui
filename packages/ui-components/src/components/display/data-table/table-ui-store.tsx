@@ -27,6 +27,13 @@ export type DataTableUiState = {
   undoToast: DataTableUndoToastState;
   liveMessage: string;
   scrollEdge: DataTableScrollEdge;
+  /**
+   * A document-level modal (e.g. the bulk confirm dialog) is open. Other
+   * parts with document-level keydown handlers (peek navigation, row
+   * action menus) must bail out while this is true so Escape and arrows
+   * do not act behind the modal.
+   */
+  modalOpen: boolean;
   setDensity: (density: DataTableDensity) => void;
   setPeekRowId: (rowId: string | null) => void;
   setEditing: (editing: DataTableEditingTarget) => void;
@@ -35,6 +42,7 @@ export type DataTableUiState = {
   setUndoToast: (toast: DataTableUndoToastState) => void;
   announce: (message: string) => void;
   setScrollEdge: (edge: DataTableScrollEdge) => void;
+  setModalOpen: (value: boolean) => void;
 };
 
 export type DataTableUiStore = ReturnType<typeof createDataTableUiStore>;
@@ -49,6 +57,7 @@ export function createDataTableUiStore() {
     undoToast: null,
     liveMessage: '',
     scrollEdge: { start: true, end: true },
+    modalOpen: false,
     setDensity: (density) => {
       set({ density });
     },
@@ -72,6 +81,9 @@ export function createDataTableUiStore() {
     },
     setScrollEdge: (scrollEdge) => {
       set({ scrollEdge });
+    },
+    setModalOpen: (modalOpen) => {
+      set({ modalOpen });
     },
   }));
 }

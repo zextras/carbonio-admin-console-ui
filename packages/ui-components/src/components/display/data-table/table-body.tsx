@@ -17,7 +17,7 @@ import { copyTextToClipboard, getCellDisplayValue, navigatePeekRowId } from './m
 import { DataTableDecoratedCell } from './row-ui/decorated-cell';
 import { ROW_MODEL_SLICES } from './table-selectors';
 import { DataTableEmptyState, DataTableErrorState, DataTableSkeletonRows } from './table-states';
-import { useTableUi } from './table-ui-store';
+import { useTableUi, useTableUiStore } from './table-ui-store';
 import type {
   DataTableCellEditCommit,
   DataTableColumnDef,
@@ -146,6 +146,7 @@ export const DataTableTableBody = <TData extends RowData>({
   const setPeekRowId = useTableUi((s) => s.setPeekRowId);
   const setEditing = useTableUi((s) => s.setEditing);
   const announce = useTableUi((s) => s.announce);
+  const uiStore = useTableUiStore();
 
   const isRowInteractive = enablePeek || onRowClick !== undefined;
 
@@ -154,6 +155,12 @@ export const DataTableTableBody = <TData extends RowData>({
       return undefined;
     }
     function handleKeyDown(event: KeyboardEvent): void {
+      // A document-level modal (confirm dialog) owns the keyboard: bail
+      // out before any peek action so Escape/arrows act only behind it.
+      // Read at event time — the flag can change after this effect runs.
+      if (uiStore.getState().modalOpen) {
+        return;
+      }
       if (event.key === 'Escape') {
         setPeekRowId(null);
         return;
@@ -175,7 +182,7 @@ export const DataTableTableBody = <TData extends RowData>({
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [enablePeek, peekRowId, table, setPeekRowId]);
+  }, [enablePeek, peekRowId, table, setPeekRowId, uiStore]);
 
   async function handleCopy(value: string, row: TData, columnId: string): Promise<void> {
     const ok = await copyTextToClipboard(value);

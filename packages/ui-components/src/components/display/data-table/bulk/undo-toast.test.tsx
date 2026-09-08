@@ -92,4 +92,23 @@ describe('DataTableUndoToast', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Undo' }));
     expect(onUndo).toHaveBeenCalledTimes(1);
   });
+
+  it('keeps the countdown hidden from screen readers (no per-tick chatter)', () => {
+    render(<DataTableUndoToast message="Deleted" onUndo={vi.fn()} onExpire={vi.fn()} />);
+    expect(screen.getByText('5s to undo (⌘Z)').getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('stays paused while focused even after the pointer leaves', () => {
+    const onExpire = vi.fn();
+    render(<DataTableUndoToast message="Deleted" onUndo={vi.fn()} onExpire={onExpire} />);
+    const toast = screen.getByRole('status');
+    fireEvent.mouseEnter(toast);
+    fireEvent.focus(toast);
+    fireEvent.mouseLeave(toast);
+    act(() => {
+      vi.advanceTimersByTime(10000);
+    });
+    expect(screen.getByText('5s to undo (⌘Z)')).toBeTruthy();
+    expect(onExpire).not.toHaveBeenCalled();
+  });
 });

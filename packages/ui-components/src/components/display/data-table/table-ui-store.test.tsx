@@ -43,6 +43,7 @@ describe('table ui store', () => {
   it('updates state through slice setters', () => {
     const store = createDataTableUiStore();
     expect(store.getState().density).toBe('comfortable');
+    expect(store.getState().modalOpen).toBe(false);
     act(() => {
       store.getState().setDensity('compact');
     });
@@ -51,10 +52,16 @@ describe('table ui store', () => {
       store.getState().setPeekRowId('row-3');
       store.getState().setOpenPanel('filters');
       store.getState().setSelectAllMatching(true);
+      store.getState().setModalOpen(true);
     });
     expect(store.getState().peekRowId).toBe('row-3');
     expect(store.getState().openPanel).toBe('filters');
     expect(store.getState().selectAllMatching).toBe(true);
+    expect(store.getState().modalOpen).toBe(true);
+    act(() => {
+      store.getState().setModalOpen(false);
+    });
+    expect(store.getState().modalOpen).toBe(false);
   });
 
   it('updates state through the remaining slice setters', () => {

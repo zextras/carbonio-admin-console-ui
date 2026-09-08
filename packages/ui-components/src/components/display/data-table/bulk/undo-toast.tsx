@@ -40,16 +40,24 @@ export const DataTableUndoToast = ({
 }: DataTableUndoToastProps) => {
   const { t } = useTranslation();
   const [left, setLeft] = useState(durationSeconds);
-  const pausedRef = useRef(false);
+  const hoveredRef = useRef(false);
+  const focusedRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const onUndoRef = useRef(onUndo);
   const onExpireRef = useRef(onExpire);
-  onUndoRef.current = onUndo;
-  onExpireRef.current = onExpire;
 
+  // Latest-callback refs, updated post-commit (never during render).
+  useEffect(() => {
+    onUndoRef.current = onUndo;
+    onExpireRef.current = onExpire;
+  });
+
+  // The countdown pauses while the pointer hovers OR focus sits on the
+  // toast; tracking them separately means a mouseleave cannot clear a
+  // focus pause (and vice versa).
   useEffect(() => {
     intervalRef.current = globalThis.setInterval(() => {
-      if (pausedRef.current) {
+      if (hoveredRef.current || focusedRef.current) {
         return;
       }
       setLeft((value) => Math.max(0, value - 1));
@@ -94,16 +102,16 @@ export const DataTableUndoToast = ({
       role="status"
       className={styles.undoToast}
       onMouseEnter={() => {
-        pausedRef.current = true;
+        hoveredRef.current = true;
       }}
       onMouseLeave={() => {
-        pausedRef.current = false;
+        hoveredRef.current = false;
       }}
       onFocus={() => {
-        pausedRef.current = true;
+        focusedRef.current = true;
       }}
       onBlur={() => {
-        pausedRef.current = false;
+        focusedRef.current = false;
       }}
     >
       <span className={styles.undoToastCheck} aria-hidden="true">
@@ -119,7 +127,9 @@ export const DataTableUndoToast = ({
       >
         {undoLabel ?? t('data_table.undo', 'Undo')}
       </button>
-      <span className={styles.undoToastShortcut}>
+      {/* aria-hidden: the ticking seconds would re-announce the whole
+          status region on every countdown step. */}
+      <span className={styles.undoToastShortcut} aria-hidden="true">
         {t('data_table.undo_hint', '{{seconds}}s to undo (⌘Z)', { seconds: left })}
       </span>
     </div>

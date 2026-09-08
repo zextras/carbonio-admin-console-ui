@@ -18,8 +18,12 @@ export type DataTableSelectAllMatchingProps = {
   onSelectAllMatching: () => void;
 };
 
-function defaultPageSelectedLabel(pageCount: number): string {
-  return `All ${pageCount} rows on this page are selected.`;
+type Translate = ReturnType<typeof useTranslation>['t'];
+
+function defaultPageSelectedLabel(pageCount: number, t: Translate): string {
+  return t('data_table.page_selected', 'All {{rows}} rows on this page are selected.', {
+    rows: pageCount,
+  });
 }
 
 /**
@@ -31,7 +35,7 @@ function defaultPageSelectedLabel(pageCount: number): string {
 export const DataTableSelectAllMatching = ({
   count,
   pageCount,
-  pageSelectedLabel = defaultPageSelectedLabel,
+  pageSelectedLabel,
   onSelectAllMatching,
 }: DataTableSelectAllMatchingProps) => {
   const { t, i18n } = useTranslation();
@@ -39,7 +43,9 @@ export const DataTableSelectAllMatching = ({
 
   return (
     <div role="status" className={styles.selectAllMatching}>
-      <span>{pageSelectedLabel(pageCount)}</span>
+      <span>
+        {pageSelectedLabel ? pageSelectedLabel(pageCount) : defaultPageSelectedLabel(pageCount, t)}
+      </span>
       <button
         type="button"
         className={styles.selectAllMatchingButton}

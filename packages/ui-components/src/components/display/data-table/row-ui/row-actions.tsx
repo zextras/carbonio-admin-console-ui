@@ -10,6 +10,7 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../data-table.module.css';
+import { useTableUiStore } from '../table-ui-store';
 import type { DataTableRowAction } from '../types';
 
 type MenuPosition = {
@@ -46,6 +47,7 @@ export const DataTableRowActions = ({
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const [menuPosition, setMenuPosition] = useState<MenuPosition | null>(null);
+  const uiStore = useTableUiStore();
   const { t } = useTranslation();
   const actionsLabel = t('data_table.row_actions', 'Actions for {{rowLabel}}', { rowLabel });
   const lastDangerIndex = actions.reduce(
@@ -92,6 +94,11 @@ export const DataTableRowActions = ({
       onClose();
     }
     function handleKeyDown(event: KeyboardEvent): void {
+      // A document-level modal (confirm dialog) owns Escape while open;
+      // read the flag at event time so late opens/closes are honored.
+      if (uiStore.getState().modalOpen) {
+        return;
+      }
       if (event.key === 'Escape') {
         onClose();
       }
@@ -102,7 +109,7 @@ export const DataTableRowActions = ({
       document.removeEventListener('mousedown', handlePointerDown);
       document.removeEventListener('keydown', handleKeyDown);
     };
-  }, [open, onClose]);
+  }, [open, onClose, uiStore]);
 
   return (
     <div ref={rootRef} className={clsx(styles.rowActions, open && styles.tdActionsMenuOpen)}>
