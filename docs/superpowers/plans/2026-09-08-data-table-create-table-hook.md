@@ -737,13 +737,19 @@ Implementation: toast keyed by `id` (incrementing counter in bulk-bar when setti
 - Create: `peek-panel.tsx`, `stale-banner.tsx`
 - Source material: `data-table-peek-panel.tsx`, `data-table-stale-banner.tsx`
 
-- [ ] **Step 1: `peek-panel.tsx`** — subscribes `useTableUi((s) => s.peekRowId)`; resolves row via `table.getRowModel().rows.find(...)`; key on field id not label (`field.id ?? field.label`, S6479 note from finding 16); close button calls `setPeekRowId(null)`; `onOpenFullDetails` prop. Props: `peekTitle`, `peekStatus`, `peekFields`, `renderPeek`, `onOpenFullDetails` — moved from Root's old prop list.
+- [x] **Step 1: `peek-panel.tsx`** — subscribes `useTableUi((s) => s.peekRowId)`; resolves row via `table.getRowModel().rows.find(...)`; key on field id not label (`field.id ?? field.label`, S6479 note from finding 16); close button calls `setPeekRowId(null)`; `onOpenFullDetails` prop. Props: `peekTitle`, `peekStatus`, `peekFields`, `renderPeek`, `onOpenFullDetails` — moved from Root's old prop list.
 
-- [ ] **Step 2: `stale-banner.tsx`** — carried unchanged except i18n labels; visibility decided by the composing view (`stale` prop).
+- [x] **Step 2: `stale-banner.tsx`** — carried unchanged except i18n labels; visibility decided by the composing view (`stale` prop).
 
-- [ ] **Step 3: Commit** — `git commit -m "feat(data-table): peek panel and stale banner parts"`
+- [x] **Step 3: Commit** — `git commit -m "feat(data-table): peek panel and stale banner parts"`
 
 ---
+
+**Task 9 review outcomes (recorded):**
+- Peek panel subscribes to `PEEK_ROW_SLICES` (pagination/sorting/filters/globalFilter — membership only). Default peek fields are column-id keyed.
+- Task 11/12 note: peek props are `title`/`status`/`fields` on the PART (not Root's old `peekTitle`/`peekStatus`/`peekFields`); `status` returns `string`. Views must keep `peekRowId` on-page (no off-page fallback).
+- Tracked follow-ups: peek focus management (focus heading on open, restore on close); announce() counter suffix for repeated identical messages.
+
 
 ### Task 10: Public exports + delete the orchestrator
 
