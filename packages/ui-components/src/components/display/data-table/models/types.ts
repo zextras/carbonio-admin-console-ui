@@ -4,9 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { TableState } from '@tanstack/react-table';
 import type { ReactNode } from 'react';
 
+import type { DataTableFeatures } from '../data-table-features';
+
 export type DataTableStatus = 'idle' | 'loading' | 'empty' | 'error';
+
+/** Full TanStack table state for the pre-bound DataTable feature set. */
+export type DataTableState = TableState<DataTableFeatures>;
 
 export type DataTableColumnMeta = {
   width?: string | number;

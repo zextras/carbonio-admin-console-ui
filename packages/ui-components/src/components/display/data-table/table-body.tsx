@@ -44,6 +44,8 @@ export type DataTableTableBodyProps<TData extends RowData> = {
   primaryColumnId?: string;
   /** Whether the leading selection column shifts the primary column offset. */
   enableRowSelection?: boolean;
+  /** Resolves the accessible row label; takes precedence over the primary-column fallback. */
+  getRowLabel?: (row: TData) => string;
   onCellEditCommit?: (commit: DataTableCellEditCommit<TData>) => void;
   editRequiredMessage: string;
   editSaveLabel: string;
@@ -128,6 +130,7 @@ export const DataTableTableBody = <TData extends RowData>({
   columns,
   primaryColumnId,
   enableRowSelection = false,
+  getRowLabel,
   onCellEditCommit,
   editRequiredMessage,
   editSaveLabel,
@@ -218,7 +221,9 @@ export const DataTableTableBody = <TData extends RowData>({
               pageRows.map((row) => {
                 const isSelected = row.getIsSelected() || selectAllMatching;
                 const isPeeking = enablePeek && peekRowId === row.id;
-                const rowLabel = resolveRowLabel(row.original, row.id, primaryColumnId);
+                const rowLabel = getRowLabel
+                  ? getRowLabel(row.original)
+                  : resolveRowLabel(row.original, row.id, primaryColumnId);
                 return (
                   <tr
                     key={row.id}
