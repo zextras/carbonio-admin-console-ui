@@ -121,6 +121,11 @@ export const DataTableRowActions = ({
           onToggle();
         }}
         onKeyDown={(event) => {
+          // Escape must reach the document-level closer; other keys stay
+          // isolated from the row's Enter/Space activation handler.
+          if (event.key === 'Escape') {
+            return;
+          }
           event.stopPropagation();
         }}
       >

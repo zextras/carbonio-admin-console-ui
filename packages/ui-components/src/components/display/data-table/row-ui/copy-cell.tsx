@@ -8,6 +8,7 @@ import type { ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../data-table.module.css';
+import { stopEventPropagation } from './stop-propagation';
 
 type DataTableCopyCellProps = {
   value: string;
@@ -32,9 +33,7 @@ export const DataTableCopyCell = ({ value, onCopy, children }: DataTableCopyCell
             event.stopPropagation();
             onCopy();
           }}
-          onKeyDown={(event) => {
-            event.stopPropagation();
-          }}
+          onKeyDown={stopEventPropagation}
         >
           ⧉
         </button>

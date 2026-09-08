@@ -4,12 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 
 import styles from '../data-table.module.css';
 import { validateEditValue } from '../data-table-row-chrome';
+import { stopEventPropagation } from './stop-propagation';
 
 type DataTableInlineEditProps = {
+  /**
+   * Initial draft value. The component owns its draft state after mount, so
+   * later changes to this prop are ignored. Remount it (e.g. via a `key`
+   * change) to start a new edit session or to pick up a refreshed external
+   * value.
+   */
   initialValue: string;
   columnLabel: string;
   requiredMessage: string;
@@ -29,6 +36,7 @@ export const DataTableInlineEdit = ({
   onCancel,
 }: DataTableInlineEditProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const errorId = useId();
   const [value, setValue] = useState(String(initialValue ?? ''));
   const [error, setError] = useState<string | null>(null);
 
@@ -52,12 +60,12 @@ export const DataTableInlineEdit = ({
         className={styles.inlineEditInput}
         aria-label={columnLabel}
         aria-invalid={error !== null}
+        aria-describedby={error !== null ? errorId : undefined}
         value={value}
-        onClick={(event) => {
-          event.stopPropagation();
-        }}
+        onClick={stopEventPropagation}
         onChange={(event) => {
           setValue(event.target.value);
+          setError(null);
         }}
         onKeyDown={(event) => {
           event.stopPropagation();
@@ -79,9 +87,7 @@ export const DataTableInlineEdit = ({
           event.stopPropagation();
           commit();
         }}
-        onKeyDown={(event) => {
-          event.stopPropagation();
-        }}
+        onKeyDown={stopEventPropagation}
       >
         ✓
       </button>
@@ -93,13 +99,15 @@ export const DataTableInlineEdit = ({
           event.stopPropagation();
           onCancel();
         }}
-        onKeyDown={(event) => {
-          event.stopPropagation();
-        }}
+        onKeyDown={stopEventPropagation}
       >
         ✕
       </button>
-      {error && <span className={styles.inlineEditError}>{error}</span>}
+      {error && (
+        <span className={styles.inlineEditError} id={errorId}>
+          {error}
+        </span>
+      )}
     </span>
   );
 };
@@ -118,9 +126,7 @@ export const DataTableEditTrigger = ({ ariaLabel, onClick }: DataTableEditTrigge
       event.stopPropagation();
       onClick();
     }}
-    onKeyDown={(event) => {
-      event.stopPropagation();
-    }}
+    onKeyDown={stopEventPropagation}
   >
     ✎
   </button>

@@ -7,6 +7,7 @@
 import { useEffect, useRef } from 'react';
 
 import styles from '../data-table.module.css';
+import { stopEventPropagation } from './stop-propagation';
 
 type SelectionCheckboxProps = {
   checked: boolean;
@@ -39,12 +40,8 @@ export const SelectionCheckbox = ({
       checked={checked}
       disabled={disabled}
       aria-label={ariaLabel}
-      onClick={(event) => {
-        event.stopPropagation();
-      }}
-      onKeyDown={(event) => {
-        event.stopPropagation();
-      }}
+      onClick={stopEventPropagation}
+      onKeyDown={stopEventPropagation}
       onChange={onChange}
     />
   );
