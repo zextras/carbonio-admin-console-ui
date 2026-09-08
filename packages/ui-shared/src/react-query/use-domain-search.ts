@@ -9,6 +9,8 @@ type UseDomainSearchOptions<T> = {
 	searchQuery: string;
 	limit: number;
 	offset: number;
+	sortAscending?: string;
+	statusFilters?: Array<string>;
 	enabled?: boolean;
 	queryFn: () => Promise<T>;
 };
@@ -17,11 +19,21 @@ export function useDomainSearch<T>({
 	searchQuery,
 	limit,
 	offset,
+	sortAscending = '1',
+	statusFilters = [],
 	enabled = true,
 	queryFn,
 }: UseDomainSearchOptions<T>) {
 	return useQuery({
-		queryKey: ['domain', 'search-list', searchQuery, limit, offset],
+		queryKey: [
+			'domain',
+			'search-list',
+			searchQuery,
+			statusFilters,
+			limit,
+			offset,
+			sortAscending,
+		],
 		queryFn,
 		enabled,
 		staleTime: 30_000,

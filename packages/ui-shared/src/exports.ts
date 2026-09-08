@@ -163,7 +163,10 @@ import {
   getCosGeneralInformation,
   type GetCosResponse,
 } from './services/cos-general-information-service';
-import { getDomainList } from './services/domain-search-service';
+import {
+  buildDomainDirectoryQuery,
+  getDomainList,
+} from './services/domain-search-service';
 import { flushCache } from './services/flush-cache-service';
 import { fetchAccount } from './services/get-account-service';
 import {
@@ -253,6 +256,7 @@ export {
   addRoute,
   BASENAME,
   batchService,
+  buildDomainDirectoryQuery,
   buildPath,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
