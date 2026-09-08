@@ -155,8 +155,14 @@ describe('DataTableFilters', () => {
     expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
       'true',
     );
+    // dirty the draft without applying
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
+    expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
+      'false',
+    );
     fireEvent.click(screen.getByRole('button', { name: 'Close filters' }));
     expect(screen.queryByRole('dialog')).toBeNull();
+    // reopening must re-clone from the (unchanged) applied filters, not keep the draft
     fireEvent.click(getTrigger());
     expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
       'true',

@@ -48,6 +48,7 @@ export const DataTableSearch = ({
   }
 
   const resolvedLabel = label ?? t('data_table.search', 'Search');
+  const resolvedPlaceholder = placeholder ?? t('data_table.search_placeholder', 'Search…');
 
   return (
     <label className={styles.searchField}>
@@ -56,7 +57,7 @@ export const DataTableSearch = ({
         type="search"
         className={styles.searchInput}
         value={localValue}
-        placeholder={placeholder}
+        placeholder={resolvedPlaceholder}
         aria-label={resolvedLabel}
         onChange={(event) => {
           const next = event.target.value;
