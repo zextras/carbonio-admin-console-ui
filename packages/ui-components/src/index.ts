@@ -94,20 +94,8 @@ export * from './components/custom/track-number-per-page';
 /** display components */
 export * from './components/display/Chip';
 export * from './components/display/CustomChip';
-export * from './components/display/Dropdown';
-export * from './components/display/List/List';
-export * from './components/display/ListItem';
-export * from './components/display/Popper';
-export {
-  Table,
-  type TableProps,
-  type THeader,
-  type THeaderProps,
-  type TRow,
-} from './components/display/Table';
 export {
   DataTable,
-  dataTableFeatures,
   type DataTableBulkAction,
   type DataTableBulkActionContext,
   type DataTableBulkActionResult,
@@ -121,6 +109,7 @@ export {
   type DataTableEditingState,
   type DataTableEnumFilterValue,
   type DataTableFeatures,
+  dataTableFeatures,
   type DataTableFilterChip,
   type DataTableFilterDef,
   type DataTableFilterOption,
@@ -133,7 +122,79 @@ export {
   type DataTableStatus,
   type DataTableUndoToastState,
 } from './components/display/data-table';
+export * from './components/display/Dropdown';
+export * from './components/display/List/List';
+export * from './components/display/ListItem';
+export * from './components/display/Popper';
+export {
+  Table,
+  type TableProps,
+  type THeader,
+  type THeaderProps,
+  type TRow,
+} from './components/display/Table';
 
+/**
+ * Composable DataTable parts (Root + parts composition). The legacy
+ * monolithic `DataTable` above stays exported until all views migrate.
+ */
+export {
+  type DataTableBulkActionEvent,
+  DataTableBulkBar,
+  type DataTableBulkBarProps,
+} from './components/display/data-table/bulk/bulk-bar';
+export {
+  DataTableBulkJob,
+  type DataTableBulkJobProps,
+} from './components/display/data-table/bulk/bulk-job';
+export {
+  DataTableConfirmDialog,
+  type DataTableConfirmDialogProps,
+} from './components/display/data-table/bulk/confirm-dialog';
+export {
+  DataTableSelectAllMatching,
+  type DataTableSelectAllMatchingProps,
+} from './components/display/data-table/bulk/select-all-matching';
+export {
+  DataTableUndoToast,
+  type DataTableUndoToastProps,
+} from './components/display/data-table/bulk/undo-toast';
+export {
+  createDataTableColumnHelper,
+  useDataTable,
+} from './components/display/data-table/create-data-table';
+export { useDataTableContext } from './components/display/data-table/data-table-contexts';
+export { DataTablePagination } from './components/display/data-table/data-table-pagination';
+export {
+  DataTableRoot,
+  type DataTableRootProps,
+} from './components/display/data-table/data-table-root';
+export { DataTableLiveRegion } from './components/display/data-table/live-region';
+export {
+  buildFilterChips,
+  removeFilterChip,
+} from './components/display/data-table/models/filter-model';
+export {
+  DataTablePeekPanel,
+  type DataTablePeekPanelProps,
+} from './components/display/data-table/peek-panel';
+export {
+  DataTableStaleBanner,
+  type DataTableStaleBannerProps,
+} from './components/display/data-table/stale-banner';
+export { DataTableTable, type DataTableTableProps } from './components/display/data-table/table';
+export { DataTableTableFooter } from './components/display/data-table/table-footer';
+export {
+  DataTableCustomize,
+  type DataTableCustomizeProps,
+} from './components/display/data-table/toolbar/customize';
+export { DataTableFilterChips } from './components/display/data-table/toolbar/filter-chips';
+export {
+  DataTableFilters,
+  type DataTableFiltersProps,
+} from './components/display/data-table/toolbar/filters';
+export { DataTableSearch } from './components/display/data-table/toolbar/search';
+export { DataTableToolbar } from './components/display/data-table/toolbar/toolbar';
 export * from './components/display/Tooltip';
 
 /** Feedback components */

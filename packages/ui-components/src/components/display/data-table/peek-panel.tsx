@@ -34,6 +34,8 @@ export type DataTablePeekPanelProps<TData extends RowData> = {
   renderPeek?: (row: TData) => ReactNode;
   /** Shows the CTA button, invoked with the peeked row before closing. */
   onOpenFullDetails?: (row: TData) => void;
+  /** CTA button label; defaults to the i18n `Open full details` string. */
+  openFullDetailsLabel?: string;
 };
 
 function resolvePeekTitle<TData extends RowData>(
@@ -79,6 +81,7 @@ export const DataTablePeekPanel = <TData extends RowData>({
   fields,
   renderPeek,
   onOpenFullDetails,
+  openFullDetailsLabel,
 }: DataTablePeekPanelProps<TData>) => {
   const peekRowId = useTableUi((state) => state.peekRowId);
   const setPeekRowId = useTableUi((state) => state.setPeekRowId);
@@ -139,7 +142,8 @@ export const DataTablePeekPanel = <TData extends RowData>({
                   setPeekRowId(null);
                 }}
               >
-                {t('data_table.peek_open_full_details', 'Open full details')}
+                {openFullDetailsLabel ??
+                  t('data_table.peek_open_full_details', 'Open full details')}
               </button>
             )}
             <p className={styles.peekHint}>
