@@ -449,9 +449,9 @@ git commit -m "feat(data-table): subscribe-based header/body/footer/states parts
 - Create: `models/filter-model.ts`, `models/customize-model.ts`, `models/row-ui.ts`, `models/pagination.ts`, `models/types.ts`
 - Modify: delete old root-level `data-table-filter-model.ts`, `data-table-customize-model.ts`, `data-table-row-ui.ts` after moving
 
-- [ ] **Step 1: Move** `data-table-filter-model.ts` → `models/filter-model.ts`, `data-table-customize-model.ts` → `models/customize-model.ts`, `data-table-row-ui.ts` → `models/row-ui.ts`; move shared types (`DataTableFilterChip`, `DataTableFiltersState`, `DataTableBulkAction`, `DataTableRowAction`, `DataTableColumnMeta`, `DataTableStatus`, …) from `types.ts` → `models/types.ts`.
+- [x] **Step 1: Move** `data-table-filter-model.ts` → `models/filter-model.ts`, `data-table-customize-model.ts` → `models/customize-model.ts`, `data-table-row-ui.ts` → `models/row-ui.ts`; move shared types (`DataTableFilterChip`, `DataTableFiltersState`, `DataTableBulkAction`, `DataTableRowAction`, `DataTableColumnMeta`, `DataTableStatus`, …) from `types.ts` → `models/types.ts`.
 
-- [ ] **Step 2: TDD the filter coercion fix (#9)** — add cases to `models/filter-model.test.ts` (move existing `data-table-filter-model` tests first, keep them green):
+- [x] **Step 2: TDD the filter coercion fix (#9)** — add cases to `models/filter-model.test.ts` (move existing `data-table-filter-model` tests first, keep them green):
 
 ```ts
 // ISO-string and numeric-string cells must filter like native values
@@ -465,13 +465,19 @@ expect(chip.label).not.toMatch(/0/); // no false "0–50" lower bound — "≤ 5
 
 Implement by coercing in the filter fns: `const n = typeof v === 'number' ? v : Number(v)` (NaN → no match), `const d = v instanceof Date ? v : new Date(String(v))` (Invalid Date → no match). Chip label for single-bound ranges: `t('data_table.filter.max', '≤ {{max}}', {max})` / `min` variant.
 
-- [ ] **Step 3: `isEditableTarget`** helper into `models/row-ui.ts` (used by body peek-nav + undo-toast).
+- [x] **Step 3: `isEditableTarget`** helper into `models/row-ui.ts` (used by body peek-nav + undo-toast).
 
-- [ ] **Step 4: Run model tests** — `pnpm vitest run packages/ui-components/src/components/display/data-table/models/` — all pass.
+- [x] **Step 4: Run model tests** — `pnpm vitest run packages/ui-components/src/components/display/data-table/models/` — all pass.
 
-- [ ] **Step 5: Commit** — `git commit -m "fix(data-table): filter coercion for string dates/numbers; open-ended chips"` (add the moved + test files).
+- [x] **Step 5: Commit** — `git commit -m "fix(data-table): filter coercion for string dates/numbers; open-ended chips"` (add the moved + test files).
 
 ---
+
+**Task 5 review outcomes (recorded):**
+- Filter fns now coerce + normalize: reversed bounds swap, date-only `to` → end-of-day, NaN never matches, null/''/booleans never match. Chips carry structured `bounds` payload alongside English `label` fallback.
+- Task 7 chip component MUST render locale-aware labels from `bounds` (the model does not localize).
+- `models/types.ts` is canonical for EditingState/PeekField + filter/bulk/meta types; root `types.ts` re-exports until Task 10.
+
 
 ### Task 6: `DataTableRoot` + `DataTableTable` compound shell
 
