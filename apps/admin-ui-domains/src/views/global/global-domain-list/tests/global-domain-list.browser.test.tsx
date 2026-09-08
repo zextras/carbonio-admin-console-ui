@@ -299,4 +299,34 @@ describe('GlobalDomainList (browser)', () => {
       await expect.element(page.getByText('beta-11.com')).toBeVisible();
     }, 15_000);
   });
+
+  describe('Bulk selection', () => {
+    it('drops the select-all-matching banner and restores the toolbar when sorting clears the selection', async () => {
+      const pageDomains = Array.from({ length: 10 }, (_, i) =>
+        buildDomain(`bulk-${i + 1}.com`, `bulk-${i + 1}`),
+      );
+      interceptDynamicDomains(() => ({ domain: pageDomains, searchTotal: 30, more: false }));
+      setup(<GlobalDomainList />);
+
+      const searchInput = page.getByLabelText(`I'm looking for this domain…`);
+      await expect.element(page.getByText('bulk-1.com')).toBeVisible();
+      await expect.element(searchInput).toBeVisible();
+
+      await page.getByRole('checkbox', { name: 'Select all rows on this page' }).click();
+      await page.getByRole('button', { name: 'Select all 30 matching' }).click();
+      await expect
+        .element(page.getByRole('toolbar', { name: 'Bulk actions, 30 selected' }))
+        .toBeVisible();
+      await expect.element(searchInput).not.toBeInTheDocument();
+
+      // Sorting is a query-shape change: the server table state hook resets
+      // the selection while the bulk bar's select-all-matching flag is set.
+      await page.getByRole('button', { name: 'Domain Name' }).click();
+
+      await expect
+        .element(page.getByRole('toolbar', { name: /Bulk actions/ }))
+        .not.toBeInTheDocument();
+      await expect.element(searchInput).toBeVisible();
+    }, 15_000);
+  });
 });

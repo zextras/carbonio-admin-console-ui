@@ -126,7 +126,9 @@ export const GlobalDomainList = () => {
 
 	// The query total is only known after the query hook runs, so the clamp
 	// cannot flow through the state hook options: derive the pagination the
-	// table is controlled with instead.
+	// table is controlled with instead. The clamped page's data is NOT
+	// fetched until the next pagination/query-shape change — the body may
+	// briefly show the empty state while the footer shows the clamped count.
 	const pagination = clampPaginationToRowCount(rawPagination, totalDomain);
 
 	const filterDefs: Array<DataTableFilterDef> = [

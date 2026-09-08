@@ -12,7 +12,7 @@ import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
 import type { DataTableFeatures } from '../data-table-features';
 import type { DataTableBulkAction, DataTableBulkJobState } from '../models/types';
-import { useTableUi, useTableUiStore } from '../table-ui-store';
+import { type DataTableUiStore, useTableUi, useTableUiStore } from '../table-ui-store';
 import { DataTableConfirmDialog } from './confirm-dialog';
 import { DataTableSelectAllMatching } from './select-all-matching';
 import { DataTableUndoToast } from './undo-toast';
@@ -62,6 +62,21 @@ export type DataTableBulkBarProps = {
 
 function selectedRowIdsFromState(rowSelection: RowSelectionState): Array<string> {
   return Object.keys(rowSelection).filter((id) => rowSelection[id]);
+}
+
+/**
+ * Reconcile a stale "select all matching" flag: the selection the flag
+ * was derived from can be cleared underneath it (e.g. the owning view
+ * resets the selection on a query-shape change), which would otherwise
+ * leave the banner showing the full total with no selection behind it.
+ * Reading fresh state keeps the write loop-safe — it only fires while
+ * the mismatch actually exists, and once flipped the caller's guard
+ * stops matching.
+ */
+function resetStaleSelectAllMatching(store: DataTableUiStore): void {
+  if (store.getState().selectAllMatching) {
+    store.getState().setSelectAllMatching(false);
+  }
 }
 
 /**
@@ -257,9 +272,16 @@ export const DataTableBulkBar = <TData extends RowData>({
         }
       >
         {([rowSelection]) => {
-          const bannerCount = selectAllMatching
-            ? currentTotalMatching()
-            : selectedRowIdsFromState(rowSelection).length;
+          const selectedIds = selectedRowIdsFromState(rowSelection);
+          // A select-all-matching flag with no ids left in state means the
+          // selection was cleared underneath it (e.g. the view reset it on
+          // a query-shape change): treat the banner as cleared and drop
+          // the flag so the store agrees with the rendered state.
+          if (selectAllMatching && selectedIds.length === 0) {
+            resetStaleSelectAllMatching(uiStore);
+            return null;
+          }
+          const bannerCount = selectAllMatching ? currentTotalMatching() : selectedIds.length;
           // Internally derived: with nothing selected there is no prompt
           // either (the prompt requires every page row selected).
           if (bannerCount === 0) {

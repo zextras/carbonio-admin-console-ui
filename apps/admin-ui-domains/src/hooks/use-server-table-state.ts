@@ -14,11 +14,12 @@ export type UseServerTableStateOptions = {
 	pageSize?: number;
 	/**
 	 * Server-reported total row count used to clamp the returned pagination
-	 * so the view never sits on a phantom page after the result set shrinks
-	 * (review fix #5a). Only usable when the total is known before this hook
-	 * runs (e.g. supplied by a parent); a total produced by a query that
-	 * depends on this hook's pagination must be clamped via
-	 * `clampPaginationToRowCount` at the call site instead.
+	 * after the result set shrinks (review fix #5a). The clamp only adjusts
+	 * the table chrome: the clamped page's data is not refetched until the
+	 * next pagination or query-shape change. Only usable when the total is
+	 * known before this hook runs (e.g. supplied by a parent); a total
+	 * produced by a query that depends on this hook's pagination must be
+	 * clamped via `clampPaginationToRowCount` at the call site instead.
 	 */
 	totalRowCount?: number;
 	/** Sorting applied on mount and restored after a resetKey change. */

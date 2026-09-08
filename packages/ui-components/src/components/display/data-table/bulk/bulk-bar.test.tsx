@@ -299,6 +299,23 @@ describe('DataTableBulkBar', () => {
     });
   });
 
+  it('drops a stale select-all-matching flag when the selection empties underneath it', async () => {
+    const { getTable, getStore } = renderHarness({
+      enableSelectAllMatching: true,
+      totalMatchingCount: 1234,
+    });
+    await selectRows(getTable, 5);
+    fireEvent.click(screen.getByRole('button', { name: 'Select all 1,234 matching' }));
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 1,234 selected' })).toBeTruthy();
+    // The owning view resets the selection (query-shape change) without
+    // being able to reach the part-local UI store.
+    await act(async () => {
+      getTable()?.resetRowSelection();
+    });
+    expect(screen.queryByRole('toolbar')).toBeNull();
+    expect(getStore()?.getState().selectAllMatching).toBe(false);
+  });
+
   it('keeps the selection while a bulk job is active', async () => {
     const onBulkAction = vi.fn();
     const { getTable } = renderHarness({
