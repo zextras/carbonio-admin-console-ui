@@ -50,6 +50,45 @@ export type DataTableRowAction = {
   danger?: boolean;
 };
 
+/** A = replace toolbar when selecting; B = keep toolbar and show bulk bar below. */
+export type DataTableBulkVariant = 'A' | 'B';
+
+export type DataTableBulkAction = {
+  id: string;
+  label: string;
+  danger?: boolean;
+  /** When true (or when `danger`), show the confirm dialog before invoking `onBulkAction`. */
+  requireConfirm?: boolean;
+  /** Hint for consumers; reversible actions typically return an undo payload. */
+  reversible?: boolean;
+};
+
+export type DataTableBulkActionContext = {
+  action: DataTableBulkAction;
+  selectedRowIds: Array<string>;
+  selectAllMatching: boolean;
+  selectedCount: number;
+};
+
+export type DataTableBulkActionResult = {
+  undo?: {
+    message: string;
+    onUndo: () => void;
+  };
+} | void;
+
+export type DataTableBulkJobState = {
+  label: string;
+  done: number;
+  total: number;
+  result: { ok: number; failed: number } | null;
+} | null;
+
+export type DataTableUndoToastState = {
+  message: string;
+  onUndo: () => void;
+} | null;
+
 export type DataTableCellEditCommit<TData> = {
   rowId: string;
   columnId: string;
@@ -159,6 +198,41 @@ export type DataTableProps<TData extends RowData> = {
   selectAllMatchingLabel?: (count: number) => string;
   pageSelectedLabel?: (pageCount: number) => string;
 
+  /** Bulk action buttons shown in the selection bar. */
+  bulkActions?: Array<DataTableBulkAction>;
+  onBulkAction?: (
+    context: DataTableBulkActionContext,
+  ) => DataTableBulkActionResult | Promise<DataTableBulkActionResult>;
+  /**
+   * A (default): hide search/filters/customize toolbar while selecting.
+   * B: keep the toolbar and show the bulk bar below it.
+   */
+  bulkVariant?: DataTableBulkVariant;
+  /** Confirm dialog title for destructive / requireConfirm bulk actions. */
+  bulkConfirmTitle?: string;
+  bulkConfirmLabel?: string;
+  bulkConfirmCancelLabel?: string;
+  bulkConfirmMessage?: (action: DataTableBulkAction, count: number) => string;
+
+  /** Controlled async bulk job chrome (progress / partial failure). */
+  bulkJob?: DataTableBulkJobState;
+  onBulkJobCancel?: () => void;
+  onBulkJobRetryFailed?: () => void;
+  onBulkJobDismiss?: () => void;
+  bulkJobCancelLabel?: string;
+  bulkJobRetryFailedLabel?: string;
+  bulkJobDismissLabel?: string;
+
+  /** Pattern 17 — stale data banner above the table card. */
+  stale?: boolean;
+  staleMessage?: string;
+  staleReloadLabel?: string;
+  staleDismissLabel?: string;
+  onStaleReload?: () => void;
+  onStaleDismiss?: () => void;
+
+  undoLabel?: string;
+
   /** Defaults to true (server-side friendly). Set false for client-side pagination. */
   manualPagination?: boolean;
   pagination?: PaginationState;
@@ -236,6 +310,7 @@ export type DataTableProps<TData extends RowData> = {
 
   rowActions?: Array<DataTableRowAction>;
   onRowAction?: (payload: { action: DataTableRowAction; row: TData }) => void;
+  /** Accessible name for the sticky actions column header (defaults to visually empty). */
   actionsColumnLabel?: string;
 
   enablePeek?: boolean;

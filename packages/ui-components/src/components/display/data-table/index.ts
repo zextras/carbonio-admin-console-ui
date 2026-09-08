@@ -7,6 +7,11 @@
 export { DataTable } from './data-table';
 export { type DataTableFeatures, dataTableFeatures } from './data-table-features';
 export type {
+  DataTableBulkAction,
+  DataTableBulkActionContext,
+  DataTableBulkActionResult,
+  DataTableBulkJobState,
+  DataTableBulkVariant,
   DataTableCellEditCommit,
   DataTableColumnDef,
   DataTableColumnMeta,
@@ -24,4 +29,5 @@ export type {
   DataTableRangeFilterValue,
   DataTableRowAction,
   DataTableStatus,
+  DataTableUndoToastState,
 } from './types';

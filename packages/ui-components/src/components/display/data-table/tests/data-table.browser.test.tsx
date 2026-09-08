@@ -468,4 +468,131 @@ describe('DataTable (browser)', () => {
       .element(page.getByRole('complementary', { name: /Details:/ }))
       .not.toBeInTheDocument();
   });
+
+  it('shows bulk actions and replaces the toolbar for variant A', async () => {
+    const onBulkAction = vi.fn().mockReturnValue({
+      undo: { message: '2 items enabled', onUndo: vi.fn() },
+    });
+
+    function BulkVariantATable() {
+      return (
+        <DataTable
+          aria-label="Manage Accounts"
+          data={ALL_ROWS.slice(0, 5)}
+          columns={columns}
+          getRowId={(row) => row.id}
+          manualSorting={false}
+          manualPagination={false}
+          paginationThreshold={100}
+          primaryColumnId="account"
+          enableSearch
+          searchLabel="Search accounts"
+          enableRowSelection
+          bulkVariant="A"
+          bulkActions={[
+            { id: 'enable', label: 'Enable', reversible: true },
+            { id: 'delete', label: 'Delete', danger: true },
+          ]}
+          onBulkAction={onBulkAction}
+        />
+      );
+    }
+
+    await render(<BulkVariantATable />);
+
+    await expect.element(page.getByRole('searchbox', { name: 'Search accounts' })).toBeVisible();
+    await userEvent.click(page.getByRole('checkbox', { name: 'Select row' }).first());
+    await expect.element(page.getByRole('searchbox', { name: 'Search accounts' })).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Enable' })).toBeVisible();
+
+    await userEvent.click(page.getByRole('button', { name: 'Enable' }));
+    expect(onBulkAction).toHaveBeenCalledOnce();
+    await expect.element(page.getByText('2 items enabled')).toBeVisible();
+  });
+
+  it('keeps the toolbar for bulk variant B and confirms danger actions', async () => {
+    const onBulkAction = vi.fn();
+
+    function BulkVariantBTable() {
+      return (
+        <DataTable
+          aria-label="Manage Accounts"
+          data={ALL_ROWS.slice(0, 5)}
+          columns={columns}
+          getRowId={(row) => row.id}
+          manualSorting={false}
+          manualPagination={false}
+          paginationThreshold={100}
+          primaryColumnId="account"
+          enableSearch
+          searchLabel="Search accounts"
+          enableRowSelection
+          bulkVariant="B"
+          bulkActions={[
+            { id: 'hold', label: 'Hold', reversible: true },
+            { id: 'delete', label: 'Delete', danger: true },
+          ]}
+          onBulkAction={onBulkAction}
+        />
+      );
+    }
+
+    await render(<BulkVariantBTable />);
+
+    await userEvent.click(page.getByRole('checkbox', { name: 'Select row' }).first());
+    await expect.element(page.getByRole('searchbox', { name: 'Search accounts' })).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Delete' })).toBeVisible();
+
+    await userEvent.click(page.getByRole('button', { name: 'Delete' }));
+    await expect.element(page.getByRole('dialog', { name: 'Are you sure?' })).toBeVisible();
+    await userEvent.click(page.getByRole('button', { name: 'Confirm' }));
+    expect(onBulkAction).toHaveBeenCalledWith(
+      expect.objectContaining({
+        action: expect.objectContaining({ id: 'delete' }),
+        selectedCount: 1,
+      }),
+    );
+  });
+
+  it('shows the stale banner and bulk job chrome', async () => {
+    const onStaleReload = vi.fn();
+    const onBulkJobRetryFailed = vi.fn();
+
+    function StaleJobTable() {
+      return (
+        <DataTable
+          aria-label="Manage Accounts"
+          data={ALL_ROWS.slice(0, 3)}
+          columns={columns}
+          getRowId={(row) => row.id}
+          manualSorting={false}
+          manualPagination={false}
+          paginationThreshold={100}
+          primaryColumnId="account"
+          stale
+          staleMessage="Data changed on the server (7 items updated)."
+          onStaleReload={onStaleReload}
+          onStaleDismiss={vi.fn()}
+          bulkJob={{
+            label: 'Enable — 20 items',
+            done: 20,
+            total: 20,
+            result: { ok: 18, failed: 2 },
+          }}
+          onBulkJobRetryFailed={onBulkJobRetryFailed}
+          onBulkJobDismiss={vi.fn()}
+        />
+      );
+    }
+
+    await render(<StaleJobTable />);
+
+    await expect.element(page.getByText('Data changed on the server (7 items updated).')).toBeVisible();
+    await userEvent.click(page.getByRole('button', { name: 'Reload' }));
+    expect(onStaleReload).toHaveBeenCalledOnce();
+
+    await expect.element(page.getByText(/18 succeeded/)).toBeVisible();
+    await userEvent.click(page.getByRole('button', { name: 'Retry failed' }));
+    expect(onBulkJobRetryFailed).toHaveBeenCalledOnce();
+  });
 });

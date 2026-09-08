@@ -18,10 +18,13 @@ import {
   useTable,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 import styles from './data-table.module.css';
 import { DataTableChromeCell } from './data-table-body-cell';
+import { DataTableBulkBar } from './data-table-bulk-bar';
+import { DataTableBulkJob } from './data-table-bulk-job';
+import { DataTableConfirmDialog } from './data-table-confirm-dialog';
 import {
   ACTIONS_COLUMN_ID,
   buildCustomizeColumnItems,
@@ -56,16 +59,19 @@ import {
   startEditing,
   validateEditValue,
 } from './data-table-row-chrome';
+import { DataTableStaleBanner } from './data-table-stale-banner';
 import {
   DataTableEmptyState,
   DataTableErrorState,
   DataTableSkeletonRows,
 } from './data-table-states';
 import { DataTableToolbar } from './data-table-toolbar';
-import { SelectionBanner } from './selection-banner';
+import { DataTableUndoToast } from './data-table-undo-toast';
 import { SelectionCheckbox } from './selection-checkbox';
 import { SortableHeaderCell } from './sortable-header-cell';
 import type {
+  DataTableBulkAction,
+  DataTableBulkVariant,
   DataTableColumnMeta,
   DataTableDensity,
   DataTableEditingState,
@@ -73,6 +79,7 @@ import type {
   DataTableFiltersState,
   DataTableProps,
   DataTableRowAction,
+  DataTableUndoToastState,
 } from './types';
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
@@ -132,6 +139,7 @@ function buildSelectColumn<TData extends RowData>(): ColumnDef<
 function buildActionsColumn<TData extends RowData>(options: {
   actions: Array<DataTableRowAction>;
   menuRowId: string | null;
+  headerLabel: string;
   getRowLabel: (row: TData) => string;
   onToggleMenu: (rowId: string) => void;
   onCloseMenu: () => void;
@@ -142,7 +150,9 @@ function buildActionsColumn<TData extends RowData>(options: {
     enableSorting: false,
     enableColumnFilter: false,
     enableHiding: false,
-    header: () => null,
+    header: () => (
+      <span className={styles.actionsHeaderLabel}>{options.headerLabel}</span>
+    ),
     cell: ({ row }) => (
       <DataTableRowActions
         rowLabel={options.getRowLabel(row.original)}
@@ -187,6 +197,28 @@ export const DataTable = <TData extends RowData>({
   clearSelectionLabel = '× Clear',
   selectAllMatchingLabel = (count) => `Select all ${count.toLocaleString('en')} matching`,
   pageSelectedLabel = (pageCount) => `All ${pageCount} rows on this page are selected.`,
+  bulkActions,
+  onBulkAction,
+  bulkVariant = 'A',
+  bulkConfirmTitle = 'Are you sure?',
+  bulkConfirmLabel = 'Confirm',
+  bulkConfirmCancelLabel = 'Cancel',
+  bulkConfirmMessage = (action, count) =>
+    `${action.label} ${count} item${count === 1 ? '' : 's'}? This cannot be undone.`,
+  bulkJob = null,
+  onBulkJobCancel,
+  onBulkJobRetryFailed,
+  onBulkJobDismiss,
+  bulkJobCancelLabel = 'Cancel',
+  bulkJobRetryFailedLabel = 'Retry failed',
+  bulkJobDismissLabel = 'Dismiss',
+  stale = false,
+  staleMessage = 'Data changed on the server.',
+  staleReloadLabel = 'Reload',
+  staleDismissLabel = 'Dismiss',
+  onStaleReload,
+  onStaleDismiss,
+  undoLabel = 'Undo',
   manualPagination = true,
   pagination: controlledPagination,
   onPaginationChange,
@@ -240,6 +272,7 @@ export const DataTable = <TData extends RowData>({
   copiedAnnounceLabel = 'Copied to clipboard',
   rowActions,
   onRowAction,
+  actionsColumnLabel = '',
   enablePeek = false,
   peekRowId: controlledPeekRowId,
   onPeekRowIdChange,
@@ -288,6 +321,15 @@ export const DataTable = <TData extends RowData>({
   const [uncontrolledPeekRowId, setUncontrolledPeekRowId] = useState<string | null>(null);
   const [menuRowId, setMenuRowId] = useState<string | null>(null);
   const [liveMessage, setLiveMessage] = useState('');
+  const [undoToast, setUndoToast] = useState<DataTableUndoToastState>(null);
+  const [pendingConfirmAction, setPendingConfirmAction] = useState<DataTableBulkAction | null>(
+    null,
+  );
+  const [scrollEdge, setScrollEdge] = useState({ start: true, end: true });
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  const resolvedBulkActions = bulkActions ?? [];
+  const resolvedBulkVariant: DataTableBulkVariant = bulkVariant;
 
   const sorting = controlledSorting ?? uncontrolledSorting;
   const rowSelection = controlledRowSelection ?? uncontrolledRowSelection;
@@ -384,6 +426,7 @@ export const DataTable = <TData extends RowData>({
     ? buildActionsColumn<TData>({
         actions: resolvedRowActions,
         menuRowId,
+        headerLabel: actionsColumnLabel,
         getRowLabel,
         onToggleMenu: (rowId) => {
           setMenuRowId((current) => (current === rowId ? null : rowId));
@@ -478,6 +521,8 @@ export const DataTable = <TData extends RowData>({
     ? (totalMatchingCount ?? filteredRowCount)
     : selectedCount;
   const showSelectionBanner = enableRowSelection && bannerCount > 0;
+  const hideToolbarForBulkA =
+    showSelectionBanner && resolvedBulkVariant === 'A' && resolvedBulkActions.length > 0;
   const showSelectAllMatchingPrompt =
     enableRowSelection &&
     enableSelectAllMatching &&
@@ -492,8 +537,10 @@ export const DataTable = <TData extends RowData>({
   const stateColSpan = visibleColumnCount;
   const activeFilterCount = countActiveFilters(filters);
   const filterChips = buildFilterChips(filters, resolvedFilterDefs);
-  const showFilterChips = filterChips.length > 0 && !showSelectionBanner;
-  const showToolbar = enableSearch || showFilters || enableCustomize;
+  const showFilterChips =
+    filterChips.length > 0 &&
+    !(showSelectionBanner && (resolvedBulkVariant === 'A' || resolvedBulkActions.length === 0));
+  const showToolbar = (enableSearch || showFilters || enableCustomize) && !hideToolbarForBulkA;
   const showReset = isCustomizeDirty(
     columnVisibility,
     columnOrder,
@@ -550,6 +597,7 @@ export const DataTable = <TData extends RowData>({
   function clearSelection(): void {
     table.resetRowSelection();
     (onSelectAllMatchingChange ?? setUncontrolledSelectAllMatching)(false);
+    announce('Selection cleared');
   }
 
   function handleSelectAllMatching(): void {
@@ -559,6 +607,59 @@ export const DataTable = <TData extends RowData>({
   function announce(message: string): void {
     setLiveMessage(message);
   }
+
+  function getSelectedRowIds(): Array<string> {
+    if (selectAllMatching) {
+      return data.map((row, index) => getRowId(row, index));
+    }
+    return Object.keys(rowSelection).filter((id) => rowSelection[id]);
+  }
+
+  async function executeBulkAction(action: DataTableBulkAction): Promise<void> {
+    const selectedRowIds = getSelectedRowIds();
+    const result = await onBulkAction?.({
+      action,
+      selectedRowIds,
+      selectAllMatching,
+      selectedCount: bannerCount,
+    });
+    if (result?.undo) {
+      setUndoToast({
+        message: result.undo.message,
+        onUndo: () => {
+          result.undo?.onUndo();
+          setUndoToast(null);
+          announce('Undone');
+        },
+      });
+    }
+    if (!bulkJob) {
+      clearSelection();
+    }
+  }
+
+  function handleBulkAction(action: DataTableBulkAction): void {
+    if (action.danger || action.requireConfirm) {
+      setPendingConfirmAction(action);
+      return;
+    }
+    void executeBulkAction(action);
+  }
+
+  function updateScrollEdge(): void {
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
+    setScrollEdge({
+      start: el.scrollLeft <= 1,
+      end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 1,
+    });
+  }
+
+  useEffect(() => {
+    updateScrollEdge();
+  }, [columnVisibility, columnOrder, density, pageRows.length, enableRowActions]);
 
   function commitEditing(row: TData): void {
     if (!editing) {
@@ -607,6 +708,20 @@ export const DataTable = <TData extends RowData>({
       <div className={styles.liveRegion} aria-live="polite">
         {liveMessage}
       </div>
+      {stale && (
+        <DataTableStaleBanner
+          message={staleMessage}
+          reloadLabel={staleReloadLabel}
+          dismissLabel={staleDismissLabel}
+          onReload={() => {
+            onStaleReload?.();
+            announce('Reloaded');
+          }}
+          onDismiss={() => {
+            onStaleDismiss?.();
+          }}
+        />
+      )}
       {showToolbar && (
         <div className={styles.toolbarWrap}>
           <DataTableToolbar
@@ -697,11 +812,13 @@ export const DataTable = <TData extends RowData>({
         />
       )}
       {showSelectionBanner && (
-        <SelectionBanner
+        <DataTableBulkBar
           count={bannerCount}
           selectedLabel={selectionBannerLabel}
           clearLabel={clearSelectionLabel}
+          actions={resolvedBulkActions}
           onClear={clearSelection}
+          onAction={handleBulkAction}
         />
       )}
       {showSelectAllMatchingPrompt && (
@@ -716,7 +833,26 @@ export const DataTable = <TData extends RowData>({
           </button>
         </div>
       )}
-      <div className={styles.scroll}>
+      {bulkJob && (
+        <DataTableBulkJob
+          job={bulkJob}
+          cancelLabel={bulkJobCancelLabel}
+          retryFailedLabel={bulkJobRetryFailedLabel}
+          dismissLabel={bulkJobDismissLabel}
+          onCancel={() => {
+            onBulkJobCancel?.();
+            announce('Job cancelled — completed items are not rolled back');
+          }}
+          onRetryFailed={() => {
+            onBulkJobRetryFailed?.();
+          }}
+          onDismiss={() => {
+            onBulkJobDismiss?.();
+            clearSelection();
+          }}
+        />
+      )}
+      <div className={styles.scroll} ref={scrollRef} onScroll={updateScrollEdge}>
         <table className={styles.table} aria-label={ariaLabel}>
           <thead>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -737,7 +873,8 @@ export const DataTable = <TData extends RowData>({
                         isActions && styles.thActions,
                         pinnedStart && styles.pinnedLeft,
                         pinnedEnd && styles.pinnedRight,
-                        pinnedStart && isPrimary && enableRowSelection && styles.pinnedShadow,
+                        pinnedStart && isPrimary && !scrollEdge.start && styles.pinnedShadow,
+                        pinnedEnd && !scrollEdge.end && styles.pinnedRightShadow,
                       )}
                       style={{
                         width: meta?.width,
@@ -754,7 +891,7 @@ export const DataTable = <TData extends RowData>({
                           : undefined
                       }
                     >
-                      {header.isPlaceholder || isActions ? null : isSelect ? (
+                      {header.isPlaceholder ? null : isSelect || isActions ? (
                         <table.FlexRender header={header} />
                       ) : (
                         <SortableHeaderCell
@@ -858,7 +995,8 @@ export const DataTable = <TData extends RowData>({
                             isActionsMenuOpen && styles.tdActionsMenuOpen,
                             pinnedStart && styles.pinnedLeft,
                             pinnedEnd && styles.pinnedRight,
-                            pinnedStart && isPrimary && enableRowSelection && styles.pinnedShadow,
+                            pinnedStart && isPrimary && !scrollEdge.start && styles.pinnedShadow,
+                            pinnedEnd && !scrollEdge.end && styles.pinnedRightShadow,
                           )}
                           style={{
                             width: meta?.width,
@@ -974,6 +1112,32 @@ export const DataTable = <TData extends RowData>({
         >
           {renderPeek?.(peekRow)}
         </DataTablePeekPanel>
+      )}
+      {pendingConfirmAction && (
+        <DataTableConfirmDialog
+          title={bulkConfirmTitle}
+          message={bulkConfirmMessage(pendingConfirmAction, bannerCount)}
+          confirmLabel={bulkConfirmLabel}
+          cancelLabel={bulkConfirmCancelLabel}
+          onCancel={() => {
+            setPendingConfirmAction(null);
+          }}
+          onConfirm={() => {
+            const action = pendingConfirmAction;
+            setPendingConfirmAction(null);
+            void executeBulkAction(action);
+          }}
+        />
+      )}
+      {undoToast && (
+        <DataTableUndoToast
+          message={undoToast.message}
+          undoLabel={undoLabel}
+          onUndo={undoToast.onUndo}
+          onExpire={() => {
+            setUndoToast(null);
+          }}
+        />
       )}
     </div>
   );

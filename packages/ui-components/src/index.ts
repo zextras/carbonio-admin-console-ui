@@ -108,6 +108,11 @@ export {
 export {
   DataTable,
   dataTableFeatures,
+  type DataTableBulkAction,
+  type DataTableBulkActionContext,
+  type DataTableBulkActionResult,
+  type DataTableBulkJobState,
+  type DataTableBulkVariant,
   type DataTableCellEditCommit,
   type DataTableColumnDef,
   type DataTableColumnMeta,
@@ -126,7 +131,9 @@ export {
   type DataTableRangeFilterValue,
   type DataTableRowAction,
   type DataTableStatus,
+  type DataTableUndoToastState,
 } from './components/display/data-table';
+
 export * from './components/display/Tooltip';
 
 /** Feedback components */
