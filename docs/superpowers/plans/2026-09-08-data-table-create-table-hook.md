@@ -485,7 +485,7 @@ Implement by coercing in the filter fns: `const n = typeof v === 'number' ? v : 
 - Create: `data-table-root.tsx`, `table.tsx`
 - Modify: `index.ts` (temporary exports alongside old ones until Task 10)
 
-- [ ] **Step 1: `data-table-root.tsx`**
+- [x] **Step 1: `data-table-root.tsx`**
 
 ```tsx
 type DataTableRootProps<TData extends RowData> = {
@@ -536,7 +536,7 @@ export const DataTableRoot = <TData extends RowData,>({
 Density class: subscribe in a tiny module-level `ShellClass` part (`useTableUi((s) => s.density)`) rather than in Root's render (keeps Root free of UI-store subscriptions):
 structure: `<TableUiProvider><table.AppTable><ShellDensityClass />{children}</table.AppTable></TableUiProvider>` — or simpler: Root reads `useTableUi` only for `density` and applies `data-density`; acceptable (one slice).
 
-- [ ] **Step 2: `table.tsx`** — the `<table>` + scroll container:
+- [x] **Step 2: `table.tsx`** — the `<table>` + scroll container:
 
 ```tsx
 export const DataTableTable = <TData extends RowData,>({
@@ -557,9 +557,9 @@ export const DataTableTable = <TData extends RowData,>({
 };
 ```
 
-- [ ] **Step 3: Manual smoke render test (jsdom)** — `data-table-root.test.tsx`: render Root + Table with 3 rows/2 columns, assert `table` has aria-label and 3 body rows via `useDataTableContext` wiring. Write test first, watch fail, implement, watch pass.
+- [x] **Step 3: Manual smoke render test (jsdom)** — `data-table-root.test.tsx`: render Root + Table with 3 rows/2 columns, assert `table` has aria-label and 3 body rows via `useDataTableContext` wiring. Write test first, watch fail, implement, watch pass.
 
-- [ ] **Step 4: Type-check + commit**
+- [x] **Step 4: Type-check + commit**
 
 ```bash
 git add packages/ui-components/src/components/display/data-table/data-table-root.tsx packages/ui-components/src/components/display/data-table/table.tsx packages/ui-components/src/components/display/data-table/data-table-root.test.tsx
@@ -567,6 +567,14 @@ git commit -m "feat(data-table): DataTableRoot compound shell on createTableHook
 ```
 
 ---
+
+**Task 6 review outcomes (recorded):**
+- Resolved table config (primaryColumnId, enableRowSelection, columns, getRowLabel) is published via `table-config-context.tsx`; DataTableTable's copies are optional overrides (`prop ?? config ?? default`).
+- Root uses a CONSTANT selector (`() => null`) — never subscribes to table state; keeps AppTable context value stable so context consumers don't churn.
+- columnPinning is Root-owned and RESERVED: consumer-supplied `state.columnPinning` is dropped by `mergeStateOptions`.
+- `stripUndefinedKeys` prevents undefined `onXChange` from clobbering feature-installed state updaters (defined→undefined transitions retain stale handlers — documented, unsupported).
+- Task 7+ parts must NOT call pinning APIs; they read config via `useTableConfig<TData>()`.
+
 
 ### Task 7: Toolbar parts (search, filters, customize)
 
