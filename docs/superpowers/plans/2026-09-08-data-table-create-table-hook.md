@@ -627,7 +627,7 @@ Draft state lives here (part-local). The mutual exclusion with customize comes f
 - Create: `bulk/bulk-bar.tsx`, `bulk/select-all-matching.tsx`, `bulk/confirm-dialog.tsx`, `bulk/undo-toast.tsx`, `bulk/bulk-job.tsx`
 - Source material: `data-table-bulk-bar.tsx`, `data-table-confirm-dialog.tsx`, `data-table-undo-toast.tsx`, `data-table-bulk-job.tsx` + orchestrator logic at `data-table.tsx:519-647`
 
-- [ ] **Step 1: `bulk/bulk-bar.tsx`**
+- [x] **Step 1: `bulk/bulk-bar.tsx`**
 
 ```tsx
 export const DataTableBulkBar = <TData extends RowData,>({
@@ -671,7 +671,7 @@ export const DataTableBulkBar = <TData extends RowData,>({ actions, onAction, to
 
 The confirm dialog + undo toast render inside `bulk-bar.tsx` (they are triggered by it — no cross-part sharing needed, fulfilling the state-tier rule).
 
-- [ ] **Step 2: `bulk/confirm-dialog.tsx`** with fix #7:
+- [x] **Step 2: `bulk/confirm-dialog.tsx`** with fix #7:
 
 ```tsx
 export const DataTableConfirmDialog = ({ title, message, confirmLabel, cancelLabel, onCancel, onConfirm }: ConfirmDialogProps) => {
@@ -697,7 +697,7 @@ export const DataTableConfirmDialog = ({ title, message, confirmLabel, cancelLab
 };
 ```
 
-- [ ] **Step 3: TDD `bulk/undo-toast.tsx`** with fixes #6/#8 — write `bulk/undo-toast.test.tsx` first:
+- [x] **Step 3: TDD `bulk/undo-toast.tsx`** with fixes #6/#8 — write `bulk/undo-toast.test.tsx` first:
 
 ```tsx
 // 1. re-running the same reversible action restarts the timer (#8)
@@ -719,11 +719,17 @@ expect(onUndo).toHaveBeenCalled();
 
 Implementation: toast keyed by `id` (incrementing counter in bulk-bar when setting `setUndoToast({id, message, onUndo})` — key change remounts the toast so the `setInterval` starts fresh); countdown `clearInterval` at `left === 0` then `onExpire`; document keydown guarded by `isEditableTarget(event.target)`; `globalThis` not `window`.
 
-- [ ] **Step 4: `bulk/bulk-job.tsx` + `bulk/select-all-matching.tsx`** — carried from `data-table-bulk-job.tsx` and orchestrator JSX at `data-table.tsx:824-854`; i18n; ids via `useId()` where needed.
+- [x] **Step 4: `bulk/bulk-job.tsx` + `bulk/select-all-matching.tsx`** — carried from `data-table-bulk-job.tsx` and orchestrator JSX at `data-table.tsx:824-854`; i18n; ids via `useId()` where needed.
 
-- [ ] **Step 5: Run tests + commit** — `git commit -m "feat(data-table): bulk parts with confirm focus/Escape and undo timer fixes"`
+- [x] **Step 5: Run tests + commit** — `git commit -m "feat(data-table): bulk parts with confirm focus/Escape and undo timer fixes"`
 
 ---
+
+**Task 8 review outcomes (recorded):**
+- `modalOpen` UI-store slice: confirm-dialog owns it; ALL document-keydown listeners (peek-nav, row-actions, future parts) must bail when `modalOpen` is true.
+- Bulk contract: `selectedRowIds` is `[]` when `selectAllMatching` (views use flag + count); rejection → announce + selection retained; busy guard blocks double-fire.
+- i18n interpolation cannot use `{{count}}` for non-number values (i18next pluralization reserve) — use `{{total}}`/`{{rows}}` etc.
+
 
 ### Task 9: Peek panel (#12) + stale banner
 
