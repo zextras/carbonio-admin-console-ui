@@ -332,9 +332,9 @@ git commit -m "feat(data-table): row-ui primitives with local edit state and key
 - Create: `table-header.tsx`, `table-body.tsx`, `table-footer.tsx`, `table-states.tsx`, `live-region.tsx`
 - Source material: explore's `table-header.tsx`/`table-body.tsx` (Subscribe structure), current `data-table-states.tsx`, current orchestrator JSX at `data-table.tsx:855-1055` (pinned styling, aria-sort, cell UI), `data-table-pagination.tsx` (from/to logic)
 
-- [ ] **Step 1: `table-states.tsx`** — move `DataTableSkeletonRows`, `DataTableEmptyState`, `DataTableErrorState` from `data-table-states.tsx`; fix skeleton row keys from index to `skeleton-${n}` (SonarLint S6479); i18n the strings.
+- [x] **Step 1: `table-states.tsx`** — move `DataTableSkeletonRows`, `DataTableEmptyState`, `DataTableErrorState` from `data-table-states.tsx`; fix skeleton row keys from index to `skeleton-${n}` (SonarLint S6479); i18n the strings.
 
-- [ ] **Step 2: `live-region.tsx`**
+- [x] **Step 2: `live-region.tsx`**
 
 ```tsx
 export const DataTableLiveRegion = () => {
@@ -347,7 +347,7 @@ export const DataTableLiveRegion = () => {
 };
 ```
 
-- [ ] **Step 3: `table-header.tsx`** — render `<thead>` with pinned/aria-sort/sticky logic carried from `data-table.tsx:857-908`, structured as explore's part:
+- [x] **Step 3: `table-header.tsx`** — render `<thead>` with pinned/aria-sort/sticky logic carried from `data-table.tsx:857-908`, structured as explore's part:
 
 ```tsx
 const DataTableTableHeader = <TData extends RowData,>() => {
@@ -369,7 +369,7 @@ const DataTableTableHeader = <TData extends RowData,>() => {
 
 The select column header and sortable header cells come from column defs built in Root (Task 6). `SortableHeaderCell` moves from `sortable-header-cell.tsx` unchanged except converting `function SortIcon` to an arrow const (S6478-adjacent convention).
 
-- [ ] **Step 4: `table-body.tsx`** — explore's part shape + current row JSX (`data-table.tsx:934-1052`) + fixes:
+- [x] **Step 4: `table-body.tsx`** — explore's part shape + current row JSX (`data-table.tsx:934-1052`) + fixes:
 
 ```tsx
 const DataTableTableBody = <TData extends RowData,>({
@@ -409,7 +409,7 @@ function isEditableTarget(target: EventTarget | null): boolean {
 Place `isEditableTarget` in `models/row-ui.ts` (shared with undo-toast, Task 7).
 Scroll-edge tracking (`updateScrollEdge`, `data-table.tsx:649-662`) moves into `DataTableTable` (Task 6) since it owns the scroll container.
 
-- [ ] **Step 5: `table-footer.tsx`** with clamp fix (#10) — extract pure helper into `models/pagination.ts` with unit test:
+- [x] **Step 5: `table-footer.tsx`** with clamp fix (#10) — extract pure helper into `models/pagination.ts` with unit test:
 
 ```ts
 export function clampRange(
@@ -425,9 +425,9 @@ export function clampRange(
 
 `table-footer.tsx` subscribes to `pagination` + reads `rowCount` from table options and renders the `X results` / from–to meta.
 
-- [ ] **Step 6: Unit tests for `clampRange`** — `models/pagination.test.ts`: `(60, 2, 25) → {from:51,to:60}`, `(60, 5, 25) → {from:0,to:0}` (out-of-range page), `(0, 0, 25) → {from:0,to:0}`, `(10, 0, 25) → {from:1,to:10}`. TDD: write test first, watch it fail, implement, watch it pass.
+- [x] **Step 6: Unit tests for `clampRange`** — `models/pagination.test.ts`: `(60, 2, 25) → {from:51,to:60}`, `(60, 5, 25) → {from:0,to:0}` (out-of-range page), `(0, 0, 25) → {from:0,to:0}`, `(10, 0, 25) → {from:1,to:10}`. TDD: write test first, watch it fail, implement, watch it pass.
 
-- [ ] **Step 7: Commit**
+- [x] **Step 7: Commit**
 
 ```bash
 git add packages/ui-components/src/components/display/data-table/table-header.tsx packages/ui-components/src/components/display/data-table/table-body.tsx packages/ui-components/src/components/display/data-table/table-footer.tsx packages/ui-components/src/components/display/data-table/table-states.tsx packages/ui-components/src/components/display/data-table/live-region.tsx packages/ui-components/src/components/display/data-table/models/
@@ -435,6 +435,13 @@ git commit -m "feat(data-table): subscribe-based header/body/footer/states parts
 ```
 
 ---
+
+**Task 4 review outcomes (recorded):**
+- CRITICAL fix: body must subscribe to ALL row-model slices via shared `table-selectors.ts` `ROW_MODEL_SLICES`, and `getRowModel()`/`getVisibleCells()` must be read INSIDE the Subscribe callback (never hoisted to component body). Header uses `COLUMN_LAYOUT_SLICES`.
+- Task 6 MUST pass `manualFiltering` explicitly to the table (footer's `resolveRowCount` treats undefined as client-side; legacy default was `true` at prop level).
+- Task 6 should thread a `getRowLabel`-style resolver (peekTitle/primary-column) for row aria-labels (body currently derives from primary column with row.id fallback).
+- `isEditableTarget` landed in `models/event-target.ts` (not models/row-ui.ts).
+
 
 ### Task 5: Models — filter coercion (#9), shared helpers
 
