@@ -13,21 +13,25 @@ import {
 	DataTableFilterChips,
 	type DataTableFilterDef,
 	DataTableFilters,
-	type DataTableFiltersState,
 	DataTableLiveRegion,
 	DataTablePagination,
 	DataTablePeekPanel,
 	DataTableRoot,
 	type DataTableRowAction,
 	DataTableSearch,
-	type DataTableStatus,
 	DataTableTable,
 	DataTableTableFooter,
 	DataTableToolbar,
 	removeFilterChip,
 	useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory, type SoapEntity, useDebouncedValue } from '@zextras/ui-shared';
+import {
+	enumFilterValues,
+	replaceHistory,
+	resolveTableStatus,
+	type SoapEntity,
+	useDebouncedValue,
+} from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
@@ -58,31 +62,6 @@ function sortingToAscending(sorting: DomainSortState): string {
 		return '1';
 	}
 	return nameSort.desc ? '0' : '1';
-}
-
-function resolveTableStatus(
-	isPending: boolean,
-	isError: boolean,
-	rowCount: number,
-): DataTableStatus {
-	if (isPending) {
-		return 'loading';
-	}
-	if (isError) {
-		return 'error';
-	}
-	if (rowCount === 0) {
-		return 'empty';
-	}
-	return 'idle';
-}
-
-function enumFilterValues(filters: DataTableFiltersState, filterId: string): Array<string> {
-	const value = filters[filterId];
-	if (!Array.isArray(value)) {
-		return [];
-	}
-	return value;
 }
 
 function openDomainAccounts(domainId: string): void {
