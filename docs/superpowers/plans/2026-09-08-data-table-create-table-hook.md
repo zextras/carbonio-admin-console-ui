@@ -828,11 +828,11 @@ export function useDomainTableState(rowCount: number) {
 - Delete: `apps/admin-ui-domains/src/services/use-count-account.ts`, `apps/admin-ui-domains/src/services/count-account-service.ts` (+ its test if present, + `parseAccountCount` and its test — verify zero references via `rg 'count-account|parseAccountCount|useCountAccount' apps/`)
 - Create: `packages/ui-shared/src/utils/table-status.ts` (moved `resolveTableStatus` + `enumFilterValues`; re-export from both views' usage)
 
-- [ ] **Step 1: Move shared helpers to ui-shared** — `resolveTableStatus` + `enumFilterValues` copy-pasted in both views (finding 15); single export `resolveTableStatus<T>(query)` in `@zextras/ui-shared`; unit test there.
+- [x] **Step 1: Move shared helpers to ui-shared** — `resolveTableStatus` + `enumFilterValues` copy-pasted in both views (finding 15); single export `resolveTableStatus<T>(query)` in `@zextras/ui-shared`; unit test there.
 
-- [ ] **Step 2: Rewrite the view** — Root + parts; same `useDomainTableState` pattern (extract to `apps/admin-ui-domains/src/views/manage/accounts/use-accounts-table-state.ts` or promote Task 11's hook to `apps/admin-ui-domains/src/hooks/use-server-table-state.ts` and reuse in both views — **preferred**, one hook, DRY).
+- [x] **Step 2: Rewrite the view** — Root + parts; same `useDomainTableState` pattern (extract to `apps/admin-ui-domains/src/views/manage/accounts/use-accounts-table-state.ts` or promote Task 11's hook to `apps/admin-ui-domains/src/hooks/use-server-table-state.ts` and reuse in both views — **preferred**, one hook, DRY).
 
-- [ ] **Step 3: Domain-switch reset (#5)** — the accounts route stays mounted across `domainId` changes; add to the shared hook:
+- [x] **Step 3: Domain-switch reset (#5)** — the accounts route stays mounted across `domainId` changes; add to the shared hook:
 
 ```ts
 useEffect(() => {
@@ -845,11 +845,18 @@ useEffect(() => {
 
 (pass `domainId` as an optional `resetKey` param of the shared hook — domain list passes nothing, accounts view passes `domainId`).
 
-- [ ] **Step 4: Delete count dead code (#1, #14)** — remove `Total Accounts` references; both views + services must have zero references (verify with `rg`).
+- [x] **Step 4: Delete count dead code (#1, #14)** — remove `Total Accounts` references; both views + services must have zero references (verify with `rg`).
 
-- [ ] **Step 5: Commit** — `git commit -m "refactor(admin-ui-domains): manage accounts on composable DataTable; remove count dead code"`
+- [x] **Step 5: Commit** — `git commit -m "refactor(admin-ui-domains): manage accounts on composable DataTable; remove count dead code"`
 
 ---
+
+**Task 12 review outcomes (recorded):**
+- Views duplicate composition blocks (toolbar swap, chips, ~35-line pagination wiring) — do NOT extract a composite yet (rule of three; revisit on third consumer).
+- Task 13 must add the selection-reset assertion to the domain-switch browser test (named but unasserted).
+- Follow-up tickets (out of scope): resetKey-aware debounce flush (stale-search transient on domain switch); make CreateAccount's setIsAccountCreated/showAccountDetailView props optional.
+- ui-shared's TableStatus union is intentionally structural (no package edge to ui-components).
+
 
 ### Task 13: Tests — e2e rewrite + targeted + isolation
 
