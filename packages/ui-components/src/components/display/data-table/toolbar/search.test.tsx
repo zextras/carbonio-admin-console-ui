@@ -5,6 +5,7 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
+import { useEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { DataTableSearch } from './search';
@@ -36,10 +37,24 @@ function getSearchInput(): HTMLElement {
   return screen.getByRole('searchbox', { name: 'Search' });
 }
 
+// Render-isolation probe: module-level component + module-scope counter. The
+// increment lives in an effect (render-phase side effects are forbidden by
+// the React Compiler rules) and fires once per render, so the count only
+// moves when React actually re-renders the probe subtree.
+let searchProbeCount = 0;
+
+const SearchRenderProbe = () => {
+  useEffect(() => {
+    searchProbeCount += 1;
+  });
+  return <span>search probe</span>;
+};
+
 describe('DataTableSearch', () => {
   it('defaults the accessible label and placeholder via i18n', () => {
     render(<DataTableSearch value="" onSearchChange={vi.fn()} />);
     expect(getSearchInput()).toBeTruthy();
+    expect(getSearchInput().getAttribute('placeholder')).toBe('Search…');
   });
 
   it('calls onSearchChange on every keystroke', () => {
@@ -73,6 +88,21 @@ describe('DataTableSearch', () => {
     fireEvent.change(getSearchInput(), { target: { value: 'ab' } });
     rerender(<DataTableSearch value="" onSearchChange={onSearchChange} />);
     expect((getSearchInput() as HTMLInputElement).value).toBe('ab');
+  });
+
+  it('typing re-renders only the search part, not its siblings', () => {
+    const onSearchChange = vi.fn();
+    render(
+      <>
+        <SearchRenderProbe />
+        <DataTableSearch value="" onSearchChange={onSearchChange} />
+      </>,
+    );
+    const probeCountBefore = searchProbeCount;
+    const input = getSearchInput();
+    fireEvent.change(input, { target: { value: 'ab' } });
+    expect((input as HTMLInputElement).value).toBe('ab');
+    expect(searchProbeCount).toBe(probeCountBefore);
   });
 
   it('renders a custom placeholder and label', () => {

@@ -349,8 +349,7 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
         aria-expanded={open}
         aria-haspopup="dialog"
         aria-controls={panelId}
-        onClick={(event) => {
-          event.stopPropagation();
+        onClick={() => {
           setOpenPanel(open ? null : 'customize');
         }}
       >

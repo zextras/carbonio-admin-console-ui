@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
+import { useEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import type { DataTableFilterDef, DataTableFiltersState } from '../models/types';
@@ -66,10 +67,33 @@ function getTrigger(): HTMLElement {
   return screen.getByRole('button', { name: /Filters/ });
 }
 
+// Render-isolation probe: module-level component + module-scope counter. It
+// deliberately does NOT consume the table UI store — opening a panel must
+// re-render only the trigger part and the panel it mounts. The increment
+// lives in an effect (render-phase side effects are forbidden by the React
+// Compiler rules) and fires once per render.
+let panelProbeCount = 0;
+
+const PanelRenderProbe = () => {
+  useEffect(() => {
+    panelProbeCount += 1;
+  });
+  return <span>panel probe</span>;
+};
+
 describe('DataTableFilters', () => {
-  it('renders the active filter count badge', () => {
+  it('renders the active filter count badge and exposes it in the accessible name', () => {
     render(<FiltersHarness filters={{ status: ['active'] }} />);
     expect(screen.getByText('1')).toBeTruthy();
+    const trigger = screen.getByRole('button', { name: 'Filters, 1 active' });
+    expect(trigger.getAttribute('aria-haspopup')).toBe('dialog');
+  });
+
+  it('keeps the plain accessible name when no filter is active', () => {
+    render(<FiltersHarness filters={{}} />);
+    const trigger = getTrigger();
+    expect(trigger.getAttribute('aria-label')).toBeNull();
+    expect(trigger.getAttribute('aria-haspopup')).toBe('dialog');
   });
 
   it('opens and closes the panel via the trigger', () => {
@@ -187,13 +211,77 @@ describe('DataTableFilters', () => {
     expect(screen.getByRole('dialog')).toBeTruthy();
   });
 
-  it('removes the outside-click listener when closed', async () => {
+  it('removes the outside-click listener when the panel closes', () => {
+    const removeEventListenerSpy = vi.spyOn(document, 'removeEventListener');
     render(<FiltersHarness filters={{}} />);
     fireEvent.click(getTrigger());
     fireEvent.click(getTrigger());
-    fireEvent.mouseDown(document.body);
-    await waitFor(() => {
-      expect(screen.queryByRole('dialog')).toBeNull();
-    });
+    expect(removeEventListenerSpy).toHaveBeenCalledWith('mousedown', expect.any(Function));
+    removeEventListenerSpy.mockRestore();
+  });
+
+  it('opening the panel re-renders only the filters part, not its siblings', () => {
+    render(
+      <TableUiProvider>
+        <PanelRenderProbe />
+        <DataTableFilters
+          filterDefs={filterDefs}
+          filters={{}}
+          onFiltersChange={vi.fn()}
+          onApplyResetSelection={vi.fn()}
+        />
+      </TableUiProvider>,
+    );
+    const probeCountBefore = panelProbeCount;
+    fireEvent.click(getTrigger());
+    expect(screen.getByRole('dialog', { name: 'Filters' })).toBeTruthy();
+    expect(panelProbeCount).toBe(probeCountBefore);
+  });
+
+  it('keeps two independent instances open at once with distinct panel ids', () => {
+    const defsA: Array<DataTableFilterDef> = [
+      { id: 'status', label: 'Status A', type: 'enum', options: [{ label: 'On', value: 'on' }] },
+    ];
+    const defsB: Array<DataTableFilterDef> = [
+      { id: 'status', label: 'Status B', type: 'enum', options: [{ label: 'Off', value: 'off' }] },
+    ];
+    render(
+      <>
+        <TableUiProvider>
+          <DataTableFilters
+            filterDefs={defsA}
+            filters={{}}
+            onFiltersChange={vi.fn()}
+            onApplyResetSelection={vi.fn()}
+          />
+        </TableUiProvider>
+        <TableUiProvider>
+          <DataTableFilters
+            filterDefs={defsB}
+            filters={{}}
+            onFiltersChange={vi.fn()}
+            onApplyResetSelection={vi.fn()}
+          />
+        </TableUiProvider>
+      </>,
+    );
+    const [triggerA, triggerB] = screen.getAllByRole('button', { name: 'Filters' });
+    fireEvent.click(triggerA);
+    fireEvent.click(triggerB);
+    const [panelA, panelB] = screen.getAllByRole('dialog');
+    // Regression for #11: fixed DOM ids made the second instance's panel
+    // unreachable; ids must be instance-scoped and must not collide.
+    const idA = triggerA.getAttribute('aria-controls');
+    const idB = triggerB.getAttribute('aria-controls');
+    expect(idA).toBeTruthy();
+    expect(idB).toBeTruthy();
+    expect(idA).not.toBe(idB);
+    expect(panelA.getAttribute('id')).toBe(idA);
+    expect(panelB.getAttribute('id')).toBe(idB);
+    // Each UI store is instance-scoped: opening B must not close A.
+    expect(panelA).toBeTruthy();
+    expect(panelB).toBeTruthy();
+    expect(screen.getByText('Status A')).toBeTruthy();
+    expect(screen.getByText('Status B')).toBeTruthy();
   });
 });

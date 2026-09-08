@@ -73,108 +73,111 @@ const FiltersPanel = ({
   clearDraftLabel,
   applyLabel,
   filtersHint,
-}: FiltersPanelProps) => (
-  <div id={id} ref={ref} role="dialog" aria-label={filtersLabel} className={styles.filtersPanel}>
-    <div className={styles.filtersPanelHeader}>
-      <span className={styles.filtersPanelTitle}>{filtersLabel}</span>
-      <button
-        type="button"
-        className={styles.filtersCloseButton}
-        aria-label={closeFiltersLabel}
-        onClick={onClose}
-      >
-        ✕
-      </button>
-    </div>
-    {filterDefs.map((def) => (
-      <div key={def.id} className={styles.filterField}>
-        <div className={styles.filterFieldLabel}>{def.label}</div>
-        {def.type === 'enum' && (
-          <div className={styles.enumOptions}>
-            {def.options.map((option) => {
-              const selected = getEnumDraftSelection(draft, def.id).includes(option.value);
-              return (
-                <button
-                  key={option.value}
-                  type="button"
-                  role="checkbox"
-                  aria-checked={selected}
-                  className={clsx(styles.enumOption, selected && styles.enumOptionSelected)}
-                  onClick={() => {
-                    onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
-                  }}
-                >
-                  {option.label}
-                </button>
-              );
-            })}
-          </div>
-        )}
-        {def.type === 'range' && (
-          <div className={styles.rangeInputs}>
-            <input
-              type="number"
-              className={styles.rangeInput}
-              placeholder={def.minPlaceholder ?? 'min'}
-              aria-label={`${def.label} from`}
-              value={getRangeDraftValue(draft, def.id).min ?? ''}
-              onChange={(event) => {
-                onDraftChange(setRangeDraftValue(draft, def.id, 'min', event.target.value));
-              }}
-            />
-            <span className={styles.rangeSeparator} aria-hidden="true">
-              –
-            </span>
-            <input
-              type="number"
-              className={styles.rangeInput}
-              placeholder={def.maxPlaceholder ?? 'max'}
-              aria-label={`${def.label} to`}
-              value={getRangeDraftValue(draft, def.id).max ?? ''}
-              onChange={(event) => {
-                onDraftChange(setRangeDraftValue(draft, def.id, 'max', event.target.value));
-              }}
-            />
-          </div>
-        )}
-        {def.type === 'date' && (
-          <div className={styles.rangeInputs}>
-            <input
-              type="date"
-              className={styles.rangeInput}
-              aria-label={`${def.label} from`}
-              value={getDateDraftValue(draft, def.id).from ?? ''}
-              onChange={(event) => {
-                onDraftChange(setDateDraftValue(draft, def.id, 'from', event.target.value));
-              }}
-            />
-            <span className={styles.rangeSeparator} aria-hidden="true">
-              –
-            </span>
-            <input
-              type="date"
-              className={styles.rangeInput}
-              aria-label={`${def.label} to`}
-              value={getDateDraftValue(draft, def.id).to ?? ''}
-              onChange={(event) => {
-                onDraftChange(setDateDraftValue(draft, def.id, 'to', event.target.value));
-              }}
-            />
-          </div>
-        )}
+}: FiltersPanelProps) => {
+  const { t } = useTranslation();
+  return (
+    <div id={id} ref={ref} role="dialog" aria-label={filtersLabel} className={styles.filtersPanel}>
+      <div className={styles.filtersPanelHeader}>
+        <span className={styles.filtersPanelTitle}>{filtersLabel}</span>
+        <button
+          type="button"
+          className={styles.filtersCloseButton}
+          aria-label={closeFiltersLabel}
+          onClick={onClose}
+        >
+          ✕
+        </button>
       </div>
-    ))}
-    <div className={styles.filtersPanelActions}>
-      <button type="button" className={styles.filtersSecondaryButton} onClick={onClearDraft}>
-        {clearDraftLabel}
-      </button>
-      <button type="button" className={styles.filtersPrimaryButton} onClick={onApply}>
-        {applyLabel}
-      </button>
+      {filterDefs.map((def) => (
+        <div key={def.id} className={styles.filterField}>
+          <div className={styles.filterFieldLabel}>{def.label}</div>
+          {def.type === 'enum' && (
+            <div className={styles.enumOptions}>
+              {def.options.map((option) => {
+                const selected = getEnumDraftSelection(draft, def.id).includes(option.value);
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    role="checkbox"
+                    aria-checked={selected}
+                    className={clsx(styles.enumOption, selected && styles.enumOptionSelected)}
+                    onClick={() => {
+                      onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
+                    }}
+                  >
+                    {option.label}
+                  </button>
+                );
+              })}
+            </div>
+          )}
+          {def.type === 'range' && (
+            <div className={styles.rangeInputs}>
+              <input
+                type="number"
+                className={styles.rangeInput}
+                placeholder={def.minPlaceholder ?? t('data_table.filter_min_placeholder', 'min')}
+                aria-label={t('data_table.filter_from', '{{label}} from', { label: def.label })}
+                value={getRangeDraftValue(draft, def.id).min ?? ''}
+                onChange={(event) => {
+                  onDraftChange(setRangeDraftValue(draft, def.id, 'min', event.target.value));
+                }}
+              />
+              <span className={styles.rangeSeparator} aria-hidden="true">
+                –
+              </span>
+              <input
+                type="number"
+                className={styles.rangeInput}
+                placeholder={def.maxPlaceholder ?? t('data_table.filter_max_placeholder', 'max')}
+                aria-label={t('data_table.filter_to', '{{label}} to', { label: def.label })}
+                value={getRangeDraftValue(draft, def.id).max ?? ''}
+                onChange={(event) => {
+                  onDraftChange(setRangeDraftValue(draft, def.id, 'max', event.target.value));
+                }}
+              />
+            </div>
+          )}
+          {def.type === 'date' && (
+            <div className={styles.rangeInputs}>
+              <input
+                type="date"
+                className={styles.rangeInput}
+                aria-label={t('data_table.filter_from', '{{label}} from', { label: def.label })}
+                value={getDateDraftValue(draft, def.id).from ?? ''}
+                onChange={(event) => {
+                  onDraftChange(setDateDraftValue(draft, def.id, 'from', event.target.value));
+                }}
+              />
+              <span className={styles.rangeSeparator} aria-hidden="true">
+                –
+              </span>
+              <input
+                type="date"
+                className={styles.rangeInput}
+                aria-label={t('data_table.filter_to', '{{label}} to', { label: def.label })}
+                value={getDateDraftValue(draft, def.id).to ?? ''}
+                onChange={(event) => {
+                  onDraftChange(setDateDraftValue(draft, def.id, 'to', event.target.value));
+                }}
+              />
+            </div>
+          )}
+        </div>
+      ))}
+      <div className={styles.filtersPanelActions}>
+        <button type="button" className={styles.filtersSecondaryButton} onClick={onClearDraft}>
+          {clearDraftLabel}
+        </button>
+        <button type="button" className={styles.filtersPrimaryButton} onClick={onApply}>
+          {applyLabel}
+        </button>
+      </div>
+      <p className={styles.filtersHint}>{filtersHint}</p>
     </div>
-    <p className={styles.filtersHint}>{filtersHint}</p>
-  </div>
-);
+  );
+};
 
 /**
  * The toolbar filters trigger + panel. Opening clones the applied filters
@@ -263,7 +266,15 @@ export const DataTableFilters = ({
           activeFilterCount > 0 && styles.filtersTriggerActive,
         )}
         aria-expanded={open}
+        aria-haspopup="dialog"
         aria-controls={panelId}
+        aria-label={
+          activeFilterCount > 0
+            ? t('data_table.filters_active', 'Filters, {{count}} active', {
+                count: activeFilterCount,
+              })
+            : undefined
+        }
         onClick={() => {
           if (open) {
             closeFilters();

@@ -21,9 +21,10 @@ type ChipBounds = NonNullable<DataTableFilterChip['bounds']>;
 
 type Translate = ReturnType<typeof useTranslation>['t'];
 
-function formatBoundValue(value: number | string): string {
-  // No locale argument: `toLocaleString` formats with the runtime locale.
-  return typeof value === 'number' ? value.toLocaleString() : String(value);
+function formatBoundValue(value: number | string, locale: string): string {
+  // Locale follows the app language so numbers and t() templates cannot
+  // diverge on machines whose browser locale differs from the UI language.
+  return typeof value === 'number' ? value.toLocaleString(locale) : String(value);
 }
 
 /**
@@ -48,7 +49,7 @@ function labelPrefix(label: string): string {
   return separatorIndex === -1 ? '' : label.slice(0, separatorIndex + 2);
 }
 
-function numericBoundsLabel(bounds: ChipBounds, t: Translate): string | null {
+function numericBoundsLabel(bounds: ChipBounds, t: Translate, locale: string): string | null {
   const min = bounds.min;
   const max = bounds.max;
   if (min === undefined && max === undefined) {
@@ -56,21 +57,23 @@ function numericBoundsLabel(bounds: ChipBounds, t: Translate): string | null {
   }
   if (min !== undefined && max !== undefined) {
     return t('data_table.filter.range', '{{min}}–{{max}}', {
-      min: formatBoundValue(min),
-      max: formatBoundValue(max),
+      min: formatBoundValue(min, locale),
+      max: formatBoundValue(max, locale),
     });
   }
   if (max !== undefined) {
-    return t('data_table.filter.max', '≤ {{max}}', { max: formatBoundValue(max) });
+    return t('data_table.filter.max', '≤ {{max}}', { max: formatBoundValue(max, locale) });
   }
-  return t('data_table.filter.min', '≥ {{min}}', { min: formatBoundValue(min as number) });
+  return t('data_table.filter.min', '≥ {{min}}', {
+    min: formatBoundValue(min as number, locale),
+  });
 }
 
-function chipDisplayLabel(chip: DataTableFilterChip, t: Translate): string {
+function chipDisplayLabel(chip: DataTableFilterChip, t: Translate, locale: string): string {
   if (!chip.bounds || !isNumericBounds(chip.bounds)) {
     return chip.label;
   }
-  const boundsLabel = numericBoundsLabel(chip.bounds, t);
+  const boundsLabel = numericBoundsLabel(chip.bounds, t, locale);
   return boundsLabel === null ? chip.label : labelPrefix(chip.label) + boundsLabel;
 }
 
@@ -87,7 +90,8 @@ export const DataTableFilterChips = ({
   onClearAll,
   clearAllLabel,
 }: DataTableFilterChipsProps) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const locale = i18n.resolvedLanguage ?? i18n.language;
 
   if (chips.length === 0) {
     return null;
@@ -100,7 +104,7 @@ export const DataTableFilterChips = ({
       aria-label={t('data_table.active_filters', 'Active filters')}
     >
       {chips.map((chip) => {
-        const displayLabel = chipDisplayLabel(chip, t);
+        const displayLabel = chipDisplayLabel(chip, t, locale);
         return (
           <span key={chip.key} className={styles.filterChip} role="listitem">
             {displayLabel}

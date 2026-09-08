@@ -27,6 +27,11 @@ type DataTableSearchProps = {
  * value emitted locally (a stale echo would otherwise clobber the caret);
  * the last-seen prop and last-emitted value are tracked in state so the
  * sync happens during render (documented derived-state pattern, no effects).
+ *
+ * Caveat: a view that never echoes `onSearchChange` back into `value`
+ * cannot force the input to a new value programmatically — adoption only
+ * triggers on a `value` prop change. Remounting with a `key` is the escape
+ * hatch for such views.
  */
 export const DataTableSearch = ({
   value,

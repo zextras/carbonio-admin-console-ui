@@ -5,7 +5,6 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import { useEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useDataTable } from '../create-data-table';
@@ -63,12 +62,12 @@ const DensityProbe = () => {
 };
 
 type HarnessProps = {
-  onTable: (table: TestTable) => void;
+  onTableReady: (table: TestTable) => void;
   withFilters?: boolean;
   onDensityChange?: (density: 'comfortable' | 'compact') => void;
 };
 
-const CustomizeHarness = ({ onTable, withFilters = false, onDensityChange }: HarnessProps) => {
+const CustomizeHarness = ({ onTableReady, withFilters = false, onDensityChange }: HarnessProps) => {
   const table = useDataTable<TestRow>({
     data: rows,
     columns,
@@ -76,14 +75,20 @@ const CustomizeHarness = ({ onTable, withFilters = false, onDensityChange }: Har
     initialState: { columnOrder: ['name', 'email', 'role'] },
   });
 
-  useEffect(() => {
-    onTable(table);
-  }, [table, onTable]);
-
   return (
     <TableUiProvider>
       <table.AppTable>
         <TableConfigProvider value={config}>
+          {/* The table instance is created once (useState initializer inside
+              useAppTable), so a mount-time ref callback captures it safely. */}
+          <span
+            aria-hidden="true"
+            ref={(node) => {
+              if (node) {
+                onTableReady(table);
+              }
+            }}
+          />
           <DensityProbe />
           {withFilters && (
             <DataTableFilters
@@ -106,18 +111,17 @@ function renderHarness(
     onDensityChange?: (density: 'comfortable' | 'compact') => void;
   } = {},
 ): { getTable: () => TestTable } {
-  let table: TestTable | undefined;
-  const onTable = (instance: TestTable): void => {
-    table = instance;
-  };
+  const holder: { table?: TestTable } = {};
   render(
     <CustomizeHarness
-      onTable={onTable}
+      onTableReady={(instance) => {
+        holder.table = instance;
+      }}
       withFilters={options.withFilters}
       onDensityChange={options.onDensityChange}
     />,
   );
-  return { getTable: () => table as TestTable };
+  return { getTable: () => holder.table as TestTable };
 }
 
 function getCustomizeTrigger(): HTMLElement {

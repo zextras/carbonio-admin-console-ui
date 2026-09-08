@@ -24,6 +24,7 @@ vi.mock('react-i18next', () => ({
         (_match: string, name: string) => options[name] ?? '',
       );
     },
+    i18n: { resolvedLanguage: 'de-DE', language: 'de-DE' },
   }),
 }));
 
@@ -45,12 +46,12 @@ describe('DataTableFilterChips', () => {
     expect(screen.getByText('Size: ≥ 10')).toBeTruthy();
   });
 
-  it('formats numeric bounds with the runtime locale', () => {
+  it('formats numeric bounds with the app language, not the browser locale', () => {
     const chips: Array<DataTableFilterChip> = [
       { key: 'size:max', filterId: 'size', label: 'Size: ≤ 1234', bounds: { max: 1234 } },
     ];
     render(<DataTableFilterChips chips={chips} onRemoveChip={vi.fn()} onClearAll={vi.fn()} />);
-    expect(screen.getByText(`Size: ≤ ${(1234).toLocaleString()}`)).toBeTruthy();
+    expect(screen.getByText('Size: ≤ 1.234')).toBeTruthy();
   });
 
   it('falls back to the model label when there are no bounds', () => {
