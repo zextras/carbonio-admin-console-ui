@@ -4,13 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { RowData, RowSelectionState, Table } from '@tanstack/react-table';
+import type { RowData, RowSelectionState } from '@tanstack/react-table';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
-import type { DataTableFeatures } from '../data-table-features';
 import type { DataTableBulkAction, DataTableBulkJobState } from '../models/types';
 import { type DataTableUiStore, useTableUi, useTableUiStore } from '../table-ui-store';
 import { DataTableConfirmDialog } from './confirm-dialog';
@@ -77,21 +76,6 @@ function resetStaleSelectAllMatching(store: DataTableUiStore): void {
   if (store.getState().selectAllMatching) {
     store.getState().setSelectAllMatching(false);
   }
-}
-
-/**
- * Total rows behind the current filters, mirroring the legacy orchestrator
- * (`manualFiltering ? rowCount ?? data.length : filtered row model`) via
- * the table options, the same resolution the footer part uses.
- */
-function resolveFilteredRowCount<TData extends RowData>(
-  table: Table<DataTableFeatures, TData>,
-): number {
-  const { manualFiltering, rowCount, data } = table.options;
-  if (manualFiltering === true || rowCount !== undefined) {
-    return rowCount ?? data.length;
-  }
-  return table.getFilteredRowModel().rows.length;
 }
 
 type BulkBannerProps = {
@@ -167,6 +151,7 @@ export const DataTableBulkBar = <TData extends RowData>({
   const table = useDataTableContext<TData>();
   const uiStore = useTableUiStore();
   const selectAllMatching = useTableUi((s) => s.selectAllMatching);
+  const manualRowCount = useTableUi((s) => s.resolvedRowCount);
   const undoToast = useTableUi((s) => s.undoToast);
   const [pendingConfirm, setPendingConfirm] = useState<DataTableBulkAction | null>(null);
   const undoIdRef = useRef(0);
@@ -181,9 +166,16 @@ export const DataTableBulkBar = <TData extends RowData>({
     confirmCancel: bulkConfirmCancelLabel ?? t('data_table.bulk_confirm_cancel', 'Cancel'),
   };
 
-  /** Selection count that "select all matching" would act on. */
+  /**
+   * Selection count that "select all matching" would act on. Manual-mode
+   * count comes from the Root-published `resolvedRowCount` store slice
+   * (compiler-safe: render-time `table.options` reads via the context table
+   * are mount-time snapshots under the React Compiler); client mode counts
+   * the filtered row model inside the Subscribe (the selector tuple already
+   * includes `columnFilters`/`globalFilter` so filter changes re-run it).
+   */
   function currentTotalMatching(): number {
-    return totalMatchingCount ?? resolveFilteredRowCount(table);
+    return totalMatchingCount ?? manualRowCount ?? table.getFilteredRowModel().rows.length;
   }
 
   function clearSelection(): void {

@@ -316,6 +316,25 @@ describe('DataTableBulkBar', () => {
     expect(getStore()?.getState().selectAllMatching).toBe(false);
   });
 
+  it('tracks Root republishes of resolvedRowCount without table interaction', async () => {
+    // No totalMatchingCount prop: the count must come from the store slice
+    // DataTableRoot publishes, and keep tracking its republishes.
+    const { getTable, getStore } = renderHarness({ enableSelectAllMatching: true });
+    await selectRows(getTable, 2);
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 2 selected' })).toBeTruthy();
+    await act(async () => {
+      getStore()?.getState().setResolvedRowCount(50);
+      getStore()?.getState().setSelectAllMatching(true);
+    });
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 50 selected' })).toBeTruthy();
+    // A Root republish after a total change must reach the banner with no
+    // table state change alongside it.
+    await act(async () => {
+      getStore()?.getState().setResolvedRowCount(60);
+    });
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 60 selected' })).toBeTruthy();
+  });
+
   it('keeps the selection while a bulk job is active', async () => {
     const onBulkAction = vi.fn();
     const { getTable } = renderHarness({
