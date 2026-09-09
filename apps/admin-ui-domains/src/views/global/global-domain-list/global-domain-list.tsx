@@ -33,14 +33,12 @@ import {
 	useDebouncedValue,
 } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ACCOUNTS, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
-import {
-	clampPaginationToRowCount,
-	useServerTableState,
-} from '../../../hooks/use-server-table-state';
+import { useServerTableState } from '../../../hooks/use-server-table-state';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { attributesToObject, parseDomainAttributes } from '../../../utils/attributes';
 import { getStatusDisplay } from '../../../utils/status';
@@ -70,10 +68,16 @@ export const GlobalDomainList = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
 
+	// #5: the query total is only available after the query hook runs, so
+	// feed it back into the table state via the documented adjust-state-
+	// when-props-change pattern (same as the hook's resetKey); the raw
+	// value keeps a pending query (no placeholder data yet) from clamping.
+	const [totalRowCount, setTotalRowCount] = useState<number | undefined>();
+
 	const {
 		sorting,
 		setSorting,
-		pagination: rawPagination,
+		pagination,
 		setPagination,
 		rowSelection,
 		setRowSelection,
@@ -81,7 +85,11 @@ export const GlobalDomainList = () => {
 		setSearchString,
 		filters,
 		setFilters,
-	} = useServerTableState({ pageSize: RECORD_DISPLAY_LIMIT, initialSorting: NAME_SORT });
+	} = useServerTableState({
+		pageSize: RECORD_DISPLAY_LIMIT,
+		initialSorting: NAME_SORT,
+		totalRowCount,
+	});
 
 	const debouncedSearch = useDebouncedValue(searchString, 700);
 	const statusFilters = enumFilterValues(filters, 'status');
@@ -89,24 +97,21 @@ export const GlobalDomainList = () => {
 
 	const { data, isPending, isError, error, refetch } = useDomainSearch({
 		searchQuery: debouncedSearch,
-		limit: rawPagination.pageSize,
-		offset: rawPagination.pageIndex * rawPagination.pageSize,
+		limit: pagination.pageSize,
+		offset: pagination.pageIndex * pagination.pageSize,
 		sortAscending,
 		statusFilters,
 	});
+
+	if (data?.searchTotal !== totalRowCount) {
+		setTotalRowCount(data?.searchTotal);
+	}
 
 	useQueryErrorSnackbar(error);
 
 	const rawDomains = data?.domain ?? [];
 	const totalDomain = data?.searchTotal ?? 0;
 	const tableStatus = resolveTableStatus(isPending, isError, rawDomains.length);
-
-	// The query total is only known after the query hook runs, so the clamp
-	// cannot flow through the state hook options: derive the pagination the
-	// table is controlled with instead. The clamped page's data is NOT
-	// fetched until the next pagination/query-shape change — the body may
-	// briefly show the empty state while the footer shows the clamped count.
-	const pagination = clampPaginationToRowCount(rawPagination, totalDomain);
 
 	const filterDefs: Array<DataTableFilterDef> = [
 		{

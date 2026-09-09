@@ -171,6 +171,51 @@ describe('useServerTableState', () => {
 
       expect(result.current.pagination.pageIndex).toBe(2);
     });
+
+    it('writes the clamped page back into state when totalRowCount shrinks', () => {
+      const { result, rerender } = setup({ pageSize: 25 });
+
+      act(() => {
+        result.current.setPagination((prev) => ({ ...prev, pageIndex: 3 }));
+      });
+      expect(result.current.pagination.pageIndex).toBe(3);
+
+      rerender({ pageSize: 25, totalRowCount: 100 });
+      expect(result.current.pagination.pageIndex).toBe(3);
+
+      rerender({ pageSize: 25, totalRowCount: 30 });
+      expect(result.current.pagination.pageIndex).toBe(1);
+
+      // The clamp must live in state, not only in the returned snapshot:
+      // dropping the total again (a query loading without placeholder
+      // data) must not resurrect the phantom page.
+      rerender({ pageSize: 25 });
+      expect(result.current.pagination.pageIndex).toBe(1);
+    });
+
+    it('does not clamp while totalRowCount is undefined', () => {
+      const { result, rerender } = setup({ pageSize: 25 });
+
+      act(() => {
+        result.current.setPagination((prev) => ({ ...prev, pageIndex: 3 }));
+      });
+
+      rerender({ pageSize: 25, totalRowCount: undefined });
+
+      expect(result.current.pagination.pageIndex).toBe(3);
+    });
+
+    it('does not clamp upward when the total grows', () => {
+      const { result, rerender } = setup({ pageSize: 25, totalRowCount: 30 });
+
+      act(() => {
+        result.current.setPagination((prev) => ({ ...prev, pageIndex: 1 }));
+      });
+
+      rerender({ pageSize: 25, totalRowCount: 1000 });
+
+      expect(result.current.pagination.pageIndex).toBe(1);
+    });
   });
 
   describe('review fix #5b — resetKey change clears all table state', () => {

@@ -14,13 +14,12 @@ export type UseServerTableStateOptions = {
   /** Initial page size. Default: 25 */
   pageSize?: number;
   /**
-   * Server-reported total row count used to clamp the returned pagination
-   * after the result set shrinks (review fix #5a). The clamp only adjusts
-   * the table chrome: the clamped page's data is not refetched until the
-   * next pagination or query-shape change. Only usable when the total is
-   * known before this hook runs (e.g. supplied by a parent); a total
-   * produced by a query that depends on this hook's pagination must be
-   * clamped via `clampPaginationToRowCount` at the call site instead.
+   * Server-reported total row count used to clamp the page index INTO
+   * state after the result set shrinks (deletions, changed result sets).
+   * The clamp is self-healing: because the query offset derives from this
+   * hook's pagination, the clamped page's data is refetched. Views MUST
+   * pass the raw query total (`data?.total`, NOT `?? 0`) so a pending
+   * query without placeholder data does not spuriously clamp to page 0.
    */
   totalRowCount?: number;
   /** Sorting applied on mount and restored after a resetKey change. */
@@ -28,9 +27,9 @@ export type UseServerTableStateOptions = {
 };
 
 /**
- * Clamp the page index against the server total. Pure: the clamped value is
- * derived during render and never written back, so the state self-heals on
- * the next pagination change without extra renders.
+ * Clamp the page index against the server total. Pure helper — the
+ * clamped value is applied by `useServerTableState`, which writes it back
+ * into state; an undefined total never clamps.
  */
 export function clampPaginationToRowCount(
   pagination: PaginationState,
@@ -59,8 +58,10 @@ type Updater<T> = T | ((prev: T) => T);
  *   into the new result set. TanStack cannot do this itself in manual mode
  *   (the data array is opaque to it), so the reset composes into the
  *   setters. Applying a value that is unchanged does not reset.
- * - Review fix #5a: a `totalRowCount` option clamps the returned pagination
- *   when the server total shrinks (deletions, changed result sets).
+ * - Review fix #5a: a `totalRowCount` option clamps the page index INTO
+ *   state when the server total shrinks (deletions, changed result sets).
+ *   The clamp is self-healing: the clamped page's data is refetched
+ *   because the query offset changes.
  * - Review fix #5b: a `resetKey` change resets every slice. This is a
  *   prop-driven adjustment (not an event), applied during render with a
  *   convergence guard — React's documented "adjust state when props
@@ -130,10 +131,21 @@ export function useServerTableState({
     setSortingState(initialSorting);
   }
 
+  // #5: clamp the page index INTO state when the server total shrinks
+  // (deletions, changed result sets) so the query offset, the table chrome
+  // and the internal page stay in sync — React's documented
+  // adjust-state-when-props-change pattern, same as the resetKey guard
+  // above. Undefined total (query loading without placeholder data) never
+  // clamps, and an unchanged clamp converges without extra renders.
+  const clampedPagination = clampPaginationToRowCount(pagination, totalRowCount);
+  if (clampedPagination.pageIndex !== pagination.pageIndex) {
+    setPagination(clampedPagination);
+  }
+
   return {
     sorting,
     setSorting,
-    pagination: clampPaginationToRowCount(pagination, totalRowCount),
+    pagination,
     setPagination,
     rowSelection,
     setRowSelection,

@@ -42,10 +42,7 @@ import { useParams } from 'react-router';
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
-import {
-	clampPaginationToRowCount,
-	useServerTableState,
-} from '../../../hooks/use-server-table-state';
+import { useServerTableState } from '../../../hooks/use-server-table-state';
 import { domainQueryKeys } from '../../../services/domain-query-keys';
 import {
 	AccountListEntry,
@@ -181,10 +178,16 @@ export const ManageAccounts = () => {
 	const [showCreateAccountView, setShowCreateAccountView] = useState<boolean>(false);
 	const [showEditAccountView, setShowEditAccountView] = useState<boolean>(false);
 
+	// #5: the query total is only available after the query hook runs, so
+	// feed it back into the table state via the documented adjust-state-
+	// when-props-change pattern (same as the hook's resetKey); the raw
+	// value keeps a pending query (no placeholder data yet) from clamping.
+	const [totalRowCount, setTotalRowCount] = useState<number | undefined>();
+
 	const {
 		sorting,
 		setSorting,
-		pagination: rawPagination,
+		pagination,
 		setPagination,
 		rowSelection,
 		setRowSelection,
@@ -196,6 +199,7 @@ export const ManageAccounts = () => {
 		resetKey: domainId,
 		pageSize: RECORD_DISPLAY_LIMIT,
 		initialSorting: NAME_SORT,
+		totalRowCount,
 	});
 
 	const typeFilter = typeFilterToLdap(enumFilterValues(filters, 'type'));
@@ -211,14 +215,18 @@ export const ManageAccounts = () => {
 			type: 'accounts',
 			domainName,
 			query: searchQuery,
-			offset: rawPagination.pageIndex * rawPagination.pageSize,
-			limit: rawPagination.pageSize,
+			offset: pagination.pageIndex * pagination.pageSize,
+			limit: pagination.pageSize,
 			sortBy,
 			sortAscending,
 			select: selectAccountListWithTotal,
 		},
 		!!domainName,
 	);
+
+	if (data?.total !== totalRowCount) {
+		setTotalRowCount(data?.total);
+	}
 
 	const modifyAccountAttributes = useModifyAccountAttributes();
 
@@ -254,11 +262,6 @@ export const ManageAccounts = () => {
 	const accounts: Array<AccountRowItem> = (data?.accounts ?? []).map(flattenAccountAttributes);
 	const totalAccount = data?.total ?? 0;
 	const tableStatus = resolveTableStatus(isPending, isError, accounts.length);
-
-	// The query total is only known after the query hook runs, so the clamp
-	// cannot flow through the state hook options: derive the pagination the
-	// table is controlled with instead (same stopgap as the domain list).
-	const pagination = clampPaginationToRowCount(rawPagination, totalAccount);
 
 	const filterDefs: Array<DataTableFilterDef> = [
 		{
