@@ -15,7 +15,6 @@ import type {
   RowData,
   RowSelectionState,
   SortingState,
-  Table,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { type ReactNode, useState } from 'react';
@@ -23,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from './create-data-table';
 import styles from './data-table.module.css';
+import { useDataTableContext } from './data-table-contexts';
 import type { DataTableFeatures } from './data-table-features';
 import {
   ACTIONS_COLUMN_ID,
@@ -116,7 +116,6 @@ function defaultGetRowId<TData extends RowData>(row: TData, index: number): stri
 
 type SelectRowCellProps<TData extends RowData> = {
   row: Row<DataTableFeatures, TData>;
-  table: Table<DataTableFeatures, TData>;
   uiStore: DataTableUiStore;
   selectRowLabel: string;
 };
@@ -125,41 +124,48 @@ type SelectRowCellProps<TData extends RowData> = {
  * Store-aware row checkbox: while "select all matching" is active every
  * row renders checked (the flag spans pages the selection state has
  * never seen), and unchecking any row breaks the flag down to an
- * explicit selection of the remaining page rows.
+ * explicit selection of the remaining page rows. The checked state is
+ * derived inside a `table.Subscribe` render prop on purpose: the React
+ * Compiler caches `row.getIsSelected()` on the stable row identity, so
+ * reading it in a plain prop would freeze the checkbox at its
+ * mount-time value while the row selection changes underneath.
  */
 const SelectRowCell = <TData extends RowData>({
   row,
-  table,
   uiStore,
   selectRowLabel,
 }: SelectRowCellProps<TData>) => {
+  const table = useDataTableContext<TData>();
   const selectAllMatching = useTableUi((s) => s.selectAllMatching);
   return (
-    <SelectionCheckbox
-      aria-label={selectRowLabel}
-      checked={row.getIsSelected() || selectAllMatching}
-      disabled={!row.getCanSelect()}
-      onChange={(event) => {
-        const checked = event.target.checked;
-        if (selectAllMatching && !checked) {
-          const next: RowSelectionState = {};
-          table.getRowModel().rows.forEach((pageRow) => {
-            if (pageRow.id !== row.id) {
-              next[pageRow.id] = true;
+    <table.Subscribe selector={(state) => state.rowSelection[row.id] === true}>
+      {(isSelected) => (
+        <SelectionCheckbox
+          aria-label={selectRowLabel}
+          checked={isSelected || selectAllMatching}
+          disabled={!row.getCanSelect()}
+          onChange={(event) => {
+            const checked = event.target.checked;
+            if (selectAllMatching && !checked) {
+              const next: RowSelectionState = {};
+              table.getRowModel().rows.forEach((pageRow) => {
+                if (pageRow.id !== row.id) {
+                  next[pageRow.id] = true;
+                }
+              });
+              table.setRowSelection(next);
+              uiStore.getState().setSelectAllMatching(false);
+              return;
             }
-          });
-          table.setRowSelection(next);
-          uiStore.getState().setSelectAllMatching(false);
-          return;
-        }
-        row.getToggleSelectedHandler()(event);
-      }}
-    />
+            row.getToggleSelectedHandler()(event);
+          }}
+        />
+      )}
+    </table.Subscribe>
   );
 };
 
-type SelectAllCellProps<TData extends RowData> = {
-  table: Table<DataTableFeatures, TData>;
+type SelectAllCellProps = {
   uiStore: DataTableUiStore;
   selectAllLabel: string;
 };
@@ -168,27 +174,43 @@ type SelectAllCellProps<TData extends RowData> = {
  * Store-aware header checkbox: while "select all matching" is active the
  * header renders checked even on pages the selection state has never
  * seen, and unchecking it clears the whole selection (flag included).
+ * Like the row checkbox, the derived all/some page-rows state is read
+ * inside a `table.Subscribe`: the selector runs outside compiled render
+ * code, so `table.getRowModel()` and the selection slice stay fresh
+ * instead of being cached on the stable table identity. The header part
+ * itself only subscribes to column-layout slices, so this subscription
+ * is what makes the checkbox track page selection.
  */
-const SelectAllCell = <TData extends RowData>({
-  table,
-  uiStore,
-  selectAllLabel,
-}: SelectAllCellProps<TData>) => {
+const SelectAllCell = ({ uiStore, selectAllLabel }: SelectAllCellProps) => {
+  const table = useDataTableContext();
   const selectAllMatching = useTableUi((s) => s.selectAllMatching);
   return (
-    <SelectionCheckbox
-      aria-label={selectAllLabel}
-      checked={table.getIsAllPageRowsSelected() || selectAllMatching}
-      indeterminate={table.getIsSomePageRowsSelected()}
-      onChange={(event) => {
-        if (selectAllMatching && !event.target.checked) {
-          table.resetRowSelection();
-          uiStore.getState().setSelectAllMatching(false);
-          return;
-        }
-        table.getToggleAllPageRowsSelectedHandler()(event);
+    <table.Subscribe
+      selector={(state) => {
+        const pageRowIds = table.getRowModel().rows.map((pageRow) => pageRow.id);
+        const allPageRowsSelected =
+          pageRowIds.length > 0 && pageRowIds.every((id) => state.rowSelection[id] === true);
+        const somePageRowsSelected =
+          !allPageRowsSelected && pageRowIds.some((id) => state.rowSelection[id] === true);
+        return [allPageRowsSelected, somePageRowsSelected] as const;
       }}
-    />
+    >
+      {([allPageRowsSelected, somePageRowsSelected]) => (
+        <SelectionCheckbox
+          aria-label={selectAllLabel}
+          checked={allPageRowsSelected || selectAllMatching}
+          indeterminate={somePageRowsSelected}
+          onChange={(event) => {
+            if (selectAllMatching && !event.target.checked) {
+              table.resetRowSelection();
+              uiStore.getState().setSelectAllMatching(false);
+              return;
+            }
+            table.getToggleAllPageRowsSelectedHandler()(event);
+          }}
+        />
+      )}
+    </table.Subscribe>
   );
 };
 
@@ -202,17 +224,12 @@ function buildSelectColumn<TData extends RowData>(options: {
     enableSorting: false,
     enableColumnFilter: false,
     enableHiding: false,
-    header: ({ table }) => (
-      <SelectAllCell
-        table={table}
-        uiStore={options.uiStore}
-        selectAllLabel={options.selectAllLabel}
-      />
+    header: () => (
+      <SelectAllCell uiStore={options.uiStore} selectAllLabel={options.selectAllLabel} />
     ),
-    cell: ({ row, table }) => (
+    cell: ({ row }) => (
       <SelectRowCell
         row={row}
-        table={table}
         uiStore={options.uiStore}
         selectRowLabel={options.selectRowLabel}
       />
