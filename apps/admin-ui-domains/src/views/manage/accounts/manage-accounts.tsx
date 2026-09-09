@@ -98,8 +98,6 @@ const ACCOUNT_SORTABLE_IDS = new Set(['name', 'displayName']);
 
 const NAME_SORT: Array<{ id: string; desc: boolean }> = [{ id: 'name', desc: false }];
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
-
 type AccountSortState = Array<{ id: string; desc: boolean }>;
 
 type AccountListData = {
@@ -479,7 +477,6 @@ export const ManageAccounts = () => {
 	const hasSelection = Object.values(rowSelection).some(Boolean);
 
 	const filterChips = buildFilterChips(filters, filterDefs);
-	const pageCount = Math.max(1, Math.ceil(totalAccount / pagination.pageSize));
 	const showPaginationControls = totalAccount > RECORD_DISPLAY_LIMIT;
 
 	return (
@@ -595,41 +592,13 @@ export const ManageAccounts = () => {
 									retryLabel={t('label.retry', 'Retry')}
 									onCellEditCommit={handleCellEditCommit}
 								/>
-								{tableStatus !== 'loading' &&
-									tableStatus !== 'error' &&
-									(showPaginationControls ? (
-										<DataTablePagination
-											pageIndex={pagination.pageIndex}
-											pageSize={pagination.pageSize}
-											rowCount={totalAccount}
-											pageCount={pageCount}
-											pageSizeOptions={PAGE_SIZE_OPTIONS}
-											rowsPerPageLabel={t('label.rows_per_page', 'Rows per page')}
-											goToPageLabel={t('label.go_to_page', 'Go to page')}
-											canPreviousPage={pagination.pageIndex > 0}
-											canNextPage={pagination.pageIndex < pageCount - 1}
-											onPreviousPage={() => {
-												setPagination({
-													...pagination,
-													pageIndex: Math.max(0, pagination.pageIndex - 1),
-												});
-											}}
-											onNextPage={() => {
-												setPagination({
-													...pagination,
-													pageIndex: pagination.pageIndex + 1,
-												});
-											}}
-											onSetPageIndex={(pageIndex) => {
-												setPagination({ ...pagination, pageIndex });
-											}}
-											onSetPageSize={(pageSize) => {
-												setPagination({ pageIndex: 0, pageSize });
-											}}
-										/>
-									) : (
-										<DataTableTableFooter paginationThreshold={RECORD_DISPLAY_LIMIT} />
-									))}
+							{tableStatus !== 'loading' &&
+								tableStatus !== 'error' &&
+								(showPaginationControls ? (
+									<DataTablePagination />
+								) : (
+									<DataTableTableFooter paginationThreshold={RECORD_DISPLAY_LIMIT} />
+								))}
 								<DataTablePeekPanel<AccountRowItem>
 									title={(account) => account.name}
 									status={(account) => {

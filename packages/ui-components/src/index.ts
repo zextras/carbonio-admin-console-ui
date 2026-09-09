@@ -95,17 +95,13 @@ export * from './components/custom/track-number-per-page';
 export * from './components/display/Chip';
 export * from './components/display/CustomChip';
 export {
-  DataTable,
   type DataTableBulkAction,
-  type DataTableBulkActionContext,
-  type DataTableBulkActionResult,
   type DataTableBulkJobState,
   type DataTableBulkVariant,
   type DataTableCellEditCommit,
   type DataTableColumnDef,
   type DataTableColumnMeta,
   type DataTableDateFilterValue,
-  type DataTableDensity,
   type DataTableEditingState,
   type DataTableEnumFilterValue,
   type DataTableFeatures,
@@ -116,11 +112,9 @@ export {
   type DataTableFiltersState,
   type DataTableFilterValue,
   type DataTablePeekField,
-  type DataTableProps,
   type DataTableRangeFilterValue,
   type DataTableRowAction,
   type DataTableStatus,
-  type DataTableUndoToastState,
 } from './components/display/data-table';
 export * from './components/display/Dropdown';
 export * from './components/display/List/List';
@@ -136,7 +130,8 @@ export {
 
 /**
  * Composable DataTable parts (Root + parts composition). The legacy
- * monolithic `DataTable` above stays exported until all views migrate.
+ * monolithic `DataTable` orchestrator was removed; compose `DataTableRoot`
+ * with the parts below instead.
  */
 export {
   type DataTableBulkActionEvent,
@@ -164,7 +159,6 @@ export {
   useDataTable,
 } from './components/display/data-table/create-data-table';
 export { useDataTableContext } from './components/display/data-table/data-table-contexts';
-export { DataTablePagination } from './components/display/data-table/data-table-pagination';
 export {
   DataTableRoot,
   type DataTableRootProps,
@@ -175,6 +169,10 @@ export {
   removeFilterChip,
 } from './components/display/data-table/models/filter-model';
 export {
+  DataTablePagination,
+  type DataTablePaginationProps,
+} from './components/display/data-table/pagination';
+export {
   DataTablePeekPanel,
   type DataTablePeekPanelProps,
 } from './components/display/data-table/peek-panel';
@@ -184,6 +182,10 @@ export {
 } from './components/display/data-table/stale-banner';
 export { DataTableTable, type DataTableTableProps } from './components/display/data-table/table';
 export { DataTableTableFooter } from './components/display/data-table/table-footer';
+export type {
+  DataTableDensity,
+  DataTableUndoToastState,
+} from './components/display/data-table/table-ui-store';
 export {
   DataTableCustomize,
   type DataTableCustomizeProps,
@@ -199,7 +201,10 @@ export * from './components/display/Tooltip';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';
-export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/LicenseBanner';
+export {
+  LicenseBanner,
+  type LicenseBannerProps,
+} from './components/feedback/license-banner/LicenseBanner';
 export * from './components/feedback/Modal';
 export * from './components/feedback/quota/Quota';
 export * from './components/feedback/snackbar/Snackbar';

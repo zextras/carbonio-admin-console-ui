@@ -25,3 +25,31 @@ export function clampRange(rowCount: number, pageIndex: number, pageSize: number
 export function isStalePage(rowCount: number, pageIndex: number, pageSize: number): boolean {
   return rowCount > 0 && pageIndex * pageSize >= rowCount;
 }
+
+/** Minimal table surface `resolveRowCount` needs (structural: keeps the model pure). */
+export type RowCountSource = {
+  options: { manualFiltering?: boolean; rowCount?: number; data: ReadonlyArray<unknown> };
+  getFilteredRowModel: () => { rows: Array<unknown> };
+};
+
+/**
+ * Total rows behind the table. Manual mode (or an explicit `rowCount` option)
+ * trusts the server count (`rowCount ?? data.length`); client-side filtering
+ * counts the filtered row model — NOT the paginated row model, which only
+ * holds the current page.
+ */
+export function resolveRowCount(table: RowCountSource): number {
+  const { manualFiltering, rowCount, data } = table.options;
+  if (manualFiltering === true || rowCount !== undefined) {
+    return rowCount ?? data.length;
+  }
+  return table.getFilteredRowModel().rows.length;
+}
+
+export function defaultResultsLabel(count: number): string {
+  return `${count} result${count === 1 ? '' : 's'}`;
+}
+
+export function defaultRangeLabel(from: number, to: number, count: number): string {
+  return `${from.toLocaleString('en')}–${to.toLocaleString('en')} of ${count.toLocaleString('en')}`;
+}

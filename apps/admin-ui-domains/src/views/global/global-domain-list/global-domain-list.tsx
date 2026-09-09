@@ -54,8 +54,6 @@ const DOMAIN_STATUS_VALUES = ['active', 'closed', 'locked', 'maintenance', 'susp
 
 const NAME_SORT: DomainSortState = [{ id: 'name', desc: false }];
 
-const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
-
 function sortingToAscending(sorting: DomainSortState): string {
 	const nameSort = sorting.find((entry) => entry.id === 'name');
 	if (!nameSort) {
@@ -212,7 +210,6 @@ export const GlobalDomainList = () => {
 	const hasSelection = Object.values(rowSelection).some(Boolean);
 
 	const filterChips = buildFilterChips(filters, filterDefs);
-	const pageCount = Math.max(1, Math.ceil(totalDomain / pagination.pageSize));
 	const showPaginationControls = totalDomain > RECORD_DISPLAY_LIMIT;
 
 	return (
@@ -314,35 +311,7 @@ export const GlobalDomainList = () => {
 						{tableStatus !== 'loading' &&
 							tableStatus !== 'error' &&
 							(showPaginationControls ? (
-								<DataTablePagination
-									pageIndex={pagination.pageIndex}
-									pageSize={pagination.pageSize}
-									rowCount={totalDomain}
-									pageCount={pageCount}
-									pageSizeOptions={PAGE_SIZE_OPTIONS}
-									rowsPerPageLabel={t('label.rows_per_page', 'Rows per page')}
-									goToPageLabel={t('label.go_to_page', 'Go to page')}
-									canPreviousPage={pagination.pageIndex > 0}
-									canNextPage={pagination.pageIndex < pageCount - 1}
-									onPreviousPage={() => {
-										setPagination({
-											...pagination,
-											pageIndex: Math.max(0, pagination.pageIndex - 1),
-										});
-									}}
-									onNextPage={() => {
-										setPagination({
-											...pagination,
-											pageIndex: pagination.pageIndex + 1,
-										});
-									}}
-									onSetPageIndex={(pageIndex) => {
-										setPagination({ ...pagination, pageIndex });
-									}}
-									onSetPageSize={(pageSize) => {
-										setPagination({ pageIndex: 0, pageSize });
-									}}
-								/>
+								<DataTablePagination />
 							) : (
 								<DataTableTableFooter paginationThreshold={RECORD_DISPLAY_LIMIT} />
 							))}
