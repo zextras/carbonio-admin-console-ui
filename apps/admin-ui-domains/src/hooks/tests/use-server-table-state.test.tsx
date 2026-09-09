@@ -258,7 +258,7 @@ describe('useServerTableState', () => {
 });
 
 describe('clampPaginationToRowCount', () => {
-  it('clamps a fresh query total (the path views use for query-derived totals)', () => {
+  it('clamps a fresh query total (the bridge path views use for query-derived totals)', () => {
     expect(clampPaginationToRowCount({ pageIndex: 3, pageSize: 25 }, 30).pageIndex).toBe(1);
     expect(clampPaginationToRowCount({ pageIndex: 3, pageSize: 25 }, 100).pageIndex).toBe(3);
     expect(clampPaginationToRowCount({ pageIndex: 3, pageSize: 25 }, undefined).pageIndex).toBe(3);

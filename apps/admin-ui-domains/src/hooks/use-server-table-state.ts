@@ -139,7 +139,9 @@ export function useServerTableState({
   // clamps, and an unchanged clamp converges without extra renders.
   const clampedPagination = clampPaginationToRowCount(pagination, totalRowCount);
   if (clampedPagination.pageIndex !== pagination.pageIndex) {
-    setPagination(clampedPagination);
+    // Functional form: clamps the latest state, so a same-render resetKey
+    // reset (also functional) can never be clobbered by this adjustment.
+    setPagination((prev) => clampPaginationToRowCount(prev, totalRowCount));
   }
 
   return {
