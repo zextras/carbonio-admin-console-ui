@@ -116,6 +116,29 @@ function buildCellStyle(options: {
   };
 }
 
+type EditingReconcilerProps = {
+  pageRowIds: Array<string>;
+};
+
+/**
+ * Clears the store's editing target once its row leaves the row model
+ * (page change, filter-away): a stale target would otherwise re-open
+ * that cell in edit mode — with its draft silently lost — when the row
+ * re-enters the model. Rendered inside the row-model subscription, so
+ * the page-row-ids prop changes identity on every row-model change
+ * (same compiler-memoization defeat as the scroll-edge effect props).
+ */
+const EditingReconciler = ({ pageRowIds }: EditingReconcilerProps) => {
+  const editing = useTableUi((s) => s.editing);
+  const setEditing = useTableUi((s) => s.setEditing);
+  useEffect(() => {
+    if (editing !== null && !pageRowIds.includes(editing.rowId)) {
+      setEditing(null);
+    }
+  }, [editing, pageRowIds, setEditing]);
+  return null;
+};
+
 export const DataTableTableBody = <TData extends RowData>({
   status,
   onRetry,
@@ -199,147 +222,151 @@ export const DataTableTableBody = <TData extends RowData>({
         // Read inside the subscription callback: the part component itself
         // does not re-render on table state changes, only this callback does.
         const pageRows = table.getRowModel().rows;
+        const pageRowIds = pageRows.map((row) => row.id);
         const stateColSpan = table.getVisibleLeafColumns().length;
         return (
-          <tbody>
-            {status === 'loading' && (
-              <DataTableSkeletonRows
-                rowCount={skeletonRowCount}
-                columnCount={columns.length}
-                showSelection={enableRowSelection}
-              />
-            )}
-            {status === 'empty' && (
-              <DataTableEmptyState
-                colSpan={stateColSpan}
-                title={emptyTitle}
-                description={emptyDescription}
-              />
-            )}
-            {status === 'error' && (
-              <DataTableErrorState
-                colSpan={stateColSpan}
-                title={errorTitle}
-                description={errorDescription}
-                retryLabel={retryLabel}
-                onRetry={onRetry}
-              />
-            )}
-            {status === 'idle' &&
-              pageRows.map((row) => {
-                const isSelected = row.getIsSelected() || selectAllMatching;
-                const isPeeking = enablePeek && peekRowId === row.id;
-                const rowLabel = getRowLabel
-                  ? getRowLabel(row.original)
-                  : resolveRowLabel(row.original, row.id, primaryColumnId);
-                return (
-                  <tr
-                    key={row.id}
-                    className={buildRowClassName({ isSelected, isPeeking, isRowInteractive })}
-                    data-selected={isSelected || undefined}
-                    tabIndex={isRowInteractive ? 0 : undefined}
-                    onClick={
-                      isRowInteractive
-                        ? (): void => {
-                            if (enablePeek) {
-                              setPeekRowId(row.id);
-                            }
-                            onRowClick?.(row.original);
-                          }
-                        : undefined
-                    }
-                    onKeyDown={
-                      isRowInteractive
-                        ? (e): void => {
-                            if (e.key === 'Enter' || e.key === ' ') {
-                              e.preventDefault();
+          <>
+            <EditingReconciler pageRowIds={pageRowIds} />
+            <tbody>
+              {status === 'loading' && (
+                <DataTableSkeletonRows
+                  rowCount={skeletonRowCount}
+                  columnCount={columns.length}
+                  showSelection={enableRowSelection}
+                />
+              )}
+              {status === 'empty' && (
+                <DataTableEmptyState
+                  colSpan={stateColSpan}
+                  title={emptyTitle}
+                  description={emptyDescription}
+                />
+              )}
+              {status === 'error' && (
+                <DataTableErrorState
+                  colSpan={stateColSpan}
+                  title={errorTitle}
+                  description={errorDescription}
+                  retryLabel={retryLabel}
+                  onRetry={onRetry}
+                />
+              )}
+              {status === 'idle' &&
+                pageRows.map((row) => {
+                  const isSelected = row.getIsSelected() || selectAllMatching;
+                  const isPeeking = enablePeek && peekRowId === row.id;
+                  const rowLabel = getRowLabel
+                    ? getRowLabel(row.original)
+                    : resolveRowLabel(row.original, row.id, primaryColumnId);
+                  return (
+                    <tr
+                      key={row.id}
+                      className={buildRowClassName({ isSelected, isPeeking, isRowInteractive })}
+                      data-selected={isSelected || undefined}
+                      tabIndex={isRowInteractive ? 0 : undefined}
+                      onClick={
+                        isRowInteractive
+                          ? (): void => {
                               if (enablePeek) {
                                 setPeekRowId(row.id);
                               }
                               onRowClick?.(row.original);
                             }
-                          }
-                        : undefined
-                    }
-                  >
-                    {row.getVisibleCells().map((cell) => {
-                      const meta = cell.column.columnDef.meta as DataTableColumnMeta | undefined;
-                      const pinnedStart = cell.column.getIsPinned() === 'start';
-                      const pinnedEnd = cell.column.getIsPinned() === 'end';
-                      const isSelect = cell.column.id === SELECT_COLUMN_ID;
-                      const isActions = cell.column.id === ACTIONS_COLUMN_ID;
-                      const isPrimary = cell.column.id === primaryColumnId;
-                      const columnLabel = resolveColumnLabel(
-                        cell.column.columnDef as DataTableColumnDef<TData>,
-                        cell.column.id,
-                      );
-                      const displayValue = getCellDisplayValue(cell.getValue());
-                      const isEditingCell =
-                        editing !== null &&
-                        editing.rowId === row.id &&
-                        editing.columnId === cell.column.id;
-                      return (
-                        <td
-                          key={cell.id}
-                          className={buildCellClassName({
-                            isSelect,
-                            isActions,
-                            isPrimary,
-                            pinnedStart,
-                            pinnedEnd,
-                            scrollEdgeStart: scrollEdge.start,
-                            scrollEdgeEnd: scrollEdge.end,
-                          })}
-                          style={buildCellStyle({
-                            meta,
-                            isPrimary,
-                            enableRowSelection,
-                            pinnedStart,
-                          })}
-                        >
-                          {isActions || isSelect ? (
-                            <table.FlexRender cell={cell} />
-                          ) : (
-                            <DataTableDecoratedCell
-                              displayValue={displayValue}
-                              columnLabel={columnLabel}
-                              rowLabel={rowLabel}
-                              editable={meta?.editable === true}
-                              copyable={meta?.copyable === true}
-                              isEditing={isEditingCell}
-                              editInitialValue={displayValue}
-                              requiredMessage={editRequiredMessage}
-                              saveLabel={editSaveLabel}
-                              cancelLabel={editCancelLabel}
-                              onStartEdit={() => {
-                                setEditing({ rowId: row.id, columnId: cell.column.id });
-                              }}
-                              onCommitEdit={(value) => {
-                                onCellEditCommit?.({
-                                  rowId: row.id,
-                                  columnId: cell.column.id,
-                                  value,
-                                  row: row.original,
-                                });
-                                setEditing(null);
-                              }}
-                              onCancelEdit={() => {
-                                setEditing(null);
-                              }}
-                              onCopy={() => {
-                                void handleCopy(displayValue, row.original, cell.column.id);
-                              }}
-                            >
+                          : undefined
+                      }
+                      onKeyDown={
+                        isRowInteractive
+                          ? (e): void => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                if (enablePeek) {
+                                  setPeekRowId(row.id);
+                                }
+                                onRowClick?.(row.original);
+                              }
+                            }
+                          : undefined
+                      }
+                    >
+                      {row.getVisibleCells().map((cell) => {
+                        const meta = cell.column.columnDef.meta as DataTableColumnMeta | undefined;
+                        const pinnedStart = cell.column.getIsPinned() === 'start';
+                        const pinnedEnd = cell.column.getIsPinned() === 'end';
+                        const isSelect = cell.column.id === SELECT_COLUMN_ID;
+                        const isActions = cell.column.id === ACTIONS_COLUMN_ID;
+                        const isPrimary = cell.column.id === primaryColumnId;
+                        const columnLabel = resolveColumnLabel(
+                          cell.column.columnDef as DataTableColumnDef<TData>,
+                          cell.column.id,
+                        );
+                        const displayValue = getCellDisplayValue(cell.getValue());
+                        const isEditingCell =
+                          editing !== null &&
+                          editing.rowId === row.id &&
+                          editing.columnId === cell.column.id;
+                        return (
+                          <td
+                            key={cell.id}
+                            className={buildCellClassName({
+                              isSelect,
+                              isActions,
+                              isPrimary,
+                              pinnedStart,
+                              pinnedEnd,
+                              scrollEdgeStart: scrollEdge.start,
+                              scrollEdgeEnd: scrollEdge.end,
+                            })}
+                            style={buildCellStyle({
+                              meta,
+                              isPrimary,
+                              enableRowSelection,
+                              pinnedStart,
+                            })}
+                          >
+                            {isActions || isSelect ? (
                               <table.FlexRender cell={cell} />
-                            </DataTableDecoratedCell>
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                );
-              })}
-          </tbody>
+                            ) : (
+                              <DataTableDecoratedCell
+                                displayValue={displayValue}
+                                columnLabel={columnLabel}
+                                rowLabel={rowLabel}
+                                editable={meta?.editable === true}
+                                copyable={meta?.copyable === true}
+                                isEditing={isEditingCell}
+                                editInitialValue={displayValue}
+                                requiredMessage={editRequiredMessage}
+                                saveLabel={editSaveLabel}
+                                cancelLabel={editCancelLabel}
+                                onStartEdit={() => {
+                                  setEditing({ rowId: row.id, columnId: cell.column.id });
+                                }}
+                                onCommitEdit={(value) => {
+                                  onCellEditCommit?.({
+                                    rowId: row.id,
+                                    columnId: cell.column.id,
+                                    value,
+                                    row: row.original,
+                                  });
+                                  setEditing(null);
+                                }}
+                                onCancelEdit={() => {
+                                  setEditing(null);
+                                }}
+                                onCopy={() => {
+                                  void handleCopy(displayValue, row.original, cell.column.id);
+                                }}
+                              >
+                                <table.FlexRender cell={cell} />
+                              </DataTableDecoratedCell>
+                            )}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                  );
+                })}
+            </tbody>
+          </>
         );
       }}
     </table.Subscribe>

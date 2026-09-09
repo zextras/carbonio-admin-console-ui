@@ -98,6 +98,15 @@ const actionsColumn: DataTableColumnDef<TestRow> = {
   cell: ({ row }) => <TestActionsCell rowId={row.id} />,
 };
 
+const editableRows: Array<TestRow> = Array.from({ length: 10 }, (_, index) => ({
+  id: `row-${String(index + 1).padStart(3, '0')}`,
+  name: `row-${String(index + 1).padStart(3, '0')}`,
+}));
+
+const editableColumns: Array<DataTableColumnDef<TestRow>> = [
+  { accessorKey: 'name', header: 'Name', meta: { editable: true } },
+];
+
 function BodyHarness({
   onTable,
   onStore,
@@ -140,9 +149,7 @@ function firstRowCellText(): string {
   return screen.getAllByRole('cell')[0]?.textContent ?? '';
 }
 
-function renderHarness(
-  options: { withPeek?: boolean; withRowActions?: boolean } = {},
-): {
+function renderHarness(options: { withPeek?: boolean; withRowActions?: boolean } = {}): {
   getTable: () => TestTable | undefined;
   getStore: () => DataTableUiStore | undefined;
 } {
@@ -163,6 +170,40 @@ function renderHarness(
     />,
   );
   return { getTable: () => table, getStore: () => store };
+}
+
+function EditableBodyHarness({
+  onTable,
+  onStore,
+}: {
+  onTable: (table: TestTable) => void;
+  onStore: (store: DataTableUiStore) => void;
+}) {
+  // Same narrow root subscription as BodyHarness: the page change must reach
+  // the body part through its own <table.Subscribe>, not a parent re-render.
+  const table = useDataTable<TestRow, ColumnPinningState>(
+    {
+      data: editableRows,
+      columns: editableColumns,
+      getRowId: (row) => row.id,
+      manualPagination: false,
+      initialState: { pagination: { pageIndex: 0, pageSize: 5 } },
+    },
+    (state) => state.columnPinning,
+  );
+
+  useEffect(() => {
+    onTable(table);
+  }, [table, onTable]);
+
+  return (
+    <TableUiProvider>
+      <table.AppTable>
+        <DataTableTableBody {...bodyProps} />
+        <StoreProbe onStore={onStore} />
+      </table.AppTable>
+    </TableUiProvider>
+  );
 }
 
 describe('DataTableTableBody subscription wiring', () => {
@@ -207,5 +248,41 @@ describe('DataTableTableBody peek layering', () => {
     expect(getStore()?.getState().peekRowId).toBe('row-001');
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(getStore()?.getState().peekRowId).toBeNull();
+  });
+});
+
+describe('DataTableTableBody editing target reconciliation', () => {
+  it('clears the editing target when its row leaves the row model', async () => {
+    let table: TestTable | undefined;
+    let store: DataTableUiStore | undefined;
+    render(
+      <EditableBodyHarness
+        onTable={(instance) => {
+          table = instance;
+        }}
+        onStore={(instance) => {
+          store = instance;
+        }}
+      />,
+    );
+
+    expect(screen.getAllByRole('row')).toHaveLength(5);
+    expect(screen.queryByRole('textbox', { name: 'Name' })).toBeNull();
+
+    await act(async () => {
+      store?.getState().setEditing({ rowId: 'row-001', columnId: 'name' });
+    });
+    expect(screen.getByRole('textbox', { name: 'Name' })).toBeTruthy();
+
+    await act(async () => {
+      table?.setPageIndex(1);
+    });
+    expect(store?.getState().editing).toBeNull();
+
+    await act(async () => {
+      table?.setPageIndex(0);
+    });
+    expect(store?.getState().editing).toBeNull();
+    expect(screen.queryByRole('textbox', { name: 'Name' })).toBeNull();
   });
 });
