@@ -15,8 +15,8 @@ import {
   defaultRangeLabel,
   defaultResultsLabel,
   isStalePage,
-  resolveRowCount,
 } from './models/pagination';
+import { useTableUi } from './table-ui-store';
 
 const DEFAULT_PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 
@@ -53,6 +53,8 @@ export type DataTablePaginationProps = {
 type PaginationControlsProps = {
   table: ReturnType<typeof useDataTableContext>;
   pagination: PaginationState;
+  /** Manual-mode count published by `DataTableRoot` into the UI store. */
+  manualRowCount: number | undefined;
   pageSizeOptions: Array<number>;
   rowsPerPageLabel: string;
   goToPageLabel: string;
@@ -87,6 +89,7 @@ const PageButton = ({ page, current, onSelect }: PageButtonProps) => (
 const PaginationControls = ({
   table,
   pagination,
+  manualRowCount,
   pageSizeOptions,
   rowsPerPageLabel,
   goToPageLabel,
@@ -94,17 +97,22 @@ const PaginationControls = ({
   const [goTo, setGoTo] = useState('');
   const [goToError, setGoToError] = useState(false);
   const currentPage = pagination.pageIndex + 1;
-  const rowCount = resolveRowCount(table);
+  // Manual mode trusts the Root-published store count; client mode counts
+  // the filtered row model live inside the Subscribe (the selector covers
+  // columnFilters/globalFilter so filter changes re-run this).
+  const rowCount = manualRowCount ?? table.getFilteredRowModel().rows.length;
   // Floor at 1 so the controls keep their shape for an empty/unknown result
   // set (mirrors the migrated views' Math.max(1, …) page count).
   const pageCount = Math.max(1, Math.ceil(rowCount / pagination.pageSize));
   const stale = isStalePage(rowCount, pagination.pageIndex, pagination.pageSize);
   const { from, to } = clampRange(rowCount, pagination.pageIndex, pagination.pageSize);
-  // Navigation flags are derived from the subscribed pagination slice, NOT
-  // from `table.getCanPreviousPage()`/`getPageCount()`: those read mutable
-  // atoms behind the stable context table reference, and the React Compiler
-  // memoizes such calls — the buttons would go stale after the first render.
-  // Table mutation APIs are only safe in event handlers below.
+  // Compiler-safety contract: slice-derived pageIndex checks (above) and
+  // store-published counts are safe to compute at render; render-time
+  // `table.options` / `table.state` reads via the context table are NOT —
+  // under the React Compiler the options wrapper is a mount-time snapshot
+  // (AppTable element + prop-less children get memoized), so such reads
+  // never observe updates. Table mutation APIs are only safe in event
+  // handlers below.
   const canPreviousPage = pagination.pageIndex > 0;
   const canNextPage = pagination.pageIndex < pageCount - 1;
 
@@ -209,11 +217,13 @@ const PaginationControls = ({
 
 /**
  * Context-connected pagination controls: page-size select, page buttons and
- * go-to-page input wired straight to the table instance, with the row count
- * resolved like the meta footer (manual mode trusts `rowCount`, client-side
- * filtering counts the filtered row model). On a stale page the from/to
- * window is hidden and only the count is shown (the view clamps the page
- * index separately). Compose inside `DataTableRoot`.
+ * go-to-page input wired straight to the table instance. The manual-mode row
+ * count comes from the UI store (`DataTableRoot` republishes it on every
+ * prop change — render-time `table.options` reads are compiler-frozen);
+ * client-side filtering counts the filtered row model inside the
+ * subscription. On a stale page the from/to window is hidden and only the
+ * count is shown (the view clamps the page index separately). Compose
+ * inside `DataTableRoot`.
  */
 export const DataTablePagination = ({
   pageSizeOptions = DEFAULT_PAGE_SIZE_OPTIONS,
@@ -221,16 +231,20 @@ export const DataTablePagination = ({
   goToPageLabel: goToPageLabelProp,
 }: DataTablePaginationProps) => {
   const table = useDataTableContext();
+  const manualRowCount = useTableUi((s) => s.resolvedRowCount);
   const { t } = useTranslation();
   const rowsPerPageLabel = rowsPerPageLabelProp ?? t('label.rows_per_page', 'Rows per page');
   const goToPageLabel = goToPageLabelProp ?? t('label.go_to_page', 'Go to page');
 
   return (
-    <table.Subscribe selector={(state) => state.pagination}>
-      {(pagination) => (
+    <table.Subscribe
+      selector={(state) => [state.pagination, state.columnFilters, state.globalFilter] as const}
+    >
+      {([pagination]) => (
         <PaginationControls
           table={table}
           pagination={pagination}
+          manualRowCount={manualRowCount}
           pageSizeOptions={pageSizeOptions}
           rowsPerPageLabel={rowsPerPageLabel}
           goToPageLabel={goToPageLabel}

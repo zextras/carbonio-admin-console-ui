@@ -11,8 +11,8 @@ import {
   defaultRangeLabel,
   defaultResultsLabel,
   isStalePage,
-  resolveRowCount,
 } from './models/pagination';
+import { useTableUi } from './table-ui-store';
 
 const DEFAULT_PAGINATION_THRESHOLD = 10;
 
@@ -28,9 +28,12 @@ type DataTableTableFooterProps = {
 /**
  * Meta-only footer line: the row count below the pagination threshold, the
  * clamped from/to window above it. The full pagination controls are the
- * connected `DataTablePagination` part. On a stale page the from/to window
- * is hidden and only the count is shown (the view clamps the page index
- * separately).
+ * connected `DataTablePagination` part. The manual-mode count comes from
+ * the UI store (`DataTableRoot` republishes it on every prop change —
+ * render-time `table.options` reads are compiler-frozen); client-side
+ * filtering counts the filtered row model inside the subscription. On a
+ * stale page the from/to window is hidden and only the count is shown
+ * (the view clamps the page index separately).
  */
 export const DataTableTableFooter = ({
   paginationThreshold = DEFAULT_PAGINATION_THRESHOLD,
@@ -38,13 +41,14 @@ export const DataTableTableFooter = ({
   rangeLabel = defaultRangeLabel,
 }: DataTableTableFooterProps) => {
   const table = useDataTableContext();
+  const manualRowCount = useTableUi((s) => s.resolvedRowCount);
 
   return (
     <table.Subscribe
       selector={(state) => [state.pagination, state.columnFilters, state.globalFilter] as const}
     >
       {([pagination]) => {
-        const rowCount = resolveRowCount(table);
+        const rowCount = manualRowCount ?? table.getFilteredRowModel().rows.length;
         const showRange =
           rowCount > paginationThreshold &&
           !isStalePage(rowCount, pagination.pageIndex, pagination.pageSize);

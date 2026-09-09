@@ -33,7 +33,7 @@ import type { DataTableRowAction, DataTableState } from './models/types';
 import { DataTableRowActions } from './row-ui/row-actions';
 import { SelectionCheckbox } from './row-ui/selection-checkbox';
 import { type DataTableTableConfig, TableConfigProvider } from './table-config-context';
-import { TableUiProvider, useTableUi } from './table-ui-store';
+import { TableUiProvider, useTableUi, useTableUiStore } from './table-ui-store';
 import type { DataTableColumnDef, DataTableColumnMeta } from './types';
 
 export type DataTableRootProps<TData extends RowData> = {
@@ -348,6 +348,19 @@ const DataTableRootShell = <TData extends RowData>({
   };
 
   const resolvedRowCount = manualFiltering ? rowCountProp ?? data.length : undefined;
+
+  // Publish the manual-mode count into the UI store (render-time adjust
+  // guard, same derived-state pattern as the server table state hook: the
+  // write only happens when the value actually changed, so it converges
+  // without extra renders). Root re-renders on every prop change, which
+  // keeps the store tracking the latest count. Parts subscribe to this
+  // slice because the React Compiler memoizes the AppTable element (and
+  // prop-less children), freezing the context table's options wrapper at
+  // mount time for anything reading `table.options` at render.
+  const uiStore = useTableUiStore();
+  if (uiStore.getState().resolvedRowCount !== resolvedRowCount) {
+    uiStore.getState().setResolvedRowCount(resolvedRowCount);
+  }
 
   // Constant root selector: Root renders no table state of its own, and a
   // never-changing selection keeps it from re-rendering on every table state

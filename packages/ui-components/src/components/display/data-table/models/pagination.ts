@@ -26,26 +26,6 @@ export function isStalePage(rowCount: number, pageIndex: number, pageSize: numbe
   return rowCount > 0 && pageIndex * pageSize >= rowCount;
 }
 
-/** Minimal table surface `resolveRowCount` needs (structural: keeps the model pure). */
-export type RowCountSource = {
-  options: { manualFiltering?: boolean; rowCount?: number; data: ReadonlyArray<unknown> };
-  getFilteredRowModel: () => { rows: Array<unknown> };
-};
-
-/**
- * Total rows behind the table. Manual mode (or an explicit `rowCount` option)
- * trusts the server count (`rowCount ?? data.length`); client-side filtering
- * counts the filtered row model — NOT the paginated row model, which only
- * holds the current page.
- */
-export function resolveRowCount(table: RowCountSource): number {
-  const { manualFiltering, rowCount, data } = table.options;
-  if (manualFiltering === true || rowCount !== undefined) {
-    return rowCount ?? data.length;
-  }
-  return table.getFilteredRowModel().rows.length;
-}
-
 export function defaultResultsLabel(count: number): string {
   return `${count} result${count === 1 ? '' : 's'}`;
 }

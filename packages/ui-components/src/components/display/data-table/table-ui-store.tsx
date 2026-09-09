@@ -28,6 +28,16 @@ export type DataTableUiState = {
   liveMessage: string;
   scrollEdge: DataTableScrollEdge;
   /**
+   * Manual-mode total row count (`rowCount ?? data.length`), published by
+   * `DataTableRoot` on every prop change. Parts must read the count from
+   * here, NOT from `table.options` via context: the React Compiler memoizes
+   * the AppTable element (and prop-less children), so the context table's
+   * options wrapper is a mount-time snapshot for the parts — the store
+   * subscription is the propagation channel that stays live. `undefined`
+   * means client-side mode: parts count the filtered row model instead.
+   */
+  resolvedRowCount: number | undefined;
+  /**
    * A document-level modal (e.g. the bulk confirm dialog) is open. Other
    * parts with document-level keydown handlers (peek navigation, row
    * action menus) must bail out while this is true so Escape and arrows
@@ -42,6 +52,7 @@ export type DataTableUiState = {
   setUndoToast: (toast: DataTableUndoToastState) => void;
   announce: (message: string) => void;
   setScrollEdge: (edge: DataTableScrollEdge) => void;
+  setResolvedRowCount: (count: number | undefined) => void;
   setModalOpen: (value: boolean) => void;
 };
 
@@ -57,6 +68,7 @@ export function createDataTableUiStore() {
     undoToast: null,
     liveMessage: '',
     scrollEdge: { start: true, end: true },
+    resolvedRowCount: undefined,
     modalOpen: false,
     setDensity: (density) => {
       set({ density });
@@ -81,6 +93,9 @@ export function createDataTableUiStore() {
     },
     setScrollEdge: (scrollEdge) => {
       set({ scrollEdge });
+    },
+    setResolvedRowCount: (resolvedRowCount) => {
+      set({ resolvedRowCount });
     },
     setModalOpen: (modalOpen) => {
       set({ modalOpen });

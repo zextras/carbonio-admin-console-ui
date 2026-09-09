@@ -44,6 +44,7 @@ describe('table ui store', () => {
     const store = createDataTableUiStore();
     expect(store.getState().density).toBe('comfortable');
     expect(store.getState().modalOpen).toBe(false);
+    expect(store.getState().resolvedRowCount).toBeUndefined();
     act(() => {
       store.getState().setDensity('compact');
     });
@@ -62,6 +63,19 @@ describe('table ui store', () => {
       store.getState().setModalOpen(false);
     });
     expect(store.getState().modalOpen).toBe(false);
+  });
+
+  it('round-trips the resolved row count slice (manual-mode publish channel)', () => {
+    const store = createDataTableUiStore();
+    act(() => {
+      store.getState().setResolvedRowCount(60);
+    });
+    expect(store.getState().resolvedRowCount).toBe(60);
+    // Client-side mode publishes undefined again.
+    act(() => {
+      store.getState().setResolvedRowCount(undefined);
+    });
+    expect(store.getState().resolvedRowCount).toBeUndefined();
   });
 
   it('updates state through the remaining slice setters', () => {

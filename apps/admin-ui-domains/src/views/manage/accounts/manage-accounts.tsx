@@ -592,13 +592,13 @@ export const ManageAccounts = () => {
 									retryLabel={t('label.retry', 'Retry')}
 									onCellEditCommit={handleCellEditCommit}
 								/>
-							{tableStatus !== 'loading' &&
-								tableStatus !== 'error' &&
-								(showPaginationControls ? (
-									<DataTablePagination />
-								) : (
-									<DataTableTableFooter paginationThreshold={RECORD_DISPLAY_LIMIT} />
-								))}
+								{tableStatus !== 'loading' &&
+									tableStatus !== 'error' &&
+									(showPaginationControls ? (
+										<DataTablePagination />
+									) : (
+										<DataTableTableFooter paginationThreshold={RECORD_DISPLAY_LIMIT} />
+									))}
 								<DataTablePeekPanel<AccountRowItem>
 									title={(account) => account.name}
 									status={(account) => {
