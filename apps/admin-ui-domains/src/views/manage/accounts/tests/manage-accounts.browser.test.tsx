@@ -4,18 +4,24 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { type QueryClient } from '@tanstack/react-query';
 import { domainByIdKey, useContextBridge } from '@zextras/ui-shared';
 import {
     advancedSupportedApiForBrowser,
     createBrowserSoapAPIInterceptor,
     getQueryClient,
+    resetMockWorker,
     setupBrowserTest as _setupBrowserTest,
+    worker,
 } from 'admin-ui-test-utils';
+import { http, HttpResponse } from 'msw';
 import { type ReactElement } from 'react';
-import { beforeEach, describe, expect, it } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { type RenderResult } from 'vitest-browser-react';
 
+import { RECORD_DISPLAY_LIMIT } from '../../../../constants';
+import { domainQueryKeys } from '../../../../services/domain-query-keys';
 import { ManageAccounts } from '../manage-accounts';
 
 const DOMAIN_ID = 'test-domain-id';
@@ -28,7 +34,7 @@ function setupBrowserTest(
     ui: ReactElement,
     domainId: string = DOMAIN_ID,
     domainName: string = DOMAIN_NAME,
-): Promise<RenderResult> {
+): Promise<{ queryClient: QueryClient; render: RenderResult }> {
     const queryClient = getQueryClient();
     const domains: Array<[string, string]> = [
         [domainId, domainName],
@@ -45,7 +51,7 @@ function setupBrowserTest(
         queryClient,
         withDomainIdRoute: true,
         initialRouterEntry: `/${domainId}`,
-    });
+    }).then((render) => ({ queryClient, render }));
 }
 
 type AccountEntry = {
@@ -118,6 +124,37 @@ function setupSearchDirectoryInterceptor(
         searchTotal: searchTotal ?? accounts.length,
         more: false,
     });
+}
+
+type DynamicSearchDirectoryParams = { offset?: number; limit?: number } & Record<string, unknown>;
+
+/**
+ * Persistent dynamic SearchDirectory handler (mirrors the domain-list
+ * suite's interceptDynamicDomains): unlike the stacked one-shot
+ * interceptor, it answers every request consistently, so chained refetches
+ * (stale page, then the clamped page) cannot race a reprogramming step.
+ */
+function interceptDynamicSearchDirectory(
+    handler: (params: DynamicSearchDirectoryParams) => {
+        account: Array<AccountEntry>;
+        searchTotal: number;
+        more: boolean;
+    },
+): void {
+    worker.use(
+        http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
+            const body = await request.clone().json();
+            const params =
+                (
+                    body as {
+                        Body?: { SearchDirectoryRequest?: DynamicSearchDirectoryParams };
+                    }
+                ).Body?.SearchDirectoryRequest ?? {};
+            return HttpResponse.json({
+                Body: { SearchDirectoryResponse: handler(params) },
+            });
+        }),
+    );
 }
 
 type ExtendedAccountEntry = Omit<AccountEntry, 'a'> & {
@@ -724,5 +761,121 @@ describe('ManageAccounts (browser)', () => {
             await expect.element(page.getByText('Display name saved: Renamed User')).toBeVisible();
             await expect.element(page.getByText('Renamed User')).toBeVisible();
         });
+    });
+
+    describe('Selection reset on query-shape change (#4)', () => {
+        // Review fix #4 resets page AND selection whenever the query shape
+        // changes. Variant A swaps the toolbar (search box included) for
+        // the bulk bar while rows are selected, so a new search cannot be
+        // typed with a live selection; sorting is the query-shape change
+        // that IS reachable from the bulk state and it runs the exact hook
+        // path a new search takes (applyQueryShapeValue ->
+        // resetPageAndSelection). The search half is then exercised from
+        // the restored toolbar to lock the fresh-query flow.
+        it('clears the bulk selection when the query shape changes and serves the next search banner-free', async () => {
+            const accounts = Array.from({ length: 10 }, (_, i) =>
+                buildAccount(`sel-${i + 1}@${DOMAIN_NAME}`, `sel-acc-${i + 1}`, {
+                    displayName: `Sel ${i + 1}`,
+                }),
+            );
+            const initialRequest = setupSearchDirectoryInterceptor(accounts);
+            await setupBrowserTest(<ManageAccounts />);
+            await initialRequest;
+            await expect.element(page.getByText('sel-1@example.com')).toBeInTheDocument();
+
+            const searchInput = page.getByLabelText("I'm looking for this account…");
+            await page.getByRole('checkbox', { name: 'Select row' }).first().click();
+            await expect
+                .element(page.getByRole('toolbar', { name: 'Bulk actions, 1 selected' }))
+                .toBeVisible();
+            await expect.element(searchInput).not.toBeInTheDocument();
+
+            // Sorting is a query-shape change: #4 drops the selection (and
+            // the page) in the same batched event and the server sees the
+            // new sort (name toggles ascending -> descending).
+            const sortedRequest = setupSearchDirectoryInterceptor(accounts);
+            await page.getByRole('button', { name: 'Email' }).click();
+            const sortedParams = await sortedRequest;
+            expect(sortedParams.sortBy).toBe('name');
+            expect(sortedParams.sortAscending).toBe(0);
+
+            await expect
+                .element(page.getByRole('toolbar', { name: /Bulk actions/ }))
+                .not.toBeInTheDocument();
+            await expect.element(searchInput).toBeVisible();
+
+            // The next search starts from the restored toolbar: fresh
+            // query at offset 0, filtered rows, no banner resurrection.
+            const searchRequest = setupSearchDirectoryInterceptor([
+                buildAccount('sel-filtered@example.com', 'sel-acc-filtered', {
+                    displayName: 'Sel Filtered',
+                }),
+            ]);
+            await searchInput.fill('filtered');
+            const searchParams = await searchRequest;
+            expect(String(searchParams.query)).toContain('filtered');
+            expect(searchParams.offset).toBe(0);
+            await expect.element(page.getByText('sel-filtered@example.com')).toBeInTheDocument();
+            await expect
+                .element(page.getByRole('toolbar', { name: /Bulk actions/ }))
+                .not.toBeInTheDocument();
+        }, 20_000);
+    });
+
+    describe('Last-page clamp (#5)', () => {
+        afterEach(() => {
+            resetMockWorker();
+        });
+
+        it('returns to the last valid page when deletions shrink the server total', async () => {
+            // RECORD_DISPLAY_LIMIT is 10, so 60 accounts span 6 pages.
+            const allAccounts = Array.from({ length: 60 }, (_, i) =>
+                buildAccount(`clamp-${i + 1}@${DOMAIN_NAME}`, `clamp-acc-${i + 1}`, {
+                    displayName: `Clamp ${i + 1}`,
+                }),
+            );
+            // Deletions shrink the visible result set under the stale page.
+            let visibleAccounts = allAccounts;
+            const offsets: Array<number> = [];
+            interceptDynamicSearchDirectory((params) => {
+                const offset = params.offset ?? 0;
+                const limit = params.limit ?? RECORD_DISPLAY_LIMIT;
+                offsets.push(offset);
+                return {
+                    account: visibleAccounts.slice(offset, offset + limit),
+                    searchTotal: visibleAccounts.length,
+                    more: false,
+                };
+            });
+            const { queryClient } = await setupBrowserTest(<ManageAccounts />);
+
+            await expect.element(page.getByText('clamp-1@example.com')).toBeInTheDocument();
+            await expect.element(page.getByText('1–10 of 60')).toBeInTheDocument();
+
+            await page.getByRole('button', { name: 'Page 6' }).click();
+            await expect.element(page.getByText('clamp-51@example.com')).toBeInTheDocument();
+            await expect.element(page.getByText('51–60 of 60')).toBeInTheDocument();
+
+            // Simulate rows deleted elsewhere: the refetch at the stale
+            // offset reports the shrunken total. The invalidation is the
+            // exact call the view's handleAccountDeleted runs after a
+            // deletion (refreshAccountList uses the same key).
+            visibleAccounts = allAccounts.slice(0, 30);
+            void queryClient.invalidateQueries({
+                queryKey: domainQueryKeys.accountListDirectory.base(),
+            });
+
+            // The stale fetch (offset 50) resolves out of range; #5 writes
+            // the clamped page 3 into state and the offset-20 page is
+            // refetched (self-healing clamp).
+            await expect.poll(() => offsets.at(-1), { timeout: 5000 }).toBe(20);
+            await expect.element(page.getByText('clamp-21@example.com')).toBeInTheDocument();
+            await expect.element(page.getByText('clamp-30@example.com')).toBeInTheDocument();
+            await expect.element(page.getByText('clamp-51@example.com')).not.toBeInTheDocument();
+            await expect.element(page.getByText('21–30 of 30')).toBeInTheDocument();
+            await expect
+                .element(page.getByRole('button', { name: 'Page 3' }))
+                .toHaveAttribute('aria-current', 'page');
+        }, 20_000);
     });
 });

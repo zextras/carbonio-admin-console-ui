@@ -8,9 +8,11 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
   return { ...actual, replaceHistory: vi.fn() };
 });
 
+import { type QueryClient } from '@tanstack/react-query';
 import { replaceHistory } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
+  getQueryClient,
   resetMockWorker,
   setupBrowserTest,
   worker,
@@ -297,6 +299,53 @@ describe('GlobalDomainList (browser)', () => {
       await page.getByRole('button', { name: 'Next page' }).click();
 
       await expect.element(page.getByText('beta-11.com')).toBeVisible();
+    }, 15_000);
+  });
+
+  describe('Pagination clamp (#5)', () => {
+    it('returns to the last valid page when the server total shrinks', async () => {
+      // The view's page size is RECORD_DISPLAY_LIMIT (10), so 60 domains
+      // span 6 pages.
+      const allDomains = Array.from({ length: 60 }, (_, i) =>
+        buildDomain(`clamp-${i + 1}.com`, `clamp-domain-${i + 1}`),
+      );
+      // Deletions shrink the visible result set under the stale page.
+      let visibleDomains = allDomains;
+      interceptDynamicDomains((params) => {
+        const offset = params?.offset ?? 0;
+        const limit = params?.limit ?? 10;
+        return {
+          domain: visibleDomains.slice(offset, offset + limit),
+          searchTotal: visibleDomains.length,
+          more: false,
+        };
+      });
+      const queryClient: QueryClient = getQueryClient();
+      setupBrowserTest(<GlobalDomainList />, { queryClient });
+
+      await expect.element(page.getByText('clamp-1.com')).toBeVisible();
+      await expect.element(page.getByText('1–10 of 60')).toBeVisible();
+
+      await page.getByRole('button', { name: 'Page 6' }).click();
+      await expect.element(page.getByText('clamp-51.com')).toBeVisible();
+      await expect.element(page.getByText('51–60 of 60')).toBeVisible();
+
+      // Simulate rows deleted elsewhere: the refetch at the stale offset
+      // reports the shrunken total. The invalidation mirrors the refresh a
+      // view runs after deletions (useDomainSearch caches under the
+      // ['domain', 'search-list', …] key).
+      visibleDomains = allDomains.slice(0, 30);
+      void queryClient.invalidateQueries({ queryKey: ['domain', 'search-list'] });
+
+      // #5 writes the clamped page 3 into state and the offset-20 page is
+      // refetched (self-healing clamp) — rows render, not an empty state
+      // with a stale footer.
+      await expect.element(page.getByText('clamp-21.com')).toBeVisible();
+      await expect.element(page.getByText('21–30 of 30')).toBeVisible();
+      await expect.element(page.getByText('clamp-51.com')).not.toBeInTheDocument();
+      await expect
+        .element(page.getByRole('button', { name: 'Page 3' }))
+        .toHaveAttribute('aria-current', 'page');
     }, 15_000);
   });
 
