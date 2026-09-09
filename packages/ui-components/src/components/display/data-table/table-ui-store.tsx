@@ -67,6 +67,7 @@ export type DataTableUiState = {
 export type DataTableUiStore = ReturnType<typeof createDataTableUiStore>;
 
 export function createDataTableUiStore() {
+  let liveMessageClear: ReturnType<typeof setTimeout> | undefined;
   return createStore<DataTableUiState>()((set) => ({
     density: 'comfortable',
     peekRowId: null,
@@ -99,6 +100,15 @@ export function createDataTableUiStore() {
     },
     announce: (liveMessage) => {
       set({ liveMessage });
+      if (liveMessageClear !== undefined) {
+        clearTimeout(liveMessageClear);
+      }
+      // Clear after the announcement so an identical follow-up message is
+      // a real content change assistive tech re-announces.
+      liveMessageClear = setTimeout(() => {
+        set({ liveMessage: '' });
+        liveMessageClear = undefined;
+      }, 1000);
     },
     setScrollEdge: (scrollEdge) => {
       set({ scrollEdge });
