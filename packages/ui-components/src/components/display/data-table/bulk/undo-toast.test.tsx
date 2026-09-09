@@ -85,6 +85,30 @@ describe('DataTableUndoToast', () => {
     expect(onUndo).toHaveBeenCalledTimes(1);
   });
 
+  it('suppresses Cmd+Z while ignoreShortcut returns true (e.g. a modal is open)', () => {
+    const onUndo = vi.fn();
+    const { rerender } = render(
+      <DataTableUndoToast
+        message="Deleted"
+        onUndo={onUndo}
+        onExpire={vi.fn()}
+        ignoreShortcut={() => true}
+      />,
+    );
+    fireEvent.keyDown(document.body, { key: 'z', metaKey: true });
+    expect(onUndo).not.toHaveBeenCalled();
+    rerender(
+      <DataTableUndoToast
+        message="Deleted"
+        onUndo={onUndo}
+        onExpire={vi.fn()}
+        ignoreShortcut={() => false}
+      />,
+    );
+    fireEvent.keyDown(document.body, { key: 'z', metaKey: true });
+    expect(onUndo).toHaveBeenCalledTimes(1);
+  });
+
   it('undos via the undo button and shows the countdown hint', () => {
     const onUndo = vi.fn();
     render(<DataTableUndoToast message="Deleted 3 items" onUndo={onUndo} onExpire={vi.fn()} />);

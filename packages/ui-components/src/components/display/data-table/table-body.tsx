@@ -155,10 +155,11 @@ export const DataTableTableBody = <TData extends RowData>({
       return undefined;
     }
     function handleKeyDown(event: KeyboardEvent): void {
-      // A document-level modal (confirm dialog) owns the keyboard: bail
-      // out before any peek action so Escape/arrows act only behind it.
-      // Read at event time — the flag can change after this effect runs.
-      if (uiStore.getState().modalOpen) {
+      // Layers above peek own the keyboard: a document-level modal
+      // (confirm dialog) or an open row action menu. Bail out before
+      // any peek action so Escape/arrows act only on the topmost layer.
+      // Read at event time — the flags can change after this effect runs.
+      if (uiStore.getState().modalOpen || uiStore.getState().rowMenuOpen) {
         return;
       }
       if (event.key === 'Escape') {

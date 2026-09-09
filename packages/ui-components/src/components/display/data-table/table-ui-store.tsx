@@ -44,6 +44,13 @@ export type DataTableUiState = {
    * do not act behind the modal.
    */
   modalOpen: boolean;
+  /**
+   * A row action menu is open (portal). Parts with document-level key
+   * handlers that sit BELOW the menu layer (peek navigation) must bail
+   * out while true so a single Escape closes only the topmost layer:
+   * modal > row menu > peek.
+   */
+  rowMenuOpen: boolean;
   setDensity: (density: DataTableDensity) => void;
   setPeekRowId: (rowId: string | null) => void;
   setEditing: (editing: DataTableEditingTarget) => void;
@@ -54,6 +61,7 @@ export type DataTableUiState = {
   setScrollEdge: (edge: DataTableScrollEdge) => void;
   setResolvedRowCount: (count: number | undefined) => void;
   setModalOpen: (value: boolean) => void;
+  setRowMenuOpen: (value: boolean) => void;
 };
 
 export type DataTableUiStore = ReturnType<typeof createDataTableUiStore>;
@@ -70,6 +78,7 @@ export function createDataTableUiStore() {
     scrollEdge: { start: true, end: true },
     resolvedRowCount: undefined,
     modalOpen: false,
+    rowMenuOpen: false,
     setDensity: (density) => {
       set({ density });
     },
@@ -99,6 +108,9 @@ export function createDataTableUiStore() {
     },
     setModalOpen: (modalOpen) => {
       set({ modalOpen });
+    },
+    setRowMenuOpen: (rowMenuOpen) => {
+      set({ rowMenuOpen });
     },
   }));
 }

@@ -18,6 +18,8 @@ export type DataTableUndoToastProps = {
   durationSeconds?: number;
   onUndo: () => void;
   onExpire: () => void;
+  /** Return true to suppress the Cmd/Ctrl+Z shortcut (e.g. a modal is open). */
+  ignoreShortcut?: () => boolean;
 };
 
 /**
@@ -37,6 +39,7 @@ export const DataTableUndoToast = ({
   durationSeconds = 5,
   onUndo,
   onExpire,
+  ignoreShortcut,
 }: DataTableUndoToastProps) => {
   const { t } = useTranslation();
   const [left, setLeft] = useState(durationSeconds);
@@ -45,11 +48,13 @@ export const DataTableUndoToast = ({
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const onUndoRef = useRef(onUndo);
   const onExpireRef = useRef(onExpire);
+  const ignoreShortcutRef = useRef(ignoreShortcut);
 
   // Latest-callback refs, updated post-commit (never during render).
   useEffect(() => {
     onUndoRef.current = onUndo;
     onExpireRef.current = onExpire;
+    ignoreShortcutRef.current = ignoreShortcut;
   });
 
   // The countdown pauses while the pointer hovers OR focus sits on the
@@ -85,6 +90,9 @@ export const DataTableUndoToast = ({
     function handleKeyDown(event: KeyboardEvent): void {
       if ((event.key === 'z' || event.key === 'Z') && (event.metaKey || event.ctrlKey)) {
         if (isEditableTarget(event.target)) {
+          return;
+        }
+        if (ignoreShortcutRef.current?.()) {
           return;
         }
         event.preventDefault();

@@ -82,6 +82,15 @@ function ModalFlag({ value }: { value: boolean }) {
   return null;
 }
 
+/** Mirrors the store's rowMenuOpen slice into a callback for assertions. */
+function RowMenuOpenProbe({ onValue }: { onValue: (value: boolean) => void }) {
+  const rowMenuOpen = useTableUi((s) => s.rowMenuOpen);
+  useEffect(() => {
+    onValue(rowMenuOpen);
+  }, [onValue, rowMenuOpen]);
+  return null;
+}
+
 describe('DataTableRowActions', () => {
   it('opens the menu when the kebab is clicked', async () => {
     setupRowActions();
@@ -147,6 +156,33 @@ describe('DataTableRowActions', () => {
     fireEvent.keyDown(getKebab(), { key: 'Escape' });
     await waitFor(() => {
       expect(screen.queryByRole('menu')).toBeNull();
+    });
+  });
+
+  it('publishes rowMenuOpen to the UI store while the menu is open', async () => {
+    const values: Array<boolean> = [];
+    render(
+      <TableUiProvider>
+        <RowMenuOpenProbe
+          onValue={(value) => {
+            values.push(value);
+          }}
+        />
+        <RowActionsHarness onSelect={vi.fn()} />
+      </TableUiProvider>,
+    );
+    expect(values).toEqual([false]);
+    fireEvent.click(getKebab());
+    await screen.findByRole('menu');
+    await waitFor(() => {
+      expect(values[values.length - 1]).toBe(true);
+    });
+    fireEvent.keyDown(getKebab(), { key: 'Escape' });
+    await waitFor(() => {
+      expect(screen.queryByRole('menu')).toBeNull();
+    });
+    await waitFor(() => {
+      expect(values[values.length - 1]).toBe(false);
     });
   });
 });

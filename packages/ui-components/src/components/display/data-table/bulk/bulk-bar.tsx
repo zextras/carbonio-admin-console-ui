@@ -342,6 +342,7 @@ export const DataTableBulkBar = <TData extends RowData>({
           onExpire={() => {
             uiStore.getState().setUndoToast(null);
           }}
+          ignoreShortcut={() => uiStore.getState().modalOpen}
         />
       )}
     </>
