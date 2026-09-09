@@ -82,6 +82,6 @@ export const DataTableSkeletonRows = ({
           />
         </td>
       ))}
-      {showActions && <td className={`${styles.td} ${styles.tdActions}`} />}
+      {showActions && <td className={`${styles.td} ${styles.tdActions} ${styles.pinnedRight}`} />}
     </tr>
   ));
