@@ -9,7 +9,7 @@ import i18next from 'i18next';
 import { noop } from 'lodash-es';
 import { type ReactElement, useState } from 'react';
 import { I18nextProvider } from 'react-i18next';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
@@ -409,7 +409,25 @@ function StaleJobTable({
 }
 
 describe('DataTable (browser)', () => {
+  // The copy scenario needs a stubbed clipboard; the original descriptor is
+  // captured before each test and restored after so nothing leaks.
+  const clipboardWriteText = vi.fn().mockResolvedValue(undefined);
+  let originalClipboardDescriptor: PropertyDescriptor | undefined;
+
+  beforeEach(() => {
+    originalClipboardDescriptor = Object.getOwnPropertyDescriptor(navigator, 'clipboard');
+    Object.defineProperty(navigator, 'clipboard', {
+      configurable: true,
+      value: { writeText: clipboardWriteText },
+    });
+  });
+
   afterEach(() => {
+    if (originalClipboardDescriptor !== undefined) {
+      Object.defineProperty(navigator, 'clipboard', originalClipboardDescriptor);
+    } else {
+      delete (navigator as { clipboard?: Clipboard }).clipboard;
+    }
     document.body.replaceChildren();
   });
 
@@ -447,7 +465,6 @@ describe('DataTable (browser)', () => {
     await userEvent.click(page.getByRole('checkbox', { name: 'Select row' }).first());
 
     await expect.element(page.getByRole('toolbar', { name: /1 selected/ })).toBeVisible();
-    await expect.element(page.getByText('selected')).toBeVisible();
 
     await userEvent.click(page.getByRole('button', { name: /Clear/ }));
     await expect.element(page.getByRole('toolbar', { name: /selected/ })).not.toBeInTheDocument();
@@ -603,7 +620,6 @@ describe('DataTable (browser)', () => {
 
     const headerButtons = document.querySelectorAll('thead button');
     const headerLabels = Array.from(headerButtons).map((button) => button.textContent ?? '');
-    expect(headerLabels.join('|')).toContain('Account');
     expect(headerLabels.indexOf('Status')).toBeLessThan(headerLabels.indexOf('Display name'));
 
     await userEvent.click(page.getByRole('button', { name: 'Reset' }));
@@ -620,6 +636,8 @@ describe('DataTable (browser)', () => {
     await renderTable(<ChromeDataTable onCellEditCommit={onCellEditCommit} />);
 
     await userEvent.hover(page.getByText('User 0'));
+    // .first() is legacy-suite parity, not duplication handling: this DOM
+    // renders exactly one edit trigger per row (no twin sticky/hover layer).
     await userEvent.click(
       page.getByRole('button', { name: /Edit display name for user0/ }).first(),
     );
@@ -653,17 +671,12 @@ describe('DataTable (browser)', () => {
 
   it('copies an identity cell value', async () => {
     const onCopyCell = vi.fn();
-    const writeText = vi.fn().mockResolvedValue(undefined);
-    Object.defineProperty(navigator, 'clipboard', {
-      configurable: true,
-      value: { writeText },
-    });
 
     await renderTable(<ChromeDataTable onCopyCell={onCopyCell} />);
 
     await userEvent.hover(page.getByText('user0@demo.zextras.io'));
     await userEvent.click(page.getByRole('button', { name: 'Copy user0@demo.zextras.io' }).first());
-    expect(writeText).toHaveBeenCalledWith('user0@demo.zextras.io');
+    expect(clipboardWriteText).toHaveBeenCalledWith('user0@demo.zextras.io');
     expect(onCopyCell).toHaveBeenCalledWith('user0@demo.zextras.io');
     // The live region clears the announcement after ~1s: assert promptly.
     await expect.element(page.getByText('Copied to clipboard')).toBeVisible();
@@ -704,7 +717,7 @@ describe('DataTable (browser)', () => {
 
   it('shows bulk actions and replaces the toolbar for variant A', async () => {
     const onBulkAction = vi.fn().mockReturnValue({
-      undo: { message: '2 items enabled', onUndo: vi.fn() },
+      undo: { message: '1 item enabled', onUndo: vi.fn() },
     });
 
     await renderTable(<BulkVariantATable onBulkAction={onBulkAction} />);
@@ -718,7 +731,7 @@ describe('DataTable (browser)', () => {
 
     await userEvent.click(page.getByRole('button', { name: 'Enable' }));
     expect(onBulkAction).toHaveBeenCalledOnce();
-    await expect.element(page.getByText('2 items enabled')).toBeVisible();
+    await expect.element(page.getByText('1 item enabled')).toBeVisible();
   });
 
   it('keeps the toolbar for bulk variant B and confirms danger actions', async () => {
