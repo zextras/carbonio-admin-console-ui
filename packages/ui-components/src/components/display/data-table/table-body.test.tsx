@@ -5,14 +5,16 @@
  */
 
 import type { ColumnPinningState } from '@tanstack/react-table';
-import { act, render, screen } from '@testing-library/react';
-import { useEffect } from 'react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { useEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useDataTable } from './create-data-table';
+import { ACTIONS_COLUMN_ID } from './models/customize-model';
+import { DataTableRowActions } from './row-ui/row-actions';
 import { DataTableTableBody } from './table-body';
-import { TableUiProvider } from './table-ui-store';
-import type { DataTableColumnDef } from './types';
+import { type DataTableUiStore, TableUiProvider, useTableUiStore } from './table-ui-store';
+import type { DataTableColumnDef, DataTableRowAction } from './types';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -42,6 +44,11 @@ const rows: Array<TestRow> = Array.from({ length: 60 }, (_, index) => ({
 
 const columns: Array<DataTableColumnDef<TestRow>> = [{ accessorKey: 'name', header: 'Name' }];
 
+const rowActions: Array<DataTableRowAction> = [
+  { id: 'open', label: 'Open' },
+  { id: 'delete', label: 'Delete', danger: true },
+];
+
 const bodyProps = {
   status: 'idle' as const,
   columns,
@@ -56,13 +63,58 @@ const bodyProps = {
   copiedAnnounceLabel: 'Copied to clipboard',
 };
 
-function BodyHarness({ onTable }: { onTable: (table: TestTable) => void }) {
+function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
+  const store = useTableUiStore();
+  useEffect(() => {
+    onStore(store);
+  }, [store, onStore]);
+  return null;
+}
+
+/** Mirrors Root's RowActionsCell: local menu-open state per rendered cell. */
+function TestActionsCell({ rowId }: { rowId: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <DataTableRowActions
+      rowLabel={rowId}
+      actions={rowActions}
+      open={open}
+      onToggle={() => {
+        setOpen((value) => !value);
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
+      onSelect={() => {
+        setOpen(false);
+      }}
+    />
+  );
+}
+
+const actionsColumn: DataTableColumnDef<TestRow> = {
+  id: ACTIONS_COLUMN_ID,
+  enableSorting: false,
+  cell: ({ row }) => <TestActionsCell rowId={row.id} />,
+};
+
+function BodyHarness({
+  onTable,
+  onStore,
+  withPeek = false,
+  withRowActions = false,
+}: {
+  onTable: (table: TestTable) => void;
+  onStore?: (store: DataTableUiStore) => void;
+  withPeek?: boolean;
+  withRowActions?: boolean;
+}) {
   // Narrow root subscription: state changes must reach the body part through
   // its own <table.Subscribe>, not through a parent re-render.
   const table = useDataTable<TestRow, ColumnPinningState>(
     {
       data: rows,
-      columns,
+      columns: withRowActions ? [...columns, actionsColumn] : columns,
       getRowId: (row) => row.id,
       manualPagination: false,
       initialState: { pagination: { pageIndex: 0, pageSize: 25 } },
@@ -77,7 +129,8 @@ function BodyHarness({ onTable }: { onTable: (table: TestTable) => void }) {
   return (
     <TableUiProvider>
       <table.AppTable>
-        <DataTableTableBody {...bodyProps} />
+        <DataTableTableBody {...bodyProps} enablePeek={withPeek} />
+        {onStore && <StoreProbe onStore={onStore} />}
       </table.AppTable>
     </TableUiProvider>
   );
@@ -87,13 +140,29 @@ function firstRowCellText(): string {
   return screen.getAllByRole('cell')[0]?.textContent ?? '';
 }
 
-function renderHarness(): { getTable: () => TestTable | undefined } {
+function renderHarness(
+  options: { withPeek?: boolean; withRowActions?: boolean } = {},
+): {
+  getTable: () => TestTable | undefined;
+  getStore: () => DataTableUiStore | undefined;
+} {
   let table: TestTable | undefined;
+  let store: DataTableUiStore | undefined;
   const onTable = (instance: TestTable): void => {
     table = instance;
   };
-  render(<BodyHarness onTable={onTable} />);
-  return { getTable: () => table };
+  const onStore = (instance: DataTableUiStore): void => {
+    store = instance;
+  };
+  render(
+    <BodyHarness
+      onTable={onTable}
+      onStore={onStore}
+      withPeek={options.withPeek}
+      withRowActions={options.withRowActions}
+    />,
+  );
+  return { getTable: () => table, getStore: () => store };
 }
 
 describe('DataTableTableBody subscription wiring', () => {
@@ -119,5 +188,24 @@ describe('DataTableTableBody subscription wiring', () => {
       getTable()?.setPageIndex(0);
     });
     expect(firstRowCellText()).toBe('row-060');
+  });
+});
+
+describe('DataTableTableBody peek layering', () => {
+  it('Escape closes only the open row menu, then the peek on a second press', async () => {
+    const { getStore } = renderHarness({ withPeek: true, withRowActions: true });
+    fireEvent.click(screen.getAllByRole('row')[0]);
+    expect(getStore()?.getState().peekRowId).toBe('row-001');
+    fireEvent.click(screen.getByRole('button', { name: 'Actions for row-001' }));
+    expect(await screen.findByRole('menu')).toBeTruthy();
+    expect(getStore()?.getState().rowMenuOpen).toBe(true);
+    fireEvent.keyDown(document, { key: 'Escape' });
+    await waitFor(() => {
+      expect(screen.queryByRole('menu')).toBeNull();
+    });
+    expect(getStore()?.getState().rowMenuOpen).toBe(false);
+    expect(getStore()?.getState().peekRowId).toBe('row-001');
+    fireEvent.keyDown(document, { key: 'Escape' });
+    expect(getStore()?.getState().peekRowId).toBeNull();
   });
 });

@@ -412,4 +412,29 @@ describe('DataTableBulkBar', () => {
     expect(getStore()?.getState().peekRowId).toBe('row-1');
     expect(onBulkAction).not.toHaveBeenCalled();
   });
+
+  it('Cmd+Z is suppressed while the confirm dialog is open and undoes after cancel', async () => {
+    const onUndo = vi.fn();
+    const onBulkAction = vi.fn().mockResolvedValue({
+      undo: { message: 'Archived 2 items', onUndo },
+    });
+    const { getTable, getStore } = renderHarness({ onBulkAction });
+    // First action leaves an undoable toast alive.
+    await selectRows(getTable, 2);
+    fireEvent.click(screen.getByRole('button', { name: 'Archive' }));
+    await act(async () => {});
+    expect(await screen.findByRole('status')).toBeTruthy();
+    // Re-select and open the danger confirm dialog above the live toast.
+    await selectRows(getTable, 1);
+    fireEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    expect(screen.getByRole('dialog', { name: 'Are you sure?' })).toBeTruthy();
+    expect(getStore()?.getState().modalOpen).toBe(true);
+    fireEvent.keyDown(document, { key: 'z', metaKey: true });
+    expect(onUndo).not.toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    expect(screen.queryByRole('dialog')).toBeNull();
+    fireEvent.keyDown(document, { key: 'z', metaKey: true });
+    expect(onUndo).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('status')).toBeNull();
+  });
 });
