@@ -4,12 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
+import { useEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
+import { DataTableBulkBar } from './bulk/bulk-bar';
 import { DataTableRoot } from './data-table-root';
 import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
+import { DataTablePagination } from './pagination';
 import { DataTableTable } from './table';
+import { type DataTableUiStore, useTableUiStore } from './table-ui-store';
 import type { DataTableColumnDef, DataTableRowAction } from './types';
 
 vi.mock('react-i18next', () => ({
@@ -26,6 +30,7 @@ vi.mock('react-i18next', () => ({
         (_match: string, name: string) => options[name] ?? '',
       );
     },
+    i18n: { resolvedLanguage: 'en-US', language: 'en-US' },
   }),
 }));
 
@@ -157,5 +162,136 @@ describe('DataTableRoot + DataTableTable shell', () => {
     expect(firstBodyCell()).toBe('Carol');
     fireEvent.click(screen.getByRole('button', { name: 'Name' }));
     expect(firstBodyCell()).toBe('Alice');
+  });
+});
+
+const pagedRows: Array<TestRow> = Array.from({ length: 12 }, (_, index) => ({
+  id: `row-${index + 1}`,
+  name: `Row ${index + 1}`,
+  email: `row-${index + 1}@example.com`,
+}));
+
+function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
+  const store = useTableUiStore();
+  useEffect(() => {
+    onStore(store);
+  }, [store, onStore]);
+  return null;
+}
+
+/**
+ * Root-composed harness with pagination (12 rows, pages of 5), a bulk bar
+ * with the server-mode total and a store probe: mirrors how the flag is
+ * owned by the per-instance UI store while the selection state stays in
+ * the table.
+ */
+function SelectAllMatchingHarness({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
+  return (
+    <DataTableRoot<TestRow>
+      data={pagedRows}
+      columns={columns}
+      getRowId={(row) => row.id}
+      enableRowSelection
+      manualPagination={false}
+      initialState={{ pagination: { pageIndex: 0, pageSize: 5 } }}
+    >
+      <DataTableTable<TestRow> aria-label="People" />
+      <DataTablePagination />
+      <DataTableBulkBar totalMatchingCount={12} />
+      <StoreProbe onStore={onStore} />
+    </DataTableRoot>
+  );
+}
+
+function renderSelectAllMatchingHarness(): {
+  getStore: () => DataTableUiStore | undefined;
+} {
+  let store: DataTableUiStore | undefined;
+  const onStore = (instance: DataTableUiStore): void => {
+    store = instance;
+  };
+  render(<SelectAllMatchingHarness onStore={onStore} />);
+  return { getStore: () => store };
+}
+
+function headerCheckbox(): HTMLInputElement {
+  return screen.getByLabelText('Select all rows on this page') as HTMLInputElement;
+}
+
+function rowCheckbox(rowName: string): HTMLInputElement {
+  const row = screen.getByText(rowName).closest('tr');
+  if (row === null) {
+    throw new Error(`Row not found: ${rowName}`);
+  }
+  return within(row).getByLabelText('Select row') as HTMLInputElement;
+}
+
+/** Selects the current page via the header, then activates the store flag. */
+async function activateSelectAllMatching(
+  getStore: () => DataTableUiStore | undefined,
+): Promise<void> {
+  fireEvent.click(headerCheckbox());
+  await act(async () => {
+    getStore()?.getState().setSelectAllMatching(true);
+  });
+}
+
+describe('DataTableRoot select-all-matching interaction', () => {
+  it('renders every row checked on unseen pages while the flag is active', async () => {
+    const { getStore } = renderSelectAllMatchingHarness();
+    await activateSelectAllMatching(getStore);
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 12 selected' })).toBeTruthy();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+
+    const checkboxes = screen.getAllByLabelText('Select row');
+    expect(checkboxes).toHaveLength(5);
+    checkboxes.forEach((checkbox) => {
+      expect((checkbox as HTMLInputElement).checked).toBe(true);
+    });
+    expect(headerCheckbox().checked).toBe(true);
+  });
+
+  it('unchecking a row on an unseen page breaks the flag to the remaining page rows', async () => {
+    const { getStore } = renderSelectAllMatchingHarness();
+    await activateSelectAllMatching(getStore);
+    fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+
+    fireEvent.click(rowCheckbox('Row 6'));
+
+    expect(getStore()?.getState().selectAllMatching).toBe(false);
+    expect(rowCheckbox('Row 6').checked).toBe(false);
+    ['Row 7', 'Row 8', 'Row 9', 'Row 10'].forEach((name) => {
+      expect(rowCheckbox(name).checked).toBe(true);
+    });
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 4 selected' })).toBeTruthy();
+  });
+
+  it('unchecking a row on the original page breaks the flag too', async () => {
+    const { getStore } = renderSelectAllMatchingHarness();
+    await activateSelectAllMatching(getStore);
+
+    fireEvent.click(rowCheckbox('Row 1'));
+
+    expect(getStore()?.getState().selectAllMatching).toBe(false);
+    expect(rowCheckbox('Row 1').checked).toBe(false);
+    ['Row 2', 'Row 3', 'Row 4', 'Row 5'].forEach((name) => {
+      expect(rowCheckbox(name).checked).toBe(true);
+    });
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 4 selected' })).toBeTruthy();
+  });
+
+  it('unchecking the header clears the whole selection while the flag is active', async () => {
+    const { getStore } = renderSelectAllMatchingHarness();
+    await activateSelectAllMatching(getStore);
+    fireEvent.click(screen.getByRole('button', { name: 'Next page' }));
+
+    fireEvent.click(headerCheckbox());
+
+    expect(getStore()?.getState().selectAllMatching).toBe(false);
+    expect(screen.queryByRole('toolbar')).toBeNull();
+    screen.getAllByLabelText('Select row').forEach((checkbox) => {
+      expect((checkbox as HTMLInputElement).checked).toBe(false);
+    });
   });
 });
