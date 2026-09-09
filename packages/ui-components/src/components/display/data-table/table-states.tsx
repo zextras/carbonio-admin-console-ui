@@ -54,12 +54,14 @@ type SkeletonRowsProps = {
   rowCount: number;
   columnCount: number;
   showSelection: boolean;
+  showActions?: boolean;
 };
 
 export const DataTableSkeletonRows = ({
   rowCount,
   columnCount,
   showSelection,
+  showActions,
 }: SkeletonRowsProps) =>
   Array.from({ length: rowCount }, (_, rowIndex) => (
     <tr key={`skeleton-${rowIndex}`} aria-hidden="true">
@@ -80,5 +82,6 @@ export const DataTableSkeletonRows = ({
           />
         </td>
       ))}
+      {showActions && <td className={`${styles.td} ${styles.tdActions}`} />}
     </tr>
   ));

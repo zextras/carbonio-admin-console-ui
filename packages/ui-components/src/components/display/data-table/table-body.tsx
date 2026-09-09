@@ -224,6 +224,9 @@ export const DataTableTableBody = <TData extends RowData>({
         const pageRows = table.getRowModel().rows;
         const pageRowIds = pageRows.map((row) => row.id);
         const stateColSpan = table.getVisibleLeafColumns().length;
+        const showActions = table
+          .getVisibleLeafColumns()
+          .some((column) => column.id === ACTIONS_COLUMN_ID);
         return (
           <>
             <EditingReconciler pageRowIds={pageRowIds} />
@@ -233,6 +236,7 @@ export const DataTableTableBody = <TData extends RowData>({
                   rowCount={skeletonRowCount}
                   columnCount={columns.length}
                   showSelection={enableRowSelection}
+                  showActions={showActions}
                 />
               )}
               {status === 'empty' && (

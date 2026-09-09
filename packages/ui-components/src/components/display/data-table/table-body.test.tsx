@@ -5,7 +5,7 @@
  */
 
 import type { ColumnPinningState } from '@tanstack/react-table';
-import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { useEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
@@ -14,7 +14,7 @@ import { ACTIONS_COLUMN_ID } from './models/customize-model';
 import { DataTableRowActions } from './row-ui/row-actions';
 import { DataTableTableBody } from './table-body';
 import { type DataTableUiStore, TableUiProvider, useTableUiStore } from './table-ui-store';
-import type { DataTableColumnDef, DataTableRowAction } from './types';
+import type { DataTableColumnDef, DataTableRowAction, DataTableStatus } from './types';
 
 vi.mock('react-i18next', () => ({
   useTranslation: () => ({
@@ -112,11 +112,13 @@ function BodyHarness({
   onStore,
   withPeek = false,
   withRowActions = false,
+  status = bodyProps.status,
 }: {
   onTable: (table: TestTable) => void;
   onStore?: (store: DataTableUiStore) => void;
   withPeek?: boolean;
   withRowActions?: boolean;
+  status?: DataTableStatus;
 }) {
   // Narrow root subscription: state changes must reach the body part through
   // its own <table.Subscribe>, not through a parent re-render.
@@ -138,7 +140,7 @@ function BodyHarness({
   return (
     <TableUiProvider>
       <table.AppTable>
-        <DataTableTableBody {...bodyProps} enablePeek={withPeek} />
+        <DataTableTableBody {...bodyProps} status={status} enablePeek={withPeek} />
         {onStore && <StoreProbe onStore={onStore} />}
       </table.AppTable>
     </TableUiProvider>
@@ -149,7 +151,9 @@ function firstRowCellText(): string {
   return screen.getAllByRole('cell')[0]?.textContent ?? '';
 }
 
-function renderHarness(options: { withPeek?: boolean; withRowActions?: boolean } = {}): {
+function renderHarness(
+  options: { withPeek?: boolean; withRowActions?: boolean; status?: DataTableStatus } = {},
+): {
   getTable: () => TestTable | undefined;
   getStore: () => DataTableUiStore | undefined;
 } {
@@ -167,6 +171,7 @@ function renderHarness(options: { withPeek?: boolean; withRowActions?: boolean }
       onStore={onStore}
       withPeek={options.withPeek}
       withRowActions={options.withRowActions}
+      status={options.status}
     />,
   );
   return { getTable: () => table, getStore: () => store };
@@ -248,6 +253,20 @@ describe('DataTableTableBody peek layering', () => {
     expect(getStore()?.getState().peekRowId).toBe('row-001');
     fireEvent.keyDown(document, { key: 'Escape' });
     expect(getStore()?.getState().peekRowId).toBeNull();
+  });
+});
+
+describe('DataTableTableBody skeleton rows', () => {
+  it('renders one skeleton cell per visible leaf column, including the actions column', () => {
+    const { getTable } = renderHarness({ withRowActions: true, status: 'loading' });
+    const expectedCellCount = getTable()?.getVisibleLeafColumns().length;
+    expect(expectedCellCount).toBe(2);
+    // Skeleton rows are aria-hidden, so they are invisible to default role queries.
+    const skeletonRows = screen.getAllByRole('row', { hidden: true });
+    expect(skeletonRows).toHaveLength(5);
+    skeletonRows.forEach((row) => {
+      expect(within(row).getAllByRole('cell', { hidden: true })).toHaveLength(expectedCellCount ?? 0);
+    });
   });
 });
 
