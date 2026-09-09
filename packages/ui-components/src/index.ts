@@ -94,6 +94,28 @@ export * from './components/custom/track-number-per-page';
 /** display components */
 export * from './components/display/Chip';
 export * from './components/display/CustomChip';
+export {
+  type DataTableBulkAction,
+  type DataTableBulkJobState,
+  type DataTableBulkVariant,
+  type DataTableCellEditCommit,
+  type DataTableColumnDef,
+  type DataTableColumnMeta,
+  type DataTableDateFilterValue,
+  type DataTableEditingState,
+  type DataTableEnumFilterValue,
+  type DataTableFeatures,
+  dataTableFeatures,
+  type DataTableFilterChip,
+  type DataTableFilterDef,
+  type DataTableFilterOption,
+  type DataTableFiltersState,
+  type DataTableFilterValue,
+  type DataTablePeekField,
+  type DataTableRangeFilterValue,
+  type DataTableRowAction,
+  type DataTableStatus,
+} from './components/display/data-table';
 export * from './components/display/Dropdown';
 export * from './components/display/List/List';
 export * from './components/display/ListItem';
@@ -105,40 +127,84 @@ export {
   type THeaderProps,
   type TRow,
 } from './components/display/Table';
-export {
-  DataTable,
-  dataTableFeatures,
-  type DataTableBulkAction,
-  type DataTableBulkActionContext,
-  type DataTableBulkActionResult,
-  type DataTableBulkJobState,
-  type DataTableBulkVariant,
-  type DataTableCellEditCommit,
-  type DataTableColumnDef,
-  type DataTableColumnMeta,
-  type DataTableDateFilterValue,
-  type DataTableDensity,
-  type DataTableEditingState,
-  type DataTableEnumFilterValue,
-  type DataTableFeatures,
-  type DataTableFilterChip,
-  type DataTableFilterDef,
-  type DataTableFilterOption,
-  type DataTableFiltersState,
-  type DataTableFilterValue,
-  type DataTablePeekField,
-  type DataTableProps,
-  type DataTableRangeFilterValue,
-  type DataTableRowAction,
-  type DataTableStatus,
-  type DataTableUndoToastState,
-} from './components/display/data-table';
 
+/**
+ * Composable DataTable parts (Root + parts composition). The legacy
+ * monolithic `DataTable` orchestrator was removed; compose `DataTableRoot`
+ * with the parts below instead.
+ */
+export {
+  type DataTableBulkActionEvent,
+  DataTableBulkBar,
+  type DataTableBulkBarProps,
+} from './components/display/data-table/bulk/bulk-bar';
+export {
+  DataTableBulkJob,
+  type DataTableBulkJobProps,
+} from './components/display/data-table/bulk/bulk-job';
+export {
+  DataTableConfirmDialog,
+  type DataTableConfirmDialogProps,
+} from './components/display/data-table/bulk/confirm-dialog';
+export {
+  DataTableSelectAllMatching,
+  type DataTableSelectAllMatchingProps,
+} from './components/display/data-table/bulk/select-all-matching';
+export {
+  DataTableUndoToast,
+  type DataTableUndoToastProps,
+} from './components/display/data-table/bulk/undo-toast';
+export {
+  createDataTableColumnHelper,
+  useDataTable,
+} from './components/display/data-table/create-data-table';
+export { useDataTableContext } from './components/display/data-table/data-table-contexts';
+export {
+  DataTableRoot,
+  type DataTableRootProps,
+} from './components/display/data-table/data-table-root';
+export { DataTableLiveRegion } from './components/display/data-table/live-region';
+export {
+  buildFilterChips,
+  removeFilterChip,
+} from './components/display/data-table/models/filter-model';
+export {
+  DataTablePagination,
+  type DataTablePaginationProps,
+} from './components/display/data-table/pagination';
+export {
+  DataTablePeekPanel,
+  type DataTablePeekPanelProps,
+} from './components/display/data-table/peek-panel';
+export {
+  DataTableStaleBanner,
+  type DataTableStaleBannerProps,
+} from './components/display/data-table/stale-banner';
+export { DataTableTable, type DataTableTableProps } from './components/display/data-table/table';
+export { DataTableTableFooter } from './components/display/data-table/table-footer';
+export type {
+  DataTableDensity,
+  DataTableUndoToastState,
+} from './components/display/data-table/table-ui-store';
+export {
+  DataTableCustomize,
+  type DataTableCustomizeProps,
+} from './components/display/data-table/toolbar/customize';
+export { DataTableFilterChips } from './components/display/data-table/toolbar/filter-chips';
+export {
+  DataTableFilters,
+  type DataTableFiltersProps,
+} from './components/display/data-table/toolbar/filters';
+export { DataTableSearch } from './components/display/data-table/toolbar/search';
+export { DataTableToolbar } from './components/display/data-table/toolbar/toolbar';
 export * from './components/display/Tooltip';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';
-export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/LicenseBanner';
+export {
+  LicenseBanner,
+  type LicenseBannerProps,
+} from './components/feedback/license-banner/LicenseBanner';
 export * from './components/feedback/Modal';
 export * from './components/feedback/quota/Quota';
 export * from './components/feedback/snackbar/Snackbar';

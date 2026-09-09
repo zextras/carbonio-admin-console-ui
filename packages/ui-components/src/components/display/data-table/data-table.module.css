@@ -388,13 +388,6 @@
   cursor: pointer;
 }
 
-.undoToastTimer {
-  min-width: 0.625rem;
-  color: #8a94a1;
-  font-size: 0.75rem;
-  text-align: center;
-}
-
 .undoToastShortcut {
   color: #8a94a1;
   font-size: 0.6875rem;
@@ -684,10 +677,6 @@
   gap: 0.5rem;
   align-items: center;
   padding: 0.625rem var(--padding-size-medium, 1rem);
-}
-
-.toolbarSpacer {
-  flex: 1;
 }
 
 .searchField {
@@ -1318,10 +1307,6 @@
   justify-content: center;
 }
 
-.rowActionsOpen {
-  z-index: 5;
-}
-
 .kebabButton {
   width: 1.75rem;
   height: 1.75rem;
@@ -1387,13 +1372,6 @@
 .shellWithPeek {
   flex-direction: row;
   align-items: stretch;
-}
-
-.tableMain {
-  display: flex;
-  flex: 1;
-  flex-direction: column;
-  min-width: 0;
 }
 
 .peekPanel {
