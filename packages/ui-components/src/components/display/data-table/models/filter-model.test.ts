@@ -424,6 +424,17 @@ describe('dateRangeFilterFn', () => {
     expect(dateRangeFilterFn(rowWithValue('2026-01-15T12:00:00.000Z'), 'col', resolved)).toBe(true);
   });
 
+  it('swaps reversed bounds before applying the end-of-day extension', () => {
+    const resolved = dateRangeFilterFn.resolveFilterValue?.(['2026-01-10', '2026-01-05']) ?? [];
+    expect(resolved).toEqual([
+      new Date('2026-01-05T00:00:00.000Z').getTime(),
+      new Date('2026-01-10T23:59:59.999Z').getTime(),
+    ]);
+    expect(dateRangeFilterFn(rowWithValue('2026-01-05T12:00:00.000Z'), 'col', resolved)).toBe(true);
+    expect(dateRangeFilterFn(rowWithValue('2026-01-10T20:00:00.000Z'), 'col', resolved)).toBe(true);
+    expect(dateRangeFilterFn(rowWithValue('2026-01-04T23:00:00.000Z'), 'col', resolved)).toBe(false);
+  });
+
   it('keeps a 0 (epoch) bound when deciding whether to auto-remove the filter', () => {
     expect(dateRangeFilterFn.autoRemove?.(0)).toBe(false);
     expect(dateRangeFilterFn.autoRemove?.([0, null])).toBe(false);

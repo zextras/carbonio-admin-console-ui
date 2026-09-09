@@ -145,19 +145,26 @@ function resolveRangeEndpoints(val: unknown): Array<number | null> {
   return [min, max];
 }
 
+function endOfDayTimestamp(bound: unknown): number | null {
+  if (typeof bound === 'string' && DATE_ONLY_PATTERN.test(bound.trim())) {
+    // A date-only upper bound means "through that day": a bare
+    // `YYYY-MM-DD` parses to UTC midnight and would otherwise exclude
+    // the rest of the day.
+    return new Date(`${bound.trim()}T23:59:59.999Z`).getTime();
+  }
+  return coerceDateTimestamp(bound);
+}
+
 function resolveDateEndpoints(val: unknown): Array<number | null> {
   const [unsafeFrom, unsafeTo] = Array.isArray(val) ? val : [undefined, undefined];
   const from = coerceDateTimestamp(unsafeFrom);
-  let to = coerceDateTimestamp(unsafeTo);
-  if (typeof unsafeTo === 'string' && DATE_ONLY_PATTERN.test(unsafeTo.trim())) {
-    // A date-only `to` bound means "through that day": a bare `YYYY-MM-DD`
-    // parses to UTC midnight and would otherwise exclude the rest of the day.
-    to = new Date(`${unsafeTo.trim()}T23:59:59.999Z`).getTime();
-  }
+  const to = coerceDateTimestamp(unsafeTo);
   if (from !== null && to !== null && from > to) {
-    return [to, from];
+    // Normalize order FIRST, then extend whichever raw input is now the
+    // upper bound so date-only semantics survive the swap.
+    return [to, endOfDayTimestamp(unsafeFrom)];
   }
-  return [from, to];
+  return [from, endOfDayTimestamp(unsafeTo)];
 }
 
 /** Coercing `inNumberRange` replacement (review finding #9). */
