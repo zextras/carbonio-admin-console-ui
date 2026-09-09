@@ -125,10 +125,15 @@ type SelectRowCellProps<TData extends RowData> = {
  * row renders checked (the flag spans pages the selection state has
  * never seen), and unchecking any row breaks the flag down to an
  * explicit selection of the remaining page rows. The checked state is
- * derived inside a `table.Subscribe` render prop on purpose: the React
- * Compiler caches `row.getIsSelected()` on the stable row identity, so
- * reading it in a plain prop would freeze the checkbox at its
- * mount-time value while the row selection changes underneath.
+ * derived inside a `table.Subscribe` render prop on purpose: under the
+ * React Compiler a cell whose inputs keep stable identities (row, table,
+ * labels) and that holds no selection subscription simply never
+ * re-renders on a selection change, so `row.getIsSelected()` never
+ * re-runs and a plain prop would keep the checkbox at its mount-time
+ * value. The flag path stayed correct only because `useTableUi`
+ * re-renders the cell when the flag flips. The Subscribe render prop
+ * re-runs on every store emit that changes the row's selection slice,
+ * so the checkbox always sees a fresh value.
  */
 const SelectRowCell = <TData extends RowData>({
   row,
@@ -175,11 +180,13 @@ type SelectAllCellProps = {
  * header renders checked even on pages the selection state has never
  * seen, and unchecking it clears the whole selection (flag included).
  * Like the row checkbox, the derived all/some page-rows state is read
- * inside a `table.Subscribe`: the selector runs outside compiled render
- * code, so `table.getRowModel()` and the selection slice stay fresh
- * instead of being cached on the stable table identity. The header part
- * itself only subscribes to column-layout slices, so this subscription
- * is what makes the checkbox track page selection.
+ * inside a `table.Subscribe`: the header part only subscribes to
+ * column-layout slices and the cell's inputs are identity-stable, so
+ * under the React Compiler the cell never re-rendered on a selection
+ * change and `table.getIsAllPageRowsSelected()` /
+ * `getIsSomePageRowsSelected()` never re-ran. Here the selector re-runs
+ * on every store emit and the render prop receives freshly derived
+ * booleans, which is what makes the checkbox track page selection.
  */
 const SelectAllCell = ({ uiStore, selectAllLabel }: SelectAllCellProps) => {
   const table = useDataTableContext();
