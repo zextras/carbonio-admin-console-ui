@@ -869,11 +869,11 @@ useEffect(() => {
 - Modify: `packages/ui-components/src/components/display/data-table/tests/data-table.browser.test.tsx` (full rewrite), `apps/admin-ui-domains/…/tests/manage-accounts.browser.test.tsx` (update), `apps/admin-ui-domains/…/tests/global-domain-list.browser.test.tsx` (update if exists)
 - Create: `packages/ui-components/src/components/display/data-table/tests/render-isolation.browser.test.tsx`
 
-- [ ] **Step 1: Rewrite the package e2e** — same 23 user-facing scenarios (selection, select-all-matching, sort cycle incl. third click back to unsorted + `aria-sort` assertion, search, filter panel apply/clear/chips, customize density/columns, pagination navigation + clamped from/to, bulk confirm + undo, copy cell announce, inline edit commit/cancel, peek open/arrows/escape, stale banner) against the composable API. Follow `docs/browser-test-conventions.md`: `getByRole`/`getByLabelText`/`getByText` only, never `getByTestId` (except icon fallbacks), `testTimeout: 10_000`.
+- [x] **Step 1: Rewrite the package e2e** — same 22 user-facing scenarios (the old suite actually had 22, not 23) (selection, select-all-matching, sort cycle incl. third click back to unsorted + `aria-sort` assertion, search, filter panel apply/clear/chips, customize density/columns, pagination navigation + clamped from/to, bulk confirm + undo, copy cell announce, inline edit commit/cancel, peek open/arrows/escape, stale banner) against the composable API. Follow `docs/browser-test-conventions.md`: `getByRole`/`getByLabelText`/`getByText` only, never `getByTestId` (except icon fallbacks), `testTimeout: 10_000`.
 
-- [ ] **Step 2: Update view tests** — `manage-accounts.browser.test.tsx`: remove `Total Accounts` + CountAccount interceptor assertions (finding 1); keep all other scenarios; add: new search clears selection (#4), deleting last rows on last page clamps page (#5).
+- [x] **Step 2: Update view tests** — `manage-accounts.browser.test.tsx`: remove `Total Accounts` + CountAccount interceptor assertions (finding 1); keep all other scenarios; add: new search clears selection (#4), deleting last rows on last page clamps page (#5). The #4/#5 scenarios landed via `docs/superpowers/plans/2026-09-09-data-table-review-fixes.md` Task 11 (commit `338627915`).
 
-- [ ] **Step 3: `render-isolation.browser.test.tsx`** — the architecture's core promise, locked in:
+- [x] **Step 3: `render-isolation.browser.test.tsx`** — the architecture's core promise, locked in:
 
 ```tsx
 // module-level render counters (S6478-safe: defined outside components)
@@ -896,6 +896,12 @@ Note: counters must live at module level, probes defined at module level (SonarL
 - [ ] **Step 4: Run everything** — `pnpm test` (full suite). All green.
 
 - [ ] **Step 5: Commit** — `git commit -m "test(data-table): composable e2e suite, targeted fixes coverage, render-isolation lock"`
+
+**Post-review outcomes (2026-09-09):**
+- Review fix #5 was upgraded from the display-only stopgap to a state clamp: `useServerTableState({ totalRowCount })` now writes the clamped page back into state (render-time adjust with a convergence guard; views bridge the raw query total). Implemented in `docs/superpowers/plans/2026-09-09-data-table-review-fixes.md` Task 1.
+- The bulk-bar `resolveFilteredRowCount` follow-up ticket noted in Task 10 outcomes (above) is DONE — the bar now resolves the manual-mode count via the Root-published `resolvedRowCount` store slice.
+- The render-isolation work additionally surfaced and fixed a real compiler bug: selection checkbox cells froze under the React Compiler (no selection subscription → cell never re-rendered); cells now derive their state inside `table.Subscribe` render props (commit `c09aa4ad9`).
+- View-level note: render isolation covers the table subtree; view-level controlled state still re-renders the whole view on page changes (as designed).
 
 ---
 
