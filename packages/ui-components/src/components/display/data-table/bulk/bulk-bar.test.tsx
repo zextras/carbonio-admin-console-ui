@@ -335,6 +335,17 @@ describe('DataTableBulkBar', () => {
     expect(screen.getByRole('toolbar', { name: 'Bulk actions, 60 selected' })).toBeTruthy();
   });
 
+  it('falls back to the filtered row model count in client mode', async () => {
+    // No totalMatchingCount prop and the store's resolvedRowCount left
+    // untouched (undefined): the banner must count the filtered row model.
+    const { getTable, getStore } = renderHarness({ enableSelectAllMatching: true });
+    await selectRows(getTable, 2);
+    await act(async () => {
+      getStore()?.getState().setSelectAllMatching(true);
+    });
+    expect(screen.getByRole('toolbar', { name: 'Bulk actions, 12 selected' })).toBeTruthy();
+  });
+
   it('keeps the selection while a bulk job is active', async () => {
     const onBulkAction = vi.fn();
     const { getTable } = renderHarness({
