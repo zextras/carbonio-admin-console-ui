@@ -5,6 +5,7 @@
  */
 import type { PaginationState, RowSelectionState, SortingState } from '@tanstack/react-table';
 import type { DataTableFiltersState } from '@zextras/ui-components';
+import { isEqual } from 'lodash-es';
 import { useState } from 'react';
 
 export type UseServerTableStateOptions = {
@@ -87,6 +88,8 @@ export function useServerTableState({
    * Returns whether the resolved value differs from the current one, so
    * query-shape setters can reset page+selection only on real changes
    * (re-applying an identical filter draft must not drop a selection).
+   * `isEqual` early-exits on reference identity and is key-order agnostic,
+   * unlike a JSON.stringify comparison.
    */
   function applyQueryShapeValue<T>(
     current: T,
@@ -95,7 +98,7 @@ export function useServerTableState({
   ): boolean {
     const value = typeof next === 'function' ? (next as (prev: T) => T)(current) : next;
     apply(value);
-    return JSON.stringify(value) !== JSON.stringify(current);
+    return !isEqual(value, current);
   }
 
   // #4: query-shape setters — apply, then reset page + selection atomically.
