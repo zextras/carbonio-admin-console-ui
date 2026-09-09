@@ -756,13 +756,13 @@ Implementation: toast keyed by `id` (incrementing counter in bulk-bar when setti
 **Files:**
 - Modify: `index.ts`, delete `data-table.tsx`, `data-table-toolbar.tsx`, `data-table-bulk-bar.tsx`, `data-table-bulk-job.tsx`, `data-table-confirm-dialog.tsx`, `data-table-copy-cell.tsx`, `data-table-customize-panel.tsx`, `data-table-filter-chips.tsx`, `data-table-filters-panel.tsx`, `data-table-inline-edit.tsx`, `data-table-pagination.tsx`, `data-table-row-actions.tsx`, `data-table-row-ui.ts`, `data-table-stale-banner.tsx`, `data-table-states.tsx`, `data-table-body-cell.tsx`, `selection-checkbox.tsx` (old location), `sortable-header-cell.tsx` (old location)
 
-- [ ] **Step 1: `index.ts` exports** — `DataTableRoot`, `DataTableTable`, `DataTableToolbar`, `DataTableSearch`, `DataTableFilters`, `DataTableFilterChips`, `DataTableCustomize`, `DataTableBulkBar`, `DataTableSelectAllMatching`, `DataTableBulkJob`, `DataTablePagination` (wrapper part subscribing to `table.state.pagination`, from `table-footer.tsx` Task 4 + controls from old `data-table-pagination.tsx`), `DataTablePeekPanel`, `DataTableStaleBanner`, `DataTableConfirmDialog`, `DataTableUndoToast`, `DataTableLiveRegion`, `useDataTable`, `useDataTableContext`, `createDataTableColumnHelper`, `dataTableFeatures`, all model types.
+- [x] **Step 1: `index.ts` exports** — `DataTableRoot`, `DataTableTable`, `DataTableToolbar`, `DataTableSearch`, `DataTableFilters`, `DataTableFilterChips`, `DataTableCustomize`, `DataTableBulkBar`, `DataTableSelectAllMatching`, `DataTableBulkJob`, `DataTablePagination` (wrapper part subscribing to `table.state.pagination`, from `table-footer.tsx` Task 4 + controls from old `data-table-pagination.tsx`), `DataTablePeekPanel`, `DataTableStaleBanner`, `DataTableConfirmDialog`, `DataTableUndoToast`, `DataTableLiveRegion`, `useDataTable`, `useDataTableContext`, `createDataTableColumnHelper`, `dataTableFeatures`, all model types.
 
-- [ ] **Step 2: `git rm` the old files** (list above) — but keep `data-table.module.css`.
+- [x] **Step 2: `git rm` the old files** (list above) — but keep `data-table.module.css`.
 
-- [ ] **Step 3: Verify package builds** — `pnpm -F @zextras/ui-components exec tsc --noEmit` (old `DataTable` import sites in apps will fail — that's Task 12/13; to keep the tree green per-commit, do this delete **after** the view migrations, i.e. execute Tasks 11→12→13 first if you prefer; the recommended order is: build parts (Tasks 1–9) → migrate views (11–12) → delete orchestrator (10) → tests (13)). Adjust task order accordingly at execution time.
+- [x] **Step 3: Verify package builds** — `pnpm -F @zextras/ui-components exec tsc --noEmit` (old `DataTable` import sites in apps will fail — that's Task 12/13; to keep the tree green per-commit, do this delete **after** the view migrations, i.e. execute Tasks 11→12→13 first if you prefer; the recommended order is: build parts (Tasks 1–9) → migrate views (11–12) → delete orchestrator (10) → tests (13)). Adjust task order accordingly at execution time.
 
-- [ ] **Step 4: Commit** — `git commit -m "refactor(data-table): remove monolithic orchestrator; composable API is public"`
+- [x] **Step 4: Commit** — `git commit -m "refactor(data-table): remove monolithic orchestrator; composable API is public"`
 
 ---
 
@@ -856,6 +856,11 @@ useEffect(() => {
 - Task 13 must add the selection-reset assertion to the domain-switch browser test (named but unasserted).
 - Follow-up tickets (out of scope): resetKey-aware debounce flush (stale-search transient on domain switch); make CreateAccount's setIsAccountCreated/showAccountDetailView props optional.
 - ui-shared's TableStatus union is intentionally structural (no package edge to ui-components).
+
+**Task 10 review outcomes (recorded):**
+- CRITICAL contract: render-time `table.options`/`table.state` reads via context are mount-frozen under the React Compiler. Manual-mode `resolvedRowCount` is published by Root into the UI store; parts subscribe. Any new part needing option-derived data must follow the store-publish pattern.
+- Connected `DataTablePagination` ships; views use bare `<DataTablePagination />`. bulk-bar still has a `resolveFilteredRowCount` fallback read (masked by totalMatchingCount prop) — follow-up ticket.
+- Follow-up tickets: report AppTable × React Compiler provider interaction upstream; client-mode data-identity residual; CreateAccount optional props; resetKey-aware debounce flush.
 
 
 ### Task 13: Tests — e2e rewrite + targeted + isolation
