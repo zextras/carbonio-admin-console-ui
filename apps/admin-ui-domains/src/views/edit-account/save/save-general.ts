@@ -15,6 +15,8 @@ import type { SaveContext, SaveDeps } from './types';
 
 export const VALUE_BLOCKED = 'VALUE-BLOCKED';
 
+export type SaveRemainingResult = 'failed' | 'success' | 'password-success';
+
 export function saveAdministrationRights(
   values: Record<string, any>,
   modifiedKeys: Array<string>,
@@ -28,16 +30,6 @@ export function saveAdministrationRights(
     values.deleteAdministrationRights.forEach((item: { id: string }) => {
       void deps.removeDistributionListMember
         .mutateAsync({ listId: item.id, member: values.name })
-        .then((data) => {
-          if (data) {
-            ctx.successSnackbar(
-              ctx.t(
-                'account_details.right_for_selected_user_deleted_successfully',
-                'Right for selected user deleted successfully',
-              ),
-            );
-          }
-        })
         .catch((error) => {
           ctx.notifySaveError(error);
         });
@@ -78,18 +70,13 @@ export async function saveCoreAttributes(
   }
   try {
     await deps.setCoreAttributes(body);
-    ctx.successSnackbar(
-      ctx.t(
-        'label.the_last_changes_has_been_saved_successfully',
-        'Changes have been saved successfully',
-      ),
-    );
+    remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
+    remove(modifiedKeys, (ele) => ele === ABQ_MODE);
+    remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
   } catch (error) {
     ctx.notifySaveError(error as { message?: string });
+    throw error;
   }
-  remove(modifiedKeys, (ele) => ele === BACKUP_ENABLED);
-  remove(modifiedKeys, (ele) => ele === ABQ_MODE);
-  remove(modifiedKeys, (ele) => ele === BACKUP_SELF_UNDELETE_ALLOWED);
 }
 
 export async function saveRemainingAttributes(
@@ -100,7 +87,7 @@ export async function saveRemainingAttributes(
   deps: SaveDeps,
   ctx: SaveContext,
   finalize: () => void,
-): Promise<void> {
+): Promise<SaveRemainingResult> {
   const modifiedData: Record<string, any> = {};
   modifiedKeys.forEach((ele) => {
     modifiedData[ele] = values[ele];
@@ -115,9 +102,11 @@ export async function saveRemainingAttributes(
       ctx.successSnackbar(ctx.t('account_details.user_password_set', 'User password set successfully'));
       values.userPassword = VALUE_BLOCKED;
       values.zimbraPasswordMustChange = 'FALSE';
+      finalize();
+      return 'password-success';
     }
     finalize();
-    return;
+    return 'success';
   }
 
   try {
@@ -125,17 +114,15 @@ export async function saveRemainingAttributes(
       id: saved.zimbraId,
       modifiedData,
     });
-    if (data) {
-      await ctx.flushAccountCache();
-      ctx.successSnackbar(
-        ctx.t(
-          'label.the_last_changes_has_been_saved_successfully',
-          'Changes have been saved successfully',
-        ),
-      );
-      finalize();
+    if (data == null) {
+      ctx.notifySaveError();
+      return 'failed';
     }
+    await ctx.flushAccountCache();
+    finalize();
+    return 'success';
   } catch (error) {
     ctx.notifySaveError(error as { message?: string });
+    return 'failed';
   }
 }

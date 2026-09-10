@@ -329,19 +329,31 @@ export function useAccountFormProvider({
           return;
         }
 
-        await saveRename(values, saved, modifiedKeys, saveDeps, saveCtx);
-        await saveCoreAttributes(values, modifiedKeys, saveDeps, saveCtx);
-        saveAliases(values, saved, modifiedKeys, saveDeps, saveCtx);
-        saveQuota(values, modifiedKeys, saveDeps, saveCtx);
-        await saveRemainingAttributes(
-          values,
-          saved,
-          modifiedKeys,
-          passwordChange === 'changed',
-          saveDeps,
-          saveCtx,
-          finalize,
-        );
+        try {
+          await saveRename(values, saved, modifiedKeys, saveDeps, saveCtx);
+          await saveCoreAttributes(values, modifiedKeys, saveDeps, saveCtx);
+          saveAliases(values, saved, modifiedKeys, saveDeps, saveCtx);
+          await saveQuota(values, modifiedKeys, saveDeps, saveCtx);
+          const remainingResult = await saveRemainingAttributes(
+            values,
+            saved,
+            modifiedKeys,
+            passwordChange === 'changed',
+            saveDeps,
+            saveCtx,
+            finalize,
+          );
+          if (remainingResult === 'success') {
+            successSnackbar(
+              t(
+                'label.the_last_changes_has_been_saved_successfully',
+                'Changes have been saved successfully',
+              ),
+            );
+          }
+        } catch {
+          // Step helpers already surfaced the error snackbar.
+        }
       } finally {
         setIsSaving(false);
       }

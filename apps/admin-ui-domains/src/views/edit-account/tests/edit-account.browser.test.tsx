@@ -11,7 +11,7 @@ import {
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import { GENERAL_SECTION, SECURITY } from '../../../constants';
 import type { GetAccountQuotaRawResponse } from '../../../services/account-quota';
@@ -185,5 +185,65 @@ describe('EditAccount (browser)', () => {
       objectName: ACCOUNT_ID,
       configType: 'account',
     });
+  });
+
+  it('shows an error toast and keeps the form dirty when ModifyAccount returns a seats Fault', async () => {
+    setupAdvancedEditAccountMocks();
+    await createBrowserAPIInterceptor('post', '/service/admin/soap/ModifyAccountRequest', () =>
+      HttpResponse.json(
+        {
+          Body: {
+            Fault: {
+              Code: { Value: 'soap:Receiver' },
+              Reason: {
+                Text: 'permission denied: Cannot modify account: not enough seats available for the new edition.',
+              },
+              Detail: {
+                Error: {
+                  Code: 'service.FAILURE',
+                  Trace: 'test-trace',
+                },
+              },
+            },
+          },
+        },
+        { status: 500 },
+      ),
+    );
+
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['advanced-supported'], { supported: true });
+
+    await setupBrowserTest(
+      <EditAccount
+        account={{ id: ACCOUNT_ID, name: ACCOUNT_NAME }}
+        onClose={(): void => {}}
+        onSaved={(): void => {}}
+        onDeleted={(): void => {}}
+        defaultTab={GENERAL_SECTION}
+      />,
+      { queryClient, withDomainIdRoute: true, initialRouterEntry: '/domain-id' },
+    );
+
+    const displayNameInput = page.getByRole('textbox', { name: 'Display Name' });
+    await expect.element(displayNameInput).toBeVisible();
+    await userEvent.clear(displayNameInput);
+    await userEvent.type(displayNameInput, 'Updated Name');
+
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+    await saveButton.click();
+
+    await expect
+      .element(
+        page.getByText(
+          'permission denied: Cannot modify account: not enough seats available for the new edition.',
+        ),
+      )
+      .toBeVisible();
+    await expect
+      .element(page.getByText('Changes have been saved successfully'))
+      .not.toBeInTheDocument();
+    await expect.element(saveButton).toBeVisible();
   });
 });
