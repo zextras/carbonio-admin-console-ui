@@ -188,10 +188,13 @@ describe('EditAccount (browser)', () => {
   });
 
   it('shows an error toast and keeps the form dirty when ModifyAccount returns a seats Fault', async () => {
-    setupAdvancedEditAccountMocks();
+    createBrowserSoapAPIInterceptor('GetAccount', mockGetAccountResponse);
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      cos: [{ name: 'default', id: 'cos-1' }],
+    });
 
     const queryClient = getQueryClient();
-    queryClient.setQueryData(['advanced-supported'], { supported: true });
+    queryClient.setQueryData(['advanced-supported'], { supported: false });
 
     await setupBrowserTest(
       <EditAccount
@@ -230,6 +233,7 @@ describe('EditAccount (browser)', () => {
     await expect.element(displayNameInput).toBeVisible();
     await userEvent.clear(displayNameInput);
     await userEvent.type(displayNameInput, 'Updated Name');
+    await expect.element(displayNameInput).toHaveValue('Updated Name');
 
     const saveButton = page.getByRole('button', { name: 'Save' });
     await expect.element(saveButton).toBeVisible();
