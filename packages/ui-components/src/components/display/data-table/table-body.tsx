@@ -85,7 +85,6 @@ function buildCellClassName(options: {
   pinnedStart: boolean;
   pinnedEnd: boolean;
   scrollEdgeStart: boolean;
-  scrollEdgeEnd: boolean;
 }): string {
   return clsx(
     styles.td,
@@ -94,7 +93,6 @@ function buildCellClassName(options: {
     options.pinnedStart && styles.pinnedLeft,
     options.pinnedEnd && styles.pinnedRight,
     options.pinnedStart && options.isPrimary && !options.scrollEdgeStart && styles.pinnedShadow,
-    options.pinnedEnd && !options.scrollEdgeEnd && styles.pinnedRightShadow,
   );
 }
 
@@ -318,7 +316,6 @@ export const DataTableTableBody = <TData extends RowData>({
                               pinnedStart,
                               pinnedEnd,
                               scrollEdgeStart: scrollEdge.start,
-                              scrollEdgeEnd: scrollEdge.end,
                             })}
                             style={buildCellStyle({
                               meta,

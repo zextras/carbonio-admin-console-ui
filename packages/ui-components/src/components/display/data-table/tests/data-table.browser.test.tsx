@@ -696,18 +696,22 @@ describe('DataTable (browser)', () => {
     );
   });
 
-  it('opens peek on row click and closes with Escape', async () => {
+  it('opens peek on row click and keeps table rows visible', async () => {
     await renderTable(<ChromeDataTable />);
 
     await userEvent.click(page.getByText('user0@demo.zextras.io'));
     await expect
       .element(page.getByRole('complementary', { name: 'Details: user0@demo.zextras.io' }))
       .toBeVisible();
+    const table = page.getByRole('table', { name: 'Manage Accounts' });
+    await expect.element(table.getByText('user0@demo.zextras.io')).toBeVisible();
+    await expect.element(table.getByText('user1@demo.zextras.io')).toBeVisible();
 
     await userEvent.keyboard('{ArrowDown}');
     await expect
       .element(page.getByRole('complementary', { name: 'Details: user1@demo.zextras.io' }))
       .toBeVisible();
+    await expect.element(table.getByText('user0@demo.zextras.io')).toBeVisible();
 
     await userEvent.keyboard('{Escape}');
     await expect

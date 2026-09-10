@@ -16,6 +16,13 @@
   position: relative;
 }
 
+.tableMain {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
 .scroll {
   flex: 1;
   min-width: 0;
@@ -98,10 +105,6 @@
 
 .pinnedShadow {
   box-shadow: 6px 0 8px -6px rgb(0 0 0 / 12%);
-}
-
-.pinnedRightShadow {
-  box-shadow: -6px 0 8px -6px rgb(0 0 0 / 12%);
 }
 
 .actionsHeaderLabel {

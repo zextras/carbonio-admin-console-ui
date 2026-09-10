@@ -70,7 +70,6 @@ export const DataTableTableHeader = ({
                       pinnedStart && styles.pinnedLeft,
                       pinnedEnd && styles.pinnedRight,
                       pinnedStart && isPrimary && !scrollEdge.start && styles.pinnedShadow,
-                      pinnedEnd && !scrollEdge.end && styles.pinnedRightShadow,
                     )}
                     style={{
                       width: meta?.width,

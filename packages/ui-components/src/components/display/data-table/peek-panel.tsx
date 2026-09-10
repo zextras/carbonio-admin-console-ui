@@ -155,3 +155,5 @@ export const DataTablePeekPanel = <TData extends RowData>({
     </table.Subscribe>
   );
 };
+
+DataTablePeekPanel.displayName = 'DataTablePeekPanel';

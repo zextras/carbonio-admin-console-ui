@@ -17,7 +17,7 @@ import type {
   SortingState,
 } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { type ReactNode, useState } from 'react';
+import { Children, isValidElement, type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from './create-data-table';
@@ -32,6 +32,7 @@ import {
 } from './models/customize-model';
 import { getCellDisplayValue } from './models/row-ui';
 import type { DataTableRowAction, DataTableState } from './models/types';
+import { DataTablePeekPanel } from './peek-panel';
 import { DataTableRowActions } from './row-ui/row-actions';
 import { SelectionCheckbox } from './row-ui/selection-checkbox';
 import { type DataTableTableConfig, TableConfigProvider } from './table-config-context';
@@ -42,6 +43,36 @@ import {
   useTableUiStore,
 } from './table-ui-store';
 import type { DataTableColumnDef, DataTableColumnMeta } from './types';
+
+function isPeekPanelElement(child: ReactNode): boolean {
+  return (
+    isValidElement(child) &&
+    (child.type === DataTablePeekPanel ||
+      (typeof child.type === 'function' &&
+        'displayName' in child.type &&
+        child.type.displayName === 'DataTablePeekPanel'))
+  );
+}
+
+/**
+ * Peek must sit beside the vertical chrome stack (not as a row sibling of
+ * toolbar/table/pagination), otherwise `.shellWithPeek` collapses the table.
+ */
+function partitionPeekChildren(children: ReactNode): {
+  mainChildren: Array<ReactNode>;
+  peekChildren: Array<ReactNode>;
+} {
+  const mainChildren: Array<ReactNode> = [];
+  const peekChildren: Array<ReactNode> = [];
+  Children.forEach(children, (child) => {
+    if (isPeekPanelElement(child)) {
+      peekChildren.push(child);
+    } else {
+      mainChildren.push(child);
+    }
+  });
+  return { mainChildren, peekChildren };
+}
 
 export type DataTableRootProps<TData extends RowData> = {
   data: Array<TData>;
@@ -513,6 +544,8 @@ const DataTableRootShell = <TData extends RowData>({
     () => null,
   );
 
+  const { mainChildren, peekChildren } = partitionPeekChildren(children);
+
   return (
     <div
       className={clsx(
@@ -523,7 +556,10 @@ const DataTableRootShell = <TData extends RowData>({
       data-density={density}
     >
       <TableConfigProvider value={tableConfig}>
-        <table.AppTable>{children}</table.AppTable>
+        <table.AppTable>
+          <div className={styles.tableMain}>{mainChildren}</div>
+          {peekChildren}
+        </table.AppTable>
       </TableConfigProvider>
     </div>
   );
