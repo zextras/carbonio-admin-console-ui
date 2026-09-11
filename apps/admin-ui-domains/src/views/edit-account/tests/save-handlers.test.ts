@@ -154,7 +154,7 @@ describe('saveRename', () => {
       id: 'acc-1',
       newName: 'renamed@example.com',
     });
-    expect(ctx.successSnackbar).toHaveBeenCalledWith('Changes have been saved successfully');
+    expect(ctx.successSnackbar).not.toHaveBeenCalled();
     expect(ctx.onSaved).toHaveBeenCalledTimes(1);
     expect(ctx.onDomainRenamed).not.toHaveBeenCalled();
     expect(modifiedKeys).toEqual(['displayName']);
@@ -173,13 +173,15 @@ describe('saveRename', () => {
 
   it('still calls onSaved when the rename fails', async () => {
     deps.renameAccount.mutateAsync = vi.fn().mockRejectedValue(new Error('rename failed'));
-    await saveRename(
-      { uid: 'renamed', domainName: 'example.com' },
-      { zimbraId: 'acc-1' },
-      ['uid'],
-      deps,
-      ctx,
-    );
+    await expect(
+      saveRename(
+        { uid: 'renamed', domainName: 'example.com' },
+        { zimbraId: 'acc-1' },
+        ['uid'],
+        deps,
+        ctx,
+      ),
+    ).rejects.toThrow('rename failed');
     expect(ctx.notifySaveError).toHaveBeenCalledWith(new Error('rename failed'));
     expect(ctx.onSaved).toHaveBeenCalledTimes(1);
   });
@@ -247,7 +249,7 @@ describe('saveQuota', () => {
 
   it('sets a limited quota and drops the quota key', async () => {
     const modifiedKeys = [TOTAL_COMPUTED_QUOTA_LIMIT];
-    saveQuota(
+    await saveQuota(
       { zimbraId: 'acc-1', totalComputedQuotaLimit: { type: 'limited', value: 1024 } },
       modifiedKeys,
       deps,
@@ -258,13 +260,11 @@ describe('saveQuota', () => {
       limit: { type: 'limited', value: 1024 },
     });
     expect(modifiedKeys).toEqual([]);
-    await vi.waitFor(() => {
-      expect(ctx.successSnackbar).toHaveBeenCalledWith('Changes have been saved successfully');
-    });
+    expect(ctx.successSnackbar).not.toHaveBeenCalled();
   });
 
-  it('passes an unlimited value so the hook unsets the quota', () => {
-    saveQuota(
+  it('passes an unlimited value so the hook unsets the quota', async () => {
+    await saveQuota(
       { zimbraId: 'acc-1', totalComputedQuotaLimit: { type: 'unlimited' } },
       [TOTAL_COMPUTED_QUOTA_LIMIT],
       deps,
@@ -276,9 +276,9 @@ describe('saveQuota', () => {
     });
   });
 
-  it('is a no-op on non-advanced builds', () => {
+  it('is a no-op on non-advanced builds', async () => {
     const ctxBasic = createContext({ isAdvanced: false });
-    saveQuota(
+    await saveQuota(
       { zimbraId: 'acc-1', totalComputedQuotaLimit: { type: 'limited', value: 1024 } },
       [TOTAL_COMPUTED_QUOTA_LIMIT],
       deps,
@@ -289,15 +289,15 @@ describe('saveQuota', () => {
 
   it('shows the service error message when the quota save fails', async () => {
     deps.setAccountQuota.mutateAsync = vi.fn().mockRejectedValue(new Error('quota failed'));
-    saveQuota(
-      { zimbraId: 'acc-1', totalComputedQuotaLimit: { type: 'limited', value: 1024 } },
-      [TOTAL_COMPUTED_QUOTA_LIMIT],
-      deps,
-      ctx,
-    );
-    await vi.waitFor(() => {
-      expect(ctx.errorSnackbar).toHaveBeenCalledWith('quota failed');
-    });
+    await expect(
+      saveQuota(
+        { zimbraId: 'acc-1', totalComputedQuotaLimit: { type: 'limited', value: 1024 } },
+        [TOTAL_COMPUTED_QUOTA_LIMIT],
+        deps,
+        ctx,
+      ),
+    ).rejects.toThrow('quota failed');
+    expect(ctx.errorSnackbar).toHaveBeenCalledWith('quota failed');
   });
 });
 
@@ -324,6 +324,7 @@ describe('saveAdministrationRights', () => {
         member: 'user@example.com',
       });
     });
+    expect(ctx.successSnackbar).not.toHaveBeenCalled();
   });
 
   it('does nothing when the admin flag was not modified', () => {
@@ -356,7 +357,7 @@ describe('saveCoreAttributes', () => {
         configType: 'account',
       },
     });
-    expect(ctx.successSnackbar).toHaveBeenCalledWith('Changes have been saved successfully');
+    expect(ctx.successSnackbar).not.toHaveBeenCalled();
     expect(modifiedKeys).toEqual(['displayName']);
   });
 
@@ -364,6 +365,21 @@ describe('saveCoreAttributes', () => {
     const deps = createDeps();
     await saveCoreAttributes({ zimbraId: 'acc-1' }, ['displayName'], deps, createContext());
     expect(deps.setCoreAttributes).not.toHaveBeenCalled();
+  });
+
+  it('notifies and rethrows when setCoreAttributes fails', async () => {
+    const deps = createDeps();
+    const ctx = createContext();
+    deps.setCoreAttributes = vi.fn().mockRejectedValue(new Error('core failed'));
+    await expect(
+      saveCoreAttributes(
+        { zimbraId: 'acc-1', backupSelfUndeleteAllowed: true },
+        ['backupSelfUndeleteAllowed'],
+        deps,
+        ctx,
+      ),
+    ).rejects.toThrow('core failed');
+    expect(ctx.notifySaveError).toHaveBeenCalledWith(new Error('core failed'));
   });
 });
 
@@ -380,7 +396,7 @@ describe('saveRemainingAttributes', () => {
 
   it('sends the remaining keys through ModifyAccount and finalizes', async () => {
     const modifiedKeys = ['displayName'];
-    await saveRemainingAttributes(
+    const result = await saveRemainingAttributes(
       { displayName: 'New Name' },
       { zimbraId: 'acc-1' },
       modifiedKeys,
@@ -393,14 +409,24 @@ describe('saveRemainingAttributes', () => {
       id: 'acc-1',
       modifiedData: { displayName: 'New Name' },
     });
-    expect(ctx.successSnackbar).toHaveBeenCalledWith('Changes have been saved successfully');
+    expect(result).toBe('success');
+    expect(ctx.successSnackbar).not.toHaveBeenCalled();
     expect(finalize).toHaveBeenCalledTimes(1);
   });
 
   it('masks the password field on a password-only save', async () => {
     const values: Record<string, any> = {};
-    await saveRemainingAttributes(values, { zimbraId: 'acc-1' }, [], true, deps, ctx, finalize);
+    const result = await saveRemainingAttributes(
+      values,
+      { zimbraId: 'acc-1' },
+      [],
+      true,
+      deps,
+      ctx,
+      finalize,
+    );
     expect(deps.modifyAccountAttributes.mutateAsync).not.toHaveBeenCalled();
+    expect(result).toBe('password-success');
     expect(ctx.successSnackbar).toHaveBeenCalledWith('User password set successfully');
     expect(values.userPassword).toBe('VALUE-BLOCKED');
     expect(values.zimbraPasswordMustChange).toBe('FALSE');
@@ -409,7 +435,7 @@ describe('saveRemainingAttributes', () => {
 
   it('does not finalize when ModifyAccount fails', async () => {
     deps.modifyAccountAttributes.mutateAsync = vi.fn().mockRejectedValue(new Error('nope'));
-    await saveRemainingAttributes(
+    const result = await saveRemainingAttributes(
       { displayName: 'New Name' },
       { zimbraId: 'acc-1' },
       ['displayName'],
@@ -418,7 +444,25 @@ describe('saveRemainingAttributes', () => {
       ctx,
       finalize,
     );
+    expect(result).toBe('failed');
     expect(ctx.notifySaveError).toHaveBeenCalledWith(new Error('nope'));
+    expect(finalize).not.toHaveBeenCalled();
+    expect(ctx.successSnackbar).not.toHaveBeenCalled();
+  });
+
+  it('treats a null ModifyAccount response as failure', async () => {
+    deps.modifyAccountAttributes.mutateAsync = vi.fn().mockResolvedValue(null);
+    const result = await saveRemainingAttributes(
+      { displayName: 'New Name' },
+      { zimbraId: 'acc-1' },
+      ['displayName'],
+      false,
+      deps,
+      ctx,
+      finalize,
+    );
+    expect(result).toBe('failed');
+    expect(ctx.notifySaveError).toHaveBeenCalled();
     expect(finalize).not.toHaveBeenCalled();
   });
 });

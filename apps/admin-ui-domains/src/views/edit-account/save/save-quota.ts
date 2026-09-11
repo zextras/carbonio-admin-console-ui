@@ -8,30 +8,26 @@ import { remove } from 'lodash-es';
 import { TOTAL_COMPUTED_QUOTA_LIMIT } from '../../../constants';
 import type { SaveContext, SaveDeps } from './types';
 
-export function saveQuota(
+export async function saveQuota(
   values: Record<string, any>,
   modifiedKeys: Array<string>,
   deps: SaveDeps,
   ctx: SaveContext,
-): void {
+): Promise<void> {
   if (!modifiedKeys.includes(TOTAL_COMPUTED_QUOTA_LIMIT) || !ctx.isAdvanced) {
     return;
   }
-  void deps.setAccountQuota
-    .mutateAsync({ accountId: values.zimbraId, limit: values.totalComputedQuotaLimit })
-    .then(() => {
-      ctx.successSnackbar(
-        ctx.t(
-          'label.the_last_changes_has_been_saved_successfully',
-          'Changes have been saved successfully',
-        ),
-      );
-    })
-    .catch((error: { message?: string }) => {
-      ctx.errorSnackbar(
-        error?.message ??
-          ctx.t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
-      );
+  try {
+    await deps.setAccountQuota.mutateAsync({
+      accountId: values.zimbraId,
+      limit: values.totalComputedQuotaLimit,
     });
-  remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
+    remove(modifiedKeys, (key) => key === TOTAL_COMPUTED_QUOTA_LIMIT);
+  } catch (error) {
+    ctx.errorSnackbar(
+      (error as { message?: string })?.message ??
+        ctx.t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+    );
+    throw error;
+  }
 }

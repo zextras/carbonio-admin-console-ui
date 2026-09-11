@@ -23,17 +23,16 @@ export async function saveRename(
       id: saved.zimbraId,
       newName: `${values.uid}@${values.domainName}`,
     });
-    ctx.successSnackbar(
-      ctx.t('label.the_last_changes_has_been_saved_successfully', 'Changes have been saved successfully'),
-    );
     await ctx.flushAccountCache();
   } catch (error) {
     ctx.notifySaveError(error as { message?: string });
-  }
-  ctx.onSaved();
-  remove(modifiedKeys, (ele) => ele === UID);
-  if (modifiedKeys.includes(DOMAIN_NAME)) {
-    remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
-    ctx.onDomainRenamed();
+    throw error;
+  } finally {
+    ctx.onSaved();
+    remove(modifiedKeys, (ele) => ele === UID);
+    if (modifiedKeys.includes(DOMAIN_NAME)) {
+      remove(modifiedKeys, (ele) => ele === DOMAIN_NAME);
+      ctx.onDomainRenamed();
+    }
   }
 }

@@ -143,7 +143,7 @@ describe('GracePeriodDatePicker interactions (browser)', () => {
     await expect
       .element(page.getByRole('grid', { name: format(nextMonth, 'LLLL yyyy') }))
       .toBeVisible();
-    await page.getByRole('gridcell').filter({ hasText: '10' }).click();
+    await page.getByRole('gridcell', { name: '15' }).click();
 
     await expect.element(page.getByText(/^probe-grace:\d{14}Z$/)).toBeVisible();
     const pickedValue = (input.element() as HTMLInputElement).value;
