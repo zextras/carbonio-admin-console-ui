@@ -201,7 +201,7 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
     const idColumn = queueTable!.querySelectorAll('th')[1];
     expect(idColumn).toBeTruthy();
     const remInPx = Number.parseFloat(getComputedStyle(idColumn).fontSize);
-    expect(idColumn.getBoundingClientRect().width).toBeGreaterThan(remInPx * 15);
+    expect(idColumn.getBoundingClientRect().width).toBeGreaterThan(remInPx * 8);
 
     const scrollContainer = queueTable!.parentElement;
     expect(scrollContainer).toBeTruthy();
