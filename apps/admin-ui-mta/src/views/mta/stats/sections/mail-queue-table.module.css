@@ -1,0 +1,39 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.tableSection {
+  position: relative;
+  width: 100%;
+  min-width: 0;
+}
+
+.tableSection :global(th),
+.tableSection :global(td) {
+  white-space: nowrap;
+}
+
+/* Empty table: columns follow header label width instead of content slot sizes. */
+.tableSection:not(.hasRows) :global(table) {
+  table-layout: auto;
+  width: 100%;
+  min-width: 0;
+}
+
+.tableSection:not(.hasRows) :global(th) {
+  width: auto;
+  min-width: max-content;
+}
+
+.hasRows :global(table) {
+  width: max-content;
+  min-width: calc(12 * 10rem + 2rem);
+}
+
+.hasRows :global(th:nth-child(n + 2)),
+.hasRows :global(td:nth-child(n + 2)) {
+  width: 10rem;
+  min-width: 10rem;
+}
