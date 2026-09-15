@@ -1,3 +1,10 @@
+## [0.19.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.1...v0.19.2) (2026-09-15)
+
+### Other changes
+
+* enhance error handling and success notifications in account… ([#1377](https://github.com/zextras/carbonio-admin-console-ui/issues/1377)) ([8ae6ed6](https://github.com/zextras/carbonio-admin-console-ui/commit/8ae6ed65b8855f51dca61a616127ca4b24315a15))
+* update volume allocation handling in advanced mailstores co… ([#1378](https://github.com/zextras/carbonio-admin-console-ui/issues/1378)) ([86f84fe](https://github.com/zextras/carbonio-admin-console-ui/commit/86f84fe6abdeab3aa1bc983f31cb901eae526124))
+
 ## [0.19.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.0...v0.19.1) (2026-09-08)
 
 ### Bug Fixes
