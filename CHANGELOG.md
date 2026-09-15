@@ -1,3 +1,9 @@
+## [0.19.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.2...v0.19.3) (2026-09-15)
+
+### Bug Fixes
+
+* horizontal scrolling is missing in mail queue ([#1379](https://github.com/zextras/carbonio-admin-console-ui/issues/1379)) ([ca36423](https://github.com/zextras/carbonio-admin-console-ui/commit/ca364233022e23389962aa87a757c401fb9e0c3e))
+
 ## [0.19.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.1...v0.19.2) (2026-09-15)
 
 ### Other changes
