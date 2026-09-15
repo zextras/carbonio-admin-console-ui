@@ -87,10 +87,7 @@ export function AdvancedMailstoresDefinition({
     }
 
     volumeForm.setFieldValue('volumeAllocation', v);
-    const volumeTypeObject = volAllocationList?.find(
-      (item: VolumeAllocationItem) => item?.value === v,
-    )?.label;
-    form.setFieldValue('volumeAllocation', volumeTypeObject ?? '');
+    form.setFieldValue('volumeAllocation', v);
 
     if (v === EXTERNAL_TYPE_VALUE && !bucketId) {
       const defaultConnector = backupUnusedConnectorList?.[0]?.value;

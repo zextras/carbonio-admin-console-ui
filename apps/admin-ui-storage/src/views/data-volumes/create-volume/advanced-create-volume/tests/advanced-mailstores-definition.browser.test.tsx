@@ -16,6 +16,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
+import { LOCAL_TYPE_VALUE } from '../../../../../constants';
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
 import { AdvancedMailstoresDefinition } from '../advanced-mailstores-definition';
@@ -66,7 +67,7 @@ function Harness({
       volumeName: initialVolumeName ?? '',
       volumeMain: 0,
       isCurrent: false,
-      volumeAllocation: 'Local Block Device',
+      volumeAllocation: LOCAL_TYPE_VALUE,
       bucketName: '',
       unusedBucketType: '',
       tieringSupported: false,
@@ -128,7 +129,7 @@ describe('AdvancedMailstoresDefinition (browser)', () => {
 
     await vi.waitFor(() => {
       const state = document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '';
-      expect(state).toContain('"volumeAllocation":"Local Block Device"');
+      expect(state).toContain('"volumeAllocation":1');
     });
   });
 
@@ -139,12 +140,10 @@ describe('AdvancedMailstoresDefinition (browser)', () => {
     await page.getByText('Object Storage', { exact: true }).click();
 
     await vi.waitFor(() => {
-      expect(document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '').toContain(
-        'unused-bucket',
-      );
-      expect(document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '').toContain(
-        'conn-unused',
-      );
+      const state = document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '';
+      expect(state).toContain('"volumeAllocation":2');
+      expect(state).toContain('unused-bucket');
+      expect(state).toContain('conn-unused');
     });
   });
 
@@ -155,9 +154,9 @@ describe('AdvancedMailstoresDefinition (browser)', () => {
     await page.getByText('Object Storage', { exact: true }).click();
 
     await vi.waitFor(() => {
-      expect(document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '').toContain(
-        'unused-bucket',
-      );
+      const state = document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '';
+      expect(state).toContain('"volumeAllocation":2');
+      expect(state).toContain('unused-bucket');
     });
   });
 });
