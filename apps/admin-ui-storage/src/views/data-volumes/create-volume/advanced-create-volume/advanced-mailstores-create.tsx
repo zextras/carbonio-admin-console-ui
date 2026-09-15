@@ -8,8 +8,8 @@ import { Container, ListRow, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
-import { DISABLED, ENABLED, NO, S3, YES } from '../../../../constants';
-import { volumeTypeList } from '../../../utility/utils';
+import { DISABLED, ENABLED, LOCAL_TYPE_VALUE, NO, S3, YES } from '../../../../constants';
+import { volumeAllocationList, volumeTypeList } from '../../../utility/utils';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
 
@@ -191,8 +191,10 @@ export function AdvancedMailstoresCreate({
   const isCompression = useSelector(form.store, (s) => s.values.isCompression);
   const compressionThreshold = useSelector(form.store, (s) => s.values.compressionThreshold);
 
-  const isLocalBlockDevice = volumeAllocation === 'Local Block Device';
+  const isLocalBlockDevice = volumeAllocation === LOCAL_TYPE_VALUE;
   const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
+  const volumeAllocationLabel =
+    volumeAllocationList(t).find((item) => item.value === volumeAllocation)?.label ?? '';
   const volumeType =
     volTypeList?.find((item: { label?: string; value?: number }) => item?.value === volumeMain)
       ?.label ?? '';
@@ -234,7 +236,7 @@ export function AdvancedMailstoresCreate({
             >
               <DetailField
                 label={t('label.storage_type', 'Storage Type')}
-                value={volumeAllocation}
+                value={volumeAllocationLabel}
               />
             </Container>
             <Container

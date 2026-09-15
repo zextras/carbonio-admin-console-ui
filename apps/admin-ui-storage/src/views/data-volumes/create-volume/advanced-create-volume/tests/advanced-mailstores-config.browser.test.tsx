@@ -13,7 +13,9 @@ import { page } from 'vitest/browser';
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
+  EXTERNAL_TYPE_VALUE,
   INDEX_TYPE_VALUE,
+  LOCAL_TYPE_VALUE,
   PRIMARY_TYPE_VALUE,
   S3,
 } from '../../../../../constants';
@@ -54,7 +56,7 @@ function Harness({
       volumeName: 'volume-a',
       volumeMain: 0,
       isCurrent: false,
-      volumeAllocation: '',
+      volumeAllocation: EXTERNAL_TYPE_VALUE,
       bucketName: 'bucket-a',
       unusedBucketType: '',
       tieringSupported: false,
@@ -157,7 +159,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: 'Ceph',
         tieringSupported: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
       },
     }).render();
 
@@ -170,7 +172,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: false,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
       },
     }).render();
 
@@ -183,7 +185,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: true,
-        volumeAllocation: 'Local Block Device',
+        volumeAllocation: LOCAL_TYPE_VALUE,
       },
     }).render();
 
@@ -196,7 +198,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
       },
     }).render();
 
@@ -210,7 +212,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
       },
     }).render();
 
@@ -235,7 +237,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
 
   it('should hide Storage centralized switch for Local Block Device allocation', async () => {
     await renderHarness({
-      initialAdvanced: { volumeAllocation: 'Local Block Device' },
+      initialAdvanced: { volumeAllocation: LOCAL_TYPE_VALUE },
     }).render();
 
     expect(
@@ -245,7 +247,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
 
   it('should render Storage centralized switch for Object Storage allocation', async () => {
     await renderHarness({
-      initialAdvanced: { volumeAllocation: 'Object Storage' },
+      initialAdvanced: { volumeAllocation: EXTERNAL_TYPE_VALUE },
     }).render();
 
     await expect
@@ -267,7 +269,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
         tieringSupported: false,
         useInfrequentAccess: true,
         useIntelligentTiering: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
       },
     }).render();
 
@@ -301,7 +303,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     const onSelection = vi.fn();
     await renderHarness({
       onSelection,
-      initialAdvanced: { volumeAllocation: 'Object Storage' },
+      initialAdvanced: { volumeAllocation: EXTERNAL_TYPE_VALUE },
     }).render();
     await page.getByText('I want this Storage to be centralized', { exact: true }).click();
     await vi.waitFor(() => {
@@ -316,7 +318,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
         useInfrequentAccess: true,
         useIntelligentTiering: false,
         infrequentAccessThreshold: '4096',
@@ -338,7 +340,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
         useInfrequentAccess: false,
         useIntelligentTiering: false,
       },
@@ -359,7 +361,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: {
         unusedBucketType: S3,
         tieringSupported: true,
-        volumeAllocation: 'Object Storage',
+        volumeAllocation: EXTERNAL_TYPE_VALUE,
         useInfrequentAccess: false,
         useIntelligentTiering: false,
       },
@@ -373,9 +375,25 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     });
   });
 
+  it('should show Index Volume when allocation is LOCAL_TYPE_VALUE regardless of label locale', async () => {
+    await renderHarness({
+      initialAdvanced: { volumeAllocation: LOCAL_TYPE_VALUE },
+    }).render();
+
+    await expect.element(page.getByText('Index Volume', { exact: true })).toBeVisible();
+  });
+
+  it('should hide Index Volume when allocation is EXTERNAL_TYPE_VALUE', async () => {
+    await renderHarness({
+      initialAdvanced: { volumeAllocation: EXTERNAL_TYPE_VALUE },
+    }).render();
+
+    expect(page.getByText('Index Volume', { exact: true }).elements()).toHaveLength(0);
+  });
+
   it('should show index radio and path input for local block device', async () => {
     await renderHarness({
-      initialAdvanced: { volumeAllocation: 'Local Block Device' },
+      initialAdvanced: { volumeAllocation: LOCAL_TYPE_VALUE },
     }).render();
 
     await expect.element(page.getByText('Index Volume', { exact: true })).toBeVisible();
@@ -393,7 +411,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     await renderHarness({
       onSelection,
       initialAdvanced: {
-        volumeAllocation: 'Local Block Device',
+        volumeAllocation: LOCAL_TYPE_VALUE,
         volumeMain: PRIMARY_TYPE_VALUE,
       },
     }).render();
@@ -416,7 +434,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
   it('should hide compression controls when index volume is selected for local block device', async () => {
     await renderHarness({
       initialAdvanced: {
-        volumeAllocation: 'Local Block Device',
+        volumeAllocation: LOCAL_TYPE_VALUE,
         volumeMain: INDEX_TYPE_VALUE,
       },
     }).render();
