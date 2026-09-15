@@ -257,6 +257,7 @@ export const MTAStatsMail = ({
         mainAlignment="flex-start"
         crossAlignment="flex-start"
         height="calc(100vh - 3.5rem)"
+        minWidth={0}
         style={{ overflow: 'auto' }}
         background="white"
       >
