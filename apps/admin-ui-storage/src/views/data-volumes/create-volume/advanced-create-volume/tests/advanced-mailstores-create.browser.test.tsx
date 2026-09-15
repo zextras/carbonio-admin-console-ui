@@ -10,7 +10,7 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DISABLED, ENABLED, NO, S3, YES } from '../../../../../constants';
+import { DISABLED, ENABLED, EXTERNAL_TYPE_VALUE, LOCAL_TYPE_VALUE, NO, S3, YES } from '../../../../../constants';
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
 import { AdvancedMailstoresCreate } from '../advanced-mailstores-create';
@@ -43,7 +43,7 @@ function Harness({ initialAdvanced, externalData }: HarnessOptions) {
       volumeName: '',
       volumeMain: 0,
       isCurrent: false,
-      volumeAllocation: '',
+      volumeAllocation: EXTERNAL_TYPE_VALUE,
       bucketName: '',
       unusedBucketType: '',
       tieringSupported: false,
@@ -197,7 +197,7 @@ describe('AdvancedMailstoresCreate (browser)', () => {
   it('should render local block device review with path and compression fields', async () => {
     await renderHarness({
       initialAdvanced: {
-        volumeAllocation: 'Local Block Device',
+        volumeAllocation: LOCAL_TYPE_VALUE,
         volumeMain: 1,
         volumeName: 'local-vol',
         path: '/opt/zextras/store',
@@ -220,7 +220,7 @@ describe('AdvancedMailstoresCreate (browser)', () => {
   it('should show DISABLED for compression threshold when compression is off for local block device', async () => {
     await renderHarness({
       initialAdvanced: {
-        volumeAllocation: 'Local Block Device',
+        volumeAllocation: LOCAL_TYPE_VALUE,
         volumeMain: 1,
         path: '/opt/zextras/store',
         isCompression: false,

@@ -23,10 +23,12 @@ import {
   AMAZON_USERGUIDE_STORAGE_CLASS_LINK,
   COMPRESSION_THRESHOLD_UNIT,
   INDEX_TYPE_VALUE,
+  LOCAL_TYPE_VALUE,
   PRIMARY_TYPE_VALUE,
   S3,
   SECONDARY_TYPE_VALUE,
 } from '../../../../constants';
+import { volumeAllocationList } from '../../../utility/utils';
 import { useAdvancedVolumeContext } from './create-advanced-volume-context';
 import styles from './create-volume.module.css';
 
@@ -72,8 +74,10 @@ export function AdvancedMailstoresConfig({
   const isCompression = useSelector(form.store, (s) => s.values.isCompression);
   const compressionThreshold = useSelector(form.store, (s) => s.values.compressionThreshold);
 
-  const isLocalBlockDevice = volumeAllocation === 'Local Block Device';
+  const isLocalBlockDevice = volumeAllocation === LOCAL_TYPE_VALUE;
   const showTieringSettings = unusedBucketType === S3 && tieringSupported === true;
+  const volumeAllocationLabel =
+    volumeAllocationList(t).find((item) => item.value === volumeAllocation)?.label ?? '';
 
   const changeVolDetail = (e: ChangeEvent<HTMLInputElement>): void => {
     form.setFieldValue(
@@ -117,7 +121,7 @@ export function AdvancedMailstoresConfig({
           </ds-text>
           <div className={styles.detailValueRow}>
             <ds-text className={styles.detailValue} weight="bold" size="small">
-              {volumeAllocation}
+              {volumeAllocationLabel}
             </ds-text>
           </div>
         </div>
