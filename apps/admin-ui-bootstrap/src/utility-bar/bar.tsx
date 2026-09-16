@@ -6,18 +6,21 @@
 
 import { Button, Container, Dropdown, type IconName, Tooltip } from '@zextras/ui-components';
 import {
-  CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   logout,
-  useConfigAttribute,
   useIsAdvanced,
   useUserAccount,
   useUtilityBarStore,
   UtilityView,
 } from '@zextras/ui-shared';
 import { map, noop } from 'lodash-es';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { buildDocumentationUrl } from './build-documentation-url';
+import { useDocumentationBaseUrl } from './use-documentation-base-url';
+import { useDocumentationContext } from './use-documentation-context';
+import { useServerVersion } from './use-server-version';
 import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem = ({ view }: { view: UtilityView }) => {
@@ -54,18 +57,30 @@ export const ShellUtilityBar = () => {
   const acct = useUserAccount();
   const accountName = acct?.name ? clipTextAfterWords(acct.name) : '';
   const isAdvanced = useIsAdvanced();
-  const { data: helpDocumentationUrlAttribute } = useConfigAttribute(
-    CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
-  );
-  const helpDocumentationUrl = isAdvanced
-    ? helpDocumentationUrlAttribute || CARBONIO_CE_ADMIN_DOCUMENTATION_URL
-    : CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
+  const baseUrl = useDocumentationBaseUrl();
+  const { serverVersion } = useServerVersion();
+  const docContext = useDocumentationContext();
   const [t] = useTranslation();
+
+  const helpDocumentationUrl = useMemo(() => {
+    if (!isAdvanced) {
+      return CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
+    }
+
+    return buildDocumentationUrl(baseUrl, {
+      v: serverVersion || undefined,
+      m: docContext.module,
+      c: docContext.context,
+    });
+  }, [isAdvanced, baseUrl, serverVersion, docContext]);
   const accountItems = [
     {
       id: 'help',
       label: t('label.help_and_documentation', 'Help & Documentation'),
-      onClick: () => openLink(helpDocumentationUrl),
+      onClick: () => {
+        console.log(helpDocumentationUrl);
+        openLink(helpDocumentationUrl);
+      },
       icon: 'QuestionMarkOutline' as IconName,
     },
     {

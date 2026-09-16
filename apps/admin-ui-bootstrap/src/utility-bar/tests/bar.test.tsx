@@ -42,13 +42,27 @@ vi.mock('@zextras/ui-components', () => ({
 }));
 
 vi.mock('@zextras/ui-shared', () => ({
-	CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE: 'carbonioAdminDocumentationUrl',
 	CARBONIO_CE_ADMIN_DOCUMENTATION_URL: 'https://docs.example.com/ce',
 	logout: vi.fn(),
-	useConfigAttribute: vi.fn(),
 	useIsAdvanced: vi.fn(),
 	useUserAccount: vi.fn(),
 	useUtilityBarStore: vi.fn(),
+}));
+
+vi.mock('../use-documentation-base-url', () => ({
+	useDocumentationBaseUrl: vi.fn(),
+}));
+
+vi.mock('../use-documentation-context', () => ({
+	useDocumentationContext: vi.fn(),
+}));
+
+vi.mock('../use-server-version', () => ({
+	useServerVersion: vi.fn(),
+}));
+
+vi.mock('../build-documentation-url', () => ({
+	buildDocumentationUrl: vi.fn((baseUrl: string) => baseUrl),
 }));
 
 vi.mock('react-i18next', () => ({
@@ -62,15 +76,12 @@ vi.mock('../utils', () => ({
 	useUtilityViews: vi.fn(),
 }));
 
-import {
-	logout,
-	useConfigAttribute,
-	useIsAdvanced,
-	useUserAccount,
-	useUtilityBarStore,
-} from '@zextras/ui-shared';
+import { logout, useIsAdvanced, useUserAccount, useUtilityBarStore } from '@zextras/ui-shared';
 
 import { ShellUtilityBar } from '../bar';
+import { useDocumentationBaseUrl } from '../use-documentation-base-url';
+import { useDocumentationContext } from '../use-documentation-context';
+import { useServerVersion } from '../use-server-version';
 import { openLink, useUtilityViews } from '../utils';
 
 describe('ShellUtilityBar', () => {
@@ -79,7 +90,9 @@ describe('ShellUtilityBar', () => {
 		vi.mocked(useUtilityViews).mockReturnValue([]);
 		vi.mocked(useUserAccount).mockReturnValue({ name: 'Test User' } as never);
 		vi.mocked(useIsAdvanced).mockReturnValue(false);
-		vi.mocked(useConfigAttribute).mockReturnValue({ data: undefined } as never);
+		vi.mocked(useDocumentationBaseUrl).mockReturnValue('https://docs.example.com/landing');
+		vi.mocked(useServerVersion).mockReturnValue({ serverVersion: '', isLoading: false } as never);
+		vi.mocked(useDocumentationContext).mockReturnValue({ module: 'Admin' });
 		vi.mocked(useUtilityBarStore).mockReturnValue({
 			mode: 'closed',
 			current: undefined,
