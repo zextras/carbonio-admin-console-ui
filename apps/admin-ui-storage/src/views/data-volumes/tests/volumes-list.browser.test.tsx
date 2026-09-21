@@ -226,7 +226,7 @@ describe('VolumesDetailPanel (browser)', () => {
     });
 
     describe('Rendering', () => {
-      it('should render the server name in the title', async () => {
+      it('should render the title, sections, button and table headers without Secondary or Storage Type', async () => {
         setupAllServersInterceptor();
         setupGetAllVolumesCE();
         await setupBrowserTest(renderWithContext(), {
@@ -235,53 +235,10 @@ describe('VolumesDetailPanel (browser)', () => {
         await expect
           .element(page.getByText(`${SERVER_NAME} Volumes`, { exact: true }))
           .toBeVisible();
-      });
-
-      it('should render the NEW VOLUME button', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesCE();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
         await expect.element(page.getByRole('button', { name: /new volume/i })).toBeVisible();
-      });
-
-      it('should render the Primary section label', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesCE();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
         await expect.element(page.getByText('Primary', { exact: true }).first()).toBeVisible();
-      });
-
-      it('should render the Indexer section label', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesCE();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
         await expect.element(page.getByText('Indexer', { exact: true }).first()).toBeVisible();
-      });
-
-      it('should not render the Secondary section in CE mode', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesCE();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
-        await expect.element(page.getByText('Primary', { exact: true }).first()).toBeVisible();
         expect(page.getByText('Secondary', { exact: true }).elements()).toHaveLength(0);
-      });
-    });
-
-    describe('Table headers', () => {
-      it('should render volume table headers without Storage Type', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesCE();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
         await expect.element(page.getByText('ID', { exact: true }).first()).toBeInTheDocument();
         await expect.element(page.getByText('Name', { exact: true }).first()).toBeInTheDocument();
         await expect.element(page.getByText('Path', { exact: true }).first()).toBeInTheDocument();
@@ -316,17 +273,7 @@ describe('VolumesDetailPanel (browser)', () => {
     });
 
     describe('Rendering', () => {
-      it('should render the Secondary section in advanced mode', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesAdvanced();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
-        await expect.element(page.getByText('Secondary', { exact: true }).first()).toBeVisible();
-      });
-
-      it('should render all three sections: Primary, Secondary, Indexer', async () => {
-        setupAllServersInterceptor();
+      it('should render Primary, Secondary and Indexer sections with the Storage Type column', async () => {
         setupGetAllVolumesAdvanced();
         await setupBrowserTest(renderWithContext(), {
           initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
@@ -334,16 +281,6 @@ describe('VolumesDetailPanel (browser)', () => {
         await expect.element(page.getByText('Primary', { exact: true }).first()).toBeVisible();
         await expect.element(page.getByText('Secondary', { exact: true }).first()).toBeVisible();
         await expect.element(page.getByText('Indexer', { exact: true }).first()).toBeVisible();
-      });
-    });
-
-    describe('Table headers', () => {
-      it('should render Storage Type column in advanced mode', async () => {
-        setupAllServersInterceptor();
-        setupGetAllVolumesAdvanced();
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-        });
         await expect
           .element(page.getByText('Storage Type', { exact: true }).first())
           .toBeInTheDocument();
@@ -352,7 +289,6 @@ describe('VolumesDetailPanel (browser)', () => {
 
     describe('Empty state', () => {
       it('should show Empty Table when no volumes exist in advanced mode', async () => {
-        setupAllServersInterceptor();
         setupEmptyVolumesAdvanced();
         await setupBrowserTest(renderWithContext(), {
           initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
@@ -382,32 +318,20 @@ describe('VolumesDetailPanel (browser)', () => {
         return qc;
       }
 
-      it('should map volumeType "primary" to type 1 and display volume data', async () => {
-        setupGetAllVolumesAdvanced([
-          {
-            id: 5,
-            name: 'primary-s3',
-            path: '/opt/zextras/primary-store',
-            compressed: true,
-            threshold: 2048,
-            storeType: 'LOCAL',
-            isCurrent: true,
-            volumeType: 'primary',
-          },
-        ]);
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-          queryClient: createPreSeededQueryClient(),
-        });
-        await expect.element(page.getByText('primary-s3', { exact: true })).toBeVisible();
-        await expect
-          .element(page.getByText('/opt/zextras/primary-store', { exact: true }))
-          .toBeVisible();
-      });
-
-      it('should map volumeType "secondary" to type 2 and display in secondary table', async () => {
+      it('should map primary, secondary and index volumes to their tables', async () => {
         setupGetAllVolumesAdvanced(
-          [],
+          [
+            {
+              id: 5,
+              name: 'primary-s3',
+              path: '/opt/zextras/primary-store',
+              compressed: true,
+              threshold: 2048,
+              storeType: 'LOCAL',
+              isCurrent: true,
+              volumeType: 'primary',
+            },
+          ],
           [
             {
               id: 6,
@@ -420,21 +344,6 @@ describe('VolumesDetailPanel (browser)', () => {
               volumeType: 'secondary',
             },
           ],
-        );
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-          queryClient: createPreSeededQueryClient(),
-        });
-        await expect.element(page.getByText('sec-vol-mapped', { exact: true })).toBeVisible();
-        await expect
-          .element(page.getByText('/opt/zextras/sec-path', { exact: true }))
-          .toBeVisible();
-      });
-
-      it('should map volumeType "index" to type 10 and display in indexer table', async () => {
-        setupGetAllVolumesAdvanced(
-          [],
-          [],
           [
             {
               id: 7,
@@ -452,14 +361,65 @@ describe('VolumesDetailPanel (browser)', () => {
           initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
           queryClient: createPreSeededQueryClient(),
         });
+        await expect.element(page.getByText('primary-s3', { exact: true })).toBeVisible();
+        await expect
+          .element(page.getByText('/opt/zextras/primary-store', { exact: true }))
+          .toBeVisible();
+        await expect.element(page.getByText('sec-vol-mapped', { exact: true })).toBeVisible();
+        await expect
+          .element(page.getByText('/opt/zextras/sec-path', { exact: true }))
+          .toBeVisible();
         await expect.element(page.getByText('idx-vol-mapped', { exact: true })).toBeVisible();
         await expect
           .element(page.getByText('/opt/zextras/idx-path', { exact: true }))
           .toBeVisible();
       });
 
-      it('should map S3 volume with uuid to bucketConfigurationId', async () => {
+      it('should display isCurrent as YES or No per volume', async () => {
         setupGetAllVolumesAdvanced([
+          {
+            id: 1,
+            name: 'current-vol',
+            path: '/opt/store',
+            compressed: true,
+            threshold: 4096,
+            storeType: 'LOCAL',
+            isCurrent: true,
+            volumeType: 'primary',
+          },
+          {
+            id: 2,
+            name: 'not-current-vol',
+            path: '/opt/store2',
+            compressed: false,
+            threshold: 4096,
+            storeType: 'LOCAL',
+            isCurrent: false,
+            volumeType: 'primary',
+          },
+        ]);
+        await setupBrowserTest(renderWithContext(), {
+          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
+          queryClient: createPreSeededQueryClient(),
+        });
+        await expect.element(page.getByText('current-vol', { exact: true })).toBeVisible();
+        await expect.element(page.getByText('not-current-vol', { exact: true })).toBeVisible();
+        await expect.element(page.getByText('YES', { exact: true }).first()).toBeVisible();
+        await expect.element(page.getByText('No', { exact: true }).first()).toBeVisible();
+      });
+
+      it('should display Local Block Device and Object Storage per storeType, with S3 uuid volumes', async () => {
+        setupGetAllVolumesAdvanced([
+          {
+            id: 1,
+            name: 'local-vol',
+            path: '/opt/store',
+            compressed: false,
+            threshold: 4096,
+            storeType: 'LOCAL',
+            isCurrent: true,
+            volumeType: 'primary',
+          },
           {
             id: 8,
             name: 'minio-vol',
@@ -480,87 +440,11 @@ describe('VolumesDetailPanel (browser)', () => {
           initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
           queryClient: createPreSeededQueryClient(),
         });
+        await expect.element(page.getByText('local-vol', { exact: true })).toBeVisible();
         await expect.element(page.getByText('minio-vol', { exact: true })).toBeVisible();
-      });
-
-      it('should display isCurrent as Yes when volume is current', async () => {
-        setupGetAllVolumesAdvanced([
-          {
-            id: 1,
-            name: 'current-vol',
-            path: '/opt/store',
-            compressed: true,
-            threshold: 4096,
-            storeType: 'LOCAL',
-            isCurrent: true,
-            volumeType: 'primary',
-          },
-        ]);
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-          queryClient: createPreSeededQueryClient(),
-        });
-        await expect.element(page.getByText('YES', { exact: true }).first()).toBeVisible();
-      });
-
-      it('should display isCurrent as No when volume is not current', async () => {
-        setupGetAllVolumesAdvanced([
-          {
-            id: 1,
-            name: 'not-current-vol',
-            path: '/opt/store',
-            compressed: false,
-            threshold: 4096,
-            storeType: 'LOCAL',
-            isCurrent: false,
-            volumeType: 'primary',
-          },
-        ]);
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-          queryClient: createPreSeededQueryClient(),
-        });
-        await expect.element(page.getByText('No', { exact: true }).first()).toBeVisible();
-      });
-
-      it('should display Local Block Device for LOCAL storeType', async () => {
-        setupGetAllVolumesAdvanced([
-          {
-            id: 1,
-            name: 'local-vol',
-            path: '/opt/store',
-            compressed: false,
-            threshold: 4096,
-            storeType: 'LOCAL',
-            isCurrent: true,
-            volumeType: 'primary',
-          },
-        ]);
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-          queryClient: createPreSeededQueryClient(),
-        });
         await expect
           .element(page.getByText('Local Block Device', { exact: true }).first())
           .toBeVisible();
-      });
-
-      it('should display Object Storage for S3 storeType', async () => {
-        setupGetAllVolumesAdvanced([
-          {
-            id: 1,
-            name: 's3-vol',
-            compressed: true,
-            uuid: 'some-uuid',
-            storeType: 'S3',
-            isCurrent: true,
-            volumeType: 'primary',
-          },
-        ]);
-        await setupBrowserTest(renderWithContext(), {
-          initialRouterEntry: `/${SERVER_NAME}/data_volumes`,
-          queryClient: createPreSeededQueryClient(),
-        });
         await expect
           .element(page.getByText('Object Storage', { exact: true }).first())
           .toBeVisible();
