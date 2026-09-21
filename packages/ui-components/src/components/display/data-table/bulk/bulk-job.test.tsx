@@ -112,8 +112,8 @@ describe('DataTableBulkJob', () => {
   it('renders a labelled progressbar with the cancel affordance while running', () => {
     const { onCancel } = renderJobHarness({ label: 'Deleting', done: 2, total: 6, result: null });
     const progressbar = screen.getByRole('progressbar', { name: 'Deleting' });
-    expect(progressbar.getAttribute('aria-valuenow')).toBe('2');
-    expect(progressbar.getAttribute('aria-valuemax')).toBe('6');
+    expect(progressbar).toHaveProperty('value', 2);
+    expect(progressbar).toHaveProperty('max', 6);
     expect(screen.getByText('2 / 6')).toBeTruthy();
     fireEvent.click(screen.getByRole('button', { name: 'Cancel' }));
     expect(onCancel).toHaveBeenCalledTimes(1);

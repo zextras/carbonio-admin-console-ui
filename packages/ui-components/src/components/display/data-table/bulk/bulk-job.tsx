@@ -55,7 +55,6 @@ export const DataTableBulkJob = ({
   }
 
   if (!job.result) {
-    const percent = job.total === 0 ? 0 : Math.min(100, (job.done / job.total) * 100);
     return (
       <div className={styles.bulkJob}>
         <div className={styles.bulkJobProgress}>
@@ -65,16 +64,12 @@ export const DataTableBulkJob = ({
               {job.done.toLocaleString(locale)} / {job.total.toLocaleString(locale)}
             </span>
           </div>
-          <div
-            role="progressbar"
+          <progress
             aria-label={job.label}
-            aria-valuemin={0}
-            aria-valuemax={job.total}
-            aria-valuenow={job.done}
+            max={job.total}
+            value={job.done}
             className={styles.bulkJobTrack}
-          >
-            <div className={styles.bulkJobFill} style={{ width: `${percent}%` }} />
-          </div>
+          />
         </div>
         <button type="button" className={styles.bulkJobCancel} onClick={handleCancel}>
           {cancelLabel ?? t('data_table.job_cancel', 'Cancel')}
@@ -85,7 +80,7 @@ export const DataTableBulkJob = ({
 
   return (
     <div className={styles.bulkJob}>
-      <div role="status" className={styles.bulkJobResult}>
+      <output className={styles.bulkJobResult}>
         <span>
           {t('data_table.job_result', '✓ {{ok}} succeeded · {{failed}} failed', {
             ok: job.result.ok.toLocaleString(locale),
@@ -101,7 +96,7 @@ export const DataTableBulkJob = ({
         <button type="button" className={styles.bulkJobDismiss} onClick={handleDismiss}>
           {dismissLabel ?? t('data_table.job_dismiss', 'Dismiss')}
         </button>
-      </div>
+      </output>
     </div>
   );
 };
