@@ -36,7 +36,29 @@ type EditViewSetup = {
   setShowMailingListDetailView: ReturnType<typeof vi.fn>;
 };
 
-async function setupEditView(): Promise<EditViewSetup> {
+type EditViewGrants = Array<{
+  right: Array<{ _content: string }>;
+  grantee: Array<{ id: string; name: string; type: string }>;
+}>;
+
+type EditViewSetupOptions = {
+  grants?: EditViewGrants;
+  includeDisplayName?: boolean;
+};
+
+function registerEditViewData({
+  grants = [
+    {
+      right: [{ _content: 'ownDistList' }],
+      grantee: [{ id: 'owner-1', name: 'owner@example.com', type: 'usr' }],
+    },
+    {
+      right: [{ _content: 'sendAsDistList' }],
+      grantee: [{ id: 'send-1', name: 'sender@example.com', type: 'usr' }],
+    },
+  ],
+  includeDisplayName = true,
+}: EditViewSetupOptions = {}): void {
   createBrowserSoapAPIInterceptor('GetDistributionList', {
     dl: [
       {
@@ -44,7 +66,7 @@ async function setupEditView(): Promise<EditViewSetup> {
         name: DL_EMAIL,
         dlm: [{ _content: 'user1@example.com' }, { _content: 'user2@example.com' }],
         a: [
-          { n: 'displayName', _content: DL_DISPLAY_NAME },
+          ...(includeDisplayName ? [{ n: 'displayName', _content: DL_DISPLAY_NAME }] : []),
           { n: 'zimbraHideInGal', _content: 'FALSE' },
           { n: 'zimbraNotes', _content: '' },
           { n: 'description', _content: 'Team mailing list' },
@@ -58,22 +80,15 @@ async function setupEditView(): Promise<EditViewSetup> {
   createBrowserSoapAPIInterceptor('GetDistributionListMembership', {
     dl: [{ id: 'dl-2', name: 'other@example.com' }],
   });
-  createBrowserSoapAPIInterceptor('GetGrants', {
-    grant: [
-      {
-        right: [{ _content: 'ownDistList' }],
-        grantee: [{ id: 'owner-1', name: 'owner@example.com', type: 'usr' }],
-      },
-      {
-        right: [{ _content: 'sendAsDistList' }],
-        grantee: [{ id: 'send-1', name: 'sender@example.com', type: 'usr' }],
-      },
-    ],
-  });
+  createBrowserSoapAPIInterceptor('GetGrants', { grant: grants });
   // resolves ManageAliases' useDomainById query (suffix for new aliases)
   createBrowserSoapAPIInterceptor('GetDomain', {
     domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] }],
   });
+}
+
+async function setupEditView(options: EditViewSetupOptions = {}): Promise<EditViewSetup> {
+  registerEditViewData(options);
 
   const queryClient = getQueryClient();
   queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
@@ -137,61 +152,36 @@ async function expectHeaderDeleteVisible(): Promise<void> {
 
 describe('EditDistributionList (browser)', () => {
   describe('Rendering', () => {
-    it('renders the header with the list address and type', async () => {
+    it('renders the header, tabs and general tab fields from the loaded list', async () => {
       await setupEditView();
       await waitForLoad();
       await expect.element(page.getByText(/team@example.com/)).toBeInTheDocument();
       await expect.element(page.getByText(/Standard/)).toBeInTheDocument();
-    });
-
-    it('renders the five edit tabs', async () => {
-      await setupEditView();
-      await waitForLoad();
       await expect.element(page.getByText('GENERAL', { exact: true })).toBeInTheDocument();
       await expect.element(page.getByText('MEMBERS', { exact: true })).toBeInTheDocument();
       await expect.element(page.getByText('OWNERS', { exact: true })).toBeInTheDocument();
       await expect.element(page.getByText('SEND AS', { exact: true })).toBeInTheDocument();
       await expect.element(page.getByText('SEND TO', { exact: true })).toBeInTheDocument();
-    });
-
-    it('renders general tab fields from the loaded list', async () => {
-      await setupEditView();
-      await waitForLoad();
       await expect.element(page.getByLabelText('Display Name')).toHaveValue(DL_DISPLAY_NAME);
       await expect.element(page.getByLabelText('Address')).toHaveValue(DL_EMAIL);
     });
   });
 
   describe('Tab navigation', () => {
-    it('switches to the members tab and shows the members table', async () => {
+    it('switches to each tab and shows its content', async () => {
       await setupEditView();
       await waitForLoad();
       await page.getByText('MEMBERS', { exact: true }).click();
       await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
       await expect.element(page.getByText('user2@example.com')).toBeInTheDocument();
-    });
-
-    it('switches to the owners tab and shows the add-owners input', async () => {
-      await setupEditView();
-      await waitForLoad();
       await page.getByText('OWNERS', { exact: true }).click();
       await expect
         .element(page.getByRole('button', { name: 'Add Owners' }))
         .toBeInTheDocument();
-    });
-
-    it('switches to the send-as tab and shows the permission level radios', async () => {
-      await setupEditView();
-      await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
       await expect
         .element(page.getByText('Send on behalf of', { exact: true }))
         .toBeInTheDocument();
-    });
-
-    it('switches to the send-to tab and shows the default grant type', async () => {
-      await setupEditView();
-      await waitForLoad();
       await page.getByText('SEND TO', { exact: true }).click();
       await expect.element(page.getByText('Everyone')).toBeInTheDocument();
     });
@@ -345,30 +335,13 @@ describe('EditDistributionList (browser)', () => {
   });
 
   describe('Delete', () => {
-    it('confirms deletion, deletes the list and closes the detail view', async () => {
-      const remove = createBrowserSoapAPIInterceptor('DeleteDistributionList', {});
-      const { setShowMailingListDetailView } = await setupEditView();
-      await waitForLoad();
-      await page.getByRole('button', { name: 'delete' }).click();
-      await expect
-        .element(page.getByText('You are deleting Team List'))
-        .toBeInTheDocument();
-      await page.getByRole('button', { name: 'Yes, Delete it' }).click();
-      const params = await remove;
-      expect(params).toMatchObject({ id: { _content: DL_ID } });
-      await expect
-        .element(page.getByText('team@example.com has been deleted successfully'))
-        .toBeInTheDocument();
-      expect(setShowMailingListDetailView).toHaveBeenCalledWith(false);
-    });
-
-    it('closes the delete modal without deleting when cancelled', async () => {
+    it('cancels, then confirms deletion, deletes the list and closes the detail view', async () => {
       let deleteRequested = false;
-      createBrowserSoapAPIInterceptor('DeleteDistributionList', {}).then((params) => {
+      const remove = createBrowserSoapAPIInterceptor('DeleteDistributionList', {}).then((params) => {
         deleteRequested = true;
         return params;
       });
-      await setupEditView();
+      const { setShowMailingListDetailView } = await setupEditView();
       await waitForLoad();
       await page.getByRole('button', { name: 'delete' }).click();
       await expect
@@ -379,6 +352,15 @@ describe('EditDistributionList (browser)', () => {
         .element(page.getByText('You are deleting Team List'))
         .not.toBeInTheDocument();
       expect(deleteRequested).toBe(false);
+
+      await page.getByRole('button', { name: 'delete' }).click();
+      await page.getByRole('button', { name: 'Yes, Delete it' }).click();
+      const params = await remove;
+      expect(params).toMatchObject({ id: { _content: DL_ID } });
+      await expect
+        .element(page.getByText('team@example.com has been deleted successfully'))
+        .toBeInTheDocument();
+      expect(setShowMailingListDetailView).toHaveBeenCalledWith(false);
     });
 
     it('shows the total grant rights warning when the list has rights', async () => {
@@ -432,7 +414,7 @@ describe('EditDistributionList (browser)', () => {
   });
 
   describe('Members tab interactions', () => {
-    it('adds a member by typed email', async () => {
+    it('adds a member by typed email, then removes it after confirmation', async () => {
       const addMember = createBrowserSoapAPIInterceptor('AddDistributionListMember', {});
       await setupEditView();
       await waitForLoad();
@@ -442,23 +424,18 @@ describe('EditDistributionList (browser)', () => {
         'user3@example.com',
       );
       await page.getByRole('button', { name: 'Add Members' }).click();
-      const params = await addMember;
-      expect(params).toMatchObject({
+      const addParams = await addMember;
+      expect(addParams).toMatchObject({
         id: { n: 'id', _content: DL_ID },
         dlm: { n: 'dlm', _content: 'user3@example.com' },
       });
       await expect.element(page.getByText('user3@example.com')).toBeInTheDocument();
-    });
 
-    it('removes a member after confirmation', async () => {
       const removeMember = createBrowserSoapAPIInterceptor('RemoveDistributionListMember', {});
-      await setupEditView();
-      await waitForLoad();
-      await page.getByText('MEMBERS', { exact: true }).click();
       await page.getByRole('button', { name: 'Delete', exact: true }).first().click();
       await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
-      const params = await removeMember;
-      expect(params).toMatchObject({
+      const removeParams = await removeMember;
+      expect(removeParams).toMatchObject({
         id: { n: 'id', _content: DL_ID },
         dlm: { n: 'dlm', _content: 'user1@example.com' },
       });
@@ -467,7 +444,7 @@ describe('EditDistributionList (browser)', () => {
   });
 
   describe('Owners tab interactions', () => {
-    it('adds an owner found via GAL search', async () => {
+    it('adds an owner found via GAL search, then removes it after confirmation', async () => {
       const addAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
       createBrowserSoapAPIInterceptor('SearchGal', {
         cn: [{ id: 'gal-1', _attrs: { email: 'owner@example.com', type: 'account' } }],
@@ -492,26 +469,21 @@ describe('EditDistributionList (browser)', () => {
       );
       await expect.poll(() => debouncedGalSearchFired).toBe(true);
       await page.getByRole('button', { name: 'Add Owners' }).click();
-      const params = (await addAction) as { action: Record<string, unknown> };
-      expect(params.action).toMatchObject({ op: 'addOwners' });
+      const addParams = (await addAction) as { action: Record<string, unknown> };
+      expect(addParams.action).toMatchObject({ op: 'addOwners' });
       await expect
         .element(page.getByText('Owner has been added successfully'))
         .toBeInTheDocument();
-    });
 
-    it('removes an existing owner after confirmation', async () => {
       const removeAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
-      await setupEditView();
-      await waitForLoad();
-      await page.getByText('OWNERS', { exact: true }).click();
-      await expect.element(page.getByText('owner@example.com')).toBeInTheDocument();
-      await page.getByRole('button', { name: 'Delete', exact: true }).click();
+      // the newly added owner row is prepended, so the seeded owner is last
+      await page.getByRole('button', { name: 'Delete', exact: true }).last().click();
       await expect
         .element(page.getByText(/^Are you sure you want to remove owner@example\.com/))
         .toBeInTheDocument();
       await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
-      const params = (await removeAction) as { action: Record<string, unknown> };
-      expect(params.action).toMatchObject({ op: 'removeOwners' });
+      const removeParams = (await removeAction) as { action: Record<string, unknown> };
+      expect(removeParams.action).toMatchObject({ op: 'removeOwners' });
       await expect.element(page.getByText('owner@example.com')).not.toBeInTheDocument();
     });
   });
@@ -610,37 +582,29 @@ describe('EditDistributionList (browser)', () => {
   });
 
   describe('Send-as tab validation', () => {
-    it('shows the blank email error when adding without typing an email', async () => {
+    it('shows blank, invalid and already-in-list errors for the add-senders input', async () => {
       await setupEditView();
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
+      const addSendersInput = page.getByLabelText('Add senders by email address');
+
+      await userEvent.clear(addSendersInput);
       await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
       await expect
         .element(page.getByText('Please enter at least one email address'))
         .toBeInTheDocument();
-    });
 
-    it('shows the invalid email error for a malformed address', async () => {
-      await setupEditView();
-      await waitForLoad();
-      await page.getByText('SEND AS', { exact: true }).click();
-      await userEvent.type(page.getByLabelText('Add senders by email address'), 'not-an-email');
+      await userEvent.clear(addSendersInput);
+      await userEvent.type(addSendersInput, 'not-an-email');
       await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
       await expect
         .element(
           page.getByText('The account does not exist. Please check the spelling and try again.'),
         )
         .toBeInTheDocument();
-    });
 
-    it('shows the already-in-list error for an existing sender', async () => {
-      await setupEditView();
-      await waitForLoad();
-      await page.getByText('SEND AS', { exact: true }).click();
-      await userEvent.type(
-        page.getByLabelText('Add senders by email address'),
-        'sender@example.com',
-      );
+      await userEvent.clear(addSendersInput);
+      await userEvent.type(addSendersInput, 'sender@example.com');
       await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
       await expect
         .element(page.getByText('The Distribution List / User is already in the list'))
@@ -649,22 +613,21 @@ describe('EditDistributionList (browser)', () => {
   });
 
   describe('Send-as tab table', () => {
-    it('filters the authorized senders by the search input', async () => {
+    it('filters senders by the search input and selects a row on address click', async () => {
       await setupEditView();
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
       await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
-      await userEvent.type(page.getByLabelText('Search senders'), 'nomatch');
-      await expect.element(page.getByText('sender@example.com')).not.toBeInTheDocument();
-      await userEvent.clear(page.getByLabelText('Search senders'));
-      await userEvent.type(page.getByLabelText('Search senders'), 'sender');
-      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
-    });
+      const searchSenders = page.getByLabelText('Search senders');
 
-    it('selects a sender row when its address is clicked', async () => {
-      await setupEditView();
-      await waitForLoad();
-      await page.getByText('SEND AS', { exact: true }).click();
+      await userEvent.clear(searchSenders);
+      await userEvent.type(searchSenders, 'nomatch');
+      await expect.element(page.getByText('sender@example.com')).not.toBeInTheDocument();
+      await userEvent.clear(searchSenders);
+      await userEvent.type(searchSenders, 'sender');
+      await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
+
+      await userEvent.clear(searchSenders);
       await page.getByText('sender@example.com', { exact: true }).click();
       // the permission-level cell of the row is the last 'Send As' text on the tab
       await page.getByText('Send As', { exact: true }).last().click();
@@ -674,59 +637,15 @@ describe('EditDistributionList (browser)', () => {
 
   describe('Send-as tab empty state', () => {
     it('shows the empty state when the list has no authorized senders', async () => {
-      createBrowserSoapAPIInterceptor('GetDistributionList', {
-        dl: [
-          {
-            id: DL_ID,
-            name: DL_EMAIL,
-            dlm: [{ _content: 'user1@example.com' }],
-            a: [
-              { n: 'zimbraHideInGal', _content: 'FALSE' },
-              { n: 'zimbraNotes', _content: '' },
-              { n: 'description', _content: 'Team mailing list' },
-              { n: 'zimbraMailStatus', _content: 'enabled' },
-              { n: 'zimbraMailAlias', _content: DL_EMAIL },
-              { n: 'zimbraMailAlias', _content: 'alias1@example.com' },
-            ],
-          },
-        ],
-      });
-      createBrowserSoapAPIInterceptor('GetDistributionListMembership', {
-        dl: [{ id: 'dl-2', name: 'other@example.com' }],
-      });
-      createBrowserSoapAPIInterceptor('GetGrants', {
-        grant: [
+      await setupEditView({
+        grants: [
           {
             right: [{ _content: 'ownDistList' }],
             grantee: [{ id: 'owner-1', name: 'owner@example.com', type: 'usr' }],
           },
         ],
+        includeDisplayName: false,
       });
-      createBrowserSoapAPIInterceptor('GetDomain', {
-        domain: [
-          { id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] },
-        ],
-      });
-      const queryClient = getQueryClient();
-      queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
-        id: DOMAIN_ID,
-        name: DOMAIN_NAME,
-        a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
-      });
-      queryClient.setQueryData(domainQueryKeys.list(), [
-        { name: DOMAIN_NAME, id: DOMAIN_ID, a: [] },
-      ]);
-      await _setupBrowserTest(
-        <EditDistributionList
-          selectedMailingList={SELECTED_MAILING_LIST}
-          setShowMailingListDetailView={vi.fn()}
-        />,
-        {
-          queryClient,
-          withDomainIdRoute: true,
-          initialRouterEntry: `/${DOMAIN_ID}`,
-        },
-      );
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
       await expect
