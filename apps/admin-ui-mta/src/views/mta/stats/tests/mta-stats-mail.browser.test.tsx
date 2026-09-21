@@ -145,9 +145,12 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
     await expect.element(page.getByText(QUEUE_ITEM_ID)).toBeVisible();
 
     const queueRow = page.getByRole('row').filter({ hasText: QUEUE_ITEM_ID });
+    const holdButton = page.getByRole('button', { name: 'Hold' });
     // Drawer and table can exceed the default browser viewport; hover, scroll and
-    // click through the DOM to bypass bounds checks. The row is re-resolved on every
-    // poll attempt so a table re-render mid-wait cannot leave the click on a detached node.
+    // click through the DOM to bypass bounds checks. The row checkbox attaches its
+    // click listener in a passive effect, so a click dispatched right after the
+    // checkbox first renders can land before the listener exists. Re-hover and
+    // re-click (only while the row is still unchecked) until Hold enables.
     await expect
       .poll(
         () => {
@@ -155,15 +158,16 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
           rowEl.closest('table')?.parentElement?.scrollTo({ left: 0 });
           rowEl.querySelector('td')?.scrollIntoView({ block: 'center', inline: 'start' });
           rowEl.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-          return rowEl.isConnected && rowEl.querySelector('[data-testid="checkbox"]') !== null;
+          if (!holdButton.element().disabled) return true;
+          const checkboxIcon = rowEl.querySelector('[data-testid="checkbox"] ds-icon');
+          if (checkboxIcon?.getAttribute('icon') === 'Square') {
+            rowEl.querySelector('[data-testid="checkbox"]')?.click();
+          }
+          return !holdButton.element().disabled;
         },
-        { timeout: 5_000 },
+        { timeout: 10_000 },
       )
       .toBeTruthy();
-    (queueRow.element().querySelector('[data-testid="checkbox"]') as HTMLElement).click();
-
-    const holdButton = page.getByRole('button', { name: 'Hold' });
-    await expect.element(holdButton).toBeEnabled();
     await holdButton.click();
 
     const request = await batchInterceptor;
