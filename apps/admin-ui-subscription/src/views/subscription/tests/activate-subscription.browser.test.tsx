@@ -52,7 +52,7 @@ describe('ActivateSubscription', () => {
       await expect
         .element(page.getByText(/Seems like you don't have a subscription token active yet/i))
         .toBeVisible();
-      await expect.element(page.getByRole('img', { name: 'logo' })).toBeVisible();
+      await expect.element(page.getByRole('img', { name: 'subscription logo' })).toBeVisible();
     });
 
   });
