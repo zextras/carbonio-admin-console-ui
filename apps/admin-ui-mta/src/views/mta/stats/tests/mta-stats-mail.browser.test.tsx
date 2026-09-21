@@ -158,12 +158,13 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
           rowEl.closest('table')?.parentElement?.scrollTo({ left: 0 });
           rowEl.querySelector('td')?.scrollIntoView({ block: 'center', inline: 'start' });
           rowEl.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-          if (!holdButton.element().disabled) return true;
+          const holdEnabled = (): boolean => (holdButton.element() as HTMLButtonElement).disabled === false;
+          if (holdEnabled()) return true;
           const checkboxIcon = rowEl.querySelector('[data-testid="checkbox"] ds-icon');
           if (checkboxIcon?.getAttribute('icon') === 'Square') {
-            rowEl.querySelector('[data-testid="checkbox"]')?.click();
+            (rowEl.querySelector('[data-testid="checkbox"]') as HTMLElement | null)?.click();
           }
-          return !holdButton.element().disabled;
+          return holdEnabled();
         },
         { timeout: 10_000 },
       )
