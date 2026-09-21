@@ -17,7 +17,7 @@
     "lint:fix": "eslint --fix --quiet --cache",
     "test": "vitest run",
     "test:watch": "vitest --browser --watch --open",
-    "test:ci": "vitest run --coverage --maxWorkers=2",
+    "test:ci": "vitest run --coverage",
     "type-lint": "pnpm run type-check && pnpm run lint"
   },
   "dependencies": {
@@ -50,7 +50,7 @@
     "@types/react-dom": "^19.2.3",
     "@vitest/browser": "^5.0.1",
     "@vitest/browser-preview": "^5.0.1",
-    "@vitest/coverage-istanbul": "^5.0.1",
+    "@vitest/coverage-v8": "^5.0.1",
     "babel-plugin-i18next-extract": "^1.1.0",
     "cjs-module-lexer": "^2.2.0",
     "clsx": "^2.1.1",
