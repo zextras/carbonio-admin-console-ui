@@ -26,7 +26,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'admin' });
+		expect(result.current).toEqual({ module: 'admin', moduleLabelKey: 'label.admin', moduleLabelFallback: 'Admin' });
 	});
 
 	it('returns the default context when the route has no mapping', () => {
@@ -35,7 +35,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'admin' });
+		expect(result.current).toEqual({ module: 'admin', moduleLabelKey: 'label.admin', moduleLabelFallback: 'Admin' });
 	});
 
 	it('resolves module and context for a route with no subpaths', () => {
@@ -44,7 +44,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'privacy', context: undefined });
+		expect(result.current).toEqual({ module: 'privacy', context: undefined, moduleLabelKey: 'label.privacy', moduleLabelFallback: 'Privacy' });
 	});
 
 	it('resolves a domain-level subpath (general_settings)', () => {
@@ -53,7 +53,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'domains', context: 'general' });
+		expect(result.current).toEqual({ module: 'domains', context: 'general', moduleLabelKey: 'label.domains', moduleLabelFallback: 'Domains' });
 	});
 
 	it('resolves the global section with its specific subpath (administrators)', () => {
@@ -62,7 +62,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'domains', context: 'admins' });
+		expect(result.current).toEqual({ module: 'domains', context: 'admins', moduleLabelKey: 'label.domains', moduleLabelFallback: 'Domains' });
 	});
 
 	it('falls back to the generic global context when no specific subpath matches', () => {
@@ -71,7 +71,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'domains', context: 'global' });
+		expect(result.current).toEqual({ module: 'domains', context: 'global', moduleLabelKey: 'label.domains', moduleLabelFallback: 'Domains' });
 	});
 
 	it('maps the accounts subpath to the account context', () => {
@@ -80,7 +80,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'domains', context: 'account' });
+		expect(result.current).toEqual({ module: 'domains', context: 'account', moduleLabelKey: 'label.domains', moduleLabelFallback: 'Domains' });
 	});
 
 	it('maps active_sync and address_book to the manage fallback context', () => {
@@ -89,7 +89,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'domains', context: 'manage' });
+		expect(result.current).toEqual({ module: 'domains', context: 'manage', moduleLabelKey: 'label.domains', moduleLabelFallback: 'Domains' });
 	});
 
 	it('resolves a nested COS subpath regardless of the dynamic :cosId segment', () => {
@@ -98,7 +98,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'cos', context: 'features' });
+		expect(result.current).toEqual({ module: 'cos', context: 'features', moduleLabelKey: 'label.cos', moduleLabelFallback: 'COS' });
 	});
 
 	it('resolves an MTA server-scoped subpath regardless of the dynamic :server segment', () => {
@@ -107,7 +107,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'mta', context: 'server-general' });
+		expect(result.current).toEqual({ module: 'mta', context: 'server-general', moduleLabelKey: 'label.mail_trans_agent', moduleLabelFallback: 'Mail Trans. Agent' });
 	});
 
 	it('resolves a Storage subpath', () => {
@@ -116,7 +116,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'storage', context: 'data-volumes' });
+		expect(result.current).toEqual({ module: 'storage', context: 'data-volumes', moduleLabelKey: 'label.storage', moduleLabelFallback: 'Storage' });
 	});
 
 	it('resolves a Backup subpath', () => {
@@ -125,7 +125,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'backup', context: 'server-config' });
+		expect(result.current).toEqual({ module: 'backup', context: 'server-config', moduleLabelKey: 'label.backup', moduleLabelFallback: 'Backup' });
 	});
 
 	it('falls back to undefined context on an unmapped subpath within a known app', () => {
@@ -134,7 +134,7 @@ describe('useDocumentationContext', () => {
 
 		const { result } = renderHook(() => useDocumentationContext());
 
-		expect(result.current).toEqual({ module: 'cos', context: undefined });
+		expect(result.current).toEqual({ module: 'cos', context: undefined, moduleLabelKey: 'label.cos', moduleLabelFallback: 'COS' });
 	});
 
 	it('memoizes the result and recomputes only when route or path change', () => {

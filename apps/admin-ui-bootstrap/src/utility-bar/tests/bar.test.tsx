@@ -67,7 +67,12 @@ vi.mock('../build-documentation-url', () => ({
 
 vi.mock('react-i18next', () => ({
 	useTranslation: () => [
-		(key: string, fallback?: string): string => fallback ?? key,
+		(key: string, fallback?: string, options?: Record<string, string>): string => {
+			const text = fallback ?? key;
+			return options
+				? text.replace(/{{(\w+)}}/g, (_match, token: string) => options[token] ?? '')
+				: text;
+		},
 	],
 }));
 
@@ -92,7 +97,11 @@ describe('ShellUtilityBar', () => {
 		vi.mocked(useIsAdvanced).mockReturnValue(false);
 		vi.mocked(useDocumentationBaseUrl).mockReturnValue('https://docs.example.com/landing');
 		vi.mocked(useServerVersion).mockReturnValue({ serverVersion: '', isLoading: false } as never);
-		vi.mocked(useDocumentationContext).mockReturnValue({ module: 'Admin' });
+		vi.mocked(useDocumentationContext).mockReturnValue({
+			module: 'admin',
+			moduleLabelKey: 'label.admin',
+			moduleLabelFallback: 'Admin',
+		});
 		vi.mocked(useUtilityBarStore).mockReturnValue({
 			mode: 'closed',
 			current: undefined,
@@ -123,18 +132,30 @@ describe('ShellUtilityBar', () => {
 		expect(screen.getByRole('button', { name: 'Account menu' })).toBeTruthy();
 	});
 
-	it('renders help and logout dropdown items', () => {
+	it('renders the standalone help button and the logout dropdown item', () => {
 		render(<ShellUtilityBar />);
 		expect(
-			screen.getByRole('button', { name: 'Help & Documentation' }),
+			screen.getByRole('button', { name: 'Documentation: Admin' }),
 		).toBeTruthy();
 		expect(screen.getByRole('button', { name: 'Logout' })).toBeTruthy();
 	});
 
-	it('calls openLink with the help URL when Help & Documentation is clicked', () => {
+	it('labels the help button with the current module (e.g. Domains)', () => {
+		vi.mocked(useDocumentationContext).mockReturnValue({
+			module: 'domains',
+			moduleLabelKey: 'label.domains',
+			moduleLabelFallback: 'Domains',
+		});
+		render(<ShellUtilityBar />);
+		expect(
+			screen.getByRole('button', { name: 'Documentation: Domains' }),
+		).toBeTruthy();
+	});
+
+	it('calls openLink with the help URL when the help button is clicked', () => {
 		render(<ShellUtilityBar />);
 		fireEvent.click(
-			screen.getByRole('button', { name: 'Help & Documentation' }),
+			screen.getByRole('button', { name: 'Documentation: Admin' }),
 		);
 		expect(openLink).toHaveBeenCalledWith('https://docs.example.com/ce');
 	});

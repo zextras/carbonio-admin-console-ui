@@ -10,6 +10,9 @@ import { useMemo } from 'react';
 export type DocumentationContext = {
 	module: string;
 	context?: string;
+	/** i18n key/fallback for the module's own display name (e.g. sidebar label). */
+	moduleLabelKey: string;
+	moduleLabelFallback: string;
 };
 
 /**
@@ -21,13 +24,27 @@ type RouteMapping = {
 	module: string;
 	context?: string;
 	subpaths?: Record<string, string>;
+	/** Same i18n key/fallback used by the app itself to label its sidebar entry. */
+	moduleLabelKey: string;
+	moduleLabelFallback: string;
 };
 
 const ROUTE_MAPPINGS: Record<string, RouteMapping> = {
-	accounts: { module: 'account', context: 'list' },
-	dashboard: { module: 'dashboard' },
+	accounts: {
+		module: 'account',
+		context: 'list',
+		moduleLabelKey: 'label.accounts',
+		moduleLabelFallback: 'Accounts',
+	},
+	dashboard: {
+		module: 'dashboard',
+		moduleLabelKey: 'label.dashboard',
+		moduleLabelFallback: 'Dashboard',
+	},
 	domains: {
 		module: 'domains',
+		moduleLabelKey: 'label.domains',
+		moduleLabelFallback: 'Domains',
 		subpaths: {
 			'create-new-domain': 'create-domain',
 			general_information: 'details',
@@ -56,6 +73,8 @@ const ROUTE_MAPPINGS: Record<string, RouteMapping> = {
 	},
 	cos: {
 		module: 'cos',
+		moduleLabelKey: 'label.cos',
+		moduleLabelFallback: 'COS',
 		subpaths: {
 			general_information: 'general-information',
 			features: 'features',
@@ -67,6 +86,8 @@ const ROUTE_MAPPINGS: Record<string, RouteMapping> = {
 	},
 	mail_transfer_agent: {
 		module: 'mta',
+		moduleLabelKey: 'label.mail_trans_agent',
+		moduleLabelFallback: 'Mail Trans. Agent',
 		subpaths: {
 			general_lbl: 'inbound-flow-security',
 			postscreen_tuning: 'postscreen-tuning',
@@ -79,6 +100,8 @@ const ROUTE_MAPPINGS: Record<string, RouteMapping> = {
 	},
 	storage: {
 		module: 'storage',
+		moduleLabelKey: 'label.storage',
+		moduleLabelFallback: 'Storage',
 		subpaths: {
 			servers_list: 'servers-list',
 			s3connector_list: 's3-connectors',
@@ -88,6 +111,8 @@ const ROUTE_MAPPINGS: Record<string, RouteMapping> = {
 	},
 	backup: {
 		module: 'backup',
+		moduleLabelKey: 'label.backup',
+		moduleLabelFallback: 'Backup',
 		subpaths: {
 			servers_list: 'servers-list',
 			server_config: 'server-config',
@@ -97,14 +122,38 @@ const ROUTE_MAPPINGS: Record<string, RouteMapping> = {
 			advanced_lbl: 'advanced',
 		},
 	},
-	subscriptions: { module: 'subscription' },
-	operations: { module: 'operations' },
-	privacy: { module: 'privacy' },
-	legal_hold: { module: 'legal-hold' },
-	notifications: { module: 'notifications' },
+	subscriptions: {
+		module: 'subscriptions',
+		moduleLabelKey: 'label.subscriptions',
+		moduleLabelFallback: 'Subscriptions',
+	},
+	operations: {
+		module: 'operations',
+		moduleLabelKey: 'label.operations',
+		moduleLabelFallback: 'Operations',
+	},
+	privacy: {
+		module: 'privacy',
+		moduleLabelKey: 'label.privacy',
+		moduleLabelFallback: 'Privacy',
+	},
+	legal_hold: {
+		module: 'legalhold',
+		moduleLabelKey: 'label.legal_hold',
+		moduleLabelFallback: 'Legal Hold',
+	},
+	notifications: {
+		module: 'notifications',
+		moduleLabelKey: 'label.notifications',
+		moduleLabelFallback: 'Notifications',
+	},
 };
 
-const DEFAULT_CONTEXT: DocumentationContext = { module: 'admin' };
+const DEFAULT_CONTEXT: DocumentationContext = {
+	module: 'admin',
+	moduleLabelKey: 'label.admin',
+	moduleLabelFallback: 'Admin',
+};
 
 const getContextFromSubpath = (
 	mapping: RouteMapping,
@@ -145,6 +194,8 @@ export const useDocumentationContext = (): DocumentationContext => {
 		return {
 			module: mapping.module,
 			context: getContextFromSubpath(mapping, relativePath),
+			moduleLabelKey: mapping.moduleLabelKey,
+			moduleLabelFallback: mapping.moduleLabelFallback,
 		};
 	}, [currentRoute, relativePath]);
 };

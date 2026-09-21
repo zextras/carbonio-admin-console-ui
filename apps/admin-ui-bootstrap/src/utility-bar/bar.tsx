@@ -13,10 +13,12 @@ import {
   useUtilityBarStore,
   UtilityView,
 } from '@zextras/ui-shared';
+import clsx from 'clsx';
 import { map, noop } from 'lodash-es';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import styles from './bar.module.css';
 import { buildDocumentationUrl } from './build-documentation-url';
 import { useDocumentationBaseUrl } from './use-documentation-base-url';
 import { useDocumentationContext } from './use-documentation-context';
@@ -61,6 +63,8 @@ export const ShellUtilityBar = () => {
   const { serverVersion } = useServerVersion();
   const docContext = useDocumentationContext();
   const [t] = useTranslation();
+  const [isHelpHovered, setIsHelpHovered] = useState(false);
+  const [isAccountHovered, setIsAccountHovered] = useState(false);
 
   const helpDocumentationUrl = useMemo(() => {
     if (!isAdvanced) {
@@ -73,16 +77,11 @@ export const ShellUtilityBar = () => {
       c: docContext.context,
     });
   }, [isAdvanced, baseUrl, serverVersion, docContext]);
+  const moduleLabel = t(docContext.moduleLabelKey, docContext.moduleLabelFallback);
+  const helpTooltipLabel = t('label.documentation_for_module', 'Documentation: {{module}}', {
+    module: moduleLabel,
+  });
   const accountItems = [
-    {
-      id: 'help',
-      label: t('label.help_and_documentation', 'Help & Documentation'),
-      onClick: () => {
-        console.log(helpDocumentationUrl);
-        openLink(helpDocumentationUrl);
-      },
-      icon: 'QuestionMarkOutline' as IconName,
-    },
     {
       id: 'logout',
       label: t('label.logout', 'Logout'),
@@ -98,23 +97,52 @@ export const ShellUtilityBar = () => {
       {map(views, (view) => (
         <UtilityBarItem view={view} key={view.id} />
       ))}
-      <Container margin={{ right: 'small' }}>
-        <ds-text as="span" color="primary" style={{ whiteSpace: 'pre-line', textAlign: 'left' }}>
-          {accountName}
-        </ds-text>
+      <Container orientation="horizontal" width="fit" gap="0.25rem">
+        <Tooltip label={helpTooltipLabel} placement="bottom-end">
+          <button
+            type="button"
+            className={clsx(styles.trigger, styles.helpTrigger)}
+            onClick={() => {
+              console.log(helpDocumentationUrl);
+              openLink(helpDocumentationUrl);
+            }}
+            onMouseEnter={() => setIsHelpHovered(true)}
+            onMouseLeave={() => setIsHelpHovered(false)}
+            aria-label={helpTooltipLabel}
+          >
+            <ds-icon
+              icon="QuestionMarkCircleOutline"
+              color={isHelpHovered ? 'primary' : 'gray1'}
+              size="large"
+            />
+          </button>
+        </Tooltip>
+        <Tooltip label={t('label.account_menu', 'Account menu')} placement="right-end">
+          <Dropdown items={accountItems}>
+            <button
+              type="button"
+              className={clsx(styles.trigger, styles.accountTrigger)}
+              onClick={noop}
+              onMouseEnter={() => setIsAccountHovered(true)}
+              onMouseLeave={() => setIsAccountHovered(false)}
+              aria-label={t('label.account_menu', 'Account menu')}
+            >
+              <ds-text
+                as="span"
+                color={isAccountHovered ? 'primary' : 'gray1'}
+                style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
+              >
+                {accountName}
+              </ds-text>
+              <ds-icon
+                icon="AvatarOutline"
+                color={isAccountHovered ? 'primary' : 'gray1'}
+                size="large"
+              />
+            </button>
+          </Dropdown>
+        </Tooltip>
       </Container>
-      <Tooltip label={t('label.account_menu', 'Account menu')} placement="left-end">
-        <Dropdown items={accountItems}>
-          <Button
-            type="ghost"
-            icon="AvatarOutline"
-            size={'extralarge'}
-            color="primary"
-            onClick={noop}
-            aria-label={t('label.account_menu', 'Account menu')}
-          />
-        </Dropdown>
-      </Tooltip>
     </Container>
   );
 };
