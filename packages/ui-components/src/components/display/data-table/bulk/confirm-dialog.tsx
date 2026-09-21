@@ -39,15 +39,13 @@ function cycleTabFocus(
 }
 
 /**
- * Modal confirmation dialog for destructive bulk actions. Escape is
- * handled at the DOCUMENT level so it works no matter where focus sits
- * (the legacy overlay-only handler missed keys outside the overlay);
- * backdrop dismissal is a document-level press whose target is the overlay
- * itself, so the non-interactive elements carry no handlers. While open,
- * the modal flag in the UI store makes sibling document-level handlers
- * (peek navigation, row action menus) bail out so Escape acts only here.
- * Focus starts on the safe action (cancel) and is restored to the
- * previously focused element on close.
+ * Modal confirmation dialog for destructive bulk actions. Uses a native
+ * `<dialog>` with `showModal()` so Escape and backdrop dimming come from
+ * the platform; cancel is preventDefault'd so React owns unmount. While
+ * open, the modal flag in the UI store makes sibling document-level
+ * handlers (peek navigation, row action menus) bail out so Escape acts
+ * only here. Focus starts on the safe action (cancel) and is restored to
+ * the previously focused element on close.
  */
 export const DataTableConfirmDialog = ({
   title,
@@ -58,7 +56,7 @@ export const DataTableConfirmDialog = ({
   onCancel,
 }: DataTableConfirmDialogProps) => {
   const titleId = useId();
-  const overlayRef = useRef<HTMLDivElement>(null);
+  const dialogRef = useRef<HTMLDialogElement>(null);
   const cancelRef = useRef<HTMLButtonElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
   const previouslyFocused = useRef<Element | null>(null);
@@ -74,12 +72,35 @@ export const DataTableConfirmDialog = ({
   });
 
   useEffect(() => {
-    const overlay = overlayRef.current;
+    const dialog = dialogRef.current;
+    if (!dialog) {
+      return;
+    }
     previouslyFocused.current = document.activeElement;
+    // jsdom does not implement showModal/close; fall back to the open attribute.
+    if (typeof dialog.showModal === 'function') {
+      dialog.showModal();
+    } else {
+      dialog.setAttribute('open', '');
+    }
     cancelRef.current?.focus();
     setModalOpen(true);
+
+    function handleCancel(event: Event): void {
+      event.preventDefault();
+      onCancelRef.current();
+    }
+
+    function handleClick(event: MouseEvent): void {
+      if (event.target === dialog) {
+        onCancelRef.current();
+      }
+    }
+
     function handleKeyDown(event: KeyboardEvent): void {
-      if (event.key === 'Escape') {
+      // Real browsers fire `cancel` on Escape for modal dialogs. jsdom does not,
+      // so document Escape is only the fallback when showModal is unavailable.
+      if (event.key === 'Escape' && typeof dialog.showModal !== 'function') {
         event.stopPropagation();
         onCancelRef.current();
         return;
@@ -88,16 +109,19 @@ export const DataTableConfirmDialog = ({
         cycleTabFocus(event, cancelRef.current, confirmRef.current);
       }
     }
-    function handlePointerDown(event: PointerEvent): void {
-      if (event.target === overlay) {
-        onCancelRef.current();
-      }
-    }
+
+    dialog.addEventListener('cancel', handleCancel);
+    dialog.addEventListener('click', handleClick);
     document.addEventListener('keydown', handleKeyDown);
-    document.addEventListener('pointerdown', handlePointerDown);
     return () => {
+      dialog.removeEventListener('cancel', handleCancel);
+      dialog.removeEventListener('click', handleClick);
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('pointerdown', handlePointerDown);
+      if (typeof dialog.close === 'function' && dialog.open) {
+        dialog.close();
+      } else {
+        dialog.removeAttribute('open');
+      }
       setModalOpen(false);
       if (previouslyFocused.current instanceof HTMLElement) {
         previouslyFocused.current.focus();
@@ -106,40 +130,33 @@ export const DataTableConfirmDialog = ({
   }, [setModalOpen]);
 
   return (
-    <div ref={overlayRef} className={styles.confirmOverlay} role="presentation">
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        className={styles.confirmDialog}
-      >
-        <h2 id={titleId} className={styles.confirmTitle}>
-          {title}
-        </h2>
-        <p className={styles.confirmMessage}>{message}</p>
-        <div className={styles.confirmActions}>
-          <button
-            type="button"
-            ref={cancelRef}
-            className={styles.confirmCancel}
-            onClick={() => {
-              onCancelRef.current();
-            }}
-          >
-            {cancelLabel}
-          </button>
-          <button
-            type="button"
-            ref={confirmRef}
-            className={styles.confirmPrimary}
-            onClick={() => {
-              onConfirmRef.current();
-            }}
-          >
-            {confirmLabel}
-          </button>
-        </div>
+    <dialog ref={dialogRef} aria-labelledby={titleId} className={styles.confirmDialog}>
+      <h2 id={titleId} className={styles.confirmTitle}>
+        {title}
+      </h2>
+      <p className={styles.confirmMessage}>{message}</p>
+      <div className={styles.confirmActions}>
+        <button
+          type="button"
+          ref={cancelRef}
+          className={styles.confirmCancel}
+          onClick={() => {
+            onCancelRef.current();
+          }}
+        >
+          {cancelLabel}
+        </button>
+        <button
+          type="button"
+          ref={confirmRef}
+          className={styles.confirmPrimary}
+          onClick={() => {
+            onConfirmRef.current();
+          }}
+        >
+          {confirmLabel}
+        </button>
       </div>
-    </div>
+    </dialog>
   );
 };

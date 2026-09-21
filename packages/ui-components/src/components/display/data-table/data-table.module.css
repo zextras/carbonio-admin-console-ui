@@ -408,23 +408,18 @@
   font-size: 0.6875rem;
 }
 
-.confirmOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 35%);
-}
-
 .confirmDialog {
   width: 23.75rem;
   max-width: calc(100vw - 2rem);
   padding: 1.5rem;
+  border: none;
   border-radius: 8px;
   background: var(--color-gray6-regular, #fff);
   box-shadow: 0 8px 30px rgb(0 0 0 / 20%);
+}
+
+.confirmDialog::backdrop {
+  background: rgb(0 0 0 / 35%);
 }
 
 .confirmTitle {
