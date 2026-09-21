@@ -6,13 +6,12 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  resetMockWorker,
   setupBrowserTest,
   worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { CreateNewCos } from '../create-new-cos';
@@ -59,10 +58,6 @@ async function setupWizardTest(): Promise<void> {
 describe('CreateNewCos wizard', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-  });
-
-  afterEach(() => {
-    resetMockWorker();
   });
 
   describe('Rendering (step 1)', () => {

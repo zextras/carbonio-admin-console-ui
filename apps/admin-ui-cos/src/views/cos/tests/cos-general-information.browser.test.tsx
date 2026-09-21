@@ -9,12 +9,11 @@ import {
   delayedSoapApiForBrowser,
   getQueryClient,
   grantUserCosRights,
-  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../services/modify-cos-service';
@@ -233,10 +232,6 @@ async function expectEditionValue(value: string): Promise<void> {
 describe('CosGeneralInformation', () => {
   beforeEach(() => {
     vi.resetAllMocks();
-  });
-
-  afterEach(() => {
-    resetMockWorker();
   });
 
   describe('Rendering', () => {

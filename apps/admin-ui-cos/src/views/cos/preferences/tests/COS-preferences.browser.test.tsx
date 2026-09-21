@@ -9,11 +9,10 @@ import {
   delayedSoapApiForBrowser,
   getQueryClient,
   grantUserCosRights,
-  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../../services/modify-cos-service';
@@ -155,10 +154,6 @@ async function expectCalendarOptionsVisible() {
 describe('COSPreferences', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
-  });
-
-  afterEach(() => {
-    resetMockWorker();
   });
 
   describe('Rendering', () => {
