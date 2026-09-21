@@ -375,7 +375,9 @@ describe('EditDistributionList (browser)', () => {
         .element(page.getByText('You are deleting Team List'))
         .toBeInTheDocument();
       await page.getByRole('button', { name: 'Cancel', exact: true }).click();
-      await new Promise((resolve) => setTimeout(resolve, 500));
+      await expect
+        .element(page.getByText('You are deleting Team List'))
+        .not.toBeInTheDocument();
       expect(deleteRequested).toBe(false);
     });
 
@@ -391,12 +393,14 @@ describe('EditDistributionList (browser)', () => {
 
     it('does not open the delete dialog when the rights count request fails', async () => {
       await setupEditView();
+      let getGrantsCalls = 0;
       worker.use(
         http.post('/service/admin/soap/GetGrantsRequest', async ({ request }) => {
           const body = (await request.json()) as {
             Body?: { GetGrantsRequest?: { grantee?: unknown } };
           };
           if (body?.Body?.GetGrantsRequest?.grantee) {
+            getGrantsCalls += 1;
             return new HttpResponse(null, { status: 500 });
           }
           return HttpResponse.json({
@@ -410,7 +414,8 @@ describe('EditDistributionList (browser)', () => {
       );
       await waitForLoad();
       await page.getByRole('button', { name: 'delete' }).click();
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await expect.poll(() => getGrantsCalls).toBeGreaterThanOrEqual(1);
+      await new Promise((resolve) => setTimeout(resolve, 250));
       await expect
         .element(page.getByText('You are deleting Team List'))
         .not.toBeInTheDocument();
@@ -467,6 +472,16 @@ describe('EditDistributionList (browser)', () => {
       createBrowserSoapAPIInterceptor('SearchGal', {
         cn: [{ id: 'gal-1', _attrs: { email: 'owner@example.com', type: 'account' } }],
       });
+      // Fires only for the debounced search of the typed email, not the mount-time one.
+      let debouncedGalSearchFired = false;
+      worker.use(
+        http.post('/service/admin/soap/SearchGalRequest', async ({ request }) => {
+          const body = await request.clone().json();
+          if (JSON.stringify(body).includes('newowner@example.com')) {
+            debouncedGalSearchFired = true;
+          }
+        }),
+      );
       await setupEditView();
       await waitForLoad();
       await page.getByText('OWNERS', { exact: true }).click();
@@ -475,8 +490,7 @@ describe('EditDistributionList (browser)', () => {
         page.getByLabelText('Add owners by email address'),
         'newowner@example.com',
       );
-      // allow the debounced GAL search to run, then add the typed email
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      await expect.poll(() => debouncedGalSearchFired).toBe(true);
       await page.getByRole('button', { name: 'Add Owners' }).click();
       const params = (await addAction) as { action: Record<string, unknown> };
       expect(params.action).toMatchObject({ op: 'addOwners' });
@@ -769,7 +783,6 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('Edit permission level')).toBeInTheDocument();
       await page.getByRole('button', { name: 'SAVE CHANGES' }).click();
       await expect.element(page.getByText('Edit permission level')).not.toBeInTheDocument();
-      await new Promise((resolve) => setTimeout(resolve, 500));
       expect(actionRequested).toBe(false);
     });
   });
@@ -792,6 +805,15 @@ describe('EditDistributionList (browser)', () => {
       createBrowserSoapAPIInterceptor('SearchGal', {
         cn: [{ id: 'gal-1', _attrs: { email: 'newowner@example.com', type: 'account' } }],
       });
+      let debouncedGalSearchFired = false;
+      worker.use(
+        http.post('/service/admin/soap/SearchGalRequest', async ({ request }) => {
+          const body = await request.clone().json();
+          if (JSON.stringify(body).includes('newowner@example.com')) {
+            debouncedGalSearchFired = true;
+          }
+        }),
+      );
       await setupEditView();
       await waitForLoad();
       await page.getByText('OWNERS', { exact: true }).click();
@@ -799,7 +821,7 @@ describe('EditDistributionList (browser)', () => {
         page.getByLabelText('Add owners by email address'),
         'newowner@example.com',
       );
-      await new Promise((resolve) => setTimeout(resolve, 900));
+      await expect.poll(() => debouncedGalSearchFired).toBe(true);
       await page.getByRole('button', { name: 'Add Owners' }).click();
       await expect
         .element(page.getByText('Owner has been added successfully'))
