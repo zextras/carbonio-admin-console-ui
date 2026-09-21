@@ -91,8 +91,8 @@ describe('EditAccountDelegatesSection (browser)', () => {
 
 		await page.getByText('sender@example.com').click();
 
-		// 3 tables x (REMOVE + REMOVE ALL): the send table's REMOVE is index 4
-		const removeButton = page.getByRole('button', { name: 'REMOVE' }).nth(4);
+		// exact name matching excludes REMOVE ALL: the send table's REMOVE is index 2
+		const removeButton = page.getByRole('button', { name: 'REMOVE' }).nth(2);
 		await expect.element(removeButton).toBeEnabled();
 		await removeButton.click();
 

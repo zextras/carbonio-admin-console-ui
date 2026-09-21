@@ -493,7 +493,7 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('owner@example.com')).toBeInTheDocument();
       await page.getByRole('button', { name: 'Delete', exact: true }).click();
       await expect
-        .element(page.getByText('Are you sure you want to remove owner@example.com'))
+        .element(page.getByText(/^Are you sure you want to remove owner@example\.com/))
         .toBeInTheDocument();
       await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
       const params = (await removeAction) as { action: Record<string, unknown> };
@@ -511,7 +511,7 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('sender@example.com')).toBeInTheDocument();
       await page.getByRole('button', { name: 'Delete', exact: true }).click();
       await expect
-        .element(page.getByText('Are you sure you want to remove sender@example.com'))
+        .element(page.getByText(/^Are you sure you want to remove sender@example\.com/))
         .toBeInTheDocument();
       await page.getByRole('button', { name: 'YES, REMOVE IT' }).click();
       const params = (await revokeAction) as { action: Record<string, unknown> };
