@@ -186,7 +186,7 @@ describe('CosListPanel', () => {
       seedCosDetail: true,
     });
 
-    await page.getByPlaceholder('Select a class of service').click();
+    await page.getByPlaceholder('Select a Class of Service').click();
     await expect.element(page.getByText('firstCOS')).toBeVisible();
     await page.getByText('firstCOS').click();
 

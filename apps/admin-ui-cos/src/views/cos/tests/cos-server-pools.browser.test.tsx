@@ -209,7 +209,9 @@ describe('CosServerPools', () => {
       await disableButton.click();
 
       await expect.element(page.getByText('Disabling pool', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('You are disabling pool on mail-server-1')).toBeVisible();
+      await expect
+        .element(page.getByText(/^You are disabling pool on mail-server-1/))
+        .toBeVisible();
     });
 
     it('should send ModifyCos with server removed when confirming disable', async () => {

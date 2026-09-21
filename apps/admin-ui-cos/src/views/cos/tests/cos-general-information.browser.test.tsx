@@ -249,7 +249,7 @@ describe('CosGeneralInformation', () => {
     it('should render the Name field with COS name', async () => {
       await setupGeneralInfoTest();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await expect.element(nameInput).toBeVisible();
       await expect.element(nameInput).toHaveValue('testcos');
     });
@@ -325,7 +325,7 @@ describe('CosGeneralInformation', () => {
     it('should disable Name field for default COS', async () => {
       await setupGeneralInfoTest(mockDefaultCosData);
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await expect.element(nameInput).toBeDisabled();
     });
 
@@ -347,7 +347,7 @@ describe('CosGeneralInformation', () => {
     it('should show Save and Cancel when Name is changed', async () => {
       await setupGeneralInfoTest();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await userEvent.fill(nameInput, 'renamed-cos');
       await expect.element(nameInput).toHaveValue('renamed-cos');
 
@@ -424,7 +424,7 @@ describe('CosGeneralInformation', () => {
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       await setupSaveTest();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await userEvent.fill(nameInput, 'renamed-cos');
 
       await page.getByRole('button', { name: 'Save' }).click();
@@ -586,7 +586,7 @@ describe('CosGeneralInformation', () => {
       );
       await expect.element(page.getByText('General Information')).toBeVisible();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await expect.element(nameInput).toBeDisabled();
     });
   });
