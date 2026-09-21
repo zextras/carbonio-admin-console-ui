@@ -142,7 +142,10 @@ function resolvePrimaryColumnId<TData extends RowData>(
 
 function defaultGetRowId<TData extends RowData>(row: TData, index: number): string {
   const id = (row as Record<string, unknown>).id;
-  return id != null ? String(id) : String(index);
+  if (typeof id === 'string' || typeof id === 'number' || typeof id === 'bigint') {
+    return String(id);
+  }
+  return String(index);
 }
 
 type SelectRowCellProps<TData extends RowData> = {

@@ -91,15 +91,17 @@ export function matchesNumberRange(
   return true;
 }
 
+type DateRangeBounds = {
+  from: string | number | null;
+  to: string | number | null;
+};
+
 /**
  * Whether a cell value falls inside an inclusive date range. Dates may be
  * `Date` objects, timestamps or parseable date strings; unparseable values
  * never match. Null bounds are open-ended, an unparseable bound is ignored.
  */
-export function matchesDateRange(
-  value: unknown,
-  bounds: { from: string | number | null; to: string | number | null },
-): boolean {
+export function matchesDateRange(value: unknown, bounds: DateRangeBounds): boolean {
   const time = coerceDateTimestamp(value);
   if (time === null) {
     return false;

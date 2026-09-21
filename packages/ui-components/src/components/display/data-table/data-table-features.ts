@@ -20,7 +20,12 @@ import {
   rowPaginationFeature,
   rowSelectionFeature,
   rowSortingFeature,
-  sortFns,
+  sortFn_alphanumeric,
+  sortFn_alphanumericCaseSensitive,
+  sortFn_basic,
+  sortFn_datetime,
+  sortFn_text,
+  sortFn_textCaseSensitive,
   tableFeatures,
 } from '@tanstack/react-table';
 
@@ -36,7 +41,14 @@ export const dataTableFeatures = tableFeatures({
   sortedRowModel: createSortedRowModel(),
   filteredRowModel: createFilteredRowModel(),
   paginatedRowModel: createPaginatedRowModel(),
-  sortFns,
+  sortFns: {
+    alphanumeric: sortFn_alphanumeric,
+    alphanumericCaseSensitive: sortFn_alphanumericCaseSensitive,
+    basic: sortFn_basic,
+    datetime: sortFn_datetime,
+    text: sortFn_text,
+    textCaseSensitive: sortFn_textCaseSensitive,
+  },
   filterFns: {
     arrHas: filterFn_arrHas,
     inNumberRange: filterFn_inNumberRange,
