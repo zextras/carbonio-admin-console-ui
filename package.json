@@ -107,7 +107,8 @@
       "./apps/admin-ui-backup/public",
       "./apps/admin-ui-legalhold/public",
       "./apps/admin-ui-cos/public",
-      "public"
+      "public",
+      "packages/ui-components/public"
     ]
   },
   "carbonio": {
