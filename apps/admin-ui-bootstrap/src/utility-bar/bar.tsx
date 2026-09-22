@@ -15,7 +15,7 @@ import {
 } from '@zextras/ui-shared';
 import clsx from 'clsx';
 import { map, noop } from 'lodash-es';
-import { useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './bar.module.css';
@@ -63,8 +63,6 @@ export const ShellUtilityBar = () => {
   const { serverVersion } = useServerVersion();
   const docContext = useDocumentationContext();
   const [t] = useTranslation();
-  const [isHelpHovered, setIsHelpHovered] = useState(false);
-  const [isAccountHovered, setIsAccountHovered] = useState(false);
 
   const helpDocumentationUrl = useMemo(() => {
     if (!isAdvanced) {
@@ -103,18 +101,11 @@ export const ShellUtilityBar = () => {
             type="button"
             className={clsx(styles.trigger, styles.helpTrigger)}
             onClick={() => {
-              console.log(helpDocumentationUrl);
               openLink(helpDocumentationUrl);
             }}
-            onMouseEnter={() => setIsHelpHovered(true)}
-            onMouseLeave={() => setIsHelpHovered(false)}
             aria-label={helpTooltipLabel}
           >
-            <ds-icon
-              icon="QuestionMarkCircleOutline"
-              color={isHelpHovered ? 'primary' : 'gray1'}
-              size="large"
-            />
+            <ds-icon icon="QuestionMarkCircleOutline" color="currentColor" size="large" />
           </button>
         </Tooltip>
         <Tooltip label={t('label.account_menu', 'Account menu')} placement="right-end">
@@ -123,22 +114,16 @@ export const ShellUtilityBar = () => {
               type="button"
               className={clsx(styles.trigger, styles.accountTrigger)}
               onClick={noop}
-              onMouseEnter={() => setIsAccountHovered(true)}
-              onMouseLeave={() => setIsAccountHovered(false)}
               aria-label={t('label.account_menu', 'Account menu')}
             >
               <ds-text
                 as="span"
-                color={isAccountHovered ? 'primary' : 'gray1'}
+                color="currentColor"
                 style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
               >
                 {accountName}
               </ds-text>
-              <ds-icon
-                icon="AvatarOutline"
-                color={isAccountHovered ? 'primary' : 'gray1'}
-                size="large"
-              />
+              <ds-icon icon="AvatarOutline" color="currentColor" size="large" />
             </button>
           </Dropdown>
         </Tooltip>

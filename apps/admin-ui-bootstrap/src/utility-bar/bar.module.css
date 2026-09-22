@@ -12,10 +12,12 @@
   border-radius: 0.25rem;
   background: transparent;
   cursor: pointer;
+  color: var(--color-gray1-regular);
 }
 
 .trigger:hover {
-  background-color: #eaf1fa;
+  background-color: var(--color-primary-highlight);
+  color: var(--color-primary-regular);
 }
 
 .trigger:focus-visible {

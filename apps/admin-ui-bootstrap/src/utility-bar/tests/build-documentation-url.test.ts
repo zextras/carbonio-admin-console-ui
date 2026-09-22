@@ -14,7 +14,7 @@ describe('buildDocumentationUrl', () => {
 			m: 'Domain',
 			c: 'GAL',
 		});
-		expect(url).toBe('https://docs.zextras.com/landing?v=26.9.0&m=Domain&c=GAL');
+		expect(url).toBe('https://docs.zextras.com/landing/?v=26.9.0&m=Domain&c=GAL');
 	});
 
 	it('omits params that are undefined', () => {
@@ -23,7 +23,7 @@ describe('buildDocumentationUrl', () => {
 			m: 'Domain',
 			c: undefined,
 		});
-		expect(url).toBe('https://docs.zextras.com/landing?m=Domain');
+		expect(url).toBe('https://docs.zextras.com/landing/?m=Domain');
 	});
 
 	it('omits params that are empty strings', () => {
@@ -32,7 +32,7 @@ describe('buildDocumentationUrl', () => {
 			m: 'Domain',
 			c: '',
 		});
-		expect(url).toBe('https://docs.zextras.com/landing?m=Domain');
+		expect(url).toBe('https://docs.zextras.com/landing/?m=Domain');
 	});
 
 	it('returns the base URL unchanged when no params are provided', () => {
@@ -44,7 +44,7 @@ describe('buildDocumentationUrl', () => {
 		const url = buildDocumentationUrl('https://docs.zextras.com/landing?foo=bar', {
 			m: 'Domain',
 		});
-		expect(url).toBe('https://docs.zextras.com/landing?foo=bar&m=Domain');
+		expect(url).toBe('https://docs.zextras.com/landing/?foo=bar&m=Domain');
 	});
 
 	it('throws when the base URL is not a valid absolute URL', () => {

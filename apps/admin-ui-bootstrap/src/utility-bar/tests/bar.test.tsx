@@ -83,6 +83,7 @@ vi.mock('../utils', () => ({
 
 import { logout, useIsAdvanced, useUserAccount, useUtilityBarStore } from '@zextras/ui-shared';
 
+import { buildDocumentationUrl } from '../build-documentation-url';
 import { ShellUtilityBar } from '../bar';
 import { useDocumentationBaseUrl } from '../use-documentation-base-url';
 import { useDocumentationContext } from '../use-documentation-context';
@@ -158,6 +159,43 @@ describe('ShellUtilityBar', () => {
 			screen.getByRole('button', { name: 'Documentation: Admin' }),
 		);
 		expect(openLink).toHaveBeenCalledWith('https://docs.example.com/ce');
+	});
+
+	it('builds the doc URL from base URL, server version and module/context when advanced', () => {
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+		vi.mocked(useServerVersion).mockReturnValue({
+			serverVersion: '26.9.0',
+			isLoading: false,
+		} as never);
+		vi.mocked(useDocumentationContext).mockReturnValue({
+			module: 'domains',
+			context: 'general',
+			moduleLabelKey: 'label.domains',
+			moduleLabelFallback: 'Domains',
+		});
+		render(<ShellUtilityBar />);
+		fireEvent.click(
+			screen.getByRole('button', { name: 'Documentation: Domains' }),
+		);
+		expect(buildDocumentationUrl).toHaveBeenCalledWith('https://docs.example.com/landing', {
+			v: '26.9.0',
+			m: 'domains',
+			c: 'general',
+		});
+		expect(openLink).toHaveBeenCalledWith('https://docs.example.com/landing');
+	});
+
+	it('omits version and context from the built doc URL when unavailable (advanced)', () => {
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+		render(<ShellUtilityBar />);
+		fireEvent.click(
+			screen.getByRole('button', { name: 'Documentation: Admin' }),
+		);
+		expect(buildDocumentationUrl).toHaveBeenCalledWith('https://docs.example.com/landing', {
+			v: undefined,
+			m: 'admin',
+			c: undefined,
+		});
 	});
 
 	it('calls logout when Logout is clicked', () => {

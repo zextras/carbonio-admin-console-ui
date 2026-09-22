@@ -15,6 +15,8 @@ export const buildDocumentationUrl = (
 	params: DocumentationParams
 ): string => {
 	const url = new URL(baseUrl);
+	const hasParams = Boolean(params.v || params.m || params.c);
+	if (hasParams && !url.pathname.endsWith('/')) url.pathname += '/';
 	if (params.v) url.searchParams.set('v', params.v);
 	if (params.m) url.searchParams.set('m', params.m);
 	if (params.c) url.searchParams.set('c', params.c);
