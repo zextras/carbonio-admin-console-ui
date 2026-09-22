@@ -272,7 +272,7 @@ function formatRangeChipLabel(bounds: NonNullable<DataTableFilterChip['bounds']>
   if (bounds.min !== undefined && bounds.max !== undefined) {
     return `${bounds.min}–${bounds.max}`;
   }
-  if (bounds.max !== undefined) {
+  if (bounds.min === undefined) {
     return `≤ ${bounds.max}`;
   }
   return `≥ ${bounds.min}`;

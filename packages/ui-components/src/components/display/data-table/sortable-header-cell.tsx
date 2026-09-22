@@ -17,7 +17,9 @@ type SortableHeaderCellProps = {
   onToggleSort?: (event: unknown) => void;
 };
 
-function SortIcon({ sorted }: { sorted: SortDirection }) {
+type SortIconProps = Readonly<{ sorted: SortDirection }>;
+
+function SortIcon({ sorted }: SortIconProps) {
   if (sorted === 'asc') {
     return (
       <span className={styles.sortIcon} aria-hidden="true">
