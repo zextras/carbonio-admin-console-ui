@@ -6,8 +6,8 @@
 
 import { useId } from 'react';
 
-import { FieldShell } from './FieldShell';
-import styles from './FieldShell.module.css';
+import { FieldShell } from './field-shell';
+import styles from './field-shell.module.css';
 
 type PlainInputProps = React.ComponentPropsWithRef<'input'> & {
 	/** Always rendered as a visible <label> above the field. */

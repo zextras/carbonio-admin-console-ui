@@ -87,7 +87,7 @@ Box: `display: flex; height: 2.5rem; padding: 0.625rem 0.75rem; justify-content:
 
 ## Testing (TDD) — PlainInput
 
-Browser test file `components/inputs/tests/PlainInput.browser.test.tsx` (repo conventions; global `testTimeout` from `vitest.config.base.ts`). Red-green cycles:
+Browser test file `components/inputs/tests/plain-input.browser.test.tsx` (repo conventions; global `testTimeout` from `vitest.config.base.ts`). Red-green cycles:
 
 1. Label association + id wiring (`getByRole('textbox', { name })`; custom `id` respected by `htmlFor`)
 2. Controlled mode (`value` + `onChange` with `e.target.value`) and uncontrolled (`defaultValue`)
@@ -97,15 +97,17 @@ Browser test file `components/inputs/tests/PlainInput.browser.test.tsx` (repo co
 
 ## Files
 
-- `packages/ui-components/src/components/inputs/FieldShell.tsx` (private)
-- `packages/ui-components/src/components/inputs/FieldShell.module.css`
-- `packages/ui-components/src/components/inputs/PlainInput.tsx`
-- `packages/ui-components/src/components/inputs/tests/PlainInput.browser.test.tsx`
-- Barrel: add `export * from './components/inputs/PlainInput';` in the Inputs section of `src/index.ts`
+File naming convention for the family: **kebab-case** (`plain-input.tsx`, `search-input.tsx`, …). Exported component/type names stay PascalCase (`PlainInput`, `PlainInputProps`).
+
+- `packages/ui-components/src/components/inputs/field-shell.tsx` (private)
+- `packages/ui-components/src/components/inputs/field-shell.module.css`
+- `packages/ui-components/src/components/inputs/plain-input.tsx`
+- `packages/ui-components/src/components/inputs/tests/plain-input.browser.test.tsx`
+- Barrel: add `export * from './components/inputs/plain-input';` in the Inputs section of `src/index.ts`
 
 ## Verification
 
-- `pnpm vitest run packages/ui-components/src/components/inputs/tests/PlainInput.browser.test.tsx`
+- `pnpm vitest run packages/ui-components/src/components/inputs/tests/plain-input.browser.test.tsx`
 - `pnpm type-check`
 - `pnpm lint`
 - ui-components test suite for regressions (legacy `Input` untouched, so risk is low)

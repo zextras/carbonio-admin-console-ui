@@ -6,7 +6,7 @@
 
 import type { ReactNode } from 'react';
 
-import styles from './FieldShell.module.css';
+import styles from './field-shell.module.css';
 
 type FieldShellProps = {
 	id: string;
