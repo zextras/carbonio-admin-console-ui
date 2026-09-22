@@ -253,6 +253,81 @@ export function countActiveFilters(filters: DataTableFiltersState): number {
   }, 0);
 }
 
+function chipsForEnumFilter(
+  def: Extract<DataTableFilterDef, { type: 'enum' }>,
+  value: Array<string>,
+): Array<DataTableFilterChip> {
+  return value.map((enumValue) => {
+    const option = def.options.find((item) => item.value === enumValue);
+    return {
+      key: `${def.id}:${enumValue}`,
+      filterId: def.id,
+      label: `${def.label}: ${option?.label ?? enumValue}`,
+      enumValue,
+    };
+  });
+}
+
+function formatRangeChipLabel(bounds: NonNullable<DataTableFilterChip['bounds']>): string {
+  if (bounds.min !== undefined && bounds.max !== undefined) {
+    return `${bounds.min}–${bounds.max}`;
+  }
+  if (bounds.max !== undefined) {
+    return `≤ ${bounds.max}`;
+  }
+  return `≥ ${bounds.min}`;
+}
+
+function chipsForRangeFilter(
+  def: DataTableFilterDef,
+  value: DataTableRangeFilterValue,
+): Array<DataTableFilterChip> {
+  const bounds: DataTableFilterChip['bounds'] = {};
+  if (value.min !== null) {
+    bounds.min = value.min;
+  }
+  if (value.max !== null) {
+    bounds.max = value.max;
+  }
+  if (bounds.min === undefined && bounds.max === undefined) {
+    return [];
+  }
+  return [
+    {
+      key: def.id,
+      filterId: def.id,
+      label: `${def.label}: ${formatRangeChipLabel(bounds)}`,
+      bounds,
+    },
+  ];
+}
+
+function chipsForDateFilter(
+  def: DataTableFilterDef,
+  value: DataTableDateFilterValue,
+): Array<DataTableFilterChip> {
+  const bounds: DataTableFilterChip['bounds'] = {};
+  if (value.from) {
+    bounds.min = value.from;
+  }
+  if (value.to) {
+    bounds.max = value.to;
+  }
+  if (bounds.min === undefined && bounds.max === undefined) {
+    return [];
+  }
+  const fromLabel = value.from ?? '…';
+  const toLabel = value.to ?? '…';
+  return [
+    {
+      key: def.id,
+      filterId: def.id,
+      label: `${def.label}: ${fromLabel}–${toLabel}`,
+      bounds,
+    },
+  ];
+}
+
 export function buildFilterChips(
   filters: DataTableFiltersState,
   filterDefs: Array<DataTableFilterDef>,
@@ -264,63 +339,15 @@ export function buildFilterChips(
       return;
     }
     if (def.type === 'enum' && isEnumValue(value)) {
-      value.forEach((enumValue) => {
-        const option = def.options.find((item) => item.value === enumValue);
-        chips.push({
-          key: `${def.id}:${enumValue}`,
-          filterId: def.id,
-          label: `${def.label}: ${option?.label ?? enumValue}`,
-          enumValue,
-        });
-      });
+      chips.push(...chipsForEnumFilter(def, value));
       return;
     }
     if (def.type === 'range' && isRangeValue(value)) {
-      const bounds: DataTableFilterChip['bounds'] = {};
-      if (value.min !== null) {
-        bounds.min = value.min;
-      }
-      if (value.max !== null) {
-        bounds.max = value.max;
-      }
-      if (bounds.min === undefined && bounds.max === undefined) {
-        return;
-      }
-      let rangeLabel: string;
-      if (bounds.min !== undefined && bounds.max !== undefined) {
-        rangeLabel = `${bounds.min}–${bounds.max}`;
-      } else if (bounds.max !== undefined) {
-        rangeLabel = `≤ ${bounds.max}`;
-      } else {
-        rangeLabel = `≥ ${bounds.min}`;
-      }
-      chips.push({
-        key: def.id,
-        filterId: def.id,
-        label: `${def.label}: ${rangeLabel}`,
-        bounds,
-      });
+      chips.push(...chipsForRangeFilter(def, value));
       return;
     }
     if (def.type === 'date' && isDateValue(value)) {
-      const bounds: DataTableFilterChip['bounds'] = {};
-      if (value.from) {
-        bounds.min = value.from;
-      }
-      if (value.to) {
-        bounds.max = value.to;
-      }
-      if (bounds.min === undefined && bounds.max === undefined) {
-        return;
-      }
-      const fromLabel = value.from ?? '…';
-      const toLabel = value.to ?? '…';
-      chips.push({
-        key: def.id,
-        filterId: def.id,
-        label: `${def.label}: ${fromLabel}–${toLabel}`,
-        bounds,
-      });
+      chips.push(...chipsForDateFilter(def, value));
     }
   });
   return chips;
