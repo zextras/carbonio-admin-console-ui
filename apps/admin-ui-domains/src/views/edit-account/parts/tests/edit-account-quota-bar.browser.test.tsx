@@ -91,7 +91,7 @@ describe('QuotaBarBreakdown', () => {
     );
 
     expect(page.getByTestId('quota-bar-module-segment')).toHaveLength(3);
-    expect(page.getByText('Available')).not.toBeInTheDocument();
+    expect(page.getByText(/^Available/)).not.toBeInTheDocument();
   });
 
   it('should show available element in the legend when the limit is limited', async () => {
@@ -110,7 +110,7 @@ describe('QuotaBarBreakdown', () => {
     );
 
     expect(page.getByTestId('quota-bar-module-segment')).toHaveLength(3);
-    expect(page.getByText('Available')).toBeVisible();
+    expect(page.getByText(/^Available/)).toBeVisible();
   });
 
   it('should show warning banner when limit is limited and usage is between 80 and 100%', async () => {

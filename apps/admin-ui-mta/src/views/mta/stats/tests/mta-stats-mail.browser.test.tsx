@@ -78,6 +78,23 @@ function getMailQueueResponse() {
   };
 }
 
+function getEmptyMailQueueResponse() {
+  return {
+    server: [
+      {
+        name: SERVER_NAME,
+        queue: [
+          {
+            name: 'active',
+            total: 0,
+            qi: [],
+          },
+        ],
+      },
+    ],
+  };
+}
+
 describe('MTAStatsMail', { timeout: 20_000 }, () => {
   afterEach(() => {
     resetMockWorker();
@@ -128,14 +145,30 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
     await expect.element(page.getByText(QUEUE_ITEM_ID)).toBeVisible();
 
     const queueRow = page.getByRole('row').filter({ hasText: QUEUE_ITEM_ID });
-    await queueRow.hover();
-    const rowCheckbox = queueRow.element().querySelector('[data-testid="checkbox"]');
-    expect(rowCheckbox).toBeTruthy();
-    // Drawer is wider than the default browser viewport; use a DOM click to bypass Playwright bounds checks.
-    (rowCheckbox as HTMLElement).click();
-
     const holdButton = page.getByRole('button', { name: 'Hold' });
-    await expect.element(holdButton).toBeEnabled();
+    // Drawer and table can exceed the default browser viewport; hover, scroll and
+    // click through the DOM to bypass bounds checks. The row checkbox attaches its
+    // click listener in a passive effect, so a click dispatched right after the
+    // checkbox first renders can land before the listener exists. Re-hover and
+    // re-click (only while the row is still unchecked) until Hold enables.
+    await expect
+      .poll(
+        () => {
+          const rowEl = queueRow.element();
+          rowEl.closest('table')?.parentElement?.scrollTo({ left: 0 });
+          rowEl.querySelector('td')?.scrollIntoView({ block: 'center', inline: 'start' });
+          rowEl.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+          const holdEnabled = (): boolean => (holdButton.element() as HTMLButtonElement).disabled === false;
+          if (holdEnabled()) return true;
+          const checkboxIcon = rowEl.querySelector('[data-testid="checkbox"] ds-icon');
+          if (checkboxIcon?.getAttribute('icon') === 'Square') {
+            (rowEl.querySelector('[data-testid="checkbox"]') as HTMLElement | null)?.click();
+          }
+          return holdEnabled();
+        },
+        { timeout: 10_000 },
+      )
+      .toBeTruthy();
     await holdButton.click();
 
     const request = await batchInterceptor;
@@ -158,5 +191,61 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
         }),
       ]),
     });
+  });
+
+  it('keeps mail queue columns at their configured widths and scrolls horizontally', async () => {
+    createBrowserSoapAPIInterceptor('GetAllServers', getAllServersWithMtaResponse());
+    createBrowserSoapAPIInterceptor('GetMailQueueInfo', getMailQueueInfoResponse());
+    createBrowserSoapAPIInterceptor('GetMailQueue', getMailQueueResponse());
+
+    await setupBrowserTest(<MTAStats />, { grantRights: 'config' });
+
+    await page.getByText(SERVER_NAME).click();
+    await expect.element(page.getByText(QUEUE_ITEM_ID)).toBeVisible();
+
+    const queueTable = page
+      .getByRole('row')
+      .filter({ hasText: QUEUE_ITEM_ID })
+      .element()
+      .closest('table');
+    expect(queueTable).toBeTruthy();
+
+    const idColumn = queueTable!.querySelectorAll('th')[1];
+    expect(idColumn).toBeTruthy();
+    const remInPx = Number.parseFloat(getComputedStyle(idColumn).fontSize);
+    expect(idColumn.getBoundingClientRect().width).toBeGreaterThan(remInPx * 8);
+
+    const scrollContainer = queueTable!.parentElement;
+    expect(scrollContainer).toBeTruthy();
+    expect(scrollContainer!.scrollWidth).toBeGreaterThan(scrollContainer!.clientWidth);
+
+    await expect.element(page.getByText('user@sender.test.com')).toBeVisible();
+    await expect.element(page.getByText('user@recipient.test.com')).toBeVisible();
+    await expect.element(page.getByText('mail.origin.test.com')).toBeVisible();
+  });
+
+  it('sizes empty mail queue headers to the header labels', async () => {
+    createBrowserSoapAPIInterceptor('GetAllServers', getAllServersWithMtaResponse());
+    createBrowserSoapAPIInterceptor('GetMailQueueInfo', getMailQueueInfoResponse());
+    createBrowserSoapAPIInterceptor('GetMailQueue', getEmptyMailQueueResponse());
+
+    await setupBrowserTest(<MTAStats />, { grantRights: 'config' });
+
+    await page.getByText(SERVER_NAME).click();
+    await expect.element(page.getByText('This list is empty.')).toBeVisible();
+    await expect.element(page.getByText('Arrival Time')).toBeVisible();
+
+    const arrivalHeader = page.getByText('Arrival Time').element().closest('th');
+    expect(arrivalHeader).toBeTruthy();
+    const remInPx = Number.parseFloat(getComputedStyle(arrivalHeader!).fontSize);
+    const headerWidth = arrivalHeader!.getBoundingClientRect().width;
+    expect(headerWidth).toBeGreaterThan(0);
+    expect(headerWidth).toBeLessThan(remInPx * 10);
+
+    const queueTable = arrivalHeader!.closest('table');
+    expect(queueTable).toBeTruthy();
+    const scrollContainer = queueTable!.parentElement;
+    expect(scrollContainer).toBeTruthy();
+    expect(scrollContainer!.scrollWidth).toBeLessThanOrEqual(scrollContainer!.clientWidth + 1);
   });
 });

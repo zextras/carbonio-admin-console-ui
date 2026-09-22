@@ -10,7 +10,7 @@ export type AdvancedVolumeFormValues = {
 	volumeName: string;
 	volumeMain: number;
 	isCurrent: boolean;
-	volumeAllocation: string;
+	volumeAllocation: number;
 	bucketName: string;
 	unusedBucketType: string;
 	tieringSupported: boolean;

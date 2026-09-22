@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import clsx from 'clsx';
 import React, { HTMLAttributes, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import { NonEmptyArray, SingleItemArray } from '../../types/utils';
@@ -144,6 +145,11 @@ type TableProps = HTMLAttributes<HTMLDivElement> & {
   HeaderFactory?: React.ComponentType<THeaderProps>;
   /** Callback function, called when user changes selection of rows in table (in both controlled and uncontrolled mode). */
   onSelectionChange?: (ids: string[]) => void;
+  /**
+   * Grow the table to its column widths and scroll horizontally instead of compressing columns
+   * to the container width. Use when headers specify absolute widths that may exceed the viewport.
+   */
+  horizontalScroll?: boolean;
 
   ref?: React.Ref<HTMLDivElement>;
 } & (ControlledTableProps | UncontrolledTableProps);
@@ -158,6 +164,9 @@ const Table = ({
   defaultSelection,
   selectedRows,
   multiSelect = true,
+  horizontalScroll = false,
+  className,
+  style,
   ref,
   ...rest
 }: TableProps) => {
@@ -225,8 +234,19 @@ const Table = ({
   }, [controlledMode, selectedRows]);
 
   return (
-    <div {...rest} ref={ref} className={styles.tableContainer}>
-      <table className={styles.table}>
+    <div
+      {...rest}
+      ref={ref}
+      className={clsx(styles.tableContainer, horizontalScroll && styles.horizontalScroll, className)}
+      style={{
+        ...style,
+        ...(horizontalScroll ? { overflow: 'auto', minWidth: 0, width: '100%' } : {}),
+      }}
+    >
+      <table
+        className={clsx(styles.table, horizontalScroll && styles.horizontalScrollTable)}
+        style={horizontalScroll ? { width: 'max-content' } : undefined}
+      >
         <thead>
           <HeaderFactory
             headers={headers}

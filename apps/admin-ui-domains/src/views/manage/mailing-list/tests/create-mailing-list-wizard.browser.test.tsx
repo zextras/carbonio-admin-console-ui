@@ -100,7 +100,17 @@ describe('CreateMailingList wizard (browser)', () => {
 		await expect.element(page.getByText('Main Settings')).toBeInTheDocument();
 		await page.getByText('Hidden from GAL', { exact: false }).click();
 		await userEvent.type(page.getByLabelText('Type an account ...'), 'owner@example.com');
-		await new Promise((resolve) => setTimeout(resolve, 900));
+		// Fires only for the debounced search of the typed owner, not earlier ones.
+		let debouncedOwnerSearchFired = false;
+		worker.use(
+			http.post('/service/admin/soap/SearchGalRequest', async ({ request }) => {
+				const body = (await request.clone().json()) as DefaultBodyType;
+				if (JSON.stringify(body).includes('owner@example.com')) {
+					debouncedOwnerSearchFired = true;
+				}
+			}),
+		);
+		await expect.poll(() => debouncedOwnerSearchFired).toBe(true);
 		await page
 			.getByRole('button', { name: 'Add', exact: true })
 			.first()

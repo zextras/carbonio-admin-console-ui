@@ -120,6 +120,11 @@ describe('GracePeriodDatePicker interactions (browser)', () => {
   it('defaults to one month ahead and stores a gentime when the user picks a date', async () => {
     const nextMonth = new Date();
     nextMonth.setMonth(nextMonth.getMonth() + 1);
+    // DayPicker single-mode toggles off when the already-selected day is clicked.
+    // Default selection is "today + 1 month" (same day-of-month), so pick a different day.
+    const pickDay = nextMonth.getDate() >= 28 ? 10 : nextMonth.getDate() + 1;
+    const expectedDate = new Date(nextMonth);
+    expectedDate.setDate(pickDay);
 
     setupBrowserTest(
       <AccountFormTestProvider values={GRACE_FLAGS}>
@@ -132,22 +137,23 @@ describe('GracePeriodDatePicker interactions (browser)', () => {
 
     const input = page.getByRole('textbox', { name: /set grace period expiration date/i });
     await expect.element(input).toBeVisible();
-    const initialValue = (input.element() as HTMLInputElement).value;
-    expect(initialValue).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+    await expect.element(input).toHaveValue(format(nextMonth, 'dd/MM/yyyy'));
     await expect.element(page.getByText('probe-grace:', { exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: 'Calendar' }).click();
     await expect.element(page.getByRole('grid')).toBeVisible();
 
-    await page.getByRole('button', { name: 'Go to the Next Month' }).click();
-    await expect
-      .element(page.getByRole('grid', { name: format(nextMonth, 'LLLL yyyy') }))
-      .toBeVisible();
-    await page.getByRole('gridcell', { name: '15' }).click();
+    const nextMonthLabel = format(nextMonth, 'LLLL yyyy');
+    const nextMonthGrid = page.getByRole('grid', { name: nextMonthLabel });
+    // Calendar may open on the current month or the selected (next) month.
+    if (nextMonthGrid.elements().length === 0) {
+      await page.getByRole('button', { name: 'Go to the Next Month' }).click();
+    }
+    await expect.element(nextMonthGrid).toBeVisible();
+    await page.getByRole('gridcell').filter({ hasText: String(pickDay) }).click();
 
     await expect.element(page.getByText(/^probe-grace:\d{14}Z$/)).toBeVisible();
-    const pickedValue = (input.element() as HTMLInputElement).value;
-    expect(pickedValue).toMatch(/^\d{2}\/\d{2}\/\d{4}$/);
+    await expect.element(input).toHaveValue(format(expectedDate, 'dd/MM/yyyy'));
   });
 
   it('clears the stored ending time when the selected day is toggled off', async () => {

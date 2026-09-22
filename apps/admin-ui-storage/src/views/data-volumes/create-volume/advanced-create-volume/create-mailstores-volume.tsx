@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { CreateMailstoresVolumeProps, WizardInSectionProps } from '../../../../../types';
 import { LOCAL_TYPE_VALUE } from '../../../../constants';
-import { volumeAllocationList, volumeTypeList } from '../../../utility/utils';
+import { volumeTypeList } from '../../../utility/utils';
 import { volumeCreateSchema } from '../schema';
 import type { VolumeCreateFormValues } from '../types';
 import { VolumeContext } from '../volume-context';
@@ -148,7 +148,6 @@ export const CreateMailstoresVolume = ({
   const { t } = useTranslation();
   const isAdvanced = useIsAdvanced();
   const volTypeList = volumeTypeList(t, isAdvanced);
-  const volAllocationList = volumeAllocationList(t);
 
   const volumeForm = useForm({
     defaultValues: {
@@ -172,7 +171,7 @@ export const CreateMailstoresVolume = ({
       volumeName: '',
       volumeMain: 0,
       isCurrent: false,
-      volumeAllocation: volAllocationList[0]?.label ?? '',
+      volumeAllocation: LOCAL_TYPE_VALUE,
       bucketName: '',
       unusedBucketType: '',
       tieringSupported: false,

@@ -29,7 +29,7 @@ describe('Bootstrapper', () => {
     });
 
     const errorMessage = page.getByText(
-      'We’re sorry, but there was an error trying to load this page',
+      'We’re sorry, but there was an error trying to load this page.',
     );
     await expect.element(errorMessage).toBeVisible();
   });
