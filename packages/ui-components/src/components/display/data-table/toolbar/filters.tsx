@@ -102,7 +102,7 @@ const FiltersPanel = ({
                   >
                     <input
                       type="checkbox"
-                      className={styles.visuallyHidden}
+                      className={styles.enumOptionInput}
                       checked={selected}
                       onChange={() => {
                         onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));

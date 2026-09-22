@@ -8,9 +8,9 @@ import type { Row, RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useEffect } from 'react';
 
-import type { DataTableFeatures } from './data-table-features';
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
+import type { DataTableFeatures } from './data-table-features';
 import { resolvePinnedLeftOffset } from './layout-constants';
 import { ACTIONS_COLUMN_ID, resolveColumnLabel, SELECT_COLUMN_ID } from './models/customize-model';
 import { isEditableTarget } from './models/event-target';

@@ -815,6 +815,7 @@
 }
 
 .enumOption {
+  position: relative;
   display: inline-flex;
   align-items: center;
   height: 1.75rem;
@@ -825,6 +826,14 @@
   color: var(--color-text-regular, #414141);
   font-size: 0.75rem;
   font-family: inherit;
+  cursor: pointer;
+}
+
+.enumOptionInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
   cursor: pointer;
 }
 
