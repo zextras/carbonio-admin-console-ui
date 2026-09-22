@@ -395,7 +395,7 @@ describe('CreateAccount API Integration (browser)', () => {
     const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
     await userEvent.click(createButton);
 
-    await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+    await expect.poll(() => apiInterceptor.getLastRequest()).toBeTruthy();
 
     const capturedRequest = apiInterceptor.getLastRequest();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -760,7 +760,7 @@ describe('CreateAccount COS Selection (browser)', () => {
 
     await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
 
-    await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+    await expect.poll(() => apiInterceptor.getLastRequest()).toBeTruthy();
 
     const capturedRequest = apiInterceptor.getLastRequest();
     const capturedRequestBody = (await capturedRequest.json()) as {
