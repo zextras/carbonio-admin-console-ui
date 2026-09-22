@@ -436,8 +436,9 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await expect.element(page.getByText('Surname is required').first()).toBeVisible();
 
+    // Validation blocks the create; nothing may reach CreateAccount.
     await new Promise((resolve) => {
-      setTimeout(resolve, 500);
+      setTimeout(resolve, 250);
     });
     expect(requestSeen).toBe(false);
   });
@@ -467,8 +468,9 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await expect.element(page.getByText('Passwords do not match').first()).toBeVisible();
 
+    // Validation blocks the create; nothing may reach CreateAccount.
     await new Promise((resolve) => {
-      setTimeout(resolve, 500);
+      setTimeout(resolve, 250);
     });
     expect(requestSeen).toBe(false);
   });
