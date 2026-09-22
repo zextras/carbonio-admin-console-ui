@@ -12,24 +12,11 @@ describe('deleteFilesConfigOverride', () => {
   it('should DELETE the override at the scope and return success', async () => {
     const apiInterceptor = createAPIInterceptor(
       'delete',
-      '/services/files/admin/config/raw/domain/dom-1/shares-enabled',
+      '/services/files/admin/config/raw/cos/cos-1/shares-enabled',
       () => new HttpResponse(null, { status: 204 }),
     );
 
-    const result = await deleteFilesConfigOverride('domain', 'dom-1', 'shares-enabled');
-
-    expect(apiInterceptor.getCalledTimes()).toBe(1);
-    expect(result).toEqual({ type: 'success' });
-  });
-
-  it('should DELETE the global singleton override by key (no scope id)', async () => {
-    const apiInterceptor = createAPIInterceptor(
-      'delete',
-      '/services/files/admin/config/raw/global/shares-enabled',
-      () => new HttpResponse(null, { status: 204 }),
-    );
-
-    const result = await deleteFilesConfigOverride('global', 'global', 'shares-enabled');
+    const result = await deleteFilesConfigOverride('cos', 'cos-1', 'shares-enabled');
 
     expect(apiInterceptor.getCalledTimes()).toBe(1);
     expect(result).toEqual({ type: 'success' });

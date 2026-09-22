@@ -17,7 +17,6 @@ import {
   DELEGATES_DOMAIN_ADMINS,
   DISCLAIMER,
   DISTRIBUTION_LIST,
-  FILES,
   GAL,
   GENERAL_INFORMATION,
   GENERAL_SETTINGS,
@@ -33,7 +32,6 @@ import CreateDomain from './domain/create-new-domain';
 import DomainTwoFactorAuthentication from './domain/details/domain-2fa';
 import DomainAuthentication from './domain/details/domain-authentication';
 import DomainDisclaimer from './domain/details/domain-disclaimer';
-import { DomainFiles } from './domain/details/domain-files';
 import DomainGalSettings from './domain/details/domain-gal-settings';
 import DomainGeneralSettings from './domain/details/domain-general-settings';
 import DomainSaml from './domain/details/domain-saml';
@@ -116,7 +114,6 @@ export const DomainContentPanel = () => (
         <Route path={WHITELABEL_SETTINGS} element={<DomainTheme />} />
         <Route path={SAML} element={<DomainSaml />} />
         <Route path={ACCOUNTS} element={<ManageAccounts />} />
-        <Route path={FILES} element={<DomainFiles />} />
         <Route path={ACTIVE_SYNC} element={<ActiveSync />} />
         <Route path={DELEGATES_DOMAIN_ADMINS} element={<ManageDelegates />} />
         <Route path={DISTRIBUTION_LIST} element={<DomainMailingList />} />

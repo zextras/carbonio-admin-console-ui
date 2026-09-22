@@ -3,62 +3,80 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Select } from '@zextras/ui-components';
+import { Container, IconCheckbox, Row, Switch, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-const UNSET = 'unset';
-
 type FilesSharingOverrideControlProps = {
-  /** The raw override value at this scope: 'true' | 'false', or undefined when nothing is set here. */
-  value: string | undefined;
-  onSet: (value: string) => void;
+  /** The effective value to display: 'true' | 'false' | null. */
+  effectiveValue: string | null;
+  /** True when the override is set AT this scope (drives the source label and the revert affordance). */
+  setAtThisScope: boolean;
+  /** Label of this scope, used in the "set here" message (e.g. "Class of Service", "account"). */
+  scopeName: string;
+  /** Source tier shown when NOT set at this scope; undefined when not yet knowable (pending clear). */
+  inheritedSource: 'cos' | 'default' | undefined;
+  disabled?: boolean;
+  onToggle: () => void;
   onClear: () => void;
 };
 
 /**
- * Honest tri-state editor for a single RAW boolean override at ONE scope:
- * "Not set at this level" / "Enabled" / "Disabled". It never shows an inherited/resolved
- * value — for a scope entity in isolation the substitute value is not knowable.
+ * Shows the effective file-sharing value at a scope together with WHERE it comes from
+ * (set here / inherited from cos / default), plus a revert affordance when it is set here.
  */
 export function FilesSharingOverrideControl({
-  value,
-  onSet,
+  effectiveValue,
+  setAtThisScope,
+  scopeName,
+  inheritedSource,
+  disabled = false,
+  onToggle,
   onClear,
 }: FilesSharingOverrideControlProps) {
   const [t] = useTranslation();
 
-  const items = [
-    { value: UNSET, label: t('files_sharing.state_unset', 'Not set at this level') },
-    { value: 'true', label: t('files_sharing.state_enabled', 'Enabled') },
-    { value: 'false', label: t('files_sharing.state_disabled', 'Disabled') },
-  ];
-  const current = value === undefined ? UNSET : value;
-  const selection = items.find((item) => item.value === current) ?? items[0];
+  function sourceLabel(): string {
+    if (setAtThisScope) {
+      return t('files_sharing.source_set_here', 'Set for this {{scope}}', { scope: scopeName });
+    }
+    if (inheritedSource === 'cos') {
+      return t('files_sharing.source_cos', 'Inherited from the Class of Service');
+    }
+    if (inheritedSource === 'default') {
+      return t('files_sharing.source_default', 'Default value');
+    }
+    return t('files_sharing.source_pending', 'Reverts to the inherited value after saving');
+  }
 
   return (
-    <Container mainAlignment="flex-start" crossAlignment="flex-start" gap="0.5rem" height="auto">
-      <Select
-        items={items}
-        selection={selection}
-        label={t('files_sharing.shares_enabled', 'File sharing')}
-        background="gray5"
-        showCheckbox={false}
-        onChange={(selected: string | null): void => {
-          if (selected === null || selected === UNSET) {
-            onClear();
-          } else {
-            onSet(selected);
-          }
-        }}
-      />
-      {value === undefined && (
-        <ds-text as="span" size="small" color="secondary">
-          {t(
-            'files_sharing.not_set_hint',
-            'No override is set at this level. The effective value depends on the account and is not shown here.',
-          )}
-        </ds-text>
-      )}
+    <Container mainAlignment="flex-start" crossAlignment="flex-start" gap="0.25rem" height="auto">
+      <Row mainAlignment="flex-start" crossAlignment="center" gap="0.5rem">
+        <Switch
+          value={effectiveValue === 'true'}
+          onClick={onToggle}
+          label={t('files_sharing.shares_enabled', 'Allow users to share files')}
+          iconColor="primary"
+          disabled={disabled}
+        />
+        {setAtThisScope && (
+          <Tooltip
+            label={t('files_sharing.clear_override', 'Clear the override at this level')}
+            placement="top"
+          >
+            <IconCheckbox
+              icon="RefreshOutline"
+              value={false}
+              onClick={onClear}
+              onChange={(): null => null}
+              disabled={disabled}
+              style={{ cursor: 'pointer' }}
+            />
+          </Tooltip>
+        )}
+      </Row>
+      <ds-text as="span" size="small" color="secondary">
+        {sourceLabel()}
+      </ds-text>
     </Container>
   );
 }

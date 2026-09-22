@@ -9,33 +9,32 @@ import { HttpResponse } from 'msw';
 import { getFilesConfigRaw } from '../get-files-config-raw';
 
 describe('getFilesConfigRaw', () => {
-  it('should return the sparse overrides map set at a scope', async () => {
-    createAPIInterceptor('get', '/services/files/admin/config/raw/domain/dom-1', () =>
+  it('should return the sparse overrides map set at the account scope', async () => {
+    createAPIInterceptor('get', '/services/files/admin/config/raw/account/acc-1', () =>
       HttpResponse.json({ 'shares-enabled': 'false' }),
     );
 
-    const result = await getFilesConfigRaw('domain', 'dom-1');
+    const result = await getFilesConfigRaw('account', 'acc-1');
 
     expect(result).toEqual({ type: 'success', overrides: { 'shares-enabled': 'false' } });
   });
 
-  it('should read the global singleton overrides without a scope id', async () => {
-    const interceptor = createAPIInterceptor('get', '/services/files/admin/config/raw/global', () =>
+  it('should return the sparse overrides map set at the cos scope', async () => {
+    createAPIInterceptor('get', '/services/files/admin/config/raw/cos/cos-1', () =>
       HttpResponse.json({ 'shares-enabled': 'true' }),
     );
 
-    const result = await getFilesConfigRaw('global', 'ignored');
+    const result = await getFilesConfigRaw('cos', 'cos-1');
 
-    expect(interceptor.getCalledTimes()).toBe(1);
     expect(result).toEqual({ type: 'success', overrides: { 'shares-enabled': 'true' } });
   });
 
   it('should return an empty overrides map when nothing is overridden', async () => {
-    createAPIInterceptor('get', '/services/files/admin/config/raw/global', () =>
+    createAPIInterceptor('get', '/services/files/admin/config/raw/account/acc-2', () =>
       HttpResponse.json({}),
     );
 
-    const result = await getFilesConfigRaw('global', 'ignored');
+    const result = await getFilesConfigRaw('account', 'acc-2');
 
     expect(result).toEqual({ type: 'success', overrides: {} });
   });

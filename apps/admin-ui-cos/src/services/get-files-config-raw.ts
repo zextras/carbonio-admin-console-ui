@@ -6,7 +6,7 @@
 
 import { FILES_ADMIN_API_BASE_URL } from '../constants';
 
-export type FilesConfigScope = 'account' | 'cos' | 'domain';
+export type FilesConfigScope = 'account' | 'cos';
 
 /** Sparse map of the keys overridden AT a single scope. A key is absent when it is not overridden there. */
 export type FilesConfigOverrides = Record<string, string>;

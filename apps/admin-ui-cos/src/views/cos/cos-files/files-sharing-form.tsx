@@ -14,9 +14,11 @@ type FilesSharingFormProps = {
   zimbraId: string | undefined;
   /** The value overridden at the cos scope on the server, or undefined when not overridden. */
   initialOverride: string | undefined;
+  /** The base default (source `default`), the fallback shown when nothing is set at the cos scope. */
+  baseline: string | null | undefined;
 };
 
-export function FilesSharingForm({ zimbraId, initialOverride }: FilesSharingFormProps) {
+export function FilesSharingForm({ zimbraId, initialOverride, baseline }: FilesSharingFormProps) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const state = useFilesConfigScopeState({
@@ -25,6 +27,8 @@ export function FilesSharingForm({ zimbraId, initialOverride }: FilesSharingForm
     key: SHARES_ENABLED,
     initialOverride,
   });
+
+  const effectiveValue = state.hasOverride ? (state.value ?? null) : baseline ?? null;
 
   async function handleSave(): Promise<void> {
     const res = await state.save();
@@ -61,9 +65,12 @@ export function FilesSharingForm({ zimbraId, initialOverride }: FilesSharingForm
     >
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="100%" height="auto">
         <FilesSharingOverrideControl
-          value={state.value}
-          onSet={state.setValue}
-          onClear={state.clear}
+          effectiveValue={effectiveValue}
+          setAtThisScope={state.hasOverride}
+          scopeName={t('label.class_of_service_lower', 'Class of Service')}
+          inheritedSource="default"
+          onToggle={() => state.setValue(effectiveValue === 'true' ? 'false' : 'true')}
+          onClear={() => state.clear()}
         />
       </Container>
     </FormPageLayout>

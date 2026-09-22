@@ -22,7 +22,6 @@ import {
   DISCLAIMER,
   DISTRIBUTION_LIST,
   DOMAINS_ROUTE_ID,
-  FILES,
   GAL,
   GENERAL_SETTINGS,
   GLOBAL_ROUTE,
@@ -38,7 +37,6 @@ import { GLOBAL_SECTION_ROUTES } from './global-section-routes';
 
 const DOMAIN_DETAIL_SECTIONS: Array<SectionRoute> = [
   { id: ACCOUNTS, labelKey: 'label.accounts', labelDefault: 'Accounts' },
-  { id: FILES, labelKey: 'files_sharing.section_label', labelDefault: 'Files' },
   {
     id: DELEGATES_DOMAIN_ADMINS,
     labelKey: 'label.delegates_domain_admins',

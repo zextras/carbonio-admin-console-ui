@@ -10,4 +10,5 @@ export const filesConfigQueryKeys = {
   all: ['files-config'] as const,
   raw: (scope: FilesConfigScope, id: string) =>
     [...filesConfigQueryKeys.all, 'raw', scope, id] as const,
+  defaults: () => [...filesConfigQueryKeys.all, 'defaults'] as const,
 } as const;

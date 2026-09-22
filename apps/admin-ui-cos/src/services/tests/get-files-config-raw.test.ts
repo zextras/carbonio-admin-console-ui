@@ -24,11 +24,11 @@ describe('getFilesConfigRaw', () => {
   });
 
   it('should return an empty overrides map when nothing is overridden at the scope', async () => {
-    createAPIInterceptor('get', '/services/files/admin/config/raw/domain/dom-1', () =>
+    createAPIInterceptor('get', '/services/files/admin/config/raw/account/acc-1', () =>
       HttpResponse.json({}),
     );
 
-    const result = await getFilesConfigRaw('domain', 'dom-1');
+    const result = await getFilesConfigRaw('account', 'acc-1');
 
     expect(result).toEqual({ type: 'success', overrides: {} });
   });
