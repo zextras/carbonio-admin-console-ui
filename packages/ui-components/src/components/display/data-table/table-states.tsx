@@ -64,10 +64,10 @@ export const DataTableSkeletonRows = ({
   showActions,
 }: SkeletonRowsProps) =>
   Array.from({ length: rowCount }, (_, rowIndex) => (
-    <tr key={`skeleton-${rowIndex}`} aria-hidden="true">
+    <tr key={`skeleton-${rowIndex}`}>
       {showSelection && (
         <td className={`${styles.td} ${styles.tdSelect} ${styles.pinnedLeft}`}>
-          <div className={styles.skeletonBox} />
+          <div className={styles.skeletonBox} aria-hidden="true" />
         </td>
       )}
       {Array.from({ length: columnCount }, (__, colIndex) => (
@@ -78,6 +78,7 @@ export const DataTableSkeletonRows = ({
         >
           <div
             className={styles.skeleton}
+            aria-hidden="true"
             style={{ width: `${55 + ((rowIndex * (colIndex + 1) * 17) % 35)}%` }}
           />
         </td>

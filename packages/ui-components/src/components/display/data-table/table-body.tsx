@@ -388,7 +388,7 @@ export const DataTableTableBody = <TData extends RowData>({
         return (
           <>
             <EditingReconciler pageRowIds={pageRowIds} />
-            <tbody>
+            <tbody aria-busy={status === 'loading' || undefined}>
               {status === 'loading' && (
                 <DataTableSkeletonRows
                   rowCount={skeletonRowCount}

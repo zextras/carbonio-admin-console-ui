@@ -261,11 +261,10 @@ describe('DataTableTableBody skeleton rows', () => {
     const { getTable } = renderHarness({ withRowActions: true, status: 'loading' });
     const expectedCellCount = getTable()?.getVisibleLeafColumns().length;
     expect(expectedCellCount).toBe(2);
-    // Skeleton rows are aria-hidden, so they are invisible to default role queries.
-    const skeletonRows = screen.getAllByRole('row', { hidden: true });
+    const skeletonRows = screen.getAllByRole('row');
     expect(skeletonRows).toHaveLength(5);
     skeletonRows.forEach((row) => {
-      expect(within(row).getAllByRole('cell', { hidden: true })).toHaveLength(expectedCellCount ?? 0);
+      expect(within(row).getAllByRole('cell')).toHaveLength(expectedCellCount ?? 0);
     });
   });
 });
