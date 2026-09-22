@@ -22,6 +22,19 @@ describe('deleteFilesConfigOverride', () => {
     expect(result).toEqual({ type: 'success' });
   });
 
+  it('should DELETE the global singleton override by key (no scope id)', async () => {
+    const apiInterceptor = createAPIInterceptor(
+      'delete',
+      '/services/files/admin/config/raw/global/shares-enabled',
+      () => new HttpResponse(null, { status: 204 }),
+    );
+
+    const result = await deleteFilesConfigOverride('global', 'global', 'shares-enabled');
+
+    expect(apiInterceptor.getCalledTimes()).toBe(1);
+    expect(result).toEqual({ type: 'success' });
+  });
+
   it('should return an error when the API request fails', async () => {
     createAPIInterceptor(
       'delete',

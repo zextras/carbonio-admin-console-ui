@@ -6,8 +6,14 @@
 
 import { FILES_ADMIN_API_BASE_URL } from '../constants';
 
-export type FilesConfigScope = 'account' | 'cos' | 'domain';
-export type FilesConfigSource = 'account' | 'cos' | 'domain' | 'default';
+export type FilesConfigScope = 'account' | 'cos' | 'domain' | 'global';
+
+/** Builds the raw-config path for a scope. `global` is a singleton and takes no id. */
+export function filesConfigRawPath(scope: FilesConfigScope, id: string): string {
+  return scope === 'global'
+    ? `${FILES_ADMIN_API_BASE_URL}/config/raw/global`
+    : `${FILES_ADMIN_API_BASE_URL}/config/raw/${scope}/${id}`;
+}
 
 /** Sparse map of the keys overridden AT a single scope. A key is absent when it is not overridden there. */
 export type FilesConfigOverrides = Record<string, string>;
@@ -25,15 +31,15 @@ type GetFilesConfigRawResponse =
 /**
  * Returns the raw overrides set AT a single scope (no hierarchy resolution).
  * Keys not overridden at that scope are absent from the response.
- * @param scope The scope to read (account, cos or domain).
- * @param id The identifier of the scope object.
+ * @param scope The scope to read (account, cos, domain or the global singleton).
+ * @param id The identifier of the scope object (ignored for the global singleton).
  * @returns The sparse override map for the scope.
  */
 export const getFilesConfigRaw = async (
   scope: FilesConfigScope,
   id: string,
 ): Promise<GetFilesConfigRawResponse> => {
-  const url = `${FILES_ADMIN_API_BASE_URL}/config/raw/${scope}/${id}`;
+  const url = filesConfigRawPath(scope, id);
   const headers = {
     'Content-Type': 'application/json',
   };

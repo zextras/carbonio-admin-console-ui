@@ -5,27 +5,36 @@
  */
 import { Button, Container, ListRow, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
 
 import { SHARES_ENABLED } from '../../../constants';
 import { useFilesConfigScopeState } from '../../../hooks/use-files-config-scope-state';
+import { useFilesConfigDefaults } from '../../../services/use-files-config-defaults';
 import { useFilesConfigRaw } from '../../../services/use-files-config-raw';
 import { FilesSharingOverrideControl } from '../files-sharing-override-control';
 
-export function DomainFiles() {
+// The global singleton scope has no id; a stable placeholder keeps the query key unique.
+const GLOBAL_ID = 'global';
+
+function defaultLabel(value: string | null | undefined, t: (k: string, d: string) => string): string {
+  if (value === 'true') {
+    return t('files_sharing.state_enabled', 'Enabled');
+  }
+  if (value === 'false') {
+    return t('files_sharing.state_disabled', 'Disabled');
+  }
+  return t('files_sharing.default_not_configured', 'Not configured');
+}
+
+function GlobalFiles() {
   const [t] = useTranslation();
-  const { domainId } = useParams();
   const createSnackbar = useSnackbar();
 
-  const { data: rawData, isPending: isRawPending } = useFilesConfigRaw(
-    'domain',
-    domainId,
-    !!domainId,
-  );
+  const { data: rawData, isPending: isRawPending } = useFilesConfigRaw('global', GLOBAL_ID);
+  const { data: defaultsData, isPending: isDefaultsPending } = useFilesConfigDefaults();
 
   const state = useFilesConfigScopeState({
-    scope: 'domain',
-    id: domainId,
+    scope: 'global',
+    id: GLOBAL_ID,
     key: SHARES_ENABLED,
     initialOverride: rawData?.overrides?.[SHARES_ENABLED],
   });
@@ -53,7 +62,7 @@ export function DomainFiles() {
     }
   }
 
-  if (!!domainId && isRawPending) {
+  if (isRawPending || isDefaultsPending) {
     return <ds-spinner></ds-spinner>;
   }
 
@@ -98,6 +107,11 @@ export function DomainFiles() {
         width="100%"
         padding={{ top: 'extralarge', right: 'large', bottom: 'large', left: 'large' }}
       >
+        <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ bottom: 'small' }}>
+          <ds-text as="h2" size="small" weight="bold" color="gray0">
+            {t('files_sharing.global_override', 'Global override')}
+          </ds-text>
+        </Row>
         <ListRow>
           <FilesSharingOverrideControl
             value={state.value}
@@ -105,7 +119,35 @@ export function DomainFiles() {
             onClear={state.clear}
           />
         </ListRow>
+        <Row
+          mainAlignment="flex-start"
+          width="100%"
+          background="gray6"
+          padding={{ top: 'extralarge', bottom: 'small' }}
+        >
+          <ds-text as="h2" size="small" weight="bold" color="gray0">
+            {t('files_sharing.base_default', 'Base default (read-only)')}
+          </ds-text>
+        </Row>
+        <ListRow>
+          <Container mainAlignment="flex-start" crossAlignment="flex-start" height="auto" gap="0.25rem">
+            <ds-text as="span" size="medium">
+              {`${t('files_sharing.shares_enabled', 'File sharing')}: ${defaultLabel(
+                defaultsData?.defaults?.[SHARES_ENABLED],
+                t,
+              )}`}
+            </ds-text>
+            <ds-text as="span" size="small" color="secondary">
+              {t(
+                'files_sharing.base_default_hint',
+                'The immutable base default from the service configuration. It is not editable here.',
+              )}
+            </ds-text>
+          </Container>
+        </ListRow>
       </Container>
     </Container>
   );
 }
+
+export default GlobalFiles;

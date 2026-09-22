@@ -24,6 +24,21 @@ describe('setFilesConfigOverride', () => {
     expect(result).toEqual({ type: 'success' });
   });
 
+  it('should PUT the global singleton override without a scope id', async () => {
+    const apiInterceptor = createAPIInterceptor(
+      'put',
+      '/services/files/admin/config/raw/global',
+      () => new HttpResponse(null, { status: 204 }),
+    );
+
+    const result = await setFilesConfigOverride('global', 'global', 'shares-enabled', 'true');
+
+    expect(apiInterceptor.getCalledTimes()).toBe(1);
+    const body = await apiInterceptor.getLastRequest().json();
+    expect(body).toEqual({ key: 'shares-enabled', value: 'true' });
+    expect(result).toEqual({ type: 'success' });
+  });
+
   it('should return an error when the API request fails', async () => {
     createAPIInterceptor(
       'put',

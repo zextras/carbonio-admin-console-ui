@@ -18,7 +18,7 @@ import {
 import { DomainList } from './domain/domain-list/domain-list';
 import GlobalActiveSync from './domain/global/global-active-sync';
 import GlobalDetailPanel from './domain/global/global-detail-panel';
-import GlobalFilesDefaults from './domain/global/global-files-defaults';
+import GlobalFiles from './domain/global/global-files';
 import GlobalTheme from './domain/global/global-theme';
 import GlobalTwoFactorAuthentcation from './domain/global/global-two-factor-auth';
 import GlobalDelegates from './domain/global-delegates';
@@ -58,7 +58,7 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     id: FILES,
     labelKey: 'files_sharing.section_label',
     labelDefault: 'Files',
-    Component: GlobalFilesDefaults,
+    Component: GlobalFiles,
   },
   {
     id: ADMINISTRATORS,

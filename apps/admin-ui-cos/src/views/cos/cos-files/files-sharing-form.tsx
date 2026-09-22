@@ -3,35 +3,20 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, FormPageLayout, InheritedSwitch, useSnackbar } from '@zextras/ui-components';
+import { Container, FormPageLayout, useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { SHARES_ENABLED } from '../../../constants';
+import { FilesSharingOverrideControl } from './files-sharing-override-control';
 import { useFilesConfigScopeState } from './use-files-config-scope-state';
-
-/** The InheritedSwitch reads the legacy 'TRUE'/'FALSE' convention; the files admin API uses 'true'/'false'. */
-function toSwitchValue(value: string | null | undefined): 'TRUE' | 'FALSE' | undefined {
-  if (value === null || value === undefined) {
-    return undefined;
-  }
-  return value === 'true' ? 'TRUE' : 'FALSE';
-}
 
 type FilesSharingFormProps = {
   zimbraId: string | undefined;
   /** The value overridden at the cos scope on the server, or undefined when not overridden. */
   initialOverride: string | undefined;
-  /** The base default (inherited baseline) for the cos scope. */
-  baseline: string | null | undefined;
-  readonlyCOS: boolean;
 };
 
-export function FilesSharingForm({
-  zimbraId,
-  initialOverride,
-  baseline,
-  readonlyCOS,
-}: FilesSharingFormProps) {
+export function FilesSharingForm({ zimbraId, initialOverride }: FilesSharingFormProps) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const state = useFilesConfigScopeState({
@@ -40,12 +25,6 @@ export function FilesSharingForm({
     key: SHARES_ENABLED,
     initialOverride,
   });
-
-  const displayedIsEnabled = (state.value ?? baseline ?? 'false') === 'true';
-
-  function onToggle(): void {
-    state.setValue(displayedIsEnabled ? 'false' : 'true');
-  }
 
   async function handleSave(): Promise<void> {
     const res = await state.save();
@@ -81,16 +60,10 @@ export function FilesSharingForm({
       unsavedChanges={state.isDirty}
     >
       <Container mainAlignment="flex-start" crossAlignment="flex-start" width="100%" height="auto">
-        <InheritedSwitch
-          label={t('files_sharing.shares_enabled', 'Allow users to share files')}
-          inputName={SHARES_ENABLED}
-          subValue={toSwitchValue(state.value)}
-          inheritedValue={toSwitchValue(baseline)}
-          fromSubValue={state.hasOverride}
-          onChange={onToggle}
-          onChangeReset={() => state.clear()}
-          iconColor="primary"
-          disabled={readonlyCOS}
+        <FilesSharingOverrideControl
+          value={state.value}
+          onSet={state.setValue}
+          onClear={state.clear}
         />
       </Container>
     </FormPageLayout>

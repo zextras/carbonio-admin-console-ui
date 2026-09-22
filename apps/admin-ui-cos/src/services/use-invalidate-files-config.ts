@@ -13,6 +13,5 @@ export function useInvalidateFilesConfig() {
   const queryClient = useQueryClient();
   return (scope: FilesConfigScope, id: string) => {
     queryClient.invalidateQueries({ queryKey: filesConfigQueryKeys.raw(scope, id) });
-    queryClient.invalidateQueries({ queryKey: filesConfigQueryKeys.resolved(id) });
   };
 }
