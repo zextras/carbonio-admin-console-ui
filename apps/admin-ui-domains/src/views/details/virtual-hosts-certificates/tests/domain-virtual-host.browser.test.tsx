@@ -279,7 +279,7 @@ describe('DomainVirtualHosts (browser)', () => {
 
       await expect.element(page.getByText('Delete Certificates?')).toBeVisible();
       await expect
-        .element(page.getByText('You are deleting All Certificates.'))
+        .element(page.getByText('You are deleting All Certificates. Are you sure you want to delete it?'))
         .toBeVisible();
       await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();

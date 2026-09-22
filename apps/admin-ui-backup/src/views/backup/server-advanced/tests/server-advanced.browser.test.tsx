@@ -214,7 +214,7 @@ describe('ServerAdvanced', () => {
 
       // Wait for API data to load (child component mounts)
       await expect
-        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' }))
         .toHaveValue('200');
 
       // Re-set account + rights after child mount (gcTime:0 GC'd them during parent loading gate)
@@ -231,7 +231,7 @@ describe('ServerAdvanced', () => {
         [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
       );
 
-      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)' });
+      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' });
       await expect.element(latencyInput).toBeEnabled();
       await userEvent.fill(latencyInput, '999');
 
@@ -252,7 +252,7 @@ describe('ServerAdvanced', () => {
       });
 
       await expect
-        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' }))
         .toHaveValue('200');
 
       queryClient.setQueryData(['account', 'info'], {
@@ -304,7 +304,7 @@ describe('ServerAdvanced', () => {
 
       // Wait for API data to load
       await expect
-        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' }))
         .toHaveValue('200');
 
       // Re-set account + rights after child mount
@@ -321,7 +321,7 @@ describe('ServerAdvanced', () => {
         [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
       );
 
-      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)' });
+      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' });
       await expect.element(latencyInput).toBeEnabled();
       await userEvent.fill(latencyInput, '999');
 

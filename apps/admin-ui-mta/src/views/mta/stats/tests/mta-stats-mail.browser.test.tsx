@@ -145,18 +145,30 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
     await expect.element(page.getByText(QUEUE_ITEM_ID)).toBeVisible();
 
     const queueRow = page.getByRole('row').filter({ hasText: QUEUE_ITEM_ID });
-    const rowEl = queueRow.element();
-    rowEl.closest('table')?.parentElement?.scrollTo({ left: 0 });
-    rowEl.querySelector('td')?.scrollIntoView({ block: 'center', inline: 'start' });
-    rowEl.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
-    await expect.poll(() => rowEl.querySelector('[data-testid="checkbox"]')).toBeTruthy();
-    const rowCheckbox = rowEl.querySelector('[data-testid="checkbox"]');
-    expect(rowCheckbox).toBeTruthy();
-    // Drawer and table can exceed the default browser viewport; use a DOM click to bypass bounds checks.
-    (rowCheckbox as HTMLElement).click();
-
     const holdButton = page.getByRole('button', { name: 'Hold' });
-    await expect.element(holdButton).toBeEnabled();
+    // Drawer and table can exceed the default browser viewport; hover, scroll and
+    // click through the DOM to bypass bounds checks. The row checkbox attaches its
+    // click listener in a passive effect, so a click dispatched right after the
+    // checkbox first renders can land before the listener exists. Re-hover and
+    // re-click (only while the row is still unchecked) until Hold enables.
+    await expect
+      .poll(
+        () => {
+          const rowEl = queueRow.element();
+          rowEl.closest('table')?.parentElement?.scrollTo({ left: 0 });
+          rowEl.querySelector('td')?.scrollIntoView({ block: 'center', inline: 'start' });
+          rowEl.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+          const holdEnabled = (): boolean => (holdButton.element() as HTMLButtonElement).disabled === false;
+          if (holdEnabled()) return true;
+          const checkboxIcon = rowEl.querySelector('[data-testid="checkbox"] ds-icon');
+          if (checkboxIcon?.getAttribute('icon') === 'Square') {
+            (rowEl.querySelector('[data-testid="checkbox"]') as HTMLElement | null)?.click();
+          }
+          return holdEnabled();
+        },
+        { timeout: 10_000 },
+      )
+      .toBeTruthy();
     await holdButton.click();
 
     const request = await batchInterceptor;
