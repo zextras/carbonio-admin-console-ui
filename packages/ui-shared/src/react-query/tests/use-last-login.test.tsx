@@ -26,12 +26,13 @@ function createWrapper() {
   return Wrapper;
 }
 
-describe('useLastLoginTimestamp', { timeout: 20_000 }, () => {
+describe('useLastLoginTimestamp', () => {
   beforeEach(() => {
     vi.mocked(soapFetch).mockReset();
   });
 
   afterEach(() => {
+    vi.useRealTimers();
     vi.restoreAllMocks();
   });
 
@@ -130,14 +131,20 @@ describe('useLastLoginTimestamp', { timeout: 20_000 }, () => {
     const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
     vi.mocked(soapFetch).mockRejectedValue(new Error('Network error'));
 
+    // The hook's retryFn allows 3 retries with exponential backoff (1s, 2s, 4s):
+    // advance a faked clock instead of waiting ~7s of real time.
+    vi.useFakeTimers();
+
     const wrapper = createWrapper();
     const { result } = renderHook(() => useLastLoginTimestamp({ accountId: 'acc-1' }), {
       wrapper,
     });
 
-    // The hook's retryFn allows 3 retries (failureCount < 3) with exponential backoff
-    // retryDelay: 1s, 2s, 4s = 7s total
-    await waitFor(() => expect(result.current.isError).toBe(true), { timeout: 15_000 });
+    let guard = 0;
+    while (!result.current.isError && guard < 20) {
+      await vi.advanceTimersByTimeAsync(1000);
+      guard += 1;
+    }
 
     expect(soapFetch).toHaveBeenCalledTimes(4);
     expect(warnSpy).toHaveBeenCalledWith(
