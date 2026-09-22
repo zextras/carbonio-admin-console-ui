@@ -448,7 +448,11 @@ describe('CosGeneralInformation', () => {
     it('should not send ModifyCos when DELETE is clicked', async () => {
       await setupGeneralInfoTest();
 
-      const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      const modifyCosCalls = await createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/ModifyCosRequest',
+        () => HttpResponse.json({ Body: { ModifyCosResponse: {} } }),
+      );
 
       await page.getByRole('button', { name: 'DELETE' }).click();
 
@@ -456,13 +460,11 @@ describe('CosGeneralInformation', () => {
         .element(page.getByText('Are you sure you want to delete this Class of Service?'))
         .toBeVisible();
 
-      const settled = await Promise.race([
-        modifyCosPromise.then(() => true),
-        new Promise<boolean>((resolve) => {
-          setTimeout(() => resolve(false), 2000);
-        }),
-      ]);
-      expect(settled).toBe(false);
+      // The modal has settled; nothing may reach ModifyCos.
+      await new Promise((resolve) => {
+        setTimeout(resolve, 250);
+      });
+      expect(modifyCosCalls.getCalledTimes()).toBe(0);
     });
 
     it('should close modal when No, Go Back is clicked', async () => {
