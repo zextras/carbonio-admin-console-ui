@@ -12,6 +12,7 @@ import {
   useDomainInformation,
   useHasAllRights,
   useIsAdvanced,
+  useServerVersion,
   useUserAccounts,
 } from '@zextras/ui-shared';
 import { useNavigate } from 'react-router';
@@ -27,7 +28,6 @@ import {
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
-import { useServerVersion } from '../../hooks/use-server-version';
 import { CarbonioVersionInformation } from './carbonio-version-information-view';
 import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
@@ -38,7 +38,12 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const userName = accounts[0]?.displayName || accounts[0]?.name?.split('@')[0] || '';
-  const { serverVersion } = useServerVersion();
+  const { data: versionInfo } = useServerVersion();
+  const serverVersion = versionInfo
+    ? [versionInfo.majorversion, versionInfo.minorversion, versionInfo.microversion]
+        .filter(Boolean)
+        .join('.')
+    : '';
 
   const isAdvanced = useIsAdvanced();
 

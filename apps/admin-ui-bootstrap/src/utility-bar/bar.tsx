@@ -9,20 +9,19 @@ import {
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   logout,
   useIsAdvanced,
+  useServerVersion,
   useUserAccount,
   useUtilityBarStore,
   UtilityView,
 } from '@zextras/ui-shared';
 import clsx from 'clsx';
 import { map, noop } from 'lodash-es';
-import { useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './bar.module.css';
 import { buildDocumentationUrl } from './build-documentation-url';
 import { useDocumentationBaseUrl } from './use-documentation-base-url';
 import { useDocumentationContext } from './use-documentation-context';
-import { useServerVersion } from './use-server-version';
 import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem = ({ view }: { view: UtilityView }) => {
@@ -60,21 +59,22 @@ export const ShellUtilityBar = () => {
   const accountName = acct?.name ? clipTextAfterWords(acct.name) : '';
   const isAdvanced = useIsAdvanced();
   const baseUrl = useDocumentationBaseUrl();
-  const { serverVersion } = useServerVersion();
+  const { data: versionInfo } = useServerVersion();
+  const serverVersion = versionInfo
+    ? [versionInfo.majorversion, versionInfo.minorversion, versionInfo.microversion]
+        .filter(Boolean)
+        .join('.')
+    : '';
   const docContext = useDocumentationContext();
   const [t] = useTranslation();
 
-  const helpDocumentationUrl = useMemo(() => {
-    if (!isAdvanced) {
-      return CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
-    }
-
-    return buildDocumentationUrl(baseUrl, {
-      v: serverVersion || undefined,
-      m: docContext.module,
-      c: docContext.context,
-    });
-  }, [isAdvanced, baseUrl, serverVersion, docContext]);
+  const helpDocumentationUrl = !isAdvanced
+    ? CARBONIO_CE_ADMIN_DOCUMENTATION_URL
+    : buildDocumentationUrl(baseUrl, {
+        v: serverVersion || undefined,
+        m: docContext.module,
+        c: docContext.context,
+      });
   const moduleLabel = t(docContext.moduleLabelKey, docContext.moduleLabelFallback);
   const helpTooltipLabel = t('label.documentation_for_module', 'Documentation: {{module}}', {
     module: moduleLabel,

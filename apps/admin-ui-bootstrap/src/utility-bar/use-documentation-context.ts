@@ -5,7 +5,6 @@
  */
 
 import { useCurrentRoute, useRelativePathname } from '@zextras/ui-shared';
-import { useMemo } from 'react';
 
 export type DocumentationContext = {
 	module: string;
@@ -178,24 +177,22 @@ export const useDocumentationContext = (): DocumentationContext => {
 	const currentRoute = useCurrentRoute();
 	const relativePath = useRelativePathname();
 
-	return useMemo(() => {
-		if (!currentRoute) {
-			return DEFAULT_CONTEXT;
-		}
+	if (!currentRoute) {
+		return DEFAULT_CONTEXT;
+	}
 
-		const { route, path } = currentRoute;
+	const { route, path } = currentRoute;
 
-		const mapping = ROUTE_MAPPINGS[path] || ROUTE_MAPPINGS[route];
+	const mapping = ROUTE_MAPPINGS[path] || ROUTE_MAPPINGS[route];
 
-		if (!mapping) {
-			return DEFAULT_CONTEXT;
-		}
+	if (!mapping) {
+		return DEFAULT_CONTEXT;
+	}
 
-		return {
-			module: mapping.module,
-			context: getContextFromSubpath(mapping, relativePath),
-			moduleLabelKey: mapping.moduleLabelKey,
-			moduleLabelFallback: mapping.moduleLabelFallback,
-		};
-	}, [currentRoute, relativePath]);
+	return {
+		module: mapping.module,
+		context: getContextFromSubpath(mapping, relativePath),
+		moduleLabelKey: mapping.moduleLabelKey,
+		moduleLabelFallback: mapping.moduleLabelFallback,
+	};
 };

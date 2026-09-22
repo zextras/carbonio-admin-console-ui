@@ -47,7 +47,8 @@ describe('buildDocumentationUrl', () => {
 		expect(url).toBe('https://docs.zextras.com/landing/?foo=bar&m=Domain');
 	});
 
-	it('throws when the base URL is not a valid absolute URL', () => {
-		expect(() => buildDocumentationUrl('not-a-url', { m: 'Domain' })).toThrow();
+	it('falls back to the base URL unchanged when it is not a valid absolute URL', () => {
+		const url = buildDocumentationUrl('not-a-url', { m: 'Domain' });
+		expect(url).toBe('not-a-url');
 	});
 });

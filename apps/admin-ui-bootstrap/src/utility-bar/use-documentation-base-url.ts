@@ -12,7 +12,6 @@ import {
 	useDomainById,
 	useRelativePathname,
 } from '@zextras/ui-shared';
-import { useMemo } from 'react';
 
 type DomainAttribute = { n: string; _content: string };
 
@@ -54,10 +53,8 @@ export const useDocumentationBaseUrl = (): string => {
 		applyConfig: 0,
 	});
 
-	return useMemo(() => {
-		const domainUrl = domain?.a?.find(
-			(attr) => attr.n === CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
-		)?._content;
-		return domainUrl || globalUrl || DEFAULT_ADVANCED_DOCUMENTATION_URL;
-	}, [domain, globalUrl]);
+	const domainUrl = domain?.a?.find(
+		(attr) => attr.n === CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
+	)?._content;
+	return domainUrl || globalUrl || DEFAULT_ADVANCED_DOCUMENTATION_URL;
 };
