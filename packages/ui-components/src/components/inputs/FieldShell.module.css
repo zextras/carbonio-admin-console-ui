@@ -1,0 +1,62 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.root {
+	display: flex;
+	flex-direction: column;
+	align-self: stretch;
+	gap: 0.25rem;
+}
+
+.label {
+	color: var(--color-secondary-regular);
+	font-size: var(--font-size-small);
+	font-weight: var(--font-weight-medium);
+}
+
+.box {
+	display: flex;
+	height: 2.5rem;
+	padding: 0.625rem 0.75rem;
+	justify-content: space-between;
+	align-items: center;
+	flex-shrink: 0;
+	align-self: stretch;
+	border-radius: 0.25rem;
+	border: 1px solid #858c93;
+	background: var(--color-gray6-regular);
+	cursor: text;
+}
+
+.box[data-disabled] {
+	background: var(--color-gray5-regular);
+	border-color: var(--color-gray3-regular);
+	cursor: not-allowed;
+}
+
+.box:not([data-disabled]):hover {
+	border-color: var(--color-primary-hover);
+}
+
+.box:not([data-disabled]):focus-within {
+	border-color: rgba(43, 115, 210, 0.25);
+	box-shadow: 0 0 0 2px rgba(43, 115, 210, 0.25);
+}
+
+.control {
+	flex: 1 1 auto;
+	min-width: 0;
+	border: none;
+	outline: none;
+	background: transparent;
+	padding: 0;
+	font: inherit;
+	color: var(--color-text-regular);
+}
+
+.control:disabled {
+	color: var(--color-text-disabled);
+}
