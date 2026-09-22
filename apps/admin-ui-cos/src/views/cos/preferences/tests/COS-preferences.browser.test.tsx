@@ -417,8 +417,8 @@ describe('COSPreferences', () => {
     }, 20_000);
   });
 
-  describe('Forwarding interactions', () => {
-    it('should mark as dirty when toggling each forwarding control', async () => {
+  describe('Forwarding, Sending Mails and Contact Options interactions', () => {
+    it('should mark as dirty when toggling each section control', async () => {
       await setupCosPreferencesTest();
 
       const forwardingAddressSwitch = page.getByRole('switch', { name: 'User can specify forwarding address' });
@@ -431,14 +431,6 @@ describe('COSPreferences', () => {
       await forwardingFilterSwitch.click();
       await expect.element(forwardingFilterSwitch).toBeChecked();
 
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
-
-  describe('Sending Mails interactions', () => {
-    it('should mark as dirty when toggling each sending mails control', async () => {
-      await setupCosPreferencesTest();
-
       const saveToSentSwitch = page.getByRole('switch', { name: 'Save to sent' });
       await expect.element(saveToSentSwitch).toBeChecked();
       await saveToSentSwitch.click();
@@ -450,14 +442,6 @@ describe('COSPreferences', () => {
       await expect.element(readReceiptSwitch).not.toBeChecked();
       await readReceiptSwitch.click();
       await expect.element(readReceiptSwitch).toBeChecked();
-
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
-
-  describe('Contact Options interactions', () => {
-    it('should mark as dirty when toggling each contact options control', async () => {
-      await setupCosPreferencesTest();
 
       const autoAddContactsSwitch = page.getByRole('switch', { name: 'Enable auto-add contacts' });
       await expect.element(autoAddContactsSwitch).not.toBeChecked();
@@ -620,28 +604,17 @@ describe('COSPreferences', () => {
   });
 
   describe('Switch round-trip toggles (both directions)', () => {
-    it('should toggle Mail Options switches FALSE→TRUE→FALSE', async () => {
+    it('should toggle mail, forwarding, sending and contact switches FALSE→TRUE→FALSE', async () => {
       await setupCosPreferencesTest();
       const labels = [
         'View mail as HTML (when possible)',
         'Auto-Delete duplicate messages',
         'Enable New Mail Toast Notification',
-      ];
-      for (const label of labels) {
-        const switchElement = page.getByRole('switch', { name: label });
-        await expect.element(switchElement).not.toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).not.toBeChecked();
-      }
-    }, 20_000);
-
-    it('should toggle Forwarding switches FALSE→TRUE→FALSE', async () => {
-      await setupCosPreferencesTest();
-      const labels = [
         'User can specify forwarding address',
         'User can specify mail forwarding filter',
+        'Allow the user to ask for a read receipt',
+        'Enable auto-add contacts',
+        'Use GAL to auto-fill',
       ];
       for (const label of labels) {
         const switchElement = page.getByRole('switch', { name: label });
@@ -651,39 +624,15 @@ describe('COSPreferences', () => {
         await switchElement.click();
         await expect.element(switchElement).not.toBeChecked();
       }
-    });
 
-    it('should toggle Sending Mails switches in both directions', async () => {
-      await setupCosPreferencesTest();
+      // 'Save to sent' starts checked, so it round-trips TRUE→FALSE→TRUE.
       const saveToSentSwitch = page.getByRole('switch', { name: 'Save to sent' });
       await expect.element(saveToSentSwitch).toBeChecked();
       await saveToSentSwitch.click();
       await expect.element(saveToSentSwitch).not.toBeChecked();
       await saveToSentSwitch.click();
       await expect.element(saveToSentSwitch).toBeChecked();
-
-      const readReceiptSwitch = page.getByRole('switch', {
-        name: 'Allow the user to ask for a read receipt',
-      });
-      await expect.element(readReceiptSwitch).not.toBeChecked();
-      await readReceiptSwitch.click();
-      await expect.element(readReceiptSwitch).toBeChecked();
-      await readReceiptSwitch.click();
-      await expect.element(readReceiptSwitch).not.toBeChecked();
-    });
-
-    it('should toggle Contact Options switches FALSE→TRUE→FALSE', async () => {
-      await setupCosPreferencesTest();
-      const labels = ['Enable auto-add contacts', 'Use GAL to auto-fill'];
-      for (const label of labels) {
-        const switchElement = page.getByRole('switch', { name: label });
-        await expect.element(switchElement).not.toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).not.toBeChecked();
-      }
-    });
+    }, 20_000);
 
     it('should toggle all Calendar Options switches FALSE→TRUE→FALSE', async () => {
       await setupCosPreferencesTest();
