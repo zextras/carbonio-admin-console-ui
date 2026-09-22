@@ -9,6 +9,9 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
 	return {
 		...actual,
 		searchDirectory: vi.fn(),
+		// The panel debounces account search by 700ms; these tests do not cover
+		// debouncing, so resolve the keyword immediately to skip the timer wait.
+		useDebouncedValue: <T,>(value: T): T => value,
 	};
 });
 
@@ -355,36 +358,8 @@ describe('AddAddressBookPanel (browser)', () => {
 		});
 	});
 
-	it('should expose a specific address book folder', async () => {
+	it('should keep Add disabled until a folder is chosen, then expose that folder', async () => {
 		const { capturedActions } = setupAddressBookZextrasInterceptor();
-		await renderPanel(
-			<AddAddressBookPanel
-				domainName={DOMAIN_NAME}
-				existingEntries={[]}
-				onClose={vi.fn()}
-			/>,
-		);
-
-		await selectAccountFromSearch();
-		await userEvent.click(page.getByText('A specific address book', { exact: true }));
-		await openFolderSelectAndChoose('/Contacts/Work');
-		await expect.element(page.getByRole('button', { name: 'Add' })).toBeEnabled();
-		await userEvent.click(page.getByRole('button', { name: 'Add' }));
-
-		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
-
-		const addRequest = capturedActions.find(
-			(action) => action.action === 'AddAddressBookCommand',
-		);
-		expect(addRequest).toMatchObject({
-			module: ZX_ADDRESS_BOOK,
-			account: ACCOUNT_EMAIL,
-			folder: '7',
-		});
-	});
-
-	it('should keep Add disabled in specific mode until a folder is selected', async () => {
-		setupAddressBookZextrasInterceptor();
 		await renderPanel(
 			<AddAddressBookPanel
 				domainName={DOMAIN_NAME}
@@ -400,6 +375,21 @@ describe('AddAddressBookPanel (browser)', () => {
 			.element(page.getByText(/Select an address book/i))
 			.toBeInTheDocument();
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeDisabled();
+
+		await openFolderSelectAndChoose('/Contacts/Work');
+		await expect.element(page.getByRole('button', { name: 'Add' })).toBeEnabled();
+		await userEvent.click(page.getByRole('button', { name: 'Add' }));
+
+		await expect.element(page.getByText('Address book exposed')).toBeInTheDocument();
+
+		const addRequest = capturedActions.find(
+			(action) => action.action === 'AddAddressBookCommand',
+		);
+		expect(addRequest).toMatchObject({
+			module: ZX_ADDRESS_BOOK,
+			account: ACCOUNT_EMAIL,
+			folder: '7',
+		});
 	});
 
 	it('should show all already exposed error when account has all folders linked', async () => {

@@ -6,12 +6,11 @@
 
 import {
   createBrowserSoapAPIInterceptor,
-  resetMockWorker,
   setupBrowserTest,
   worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type Operation } from '../../../types/operations';
@@ -139,10 +138,6 @@ describe.each(PANEL_VARIANTS)(
 
     beforeEach(() => {
       vi.resetAllMocks();
-    });
-
-    afterEach(() => {
-      resetMockWorker();
     });
 
     it('should render the panel heading', async () => {

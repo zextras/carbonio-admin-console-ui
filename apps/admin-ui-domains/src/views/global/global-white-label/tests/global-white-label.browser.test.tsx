@@ -5,11 +5,13 @@
  */
 
 import {
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   setupAccount,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
@@ -230,8 +232,12 @@ describe('GlobalWhiteLabel', () => {
   });
 
   describe('Validation', () => {
-    it('should show inline error and block save when light primary color is invalid hex', async () => {
-      const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    it('should show inline errors and block save when primary colors are invalid hex', async () => {
+      const modifyConfigCalls = await createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/ModifyConfigRequest',
+        () => HttpResponse.json({ Body: { ModifyConfigResponse: {} } }),
+      );
       await setup();
 
       const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
@@ -248,17 +254,6 @@ describe('GlobalWhiteLabel', () => {
         .element(page.getByText('Primary Color for Light Mode is not valid'))
         .toBeVisible();
 
-      const settled = await Promise.race([
-        modifyConfigInterceptor.then(() => true),
-        new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 2000)),
-      ]);
-      expect(settled).toBe(false);
-    });
-
-    it('should show inline error and block save when dark primary color is invalid hex', async () => {
-      const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
-      await setup();
-
       const darkColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).last();
       await userEvent.clear(darkColorInput);
       await userEvent.type(darkColorInput, 'NOTHEX');
@@ -273,11 +268,9 @@ describe('GlobalWhiteLabel', () => {
         .element(page.getByText('Primary Color for Dark Mode is not valid'))
         .toBeVisible();
 
-      const settled = await Promise.race([
-        modifyConfigInterceptor.then(() => true),
-        new Promise<boolean>((resolve) => setTimeout(() => resolve(false), 2000)),
-      ]);
-      expect(settled).toBe(false);
+      // Validation blocks the save; nothing may reach ModifyConfig.
+      await new Promise((resolve) => setTimeout(resolve, 250));
+      expect(modifyConfigCalls.getCalledTimes()).toBe(0);
     });
   });
 });

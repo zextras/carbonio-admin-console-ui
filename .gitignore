@@ -62,7 +62,7 @@ apps/*/junit.xml
 packages/*/coverage
 packages/*/junit.xml
 .scannerwork
-**/__screenshots__/**
+**/.vitest/
 artifacts/ubuntu-jammy
 CLAUDE.md
 .mcp.json
@@ -74,7 +74,6 @@ packages/sdk/dist
 package/opt/zextras/admin/iris/shared-dependencies/571d78835dbbd73be85411460c1ea0cd4da7ae3e
 package
 dist
-**/.vitest-attachments
 /*/*/dist-types
 /.opencode
 /.worktrees
