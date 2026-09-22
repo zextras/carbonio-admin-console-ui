@@ -22,6 +22,7 @@ import {
   CONFIGURATION,
   DELEGATES,
   DOMAIN_NAME,
+  FILES,
   GENERAL_SECTION,
   IS_DEFAULT_USER_NAME,
   PROFILE,
@@ -48,6 +49,7 @@ import EditAccountAdministrationSection from './edit-account-administration-sect
 import EditAccountConfigurationSection from './edit-account-configuration-section';
 import EditAccountContactsSection from './edit-account-contacts-section';
 import EditAccountDelegatesSection from './edit-account-delegates-section';
+import { EditAccountFilesSection } from './edit-account-files-section';
 import { EditAccountGeneralSection } from './edit-account-general-section';
 import EditAccountSecuritySection from './edit-account-security-section';
 import EditAccountUserPrefrencesSection from './edit-account-user-pref-section';
@@ -172,6 +174,11 @@ const EditAccount: FC<{
     {
       id: 'configuration',
       label: t('label.configuration', 'CONFIGURATION'),
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: FILES,
+      label: t('files_sharing.section_label', 'FILES'),
       CustomComponent: ReusedDefaultTabBar,
     },
     {
@@ -986,6 +993,7 @@ const EditAccount: FC<{
           )}
           {change === PROFILE && <EditAccountContactsSection />}
           {change === CONFIGURATION && <EditAccountConfigurationSection />}
+          {change === FILES && <EditAccountFilesSection />}
           {change === USER_PREFERENCES && (
             <EditAccountUserPrefrencesSection
               signatureItems={signatureItems}

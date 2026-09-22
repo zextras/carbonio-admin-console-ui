@@ -5,10 +5,11 @@
  */
 import type { ComponentType } from 'react';
 
-import { ADVANCED, FEATURES, GENERAL_INFORMATION, PREFERENCES, SERVER_POOLS, WSC } from '../../constants';
+import { ADVANCED, FEATURES, FILES, GENERAL_INFORMATION, PREFERENCES, SERVER_POOLS, WSC } from '../../constants';
 import { WscCosSettings } from '../../wsc/wsc-cos-settings';
 import { CosAdvanced } from './advanced/cos-advanced';
 import { CosFeatures } from './cos-features/cos-features';
+import { CosFiles } from './cos-files/cos-files';
 import { CosServerPools } from './cos-server-pools/cos-server-pools';
 import { CosGeneralInformation } from './general-information/cos-general-information';
 import { COSPreferences } from './preferences/cos-preferences';
@@ -42,6 +43,13 @@ export const SECTION_ROUTES: Array<SectionRoute> = [
     labelKey: 'label.wsc',
     labelDefault: 'Chat',
     Component: WscCosSettings,
+  },
+  {
+    id: FILES,
+    prefix: ':cosId',
+    labelKey: 'files_sharing.section_label',
+    labelDefault: 'Files',
+    Component: CosFiles,
   },
   {
     id: PREFERENCES,
