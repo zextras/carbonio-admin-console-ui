@@ -13,6 +13,9 @@ const mockAccountListDirectory = vi.hoisted(() => vi.fn());
 vi.mock('@zextras/ui-shared', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@zextras/ui-shared')>()),
 	batchService: mockBatchService,
+	// The delegate picker debounces search by 700ms; these tests do not cover
+	// debouncing, so resolve the value immediately to skip the timer wait.
+	useDebouncedValue: <T,>(value: T): T => value,
 }));
 vi.mock('../../../services/account-list-directory-service', () => ({
 	accountListDirectory: mockAccountListDirectory,
