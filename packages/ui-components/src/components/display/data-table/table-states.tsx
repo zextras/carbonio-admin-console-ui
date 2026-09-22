@@ -73,7 +73,7 @@ export const DataTableSkeletonRows = ({
       {Array.from({ length: columnCount }, (__, colIndex) => (
         <td
           key={`skeleton-${rowIndex}-${colIndex}`}
-          className={`${styles.td}${colIndex === 0 ? ` ${styles.pinnedLeft}` : ''}`}
+          className={colIndex === 0 ? `${styles.td} ${styles.pinnedLeft}` : styles.td}
           style={colIndex === 0 && showSelection ? { left: PRIMARY_COLUMN_OFFSET } : undefined}
         >
           <div

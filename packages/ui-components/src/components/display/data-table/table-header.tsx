@@ -8,7 +8,7 @@ import clsx from 'clsx';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
-import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
+import { resolvePinnedLeftOffset } from './layout-constants';
 import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './models/customize-model';
 import { SortableHeaderCell } from './sortable-header-cell';
 import { COLUMN_LAYOUT_SLICES } from './table-selectors';
@@ -60,6 +60,21 @@ export const DataTableTableHeader = ({
                 const isSelect = header.column.id === SELECT_COLUMN_ID;
                 const isActions = header.column.id === ACTIONS_COLUMN_ID;
                 const isPrimary = header.column.id === primaryColumnId;
+                let content: React.ReactNode = null;
+                if (!header.isPlaceholder) {
+                  if (isSelect || isActions) {
+                    content = <table.FlexRender header={header} />;
+                  } else {
+                    content = (
+                      <SortableHeaderCell
+                        label={<table.FlexRender header={header} />}
+                        canSort={header.column.getCanSort()}
+                        sorted={header.column.getIsSorted()}
+                        onToggleSort={header.column.getToggleSortingHandler()}
+                      />
+                    );
+                  }
+                }
                 return (
                   <th
                     key={header.id}
@@ -74,28 +89,18 @@ export const DataTableTableHeader = ({
                     style={{
                       width: meta?.width,
                       textAlign: meta?.align,
-                      left:
-                        isPrimary && enableRowSelection
-                          ? PRIMARY_COLUMN_OFFSET
-                          : pinnedStart
-                          ? 0
-                          : undefined,
+                      left: resolvePinnedLeftOffset({
+                        isPrimary,
+                        enableRowSelection,
+                        pinnedStart,
+                      }),
                     }}
                     aria-sort={resolveAriaSort(
                       header.column.getCanSort(),
                       header.column.getIsSorted(),
                     )}
                   >
-                    {header.isPlaceholder ? null : isSelect || isActions ? (
-                      <table.FlexRender header={header} />
-                    ) : (
-                      <SortableHeaderCell
-                        label={<table.FlexRender header={header} />}
-                        canSort={header.column.getCanSort()}
-                        sorted={header.column.getIsSorted()}
-                        onToggleSort={header.column.getToggleSortingHandler()}
-                      />
-                    )}
+                    {content}
                   </th>
                 );
               })}

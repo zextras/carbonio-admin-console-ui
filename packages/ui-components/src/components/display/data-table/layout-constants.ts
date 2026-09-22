@@ -10,3 +10,17 @@
  * and skeleton states so the pinned stack stays aligned.
  */
 export const PRIMARY_COLUMN_OFFSET = '3.25rem';
+
+export function resolvePinnedLeftOffset(options: {
+  isPrimary: boolean;
+  enableRowSelection: boolean;
+  pinnedStart: boolean;
+}): string | number | undefined {
+  if (options.isPrimary && options.enableRowSelection) {
+    return PRIMARY_COLUMN_OFFSET;
+  }
+  if (options.pinnedStart) {
+    return 0;
+  }
+  return undefined;
+}

@@ -11,7 +11,7 @@ import { useEffect } from 'react';
 import type { DataTableFeatures } from './data-table-features';
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
-import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
+import { resolvePinnedLeftOffset } from './layout-constants';
 import { ACTIONS_COLUMN_ID, resolveColumnLabel, SELECT_COLUMN_ID } from './models/customize-model';
 import { isEditableTarget } from './models/event-target';
 import { copyTextToClipboard, getCellDisplayValue, navigatePeekRowId } from './models/row-ui';
@@ -110,12 +110,11 @@ function buildCellStyle(options: {
   return {
     width: options.meta?.width,
     textAlign: options.meta?.align,
-    left:
-      options.isPrimary && options.enableRowSelection
-        ? PRIMARY_COLUMN_OFFSET
-        : options.pinnedStart
-          ? 0
-          : undefined,
+    left: resolvePinnedLeftOffset({
+      isPrimary: options.isPrimary,
+      enableRowSelection: options.enableRowSelection,
+      pinnedStart: options.pinnedStart,
+    }),
   };
 }
 

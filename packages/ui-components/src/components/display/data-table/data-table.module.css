@@ -1006,6 +1006,7 @@
   z-index: 46;
   width: 16.25rem;
   max-width: calc(100% - 2rem);
+  margin: 0;
   padding: 0.875rem 1rem;
   border: 1px solid var(--color-gray3-hover, #cfd5de);
   border-radius: var(--border-radius, 8px);
