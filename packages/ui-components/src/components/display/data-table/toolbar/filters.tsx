@@ -43,7 +43,7 @@ export type DataTableFiltersProps = {
 };
 
 type FiltersPanelProps = {
-  ref?: Ref<HTMLDivElement>;
+  ref?: Ref<HTMLDialogElement>;
   id: string;
   filterDefs: Array<DataTableFilterDef>;
   draft: DataTableFiltersState;
@@ -76,7 +76,7 @@ const FiltersPanel = ({
 }: FiltersPanelProps) => {
   const { t } = useTranslation();
   return (
-    <div id={id} ref={ref} role="dialog" aria-label={filtersLabel} className={styles.filtersPanel}>
+    <dialog id={id} ref={ref} open aria-label={filtersLabel} className={styles.filtersPanel}>
       <div className={styles.filtersPanelHeader}>
         <span className={styles.filtersPanelTitle}>{filtersLabel}</span>
         <button
@@ -96,18 +96,20 @@ const FiltersPanel = ({
               {def.options.map((option) => {
                 const selected = getEnumDraftSelection(draft, def.id).includes(option.value);
                 return (
-                  <button
+                  <label
                     key={option.value}
-                    type="button"
-                    role="checkbox"
-                    aria-checked={selected}
                     className={clsx(styles.enumOption, selected && styles.enumOptionSelected)}
-                    onClick={() => {
-                      onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
-                    }}
                   >
+                    <input
+                      type="checkbox"
+                      className={styles.visuallyHidden}
+                      checked={selected}
+                      onChange={() => {
+                        onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
+                      }}
+                    />
                     {option.label}
-                  </button>
+                  </label>
                 );
               })}
             </div>
@@ -175,7 +177,7 @@ const FiltersPanel = ({
         </button>
       </div>
       <p className={styles.filtersHint}>{filtersHint}</p>
-    </div>
+    </dialog>
   );
 };
 
@@ -204,7 +206,7 @@ export const DataTableFilters = ({
   const setOpenPanel = useTableUi((s) => s.setOpenPanel);
   const [draft, setDraft] = useState<DataTableFiltersState>(() => cloneFiltersState(filters));
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDialogElement>(null);
   const panelId = useId();
   const activeFilterCount = countActiveFilters(filters);
 

@@ -761,6 +761,7 @@
   z-index: 45;
   width: 20rem;
   max-width: calc(100% - 2rem);
+  margin: 0;
   padding: var(--padding-size-medium, 1rem);
   border: 1px solid var(--color-gray4-regular, #e2e6ec);
   border-radius: var(--border-radius, 8px);
@@ -834,7 +835,7 @@
   font-weight: 500;
 }
 
-.enumOption:focus-visible {
+.enumOption:has(:focus-visible) {
   outline: 2px solid var(--color-primary-regular, #2b73d2);
   outline-offset: 2px;
 }
@@ -916,6 +917,16 @@
   align-items: center;
   padding: 0.625rem var(--padding-size-medium, 1rem);
   border-bottom: 1px solid var(--color-gray4-regular, #e2e6ec);
+}
+
+.filterChipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .filterChip {

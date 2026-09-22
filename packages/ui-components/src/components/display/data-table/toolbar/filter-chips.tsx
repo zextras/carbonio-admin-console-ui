@@ -98,31 +98,32 @@ export const DataTableFilterChips = ({
   }
 
   return (
-    <div
-      className={styles.filterChips}
-      role="list"
-      aria-label={t('data_table.active_filters', 'Active filters')}
-    >
-      {chips.map((chip) => {
-        const displayLabel = chipDisplayLabel(chip, t, locale);
-        return (
-          <span key={chip.key} className={styles.filterChip} role="listitem">
-            {displayLabel}
-            <button
-              type="button"
-              className={styles.filterChipRemove}
-              aria-label={t('data_table.remove_filter', 'Remove filter: {{label}}', {
-                label: displayLabel,
-              })}
-              onClick={() => {
-                onRemoveChip(chip);
-              }}
-            >
-              ✕
-            </button>
-          </span>
-        );
-      })}
+    <div className={styles.filterChips}>
+      <ul
+        className={styles.filterChipList}
+        aria-label={t('data_table.active_filters', 'Active filters')}
+      >
+        {chips.map((chip) => {
+          const displayLabel = chipDisplayLabel(chip, t, locale);
+          return (
+            <li key={chip.key} className={styles.filterChip}>
+              {displayLabel}
+              <button
+                type="button"
+                className={styles.filterChipRemove}
+                aria-label={t('data_table.remove_filter', 'Remove filter: {{label}}', {
+                  label: displayLabel,
+                })}
+                onClick={() => {
+                  onRemoveChip(chip);
+                }}
+              >
+                ✕
+              </button>
+            </li>
+          );
+        })}
+      </ul>
       <button type="button" className={styles.clearAllFilters} onClick={onClearAll}>
         {clearAllLabel ?? t('data_table.clear_all_filters', 'Clear all')}
       </button>
