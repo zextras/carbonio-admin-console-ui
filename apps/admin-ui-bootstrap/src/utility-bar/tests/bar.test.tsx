@@ -83,8 +83,8 @@ vi.mock('../utils', () => ({
 
 import { logout, useIsAdvanced, useUserAccount, useUtilityBarStore } from '@zextras/ui-shared';
 
-import { buildDocumentationUrl } from '../build-documentation-url';
 import { ShellUtilityBar } from '../bar';
+import { buildDocumentationUrl } from '../build-documentation-url';
 import { useDocumentationBaseUrl } from '../use-documentation-base-url';
 import { useDocumentationContext } from '../use-documentation-context';
 import { useServerVersion } from '../use-server-version';
