@@ -78,7 +78,8 @@ export const DataTableConfirmDialog = ({
     }
     previouslyFocused.current = document.activeElement;
     // jsdom does not implement showModal/close; fall back to the open attribute.
-    if (typeof dialog.showModal === 'function') {
+    const hasShowModal = typeof dialog.showModal === 'function';
+    if (hasShowModal) {
       dialog.showModal();
     } else {
       dialog.setAttribute('open', '');
@@ -100,7 +101,7 @@ export const DataTableConfirmDialog = ({
     function handleKeyDown(event: KeyboardEvent): void {
       // Real browsers fire `cancel` on Escape for modal dialogs. jsdom does not,
       // so document Escape is only the fallback when showModal is unavailable.
-      if (event.key === 'Escape' && typeof dialog.showModal !== 'function') {
+      if (event.key === 'Escape' && !hasShowModal) {
         event.stopPropagation();
         onCancelRef.current();
         return;
@@ -117,7 +118,7 @@ export const DataTableConfirmDialog = ({
       dialog.removeEventListener('cancel', handleCancel);
       dialog.removeEventListener('click', handleClick);
       document.removeEventListener('keydown', handleKeyDown);
-      if (typeof dialog.close === 'function' && dialog.open) {
+      if (hasShowModal && dialog.open) {
         dialog.close();
       } else {
         dialog.removeAttribute('open');
