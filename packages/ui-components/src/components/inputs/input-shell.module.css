@@ -43,7 +43,7 @@
 }
 
 .box:not([data-disabled]):focus-within {
-  border-color: rgba(43, 115, 210, 0.25);
+  border-color: var(--color-primary-hover);
   box-shadow: 0 0 0 2px rgba(43, 115, 210, 0.25);
 }
 

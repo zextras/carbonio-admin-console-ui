@@ -193,13 +193,13 @@ describe('PlainInput', () => {
       expectColor(style.borderColor, '#225CA8');
     });
 
-    it('shows the focus ring when the input is focused', async () => {
+    it('shows the solid focus border and halo when the input is focused', async () => {
       await render(<PlainInput label="Name" />);
 
       await page.getByRole('textbox', { name: 'Name' }).click();
 
       const style = getComputedStyle(await getBox('Name'));
-      expectColor(style.borderColor, 'rgba(43, 115, 210, 0.25)');
+      expectColor(style.borderColor, '#225CA8');
       expect(style.boxShadow).toBe('rgba(43, 115, 210, 0.25) 0px 0px 0px 2px');
     });
 
