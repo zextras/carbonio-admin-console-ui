@@ -59,22 +59,17 @@ export const ShellUtilityBar = () => {
   const accountName = acct?.name ? clipTextAfterWords(acct.name) : '';
   const isAdvanced = useIsAdvanced();
   const baseUrl = useDocumentationBaseUrl();
-  const { data: versionInfo } = useServerVersion();
-  const serverVersion = versionInfo
-    ? [versionInfo.majorversion, versionInfo.minorversion, versionInfo.microversion]
-        .filter(Boolean)
-        .join('.')
-    : '';
+  const { serverVersion } = useServerVersion();
   const docContext = useDocumentationContext();
   const [t] = useTranslation();
 
-  const helpDocumentationUrl = !isAdvanced
-    ? CARBONIO_CE_ADMIN_DOCUMENTATION_URL
-    : buildDocumentationUrl(baseUrl, {
+  const helpDocumentationUrl = isAdvanced
+    ? buildDocumentationUrl(baseUrl, {
         v: serverVersion || undefined,
         m: docContext.module,
         c: docContext.context,
-      });
+      })
+    : CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
   const moduleLabel = t(docContext.moduleLabelKey, docContext.moduleLabelFallback);
   const helpTooltipLabel = t('label.documentation_for_module', 'Documentation: {{module}}', {
     module: moduleLabel,

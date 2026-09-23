@@ -135,7 +135,8 @@ import {
   useCurrentUserRights,
   useHasAllRights,
 } from './react-query/use-rights';
-import { useAllServers, useMtaServers, useServerVersion } from './react-query/use-servers';
+import { useServerVersion } from './react-query/use-server-version';
+import { useAllServers, useMtaServers } from './react-query/use-servers';
 import {
   type Feature,
   invalidateLicenseQuery,

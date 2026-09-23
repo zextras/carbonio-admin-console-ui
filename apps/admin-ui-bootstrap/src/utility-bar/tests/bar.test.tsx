@@ -94,7 +94,7 @@ describe('ShellUtilityBar', () => {
 		vi.mocked(useUserAccount).mockReturnValue({ name: 'Test User' } as never);
 		vi.mocked(useIsAdvanced).mockReturnValue(false);
 		vi.mocked(useDocumentationBaseUrl).mockReturnValue('https://docs.example.com/landing');
-		vi.mocked(useServerVersion).mockReturnValue({ data: undefined, isLoading: false } as never);
+		vi.mocked(useServerVersion).mockReturnValue({ serverVersion: '', isLoading: false });
 		vi.mocked(useDocumentationContext).mockReturnValue({
 			module: 'admin',
 			moduleLabelKey: 'label.admin',
@@ -160,10 +160,7 @@ describe('ShellUtilityBar', () => {
 
 	it('builds the doc URL from base URL, server version and module/context when advanced', () => {
 		vi.mocked(useIsAdvanced).mockReturnValue(true);
-		vi.mocked(useServerVersion).mockReturnValue({
-			data: { majorversion: '26', minorversion: '9', microversion: '0' },
-			isLoading: false,
-		} as never);
+		vi.mocked(useServerVersion).mockReturnValue({ serverVersion: '26.9.0', isLoading: false });
 		vi.mocked(useDocumentationContext).mockReturnValue({
 			module: 'domains',
 			context: 'general',

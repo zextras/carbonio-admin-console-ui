@@ -38,12 +38,7 @@ export const Dashboard = () => {
   const navigate = useNavigate();
   const accounts = useUserAccounts();
   const userName = accounts[0]?.displayName || accounts[0]?.name?.split('@')[0] || '';
-  const { data: versionInfo } = useServerVersion();
-  const serverVersion = versionInfo
-    ? [versionInfo.majorversion, versionInfo.minorversion, versionInfo.microversion]
-        .filter(Boolean)
-        .join('.')
-    : '';
+  const { serverVersion } = useServerVersion();
 
   const isAdvanced = useIsAdvanced();
 
