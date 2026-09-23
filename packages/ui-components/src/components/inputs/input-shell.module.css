@@ -28,14 +28,12 @@
   align-self: stretch;
   border-radius: 0.25rem;
   border: 1px solid #858c93;
-  background: var(--color-gray6-regular);
-  cursor: text;
+  background: #fff;
 }
 
 .box[data-disabled] {
   background: var(--color-gray5-regular);
   border-color: var(--color-gray3-regular);
-  cursor: not-allowed;
 }
 
 .box:not([data-disabled]):hover {

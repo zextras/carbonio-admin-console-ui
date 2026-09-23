@@ -136,16 +136,7 @@ describe('PlainInput', () => {
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       const box = input.parentElement as HTMLElement;
       const style = getComputedStyle(box);
-      expect(style.cursor).toBe('not-allowed');
       expectColor(style.backgroundColor, '#F5F6F8');
-    });
-
-    it('does not apply disabled styling when enabled', async () => {
-      await render(<PlainInput label="Name" />);
-
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const box = input.parentElement as HTMLElement;
-      const style = getComputedStyle(box);
       expect(style.cursor).not.toBe('not-allowed');
     });
   });
@@ -164,6 +155,13 @@ describe('PlainInput', () => {
 
       const style = getComputedStyle(await getBox('Name'));
       expectColor(style.backgroundColor, '#FFFFFF');
+    });
+
+    it('does not change the cursor over the field box', async () => {
+      await render(<PlainInput label="Name" />);
+
+      const style = getComputedStyle(await getBox('Name'));
+      expect(style.cursor).toBe('auto');
     });
 
     it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
