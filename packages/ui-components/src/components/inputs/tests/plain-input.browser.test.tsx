@@ -15,6 +15,48 @@ async function getBox(label: string): Promise<HTMLElement> {
   return input.parentElement as HTMLElement;
 }
 
+function formatRgba(r: number, g: number, b: number, a: number): string {
+  if (a >= 1) return `rgb(${r}, ${g}, ${b})`;
+  return `rgba(${r}, ${g}, ${b}, ${Math.round(a * 100) / 100})`;
+}
+
+function toRgba(color: string): string {
+  const normalized = color.trim().toLowerCase();
+  if (normalized === 'transparent') return 'rgba(0, 0, 0, 0)';
+  if (normalized.startsWith('#')) {
+    let hex = normalized.slice(1);
+    if (hex.length === 3 || hex.length === 4) {
+      hex = hex
+        .split('')
+        .map((char) => char + char)
+        .join('');
+    }
+    if (hex.length !== 6 && hex.length !== 8) {
+      throw new Error(`Unsupported hex color: ${color}`);
+    }
+    const r = Number.parseInt(hex.slice(0, 2), 16);
+    const g = Number.parseInt(hex.slice(2, 4), 16);
+    const b = Number.parseInt(hex.slice(4, 6), 16);
+    const a = hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1;
+    return formatRgba(r, g, b, a);
+  }
+  const match = /^rgba?\(([^)]+)\)$/.exec(normalized);
+  if (!match) {
+    throw new Error(`Unsupported color: ${color}`);
+  }
+  const parts = match[1].split(',').map((part) => part.trim());
+  return formatRgba(
+    Number.parseInt(parts[0], 10),
+    Number.parseInt(parts[1], 10),
+    Number.parseInt(parts[2], 10),
+    parts[3] !== undefined ? Number.parseFloat(parts[3]) : 1,
+  );
+}
+
+function expectColor(actual: string, expected: string): void {
+  expect(toRgba(actual)).toBe(toRgba(expected));
+}
+
 describe('PlainInput', () => {
   describe('label association', () => {
     it('renders a textbox whose accessible name is the label', async () => {
@@ -95,7 +137,7 @@ describe('PlainInput', () => {
       const box = input.parentElement as HTMLElement;
       const style = getComputedStyle(box);
       expect(style.cursor).toBe('not-allowed');
-      expect(style.backgroundColor).toBe('rgb(245, 246, 248)');
+      expectColor(style.backgroundColor, '#F5F6F8');
     });
 
     it('does not apply disabled styling when enabled', async () => {
@@ -117,11 +159,29 @@ describe('PlainInput', () => {
       expect(style.boxSizing).toBe('border-box');
     });
 
-    it('shows the resting border', async () => {
+    it('shows a white background at rest', async () => {
       await render(<PlainInput label="Name" />);
 
       const style = getComputedStyle(await getBox('Name'));
-      expect(style.borderColor).toBe('rgb(133, 140, 147)');
+      expectColor(style.backgroundColor, '#FFFFFF');
+    });
+
+    it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
+      await render(<PlainInput label="Name" />);
+
+      const style = getComputedStyle(await getBox('Name'));
+      expect(style.borderTopWidth).toBe('1px');
+      expect(style.borderTopStyle).toBe('solid');
+      expectColor(style.borderTopColor, '#858C93');
+      expect(style.borderRightWidth).toBe('1px');
+      expect(style.borderRightStyle).toBe('solid');
+      expectColor(style.borderRightColor, '#858C93');
+      expect(style.borderBottomWidth).toBe('1px');
+      expect(style.borderBottomStyle).toBe('solid');
+      expectColor(style.borderBottomColor, '#858C93');
+      expect(style.borderLeftWidth).toBe('1px');
+      expect(style.borderLeftStyle).toBe('solid');
+      expectColor(style.borderLeftColor, '#858C93');
     });
 
     it('changes the border color on hover', async () => {
@@ -130,7 +190,7 @@ describe('PlainInput', () => {
       await page.getByRole('textbox', { name: 'Name' }).hover();
 
       const style = getComputedStyle(await getBox('Name'));
-      expect(style.borderColor).toBe('rgb(34, 92, 168)');
+      expectColor(style.borderColor, '#225CA8');
     });
 
     it('shows the focus ring when the input is focused', async () => {
@@ -139,7 +199,7 @@ describe('PlainInput', () => {
       await page.getByRole('textbox', { name: 'Name' }).click();
 
       const style = getComputedStyle(await getBox('Name'));
-      expect(style.borderColor).toBe('rgba(43, 115, 210, 0.25)');
+      expectColor(style.borderColor, 'rgba(43, 115, 210, 0.25)');
       expect(style.boxShadow).toBe('rgba(43, 115, 210, 0.25) 0px 0px 0px 2px');
     });
 
@@ -158,7 +218,7 @@ describe('PlainInput', () => {
       const input = page.getByRole('textbox', { name: 'Name' }).element() as HTMLInputElement;
       const style = getComputedStyle(input);
       expect(style.borderStyle).toBe('none');
-      expect(style.backgroundColor).toBe('rgba(0, 0, 0, 0)');
+      expectColor(style.backgroundColor, 'transparent');
       expect(style.flexGrow).toBe('1');
     });
 
@@ -241,7 +301,7 @@ describe('PlainInput', () => {
       const slot = box.nextElementSibling;
       expect(slot?.tagName).toBe('P');
       expect(slot?.textContent).toBe('');
-      expect(getComputedStyle(slot as HTMLElement).minHeight).toBe('18px');
+      expect(getComputedStyle(slot as HTMLElement).minHeight).toBe('16px');
     });
 
     it('treats a null description as absent', async () => {
@@ -275,7 +335,7 @@ describe('PlainInput', () => {
       await render(<PlainInput label="Token" hasError />);
 
       const style = getComputedStyle(await getBox('Token'));
-      expect(style.borderColor).toBe('rgb(215, 73, 66)');
+      expectColor(style.borderColor, '#D74942');
     });
 
     it('shows the error hover border on hover', async () => {
@@ -284,7 +344,7 @@ describe('PlainInput', () => {
       await page.getByRole('textbox', { name: 'Token' }).hover();
 
       const style = getComputedStyle(await getBox('Token'));
-      expect(style.borderColor).toBe('rgb(190, 48, 40)');
+      expectColor(style.borderColor, '#BE3028');
     });
 
     it('shows the error focus ring when focused', async () => {
@@ -293,7 +353,7 @@ describe('PlainInput', () => {
       await page.getByRole('textbox', { name: 'Token' }).click();
 
       const style = getComputedStyle(await getBox('Token'));
-      expect(style.borderColor).toBe('rgba(215, 73, 66, 0.25)');
+      expectColor(style.borderColor, 'rgba(215, 73, 66, 0.25)');
       expect(style.boxShadow).toBe('rgba(215, 73, 66, 0.25) 0px 0px 0px 2px');
     });
 
@@ -301,18 +361,18 @@ describe('PlainInput', () => {
       await render(<PlainInput label="Token" hasError disabled />);
 
       const style = getComputedStyle(await getBox('Token'));
-      expect(style.borderColor).toBe('rgb(230, 233, 237)');
-      expect(style.backgroundColor).toBe('rgb(245, 246, 248)');
+      expectColor(style.borderColor, '#E6E9ED');
+      expectColor(style.backgroundColor, '#F5F6F8');
     });
 
     it('renders the description in error color when hasError, secondary otherwise', async () => {
       await render(<PlainInput label="Token" description="Invalid token" hasError />);
       const errorDescription = await page.getByText('Invalid token').element();
-      expect(getComputedStyle(errorDescription).color).toBe('rgb(215, 73, 66)');
+      expectColor(getComputedStyle(errorDescription).color, '#D74942');
 
       await render(<PlainInput label="Token" description="Helper text" />);
       const helperDescription = await page.getByText('Helper text').element();
-      expect(getComputedStyle(helperDescription).color).toBe('rgb(130, 130, 130)');
+      expectColor(getComputedStyle(helperDescription).color, '#828282');
     });
   });
 });
