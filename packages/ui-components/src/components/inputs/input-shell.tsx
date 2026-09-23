@@ -55,7 +55,9 @@ const InputShell = ({
 				)}
 			</div>
 			<p className={styles.description} id={descriptionId} data-error={hasError || undefined}>
-				{hasError && <ds-icon icon="AlertCircleOutline" size="0.75rem" aria-hidden="true" />}
+				{hasError && description !== '' && (
+					<ds-icon icon="AlertCircleOutline" size="0.75rem" color="var(--color-error-hover)" aria-hidden="true" />
+				)}
 				{description}
 			</p>
 		</div>
