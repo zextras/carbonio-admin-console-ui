@@ -109,6 +109,14 @@ describe('PlainInput', () => {
   });
 
   describe('visual states', () => {
+    it('renders the field box at the 2.5rem total height (border-box)', async () => {
+      await render(<PlainInput label="Name" />);
+
+      const style = getComputedStyle(await getBox('Name'));
+      expect(style.height).toBe('40px');
+      expect(style.boxSizing).toBe('border-box');
+    });
+
     it('shows the resting border', async () => {
       await render(<PlainInput label="Name" />);
 
@@ -192,6 +200,119 @@ describe('PlainInput', () => {
 
       expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
       expect(inputRef.current?.tagName).toBe('INPUT');
+    });
+  });
+
+  describe('error and description support', () => {
+    it('renders the description below the input and links it via aria-describedby', async () => {
+      await render(<PlainInput label="Token" description="Invalid token" />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      expect(describedBy).toBeTruthy();
+      const description = document.getElementById(describedBy as string);
+      expect(description?.textContent).toBe('Invalid token');
+      expect(description?.tagName).toBe('P');
+    });
+
+    it('merges a caller-provided aria-describedby with the description id', async () => {
+      await render(<PlainInput label="Token" description="Invalid token" aria-describedby="external-hint" />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      expect(ids).toContain('external-hint');
+      expect(document.getElementById(ids.find((id) => id !== 'external-hint') as string)?.textContent).toBe(
+        'Invalid token',
+      );
+    });
+
+    it('does not set aria-describedby when no description is provided', async () => {
+      await render(<PlainInput label="Token" />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .not.toHaveAttribute('aria-describedby');
+    });
+
+    it('always reserves the description slot even without a description', async () => {
+      await render(<PlainInput label="Token" />);
+
+      const box = await getBox('Token');
+      const slot = box.nextElementSibling;
+      expect(slot?.tagName).toBe('P');
+      expect(slot?.textContent).toBe('');
+      expect(getComputedStyle(slot as HTMLElement).minHeight).toBe('18px');
+    });
+
+    it('treats a null description as absent', async () => {
+      await render(<PlainInput label="Token" description={null} />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .not.toHaveAttribute('aria-describedby');
+
+      const box = await getBox('Token');
+      expect(box.nextElementSibling?.textContent).toBe('');
+    });
+
+    it('marks the input as invalid when hasError is true', async () => {
+      await render(<PlainInput label="Token" hasError />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .toHaveAttribute('aria-invalid', 'true');
+    });
+
+    it('does not mark the input as invalid without hasError', async () => {
+      await render(<PlainInput label="Token" />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .not.toHaveAttribute('aria-invalid');
+    });
+
+    it('shows the error border at rest', async () => {
+      await render(<PlainInput label="Token" hasError />);
+
+      const style = getComputedStyle(await getBox('Token'));
+      expect(style.borderColor).toBe('rgb(215, 73, 66)');
+    });
+
+    it('shows the error hover border on hover', async () => {
+      await render(<PlainInput label="Token" hasError />);
+
+      await page.getByRole('textbox', { name: 'Token' }).hover();
+
+      const style = getComputedStyle(await getBox('Token'));
+      expect(style.borderColor).toBe('rgb(190, 48, 40)');
+    });
+
+    it('shows the error focus ring when focused', async () => {
+      await render(<PlainInput label="Token" hasError />);
+
+      await page.getByRole('textbox', { name: 'Token' }).click();
+
+      const style = getComputedStyle(await getBox('Token'));
+      expect(style.borderColor).toBe('rgba(215, 73, 66, 0.25)');
+      expect(style.boxShadow).toBe('rgba(215, 73, 66, 0.25) 0px 0px 0px 2px');
+    });
+
+    it('keeps the disabled styling when both disabled and hasError are set', async () => {
+      await render(<PlainInput label="Token" hasError disabled />);
+
+      const style = getComputedStyle(await getBox('Token'));
+      expect(style.borderColor).toBe('rgb(230, 233, 237)');
+      expect(style.backgroundColor).toBe('rgb(245, 246, 248)');
+    });
+
+    it('renders the description in error color when hasError, secondary otherwise', async () => {
+      await render(<PlainInput label="Token" description="Invalid token" hasError />);
+      const errorDescription = await page.getByText('Invalid token').element();
+      expect(getComputedStyle(errorDescription).color).toBe('rgb(215, 73, 66)');
+
+      await render(<PlainInput label="Token" description="Helper text" />);
+      const helperDescription = await page.getByText('Helper text').element();
+      expect(getComputedStyle(helperDescription).color).toBe('rgb(130, 130, 130)');
     });
   });
 });
