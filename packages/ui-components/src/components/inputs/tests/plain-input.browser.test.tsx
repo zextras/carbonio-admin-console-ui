@@ -372,5 +372,39 @@ describe('PlainInput', () => {
       const helperDescription = await page.getByText('Helper text').element();
       expectColor(getComputedStyle(helperDescription).color, '#828282');
     });
+
+    it('renders the alert icon inside the error description', async () => {
+      await render(<PlainInput label="Token" description="Invalid token" hasError />);
+
+      await expect.element(page.getByTestId('icon: AlertCircleOutline')).toBeVisible();
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      const description = document.getElementById(describedBy as string);
+      const icon = description?.querySelector('ds-icon');
+      expect(icon?.getAttribute('icon')).toBe('AlertCircleOutline');
+      expect(icon?.getAttribute('aria-hidden')).toBe('true');
+    });
+
+    it('does not render the alert icon without hasError', async () => {
+      await render(<PlainInput label="Token" description="Helper text" />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      const description = document.getElementById(describedBy as string);
+      expect(description?.querySelector('ds-icon')).toBeNull();
+    });
+
+    it('styles the error description as an icon row', async () => {
+      await render(<PlainInput label="Token" description="Invalid token" hasError />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      const description = document.getElementById(describedBy as string) as HTMLElement;
+      const style = getComputedStyle(description);
+      expect(style.display).toBe('flex');
+      expect(style.height).toBe('19px');
+      expect(style.alignItems).toBe('center');
+    });
   });
 });

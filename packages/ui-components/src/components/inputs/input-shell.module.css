@@ -67,6 +67,12 @@
 }
 
 .description[data-error] {
+  display: flex;
+  height: 1.1875rem;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  align-self: stretch;
   color: var(--color-error-regular);
 }
 

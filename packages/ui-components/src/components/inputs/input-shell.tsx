@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../web-components/ds-icon';
+
 import type { ReactNode } from 'react';
 
 import styles from './input-shell.module.css';
@@ -40,6 +42,7 @@ const InputShell = ({
 				{children}
 			</div>
 			<p className={styles.description} id={descriptionId} data-error={hasError || undefined}>
+				{hasError && <ds-icon icon="AlertCircleOutline" size="0.75rem" aria-hidden="true" />}
 				{description}
 			</p>
 		</div>
