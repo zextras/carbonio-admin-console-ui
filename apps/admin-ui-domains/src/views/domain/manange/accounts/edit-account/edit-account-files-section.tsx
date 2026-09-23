@@ -92,7 +92,7 @@ export function EditAccountFilesSection() {
         crossAlignment="center"
       >
         <ds-text size="small" color="gray0" weight="bold" as="h2">
-          {t('files_sharing.title', 'File Sharing')}
+          {t('label.files', 'Files')}
         </ds-text>
         <Row mainAlignment="flex-end">
           <Padding right="small">

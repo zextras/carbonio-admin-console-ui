@@ -45,7 +45,7 @@ function GlobalFiles() {
     >
       <Row mainAlignment="flex-start" width="100%" padding={{ all: 'large' }}>
         <ds-text as="h1" weight="bold">
-          {t('files_sharing.title', 'File Sharing')}
+          {t('label.files', 'Files')}
         </ds-text>
       </Row>
       <ds-divider></ds-divider>

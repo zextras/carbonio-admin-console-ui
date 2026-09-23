@@ -58,7 +58,7 @@ export function FilesSharingForm({ zimbraId, initialOverride, baseline }: FilesS
 
   return (
     <FormPageLayout
-      title={t('files_sharing.title', 'File Sharing')}
+      title={t('label.files', 'Files')}
       onSave={handleSave}
       onCancel={() => state.reset()}
       unsavedChanges={state.isDirty}
