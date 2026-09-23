@@ -14,7 +14,7 @@ type PlainInputProps = React.ComponentPropsWithRef<'input'> & {
 	label: string;
 	/** Renders the description below the field and links it via aria-describedby. `null` is treated as absent. */
 	description?: string | null;
-	/** Marks the field as invalid (aria-invalid) and applies the error styling. */
+	/** Marks the field as invalid (aria-invalid) and applies the error styling. Pair with `description` so the invalid state carries a visible and announced explanation. */
 	hasError?: boolean;
 	/** Renders the InfoOutline icon at the right edge of the field box. */
 	infoIcon?: boolean;

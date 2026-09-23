@@ -374,6 +374,17 @@ describe('PlainInput', () => {
       expect(box.nextElementSibling?.textContent).toBe('');
     });
 
+    it('does not render the alert icon when hasError has no description text', async () => {
+      await render(<PlainInput label="Token" hasError />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const box = input.parentElement as HTMLElement;
+      const slot = box.nextElementSibling;
+      expect(slot?.tagName).toBe('P');
+      expect(slot?.textContent).toBe('');
+      expect(slot?.querySelector('ds-icon')).toBeNull();
+    });
+
     it('marks the input as invalid when hasError is true', async () => {
       await render(<PlainInput label="Token" hasError />);
 
