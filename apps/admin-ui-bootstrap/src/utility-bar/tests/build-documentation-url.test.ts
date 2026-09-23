@@ -7,6 +7,8 @@ import { describe, expect, it } from 'vitest';
 
 import { buildDocumentationUrl } from '../build-documentation-url';
 
+const DEFAULT_URL_WITH_MODULE = 'https://docs.zextras.com/help-carbonio/?m=Domain';
+
 describe('buildDocumentationUrl', () => {
 	it('appends v, m and c as query params when all are provided', () => {
 		const url = buildDocumentationUrl('https://docs.zextras.com/landing', {
@@ -47,8 +49,23 @@ describe('buildDocumentationUrl', () => {
 		expect(url).toBe('https://docs.zextras.com/landing/?foo=bar&m=Domain');
 	});
 
-	it('falls back to the base URL unchanged when it is not a valid absolute URL', () => {
+	it('should fall back to the default documentation URL when the base URL is not a valid absolute URL', () => {
 		const url = buildDocumentationUrl('not-a-url', { m: 'Domain' });
-		expect(url).toBe('not-a-url');
+		expect(url).toBe(DEFAULT_URL_WITH_MODULE);
+	});
+
+	it.each([
+		['javascript:alert(1)'],
+		['data:text/html,<script>alert(1)</script>'],
+		['file:///etc/passwd'],
+		['https://docs.zextras.com\\@evil.com'],
+	])('should fall back to the default documentation URL when the base URL is unsafe (%s)', (baseUrl) => {
+		const url = buildDocumentationUrl(baseUrl, { m: 'Domain' });
+		expect(url).toBe(DEFAULT_URL_WITH_MODULE);
+	});
+
+	it('should accept an http base URL', () => {
+		const url = buildDocumentationUrl('http://docs.example.com/landing', { m: 'Domain' });
+		expect(url).toBe('http://docs.example.com/landing/?m=Domain');
 	});
 });

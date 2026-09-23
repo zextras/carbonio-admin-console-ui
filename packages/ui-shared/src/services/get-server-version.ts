@@ -18,6 +18,10 @@ export const getServerVersion = async (): Promise<GetServerVersionResponse> => {
       (text) => ({ type: 'success', version: text.trim() }) satisfies GetServerVersionResponse,
     )
     .catch(
-      (error) => ({ type: 'error', error: error.message }) satisfies GetServerVersionResponse,
+      (error) =>
+        ({
+          type: 'error',
+          error: error instanceof Error ? error.message : String(error),
+        }) satisfies GetServerVersionResponse,
     );
 };
