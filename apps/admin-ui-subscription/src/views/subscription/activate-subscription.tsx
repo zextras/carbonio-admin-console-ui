@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Input } from '@zextras/ui-components';
+import { Button, PlainInput } from '@zextras/ui-components';
 import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
 import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -14,6 +14,7 @@ import styles from './activate-subscription.module.css';
 import { ActivationError } from './parts/activation/activation-error';
 import { ActivationProgress } from './parts/activation/activation-progress';
 import { ActivationSuccess } from './parts/activation/activation-success';
+import { handleTrimmedPaste } from './trim-paste';
 
 type Module = {
   value: string;
@@ -62,6 +63,11 @@ export const ActivateSubscription = (): React.JSX.Element => {
 
   const handleSuccessComplete = (): void => {};
 
+  const handleTokenChange = (value: string): void => {
+    setLicenseKey(value);
+    if (validationError !== null) setValidationError(null);
+  };
+
   return (
     <div className={styles.outer}>
       <div className={styles.header}>
@@ -70,21 +76,19 @@ export const ActivateSubscription = (): React.JSX.Element => {
         </ds-text>
       </div>
       <div className={styles.content}>
-        <ds-text as="label" weight="bold">
-          {t('subscription.activate.activation_token', 'Activation token')}
-        </ds-text>
         <div className={styles.inputRow}>
           <div className={styles.inputField}>
-            <Input
+            <PlainInput
               label={t('subscription.activate.insert_token', 'Insert here the activation token')}
-              trimOnPaste
-              backgroundColor="gray5"
               hasError={validationError !== null}
+              description={validationError}
               value={licenseKey}
-              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                setLicenseKey(e.target.value);
-                if (validationError !== null) setValidationError(null);
-              }}
+              onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                handleTokenChange(e.target.value)
+              }
+              onPaste={(e: React.ClipboardEvent<HTMLInputElement>): void =>
+                handleTrimmedPaste(e, handleTokenChange)
+              }
               onBlur={(): void => {
                 if (licenseKey.length > 0) validate(licenseKey);
               }}
@@ -92,11 +96,6 @@ export const ActivateSubscription = (): React.JSX.Element => {
                 if (e.key === 'Enter') activateLicence();
               }}
             />
-            {validationError !== null && (
-              <ds-text as="span" color="error" size="small" className={styles.errorMessage}>
-                {validationError}
-              </ds-text>
-            )}
           </div>
           <div className={styles.buttonWrap}>
             <Button
