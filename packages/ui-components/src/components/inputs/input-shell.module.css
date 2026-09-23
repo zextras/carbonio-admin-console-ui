@@ -17,6 +17,11 @@
   font-weight: var(--font-weight-medium);
 }
 
+.requiredMark {
+  color: var(--color-error-hover);
+  margin-left: 0.125rem;
+}
+
 .box {
   display: flex;
   box-sizing: border-box;
@@ -29,6 +34,10 @@
   border-radius: 0.25rem;
   border: 1px solid #858c93;
   background: #fff;
+}
+
+.box ds-icon {
+  flex-shrink: 0;
 }
 
 .box[data-disabled] {

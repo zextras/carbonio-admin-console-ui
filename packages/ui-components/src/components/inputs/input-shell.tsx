@@ -16,7 +16,9 @@ type InputShellProps = {
 	description: string;
 	descriptionId: string;
 	disabled?: boolean;
+	required?: boolean;
 	hasError?: boolean;
+	infoIcon?: boolean;
 	children: ReactNode;
 };
 
@@ -26,13 +28,16 @@ const InputShell = ({
 	description,
 	descriptionId,
 	disabled = false,
+	required = false,
 	hasError = false,
+	infoIcon = false,
 	children,
 }: InputShellProps) => {
 	return (
 		<div className={styles.root}>
 			<label className={styles.label} htmlFor={id}>
 				{label}
+				{required && <span className={styles.requiredMark} aria-hidden="true">*</span>}
 			</label>
 			<div
 				className={styles.box}
@@ -40,6 +45,14 @@ const InputShell = ({
 				data-error={hasError || undefined}
 			>
 				{children}
+				{infoIcon && (
+					<ds-icon
+						icon="InfoOutline"
+						size="0.83331rem"
+						color="var(--color-gray1-focus)"
+						aria-hidden="true"
+					/>
+				)}
 			</div>
 			<p className={styles.description} id={descriptionId} data-error={hasError || undefined}>
 				{hasError && <ds-icon icon="AlertCircleOutline" size="0.75rem" aria-hidden="true" />}

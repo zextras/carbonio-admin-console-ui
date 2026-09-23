@@ -79,6 +79,31 @@ describe('PlainInput', () => {
       await expect.element(input).toHaveAttribute('id', 'custom-id');
       await expect.element(page.getByText('Display Name')).toHaveAttribute('for', 'custom-id');
     });
+
+    it('renders a red hidden asterisk after the label when required', async () => {
+      await render(<PlainInput label="Name" required />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const mark = label.querySelector('span');
+      expect(mark?.textContent).toBe('*');
+      expect(mark?.getAttribute('aria-hidden')).toBe('true');
+      expectColor(getComputedStyle(mark as HTMLElement).color, '#BE3028');
+    });
+
+    it('keeps the accessible name free of the required asterisk', async () => {
+      await render(<PlainInput label="Name" required />);
+
+      await expect.element(page.getByRole('textbox', { name: 'Name' })).toBeVisible();
+    });
+
+    it('does not render an asterisk when not required', async () => {
+      await render(<PlainInput label="Name" />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      expect(label.querySelector('span')).toBeNull();
+    });
   });
 
   describe('value handling', () => {
@@ -261,6 +286,42 @@ describe('PlainInput', () => {
     });
   });
 
+  describe('info icon', () => {
+    it('renders the InfoOutline icon inside the field box when infoIcon is true', async () => {
+      await render(<PlainInput label="Name" infoIcon />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const box = input.parentElement as HTMLElement;
+      const host = input.nextElementSibling;
+      expect(host?.tagName).toBe('DS-ICON');
+      expect(host?.getAttribute('icon')).toBe('InfoOutline');
+      expect(host?.getAttribute('aria-hidden')).toBe('true');
+      expect(host?.shadowRoot?.querySelector('svg')).not.toBeNull();
+      expect(box.contains(host as Node)).toBe(true);
+    });
+
+    it('sizes and colors the icon per spec', async () => {
+      await render(<PlainInput label="Name" infoIcon />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const host = input.nextElementSibling as HTMLElement;
+      const svg = host.shadowRoot?.querySelector('svg') as SVGSVGElement | null;
+      expect(svg).not.toBeNull();
+      const svgStyle = getComputedStyle(svg as Element);
+      expect(Number.parseFloat(svgStyle.width)).toBeCloseTo(0.83331 * 16, 1);
+      expect(Number.parseFloat(svgStyle.height)).toBeCloseTo(0.83331 * 16, 1);
+      expectColor(svgStyle.color, '#696969');
+    });
+
+    it('does not render any icon inside the box without infoIcon', async () => {
+      await render(<PlainInput label="Name" />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const box = input.parentElement as HTMLElement;
+      expect(box.querySelector('ds-icon')).toBeNull();
+    });
+  });
+
   describe('error and description support', () => {
     it('renders the description below the input and links it via aria-describedby', async () => {
       await render(<PlainInput label="Token" description="Invalid token" />);
@@ -376,14 +437,13 @@ describe('PlainInput', () => {
     it('renders the alert icon inside the error description', async () => {
       await render(<PlainInput label="Token" description="Invalid token" hasError />);
 
-      await expect.element(page.getByTestId('icon: AlertCircleOutline')).toBeVisible();
-
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const describedBy = input.getAttribute('aria-describedby');
       const description = document.getElementById(describedBy as string);
       const icon = description?.querySelector('ds-icon');
       expect(icon?.getAttribute('icon')).toBe('AlertCircleOutline');
       expect(icon?.getAttribute('aria-hidden')).toBe('true');
+      expect(icon?.shadowRoot?.querySelector('svg')).not.toBeNull();
     });
 
     it('does not render the alert icon without hasError', async () => {

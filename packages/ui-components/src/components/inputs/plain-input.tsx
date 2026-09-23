@@ -16,15 +16,19 @@ type PlainInputProps = React.ComponentPropsWithRef<'input'> & {
 	description?: string | null;
 	/** Marks the field as invalid (aria-invalid) and applies the error styling. */
 	hasError?: boolean;
+	/** Renders the InfoOutline icon at the right edge of the field box. */
+	infoIcon?: boolean;
 };
 
 const PlainInput = ({
 	label,
 	id,
 	disabled,
+	required,
 	className,
 	hasError = false,
 	description,
+	infoIcon = false,
 	'aria-describedby': callerDescribedBy,
 	...rest
 }: PlainInputProps) => {
@@ -42,13 +46,16 @@ const PlainInput = ({
 			id={inputId}
 			label={label}
 			disabled={disabled}
+			required={required}
 			hasError={hasError}
 			description={resolvedDescription}
 			descriptionId={descriptionId}
+			infoIcon={infoIcon}
 		>
 			<input
 				id={inputId}
 				disabled={disabled}
+				required={required}
 				className={inputClassName}
 				aria-invalid={hasError || undefined}
 				aria-describedby={describedBy || undefined}
