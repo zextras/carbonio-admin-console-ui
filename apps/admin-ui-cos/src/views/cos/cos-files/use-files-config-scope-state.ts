@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 import { deleteFilesConfigOverride } from '../../../services/delete-files-config';
 import { FilesConfigScope } from '../../../services/get-files-config-raw';
@@ -45,6 +45,9 @@ export function useFilesConfigScopeState({
 }: Params): UseFilesConfigScopeState {
   const invalidate = useInvalidateFilesConfig();
   const [override, setOverride] = useState<string | null | undefined>(undefined);
+  // Guards against a double submit: FormPageLayout's Save button both fires onClick and submits
+  // its <form>, so onSave is invoked twice per click. Without this, save() would issue two PUTs.
+  const savingRef = useRef(false);
 
   const effectiveOverride =
     override === undefined ? initialOverride : override === null ? undefined : override;
@@ -65,18 +68,23 @@ export function useFilesConfigScopeState({
   }
 
   async function save(): Promise<SaveResult> {
-    if (!id || !isDirty) {
+    if (!id || !isDirty || savingRef.current) {
       return { type: 'noop' };
     }
-    const res =
-      effectiveOverride === undefined
-        ? await deleteFilesConfigOverride(scope, id, key)
-        : await setFilesConfigOverride(scope, id, key, effectiveOverride);
-    if (res.type === 'success') {
-      invalidate(scope, id);
-      setOverride(undefined);
+    savingRef.current = true;
+    try {
+      const res =
+        effectiveOverride === undefined
+          ? await deleteFilesConfigOverride(scope, id, key)
+          : await setFilesConfigOverride(scope, id, key, effectiveOverride);
+      if (res.type === 'success') {
+        invalidate(scope, id);
+        setOverride(undefined);
+      }
+      return res;
+    } finally {
+      savingRef.current = false;
     }
-    return res;
   }
 
   return { value: effectiveOverride, hasOverride, isDirty, setValue, clear, reset, save };

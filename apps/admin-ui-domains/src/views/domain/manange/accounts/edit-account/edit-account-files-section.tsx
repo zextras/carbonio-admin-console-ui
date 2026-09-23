@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, Row, useSnackbar } from '@zextras/ui-components';
+import { Button, Padding, Row, useSnackbar } from '@zextras/ui-components';
 import { useContext } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -81,12 +81,10 @@ export function EditAccountFilesSection() {
   }
 
   return (
-    <Container
-      mainAlignment="flex-start"
-      crossAlignment="flex-start"
-      padding={{ left: 'large', right: 'extralarge', bottom: 'large' }}
-      style={{ overflow: 'auto' }}
-    >
+    <>
+      <Row width="100%" padding={{ top: 'medium' }}>
+        <ds-divider></ds-divider>
+      </Row>
       <Row
         padding={{ top: 'large' }}
         width="100%"
@@ -122,6 +120,6 @@ export function EditAccountFilesSection() {
           onClear={() => state.clear()}
         />
       </Row>
-    </Container>
+    </>
   );
 }

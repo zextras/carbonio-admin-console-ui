@@ -22,6 +22,7 @@ import { Features } from '../../../../cos/features';
 import { isValidEmail } from '../../../../utility/utils';
 import { AccountContext } from '../account-context';
 import { AccountType } from '../account-types/account-types';
+import { EditAccountFilesSection } from './edit-account-files-section';
 
 const EditAccountConfigurationSection: FC = () => {
   const context = useContext(AccountContext);
@@ -287,6 +288,7 @@ const EditAccountConfigurationSection: FC = () => {
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}
         />
+        <EditAccountFilesSection />
       </Row>
     </Container>
   );
