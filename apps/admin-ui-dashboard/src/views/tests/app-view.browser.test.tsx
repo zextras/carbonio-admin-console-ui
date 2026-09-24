@@ -122,12 +122,10 @@ describe('AppView', () => {
     await expect.element(page.getByRole('img', { name: 'Distribution List' })).toBeVisible();
 
     // Domain labels (at least 1)
-    const domainsElements = page.getByText(/Domains/i).all();
-    expect(domainsElements.length).toBeGreaterThanOrEqual(1);
+    await expect.poll(() => page.getByText(/Domains/i).elements().length).toBeGreaterThanOrEqual(1);
 
     // Open labels (at least 2)
-    const openElements = page.getByText(/^Open$/i).all();
-    expect(openElements.length).toBeGreaterThanOrEqual(2);
+    await expect.poll(() => page.getByText(/^Open$/i).elements().length).toBeGreaterThanOrEqual(2);
   });
 
   async function setupAdvancedTest() {
@@ -201,6 +199,7 @@ describe('AppView', () => {
       await setupAppViewTest(undefined, <LocationDisplay />);
 
       await expect.element(page.getByText(/Quick Access to example\.com/i)).toBeVisible();
+      await expect.element(page.getByText('Open').nth(1)).toBeVisible();
 
       await page.getByText('Open').nth(1).click();
 
