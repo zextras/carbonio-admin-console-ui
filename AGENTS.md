@@ -218,6 +218,63 @@ Existing call sites (~3,300) are migrated incrementally. When modifying a file t
   4. For icon-only buttons without `aria-label`: locate the rendered icon via its visible attribute (e.g. `page.getByTestId('icon: CloseOutline')`)
 - **`page.locator` does not exist** in Vitest browser mode — the `page` object from `vitest/browser` is NOT a Playwright Page. Use `page.getByRole`, `page.getByText`, `page.getByTestId`, or `userEvent` for all interactions instead.
 
+#### Avoiding Flaky Tests
+
+Rules distilled from real CI flakes in this repo — apply them when writing or reviewing browser tests.
+
+**1. Never read an intercepted request right after an action — poll for it.**
+A click doesn't guarantee the request has reached MSW. `await createBrowserAPIInterceptor(...)`
+resolves after *handler registration*, not after a request arrives.
+
+```tsx
+// Don't — races under CI load: getLastRequest() can be undefined
+await page.getByRole('button', { name: /^update$/i }).click();
+const body = await (await putInterceptor).getLastRequest().json();
+
+// Do
+const interceptor = await createBrowserAPIInterceptor('put', SAML_URL, () => HttpResponse.json({}));
+await page.getByRole('button', { name: /^update$/i }).click();
+await expect.poll(() => interceptor.getLastRequest()).toBeTruthy();
+const body = await interceptor.getLastRequest().json();
+```
+
+Same for counts: `await expect.poll(() => interceptor.getCalledTimes()).toBe(1);`.
+Reading after an awaited post-response UI state (success snackbar visible, save button gone)
+is already ordered and fine.
+
+**2. Register handlers for every request the rendered view makes.**
+Unhandled requests passthrough to the dev server → empty body → query errors. Per-test
+`worker.use()` handlers are wiped by each file's `afterEach(resetMockWorker())`, and late
+queries (retry timers, late-`enabled` hooks like `useLastLoginTimestamp`) fire in those gaps.
+The shared worker ships fallback defaults (`GetAccount`, `GetInfo`, `GetCos`,
+`SearchDirectory`, `/services/catalog/services`) in
+`packages/test-utils/src/browser/worker/index.ts` — extend that list rather than letting a
+new API leak. `Empty response from XRequest` in test output = a request went unhandled.
+
+**3. Don't let queries outlive the test.**
+Query clients from `getQueryClient()` are cleared in the root `afterAll`, cancelling pending
+retries — don't create long-lived manual clients in browser tests. Hooks with custom
+`retry`/`gcTime` keep retrying after teardown; their rejections surface as unhandled errors
+attributed to whichever file runs *next* — a flake "in" file X often originates in an
+earlier file.
+
+**4. Never import app modules from setup files.**
+`vitest-browser-setup.ts` importing anything that transitively pulls
+`@zextras/ui-shared`/`@zextras/ui-components` pre-materializes those modules and silently
+breaks `vi.mock('@zextras/ui-shared')` in test files ("X is not a spy or a call to a spy").
+Setup files may only import dependency-free modules (e.g. `query-client-registry.ts`).
+
+**5. Mock heavy async third-party widgets the test doesn't assert on.**
+Real TinyMCE loads CDN assets and async-renders after teardown → unhandled rejections. If
+the test doesn't interact with the editor, mock the wrapping component at module level:
+
+```tsx
+function MockComposer() {
+  return <div>EDITOR:composer</div>;
+}
+vi.mock('../../composer/composer', () => ({ Composer: MockComposer }));
+```
+
 ### State Management
 - Global state: Zustand stores in `store/` directories
 - Server state: TanStack React Query with proper query keys

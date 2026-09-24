@@ -89,15 +89,13 @@ describe('DashboardServerList', () => {
   it('renders one version text per server in non-advanced mode', async () => {
     await setupServerListTest({ advanced: false });
 
-    const versionTexts = page.getByText(SERVER_VERSION).all();
-    expect(versionTexts).toHaveLength(2);
+    await expect.poll(() => page.getByText(SERVER_VERSION).elements().length).toBe(2);
   });
 
   it('renders two version texts per server in advanced mode', async () => {
     await setupServerListTest({ advanced: true });
 
-    const versionTexts = page.getByText(SERVER_VERSION).all();
-    expect(versionTexts).toHaveLength(4);
+    await expect.poll(() => page.getByText(SERVER_VERSION).elements().length).toBe(4);
   });
 
   it('renders table column headers', async () => {

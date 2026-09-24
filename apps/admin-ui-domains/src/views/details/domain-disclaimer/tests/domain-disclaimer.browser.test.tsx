@@ -11,10 +11,16 @@ import {
   worker,
 } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { DomainDisclaimer } from '../../domain-disclaimer';
+
+function MockComposer() {
+  return <div>EDITOR:composer</div>;
+}
+
+vi.mock('../../../../composer/composer', () => ({ Composer: MockComposer }));
 
 const DOMAIN_ID = 'test-domain-id-123';
 const DOMAIN_NAME = 'example.com';

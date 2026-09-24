@@ -54,6 +54,7 @@ export const CONFIG = 'config';
 export const CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE = 'carbonioAdminDocumentationUrl';
 export const CARBONIO_CE_ADMIN_DOCUMENTATION_URL =
 	'https://docs.zextras.com/carbonio-ce/html/index.html';
+export const DEFAULT_ADVANCED_DOCUMENTATION_URL = 'https://docs.zextras.com/help-carbonio?';
 export const CONTENT = '_content';
 export const TRUE = 'TRUE';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
