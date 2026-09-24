@@ -50,6 +50,7 @@ const defaultHandlers = [
 	soapFallbackHandler('GetInfo'),
 	soapFallbackHandler('GetCos'),
 	soapFallbackHandler('SearchDirectory'),
+	http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
 ];
 
 export const worker = setupWorker(...defaultHandlers);
