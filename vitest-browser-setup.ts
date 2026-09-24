@@ -21,6 +21,7 @@ import {
   worker,
 } from './packages/test-utils/src/browser/worker';
 import { suppressLitDevModeWarning } from './packages/test-utils/src/browser/utils/lit';
+import { clearQueryClients } from './packages/test-utils/src/browser/utils/query-client-registry';
 
 const zextrasContentResponse = (payload: unknown): HttpResponse =>
 		HttpResponse.json({
@@ -127,6 +128,7 @@ beforeEach(() => {
 });
 
 afterAll(() => {
+  clearQueryClients();
   stopMockWorker();
   vi.clearAllMocks();
 });
