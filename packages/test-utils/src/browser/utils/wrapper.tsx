@@ -42,8 +42,10 @@ export type WrapperProps = {
   withDomainIdRoute?: boolean;
 };
 
+import { registerQueryClient } from './query-client-registry';
+
 export const getQueryClient = (): QueryClient => {
-  return new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
@@ -55,6 +57,8 @@ export const getQueryClient = (): QueryClient => {
       },
     },
   });
+  registerQueryClient(queryClient);
+  return queryClient;
 };
 
 export const I18NextTestProvider = ({

@@ -49,6 +49,7 @@ const defaultHandlers = [
 	soapFallbackHandler('GetAccount'),
 	soapFallbackHandler('GetInfo'),
 	soapFallbackHandler('GetCos'),
+	soapFallbackHandler('SearchDirectory'),
 ];
 
 export const worker = setupWorker(...defaultHandlers);
