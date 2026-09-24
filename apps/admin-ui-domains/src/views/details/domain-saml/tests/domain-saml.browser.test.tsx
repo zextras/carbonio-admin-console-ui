@@ -199,7 +199,7 @@ describe('DomainSaml', () => {
 
   describe('Attribute operations', () => {
     it('should PUT a new attribute when ADD is clicked', async () => {
-      const putInterceptor = createBrowserAPIInterceptor('put', SAML_URL, () =>
+      const putInterceptor = await createBrowserAPIInterceptor('put', SAML_URL, () =>
         HttpResponse.json({}),
       );
       await renderDomainSaml(queryClient);
@@ -214,7 +214,8 @@ describe('DomainSaml', () => {
       );
       await page.getByRole('button', { name: /^add$/i }).click();
 
-      const body = await (await putInterceptor).getLastRequest().json();
+      await expect.poll(() => putInterceptor.getLastRequest()).toBeTruthy();
+      const body = await putInterceptor.getLastRequest().json();
       expect(body).toEqual({ newAttr: 'newValue' });
       await expect.element(page.getByText('You have added the newAttr attribute')).toBeVisible();
     });
@@ -233,7 +234,7 @@ describe('DomainSaml', () => {
     });
 
     it('should PUT the selected attribute when UPDATE is clicked', async () => {
-      const putInterceptor = createBrowserAPIInterceptor('put', SAML_URL, () =>
+      const putInterceptor = await createBrowserAPIInterceptor('put', SAML_URL, () =>
         HttpResponse.json({}),
       );
       await renderDomainSaml(queryClient);
@@ -245,13 +246,14 @@ describe('DomainSaml', () => {
       );
       await page.getByRole('button', { name: /^update$/i }).click();
 
-      const body = await (await putInterceptor).getLastRequest().json();
+      await expect.poll(() => putInterceptor.getLastRequest()).toBeTruthy();
+      const body = await putInterceptor.getLastRequest().json();
       expect(body).toEqual({ samlKey: 'updatedValue' });
       await expect.element(page.getByText('You have updated the samlKey attribute')).toBeVisible();
     });
 
     it('should DELETE the selected attribute when Remove is clicked', async () => {
-      const deleteInterceptor = createBrowserAPIInterceptor('delete', SAML_URL, () =>
+      const deleteInterceptor = await createBrowserAPIInterceptor('delete', SAML_URL, () =>
         HttpResponse.json({}),
       );
       await renderDomainSaml(queryClient);
@@ -259,7 +261,8 @@ describe('DomainSaml', () => {
       await page.getByRole('button', { name: 'samlKey' }).click();
       await page.getByRole('button', { name: /^remove$/i }).click();
 
-      const requestUrl = new URL((await deleteInterceptor).getLastRequest().url);
+      await expect.poll(() => deleteInterceptor.getLastRequest()).toBeTruthy();
+      const requestUrl = new URL(deleteInterceptor.getLastRequest().url);
       expect(requestUrl.searchParams.get('keys')).toBe('samlKey');
       await expect.element(page.getByText('You have removed the samlKey attribute')).toBeVisible();
     });
@@ -267,14 +270,15 @@ describe('DomainSaml', () => {
 
   describe('Delete configuration', () => {
     it('should DELETE the whole config without keys and show a success snackbar', async () => {
-      const deleteInterceptor = createBrowserAPIInterceptor('delete', SAML_URL, () =>
+      const deleteInterceptor = await createBrowserAPIInterceptor('delete', SAML_URL, () =>
         HttpResponse.json({}),
       );
       await renderDomainSaml(queryClient);
 
       await page.getByRole('button', { name: /delete configuration/i }).click();
 
-      const requestUrl = new URL((await deleteInterceptor).getLastRequest().url);
+      await expect.poll(() => deleteInterceptor.getLastRequest()).toBeTruthy();
+      const requestUrl = new URL(deleteInterceptor.getLastRequest().url);
       expect(requestUrl.searchParams.has('keys')).toBe(false);
       await expect.element(page.getByText('You have deleted the configuration')).toBeVisible();
     });
