@@ -25,7 +25,7 @@ type ComboboxItem = {
 	icon?: IconName;
 };
 
-type ComboboxInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'size'> & {
+type ComboboxInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'size' | 'onSelect'> & {
 	/** Always rendered as a visible <label> above the field. */
 	label: string;
 	/** Options shown in the listbox. Rendered as given: the component never filters. */
