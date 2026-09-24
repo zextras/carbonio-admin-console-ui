@@ -160,6 +160,27 @@ describe('ComboboxInput', () => {
 		});
 	});
 
+	describe('field states', () => {
+		it('changes the border color on hover', async () => {
+			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+
+			await page.getByRole('combobox', { name: 'Server' }).hover();
+
+			expectColor(getComputedStyle(await getBox('Server')).borderColor, '#225CA8');
+		});
+
+		it('shows the focus border and halo on the field while the listbox is open', async () => {
+			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+
+			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
+			await expect.element(page.getByRole('listbox')).toBeVisible();
+
+			const style = getComputedStyle(await getBox('Server'));
+			expectColor(style.borderColor, '#225CA8');
+			expect(style.boxShadow).toBe('rgba(43, 115, 210, 0.25) 0px 0px 0px 2px');
+		});
+	});
+
 	describe('combobox ARIA wiring', () => {
 		it('declares the combobox popup semantics while closed', async () => {
 			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
