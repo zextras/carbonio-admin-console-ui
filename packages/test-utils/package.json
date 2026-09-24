@@ -19,7 +19,6 @@
   "msw": {
     "workerDirectory": "./public"
   },
-  "packageManager": "pnpm@11.2.2",
   "author": "zextras",
   "license": "AGPL-3.0-only",
   "files": [
