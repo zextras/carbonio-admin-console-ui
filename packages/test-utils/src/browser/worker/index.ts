@@ -33,10 +33,22 @@ const handleZextrasSoapAction: HttpResponseResolver = async ({ request }) => {
 	return withContent({ ok: false, message }, { status: 500 });
 };
 
+const soapFallbackHandler = (apiAction: string) =>
+	http.post(`/service/admin/soap/${apiAction}Request`, async () =>
+		HttpResponse.json({
+			Body: {
+				[`${apiAction}Response`]: {},
+			},
+		}),
+	);
+
 const defaultHandlers = [
 	http.get('/i18n/en.json', handleGetTranslations),
 	http.get(/\[object%20Object\]/, () => new HttpResponse(null, { status: 200 })),
 	http.post('/service/admin/soap/zextras', handleZextrasSoapAction),
+	soapFallbackHandler('GetAccount'),
+	soapFallbackHandler('GetInfo'),
+	soapFallbackHandler('GetCos'),
 ];
 
 export const worker = setupWorker(...defaultHandlers);
