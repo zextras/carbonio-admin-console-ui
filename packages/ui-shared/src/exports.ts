@@ -75,6 +75,7 @@ import {
   CARBONIO_LOGO_URL,
   CONFIG,
   CONTENT,
+  DEFAULT_ADVANCED_DOCUMENTATION_URL,
   FORUM_URL,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
@@ -134,7 +135,8 @@ import {
   useCurrentUserRights,
   useHasAllRights,
 } from './react-query/use-rights';
-import { useAllServers, useMtaServers, useServerVersion } from './react-query/use-servers';
+import { useServerVersion } from './react-query/use-server-version';
+import { useAllServers, useMtaServers } from './react-query/use-servers';
 import {
   type Feature,
   invalidateLicenseQuery,
@@ -262,6 +264,7 @@ export {
   CONFIG,
   CONTENT,
   cosQuotaQueryKey,
+  DEFAULT_ADVANCED_DOCUMENTATION_URL,
   domainByIdKey,
   doRestoreOnNewAccount,
   fetchAccount,
