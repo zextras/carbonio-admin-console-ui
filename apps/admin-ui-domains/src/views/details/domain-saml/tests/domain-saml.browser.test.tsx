@@ -136,7 +136,7 @@ describe('DomainSaml', () => {
 
   describe('Import', () => {
     it('should POST the metadata url with allowUnsecure and show a success snackbar', async () => {
-      const importInterceptor = createBrowserAPIInterceptor('post', SAML_URL, () =>
+      const importInterceptor = await createBrowserAPIInterceptor('post', SAML_URL, () =>
         HttpResponse.json({}),
       );
       await renderDomainSaml(queryClient);
@@ -148,8 +148,8 @@ describe('DomainSaml', () => {
       await page.getByRole('switch', { name: 'Allow Unsecure' }).click();
       await page.getByRole('button', { name: /^import$/i }).click();
 
-      const request = (await importInterceptor).getLastRequest();
-      const requestUrl = new URL(request.url);
+      await expect.poll(() => importInterceptor.getLastRequest()).toBeTruthy();
+      const requestUrl = new URL(importInterceptor.getLastRequest()!.url);
       expect(requestUrl.searchParams.get('url')).toBe('https://idp.example.com/metadata');
       expect(requestUrl.searchParams.get('allowUnsecure')).toBe('true');
       await expect.element(page.getByText('You have imported the configuration')).toBeVisible();
@@ -173,7 +173,7 @@ describe('DomainSaml', () => {
 
   describe('Generate certificate', () => {
     it('should POST to saml-generate and show a success snackbar', async () => {
-      const generateInterceptor = createBrowserAPIInterceptor(
+      const generateInterceptor = await createBrowserAPIInterceptor(
         'post',
         `/service/extension/zextras_admin/auth/saml-generate/${DOMAIN_NAME}`,
         () => HttpResponse.json({}),
@@ -182,7 +182,7 @@ describe('DomainSaml', () => {
 
       await page.getByRole('button', { name: /generate sp certificate/i }).click();
 
-      expect((await generateInterceptor).getCalledTimes()).toBe(1);
+      await expect.poll(() => generateInterceptor.getCalledTimes()).toBe(1);
       await expect.element(page.getByText('You have generated the SP Certificate')).toBeVisible();
     });
   });
