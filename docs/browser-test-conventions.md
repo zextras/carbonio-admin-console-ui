@@ -65,7 +65,7 @@ Options: `{ initialRouterEntry?, queryClient?, grantRights?: 'cos' | 'config', w
 ```tsx
 await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'mycos');
 await userEvent.clear(input);
-await userEvent.type(input, '256');           // append / per-key
+await userEvent.type(input, '256'); // append / per-key
 await userEvent.click(page.getByRole('switch', { name: 'Enable X' }));
 await page.getByRole('button', { name: 'Save' }).click();
 ```
@@ -77,7 +77,7 @@ await expect.element(page.getByText('Title')).toBeVisible();
 await expect.element(page.getByText('Title')).toBeInTheDocument();
 await expect.element(input).toHaveValue('value');
 await expect.element(button).toBeDisabled();
-await expect.element(button).not.toBeDisabled();   // or .toBeEnabled()
+await expect.element(button).not.toBeDisabled(); // or .toBeEnabled()
 await expect.element(switchEl).toBeChecked();
 await expect.element(switchEl).not.toBeChecked();
 ```
@@ -86,9 +86,9 @@ await expect.element(switchEl).not.toBeChecked();
 
 ```tsx
 describe('MyComponent', () => {
-  beforeEach(() => { vi.resetAllMocks(); });
-  // resetMockWorker() here is redundant: the global setup already resets the
-  // worker in beforeEach before every test. Harmless if you prefer it.
+  beforeEach(() => {
+    vi.resetAllMocks();
+  });
 });
 ```
 
@@ -110,7 +110,7 @@ worker.use(
 
 A click on Save starts a chain that outlives the request assertion: mutation → `FlushCache` →
 `invalidateQueries` → refetch → `form.reset()`. `await modifyCosPromise` (the interceptor
-promise) resolves when MSW *receives* the mutation — everything after it is still in flight.
+promise) resolves when MSW _receives_ the mutation — everything after it is still in flight.
 If the test ends there, `resetMockWorker()` and iframe teardown race the remaining requests
 into unhandled rejections attributed to whichever file runs next.
 
@@ -175,7 +175,7 @@ Shared MSW fallbacks live in `defaultHandlers` in `packages/test-utils/src/brows
   `data?.x[0]`-style success callbacks); only the explicit named fallbacks above return
   key-shaped `Body: {XResponse: {}}`
 
-`resetMockWorker()` resets *to* `defaultHandlers` (`worker.resetHandlers(...defaultHandlers)`),
+`resetMockWorker()` resets _to_ `defaultHandlers` (`worker.resetHandlers(...defaultHandlers)`),
 so the catch-alls survive every reset **on purpose**: requests leaked past test teardown get a
 valid empty envelope instead of passthrough-to-dev-server empty-body errors
 (`Empty response from XRequest`). `apps/admin-ui-cos/tests/browser/soap-fallback.browser.test.tsx`
@@ -204,7 +204,7 @@ Consequences:
 - For component-level tests, render the real component via `setupBrowserTest`. For field-level tests, use a small `Wrapper` harness that calls `useForm` and renders the field + a submit button.
 - Locate inputs by label, type with `userEvent.fill`, then click submit and assert errors / call counts.
 - Validation timing matches the form's `validators` config: `onMount` / `onChange` / `onBlur` / `onSubmit`.
-- **Disabling a button based on validity:** read form state *reactively*, e.g. `const canSubmit = useSelector(form.store, (s) => s.canSubmit);` — a direct `form.state.canSubmit` read does **not** re-render on changes. Note `canSubmit` is `true` on a pristine form with no `onMount` validator, so to disable a button when a required field is empty from the start, add `onMount: schema` to the validators.
+- **Disabling a button based on validity:** read form state _reactively_, e.g. `const canSubmit = useSelector(form.store, (s) => s.canSubmit);` — a direct `form.state.canSubmit` read does **not** re-render on changes. Note `canSubmit` is `true` on a pristine form with no `onMount` validator, so to disable a button when a required field is empty from the start, add `onMount: schema` to the validators.
 
 ## File naming & location
 
