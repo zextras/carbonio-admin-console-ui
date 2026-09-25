@@ -40,14 +40,15 @@ async function setupMyTest(): Promise<void> {
 }
 ```
 
-Options: `{ initialRouterEntry?, queryClient?, withDomainIdRoute? }`.
+Options: `{ initialRouterEntry?, queryClient?, grantRights?: 'cos' | 'config', withDomainIdRoute? }`.
 
 ## `admin-ui-test-utils` exports
 
 - **Render/providers:** `setupBrowserTest`, `getQueryClient`, `LocationDisplay`.
 - **Rights seeding (when the view needs them):** `grantUserCosRights(queryClient)`, `grantUserConfigRights(queryClient)`, `setupAccount(queryClient)`.
-- **SOAP mocking:** `createBrowserSoapAPIInterceptor<Req, Res>(apiAction, response?)` → resolves with the request body; `createBrowserZextrasActionInterceptor(action, responseFactory)`; `delayedSoapApiForBrowser`.
-- **MSW workers:** `worker`, `resetMockWorker`. The **global worker lifecycle is auto-wired** (`vitest-browser-setup.ts` starts it once per file and resets it in `beforeEach` via `resetMockWorker()`; it is never stopped per file — see [Durable SOAP catch-alls](#durable-soap-catch-alls)). You only need to call `resetMockWorker()` in your own `afterEach` if you add custom handlers.
+- **SOAP mocking:** `createBrowserSoapAPIInterceptor<Req, Res>(apiAction, response?)` → resolves with the request body; `createBrowserZextrasActionInterceptor(action, response)` (a `() => HttpResponse` factory); `delayedSoapApiForBrowser`.
+- **REST mocking:** `createBrowserAPIInterceptor(method, url, response)` → resolves to `{ getLastRequest(), getCalledTimes() }` for non-SOAP endpoints (`/services/...`, `/service/extension/...`).
+- **MSW workers:** `worker`, `resetMockWorker`. The **global worker lifecycle is auto-wired** (`vitest-browser-setup.ts` starts it once per file and resets it in `beforeEach` via `resetMockWorker()`; it is never stopped per file — see [Durable SOAP catch-alls](#durable-soap-catch-alls)). Your own `afterEach(() => resetMockWorker())` is redundant (the global `beforeEach` resets before every test) but harmless.
 
 ## Locating elements (priority order)
 
@@ -86,7 +87,8 @@ await expect.element(switchEl).not.toBeChecked();
 ```tsx
 describe('MyComponent', () => {
   beforeEach(() => { vi.resetAllMocks(); });
-  afterEach(() => { resetMockWorker(); }); // only needed if you add custom MSW handlers
+  // resetMockWorker() here is redundant: the global setup already resets the
+  // worker in beforeEach before every test. Harmless if you prefer it.
 });
 ```
 
@@ -125,6 +127,12 @@ await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDo
 
 Snackbar labels in this repo: `Changes have been saved successfully` (cos), `The change has
 been saved successfully` (domains/config views), `The changes have been saved` (mailing lists).
+
+Error-path tests need the same discipline — and vacuous waits are the classic trap there:
+asserting elements that already existed before the action (form still visible, input still
+filled) proves nothing about the request. Await the ordered error signal instead — the error
+snackbar surfaces `error?.message` verbatim, e.g. a `Fault` reason text, or `'Failed to fetch'`
+for `HttpResponse.error()` network failures (Chromium-only suite, so the string is stable).
 
 ### Saved-state refetch handlers
 
@@ -214,13 +222,12 @@ HEADED=true pnpm vitest run <file>
 ## Cheatsheet
 
 ```tsx
-import { resetMockWorker, setupBrowserTest } from 'admin-ui-test-utils';
+import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 describe('X', () => {
   beforeEach(() => vi.resetAllMocks());
-  afterEach(() => resetMockWorker());
 
   it('does something', async () => {
     await setupBrowserTest(<MyComponent />, { initialRouterEntry: '/x' });
