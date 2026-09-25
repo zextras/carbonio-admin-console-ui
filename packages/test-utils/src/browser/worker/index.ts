@@ -28,6 +28,17 @@ const handleZextrasSoapAction: HttpResponseResolver = async ({ request }) => {
 	if (action === 'getVersion') {
 		return withContent({ ok: true, response: { version: '0.0.0' } });
 	}
+	if (
+		action === 'listS3Connector' ||
+		action === 'getHSMPolicy' ||
+		action === 'listBuckets' ||
+		action === 'get_global_config'
+	) {
+		return withContent({ ok: true, response: { values: [] } });
+	}
+	if (action === 'getAllVolumes') {
+		return withContent({ ok: true, response: {} });
+	}
 	const message = `Unhandled zextras SOAP action: ${action ?? 'unknown'}`;
 	console.error(`[test-utils] ${message}`);
 	return withContent({ ok: false, message }, { status: 500 });
@@ -42,6 +53,10 @@ const soapFallbackHandler = (apiAction: string) =>
 		}),
 	);
 
+const soapCatchAllHandler = http.post('/service/admin/soap/:api', () =>
+	HttpResponse.json({ Body: {} }),
+);
+
 const defaultHandlers = [
 	http.get('/i18n/en.json', handleGetTranslations),
 	http.get(/\[object%20Object\]/, () => new HttpResponse(null, { status: 200 })),
@@ -51,6 +66,18 @@ const defaultHandlers = [
 	soapFallbackHandler('GetCos'),
 	soapFallbackHandler('SearchDirectory'),
 	http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
+	http.get(
+		'/service/extension/zextras_admin/core/getAllServers',
+		() => HttpResponse.json({ items: [] }),
+	),
+	http.post('/service/admin/soap/GetAllServersRequest', () =>
+		HttpResponse.json({ Body: { GetAllServersResponse: { server: [] } } }),
+	),
+	http.post('/service/admin/soap/GetAllConfigRequest', () =>
+		HttpResponse.json({ Body: { GetAllConfigResponse: {} } }),
+	),
+	http.post('/service/admin/soap', () => HttpResponse.json({ Body: {} })),
+	soapCatchAllHandler,
 ];
 
 export const worker = setupWorker(...defaultHandlers);
@@ -73,10 +100,6 @@ export const startMockWorker = async (
 		onUnhandledRequest: options?.onUnhandledRequest ?? 'warn',
 		quiet: true,
 	});
-};
-
-export const stopMockWorker = () => {
-  worker.stop();
 };
 
 export const resetMockWorker = () => {
