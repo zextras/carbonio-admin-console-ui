@@ -81,7 +81,7 @@ function expectColor(actual: string, expected: string): void {
 describe('ComboboxInput', () => {
 	describe('field base', () => {
 		it('renders a combobox whose accessible name is the label', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await expect.element(page.getByRole('combobox', { name: 'Server' })).toBeVisible();
 			await expect.element(page.getByText('Server')).toBeVisible();
@@ -89,7 +89,7 @@ describe('ComboboxInput', () => {
 
 		it('uses a custom id and wires the label to it', async () => {
 			await render(
-				<ComboboxInput label="Server" id="custom-id" items={SERVERS} onSelect={() => {}} />,
+				<ComboboxInput label="Server" id="custom-id" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
 			);
 
 			const input = page.getByRole('combobox', { name: 'Server' });
@@ -98,7 +98,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('renders a hidden red asterisk when required, outside the accessible name', async () => {
-			await render(<ComboboxInput label="Server" required items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" required items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const input = (await getCombobox('Server')) as HTMLInputElement;
 			const label = input.labels?.[0] as HTMLLabelElement;
@@ -114,6 +114,8 @@ describe('ComboboxInput', () => {
 			await render(
 				<ComboboxInput
 					label="Server"
+					value=""
+					onChange={() => {}}
 					description="Pick the target server"
 					items={SERVERS}
 					onSelect={() => {}}
@@ -132,6 +134,8 @@ describe('ComboboxInput', () => {
 			await render(
 				<ComboboxInput
 					label="Server"
+					value=""
+					onChange={() => {}}
 					description="Pick the target server"
 					aria-describedby="external-hint"
 					items={SERVERS}
@@ -147,7 +151,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('marks the input invalid and shows the error border when hasError', async () => {
-			await render(<ComboboxInput label="Server" hasError items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" hasError items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await expect
 				.element(page.getByRole('combobox', { name: 'Server' }))
@@ -156,7 +160,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('disables the input and applies the disabled box styling', async () => {
-			await render(<ComboboxInput label="Server" disabled items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" disabled items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await expect.element(page.getByRole('combobox', { name: 'Server' })).toBeDisabled();
 			const style = getComputedStyle(await getBox('Server'));
@@ -167,7 +171,7 @@ describe('ComboboxInput', () => {
 
 	describe('field states', () => {
 		it('changes the border color on hover', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await page.getByRole('combobox', { name: 'Server' }).hover();
 
@@ -175,7 +179,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('shows the focus border and halo on the field while the listbox is open', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 			await expect.element(page.getByRole('listbox')).toBeVisible();
@@ -188,7 +192,7 @@ describe('ComboboxInput', () => {
 
 	describe('combobox ARIA wiring', () => {
 		it('declares the combobox popup semantics while closed', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const input = page.getByRole('combobox', { name: 'Server' });
 			await expect.element(input).toHaveAttribute('aria-expanded', 'false');
@@ -198,7 +202,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('opens on click: aria-expanded flips, listbox appears, aria-controls wires to it', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -212,7 +216,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('renders options with role and accessible names', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -242,7 +246,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('opens the list while typing', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -256,7 +260,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('mirrors aria-expanded and aria-controls on the chevron button', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const toggle = page.getByRole('button', { name: 'Toggle suggestions' });
 			await expect.element(toggle).toHaveAttribute('aria-expanded', 'false');
@@ -271,7 +275,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('keeps the popup expanded while loading, without a listbox', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} loading onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} loading onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -285,7 +289,7 @@ describe('ComboboxInput', () => {
 
 	describe('keyboard navigation', () => {
 		it('opens with ArrowDown and activates the first option, keeping focus in the input', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -300,7 +304,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('moves down through options and skips disabled ones', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 			await userEvent.keyboard('[ArrowDown]');
@@ -327,7 +331,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('opens with ArrowUp and activates the last enabled option', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -340,7 +344,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('does not wrap past the first or last option', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -359,7 +363,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('moves to the first and last enabled options with Home and End', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 			await userEvent.keyboard('[End]');
@@ -375,7 +379,7 @@ describe('ComboboxInput', () => {
 
 		it('selects the active option with Enter: onSelect fires and the list closes', async () => {
 			const onSelect = vi.fn();
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={onSelect} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={onSelect} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -390,7 +394,7 @@ describe('ComboboxInput', () => {
 
 		it('closes without selecting when Enter is pressed with no active option', async () => {
 			const onSelect = vi.fn();
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={onSelect} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={onSelect} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -401,7 +405,21 @@ describe('ComboboxInput', () => {
 		});
 
 		it('closes with Escape and never clears the value', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			const ControlledCombobox = (): React.JSX.Element => {
+				const [value, setValue] = useState('');
+				return (
+					<ComboboxInput
+						label="Server"
+						value={value}
+						onChange={(e) => {
+							setValue(e.target.value);
+						}}
+						items={SERVERS}
+						onSelect={() => {}}
+					/>
+				);
+			};
+			await render(<ControlledCombobox />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.type(combobox, 'abc');
@@ -416,7 +434,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('closes with Tab', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const combobox = page.getByRole('combobox', { name: 'Server' });
 			await userEvent.click(combobox);
@@ -448,7 +466,7 @@ describe('ComboboxInput', () => {
 	describe('mouse interaction', () => {
 		it('selects an option on click, closes the list and keeps focus in the input', async () => {
 			const onSelect = vi.fn();
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={onSelect} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={onSelect} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 			await userEvent.click(page.getByRole('option', { name: 'store.example.com' }));
@@ -462,7 +480,7 @@ describe('ComboboxInput', () => {
 
 		it('does not select a disabled option on click', async () => {
 			const onSelect = vi.fn();
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={onSelect} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={onSelect} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 			await userEvent.click(page.getByRole('option', { name: 'proxy.example.com' }), {
@@ -477,7 +495,7 @@ describe('ComboboxInput', () => {
 			await render(
 				<div>
 					<button type="button">Outside target</button>
-					<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />
+					<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />
 				</div>,
 			);
 
@@ -490,7 +508,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('toggles the list with the chevron button and flips the icon', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			const toggle = page.getByRole('button', { name: 'Toggle suggestions' });
 			const toggleElement = await toggle.element();
@@ -605,7 +623,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('shows the Loading... row instead of options while loading', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} loading onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} loading onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -617,7 +635,7 @@ describe('ComboboxInput', () => {
 
 		it('shows the emptyMessage row when there are no items', async () => {
 			await render(
-				<ComboboxInput label="Server" items={[]} emptyMessage="No results" onSelect={() => {}} />,
+				<ComboboxInput label="Server" items={[]} value="" onChange={() => {}} emptyMessage="No results" onSelect={() => {}} />,
 			);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
@@ -627,7 +645,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('does not open the list when disabled', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} disabled onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} disabled onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }), {
 				force: true,
@@ -639,7 +657,7 @@ describe('ComboboxInput', () => {
 		it('forwards the ref to the native input element', async () => {
 			const inputRef = React.createRef<HTMLInputElement>();
 			await render(
-				<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} ref={inputRef} />,
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} ref={inputRef} />,
 			);
 
 			expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
@@ -651,7 +669,7 @@ describe('ComboboxInput', () => {
 				{ id: 'globe-1', label: 'example.com', icon: 'GlobeOutline' as const },
 				{ id: 'globe-2', label: 'example.org' },
 			];
-			await render(<ComboboxInput label="Server" items={items} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={items} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -667,7 +685,7 @@ describe('ComboboxInput', () => {
 
 	describe('popup visuals', () => {
 		it('styles the popup panel per spec', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -687,7 +705,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('styles option rows per spec', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -705,7 +723,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('renders the popup at the same width as the field box', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -716,7 +734,7 @@ describe('ComboboxInput', () => {
 
 		it('sizes the popup to two rows of content', async () => {
 			const two = SERVERS.slice(0, 2);
-			await render(<ComboboxInput label="Server" items={two} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={two} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -729,7 +747,7 @@ describe('ComboboxInput', () => {
 				{ id: 'extra-1', label: 'extra-1.example.com' },
 				{ id: 'extra-2', label: 'extra-2.example.com' },
 			];
-			await render(<ComboboxInput label="Server" items={six} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={six} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -746,7 +764,7 @@ describe('ComboboxInput', () => {
 				{ id: 'extra-5', label: 'extra-5.example.com' },
 				{ id: 'extra-6', label: 'extra-6.example.com' },
 			];
-			await render(<ComboboxInput label="Server" items={ten} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={ten} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -756,7 +774,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('renders the popup in a portal attached to the document body', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
@@ -765,7 +783,7 @@ describe('ComboboxInput', () => {
 		});
 
 		it('styles the Loading... row per spec', async () => {
-			await render(<ComboboxInput label="Server" items={SERVERS} loading onSelect={() => {}} />);
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} loading onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 

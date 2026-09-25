@@ -25,9 +25,16 @@ type ComboboxItem = {
 	icon?: IconName;
 };
 
-type ComboboxInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'size' | 'onSelect'> & {
+type ComboboxInputProps = Omit<
+	React.ComponentPropsWithRef<'input'>,
+	'size' | 'onSelect' | 'value' | 'onChange' | 'defaultValue'
+> & {
 	/** Always rendered as a visible <label> above the field. */
 	label: string;
+	/** Controlled value. The field is fully controlled by design: `value` and `onChange` are required and `defaultValue` is not accepted. */
+	value: string | number | readonly string[];
+	/** Fired on every keystroke; the caller owns the text. The component never filters and never writes back. */
+	onChange: React.ChangeEventHandler<HTMLInputElement>;
 	/** Options shown in the listbox. Rendered as given: the component never filters. */
 	items: Array<ComboboxItem>;
 	/** Renders the description below the field and links it via aria-describedby. `null` is treated as absent. */
