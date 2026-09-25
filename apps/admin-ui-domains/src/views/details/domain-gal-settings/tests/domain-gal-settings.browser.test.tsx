@@ -367,12 +367,44 @@ describe('DomainGalSettings (browser)', () => {
           },
         ],
       });
+      // stateful server: the GAL polling interval changes once ModifyAccount saves it
+      let galPollingInterval = '1d';
       const modifyAccountInterceptor = createBrowserSoapAPIInterceptor('ModifyAccount', {
         account: [{ id: GAL_ACCOUNT_ID }],
+      }).then((params) => {
+        const pollingAttr = (params as { a?: Array<DomainAttribute> }).a?.find(
+          (attr) => attr.n === 'zimbraDataSourceGalPollingInterval',
+        );
+        if (pollingAttr) {
+          galPollingInterval = pollingAttr._content;
+        }
+        return params;
       });
       createBrowserSoapAPIInterceptor('ModifyDataSource', {});
+      createBrowserSoapAPIInterceptor('FlushCache', {});
 
       await setupAndRender();
+      // Must register after setupAndRender so this response wins over the seed handler.
+      worker.use(
+        http.post('/service/admin/soap/GetAccountRequest', () =>
+          HttpResponse.json({
+            Body: {
+              GetAccountResponse: {
+                account: [
+                  {
+                    id: GAL_ACCOUNT_ID,
+                    name: `galsync.${DOMAIN_NAME}`,
+                    a: [
+                      { n: 'zimbraMailHost', _content: 'mail1.example.com' },
+                      { n: 'zimbraDataSourceGalPollingInterval', _content: galPollingInterval },
+                    ],
+                  },
+                ],
+              },
+            },
+          }),
+        ),
+      );
       const freqInput = page.getByLabelText('GAL Update Frequency (value)');
       await expect.element(freqInput).toBeVisible();
       await userEvent.clear(freqInput);
@@ -387,6 +419,11 @@ describe('DomainGalSettings (browser)', () => {
       expect(params.id).toBe(GAL_ACCOUNT_ID);
       const pollingAttr = params.a?.find((attr) => attr.n === 'zimbraDataSourceGalPollingInterval');
       expect(pollingAttr?._content).toMatch(/^2/);
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
     });
   });
 
@@ -489,8 +526,26 @@ describe('DomainGalSettings (browser)', () => {
           },
         ],
       });
+      createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('ModifyAccount', {
+        account: [{ id: GAL_ACCOUNT_ID }],
+      });
+      createBrowserSoapAPIInterceptor('ModifyDataSource', {});
 
       await setupAndRender([{ n: 'zimbraGalMode', _content: 'ldap' }]);
+      // Must register after setupAndRender so this response wins over the seed GetDomain handler.
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          {
+            name: DOMAIN_NAME,
+            id: DOMAIN_ID,
+            a: buildDomainAttributes([
+              { n: 'zimbraGalMode', _content: 'ldap' },
+              { n: 'zimbraGalLdapURL', _content: 'ldap://ldap.example.com' },
+            ]),
+          },
+        ],
+      });
       const ldapUrlInput = page.getByLabelText('External Server Address');
       await userEvent.clear(ldapUrlInput);
       await userEvent.type(ldapUrlInput, 'ldap://ldap.example.com');
@@ -500,6 +555,11 @@ describe('DomainGalSettings (browser)', () => {
       const params = (await modifyInterceptor) as { a?: Array<DomainAttribute> };
       const ldapUrlAttr = params.a?.find((attr) => attr.n === 'zimbraGalLdapURL');
       expect(ldapUrlAttr?._content).toBe('ldap://ldap.example.com');
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: /cancel/i })).not.toBeInTheDocument();
     });
   });
 

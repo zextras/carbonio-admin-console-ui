@@ -259,6 +259,9 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'Save', exact: true }).click();
       const params = await addAlias;
       expect(params).toMatchObject({ id: DL_ID, alias: 'alias2@example.com' });
+      await expect
+        .element(page.getByText('The changes have been saved'))
+        .toBeInTheDocument();
     });
 
     it('removes an existing alias and sends RemoveDistributionListAlias on save', async () => {
@@ -272,6 +275,9 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'Save', exact: true }).click();
       const params = await removeAlias;
       expect(params).toMatchObject({ id: DL_ID, alias: 'alias1@example.com' });
+      await expect
+        .element(page.getByText('The changes have been saved'))
+        .toBeInTheDocument();
     });
 
     it('shows an error snackbar when the save request fails', async () => {
