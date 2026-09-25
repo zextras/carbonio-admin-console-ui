@@ -45,7 +45,7 @@ type ComboboxInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'size' | 'o
 };
 
 function optionDomId(listboxId: string, itemId: string): string {
-	return `${listboxId}-${itemId.replace(/[^a-zA-Z0-9_-]/g, '_')}`;
+	return `${listboxId}-${itemId.replaceAll(/[^a-zA-Z0-9_-]/g, '_')}`;
 }
 
 function selectedIndexOf(items: Array<ComboboxItem>, value: string | undefined): number | null {
@@ -75,12 +75,56 @@ function nextEnabledIndexOf(
 	from: number | null,
 	direction: 1 | -1,
 ): number | null {
-	let index = from === null ? (direction === 1 ? 0 : items.length - 1) : from + direction;
+	let index: number;
+	if (from === null) {
+		index = direction === 1 ? 0 : items.length - 1;
+	} else {
+		index = from + direction;
+	}
 	while (index >= 0 && index < items.length) {
 		if (!items[index]?.disabled) return index;
 		index += direction;
 	}
 	return null;
+}
+
+type ComboboxKeyAction =
+	| { type: 'move'; direction: 1 | -1 }
+	| { type: 'jump'; to: 'first' | 'last' }
+	| { type: 'pick' }
+	| { type: 'close'; preventDefault: boolean }
+	| { type: 'passThrough' };
+
+function resolveKeyAction(
+	key: string,
+	isOpen: boolean,
+	hasActiveOption: boolean,
+): ComboboxKeyAction {
+	if (key === 'ArrowDown') {
+		return { type: 'move', direction: 1 };
+	}
+	if (key === 'ArrowUp') {
+		return { type: 'move', direction: -1 };
+	}
+	if (key === 'Home') {
+		return { type: 'jump', to: 'first' };
+	}
+	if (key === 'End') {
+		return { type: 'jump', to: 'last' };
+	}
+	if (key === 'Enter' && isOpen && hasActiveOption) {
+		return { type: 'pick' };
+	}
+	if (key === 'Enter' && isOpen) {
+		return { type: 'close', preventDefault: true };
+	}
+	if (key === 'Escape' && isOpen) {
+		return { type: 'close', preventDefault: true };
+	}
+	if (key === 'Tab' && isOpen) {
+		return { type: 'close', preventDefault: false };
+	}
+	return { type: 'passThrough' };
 }
 
 type ComboboxOptionProps = {
@@ -121,6 +165,47 @@ const ComboboxOption = ({ item, optionId, active, selected, onPick }: ComboboxOp
 	</div>
 );
 
+type ComboboxPopupBodyProps = {
+	loading: boolean;
+	emptyMessage?: string;
+	listboxId: string;
+	items: Array<ComboboxItem>;
+	activeIndex: number | null;
+	valueLower: string | undefined;
+	onPick: (item: ComboboxItem) => void;
+};
+
+const ComboboxPopupBody = ({
+	loading,
+	emptyMessage,
+	listboxId,
+	items,
+	activeIndex,
+	valueLower,
+	onPick,
+}: ComboboxPopupBodyProps) => {
+	if (loading) {
+		return <p className={popupStyles.messageRow}>Loading...</p>;
+	}
+	if (items.length === 0) {
+		return emptyMessage ? <p className={popupStyles.messageRow}>{emptyMessage}</p> : null;
+	}
+	return (
+		<div role="listbox" className={popupStyles.listboxOptions}>
+			{items.map((item, index) => (
+				<ComboboxOption
+					key={item.id}
+					item={item}
+					optionId={optionDomId(listboxId, item.id)}
+					active={activeIndex === index}
+					selected={item.label.toLowerCase() === valueLower}
+					onPick={onPick}
+				/>
+			))}
+		</div>
+	);
+};
+
 const ComboboxInput = ({
 	label,
 	id,
@@ -146,7 +231,7 @@ const ComboboxInput = ({
 	const descriptionId = useId();
 	const listboxId = useId();
 	const inputRef = useRef<HTMLInputElement | null>(null);
-	const listboxRef = useRef<HTMLDivElement | null>(null);
+	const popupRef = useRef<HTMLDivElement | null>(null);
 	const [open, setOpen] = useState(false);
 	const [activeIndex, setActiveIndex] = useState<number | null>(null);
 	const resolvedDescription = description ?? '';
@@ -178,35 +263,27 @@ const ComboboxInput = ({
 	}
 
 	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
-		if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+		const action = resolveKeyAction(e.key, open, activeIndex !== null);
+		if (action.type === 'move') {
 			e.preventDefault();
-			const direction = e.key === 'ArrowDown' ? 1 : -1;
 			if (open) {
-				handleArrow(direction);
+				handleArrow(action.direction);
 			} else {
 				setOpen(true);
-				setActiveIndex(nextEnabledIndexOf(items, null, direction));
+				setActiveIndex(nextEnabledIndexOf(items, null, action.direction));
 			}
-		} else if (e.key === 'Home') {
+		} else if (action.type === 'jump') {
 			e.preventDefault();
 			if (!open) setOpen(true);
-			setActiveIndex(firstEnabledIndexOf(items));
-		} else if (e.key === 'End') {
+			setActiveIndex(
+				action.to === 'first' ? firstEnabledIndexOf(items) : lastEnabledIndexOf(items),
+			);
+		} else if (action.type === 'pick') {
 			e.preventDefault();
-			if (!open) setOpen(true);
-			setActiveIndex(lastEnabledIndexOf(items));
-		} else if (e.key === 'Enter' && open) {
-			e.preventDefault();
-			if (activeIndex !== null) {
-				const item = items[activeIndex];
-				if (item && !item.disabled) pick(item);
-			} else {
-				closeList();
-			}
-		} else if (e.key === 'Escape' && open) {
-			e.preventDefault();
-			closeList();
-		} else if (e.key === 'Tab' && open) {
+			const item = items[activeIndex ?? -1];
+			if (item && !item.disabled) pick(item);
+		} else if (action.type === 'close') {
+			if (action.preventDefault) e.preventDefault();
 			closeList();
 		}
 		onKeyDown?.(e);
@@ -228,10 +305,10 @@ const ComboboxInput = ({
 	useLayoutEffect(() => {
 		if (!open) return undefined;
 		const box = inputRef.current?.parentElement;
-		const listbox = listboxRef.current;
-		if (!box || !listbox) return undefined;
-		listbox.style.width = `${box.offsetWidth}px`;
-		return setupFloating(box, listbox, {
+		const popup = popupRef.current;
+		if (!box || !popup) return undefined;
+		popup.style.width = `${box.offsetWidth}px`;
+		return setupFloating(box, popup, {
 			placement: 'bottom-start',
 			strategy: 'fixed',
 			middleware: [offset(4), flip(), shift({ limiter: limitShift() })],
@@ -243,8 +320,8 @@ const ComboboxInput = ({
 		function handlePointerDown(e: PointerEvent): void {
 			const target = e.target as Node;
 			const box = inputRef.current?.parentElement;
-			const listbox = listboxRef.current;
-			if (box?.contains(target) || listbox?.contains(target)) return;
+			const popup = popupRef.current;
+			if (box?.contains(target) || popup?.contains(target)) return;
 			closeList();
 		}
 		document.addEventListener('pointerdown', handlePointerDown);
@@ -279,7 +356,7 @@ const ComboboxInput = ({
 				aria-expanded={open}
 				aria-controls={open ? listboxId : undefined}
 				aria-activedescendant={
-					activeIndex !== null ? optionDomId(listboxId, items[activeIndex]?.id ?? '') : undefined
+					activeIndex === null ? undefined : optionDomId(listboxId, items[activeIndex]?.id ?? '')
 				}
 				aria-invalid={hasError || undefined}
 				aria-describedby={describedBy || undefined}
@@ -314,33 +391,16 @@ const ComboboxInput = ({
 			</button>
 			{open && !disabled && (
 				<Portal show>
-					<div
-						ref={listboxRef}
-						id={listboxId}
-						role="listbox"
-						aria-busy={loading || undefined}
-						className={popupStyles.listbox}
-					>
-						{loading ? (
-							<div role="presentation" className={popupStyles.messageRow}>
-								Loading...
-							</div>
-						) : items.length === 0 ? (
-							<div role="presentation" className={popupStyles.messageRow}>
-								{emptyMessage}
-							</div>
-						) : (
-							items.map((item, index) => (
-								<ComboboxOption
-									key={item.id}
-									item={item}
-									optionId={optionDomId(listboxId, item.id)}
-									active={activeIndex === index}
-									selected={item.label.toLowerCase() === valueLower}
-									onPick={pick}
-								/>
-							))
-						)}
+					<div ref={popupRef} id={listboxId} className={popupStyles.listbox}>
+						<ComboboxPopupBody
+							loading={loading}
+							emptyMessage={emptyMessage}
+							listboxId={listboxId}
+							items={items}
+							activeIndex={activeIndex}
+							valueLower={valueLower}
+							onPick={pick}
+						/>
 					</div>
 				</Portal>
 			)}
@@ -349,4 +409,4 @@ const ComboboxInput = ({
 };
 
 export { ComboboxInput };
-export type { ComboboxInputProps,ComboboxItem };
+export type { ComboboxInputProps, ComboboxItem };

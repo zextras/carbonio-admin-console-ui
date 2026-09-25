@@ -31,6 +31,11 @@ async function getListbox(): Promise<HTMLElement> {
 	return (await page.getByRole('listbox').element()) as HTMLElement;
 }
 
+async function getPopup(): Promise<HTMLElement> {
+	const listbox = await getListbox();
+	return listbox.parentElement as HTMLElement;
+}
+
 function formatRgba(r: number, g: number, b: number, a: number): string {
 	if (a >= 1) return `rgb(${r}, ${g}, ${b})`;
 	return `rgba(${r}, ${g}, ${b}, ${Math.round(a * 100) / 100})`;
@@ -201,9 +206,9 @@ describe('ComboboxInput', () => {
 			await expect
 				.element(page.getByRole('combobox', { name: 'Server' }))
 				.toHaveAttribute('aria-expanded', 'true');
-			const listbox = await getListbox();
-			expect(listbox.getAttribute('id')).toBeTruthy();
-			expect(input.getAttribute('aria-controls')).toBe(listbox.getAttribute('id'));
+			const popup = await getPopup();
+			expect(popup.getAttribute('id')).toBeTruthy();
+			expect(input.getAttribute('aria-controls')).toBe(popup.getAttribute('id'));
 		});
 
 		it('renders options with role and accessible names', async () => {
@@ -257,20 +262,24 @@ describe('ComboboxInput', () => {
 			await expect.element(toggle).toHaveAttribute('aria-expanded', 'false');
 			await userEvent.click(toggle);
 
-			const listbox = await getListbox();
+			const popup = await getPopup();
 			await expect.element(toggle).toHaveAttribute('aria-expanded', 'true');
 			expect((await toggle.element()).getAttribute('aria-controls')).toBe(
-				listbox.getAttribute('id'),
+				popup.getAttribute('id'),
 			);
 			expect((await getCombobox('Server')).getAttribute('aria-expanded')).toBe('true');
 		});
 
-		it('marks the listbox aria-busy while loading', async () => {
+		it('keeps the popup expanded while loading, without a listbox', async () => {
 			await render(<ComboboxInput label="Server" items={SERVERS} loading onSelect={() => {}} />);
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
-			await expect.element(page.getByRole('listbox')).toHaveAttribute('aria-busy', 'true');
+			await expect
+				.element(page.getByRole('combobox', { name: 'Server' }))
+				.toHaveAttribute('aria-expanded', 'true');
+			await expect.element(page.getByRole('listbox')).not.toBeInTheDocument();
+			await expect.element(page.getByText('Loading...')).toBeVisible();
 		});
 	});
 
@@ -662,7 +671,7 @@ describe('ComboboxInput', () => {
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
-			const style = getComputedStyle(await getListbox());
+			const style = getComputedStyle(await getPopup());
 			expect(style.display).toBe('flex');
 			expect(style.flexDirection).toBe('column');
 			expect(style.paddingTop).toBe('8px');
@@ -701,8 +710,8 @@ describe('ComboboxInput', () => {
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
 			const box = await getBox('Server');
-			const listbox = await getListbox();
-			expect(listbox.offsetWidth).toBe(box.offsetWidth);
+			const popup = await getPopup();
+			expect(popup.offsetWidth).toBe(box.offsetWidth);
 		});
 
 		it('sizes the popup to two rows of content', async () => {
@@ -711,7 +720,7 @@ describe('ComboboxInput', () => {
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
-			expect((await getListbox()).offsetHeight).toBe(79);
+			expect((await getPopup()).offsetHeight).toBe(79);
 		});
 
 		it('sizes the popup to six rows of content', async () => {
@@ -724,7 +733,7 @@ describe('ComboboxInput', () => {
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
-			expect((await getListbox()).offsetHeight).toBe(201);
+			expect((await getPopup()).offsetHeight).toBe(201);
 		});
 
 		it('caps the popup at six rows and scrolls beyond', async () => {
@@ -741,9 +750,9 @@ describe('ComboboxInput', () => {
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
-			const listbox = await getListbox();
-			expect(listbox.offsetHeight).toBe(201);
-			expect(getComputedStyle(listbox).overflowY).toBe('auto');
+			const popup = await getPopup();
+			expect(popup.offsetHeight).toBe(201);
+			expect(getComputedStyle(popup).overflowY).toBe('auto');
 		});
 
 		it('renders the popup in a portal attached to the document body', async () => {
@@ -751,8 +760,8 @@ describe('ComboboxInput', () => {
 
 			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
 
-			const listbox = await getListbox();
-			expect(listbox.parentElement).toBe(document.body);
+			const popup = await getPopup();
+			expect(popup.parentElement).toBe(document.body);
 		});
 
 		it('styles the Loading... row per spec', async () => {
