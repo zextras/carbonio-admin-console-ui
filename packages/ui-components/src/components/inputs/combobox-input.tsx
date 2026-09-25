@@ -73,17 +73,12 @@ function nextEnabledIndexOf(
 	from: number | null,
 	direction: 1 | -1,
 ): number | null {
-	let index: number;
-	if (from === null) {
-		index = direction === 1 ? 0 : items.length - 1;
-	} else {
-		index = from + direction;
-	}
-	while (index >= 0 && index < items.length) {
-		if (!items[index]?.disabled) return index;
-		index += direction;
-	}
-	return null;
+	const entries = items.map((item, index) => ({ item, index }));
+	const candidates =
+		direction === 1
+			? entries.slice(from === null ? 0 : from + 1)
+			: entries.slice(0, from === null ? items.length : from).reverse();
+	return candidates.find(({ item }) => !item.disabled)?.index ?? null;
 }
 
 type ComboboxKeyAction =
