@@ -60,28 +60,30 @@ function expectColor(actual: string, expected: string): void {
 describe('PlainInput', () => {
   describe('label association', () => {
     it('renders a textbox whose accessible name is the label', async () => {
-      await render(<PlainInput label="Display Name" />);
+      await render(<PlainInput label="Display Name" value="" onChange={() => {}} />);
 
       const input = page.getByRole('textbox', { name: 'Display Name' });
       await expect.element(input).toBeVisible();
     });
 
     it('renders the label as a visible element', async () => {
-      await render(<PlainInput label="Display Name" />);
+      await render(<PlainInput label="Display Name" value="" onChange={() => {}} />);
 
       await expect.element(page.getByText('Display Name')).toBeVisible();
     });
 
-    it('uses a custom id and wires the label to it', async () => {
-      await render(<PlainInput label="Display Name" id="custom-id" />);
+    it('generates an internal id and wires the label to it', async () => {
+      await render(<PlainInput label="Display Name" value="" onChange={() => {}} />);
 
-      const input = page.getByRole('textbox', { name: 'Display Name' });
-      await expect.element(input).toHaveAttribute('id', 'custom-id');
-      await expect.element(page.getByText('Display Name')).toHaveAttribute('for', 'custom-id');
+      const input = (await page
+        .getByRole('textbox', { name: 'Display Name' })
+        .element()) as HTMLInputElement;
+      expect(input.id).toBeTruthy();
+      await expect.element(page.getByText('Display Name')).toHaveAttribute('for', input.id);
     });
 
     it('renders a red hidden asterisk after the label when required', async () => {
-      await render(<PlainInput label="Name" required />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} required />);
 
       const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
       const label = input.labels?.[0] as HTMLLabelElement;
@@ -92,13 +94,13 @@ describe('PlainInput', () => {
     });
 
     it('keeps the accessible name free of the required asterisk', async () => {
-      await render(<PlainInput label="Name" required />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} required />);
 
       await expect.element(page.getByRole('textbox', { name: 'Name' })).toBeVisible();
     });
 
     it('does not render an asterisk when not required', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
       const label = input.labels?.[0] as HTMLLabelElement;
@@ -136,19 +138,19 @@ describe('PlainInput', () => {
       expect(changes).toEqual(['H', 'Hi']);
     });
 
-    it('updates its own value in uncontrolled mode', async () => {
-      await render(<PlainInput label="Name" defaultValue="Bob" />);
+    it('keeps the controlled value when the caller does not update state', async () => {
+      await render(<PlainInput label="Name" value="Bob" onChange={() => {}} />);
 
       const input = page.getByRole('textbox', { name: 'Name' });
       await expect.element(input).toHaveValue('Bob');
       await userEvent.type(input, 'x');
-      await expect.element(input).toHaveValue('Bobx');
+      await expect.element(input).toHaveValue('Bob');
     });
   });
 
   describe('disabled state', () => {
     it('cannot be interacted with when disabled', async () => {
-      await render(<PlainInput label="Name" defaultValue="Bob" disabled />);
+      await render(<PlainInput label="Name" value="Bob" onChange={() => {}} disabled />);
 
       const input = page.getByRole('textbox', { name: 'Name' });
       await expect.element(input).toBeDisabled();
@@ -156,7 +158,7 @@ describe('PlainInput', () => {
     });
 
     it('applies disabled styling to the field box', async () => {
-      await render(<PlainInput label="Name" disabled />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} disabled />);
 
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       const box = input.parentElement as HTMLElement;
@@ -168,7 +170,7 @@ describe('PlainInput', () => {
 
   describe('visual states', () => {
     it('renders the field box at the 2.5rem total height (border-box)', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const style = getComputedStyle(await getBox('Name'));
       expect(style.height).toBe('40px');
@@ -176,21 +178,21 @@ describe('PlainInput', () => {
     });
 
     it('shows a white background at rest', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const style = getComputedStyle(await getBox('Name'));
       expectColor(style.backgroundColor, '#FFFFFF');
     });
 
     it('does not change the cursor over the field box', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const style = getComputedStyle(await getBox('Name'));
       expect(style.cursor).toBe('auto');
     });
 
     it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const style = getComputedStyle(await getBox('Name'));
       expect(style.borderTopWidth).toBe('1px');
@@ -208,7 +210,7 @@ describe('PlainInput', () => {
     });
 
     it('changes the border color on hover', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       await page.getByRole('textbox', { name: 'Name' }).hover();
 
@@ -217,7 +219,7 @@ describe('PlainInput', () => {
     });
 
     it('shows the solid focus border and halo when the input is focused', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       await page.getByRole('textbox', { name: 'Name' }).click();
 
@@ -227,7 +229,7 @@ describe('PlainInput', () => {
     });
 
     it('does not show the focus ring when the input is disabled', async () => {
-      await render(<PlainInput label="Name" disabled />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} disabled />);
 
       await page.getByRole('textbox', { name: 'Name' }).click({ force: true });
 
@@ -236,7 +238,7 @@ describe('PlainInput', () => {
     });
 
     it('renders the native input without its own chrome', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const input = page.getByRole('textbox', { name: 'Name' }).element() as HTMLInputElement;
       const style = getComputedStyle(input);
@@ -246,7 +248,7 @@ describe('PlainInput', () => {
     });
 
     it('keeps a caller-provided className on the input', async () => {
-      await render(<PlainInput label="Name" className="custom-class" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} className="custom-class" />);
 
       await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveClass(/custom-class/);
     });
@@ -257,6 +259,8 @@ describe('PlainInput', () => {
       await render(
         <PlainInput
           label="Search Bind User"
+          value=""
+          onChange={() => {}}
           placeholder="Type here"
           type="email"
           autoComplete="off"
@@ -272,14 +276,14 @@ describe('PlainInput', () => {
     });
 
     it('marks the input as required when required is passed', async () => {
-      await render(<PlainInput label="Name" required />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} required />);
 
       await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveAttribute('required');
     });
 
     it('forwards the ref to the native input element', async () => {
       const inputRef = React.createRef<HTMLInputElement>();
-      await render(<PlainInput label="Name" ref={inputRef} />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} ref={inputRef} />);
 
       expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
       expect(inputRef.current?.tagName).toBe('INPUT');
@@ -288,7 +292,7 @@ describe('PlainInput', () => {
 
   describe('info icon', () => {
     it('renders the InfoOutline icon inside the field box when infoIcon is true', async () => {
-      await render(<PlainInput label="Name" infoIcon />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} infoIcon />);
 
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       const box = input.parentElement as HTMLElement;
@@ -301,7 +305,7 @@ describe('PlainInput', () => {
     });
 
     it('sizes and colors the icon per spec', async () => {
-      await render(<PlainInput label="Name" infoIcon />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} infoIcon />);
 
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       const host = input.nextElementSibling as HTMLElement;
@@ -314,7 +318,7 @@ describe('PlainInput', () => {
     });
 
     it('does not render any icon inside the box without infoIcon', async () => {
-      await render(<PlainInput label="Name" />);
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       const box = input.parentElement as HTMLElement;
@@ -324,7 +328,7 @@ describe('PlainInput', () => {
 
   describe('error and description support', () => {
     it('renders the description below the input and links it via aria-describedby', async () => {
-      await render(<PlainInput label="Token" description="Invalid token" />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" />);
 
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const describedBy = input.getAttribute('aria-describedby');
@@ -335,7 +339,15 @@ describe('PlainInput', () => {
     });
 
     it('merges a caller-provided aria-describedby with the description id', async () => {
-      await render(<PlainInput label="Token" description="Invalid token" aria-describedby="external-hint" />);
+      await render(
+        <PlainInput
+          label="Token"
+          value=""
+          onChange={() => {}}
+          description="Invalid token"
+          aria-describedby="external-hint"
+        />,
+      );
 
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
@@ -346,7 +358,7 @@ describe('PlainInput', () => {
     });
 
     it('does not set aria-describedby when no description is provided', async () => {
-      await render(<PlainInput label="Token" />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} />);
 
       await expect
         .element(page.getByRole('textbox', { name: 'Token' }))
@@ -354,7 +366,7 @@ describe('PlainInput', () => {
     });
 
     it('always reserves the description slot even without a description', async () => {
-      await render(<PlainInput label="Token" />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} />);
 
       const box = await getBox('Token');
       const slot = box.nextElementSibling;
@@ -364,7 +376,7 @@ describe('PlainInput', () => {
     });
 
     it('treats a null description as absent', async () => {
-      await render(<PlainInput label="Token" description={null} />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description={null} />);
 
       await expect
         .element(page.getByRole('textbox', { name: 'Token' }))
@@ -375,7 +387,7 @@ describe('PlainInput', () => {
     });
 
     it('does not render the alert icon when hasError has no description text', async () => {
-      await render(<PlainInput label="Token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} hasError />);
 
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const box = input.parentElement as HTMLElement;
@@ -386,7 +398,7 @@ describe('PlainInput', () => {
     });
 
     it('marks the input as invalid when hasError is true', async () => {
-      await render(<PlainInput label="Token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} hasError />);
 
       await expect
         .element(page.getByRole('textbox', { name: 'Token' }))
@@ -394,7 +406,7 @@ describe('PlainInput', () => {
     });
 
     it('does not mark the input as invalid without hasError', async () => {
-      await render(<PlainInput label="Token" />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} />);
 
       await expect
         .element(page.getByRole('textbox', { name: 'Token' }))
@@ -402,14 +414,16 @@ describe('PlainInput', () => {
     });
 
     it('shows the error border at rest', async () => {
-      await render(<PlainInput label="Token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} hasError />);
+
+      await page.getByRole('textbox', { name: 'Token' }).unhover();
 
       const style = getComputedStyle(await getBox('Token'));
       expectColor(style.borderColor, '#D74942');
     });
 
     it('shows the error hover border on hover', async () => {
-      await render(<PlainInput label="Token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} hasError />);
 
       await page.getByRole('textbox', { name: 'Token' }).hover();
 
@@ -418,7 +432,7 @@ describe('PlainInput', () => {
     });
 
     it('shows the error focus ring when focused', async () => {
-      await render(<PlainInput label="Token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} hasError />);
 
       await page.getByRole('textbox', { name: 'Token' }).click();
 
@@ -428,7 +442,7 @@ describe('PlainInput', () => {
     });
 
     it('keeps the disabled styling when both disabled and hasError are set', async () => {
-      await render(<PlainInput label="Token" hasError disabled />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} hasError disabled />);
 
       const style = getComputedStyle(await getBox('Token'));
       expectColor(style.borderColor, '#E6E9ED');
@@ -436,17 +450,17 @@ describe('PlainInput', () => {
     });
 
     it('renders the description in error color when hasError, secondary otherwise', async () => {
-      await render(<PlainInput label="Token" description="Invalid token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
       const errorDescription = await page.getByText('Invalid token').element();
       expectColor(getComputedStyle(errorDescription).color, '#D74942');
 
-      await render(<PlainInput label="Token" description="Helper text" />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description="Helper text" />);
       const helperDescription = await page.getByText('Helper text').element();
       expectColor(getComputedStyle(helperDescription).color, '#828282');
     });
 
     it('renders the alert icon inside the error description', async () => {
-      await render(<PlainInput label="Token" description="Invalid token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
 
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const describedBy = input.getAttribute('aria-describedby');
@@ -458,7 +472,7 @@ describe('PlainInput', () => {
     });
 
     it('does not render the alert icon without hasError', async () => {
-      await render(<PlainInput label="Token" description="Helper text" />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description="Helper text" />);
 
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const describedBy = input.getAttribute('aria-describedby');
@@ -467,7 +481,7 @@ describe('PlainInput', () => {
     });
 
     it('styles the error description as an icon row', async () => {
-      await render(<PlainInput label="Token" description="Invalid token" hasError />);
+      await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
 
       const input = await page.getByRole('textbox', { name: 'Token' }).element();
       const describedBy = input.getAttribute('aria-describedby');

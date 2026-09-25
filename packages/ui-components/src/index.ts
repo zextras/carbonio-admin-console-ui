@@ -37,6 +37,7 @@ export {
   type ChipInputProps,
   type ChipItem,
 } from './components/inputs/chipInput/ChipInput';
+export * from './components/inputs/combobox-input';
 export * from './components/inputs/DatePicker';
 export * from './components/inputs/IconCheckbox';
 export * from './components/inputs/Input';
