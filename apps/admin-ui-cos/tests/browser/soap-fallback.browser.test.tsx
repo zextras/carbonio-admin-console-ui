@@ -7,12 +7,12 @@ import { soapFetch } from '@zextras/ui-shared';
 import { resetMockWorker } from 'admin-ui-test-utils';
 import { expect, it } from 'vitest';
 
-it('answers SOAP requests with a valid empty envelope after resetMockWorker', async () => {
+it('answers SOAP requests with a flat empty envelope (undefined) after resetMockWorker', async () => {
   resetMockWorker();
   // Simulates a request fired after test teardown wiped per-test handlers.
   // Must resolve (not reject with "Empty response from NoOpRequest"), and must
   // resolve to undefined — a defined-but-empty {} payload crashes component
-  // success callbacks written against the flat {Body:{}} shape (data?.cos[0]).
+  // success callbacks written against undefined-able response data (data?.cos[0]).
   const response = await soapFetch('NoOp', {});
   expect(response).toBeUndefined();
 });
