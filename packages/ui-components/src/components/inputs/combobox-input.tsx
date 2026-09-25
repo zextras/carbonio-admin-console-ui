@@ -57,10 +57,9 @@ function selectedIndexOf(items: Array<ComboboxItem>, value: string | undefined):
 }
 
 function firstEnabledIndexOf(items: Array<ComboboxItem>): number | null {
-	for (let index = 0; index < items.length; index += 1) {
-		if (!items[index]?.disabled) return index;
-	}
-	return null;
+	return items
+		.map((item, index) => ({ item, index }))
+		.find(({ item }) => !item.disabled)?.index ?? null;
 }
 
 function lastEnabledIndexOf(items: Array<ComboboxItem>): number | null {
