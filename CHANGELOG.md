@@ -1,3 +1,9 @@
+## [0.20.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.0...v0.20.1) (2026-09-25)
+
+### Bug Fixes
+
+* raise sonar JS/TS analyzer node heap to 6144 MB ([ad8bfc6](https://github.com/zextras/carbonio-admin-console-ui/commit/ad8bfc64f82f521f09f56d27543983f5a1d48d09)), closes [#1380](https://github.com/zextras/carbonio-admin-console-ui/issues/1380) [#23](https://github.com/zextras/carbonio-admin-console-ui/issues/23)
+
 ## [0.20.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.3...v0.20.0) (2026-09-25)
 
 ### Features
