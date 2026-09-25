@@ -10,8 +10,9 @@ import { expect, it } from 'vitest';
 it('answers SOAP requests with a valid empty envelope after resetMockWorker', async () => {
   resetMockWorker();
   // Simulates a request fired after test teardown wiped per-test handlers.
-  // Must resolve with the standard empty response, not reject with
-  // "Empty response from NoOpRequest" (passthrough to dev server).
+  // Must resolve (not reject with "Empty response from NoOpRequest"), and must
+  // resolve to undefined — a defined-but-empty {} payload crashes component
+  // success callbacks written against the flat {Body:{}} shape (data?.cos[0]).
   const response = await soapFetch('NoOp', {});
-  expect(response).toEqual({});
+  expect(response).toBeUndefined();
 });

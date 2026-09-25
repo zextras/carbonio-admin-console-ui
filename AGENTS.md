@@ -298,7 +298,9 @@ scenario).
 Shared fallbacks live in `defaultHandlers` (`packages/test-utils/src/browser/worker/index.ts`):
 `GetAccount`/`GetInfo`/`GetCos`/`SearchDirectory`, `GetAllServers`/`GetAllConfig`, canned
 zextras actions at `/service/admin/soap/zextras`, a lenient bare `/service/admin/soap` handler,
-and a generic `/service/admin/soap/:api` catch-all returning `Body: {XResponse: {}}`. They
+and a generic `/service/admin/soap/:api` catch-all returning flat `Body: {}` (resolving to
+`undefined`, which component `data?.x` callbacks assume; only the named fallbacks above are
+key-shaped `Body: {XResponse: {}}`). They
 survive `resetMockWorker()` on purpose: requests leaked past test teardown get a valid empty
 envelope instead of passthrough-empty-body errors (`Empty response from XRequest`). Per-test
 interceptors registered via `createBrowserSoapAPIInterceptor` always take precedence — extend

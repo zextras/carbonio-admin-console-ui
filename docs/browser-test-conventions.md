@@ -162,7 +162,10 @@ Shared MSW fallbacks live in `defaultHandlers` in `packages/test-utils/src/brows
 - canned zextras actions at `/service/admin/soap/zextras` (`listS3Connector`, `getHSMPolicy`,
   `listBuckets`, `getAllVolumes`, `get_global_config`, …)
 - a lenient bare `/service/admin/soap` handler
-- a generic `/service/admin/soap/:api` catch-all answering `Body: {XResponse: {}}`
+- a generic `/service/admin/soap/:api` catch-all answering flat `Body: {}` (resolving to
+  `undefined`, the shape component code assumes — a defined-but-empty `{}` payload crashes
+  `data?.x[0]`-style success callbacks); only the explicit named fallbacks above return
+  key-shaped `Body: {XResponse: {}}`
 
 `resetMockWorker()` resets *to* `defaultHandlers` (`worker.resetHandlers(...defaultHandlers)`),
 so the catch-alls survive every reset **on purpose**: requests leaked past test teardown get a

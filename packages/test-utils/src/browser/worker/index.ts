@@ -53,14 +53,9 @@ const soapFallbackHandler = (apiAction: string) =>
 		}),
 	);
 
-const soapCatchAllHandler = http.post('/service/admin/soap/:api', ({ params }) => {
-	const action = String(params.api).replace(/Request$/, '');
-	return HttpResponse.json({
-		Body: {
-			[`${action}Response`]: {},
-		},
-	});
-});
+const soapCatchAllHandler = http.post('/service/admin/soap/:api', () =>
+	HttpResponse.json({ Body: {} }),
+);
 
 const defaultHandlers = [
 	http.get('/i18n/en.json', handleGetTranslations),
