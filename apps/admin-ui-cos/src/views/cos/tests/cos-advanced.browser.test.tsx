@@ -484,8 +484,10 @@ describe('CosAdvanced', () => {
       await userEvent.click(restoreMessagesSwitch);
       expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
 
+      mockGetCoreAttributes(false);
       await page.getByRole('button', { name: 'Save' }).click();
 
+      await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
       expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
     });
 

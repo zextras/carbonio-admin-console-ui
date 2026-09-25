@@ -120,6 +120,17 @@ describe('DomainDisclaimer', () => {
         domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
       });
       createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          {
+            name: DOMAIN_NAME,
+            id: DOMAIN_ID,
+            a: buildDisclaimerDomainAttributes([
+              { n: 'zimbraAmavisDomainDisclaimerText', _content: 'New disclaimer' },
+            ]),
+          },
+        ],
+      });
       renderDisclaimer(setupDisclaimerTest());
 
       await userEvent.fill(page.getByRole('textbox'), 'New disclaimer');
@@ -139,6 +150,12 @@ describe('DomainDisclaimer', () => {
         (attr: any) => attr.n === 'amavisDisclaimerOptions',
       );
       expect(optionsAttr._content).toBe(DOMAIN_NAME);
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('button', { name: /^save$/i }))
+        .not.toBeInTheDocument();
     });
 
     it('should send empty disclaimer attributes when the switch is toggled off', async () => {
@@ -146,6 +163,17 @@ describe('DomainDisclaimer', () => {
         domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
       });
       createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          {
+            name: DOMAIN_NAME,
+            id: DOMAIN_ID,
+            a: buildDisclaimerDomainAttributes([
+              { n: 'zimbraDomainMandatoryMailSignatureEnabled', _content: 'FALSE' },
+            ]),
+          },
+        ],
+      });
       renderDisclaimer(setupDisclaimerTest());
 
       await page.getByRole('switch', { name: 'Enable disclaimers for this domain' }).click();
@@ -160,6 +188,12 @@ describe('DomainDisclaimer', () => {
         (attr: any) => attr.n === 'amavisDisclaimerOptions',
       );
       expect(optionsAttr._content).toBe('');
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('button', { name: /^save$/i }))
+        .not.toBeInTheDocument();
     });
 
     it('should normalize diacritics in the text disclaimer on save', async () => {
@@ -167,6 +201,17 @@ describe('DomainDisclaimer', () => {
         domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: [] }],
       });
       createBrowserSoapAPIInterceptor('FlushCache', {});
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          {
+            name: DOMAIN_NAME,
+            id: DOMAIN_ID,
+            a: buildDisclaimerDomainAttributes([
+              { n: 'zimbraAmavisDomainDisclaimerText', _content: "Cafe'" },
+            ]),
+          },
+        ],
+      });
       renderDisclaimer(setupDisclaimerTest());
 
       await userEvent.fill(page.getByRole('textbox'), 'Café');
@@ -177,6 +222,12 @@ describe('DomainDisclaimer', () => {
         (attr: any) => attr.n === 'zimbraAmavisDomainDisclaimerText',
       );
       expect(textAttr._content).toBe("Cafe'");
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('button', { name: /^save$/i }))
+        .not.toBeInTheDocument();
     });
 
     it('should show the success snackbar, refetch the domain and hide buttons after save', async () => {
