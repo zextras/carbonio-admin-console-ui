@@ -93,31 +93,26 @@ function resolveKeyAction(
 	isOpen: boolean,
 	hasActiveOption: boolean,
 ): ComboboxKeyAction {
-	if (key === 'ArrowDown') {
-		return { type: 'move', direction: 1 };
+	switch (key) {
+		case 'ArrowDown':
+			return { type: 'move', direction: 1 };
+		case 'ArrowUp':
+			return { type: 'move', direction: -1 };
+		case 'Home':
+			return { type: 'jump', to: 'first' };
+		case 'End':
+			return { type: 'jump', to: 'last' };
+		case 'Enter':
+			if (isOpen && hasActiveOption) return { type: 'pick' };
+			if (isOpen) return { type: 'close', preventDefault: true };
+			return { type: 'passThrough' };
+		case 'Escape':
+			return isOpen ? { type: 'close', preventDefault: true } : { type: 'passThrough' };
+		case 'Tab':
+			return isOpen ? { type: 'close', preventDefault: false } : { type: 'passThrough' };
+		default:
+			return { type: 'passThrough' };
 	}
-	if (key === 'ArrowUp') {
-		return { type: 'move', direction: -1 };
-	}
-	if (key === 'Home') {
-		return { type: 'jump', to: 'first' };
-	}
-	if (key === 'End') {
-		return { type: 'jump', to: 'last' };
-	}
-	if (key === 'Enter' && isOpen && hasActiveOption) {
-		return { type: 'pick' };
-	}
-	if (key === 'Enter' && isOpen) {
-		return { type: 'close', preventDefault: true };
-	}
-	if (key === 'Escape' && isOpen) {
-		return { type: 'close', preventDefault: true };
-	}
-	if (key === 'Tab' && isOpen) {
-		return { type: 'close', preventDefault: false };
-	}
-	return { type: 'passThrough' };
 }
 
 type ComboboxOptionProps = {
