@@ -10,7 +10,7 @@ import { useId } from 'react';
 import { InputShell } from './input-shell';
 import styles from './input-shell.module.css';
 
-type PlainInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'value' | 'onChange' | 'defaultValue'> & {
+export type PlainInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'value' | 'onChange' | 'defaultValue'> & {
 	/** Always rendered as a visible <label> above the field. */
 	label: string;
 	/** Controlled value. The field is fully controlled by design: `value` and `onChange` are required and `defaultValue` is not accepted. */
@@ -25,8 +25,10 @@ type PlainInputProps = Omit<React.ComponentPropsWithRef<'input'>, 'value' | 'onC
 	infoIcon?: boolean;
 };
 
-const PlainInput = ({
+export const PlainInput = ({
 	label,
+	value,
+	onChange,
 	id,
 	disabled,
 	required,
@@ -55,10 +57,12 @@ const PlainInput = ({
 			descriptionId={descriptionId}
 			infoIcon={infoIcon}
 		>
-			<input
-				id={inputId}
-				disabled={disabled}
-				required={required}
+		<input
+			id={inputId}
+			value={value}
+			onChange={onChange}
+			disabled={disabled}
+			required={required}
 				className={inputClassName}
 				aria-invalid={hasError || undefined}
 				aria-describedby={describedBy || undefined}
@@ -68,5 +72,3 @@ const PlainInput = ({
 	);
 };
 
-export { PlainInput };
-export type { PlainInputProps };

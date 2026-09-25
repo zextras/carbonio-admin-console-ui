@@ -205,6 +205,7 @@ const ComboboxPopupBody = ({
 const ComboboxInput = ({
 	label,
 	id,
+	value,
 	items,
 	disabled,
 	required,
@@ -233,12 +234,12 @@ const ComboboxInput = ({
 	const resolvedDescription = description ?? '';
 	const inputClassName = clsx(styles.control, className);
 	const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
-	const valueLower = rest.value?.toString().toLowerCase();
+	const valueLower = value.toString().toLowerCase();
 
 	function openList(): void {
 		if (disabled) return;
 		setOpen(true);
-		setActiveIndex(selectedIndexOf(items, rest.value?.toString()));
+		setActiveIndex(selectedIndexOf(items, value.toString()));
 	}
 
 	function closeList(): void {
@@ -336,6 +337,7 @@ const ComboboxInput = ({
 		>
 			<input
 				id={inputId}
+				value={value}
 				ref={(node: HTMLInputElement | null) => {
 					inputRef.current = node;
 					if (typeof callerRef === 'function') callerRef(node);
