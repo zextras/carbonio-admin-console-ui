@@ -28,6 +28,17 @@ const handleZextrasSoapAction: HttpResponseResolver = async ({ request }) => {
 	if (action === 'getVersion') {
 		return withContent({ ok: true, response: { version: '0.0.0' } });
 	}
+	if (
+		action === 'listS3Connector' ||
+		action === 'getHSMPolicy' ||
+		action === 'listBuckets' ||
+		action === 'get_global_config'
+	) {
+		return withContent({ ok: true, response: { values: [] } });
+	}
+	if (action === 'getAllVolumes') {
+		return withContent({ ok: true, response: {} });
+	}
 	const message = `Unhandled zextras SOAP action: ${action ?? 'unknown'}`;
 	console.error(`[test-utils] ${message}`);
 	return withContent({ ok: false, message }, { status: 500 });
@@ -41,40 +52,6 @@ const soapFallbackHandler = (apiAction: string) =>
 			},
 		}),
 	);
-
-const zextrasContentResponse = (payload: unknown): HttpResponse<DefaultBodyType> =>
-	HttpResponse.json({
-		Body: {
-			response: {
-				content: JSON.stringify(payload),
-			},
-		},
-	});
-
-const handleZextrasSoapActions = http.post('/service/admin/soap', async ({ request }) => {
-	const body = (await request.json()) as {
-		Body?: { zextras?: { action?: string } };
-	};
-	const action = body?.Body?.zextras?.action;
-
-	if (
-		action === 'listS3Connector' ||
-		action === 'getHSMPolicy' ||
-		action === 'listBuckets'
-	) {
-		return zextrasContentResponse({ ok: true, response: { values: [] } });
-	}
-
-	if (action === 'getAllVolumes') {
-		return zextrasContentResponse({ ok: true, response: {} });
-	}
-
-	if (action === 'get_global_config') {
-		return zextrasContentResponse({ ok: true, response: { values: [] } });
-	}
-
-	return HttpResponse.json({ Body: {} });
-});
 
 const soapCatchAllHandler = http.post('/service/admin/soap/:api', ({ params }) => {
 	const action = String(params.api).replace(/Request$/, '');
@@ -104,7 +81,7 @@ const defaultHandlers = [
 	http.post('/service/admin/soap/GetAllConfigRequest', () =>
 		HttpResponse.json({ Body: { GetAllConfigResponse: {} } }),
 	),
-	handleZextrasSoapActions,
+	http.post('/service/admin/soap', () => HttpResponse.json({ Body: {} })),
 	soapCatchAllHandler,
 ];
 
@@ -128,10 +105,6 @@ export const startMockWorker = async (
 		onUnhandledRequest: options?.onUnhandledRequest ?? 'warn',
 		quiet: true,
 	});
-};
-
-export const stopMockWorker = () => {
-  worker.stop();
 };
 
 export const resetMockWorker = () => {
