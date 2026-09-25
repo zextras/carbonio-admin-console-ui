@@ -304,7 +304,11 @@ key-shaped `Body: {XResponse: {}}`). They
 survive `resetMockWorker()` on purpose: requests leaked past test teardown get a valid empty
 envelope instead of passthrough-empty-body errors (`Empty response from XRequest`). Per-test
 interceptors registered via `createBrowserSoapAPIInterceptor` always take precedence — extend
-`defaultHandlers` rather than registering catch-alls per-test. Never call `worker.stop()` /
+`defaultHandlers` rather than registering catch-alls per-test. A SOAP request with no in-test
+handler resolves `undefined` via the catch-all — it will NOT fail loudly, so a forgotten handler
+fails silently. When adding a named key-shaped fallback (`Body: {XResponse: {}}`), `data`
+resolves `{}` (not undefined) — consumers must fully optional-chain (`data?.x?.[0]`, never
+`data?.x[0]`). Never call `worker.stop()` /
 service-worker teardown per file: files run as parallel iframes sharing one origin-scoped
 service worker.
 

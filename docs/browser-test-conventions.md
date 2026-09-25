@@ -179,6 +179,12 @@ Consequences:
 - **Never rely on a request being unhandled.** Per-test interceptors from
   `createBrowserSoapAPIInterceptor` / `worker.use()` are prepended and always take precedence
   over the defaults.
+- **A forgotten in-test handler fails silently.** A SOAP request with no matching handler
+  resolves `undefined` via the catch-all — it will NOT fail loudly. If a test seems to pass
+  while its component gets empty data, check for a missing interceptor.
+- **When adding a named key-shaped fallback** (`Body: {XResponse: {}}`), `data` resolves `{}`
+  (not undefined) — every consumer must fully optional-chain (`data?.x?.[0]`, never
+  `data?.x[0]`); an unguarded index access crashes success callbacks.
 - **Extend `defaultHandlers`** (specific handler or fallback) rather than registering
   catch-alls per-test when a new API leaks past test ends.
 - **Never stop the worker per file.** No `worker.stop()` / service-worker teardown in per-file
