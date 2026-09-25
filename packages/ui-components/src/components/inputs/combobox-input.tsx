@@ -63,10 +63,9 @@ function firstEnabledIndexOf(items: Array<ComboboxItem>): number | null {
 }
 
 function lastEnabledIndexOf(items: Array<ComboboxItem>): number | null {
-	for (let index = items.length - 1; index >= 0; index -= 1) {
-		if (!items[index]?.disabled) return index;
-	}
-	return null;
+	return items
+		.map((item, index) => ({ item, index }))
+		.findLast(({ item }) => !item.disabled)?.index ?? null;
 }
 
 function nextEnabledIndexOf(
