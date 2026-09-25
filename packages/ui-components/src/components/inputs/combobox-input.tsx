@@ -5,6 +5,7 @@
  */
 
 import { flip, limitShift, offset, shift } from '@floating-ui/dom';
+import clsx from 'clsx';
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 import { setupFloating } from '../../utils/floating-ui';
@@ -230,10 +231,8 @@ const ComboboxInput = ({
 	const [open, setOpen] = useState(false);
 	const [activeIndex, setActiveIndex] = useState<number | null>(null);
 	const resolvedDescription = description ?? '';
-	const inputClassName = [styles.control, className].filter(Boolean).join(' ');
-	const describedBy = [callerDescribedBy, description ? descriptionId : undefined]
-		.filter(Boolean)
-		.join(' ');
+	const inputClassName = clsx(styles.control, className);
+	const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
 	const valueLower = rest.value?.toString().toLowerCase();
 
 	function openList(): void {

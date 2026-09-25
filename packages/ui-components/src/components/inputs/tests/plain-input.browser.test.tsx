@@ -414,6 +414,8 @@ describe('PlainInput', () => {
     it('shows the error border at rest', async () => {
       await render(<PlainInput label="Token" value="" onChange={() => {}} hasError />);
 
+      await page.getByRole('textbox', { name: 'Token' }).unhover();
+
       const style = getComputedStyle(await getBox('Token'));
       expectColor(style.borderColor, '#D74942');
     });

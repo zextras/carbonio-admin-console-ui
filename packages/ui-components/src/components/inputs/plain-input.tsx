@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import clsx from 'clsx';
 import { useId } from 'react';
 
 import { InputShell } from './input-shell';
@@ -40,10 +41,8 @@ const PlainInput = ({
 	const inputId = id ?? generatedId;
 	const descriptionId = useId();
 	const resolvedDescription = description ?? '';
-	const inputClassName = [styles.control, className].filter(Boolean).join(' ');
-	const describedBy = [callerDescribedBy, description ? descriptionId : undefined]
-		.filter(Boolean)
-		.join(' ');
+	const inputClassName = clsx(styles.control, className);
+	const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
 
 	return (
 		<InputShell
