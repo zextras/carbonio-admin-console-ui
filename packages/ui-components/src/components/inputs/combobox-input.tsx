@@ -28,7 +28,7 @@ type ComboboxItem = {
 
 type ComboboxInputProps = Omit<
 	React.ComponentPropsWithRef<'input'>,
-	'size' | 'onSelect' | 'value' | 'onChange' | 'defaultValue'
+	'size' | 'onSelect' | 'value' | 'onChange' | 'defaultValue' | 'id'
 > & {
 	/** Always rendered as a visible <label> above the field. */
 	label: string;
@@ -204,7 +204,6 @@ const ComboboxPopupBody = ({
 
 const ComboboxInput = ({
 	label,
-	id,
 	value,
 	items,
 	disabled,
@@ -223,8 +222,7 @@ const ComboboxInput = ({
 	'aria-describedby': callerDescribedBy,
 	...rest
 }: ComboboxInputProps) => {
-	const generatedId = useId();
-	const inputId = id ?? generatedId;
+	const inputId = useId();
 	const descriptionId = useId();
 	const listboxId = useId();
 	const inputRef = useRef<HTMLInputElement | null>(null);

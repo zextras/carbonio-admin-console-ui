@@ -72,12 +72,14 @@ describe('PlainInput', () => {
       await expect.element(page.getByText('Display Name')).toBeVisible();
     });
 
-    it('uses a custom id and wires the label to it', async () => {
-      await render(<PlainInput label="Display Name" value="" onChange={() => {}} id="custom-id" />);
+    it('generates an internal id and wires the label to it', async () => {
+      await render(<PlainInput label="Display Name" value="" onChange={() => {}} />);
 
-      const input = page.getByRole('textbox', { name: 'Display Name' });
-      await expect.element(input).toHaveAttribute('id', 'custom-id');
-      await expect.element(page.getByText('Display Name')).toHaveAttribute('for', 'custom-id');
+      const input = (await page
+        .getByRole('textbox', { name: 'Display Name' })
+        .element()) as HTMLInputElement;
+      expect(input.id).toBeTruthy();
+      await expect.element(page.getByText('Display Name')).toHaveAttribute('for', input.id);
     });
 
     it('renders a red hidden asterisk after the label when required', async () => {

@@ -87,14 +87,14 @@ describe('ComboboxInput', () => {
 			await expect.element(page.getByText('Server')).toBeVisible();
 		});
 
-		it('uses a custom id and wires the label to it', async () => {
+		it('generates an internal id and wires the label to it', async () => {
 			await render(
-				<ComboboxInput label="Server" id="custom-id" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
 			);
 
-			const input = page.getByRole('combobox', { name: 'Server' });
-			await expect.element(input).toHaveAttribute('id', 'custom-id');
-			await expect.element(page.getByText('Server')).toHaveAttribute('for', 'custom-id');
+			const input = (await getCombobox('Server')) as HTMLInputElement;
+			expect(input.id).toBeTruthy();
+			await expect.element(page.getByText('Server')).toHaveAttribute('for', input.id);
 		});
 
 		it('renders a hidden red asterisk when required, outside the accessible name', async () => {
