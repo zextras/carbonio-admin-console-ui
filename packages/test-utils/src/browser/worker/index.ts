@@ -42,6 +42,49 @@ const soapFallbackHandler = (apiAction: string) =>
 		}),
 	);
 
+const zextrasContentResponse = (payload: unknown): HttpResponse<DefaultBodyType> =>
+	HttpResponse.json({
+		Body: {
+			response: {
+				content: JSON.stringify(payload),
+			},
+		},
+	});
+
+const handleZextrasSoapActions = http.post('/service/admin/soap', async ({ request }) => {
+	const body = (await request.json()) as {
+		Body?: { zextras?: { action?: string } };
+	};
+	const action = body?.Body?.zextras?.action;
+
+	if (
+		action === 'listS3Connector' ||
+		action === 'getHSMPolicy' ||
+		action === 'listBuckets'
+	) {
+		return zextrasContentResponse({ ok: true, response: { values: [] } });
+	}
+
+	if (action === 'getAllVolumes') {
+		return zextrasContentResponse({ ok: true, response: {} });
+	}
+
+	if (action === 'get_global_config') {
+		return zextrasContentResponse({ ok: true, response: { values: [] } });
+	}
+
+	return HttpResponse.json({ Body: {} });
+});
+
+const soapCatchAllHandler = http.post('/service/admin/soap/:api', ({ params }) => {
+	const action = String(params.api).replace(/Request$/, '');
+	return HttpResponse.json({
+		Body: {
+			[`${action}Response`]: {},
+		},
+	});
+});
+
 const defaultHandlers = [
 	http.get('/i18n/en.json', handleGetTranslations),
 	http.get(/\[object%20Object\]/, () => new HttpResponse(null, { status: 200 })),
@@ -51,6 +94,18 @@ const defaultHandlers = [
 	soapFallbackHandler('GetCos'),
 	soapFallbackHandler('SearchDirectory'),
 	http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
+	http.get(
+		'/service/extension/zextras_admin/core/getAllServers',
+		() => HttpResponse.json({ items: [] }),
+	),
+	http.post('/service/admin/soap/GetAllServersRequest', () =>
+		HttpResponse.json({ Body: { GetAllServersResponse: { server: [] } } }),
+	),
+	http.post('/service/admin/soap/GetAllConfigRequest', () =>
+		HttpResponse.json({ Body: { GetAllConfigResponse: {} } }),
+	),
+	handleZextrasSoapActions,
+	soapCatchAllHandler,
 ];
 
 export const worker = setupWorker(...defaultHandlers);
