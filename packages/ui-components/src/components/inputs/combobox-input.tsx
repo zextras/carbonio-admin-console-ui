@@ -50,10 +50,10 @@ function optionDomId(listboxId: string, itemId: string): string {
 
 function selectedIndexOf(items: Array<ComboboxItem>, value: string | undefined): number | null {
 	const query = value?.toLowerCase() ?? '';
-	const index = items.findIndex(
-		(item) => !item.disabled && item.label.toLowerCase() === query,
-	);
-	return index >= 0 ? index : null;
+	const match = items
+		.map((item, index) => ({ item, index }))
+		.find(({ item }) => !item.disabled && item.label.toLowerCase() === query);
+	return match?.index ?? null;
 }
 
 function firstEnabledIndexOf(items: Array<ComboboxItem>): number | null {
