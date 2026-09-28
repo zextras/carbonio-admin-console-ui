@@ -3,12 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, LabeledValue, ListRow, Switch } from '@zextras/ui-components';
+import { Button, Container, LabeledValue, ListRow, PlainInput, Switch } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { usePurgeBackup } from '../../../../services/use-purge-backup';
 import type { BackupConfigFormApi } from '../types';
+import styles from './data-retention.module.css';
 
 type DataRetentionProps = {
   form: BackupConfigFormApi;
@@ -74,10 +75,10 @@ export const DataRetention = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="retentionPolicySchedule">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('backup.schedule', 'Schedule')}
-                backgroundColor="gray5"
+                autoComplete="off"
                 value={field.state.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
@@ -96,20 +97,30 @@ export const DataRetention = ({
         >
           <form.Field name="keepDeletedItemInBackup">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.keep_deleted_item_in_backup', 'Keep deleted items in the backup')}
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                // @ts-expect-error - needs a fix // DS only support string
-                description={
+              <div className="w-full">
+                <PlainInput
+                  required
+                  autoComplete="off"
+                  label={t(
+                    'backup.keep_deleted_item_in_backup',
+                    'Keep deleted items in the backup',
+                  )}
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={
+                    !form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup
+                  }
+                  aria-describedby="keep-deleted-items-warning"
+                />
+                <p className={styles.fieldWarning} id="keep-deleted-items-warning">
                   <Trans
                     i18nKey="backup.back_delete_account_warning_message"
                     defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
                   />
-                }
-              />
+                </p>
+              </div>
             )}
           </form.Field>
         </Container>
@@ -131,24 +142,30 @@ export const DataRetention = ({
         >
           <form.Field name="keepDeletedAccountsInBackup">
             {(field) => (
-              <Input
-                isRequired
-                label={t(
-                  'backup.keep_deleted_account_in_the_backup',
-                  'Keep deleted account in the backup',
-                )}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                // @ts-expect-error - needs a fix // DS only support string
-                description={
+              <div className="w-full">
+                <PlainInput
+                  required
+                  autoComplete="off"
+                  label={t(
+                    'backup.keep_deleted_account_in_the_backup',
+                    'Keep deleted account in the backup',
+                  )}
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={
+                    !form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup
+                  }
+                  aria-describedby="keep-deleted-accounts-warning"
+                />
+                <p className={styles.fieldWarning} id="keep-deleted-accounts-warning">
                   <Trans
                     i18nKey="backup.back_delete_account_warning_message"
                     defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
                   />
-                }
-              />
+                </p>
+              </div>
             )}
           </form.Field>
         </Container>
