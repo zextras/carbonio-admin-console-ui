@@ -176,7 +176,7 @@ describe('BackupServerConfig', () => {
 
       await expect
         .element(
-          page.getByRole('textbox', { name: 'Keep deleted items in the backup' }),
+          page.getByRole('textbox', { name: 'Keep deleted items in the backup (Days)' }),
         )
         .toBeVisible();
     });
@@ -188,7 +188,7 @@ describe('BackupServerConfig', () => {
 
       await expect
         .element(
-          page.getByRole('textbox', { name: 'Keep deleted accounts in the backup' }),
+          page.getByRole('textbox', { name: 'Keep deleted accounts in the backup (Days)' }),
         )
         .toBeVisible();
     });

@@ -282,7 +282,7 @@ describe('BackupListPanel', () => {
       await expect.element(page.getByText('Server Config', { exact: true })).toBeVisible();
     });
 
-    it('hides Server Specifics dropdown when the section header is clicked', async () => {
+    it('hides Server Specifics options but keeps the server selector when the section header is clicked', async () => {
       await setupBrowserTest(<BackupListPanel />, {
         initialRouterEntry: `${BACKUP_BASE}/${SERVERS_LIST}`,
         queryClient,
@@ -292,21 +292,24 @@ describe('BackupListPanel', () => {
 
       await page.getByText('Server Specifics', { exact: true }).click();
 
-      expect(page.getByRole('combobox', { name: 'Select a Server' }).elements()).toHaveLength(0);
+      expect(page.getByText('Configuration', { exact: true }).elements()).toHaveLength(0);
+      await expect
+        .element(page.getByRole('combobox', { name: 'Select a Server' }))
+        .toBeVisible();
     });
 
-    it('shows Server Specifics dropdown again when re-expanded', async () => {
+    it('shows Server Specifics options again when re-expanded', async () => {
       await setupBrowserTest(<BackupListPanel />, {
         initialRouterEntry: `${BACKUP_BASE}/${SERVERS_LIST}`,
         queryClient,
       });
 
       await page.getByText('Server Specifics', { exact: true }).click();
-      expect(page.getByRole('combobox', { name: 'Select a Server' }).elements()).toHaveLength(0);
+      expect(page.getByText('Configuration', { exact: true }).elements()).toHaveLength(0);
 
       await page.getByText('Server Specifics', { exact: true }).click();
 
-      await expect.element(page.getByRole('combobox', { name: 'Select a Server' })).toBeVisible();
+      await expect.element(page.getByText('Configuration', { exact: true })).toBeVisible();
     });
   });
 
