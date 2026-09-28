@@ -661,12 +661,16 @@ describe('DataTable (browser)', () => {
         }
         const rect = dialog.getBoundingClientRect();
         const triggerRect = customizeTrigger.getBoundingClientRect();
-        // Right edge must track the trigger (the left-corner bug was right≈panelWidth).
-        return (
+        const inViewport =
           rect.top >= 0 &&
           rect.bottom <= globalThis.innerHeight &&
-          Math.abs(rect.right - triggerRect.right) < 8
-        );
+          rect.left >= 0 &&
+          rect.right <= globalThis.innerWidth + 1;
+        const rightAligned = Math.abs(rect.right - triggerRect.right) < 8;
+        // When the trigger is far enough right, stay right-aligned; otherwise
+        // clamp into the viewport (narrow harness) instead of going off-screen.
+        const roomToRightAlign = triggerRect.right >= rect.width + 8;
+        return inViewport && (rightAligned || !roomToRightAlign);
       })
       .toBe(true);
   });

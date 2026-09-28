@@ -9,7 +9,12 @@ import { type RefObject, useEffect, useState } from 'react';
 export type ToolbarPanelPosition = {
   top: number;
   left: number;
+  /** Viewport-aware max height so fixed panels stay clickable (px). */
+  maxHeight?: number;
 };
+
+/** Matches `.customizePanel { width: 16.25rem }` at the default 16px root. */
+const CUSTOMIZE_PANEL_WIDTH_PX = 260;
 
 /** Anchor the Filters panel below-left of its trigger (viewport-fixed). */
 export function getFiltersPanelPosition(trigger: HTMLElement): ToolbarPanelPosition {
@@ -25,11 +30,14 @@ export function getCustomizePanelPosition(trigger: HTMLElement): ToolbarPanelPos
   const rect = trigger.getBoundingClientRect();
   // Prefer `left` over CSS `right`: native <dialog> UA styles pin
   // inset-inline-start, which fights an inline `right` and parks the panel
-  // at the viewport's left edge. Pair with `translateX(-100%)` on the panel
-  // so the right edge meets the trigger without hard-coding panel width.
+  // at the viewport's left edge. Clamp into the viewport and cap height so
+  // bottom actions (Reset) stay clickable without translateX tricks.
+  const top = rect.bottom - 4;
+  const maxLeft = globalThis.innerWidth - CUSTOMIZE_PANEL_WIDTH_PX - 8;
   return {
-    top: rect.bottom - 4,
-    left: Math.max(8, rect.right),
+    top,
+    left: Math.max(8, Math.min(rect.right - CUSTOMIZE_PANEL_WIDTH_PX, maxLeft)),
+    maxHeight: Math.max(120, globalThis.innerHeight - top - 8),
   };
 }
 

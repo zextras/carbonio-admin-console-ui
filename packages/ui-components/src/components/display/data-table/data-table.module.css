@@ -1038,8 +1038,6 @@
   border-radius: var(--border-radius, 8px);
   background: var(--color-gray6-regular, #fff);
   box-shadow: 0 6px 20px rgb(0 0 0 / 14%);
-  /* right-align to the trigger: inline `left` is the trigger's right edge */
-  transform: translateX(-100%);
 }
 
 .customizeSectionLabel {
