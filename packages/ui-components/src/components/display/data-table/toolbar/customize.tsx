@@ -392,7 +392,11 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
               <CustomizePanel
                 ref={panelRef}
                 id={panelId}
-                style={{ top: panelPosition.top, left: panelPosition.left }}
+                style={{
+                  top: panelPosition.top,
+                  left: panelPosition.left,
+                  maxHeight: panelPosition.maxHeight,
+                }}
                 density={density}
                 onDensityChange={handleDensityChange}
                 columnItems={columnItems}
