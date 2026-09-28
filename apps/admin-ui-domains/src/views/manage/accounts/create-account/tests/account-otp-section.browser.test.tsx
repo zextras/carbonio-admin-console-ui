@@ -230,7 +230,7 @@ describe('AccountOtpSection – QRCodeSVG', () => {
 
       await page.getByRole('button', { name: 'SEND', exact: true }).click();
 
-      await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+      await expect.poll(() => apiInterceptor.getLastRequest()).toBeTruthy();
 
       const capturedRequest = apiInterceptor.getLastRequest();
       const capturedRequestBody = (await capturedRequest.json()) as {

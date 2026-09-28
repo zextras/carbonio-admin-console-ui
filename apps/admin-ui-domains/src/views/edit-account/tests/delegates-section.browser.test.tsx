@@ -13,6 +13,9 @@ const mockAccountListDirectory = vi.hoisted(() => vi.fn());
 vi.mock('@zextras/ui-shared', async (importOriginal) => ({
 	...(await importOriginal<typeof import('@zextras/ui-shared')>()),
 	batchService: mockBatchService,
+	// The delegate picker debounces search by 700ms; these tests do not cover
+	// debouncing, so resolve the value immediately to skip the timer wait.
+	useDebouncedValue: <T,>(value: T): T => value,
 }));
 vi.mock('../../../services/account-list-directory-service', () => ({
 	accountListDirectory: mockAccountListDirectory,
@@ -91,8 +94,8 @@ describe('EditAccountDelegatesSection (browser)', () => {
 
 		await page.getByText('sender@example.com').click();
 
-		// 3 tables x (REMOVE + REMOVE ALL): the send table's REMOVE is index 4
-		const removeButton = page.getByRole('button', { name: 'REMOVE' }).nth(4);
+		// exact name matching excludes REMOVE ALL: the send table's REMOVE is index 2
+		const removeButton = page.getByRole('button', { name: 'REMOVE' }).nth(2);
 		await expect.element(removeButton).toBeEnabled();
 		await removeButton.click();
 

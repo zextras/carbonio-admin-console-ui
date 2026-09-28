@@ -142,7 +142,7 @@ Files: **/src/assets/*.svg
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: CC-BY-NC-SA-4.0
 
-Files: **/__screenshots__/**/*.png
+Files: **/.vitest/attachments/**/*.png
 Copyright: 2021 Zextras <https://www.zextras.com>
 License: CC-BY-NC-SA-4.0
 

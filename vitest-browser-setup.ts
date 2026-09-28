@@ -129,12 +129,8 @@ beforeEach(() => {
 afterAll(() => {
   stopMockWorker();
   vi.clearAllMocks();
-  resetMockWorker();
-  setupBrowserCatchAllHandlers();
 });
 
 afterEach(() => {
   vi.unstubAllGlobals();
-  resetMockWorker();
-  setupBrowserCatchAllHandlers();
 });

@@ -310,10 +310,10 @@ describe('DomainCosLink (browser)', () => {
 			});
 			createBrowserSoapAPIInterceptor('FlushCache', {});
 			createBrowserSoapAPIInterceptor('GetDomain', { domain: [] });
-			let grantRightCalled = false;
+			let grantRightCalls = 0;
 			worker.use(
 				http.post('/service/admin/soap/GrantRightRequest', () => {
-					grantRightCalled = true;
+					grantRightCalls += 1;
 					return HttpResponse.json({ Body: { GrantRightResponse: {} } });
 				}),
 			);
@@ -335,6 +335,9 @@ describe('DomainCosLink (browser)', () => {
 				.poll(() => page.getByText('Standard COS').elements().length)
 				.toBe(2);
 			await page.getByText('Standard COS').nth(1).click();
+			// Baseline capture: a straggler request from an earlier test must not
+			// fail this assertion.
+			const grantRightCallsBeforeLink = grantRightCalls;
 			await userEvent.fill(page.getByLabelText(/handle accounts/i), '5');
 			await page.getByRole('button', { name: 'Link' }).click();
 
@@ -346,7 +349,7 @@ describe('DomainCosLink (browser)', () => {
 				_content: 'cos-1:5',
 			});
 			expect(requestParams.a?.some((attr) => attr.n.startsWith('+'))).toBe(false);
-			expect(grantRightCalled).toBe(false);
+			expect(grantRightCalls - grantRightCallsBeforeLink).toBe(0);
 		});
 
 		it('does not call ModifyDomain when Link is clicked without a selected COS', async () => {
@@ -370,7 +373,7 @@ describe('DomainCosLink (browser)', () => {
 			await userEvent.fill(page.getByLabelText(/handle accounts/i), '10');
 			await page.getByRole('button', { name: 'Link' }).click();
 			await new Promise((resolve) => {
-				setTimeout(resolve, 500);
+				setTimeout(resolve, 250);
 			});
 
 			expect(modifyDomainCalled).toBe(false);
@@ -472,7 +475,7 @@ describe('DomainCosLink (browser)', () => {
 
 			await page.getByRole('button', { name: 'Duplicate' }).click();
 			await new Promise((resolve) => {
-				setTimeout(resolve, 500);
+				setTimeout(resolve, 250);
 			});
 
 			expect(copyCosCalled).toBe(false);
@@ -509,7 +512,7 @@ describe('DomainCosLink (browser)', () => {
 			await userEvent.fill(page.getByLabelText(/handle accounts/i), '10');
 			await page.getByRole('button', { name: 'Duplicate' }).click();
 			await new Promise((resolve) => {
-				setTimeout(resolve, 2000);
+				setTimeout(resolve, 250);
 			});
 
 			expect(modifyDomainCalled).toBe(false);

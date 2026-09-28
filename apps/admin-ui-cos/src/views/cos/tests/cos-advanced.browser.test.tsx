@@ -9,12 +9,11 @@ import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   grantUserCosRights,
-  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../services/modify-cos-service';
@@ -139,15 +138,6 @@ async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
 }
 
 describe('CosAdvanced', () => {
-  beforeEach(async () => {
-    vi.resetAllMocks();
-    resetMockWorker();
-  });
-
-  afterEach(() => {
-    resetMockWorker();
-  });
-
   describe('Rendering', () => {
     it('should render the page title', async () => {
       await setupCosAdvancedTest();

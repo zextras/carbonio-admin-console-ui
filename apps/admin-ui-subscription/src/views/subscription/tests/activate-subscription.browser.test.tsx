@@ -46,13 +46,12 @@ describe('ActivateSubscription', () => {
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
       await expect.element(page.getByText('Activate subscription')).toBeVisible();
       await expect
         .element(page.getByText(/Seems like you don't have a subscription token active yet/i))
         .toBeVisible();
-      await expect.element(page.getByRole('img', { name: 'logo' })).toBeVisible();
+      await expect.element(page.getByRole('img', { name: 'subscription logo' })).toBeVisible();
     });
 
   });

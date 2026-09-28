@@ -27,7 +27,7 @@
   ],
   "devDependencies": {
     "@testing-library/user-event": "^14.6.1",
-    "@vitest/browser": "^4.1.0",
+    "@vitest/browser": "^5.0.1",
     "clsx": "^2.1.1",
     "eslint": "^9.39.5",
     "eslint-plugin-css-modules": "^2.12.0",
@@ -36,8 +36,8 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "typescript": "npm:@typescript/typescript6@^6.0.2",
     "typescript-plugin-css-modules": "^5.2.0",
-    "vitest": "^4.1.0",
-    "vitest-browser-react": "^2.2.0"
+    "vitest": "^5.0.1",
+    "vitest-browser-react": "^2.3.0"
   },
   "peerDependencies": {
     "react": "^19.2.7",

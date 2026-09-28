@@ -42,6 +42,7 @@ export * from './components/inputs/IconCheckbox';
 export * from './components/inputs/Input';
 export * from './components/inputs/labeled-value';
 export * from './components/inputs/PasswordInput';
+export * from './components/inputs/plain-input';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
 export {

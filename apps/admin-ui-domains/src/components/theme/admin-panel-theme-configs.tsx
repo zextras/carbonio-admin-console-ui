@@ -433,6 +433,20 @@ export const AdminPanelThemeConfig = ({
         </Padding>
       </ListRow>
       <ListRow>
+        <Container
+          mainAlignment="flex-start"
+          crossAlignment="flex-start"
+          padding={{ all: 'small' }}
+        >
+          <ds-text as="p" size="small" color="gray0">
+            {t(
+              'label.help_documentation_url_note',
+              'If the URL is not set, the documentation will redirect to the default one.',
+            )}
+          </ds-text>
+        </Container>
+      </ListRow>
+      <ListRow>
         <Container padding={{ all: 'small' }}>
           <ThemeFieldInput
             form={form}

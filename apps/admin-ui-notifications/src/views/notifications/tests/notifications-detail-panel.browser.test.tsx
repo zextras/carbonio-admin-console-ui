@@ -54,7 +54,7 @@ describe('NotificationsDetailPanel', () => {
 		await setupBrowserTest(<NotificationsDetailPanel />, {
 			initialRouterEntry: '/',
 		});
-		await expect.element(page.getByText('ALL')).toBeVisible();
+		await expect.element(page.getByText(/^ALL/)).toBeVisible();
 	});
 
 	it('should render the notification tabs when on list route', async () => {
@@ -62,10 +62,10 @@ describe('NotificationsDetailPanel', () => {
 		await setupBrowserTest(<NotificationsDetailPanel />, {
 			initialRouterEntry: '/list',
 		});
-		await expect.element(page.getByText('ALL')).toBeVisible();
-		await expect.element(page.getByText('INFORMATION')).toBeVisible();
-		await expect.element(page.getByText('WARNING')).toBeVisible();
-		await expect.element(page.getByText('ERROR')).toBeVisible();
+		await expect.element(page.getByText(/^ALL/)).toBeVisible();
+		await expect.element(page.getByText(/^INFORMATION/)).toBeVisible();
+		await expect.element(page.getByText(/^WARNING/)).toBeVisible();
+		await expect.element(page.getByText(/^ERROR/)).toBeVisible();
 	});
 
 	it('should render the Notifications List title on list route', async () => {

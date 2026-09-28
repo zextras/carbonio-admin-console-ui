@@ -3,6 +3,16 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+vi.mock('@zextras/ui-shared', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@zextras/ui-shared')>();
+  return {
+    ...actual,
+    // The input debounces search by 700ms; these tests do not cover
+    // debouncing, so resolve the value immediately to skip the timer wait.
+    useDebouncedValue: <T,>(value: T): T => value,
+  };
+});
+
 import { getQueryClient, setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { type DefaultBodyType,http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
@@ -71,11 +81,20 @@ describe('DomainListChipInput (browser)', () => {
     await userEvent.type(input, 'exa');
     await expect.element(page.getByText('example.org')).toBeVisible();
 
-    // Quiet period: any debounced duplicate request would fire within this window
-    await new Promise((resolve) => {
-      setTimeout(resolve, 2000);
-    });
-
+    // Wait until the request stream is quiescent: any debounced duplicate
+    // would appear within the window.
+    await expect
+      .poll(
+        async () => {
+          const before = queries.length;
+          await new Promise((resolve) => {
+            setTimeout(resolve, 150);
+          });
+          return queries.length - before;
+        },
+        { timeout: 2000 },
+      )
+      .toBe(0);
     expect(queries.filter((query) => query.includes('exa'))).toHaveLength(1);
   });
 

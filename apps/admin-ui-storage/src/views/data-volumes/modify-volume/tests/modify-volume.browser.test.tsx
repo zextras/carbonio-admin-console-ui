@@ -459,17 +459,17 @@ describe('GetVolume failure (non-advanced mode)', () => {
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
 
-    // soapFetch retries 3 times (~7s of backoff) before the error propagates
+    // The Fault propagates as soon as the response arrives; the fetch layer has no retries
     await vi.waitFor(
       () => {
         expect(getAllVolumesRequest).toHaveBeenCalled();
       },
-      { timeout: 15_000 },
+      { timeout: 5_000 },
     );
 
     await expect.element(page.getByText('Something went wrong, please try again')).toBeVisible();
     expect(setmodifyVolumeToggle).not.toHaveBeenCalledWith(true);
-  }, 25_000);
+  });
 });
 
 describe('external volume - object storage detection', () => {
@@ -787,15 +787,15 @@ describe('advanced save', () => {
     await page.getByRole('textbox', { name: /volume name/i }).fill('primary-local-updated');
     await page.getByRole('button', { name: /^save$/i }).click();
 
-    // fetchSoap retries 3 times (~7s of backoff) before the error propagates
+    // The Fault propagates as soon as the response arrives; the fetch layer has no retries
     await vi.waitFor(
       () => {
         expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
       },
-      { timeout: 15_000 },
+      { timeout: 5_000 },
     );
     await expect.element(page.getByText('Something went wrong, please try again')).toBeVisible();
-  }, 25_000);
+  });
 });
 
 describe('compression threshold disabled state', () => {
@@ -985,7 +985,7 @@ describe('prefix-change confirmation dialog', () => {
     await applyButton.click();
 
     await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
-  }, 25_000);
+  }, 15_000);
 });
 
 describe('external volume bucket data loading', () => {

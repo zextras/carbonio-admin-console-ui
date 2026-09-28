@@ -6,6 +6,7 @@
 
 import {
   advancedSupportedApiForBrowser,
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   createBrowserZextrasActionInterceptor,
   getGetInfoResponseMock,
@@ -63,9 +64,7 @@ describe('AppView', () => {
         },
       ],
     });
-    createBrowserSoapAPIInterceptor('GetVersionInfo', {
-      info: { majorversion: '24', minorversion: '5', microversion: '0' },
-    });
+    await createBrowserAPIInterceptor('get', '/.version', () => HttpResponse.text('24.5.0'));
     createBrowserSoapAPIInterceptor('SearchDirectory', {});
     createBrowserZextrasActionInterceptor('getAllNotifications', () =>
       HttpResponse.json({

@@ -9,12 +9,11 @@ import {
   delayedSoapApiForBrowser,
   getQueryClient,
   grantUserCosRights,
-  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../services/modify-cos-service';
@@ -235,10 +234,6 @@ describe('CosGeneralInformation', () => {
     vi.resetAllMocks();
   });
 
-  afterEach(() => {
-    resetMockWorker();
-  });
-
   describe('Rendering', () => {
     it('should render the page title', async () => {
       await setupGeneralInfoTest();
@@ -249,7 +244,7 @@ describe('CosGeneralInformation', () => {
     it('should render the Name field with COS name', async () => {
       await setupGeneralInfoTest();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await expect.element(nameInput).toBeVisible();
       await expect.element(nameInput).toHaveValue('testcos');
     });
@@ -325,7 +320,7 @@ describe('CosGeneralInformation', () => {
     it('should disable Name field for default COS', async () => {
       await setupGeneralInfoTest(mockDefaultCosData);
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await expect.element(nameInput).toBeDisabled();
     });
 
@@ -347,7 +342,7 @@ describe('CosGeneralInformation', () => {
     it('should show Save and Cancel when Name is changed', async () => {
       await setupGeneralInfoTest();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await userEvent.fill(nameInput, 'renamed-cos');
       await expect.element(nameInput).toHaveValue('renamed-cos');
 
@@ -424,7 +419,7 @@ describe('CosGeneralInformation', () => {
       createBrowserSoapAPIInterceptor('ModifyCos', {});
       await setupSaveTest();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await userEvent.fill(nameInput, 'renamed-cos');
 
       await page.getByRole('button', { name: 'Save' }).click();
@@ -453,7 +448,11 @@ describe('CosGeneralInformation', () => {
     it('should not send ModifyCos when DELETE is clicked', async () => {
       await setupGeneralInfoTest();
 
-      const modifyCosPromise = createBrowserSoapAPIInterceptor('ModifyCos', {});
+      const modifyCosCalls = await createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/ModifyCosRequest',
+        () => HttpResponse.json({ Body: { ModifyCosResponse: {} } }),
+      );
 
       await page.getByRole('button', { name: 'DELETE' }).click();
 
@@ -461,13 +460,11 @@ describe('CosGeneralInformation', () => {
         .element(page.getByText('Are you sure you want to delete this Class of Service?'))
         .toBeVisible();
 
-      const settled = await Promise.race([
-        modifyCosPromise.then(() => true),
-        new Promise<boolean>((resolve) => {
-          setTimeout(() => resolve(false), 2000);
-        }),
-      ]);
-      expect(settled).toBe(false);
+      // The modal has settled; nothing may reach ModifyCos.
+      await new Promise((resolve) => {
+        setTimeout(resolve, 250);
+      });
+      expect(modifyCosCalls.getCalledTimes()).toBe(0);
     });
 
     it('should close modal when No, Go Back is clicked', async () => {
@@ -586,7 +583,7 @@ describe('CosGeneralInformation', () => {
       );
       await expect.element(page.getByText('General Information')).toBeVisible();
 
-      const nameInput = page.getByRole('textbox', { name: 'Name' });
+      const nameInput = page.getByRole('textbox', { name: 'Name*' });
       await expect.element(nameInput).toBeDisabled();
     });
   });

@@ -94,10 +94,10 @@ describe('NotificationListView', () => {
 	it('should render all notification tabs', async () => {
 		setupGetAllNotificationsInterceptor();
 		await setupBrowserTest(<NotificationListView />);
-		await expect.element(page.getByText('ALL')).toBeVisible();
-		await expect.element(page.getByText('INFORMATION')).toBeVisible();
-		await expect.element(page.getByText('WARNING')).toBeVisible();
-		await expect.element(page.getByText('ERROR')).toBeVisible();
+		await expect.element(page.getByText(/^ALL/)).toBeVisible();
+		await expect.element(page.getByText(/^INFORMATION/)).toBeVisible();
+		await expect.element(page.getByText(/^WARNING/)).toBeVisible();
+		await expect.element(page.getByText(/^ERROR/)).toBeVisible();
 	});
 
 	it('should render table headers', async () => {

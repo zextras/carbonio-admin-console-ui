@@ -207,6 +207,7 @@ Existing call sites (~3,300) are migrated incrementally. When modifying a file t
 - **Never** remove `.test.only` or `it.only` - they are intentional
 - Use Vitest globals (no need to import describe, it, expect, etc.)
 - Browser tests use `.browser.test.tsx` extension and run in Playwright
+- Vitest 5+ matches locator text and accessible names exactly (full string, case-sensitive). Accessible names of required fields include the trailing `*` rendered by the CSS required marker (see `Input.module.css`), so match it in `getByRole`/`getByLabelText` names or use a `^`-anchored regex (e.g. `{ name: /^Name/ }`) for dynamic suffixes
 - Unit tests use `.test.ts`/`.test.tsx` and run in jsdom
 - Use `admin-ui-test-utils` for shared test utilities
 - Full browser-test conventions (setup, locators, interactions, TanStack Form, MSW) are documented in `docs/browser-test-conventions.md`

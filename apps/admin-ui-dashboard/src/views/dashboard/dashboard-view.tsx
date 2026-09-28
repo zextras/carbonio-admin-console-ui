@@ -12,6 +12,7 @@ import {
   useDomainInformation,
   useHasAllRights,
   useIsAdvanced,
+  useServerVersion,
   useUserAccounts,
 } from '@zextras/ui-shared';
 import { useNavigate } from 'react-router';
@@ -27,7 +28,6 @@ import {
   SERVERS_LIST,
   STORAGES_ROUTE_ID,
 } from '../../constants';
-import { useServerVersion } from '../../hooks/use-server-version';
 import { CarbonioVersionInformation } from './carbonio-version-information-view';
 import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';

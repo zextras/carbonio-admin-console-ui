@@ -585,8 +585,9 @@ describe('ManageAccounts (browser)', () => {
 
             await page.getByText('2', { exact: true }).hover();
 
-            await expect.element(page.getByText('alias1@example.com')).toBeVisible();
-            await expect.element(page.getByText('alias2@example.com')).toBeVisible();
+            await expect
+                .element(page.getByText('alias1@example.com, alias2@example.com'))
+                .toBeVisible();
         });
     });
 

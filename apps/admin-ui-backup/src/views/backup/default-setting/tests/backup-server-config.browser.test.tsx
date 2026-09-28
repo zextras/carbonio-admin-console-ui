@@ -128,7 +128,7 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      const input = page.getByRole('textbox', { name: 'Backup Path' });
+      const input = page.getByRole('textbox', { name: 'Backup Path*' });
       await expect.element(input).toBeVisible();
       await expect.element(input).toHaveValue('/opt/zextras/backup');
     });
@@ -281,7 +281,7 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      const backupPathInput = page.getByRole('textbox', { name: 'Backup Path' });
+      const backupPathInput = page.getByRole('textbox', { name: 'Backup Path*' });
       await backupPathInput.fill('/tmp/backup');
 
       const saveButton = page.getByRole('button', { name: 'Save' });
