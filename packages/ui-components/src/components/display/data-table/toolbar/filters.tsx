@@ -7,7 +7,8 @@
 import '../../../../web-components/ds-icon';
 
 import clsx from 'clsx';
-import { type Ref, useEffect, useId, useRef, useState } from 'react';
+import { type CSSProperties, type Ref, useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../data-table.module.css';
@@ -24,6 +25,7 @@ import {
 } from '../models/filter-model';
 import type { DataTableFilterDef, DataTableFiltersState } from '../models/types';
 import { useTableUi } from '../table-ui-store';
+import { getFiltersPanelPosition, useAnchoredPanelPosition } from './panel-position';
 
 export type DataTableFiltersProps = {
   filterDefs: Array<DataTableFilterDef>;
@@ -45,6 +47,7 @@ export type DataTableFiltersProps = {
 type FiltersPanelProps = {
   ref?: Ref<HTMLDialogElement>;
   id: string;
+  style?: CSSProperties;
   filterDefs: Array<DataTableFilterDef>;
   draft: DataTableFiltersState;
   onDraftChange: (draft: DataTableFiltersState) => void;
@@ -62,6 +65,7 @@ type FiltersPanelProps = {
 const FiltersPanel = ({
   ref,
   id,
+  style,
   filterDefs,
   draft,
   onDraftChange,
@@ -76,8 +80,14 @@ const FiltersPanel = ({
 }: FiltersPanelProps) => {
   const { t } = useTranslation();
   return (
-    <dialog id={id} ref={ref} open aria-label={filtersLabel} className={styles.filtersPanel}>
-      <div className={styles.filtersPanelHeader}>
+    <dialog
+      id={id}
+      ref={ref}
+      open
+      aria-label={filtersLabel}
+      className={styles.filtersPanel}
+      style={style}
+    >      <div className={styles.filtersPanelHeader}>
         <span className={styles.filtersPanelTitle}>{filtersLabel}</span>
         <button
           type="button"
@@ -209,6 +219,11 @@ export const DataTableFilters = ({
   const panelRef = useRef<HTMLDialogElement>(null);
   const panelId = useId();
   const activeFilterCount = countActiveFilters(filters);
+  const { position: panelPosition, capturePosition } = useAnchoredPanelPosition(
+    open,
+    triggerRef,
+    getFiltersPanelPosition,
+  );
 
   const labels = {
     filtersLabel: filtersLabel ?? t('data_table.filters', 'Filters'),
@@ -244,6 +259,7 @@ export const DataTableFilters = ({
   }, [open, setOpenPanel]);
 
   function openFilters(): void {
+    capturePosition();
     setDraft(cloneFiltersState(filters));
     setOpenPanel('filters');
   }
@@ -293,25 +309,28 @@ export const DataTableFilters = ({
           </span>
         )}
       </button>
-      {open && (
-        <FiltersPanel
-          ref={panelRef}
-          id={panelId}
-          filterDefs={filterDefs}
-          draft={draft}
-          onDraftChange={setDraft}
-          onClose={closeFilters}
-          onClearDraft={() => {
-            setDraft({});
-          }}
-          onApply={applyDraft}
-          filtersLabel={labels.filtersLabel}
-          closeFiltersLabel={labels.closeFiltersLabel}
-          clearDraftLabel={labels.clearDraftLabel}
-          applyLabel={labels.applyLabel}
-          filtersHint={labels.filtersHint}
-        />
-      )}
+      {panelPosition &&
+        createPortal(
+          <FiltersPanel
+            ref={panelRef}
+            id={panelId}
+            style={{ top: panelPosition.top, left: panelPosition.left }}
+            filterDefs={filterDefs}
+            draft={draft}
+            onDraftChange={setDraft}
+            onClose={closeFilters}
+            onClearDraft={() => {
+              setDraft({});
+            }}
+            onApply={applyDraft}
+            filtersLabel={labels.filtersLabel}
+            closeFiltersLabel={labels.closeFiltersLabel}
+            clearDraftLabel={labels.clearDraftLabel}
+            applyLabel={labels.applyLabel}
+            filtersHint={labels.filtersHint}
+          />,
+          document.body,
+        )}
     </>
   );
 };

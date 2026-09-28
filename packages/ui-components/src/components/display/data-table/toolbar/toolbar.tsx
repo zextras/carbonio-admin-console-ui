@@ -16,9 +16,9 @@ type DataTableToolbarProps = {
 };
 
 /**
- * Toolbar layout part: the positioning context (`toolbarWrap`) plus the
- * flex row the search/filters/customize parts compose into. Panels dropped
- * as children are absolutely positioned against the wrap.
+ * Toolbar layout part: flex row for search/filters/customize. Filters and
+ * Customize panels portal to document.body (fixed), so they are not clipped
+ * by the DataTable shell when the table is short.
  */
 export const DataTableToolbar = ({ children, label }: DataTableToolbarProps) => {
   const { t } = useTranslation();
