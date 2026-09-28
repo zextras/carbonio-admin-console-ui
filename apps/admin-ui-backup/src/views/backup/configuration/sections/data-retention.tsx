@@ -108,11 +108,10 @@ export const DataRetention = ({
                     field.handleChange(e.target.value)
                   }
                   description={t(
-                    'backup.back_delete_account_warning_message',
-                    'If you set 0, accounts will be kept in backup forever',
+                    'backup.keep_deleted_items_warning_message',
+                    'If you set 0, items will be kept in backup forever',
                   )}
                   disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                  aria-describedby="keep-deleted-items-warning"
                 />
               </div>
             )}
@@ -139,10 +138,9 @@ export const DataRetention = ({
                     field.handleChange(e.target.value)
                   }
                   disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                  aria-describedby="keep-deleted-accounts-warning"
                   description={t(
-                    'backup.back_delete_account_warning_message',
-                    'If you set 0, accounts</strong> will be kept in backup forever',
+                    'backup.keep_deleted_accounts_warning_message',
+                    'If you set 0, accounts will be kept in backup forever',
                   )}
                 />
               </div>
