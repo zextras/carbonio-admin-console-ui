@@ -194,6 +194,8 @@ describe('PlainInput', () => {
     it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
       await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
+      await page.getByRole('textbox', { name: 'Name' }).unhover();
+
       const style = getComputedStyle(await getBox('Name'));
       expect(style.borderTopWidth).toBe('1px');
       expect(style.borderTopStyle).toBe('solid');

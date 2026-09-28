@@ -128,7 +128,7 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      const input = page.getByRole('textbox', { name: 'Backup Path*' });
+      const input = page.getByRole('textbox', { name: 'Backup Path' });
       await expect.element(input).toBeVisible();
       await expect.element(input).toHaveValue('/opt/zextras/backup');
     });
@@ -138,7 +138,9 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      await expect.element(page.getByText('Minimum Space Threshold (MB)')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Minimum Space Threshold (MB)' }))
+        .toBeVisible();
     });
 
     it('should render the Local Metadata Threshold input', async () => {
@@ -146,7 +148,9 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      await expect.element(page.getByText('Local Metadata Threshold (MB)')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Local Metadata Threshold (MB)' }))
+        .toBeVisible();
     });
 
     it('should render the Schedule Smartscan switch', async () => {
@@ -170,7 +174,11 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      await expect.element(page.getByText('Keep deleted items in the backup')).toBeVisible();
+      await expect
+        .element(
+          page.getByRole('textbox', { name: 'Keep deleted items in the backup' }),
+        )
+        .toBeVisible();
     });
 
     it('should render "Keep deleted accounts in the backup" input', async () => {
@@ -178,7 +186,11 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      await expect.element(page.getByText('Keep deleted accounts in the backup')).toBeVisible();
+      await expect
+        .element(
+          page.getByRole('textbox', { name: 'Keep deleted accounts in the backup' }),
+        )
+        .toBeVisible();
     });
 
     it('should render the "forever" helper text twice', async () => {
@@ -281,7 +293,7 @@ describe('BackupServerConfig', () => {
 
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      const backupPathInput = page.getByRole('textbox', { name: 'Backup Path*' });
+      const backupPathInput = page.getByRole('textbox', { name: 'Backup Path' });
       await backupPathInput.fill('/tmp/backup');
 
       const saveButton = page.getByRole('button', { name: 'Save' });
