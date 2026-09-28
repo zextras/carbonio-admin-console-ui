@@ -264,6 +264,36 @@ function CustomizeDataTable() {
   );
 }
 
+/** One-row table — panels must portal above the short shell without clipping. */
+function ShortToolbarDataTable() {
+  const [filters, setFilters] = useState<DataTableFiltersState>({});
+  return (
+    <DataTableRoot
+      data={ALL_ROWS.slice(0, 1)}
+      columns={columns}
+      getRowId={(row) => row.id}
+      manualSorting={false}
+      manualPagination={false}
+      manualFiltering={false}
+      primaryColumnId="account"
+      state={{ columnFilters: toColumnFilters(filters, STATUS_FILTER_DEFS), globalFilter: '' }}
+    >
+      <DataTableLiveRegion />
+      <DataTableToolbar>
+        <DataTableFilters
+          filterDefs={STATUS_FILTER_DEFS}
+          filters={filters}
+          onFiltersChange={setFilters}
+          onApplyResetSelection={noop}
+        />
+        <DataTableCustomize />
+      </DataTableToolbar>
+      <DataTableTable aria-label="Manage Accounts" />
+      <DataTableTableFooter paginationThreshold={100} />
+    </DataTableRoot>
+  );
+}
+
 /** Row chrome harness: inline edit, copy, row actions and peek. */
 function ChromeDataTable({
   onCellEditCommit,
@@ -593,6 +623,52 @@ describe('DataTable (browser)', () => {
     await expect
       .poll(() => document.querySelector('[data-density]')?.getAttribute('data-density'))
       .toBe('compact');
+  });
+
+  it('keeps Filters and Customize panels fully visible on a short table', async () => {
+    await renderTable(<ShortToolbarDataTable />);
+
+    await userEvent.click(page.getByRole('button', { name: 'Filters' }));
+    await expect.element(page.getByRole('dialog', { name: 'Filters' })).toBeVisible();
+    await expect
+      .poll(() => {
+        const dialog = document.querySelector('dialog[aria-label="Filters"]');
+        if (!(dialog instanceof HTMLElement) || dialog.parentElement !== document.body) {
+          return false;
+        }
+        const rect = dialog.getBoundingClientRect();
+        return rect.top >= 0 && rect.bottom <= globalThis.innerHeight;
+      })
+      .toBe(true);
+
+    await userEvent.click(page.getByRole('button', { name: 'Close filters' }));
+    await expect.element(page.getByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
+
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await expect.element(page.getByRole('dialog', { name: 'Customize table' })).toBeVisible();
+    await expect
+      .poll(() => {
+        const dialog = document.querySelector('dialog[aria-label="Customize table"]');
+        const customizeTrigger = document.querySelector(
+          'button[aria-haspopup="dialog"][aria-expanded="true"]',
+        );
+        if (
+          !(dialog instanceof HTMLElement) ||
+          dialog.parentElement !== document.body ||
+          !(customizeTrigger instanceof HTMLElement)
+        ) {
+          return false;
+        }
+        const rect = dialog.getBoundingClientRect();
+        const triggerRect = customizeTrigger.getBoundingClientRect();
+        // Right edge must track the trigger (the left-corner bug was right≈panelWidth).
+        return (
+          rect.top >= 0 &&
+          rect.bottom <= globalThis.innerHeight &&
+          Math.abs(rect.right - triggerRect.right) < 8
+        );
+      })
+      .toBe(true);
   });
 
   it('hides a non-locked column and keeps the primary locked', async () => {

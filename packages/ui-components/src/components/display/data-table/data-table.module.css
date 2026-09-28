@@ -755,14 +755,17 @@
 }
 
 .filtersPanel {
-  position: absolute;
-  top: calc(100% - 0.25rem);
-  left: var(--padding-size-medium, 1rem);
-  z-index: 45;
+  position: fixed;
+  /* Clears UA dialog insets (physical + logical) so portal inline coords win. */
+  inset: auto;
+  inset-inline: auto;
+  z-index: 1100;
   width: 20rem;
-  max-width: calc(100% - 2rem);
+  max-width: calc(100vw - 1rem);
+  max-height: calc(100vh - 1rem);
   margin: 0;
   padding: var(--padding-size-medium, 1rem);
+  overflow-y: auto;
   border: 1px solid var(--color-gray4-regular, #e2e6ec);
   border-radius: var(--border-radius, 8px);
   background: var(--color-gray6-regular, #fff);
@@ -1020,18 +1023,23 @@
 }
 
 .customizePanel {
-  position: absolute;
-  top: calc(100% - 0.25rem);
-  right: var(--padding-size-medium, 1rem);
-  z-index: 46;
+  position: fixed;
+  /* Clears UA dialog insets (physical + logical) so portal inline coords win. */
+  inset: auto;
+  inset-inline: auto;
+  z-index: 1100;
   width: 16.25rem;
-  max-width: calc(100% - 2rem);
+  max-width: calc(100vw - 1rem);
+  max-height: calc(100vh - 1rem);
   margin: 0;
   padding: 0.875rem 1rem;
+  overflow-y: auto;
   border: 1px solid var(--color-gray3-hover, #cfd5de);
   border-radius: var(--border-radius, 8px);
   background: var(--color-gray6-regular, #fff);
   box-shadow: 0 6px 20px rgb(0 0 0 / 14%);
+  /* right-align to the trigger: inline `left` is the trigger's right edge */
+  transform: translateX(-100%);
 }
 
 .customizeSectionLabel {
@@ -1498,9 +1506,19 @@
   background: #f3f7fd;
 }
 
-.bodyRowPeek .tdSelect,
-.bodyRowPeek .td.pinnedLeft {
+/* Peek accent: leftmost cell only (select when present). */
+.bodyRowPeek .tdSelect {
   box-shadow: inset 3px 0 0 var(--color-primary-regular, #2b73d2);
+}
+
+.bodyRowPeek:not(:has(.tdSelect)) .td.pinnedLeft {
+  box-shadow: inset 3px 0 0 var(--color-primary-regular, #2b73d2);
+}
+
+.bodyRowPeek:not(:has(.tdSelect)) .td.pinnedLeft.pinnedShadow {
+  box-shadow:
+    inset 3px 0 0 var(--color-primary-regular, #2b73d2),
+    6px 0 8px -6px rgb(0 0 0 / 12%);
 }
 
 .liveRegion {
