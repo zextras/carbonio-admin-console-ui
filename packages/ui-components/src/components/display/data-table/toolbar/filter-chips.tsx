@@ -107,7 +107,7 @@ export const DataTableFilterChips = ({
           const displayLabel = chipDisplayLabel(chip, t, locale);
           return (
             <li key={chip.key} className={styles.filterChip}>
-              {displayLabel}
+              <span>{displayLabel}</span>
               <button
                 type="button"
                 className={styles.filterChipRemove}
