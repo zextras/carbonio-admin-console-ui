@@ -272,7 +272,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
               <ds-divider></ds-divider>
             </Container>
           </ListRow>
-          <ListRow>
+          <ListRow padding={{ bottom: 'small' }}>
             <Container padding={{ bottom: 'small' }}>
               <form.Field name="keepDeletedItemsDays">
                 {(field) => (
@@ -285,22 +285,16 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     }
                     autoComplete="off"
                     disabled={!allowSetBackup}
+                    description={t(
+                      'backup.set_backup_forever_msg',
+                      'If you set 0, your data will be kept in backup forever',
+                    )}
                   />
                 )}
               </form.Field>
             </Container>
           </ListRow>
-          <ListRow>
-            <Padding bottom="large">
-              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                {t(
-                  'backup.set_backup_forever_msg',
-                  'If you set 0, your data will be kept in backup forever',
-                )}
-              </ds-text>
-            </Padding>
-          </ListRow>
-          <ListRow>
+          <ListRow padding={{ bottom: 'small' }}>
             <Container padding={{ bottom: 'small' }}>
               <form.Field name="keepDeletedAccountsDays">
                 {(field) => (
@@ -316,20 +310,14 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     }
                     autoComplete="off"
                     disabled={!allowSetBackup}
+                    description={t(
+                      'backup.set_backup_forever_msg',
+                      'If you set 0, your data will be kept in backup forever',
+                    )}
                   />
                 )}
               </form.Field>
             </Container>
-          </ListRow>
-          <ListRow>
-            <Padding bottom="large">
-              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                {t(
-                  'backup.set_backup_forever_msg',
-                  'If you set 0, your data will be kept in backup forever',
-                )}
-              </ds-text>
-            </Padding>
           </ListRow>
         </Container>
       </Container>
