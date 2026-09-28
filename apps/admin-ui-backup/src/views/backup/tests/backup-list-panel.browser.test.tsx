@@ -20,7 +20,7 @@ import {
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import {
   ADVANCED,
@@ -191,11 +191,25 @@ describe('BackupListPanel', () => {
         queryClient,
       });
 
-      const input = page.getByPlaceholder('Select a Server');
+      const input = page.getByRole('combobox', { name: 'Select a Server' });
       await input.click();
       await input.fill('mail');
 
-      await page.getByText(SERVER_NAME).click();
+      await page.getByRole('option', { name: SERVER_NAME }).click();
+
+      expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${SERVER_NAME}/${CONFIGURATION_BACKUP}`);
+    });
+
+    it('navigates to server configuration when selecting a server with the keyboard', async () => {
+      await setupBrowserTest(<BackupListPanel />, {
+        initialRouterEntry: `${BACKUP_BASE}/${SERVERS_LIST}`,
+        queryClient,
+      });
+
+      const input = page.getByRole('combobox', { name: 'Select a Server' });
+      await input.click();
+      await userEvent.keyboard('[ArrowDown]');
+      await userEvent.keyboard('[Enter]');
 
       expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${SERVER_NAME}/${CONFIGURATION_BACKUP}`);
     });
@@ -206,13 +220,13 @@ describe('BackupListPanel', () => {
         queryClient,
       });
 
-      const input = page.getByPlaceholder('Select a Server');
+      const input = page.getByRole('combobox', { name: 'Select a Server' });
       await input.click();
       await input.fill('mail');
-      await page.getByText(SERVER_NAME).click();
+      await page.getByRole('option', { name: SERVER_NAME }).click();
       mockedReplaceHistory.mockClear();
 
-      await page.getByTestId('icon: CloseOutline').click();
+      await page.getByRole('button', { name: 'Clear' }).click();
 
       expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${SERVER_CONFIG}`);
     });
@@ -223,7 +237,7 @@ describe('BackupListPanel', () => {
         queryClient,
       });
 
-      const input = page.getByPlaceholder('Select a Server');
+      const input = page.getByRole('combobox', { name: 'Select a Server' });
       await input.click();
       await input.fill('xyznomatch');
 
@@ -274,11 +288,11 @@ describe('BackupListPanel', () => {
         queryClient,
       });
 
-      await expect.element(page.getByPlaceholder('Select a Server')).toBeVisible();
+      await expect.element(page.getByRole('combobox', { name: 'Select a Server' })).toBeVisible();
 
       await page.getByText('Server Specifics', { exact: true }).click();
 
-      expect(page.getByPlaceholder('Select a Server').elements()).toHaveLength(0);
+      expect(page.getByRole('combobox', { name: 'Select a Server' }).elements()).toHaveLength(0);
     });
 
     it('shows Server Specifics dropdown again when re-expanded', async () => {
@@ -288,11 +302,11 @@ describe('BackupListPanel', () => {
       });
 
       await page.getByText('Server Specifics', { exact: true }).click();
-      expect(page.getByPlaceholder('Select a Server').elements()).toHaveLength(0);
+      expect(page.getByRole('combobox', { name: 'Select a Server' }).elements()).toHaveLength(0);
 
       await page.getByText('Server Specifics', { exact: true }).click();
 
-      await expect.element(page.getByPlaceholder('Select a Server')).toBeVisible();
+      await expect.element(page.getByRole('combobox', { name: 'Select a Server' })).toBeVisible();
     });
   });
 
@@ -313,7 +327,7 @@ describe('BackupListPanel', () => {
         queryClient,
       });
 
-      const input = page.getByPlaceholder('Select a Server');
+      const input = page.getByRole('combobox', { name: 'Select a Server' });
       await expect.element(input).toBeDisabled();
     });
   });
