@@ -5,5 +5,6 @@
  */
 
 export * from './lit';
+export * from './query-client-registry';
 export * from './utils';
 export * from './wrapper';

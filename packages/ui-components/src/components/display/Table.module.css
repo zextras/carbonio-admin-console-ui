@@ -9,10 +9,32 @@
   display: block;
 }
 
+.horizontalScroll {
+  overflow: auto;
+  width: 100%;
+  min-width: 0;
+}
+
 .table {
   border-collapse: collapse;
   table-layout: fixed;
   width: 100%;
+}
+
+.table.horizontalScrollTable {
+  width: max-content;
+  min-width: 100%;
+}
+
+.table.horizontalScrollTable thead,
+.table.horizontalScrollTable tbody,
+.table.horizontalScrollTable tr {
+  width: max-content;
+}
+
+.table.horizontalScrollTable th,
+.table.horizontalScrollTable td {
+  white-space: nowrap;
 }
 
 .table thead,

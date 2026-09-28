@@ -218,6 +218,100 @@ Existing call sites (~3,300) are migrated incrementally. When modifying a file t
   4. For icon-only buttons without `aria-label`: locate the rendered icon via its visible attribute (e.g. `page.getByTestId('icon: CloseOutline')`)
 - **`page.locator` does not exist** in Vitest browser mode — the `page` object from `vitest/browser` is NOT a Playwright Page. Use `page.getByRole`, `page.getByText`, `page.getByTestId`, or `userEvent` for all interactions instead.
 
+#### Avoiding Flaky Tests
+
+Rules distilled from real CI flakes in this repo — apply them when writing or reviewing browser tests.
+
+**1. Never read an intercepted request right after an action — poll for it.**
+A click doesn't guarantee the request has reached MSW. `await createBrowserAPIInterceptor(...)`
+resolves after *handler registration*, not after a request arrives.
+
+```tsx
+// Don't — races under CI load: getLastRequest() can be undefined
+await page.getByRole('button', { name: /^update$/i }).click();
+const body = await (await putInterceptor).getLastRequest().json();
+
+// Do
+const interceptor = await createBrowserAPIInterceptor('put', SAML_URL, () => HttpResponse.json({}));
+await page.getByRole('button', { name: /^update$/i }).click();
+await expect.poll(() => interceptor.getLastRequest()).toBeTruthy();
+const body = await interceptor.getLastRequest().json();
+```
+
+Same for counts: `await expect.poll(() => interceptor.getCalledTimes()).toBe(1);`.
+Reading after an awaited post-response UI state (success snackbar visible, save button gone)
+is already ordered and fine.
+
+**2. Register handlers for every request the rendered view makes.**
+Unhandled requests passthrough to the dev server → empty body → query errors. Per-test
+`worker.use()` handlers are wiped by each file's `afterEach(resetMockWorker())`, and late
+queries (retry timers, late-`enabled` hooks like `useLastLoginTimestamp`) fire in those gaps.
+The shared worker ships fallback defaults (`GetAccount`, `GetInfo`, `GetCos`,
+`SearchDirectory`, `/services/catalog/services`) in
+`packages/test-utils/src/browser/worker/index.ts` — extend that list rather than letting a
+new API leak. `Empty response from XRequest` in test output = a request went unhandled.
+
+**3. Don't let queries outlive the test.**
+Query clients from `getQueryClient()` are cleared in the root `afterAll`, cancelling pending
+retries — don't create long-lived manual clients in browser tests. Hooks with custom
+`retry`/`gcTime` keep retrying after teardown; their rejections surface as unhandled errors
+attributed to whichever file runs *next* — a flake "in" file X often originates in an
+earlier file.
+
+**4. Never import app modules from setup files.**
+`vitest-browser-setup.ts` importing anything that transitively pulls
+`@zextras/ui-shared`/`@zextras/ui-components` pre-materializes those modules and silently
+breaks `vi.mock('@zextras/ui-shared')` in test files ("X is not a spy or a call to a spy").
+Setup files may only import dependency-free modules (e.g. `query-client-registry.ts`).
+
+**5. Mock heavy async third-party widgets the test doesn't assert on.**
+Real TinyMCE loads CDN assets and async-renders after teardown → unhandled rejections. If
+the test doesn't interact with the editor, mock the wrapping component at module level:
+
+```tsx
+function MockComposer() {
+  return <div>EDITOR:composer</div>;
+}
+vi.mock('../../composer/composer', () => ({ Composer: MockComposer }));
+```
+
+**6. Every Save test must end on an ordered post-save signal.**
+Awaiting only the interceptor promise (`await modifyCosPromise`) resolves when MSW *receives*
+the request — the save chain (`FlushCache` → `invalidateQueries` → refetch → `form.reset()`)
+is still in flight when the test ends, and teardown races those late requests. End Save tests
+on the success snackbar or the Save button disappearing:
+
+```tsx
+await page.getByRole('button', { name: 'Save' }).click();
+await expect.element(page.getByText('The change has been saved successfully')).toBeVisible();
+await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+```
+
+When the save invalidates a query the form is built from, register the entity GET interceptor
+with the SAVED values (mirroring sibling tests) — otherwise the refetch reinstates stale
+defaults, the form stays dirty, and the Save-hidden wait never converges. Register such
+saved-state refetch handlers AFTER `setupBrowserTest`/render so the initial mount doesn't
+see them (mount-time fetches answering with the saved state silently weaken the dirty-state
+scenario).
+
+**7. SOAP catch-alls are durable — never rely on a request being unhandled.**
+Shared fallbacks live in `defaultHandlers` (`packages/test-utils/src/browser/worker/index.ts`):
+`GetAccount`/`GetInfo`/`GetCos`/`SearchDirectory`, `GetAllServers`/`GetAllConfig`, canned
+zextras actions at `/service/admin/soap/zextras`, a lenient bare `/service/admin/soap` handler,
+and a generic `/service/admin/soap/:api` catch-all returning flat `Body: {}` (resolving to
+`undefined`, which component `data?.x` callbacks assume; only the named fallbacks above are
+key-shaped `Body: {XResponse: {}}`). They
+survive `resetMockWorker()` on purpose: requests leaked past test teardown get a valid empty
+envelope instead of passthrough-empty-body errors (`Empty response from XRequest`). Per-test
+interceptors registered via `createBrowserSoapAPIInterceptor` always take precedence — extend
+`defaultHandlers` rather than registering catch-alls per-test. A SOAP request with no in-test
+handler resolves `undefined` via the catch-all — it will NOT fail loudly, so a forgotten handler
+fails silently. When adding a named key-shaped fallback (`Body: {XResponse: {}}`), `data`
+resolves `{}` (not undefined) — consumers must fully optional-chain (`data?.x?.[0]`, never
+`data?.x[0]`). Never call `worker.stop()` /
+service-worker teardown per file: files run as parallel iframes sharing one origin-scoped
+service worker.
+
 ### State Management
 - Global state: Zustand stores in `store/` directories
 - Server state: TanStack React Query with proper query keys

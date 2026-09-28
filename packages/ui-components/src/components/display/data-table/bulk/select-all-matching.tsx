@@ -42,7 +42,7 @@ export const DataTableSelectAllMatching = ({
   const locale = i18n.resolvedLanguage ?? i18n.language;
 
   return (
-    <div role="status" className={styles.selectAllMatching}>
+    <output className={styles.selectAllMatching}>
       <span>
         {pageSelectedLabel ? pageSelectedLabel(pageCount) : defaultPageSelectedLabel(pageCount, t)}
       </span>
@@ -55,6 +55,6 @@ export const DataTableSelectAllMatching = ({
           total: count.toLocaleString(locale),
         })}
       </button>
-    </div>
+    </output>
   );
 };

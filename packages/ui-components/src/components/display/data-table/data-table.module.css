@@ -302,17 +302,29 @@
 }
 
 .bulkJobTrack {
+  display: block;
+  width: 100%;
   height: 0.375rem;
-  overflow: hidden;
+  border: none;
   border-radius: 3px;
+  overflow: hidden;
   background: var(--color-gray5-regular, #e9edf2);
+  appearance: none;
 }
 
-.bulkJobFill {
-  height: 100%;
+.bulkJobTrack::-webkit-progress-bar {
+  background: var(--color-gray5-regular, #e9edf2);
   border-radius: 3px;
+}
+
+.bulkJobTrack::-webkit-progress-value {
   background: var(--color-primary-regular, #2b73d2);
-  transition: width 0.12s ease;
+  border-radius: 3px;
+}
+
+.bulkJobTrack::-moz-progress-bar {
+  background: var(--color-primary-regular, #2b73d2);
+  border-radius: 3px;
 }
 
 .bulkJobCancel,
@@ -396,23 +408,18 @@
   font-size: 0.6875rem;
 }
 
-.confirmOverlay {
-  position: fixed;
-  inset: 0;
-  z-index: 80;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: rgb(0 0 0 / 35%);
-}
-
 .confirmDialog {
   width: 23.75rem;
   max-width: calc(100vw - 2rem);
   padding: 1.5rem;
+  border: none;
   border-radius: 8px;
   background: var(--color-gray6-regular, #fff);
   box-shadow: 0 8px 30px rgb(0 0 0 / 20%);
+}
+
+.confirmDialog::backdrop {
+  background: rgb(0 0 0 / 35%);
 }
 
 .confirmTitle {
@@ -754,6 +761,7 @@
   z-index: 45;
   width: 20rem;
   max-width: calc(100% - 2rem);
+  margin: 0;
   padding: var(--padding-size-medium, 1rem);
   border: 1px solid var(--color-gray4-regular, #e2e6ec);
   border-radius: var(--border-radius, 8px);
@@ -807,6 +815,7 @@
 }
 
 .enumOption {
+  position: relative;
   display: inline-flex;
   align-items: center;
   height: 1.75rem;
@@ -820,6 +829,14 @@
   cursor: pointer;
 }
 
+.enumOptionInput {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
 .enumOptionSelected {
   border-color: var(--color-primary-regular, #2b73d2);
   background: var(--color-highlight-regular, #eaf2fc);
@@ -827,7 +844,7 @@
   font-weight: 500;
 }
 
-.enumOption:focus-visible {
+.enumOption:has(:focus-visible) {
   outline: 2px solid var(--color-primary-regular, #2b73d2);
   outline-offset: 2px;
 }
@@ -909,6 +926,16 @@
   align-items: center;
   padding: 0.625rem var(--padding-size-medium, 1rem);
   border-bottom: 1px solid var(--color-gray4-regular, #e2e6ec);
+}
+
+.filterChipList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .filterChip {
@@ -999,6 +1026,7 @@
   z-index: 46;
   width: 16.25rem;
   max-width: calc(100% - 2rem);
+  margin: 0;
   padding: 0.875rem 1rem;
   border: 1px solid var(--color-gray3-hover, #cfd5de);
   border-radius: var(--border-radius, 8px);

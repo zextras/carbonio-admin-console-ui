@@ -53,7 +53,7 @@ const CUSTOMIZE_LAYOUT_SLICES = (state: DataTableState) =>
   [state.columnVisibility, state.columnOrder] as const;
 
 type CustomizePanelProps = {
-  ref?: Ref<HTMLDivElement>;
+  ref?: Ref<HTMLDialogElement>;
   id: string;
   density: DataTableDensity;
   onDensityChange: (density: DataTableDensity) => void;
@@ -104,7 +104,13 @@ const CustomizePanel = ({
   const orderedItems = orderCustomizeItems(columnItems, columnOrder);
 
   return (
-    <div id={id} ref={ref} role="dialog" aria-label={dialogLabel} className={styles.customizePanel}>
+    <dialog
+      id={id}
+      ref={ref}
+      open
+      aria-label={dialogLabel}
+      className={styles.customizePanel}
+    >
       <div className={styles.customizeSectionLabel}>{densityLabel}</div>
       <div className={styles.densityGroup} role="radiogroup" aria-label={densityLabel}>
         <button
@@ -262,7 +268,7 @@ const CustomizePanel = ({
           {resetLabel}
         </button>
       )}
-    </div>
+    </dialog>
   );
 };
 
@@ -295,7 +301,7 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
   const density = useTableUi((s) => s.density);
   const setDensity = useTableUi((s) => s.setDensity);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDialogElement>(null);
   const panelId = useId();
 
   const primaryColumnId = config?.primaryColumnId;

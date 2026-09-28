@@ -69,7 +69,7 @@ type PageButtonProps = {
 const PageButton = ({ page, current, onSelect }: PageButtonProps) => (
   <button
     type="button"
-    className={`${styles.pageButton}${current ? ` ${styles.pageButtonCurrent}` : ''}`}
+    className={current ? `${styles.pageButton} ${styles.pageButtonCurrent}` : styles.pageButton}
     aria-label={`Page ${page}`}
     aria-current={current ? 'page' : undefined}
     onClick={() => {
@@ -194,7 +194,7 @@ const PaginationControls = ({
         <label className={styles.goTo}>
           {goToPageLabel}
           <input
-            className={`${styles.goToInput}${goToError ? ` ${styles.goToInputInvalid}` : ''}`}
+            className={goToError ? `${styles.goToInput} ${styles.goToInputInvalid}` : styles.goToInput}
             value={goTo}
             aria-label={`${goToPageLabel}, 1 to ${pageCount}`}
             aria-invalid={goToError}

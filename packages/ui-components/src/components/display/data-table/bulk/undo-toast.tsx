@@ -106,8 +106,7 @@ export const DataTableUndoToast = ({
   }, []);
 
   return (
-    <div
-      role="status"
+    <output
       className={styles.undoToast}
       onMouseEnter={() => {
         hoveredRef.current = true;
@@ -140,6 +139,6 @@ export const DataTableUndoToast = ({
       <span className={styles.undoToastShortcut} aria-hidden="true">
         {t('data_table.undo_hint', '{{seconds}}s to undo (⌘Z)', { seconds: left })}
       </span>
-    </div>
+    </output>
   );
 };

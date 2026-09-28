@@ -11,10 +11,13 @@ import { resolveColumnId, resolveColumnLabel } from './customize-model';
 import type { DataTableColumnMeta, DataTableEditingState, DataTablePeekField } from './types';
 
 export function getCellDisplayValue(value: unknown): string {
-  if (value === null || value === undefined) {
-    return '';
+  if (typeof value === 'string') {
+    return value;
   }
-  return String(value);
+  if (typeof value === 'number' || typeof value === 'bigint' || typeof value === 'boolean') {
+    return String(value);
+  }
+  return '';
 }
 
 export function startEditing(
