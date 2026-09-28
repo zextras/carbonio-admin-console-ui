@@ -261,40 +261,40 @@ const ComboboxInput = ({
     if (nextIndex !== null) setActiveIndex(nextIndex);
   }
 
-	function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
-		const action = resolveKeyAction(e.key, open, activeIndex !== null);
-		switch (action.type) {
-			case 'move':
-				e.preventDefault();
-				if (open) {
-					handleArrow(action.direction);
-				} else {
-					setOpen(true);
-					setActiveIndex(nextEnabledIndexOf(items, null, action.direction));
-				}
-				break;
-			case 'jump':
-				e.preventDefault();
-				if (!open) setOpen(true);
-				setActiveIndex(
-					action.to === 'first' ? firstEnabledIndexOf(items) : lastEnabledIndexOf(items),
-				);
-				break;
-			case 'pick': {
-				e.preventDefault();
-				const item = items[activeIndex ?? -1];
-				if (item && !item.disabled) pick(item);
-				break;
-			}
-			case 'close':
-				if (action.preventDefault) e.preventDefault();
-				closeList();
-				break;
-			default:
-				break;
-		}
-		onKeyDown?.(e);
-	}
+  function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>): void {
+    const action = resolveKeyAction(e.key, open, activeIndex !== null);
+    switch (action.type) {
+      case 'move':
+        e.preventDefault();
+        if (open) {
+          handleArrow(action.direction);
+        } else {
+          setOpen(true);
+          setActiveIndex(nextEnabledIndexOf(items, null, action.direction));
+        }
+        break;
+      case 'jump':
+        e.preventDefault();
+        if (!open) setOpen(true);
+        setActiveIndex(
+          action.to === 'first' ? firstEnabledIndexOf(items) : lastEnabledIndexOf(items),
+        );
+        break;
+      case 'pick': {
+        e.preventDefault();
+        const item = items[activeIndex ?? -1];
+        if (item && !item.disabled) pick(item);
+        break;
+      }
+      case 'close':
+        if (action.preventDefault) e.preventDefault();
+        closeList();
+        break;
+      default:
+        break;
+    }
+    onKeyDown?.(e);
+  }
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>): void {
     if (!open && !disabled) {
@@ -381,9 +381,9 @@ const ComboboxInput = ({
           onClick={onClear}
         >
           <ds-icon
-            icon="CloseOutline"
+            icon="CloseCircle"
             size="1rem"
-            color="var(--color-gray1-focus)"
+            color="var(--color-gray0-regular)"
             aria-hidden="true"
           />
         </button>

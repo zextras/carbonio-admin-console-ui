@@ -92,6 +92,7 @@
   flex-shrink: 0;
   padding: 0;
   border: none;
+  padding-left: 0.25rem;
   background: transparent;
   cursor: default;
 }
