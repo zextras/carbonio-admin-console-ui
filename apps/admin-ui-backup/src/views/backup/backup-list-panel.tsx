@@ -148,36 +148,34 @@ export const BackupListPanel = () => {
           setSelectedOperationItem={handleSelectOperationItem}
         />
       )}
-      {isServerSpecificsExpanded && (
-        <div className="box-border w-full max-w-[18.75rem] px-lg py-lg">
-          <ComboboxInput
-            label={t('label.select_a_server', 'Select a Server')}
-            items={isBackupModuleLicensed ? serverItems : []}
-            value={searchServer}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-              setSearchServer(e.target.value);
-            }}
-            onSelect={(item: ComboboxItem): void => {
-              setSearchServer(item.label);
-              replaceHistory(`/${item.label}/${CONFIGURATION_BACKUP}`);
-            }}
-            onClear={(): void => {
-              setSearchServer('');
-              replaceHistory(`/${SERVER_CONFIG}`);
-            }}
-            hasError={isShowError}
-            disabled={!isBackupModuleLicensed}
-            description={
-              isShowError
-                ? t(
-                    'label.not_found_check_the_text_and_try_again',
-                    'Not found - check the text and try again',
-                  )
-                : undefined
-            }
-          />
-        </div>
-      )}
+      <div className="box-border w-full max-w-[18.75rem] px-lg pt-lg">
+        <ComboboxInput
+          label={t('label.select_a_server', 'Select a Server')}
+          items={isBackupModuleLicensed ? serverItems : []}
+          value={searchServer}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            setSearchServer(e.target.value);
+          }}
+          onSelect={(item: ComboboxItem): void => {
+            setSearchServer(item.label);
+            replaceHistory(`/${item.label}/${CONFIGURATION_BACKUP}`);
+          }}
+          onClear={(): void => {
+            setSearchServer('');
+            replaceHistory(`/${SERVER_CONFIG}`);
+          }}
+          hasError={isShowError}
+          disabled={!isBackupModuleLicensed}
+          description={
+            isShowError
+              ? t(
+                  'label.not_found_check_the_text_and_try_again',
+                  'Not found - check the text and try again',
+                )
+              : undefined
+          }
+        />
+      </div>
       {hasListServerRights && (
         <Container mainAlignment="flex-start">
           <ListPanelItem
