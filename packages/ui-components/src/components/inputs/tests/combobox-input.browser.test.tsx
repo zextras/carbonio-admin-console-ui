@@ -616,7 +616,7 @@ describe('ComboboxInput', () => {
 			const clear = page.getByRole('button', { name: 'Clear' });
 			await expect.element(clear).toBeVisible();
 			const clearIcon = (await clear.element()).querySelector('ds-icon');
-			expect(clearIcon?.getAttribute('icon')).toBe('CloseOutline');
+			expect(clearIcon?.getAttribute('icon')).toBe('CloseCircle');
 
 			await userEvent.click(clear);
 			expect(onClear).toHaveBeenCalledTimes(1);
