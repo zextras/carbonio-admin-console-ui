@@ -3,13 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, LabeledValue, ListRow, PlainInput, Switch } from '@zextras/ui-components';
+import { Button, Container, ListRow, PlainInput, Switch } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 
 import { usePurgeBackup } from '../../../../services/use-purge-backup';
 import type { BackupConfigFormApi } from '../types';
-import styles from './data-retention.module.css';
 
 type DataRetentionProps = {
   form: BackupConfigFormApi;
@@ -93,7 +92,6 @@ export const DataRetention = ({
           crossAlignment="flex-start"
           orientation="horizontal"
           padding={{ top: 'large', right: 'large' }}
-          width="35%"
         >
           <form.Field name="keepDeletedItemInBackup">
             {(field) => (
@@ -103,23 +101,19 @@ export const DataRetention = ({
                   autoComplete="off"
                   label={t(
                     'backup.keep_deleted_item_in_backup',
-                    'Keep deleted items in the backup',
+                    'Keep deleted items in the backup (Days)',
                   )}
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     field.handleChange(e.target.value)
                   }
-                  disabled={
-                    !form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup
-                  }
+                  description={t(
+                    'backup.back_delete_account_warning_message',
+                    'If you set 0, accounts will be kept in backup forever',
+                  )}
+                  disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
                   aria-describedby="keep-deleted-items-warning"
                 />
-                <p className={styles.fieldWarning} id="keep-deleted-items-warning">
-                  <Trans
-                    i18nKey="backup.back_delete_account_warning_message"
-                    defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-                  />
-                </p>
               </div>
             )}
           </form.Field>
@@ -129,16 +123,6 @@ export const DataRetention = ({
           crossAlignment="flex-start"
           orientation="horizontal"
           padding={{ top: 'large', right: 'large' }}
-          width="15%"
-        >
-          <LabeledValue label={t('backup.range', 'Range')} value={t('label.days', 'Days')} />
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          orientation="horizontal"
-          padding={{ top: 'large', right: 'large' }}
-          width="35%"
         >
           <form.Field name="keepDeletedAccountsInBackup">
             {(field) => (
@@ -148,39 +132,22 @@ export const DataRetention = ({
                   autoComplete="off"
                   label={t(
                     'backup.keep_deleted_account_in_the_backup',
-                    'Keep deleted account in the backup',
+                    'Keep deleted account in the backup (Days)',
                   )}
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     field.handleChange(e.target.value)
                   }
-                  disabled={
-                    !form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup
-                  }
+                  disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
                   aria-describedby="keep-deleted-accounts-warning"
+                  description={t(
+                    'backup.back_delete_account_warning_message',
+                    'If you set 0, accounts</strong> will be kept in backup forever',
+                  )}
                 />
-                <p className={styles.fieldWarning} id="keep-deleted-accounts-warning">
-                  <Trans
-                    i18nKey="backup.back_delete_account_warning_message"
-                    defaults="If you set 0, <strong>accounts</strong> will be kept in backup forever"
-                  />
-                </p>
               </div>
             )}
           </form.Field>
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          orientation="horizontal"
-          padding={{ top: 'large' }}
-          width="15%"
-        >
-          <LabeledValue
-            label={t('backup.range', 'Range')}
-            backgroundColor="gray5"
-            value={t('label.days', 'Days')}
-          />
         </Container>
       </ListRow>
       <ListRow>

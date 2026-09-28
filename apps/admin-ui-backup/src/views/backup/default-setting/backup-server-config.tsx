@@ -278,7 +278,10 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                 {(field) => (
                   <PlainInput
                     required
-                    label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
+                    label={t(
+                      'backup.keep_delted_items_backup',
+                      'Keep deleted items in the backup (Days)',
+                    )}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
@@ -302,7 +305,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     required
                     label={t(
                       'backup.keep_delete_accounts_in_backup',
-                      'Keep deleted accounts in the backup',
+                      'Keep deleted accounts in the backup (Days)',
                     )}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
