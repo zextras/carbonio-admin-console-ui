@@ -55,7 +55,7 @@ export const BackupDetailPanel = () => {
       orientation="column"
       crossAlignment="center"
       mainAlignment="flex-start"
-      style={{ overflowY: 'hidden', overflowX: 'hidden' }}
+      style={{ overflowY: 'hidden' }}
       background="gray6"
     >
       {renderContent()}
