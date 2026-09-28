@@ -28,23 +28,32 @@
 }
 
 .listboxOptions {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  align-self: stretch;
-  min-width: 0;
+	appearance: none;
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	align-self: stretch;
+	min-width: 0;
+	margin: 0;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: inherit;
+	font: inherit;
 }
 
 .option {
-  display: flex;
-  height: 1.90625rem;
-  box-sizing: border-box;
-  align-self: stretch;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.375rem 0.75rem;
-  flex-shrink: 0;
-  overflow: hidden;
+	display: flex;
+	height: 1.90625rem;
+	box-sizing: border-box;
+	align-self: stretch;
+	align-items: center;
+	gap: 0.25rem;
+	padding: 0.375rem 0.75rem;
+	flex-shrink: 0;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
 }
 
 /* provisional highlight pending the Figma active/selected states */
@@ -58,15 +67,7 @@
 }
 
 .option ds-icon {
-  flex-shrink: 0;
-}
-
-.optionLabel {
-  flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+	flex-shrink: 0;
 }
 
 .messageRow {

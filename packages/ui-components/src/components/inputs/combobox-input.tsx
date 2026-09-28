@@ -82,12 +82,13 @@ function nextEnabledIndexOf(
   from: number | null,
   direction: 1 | -1,
 ): number | null {
-  const entries = items.map((item, index) => ({ item, index }));
-  const candidates =
-    direction === 1
-      ? entries.slice(from === null ? 0 : from + 1)
-      : entries.slice(0, from === null ? items.length : from).reverse();
-  return candidates.find(({ item }) => !item.disabled)?.index ?? null;
+	const entries = items.map((item, index) => ({ item, index }));
+	if (direction === 1) {
+		const start = from === null ? 0 : from + 1;
+		return entries.slice(start).find(({ item }) => !item.disabled)?.index ?? null;
+	}
+	const end = from ?? items.length;
+	return entries.slice(0, end).reverse().find(({ item }) => !item.disabled)?.index ?? null;
 }
 
 type ComboboxKeyAction =
@@ -133,11 +134,9 @@ type ComboboxOptionProps = {
 };
 
 const ComboboxOption = ({ item, optionId, active, selected, onPick }: ComboboxOptionProps) => (
-  <div
-    id={optionId}
-    role="option"
-    tabIndex={-1}
-    aria-selected={selected}
+	<option
+		id={optionId}
+		aria-selected={selected}
     aria-disabled={item.disabled || undefined}
     data-active={active || undefined}
     data-disabled={item.disabled || undefined}
@@ -155,16 +154,16 @@ const ComboboxOption = ({ item, optionId, active, selected, onPick }: ComboboxOp
       }
     }}
   >
-    {item.icon && (
-      <ds-icon
-        icon={item.icon}
-        size="0.875rem"
-        color="var(--color-text-regular)"
-        aria-hidden="true"
-      />
-    )}
-    <span className={popupStyles.optionLabel}>{item.label}</span>
-  </div>
+		{item.icon && (
+			<ds-icon
+				icon={item.icon}
+				size="0.875rem"
+				color="var(--color-text-regular)"
+				aria-hidden="true"
+			/>
+		)}
+		{item.label}
+	</option>
 );
 
 type ComboboxPopupBodyProps = {
@@ -192,9 +191,9 @@ const ComboboxPopupBody = ({
   if (items.length === 0) {
     return emptyMessage ? <p className={popupStyles.messageRow}>{emptyMessage}</p> : null;
   }
-  return (
-    <div role="listbox" className={popupStyles.listboxOptions}>
-      {items.map((item, index) => (
+	return (
+		<select size={Math.max(items.length, 2)} className={popupStyles.listboxOptions}>
+			{items.map((item, index) => (
         <ComboboxOption
           key={item.id}
           item={item}
@@ -202,10 +201,10 @@ const ComboboxPopupBody = ({
           active={activeIndex === index}
           selected={item.label.toLowerCase() === valueLower}
           onPick={onPick}
-        />
-      ))}
-    </div>
-  );
+				/>
+			))}
+		</select>
+	);
 };
 
 const ComboboxInput = ({
