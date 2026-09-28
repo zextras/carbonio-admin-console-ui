@@ -1,0 +1,35 @@
+/*
+ * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 0.25rem;
+  background: transparent;
+  cursor: pointer;
+  color: var(--color-gray1-regular);
+}
+
+.trigger:hover {
+  background-color: var(--color-primary-highlight);
+  color: var(--color-primary-regular);
+}
+
+.trigger:focus-visible {
+  outline: 0.125rem solid var(--color-primary-regular);
+  outline-offset: -0.125rem;
+}
+
+.accountTrigger {
+  padding: 0.25rem 0.5rem;
+  background-color: var(--color-gray2-regular);
+}
+
+.helpTrigger {
+  padding: 0.25rem;
+}

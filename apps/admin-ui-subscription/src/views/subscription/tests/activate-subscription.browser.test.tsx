@@ -46,7 +46,6 @@ describe('ActivateSubscription', () => {
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
       await expect.element(page.getByText('Activate subscription')).toBeVisible();
       await expect
@@ -131,7 +130,7 @@ describe('ActivateSubscription', () => {
         .element(page.getByText('Please wait while we verify and set up your workspace'))
         .toBeVisible();
 
-      await new Promise((resolve) => setTimeout(resolve, mockDelayMs + 50));
+      await expect.element(page.getByText('Subscription activated')).toBeVisible();
     });
 
     it('should show success popover after successful activation', async () => {

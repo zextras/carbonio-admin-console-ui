@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Input, LicenseBanner, Modal, Row } from '@zextras/ui-components';
+import { Button, Container, LicenseBanner, Modal, PlainInput, Row } from '@zextras/ui-components';
 import {
   type LicenseInfo,
   useActivateLicense,
@@ -166,9 +166,8 @@ const SubscriptionActions = ({
       style={{ padding: '8px 0 16px 0' }}
     >
       <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="74%">
-        <Input
+        <PlainInput
           label={t('core.subscription.token', 'Token')}
-          backgroundColor="gray5"
           value={licenseKey}
           disabled={!canSetSubscription}
           onChange={(e: ChangeEvent<HTMLInputElement>): void => onLicenseKeyChange(e.target.value)}

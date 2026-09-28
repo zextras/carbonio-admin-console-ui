@@ -111,10 +111,11 @@ export const soapFetch = <Request, Response>(
       .then(async (res) => {
         // An empty body (e.g. a transport-level failure) must surface as a
         // controlled error, not a raw SyntaxError from res.json().
-        if (!res?.body) {
+        const text = await res.text();
+        if (!text.trim()) {
           throw new Error(`Empty response from ${api}Request`);
         }
-        return res.json();
+        return JSON.parse(text);
       })
       .then((res: SoapResponse<Response>) => handleResponse(api, res))
       .catch((e) => {

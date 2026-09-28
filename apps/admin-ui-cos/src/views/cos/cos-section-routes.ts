@@ -66,7 +66,9 @@ export const SECTION_ROUTES: Array<SectionRoute> = [
   },
 ];
 
-export const getVisibleSectionRoutes = (isWorkspaceEdition: boolean): Array<SectionRoute> =>
-  isWorkspaceEdition
-    ? SECTION_ROUTES
-    : SECTION_ROUTES.filter((route) => route.id !== WSC);
+export const getVisibleSectionRoutes = (isWorkspaceEdition: boolean, featureFlag: boolean): Array<SectionRoute> => {
+  if (!featureFlag || isWorkspaceEdition) {
+    return SECTION_ROUTES;
+  }
+  return SECTION_ROUTES.filter((route) => route.id !== WSC);
+};

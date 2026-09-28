@@ -115,10 +115,10 @@ describe('CosServerPools', () => {
     it('should show Enabled and Disabled status labels in the table', async () => {
       await setupServerPoolsTest();
       await expect.element(page.getByText('mail-server-1')).toBeVisible();
-      const allEnabled = page.getByText('Enabled').all();
-      const allDisabled = page.getByText('Disabled').all();
-      expect(allEnabled.length).toBeGreaterThanOrEqual(1);
-      expect(allDisabled.length).toBeGreaterThanOrEqual(2);
+      await expect.element(page.getByText('mail-server-2')).toBeVisible();
+      await expect.element(page.getByText('mail-server-3')).toBeVisible();
+      await expect.poll(() => page.getByText('Enabled').elements().length).toBeGreaterThanOrEqual(1);
+      await expect.poll(() => page.getByText('Disabled').elements().length).toBeGreaterThanOrEqual(2);
     });
 
     it('should hide server table when all pools are disabled', async () => {

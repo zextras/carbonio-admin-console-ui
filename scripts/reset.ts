@@ -27,7 +27,7 @@ function reset() {
         name: 'Cleaning packages',
         command: 'rm -rf packages/**/node_modules packages/**/.turbo packages/**/tsconfig.tsbuildinfo packages/**/dist-types',
       },
-      { name: 'Pruning store', command: 'pnpm store prune --force' },
+      { name: 'Pruning store', command: 'pnpm store prune --yes' },
       { name: 'Installing', command: 'pnpm install' },
     ];
 

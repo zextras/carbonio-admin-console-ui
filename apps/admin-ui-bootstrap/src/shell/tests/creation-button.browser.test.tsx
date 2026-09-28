@@ -86,7 +86,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
     await expect.element(page.getByText('New Account')).toBeVisible();
-    expect(page.getByTestId('dropdown-item').elements()).toHaveLength(2);
+    await expect.poll(() => page.getByTestId('dropdown-item').elements().length).toBe(2);
   });
 
   it('calls the action onClick handler when a dropdown item is clicked', async () => {
@@ -133,8 +133,8 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await page.getByRole('button', { name: 'Create' }).click();
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
-    expect(page.getByTestId('dropdown-item').elements()).toHaveLength(2);
-    expect(document.querySelectorAll('ds-divider')).toHaveLength(1);
+    await expect.poll(() => page.getByTestId('dropdown-item').elements().length).toBe(2);
+    await expect.poll(() => document.querySelectorAll('ds-divider').length).toBe(1);
   });
 
   it('renders dividers for all app groups when no activeRoute is provided', async () => {
@@ -150,8 +150,8 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await page.getByRole('button', { name: 'Create' }).click();
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
-    expect(page.getByTestId('dropdown-item').elements()).toHaveLength(2);
-    expect(document.querySelectorAll('ds-divider')).toHaveLength(2);
+    await expect.poll(() => page.getByTestId('dropdown-item').elements().length).toBe(2);
+    await expect.poll(() => document.querySelectorAll('ds-divider').length).toBe(2);
   });
 
   it('does not render a divider for apps that have no actions', async () => {
