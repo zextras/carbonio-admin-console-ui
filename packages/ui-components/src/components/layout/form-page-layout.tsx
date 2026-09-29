@@ -16,6 +16,7 @@ type FormPageLayoutProps = {
   onSave?: () => void;
   onCancel?: () => void;
   unsavedChanges?: boolean;
+  compactHeader?: boolean;
 };
 
 export const FormPageLayout = ({
@@ -23,6 +24,7 @@ export const FormPageLayout = ({
   onSave,
   onCancel,
   unsavedChanges,
+  compactHeader,
   children,
 }: FormPageLayoutProps) => {
   const [t] = useTranslation();
@@ -36,7 +38,7 @@ export const FormPageLayout = ({
       }}
     >
       <div className={styles.stickyHeader}>
-        <div className={styles.header}>
+        <div className={compactHeader ? `${styles.header} ${styles.compactHeader}` : styles.header}>
           <ds-text as="h2" weight="bold" color="gray0" className={styles.title}>
             {title}
           </ds-text>

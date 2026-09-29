@@ -5,23 +5,23 @@
  */
 
 import { Container, PageHeader } from '@zextras/ui-components';
-import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { Suspense } from 'react';
 
 import { PrivacyView } from './privacy/privacy-view';
 
 export function AppView() {
-  const detailViewMaxWidth = useDetailViewMaxWidth();
   return (
-    <Container>
+    <Container height="fit">
       <PageHeader />
-      <Container orientation="horizontal" mainAlignment="flex-start">
+      <Container
+        orientation="horizontal"
+        mainAlignment="flex-start"
+        style={{ overflow: 'hidden' }}
+      >
         <Container style={{ maxWidth: '100%' }}>
-          <Container style={{ maxWidth: detailViewMaxWidth, transition: 'width 300ms' }}>
-            <Suspense fallback={<ds-spinner />}>
-              <PrivacyView />
-            </Suspense>
-          </Container>
+          <Suspense fallback={<ds-spinner />}>
+            <PrivacyView />
+          </Suspense>
         </Container>
       </Container>
     </Container>
