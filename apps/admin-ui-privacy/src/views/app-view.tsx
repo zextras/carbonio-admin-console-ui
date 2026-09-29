@@ -4,26 +4,23 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, PageHeader } from '@zextras/ui-components';
+import { PageHeader } from '@zextras/ui-components';
 import { Suspense } from 'react';
 
+import styles from './app-view.module.css';
 import { PrivacyView } from './privacy/privacy-view';
 
 export function AppView() {
   return (
-    <Container height="fit">
+    <div className={styles.page}>
       <PageHeader />
-      <Container
-        orientation="horizontal"
-        mainAlignment="flex-start"
-        style={{ overflow: 'hidden' }}
-      >
-        <Container style={{ maxWidth: '100%' }}>
+      <div className={styles.body}>
+        <div className={styles.content}>
           <Suspense fallback={<ds-spinner />}>
             <PrivacyView />
           </Suspense>
-        </Container>
-      </Container>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 }

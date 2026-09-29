@@ -113,4 +113,16 @@ describe('FormPageLayout', () => {
     renderFormPageLayout({ unsavedChanges: true, onSave: vi.fn() });
     expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
   });
+
+  it('should render title and actions when compactHeader is true', () => {
+    const onSave = vi.fn();
+    render(
+      <FormPageLayout title="Compact Title" compactHeader unsavedChanges onSave={onSave}>
+        <div>content</div>
+      </FormPageLayout>,
+    );
+    expect(screen.getByText('Compact Title')).not.toBeNull();
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+    expect(onSave).toHaveBeenCalledTimes(1);
+  });
 });
