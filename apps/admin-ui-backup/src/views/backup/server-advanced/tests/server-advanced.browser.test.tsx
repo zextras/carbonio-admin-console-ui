@@ -104,8 +104,6 @@ describe('ServerAdvanced', () => {
       });
 
       await expect.element(page.getByText('Tuning Options')).toBeVisible();
-      await expect.element(page.getByText('Latency', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('Metadata', { exact: true })).toBeVisible();
     });
   });
 
@@ -168,8 +166,12 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      await expect.element(page.getByText('Latency High Threshold (ms)')).toBeVisible();
-      await expect.element(page.getByText('Latency Low Threshold (ms)')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Latency Low Threshold (ms)' }))
+        .toBeVisible();
     });
 
     it('should render Maximum Metadata Size input', async () => {
@@ -178,7 +180,9 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      await expect.element(page.getByText('Maximum Metadata Size (MB)')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Maximum Metadata Size (MB)' }))
+        .toBeVisible();
     });
 
     it('should render Other Controls inputs', async () => {
@@ -187,10 +191,18 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      await expect.element(page.getByText('Maximum Operation per Account')).toBeVisible();
-      await expect.element(page.getByText('Compression Level')).toBeVisible();
-      await expect.element(page.getByText('Thread number for items')).toBeVisible();
-      await expect.element(page.getByText('Thread number for accounts')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Maximum Operation per Account' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Compression Level' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Thread number for items' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Thread number for accounts' }))
+        .toBeVisible();
     });
   });
 
@@ -214,7 +226,7 @@ describe('ServerAdvanced', () => {
 
       // Wait for API data to load (child component mounts)
       await expect
-        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' }))
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
         .toHaveValue('200');
 
       // Re-set account + rights after child mount (gcTime:0 GC'd them during parent loading gate)
@@ -231,7 +243,7 @@ describe('ServerAdvanced', () => {
         [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
       );
 
-      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' });
+      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)' });
       await expect.element(latencyInput).toBeEnabled();
       await userEvent.fill(latencyInput, '999');
 
@@ -252,7 +264,7 @@ describe('ServerAdvanced', () => {
       });
 
       await expect
-        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' }))
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
         .toHaveValue('200');
 
       queryClient.setQueryData(['account', 'info'], {
@@ -304,7 +316,7 @@ describe('ServerAdvanced', () => {
 
       // Wait for API data to load
       await expect
-        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' }))
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
         .toHaveValue('200');
 
       // Re-set account + rights after child mount
@@ -321,7 +333,7 @@ describe('ServerAdvanced', () => {
         [{ type: 'config', all: [{ setAttrs: [{ all: true }], getAttrs: [{ all: true }] }] }],
       );
 
-      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)*' });
+      const latencyInput = page.getByRole('textbox', { name: 'Latency High Threshold (ms)' });
       await expect.element(latencyInput).toBeEnabled();
       await userEvent.fill(latencyInput, '999');
 

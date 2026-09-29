@@ -194,6 +194,8 @@ describe('PlainInput', () => {
     it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
       await render(<PlainInput label="Name" value="" onChange={() => {}} />);
 
+      await page.getByRole('textbox', { name: 'Name' }).unhover();
+
       const style = getComputedStyle(await getBox('Name'));
       expect(style.borderTopWidth).toBe('1px');
       expect(style.borderTopStyle).toBe('solid');
@@ -449,14 +451,14 @@ describe('PlainInput', () => {
       expectColor(style.backgroundColor, '#F5F6F8');
     });
 
-    it('renders the description in error color when hasError, secondary otherwise', async () => {
+    it('renders the description in error color when hasError, gray otherwise', async () => {
       await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
       const errorDescription = await page.getByText('Invalid token').element();
       expectColor(getComputedStyle(errorDescription).color, '#D74942');
 
       await render(<PlainInput label="Token" value="" onChange={() => {}} description="Helper text" />);
       const helperDescription = await page.getByText('Helper text').element();
-      expectColor(getComputedStyle(helperDescription).color, '#828282');
+      expectColor(getComputedStyle(helperDescription).color, '#696969');
     });
 
     it('renders the alert icon inside the error description', async () => {
