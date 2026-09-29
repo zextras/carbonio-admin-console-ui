@@ -259,6 +259,7 @@ describe('CreateCos', () => {
       await userEvent.fill(page.getByRole('textbox', { name: 'Cos Name' }), 'testcos');
       await page.getByRole('button', { name: 'Create' }).click();
 
+      await expect.element(page.getByText('Failed to fetch')).toBeVisible();
       await expect.element(page.getByText('New COS')).toBeVisible();
       await expect.element(page.getByRole('textbox', { name: 'Cos Name' })).toHaveValue('testcos');
     });

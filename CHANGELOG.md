@@ -1,3 +1,19 @@
+## [0.20.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.0...v0.20.1) (2026-09-25)
+
+### Bug Fixes
+
+* raise sonar JS/TS analyzer node heap to 6144 MB ([ad8bfc6](https://github.com/zextras/carbonio-admin-console-ui/commit/ad8bfc64f82f521f09f56d27543983f5a1d48d09)), closes [#1380](https://github.com/zextras/carbonio-admin-console-ui/issues/1380) [#23](https://github.com/zextras/carbonio-admin-console-ui/issues/23)
+
+## [0.20.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.3...v0.20.0) (2026-09-25)
+
+### Features
+
+* enabling contextual white label help documentation via dynamic landing pages cli admin UI ([#1384](https://github.com/zextras/carbonio-admin-console-ui/issues/1384)) ([8f26217](https://github.com/zextras/carbonio-admin-console-ui/commit/8f26217c57c2f5756638c8b1e12ecea53010b2ab))
+
+### Bug Fixes
+
+* missing chats option in cos settings ([36e4d48](https://github.com/zextras/carbonio-admin-console-ui/commit/36e4d48b05286dcd9a505de5c836a4208b673a1e))
+
 ## [0.19.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.19.2...v0.19.3) (2026-09-15)
 
 ### Bug Fixes
