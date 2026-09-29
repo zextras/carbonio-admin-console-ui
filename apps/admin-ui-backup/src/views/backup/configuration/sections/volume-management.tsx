@@ -6,10 +6,10 @@
 import {
   Button,
   Container,
-  Input,
   LabeledValue,
   ListRow,
   Padding,
+  PlainInput,
   Row,
   Select,
   useSnackbar,
@@ -195,14 +195,14 @@ export const VolumeManagement = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="backupDestPath">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t(
                   'backup.local_volume_reload_if_you_changed_this_value',
                   'Local Volume (reload if you changed this value)',
                 )}
                 value={field.state.value}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
               />
             )}
@@ -213,10 +213,10 @@ export const VolumeManagement = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="spaceThreshold">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
                 value={field.state.value}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 disabled={!allowSetBackup}
               />
@@ -270,10 +270,10 @@ export const VolumeManagement = ({
       )}
       {isShowSetExternalVolume && externalVolume?.value === MOUNTPOINT && (
         <Container>
-          <Input
+          <PlainInput
             label={t('label.path', 'Path')}
             value={rootVolumePath || ''}
-            backgroundColor="gray5"
+            autoComplete="off"
             onChange={(e: ChangeEvent<HTMLInputElement>) => setRootVolumePath(e.target.value)}
           />
         </Container>
@@ -347,11 +347,11 @@ export const VolumeManagement = ({
         <Container>
           <ListRow>
             <Container padding={{ bottom: 'large' }}>
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('backup.local_mountpoint', 'Local Mountpoint')}
                 value={manageExternalVolumeNewLocalMountpoint || ''}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setManageExternalVolumeNewLocalMountpoint(e.target.value)
                 }

@@ -732,6 +732,23 @@ describe('ComboboxInput', () => {
 			expect(popup.offsetWidth).toBe(box.offsetWidth);
 		});
 
+		it('sizes the popup to one row of content when there is a single item', async () => {
+			await render(
+				<ComboboxInput
+					label="Server"
+					items={SERVERS.slice(0, 1)}
+					value=""
+					onChange={() => {}}
+					onSelect={() => {}}
+				/>,
+			);
+
+			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
+
+			// 1 row (30.5px) + 16px vertical padding + 2px borders = 48.5px
+			expect(Math.abs((await getPopup()).offsetHeight - 48.5)).toBeLessThan(1);
+		});
+
 		it('sizes the popup to two rows of content', async () => {
 			const two = SERVERS.slice(0, 2);
 			await render(<ComboboxInput label="Server" items={two} value="" onChange={() => {}} onSelect={() => {}} />);

@@ -40,11 +40,17 @@
 	background: transparent;
 	color: inherit;
 	font: inherit;
+	--option-row-height: 1.90625rem;
+}
+
+.listboxOptions[data-single] {
+	height: var(--option-row-height);
+	overflow: hidden;
 }
 
 .option {
 	display: flex;
-	height: 1.90625rem;
+	height: var(--option-row-height);
 	box-sizing: border-box;
 	align-self: stretch;
 	align-items: center;
@@ -93,7 +99,16 @@
   flex-shrink: 0;
   padding: 0;
   border: none;
-  padding-left: 0.25rem;
+  margin-left: 0.25rem;
   background: transparent;
-  cursor: default;
+  cursor: pointer;
+}
+
+.toggleButton {
+  border-radius: 0.25rem;
+  transition: background 0.2s ease-out;
+}
+
+.toggleButton:not(:disabled):hover {
+  background: var(--color-gray5-hover);
 }

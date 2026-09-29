@@ -7,7 +7,6 @@
 import { flip, limitShift, offset, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
-import { useTranslation } from 'react-i18next';
 
 import { setupFloating } from '../../utils/floating-ui';
 import type { IconName } from '../../web-components/icon-registry';
@@ -186,16 +185,18 @@ const ComboboxPopupBody = ({
   valueLower,
   onPick,
 }: ComboboxPopupBodyProps) => {
-  const { t } = useTranslation();
-
   if (loading) {
-    return <p className={popupStyles.messageRow}>{t('label.loading', 'Loading...')}</p>;
+    return <p className={popupStyles.messageRow}>Loading...</p>;
   }
   if (items.length === 0) {
     return emptyMessage ? <p className={popupStyles.messageRow}>{emptyMessage}</p> : null;
   }
 	return (
-		<select size={Math.max(items.length, 2)} className={popupStyles.listboxOptions}>
+		<select
+			size={Math.max(items.length, 2)}
+			data-single={items.length === 1 || undefined}
+			className={popupStyles.listboxOptions}
+		>
 			{items.map((item, index) => (
         <ComboboxOption
           key={item.id}
@@ -230,7 +231,6 @@ const ComboboxInput = ({
   'aria-describedby': callerDescribedBy,
   ...rest
 }: ComboboxInputProps) => {
-  const { t } = useTranslation();
   const inputId = useId();
   const descriptionId = useId();
   const listboxId = useId();
@@ -380,7 +380,7 @@ const ComboboxInput = ({
         <button
           type="button"
           className={popupStyles.iconButton}
-          aria-label={t('label.clear', 'Clear')}
+          aria-label="Clear"
           onClick={onClear}
         >
           <ds-icon
@@ -393,8 +393,8 @@ const ComboboxInput = ({
       )}
       <button
         type="button"
-        className={popupStyles.iconButton}
-        aria-label={t('label.toggle_suggestions', 'Toggle suggestions')}
+        className={clsx(popupStyles.iconButton, popupStyles.toggleButton)}
+        aria-label="Toggle suggestions"
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
         disabled={disabled}
