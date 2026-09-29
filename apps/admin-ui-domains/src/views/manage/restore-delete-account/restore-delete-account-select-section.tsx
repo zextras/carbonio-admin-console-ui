@@ -29,6 +29,10 @@ const SearchFilterIcon = (): ReactElement => (
 
 const ACCOUNT_LIMIT = 10;
 
+function buildAccountRowId(item: any): string {
+	return `${item?.id}-${item?.serverName}`;
+}
+
 const backupAccountsQueryKeys = {
 	all: ['backup-accounts'] as const,
 	list: (domainName: string | undefined, filter: string, page: number) =>
@@ -37,7 +41,7 @@ const backupAccountsQueryKeys = {
 
 export const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	const { t } = useTranslation();
-	const [selectedAccountRows, setSelectedAccountRows] = useState<any>([]);
+	const [selectedAccountRows, setSelectedAccountRows] = useState<[] | [string]>([]);
 	const [accountOffset, setAccountOffset] = useState<number>(0);
 	const { data: domain } = useSelectedDomain();
 	const domainName = domain?.name;
@@ -97,8 +101,8 @@ export const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	];
 
 	const onAccountRowClick = (item: any): void => {
-		setSelectedAccountRows([item]);
 		if (item?.id) {
+			setSelectedAccountRows([buildAccountRowId(item)]);
 			setRestoreAccountDetail(() => ({
 				name: item?.name,
 				copyAccount: item?.name,
@@ -111,7 +115,7 @@ export const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 	};
 
 	const accountRows: Array<any> = accounts.map((item: any) => ({
-		id: `${item?.id}-${item?.serverName}`,
+		id: buildAccountRowId(item),
 		columns: [
 			<Container
 				key={item?.name}
