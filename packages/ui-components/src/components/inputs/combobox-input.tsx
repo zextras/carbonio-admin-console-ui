@@ -192,7 +192,11 @@ const ComboboxPopupBody = ({
     return emptyMessage ? <p className={popupStyles.messageRow}>{emptyMessage}</p> : null;
   }
 	return (
-		<select size={Math.max(items.length, 2)} className={popupStyles.listboxOptions}>
+		<select
+			size={Math.max(items.length, 2)}
+			data-single={items.length === 1 || undefined}
+			className={popupStyles.listboxOptions}
+		>
 			{items.map((item, index) => (
         <ComboboxOption
           key={item.id}
@@ -389,7 +393,7 @@ const ComboboxInput = ({
       )}
       <button
         type="button"
-        className={popupStyles.iconButton}
+        className={clsx(popupStyles.iconButton, popupStyles.toggleButton)}
         aria-label="Toggle suggestions"
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
