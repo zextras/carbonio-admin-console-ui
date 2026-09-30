@@ -21,7 +21,7 @@
 }
 
 .compactHeader {
-  height: 3.625rem;
+  min-height: 3.625rem;
   padding: 0 0 0 var(--padding-size-extralarge);
 }
 

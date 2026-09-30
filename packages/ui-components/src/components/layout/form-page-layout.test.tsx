@@ -114,7 +114,7 @@ describe('FormPageLayout', () => {
     expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
   });
 
-  it('should render title and actions when compactHeader is true', () => {
+  it('should render title and actions with compact header', () => {
     const onSave = vi.fn();
     render(
       <FormPageLayout title="Compact Title" compactHeader unsavedChanges onSave={onSave}>
