@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow } from '@zextras/ui-components';
+import { Container, ListRow, PlainInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,14 +19,14 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
 
   return (
     <>
-      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'extralarge' }} height="fit">
+      <Container
+        mainAlignment="flex-start"
+        crossAlignment="flex-start"
+        padding={{ top: 'extralarge' }}
+        height="fit"
+      >
         <ds-text as="h3" size="medium" weight="bold">
           {t('backup.tuning_options', 'Tuning Options')}
-        </ds-text>
-      </Container>
-      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'large' }} height="fit">
-        <ds-text as="h3" size="medium" weight="bold">
-          {t('backup.latency', 'Latency')}
         </ds-text>
       </Container>
       <ListRow>
@@ -39,14 +39,18 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
         >
           <form.Field name="backupLatencyHighThreshold">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!allowSetBackup}
-              />
+              <div className="w-full">
+                <PlainInput
+                  required
+                  label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
+                  autoComplete="off"
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={!allowSetBackup}
+                />
+              </div>
             )}
           </form.Field>
         </Container>
@@ -59,14 +63,18 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
         >
           <form.Field name="backupLatencyLowThreshold">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!allowSetBackup}
-              />
+              <div className="w-full">
+                <PlainInput
+                  required
+                  label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
+                  autoComplete="off"
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={!allowSetBackup}
+                />
+              </div>
             )}
           </form.Field>
         </Container>
