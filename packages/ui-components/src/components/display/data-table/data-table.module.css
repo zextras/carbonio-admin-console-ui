@@ -699,18 +699,23 @@
 .searchInput {
   width: 100%;
   height: 2rem;
-  border: 1px solid var(--color-gray3-hover, #cfd5de);
-  border-radius: 4px;
-  padding: 0 0.625rem;
-  background: var(--color-gray6-regular, #fff);
+  border: 1px solid #858c93;
+  border-radius: 0.25rem;
+  padding: 0 0.75rem;
+  background: #fff;
   color: var(--color-text-regular, #333);
   font-size: 0.8125rem;
   font-family: inherit;
 }
 
-.searchInput:focus-visible {
-  outline: 2px solid var(--color-primary-regular, #2b73d2);
-  outline-offset: 2px;
+.searchInput:hover {
+  border-color: var(--color-primary-hover);
+}
+
+.searchInput:focus {
+  border-color: var(--color-primary-hover);
+  box-shadow: 0 0 0 2px rgba(43, 115, 210, 0.25);
+  outline: none;
 }
 
 .filtersTrigger {

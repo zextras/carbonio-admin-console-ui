@@ -63,7 +63,6 @@ export const DataTableSearch = ({
         className={styles.searchInput}
         value={localValue}
         placeholder={resolvedPlaceholder}
-        aria-label={resolvedLabel}
         onChange={(event) => {
           const next = event.target.value;
           setLocalValue(next);
