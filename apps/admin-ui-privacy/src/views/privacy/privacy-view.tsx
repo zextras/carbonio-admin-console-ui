@@ -76,43 +76,46 @@ export function PrivacyView() {
   return (
     <FormPageLayout
       title={t('label.privacy', 'Privacy')}
+      compactHeader
       unsavedChanges={isDirty}
       onCancel={() => form.reset()}
       onSave={() => form.handleSubmit()}
     >
-      <form.Field name="sendFullError">
-        {(field) => (
-          <FormSwitch
-            label={t('privacy.send_full_error_data', 'Send full error data')}
-            fieldValue={field.state.value}
-            allowSetPrivacy={allowSetPrivacy}
-            onClick={() => field.handleChange(!field.state.value)}
-          />
-        )}
-      </form.Field>
-      <SwitchDescription label={privacyErrorDescription} />
-      <form.Field name="sendAnalytics">
-        {(field) => (
-          <FormSwitch
-            label={t('privacy.allow_data_analytics', 'Allow data analytics')}
-            fieldValue={field.state.value}
-            allowSetPrivacy={allowSetPrivacy}
-            onClick={() => field.handleChange(!field.state.value)}
-          />
-        )}
-      </form.Field>
-      <SwitchDescription label={privacyAnalyticsDescription} />
-      <form.Field name="allowFeedback">
-        {(field) => (
-          <FormSwitch
-            label={t('privacy.allow_live_survey_feedbacks', 'Allow live survey feedbacks')}
-            fieldValue={field.state.value}
-            allowSetPrivacy={allowSetPrivacy}
-            onClick={() => field.handleChange(!field.state.value)}
-          />
-        )}
-      </form.Field>
-      <SwitchDescription label={privacyFeedbackDescription} />
+      <div className="p-xl">
+        <form.Field name="sendFullError">
+          {(field) => (
+            <FormSwitch
+              label={t('privacy.send_full_error_data', 'Send full error data')}
+              fieldValue={field.state.value}
+              allowSetPrivacy={allowSetPrivacy}
+              onClick={() => field.handleChange(!field.state.value)}
+            />
+          )}
+        </form.Field>
+        <SwitchDescription label={privacyErrorDescription} />
+        <form.Field name="sendAnalytics">
+          {(field) => (
+            <FormSwitch
+              label={t('privacy.allow_data_analytics', 'Allow data analytics')}
+              fieldValue={field.state.value}
+              allowSetPrivacy={allowSetPrivacy}
+              onClick={() => field.handleChange(!field.state.value)}
+            />
+          )}
+        </form.Field>
+        <SwitchDescription label={privacyAnalyticsDescription} />
+        <form.Field name="allowFeedback">
+          {(field) => (
+            <FormSwitch
+              label={t('privacy.allow_live_survey_feedbacks', 'Allow live survey feedbacks')}
+              fieldValue={field.state.value}
+              allowSetPrivacy={allowSetPrivacy}
+              onClick={() => field.handleChange(!field.state.value)}
+            />
+          )}
+        </form.Field>
+        <SwitchDescription label={privacyFeedbackDescription} />
+      </div>
     </FormPageLayout>
   );
 }

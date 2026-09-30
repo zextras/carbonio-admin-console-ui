@@ -20,10 +20,19 @@
   padding: 2rem 0 0.5rem 1rem;
 }
 
+.compactHeader {
+  min-height: 3.625rem;
+  padding: 0 0 0 var(--padding-size-extralarge);
+}
+
 .title {
   flex: 1;
   min-width: 0;
   height: 2.5rem;
+}
+
+.compactHeader .title {
+  height: auto;
 }
 
 .buttons {
