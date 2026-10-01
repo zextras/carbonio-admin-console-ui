@@ -8,9 +8,9 @@ import {
   Button,
   Container,
   CustomTextArea,
-  Input,
   ListRow,
   Padding,
+  PlainInput,
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
@@ -114,9 +114,8 @@ export const CreateCosLegacy = () => {
             </Row>
             <ListRow>
               <Container padding={{ all: 'small' }} crossAlignment="flex-start">
-                <Input
+                <PlainInput
                   label={t('label.cos_name', 'Cos Name')}
-                  backgroundColor="gray5"
                   value={cosName}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setCosName(e.target.value.toLowerCase());
@@ -134,9 +133,8 @@ export const CreateCosLegacy = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <PlainInput
                   label={t('label.description', 'Description')}
-                  backgroundColor="gray5"
                   value={description}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setDescription(e.target.value);

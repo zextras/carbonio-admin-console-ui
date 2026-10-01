@@ -57,13 +57,13 @@ async function setupWizardTest(): Promise<void> {
 
 async function setupEmailStep2(): Promise<void> {
   await setupWizardTest();
-  await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+  await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
   await page.getByRole('button', { name: 'Next' }).click();
 }
 
 async function setupWorkspaceStep2(): Promise<void> {
   await setupWizardTest();
-  await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+  await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
   await page.getByRole('radio', { name: 'Workspace edition' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
 }
@@ -87,7 +87,7 @@ describe('CreateNewCos wizard', () => {
     it('renders the Class of service name input field', async () => {
       await setupWizardTest();
       await expect
-        .element(page.getByRole('textbox', { name: 'Class of service name*' }))
+        .element(page.getByRole('textbox', { name: /^Class of service name/ }))
         .toBeVisible();
     });
 
@@ -112,13 +112,13 @@ describe('CreateNewCos wizard', () => {
 
     it('is enabled when a valid cos name is entered', async () => {
       await setupWizardTest();
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await expect.element(page.getByRole('button', { name: 'Next' })).not.toBeDisabled();
     });
 
     it('remains enabled when the cos name is cleared', async () => {
       await setupWizardTest();
-      const cosNameInput = page.getByRole('textbox', { name: 'Class of service name*' });
+      const cosNameInput = page.getByRole('textbox', { name: /^Class of service name/ });
       await userEvent.fill(cosNameInput, 'testcos');
       await userEvent.clear(cosNameInput);
       await expect.element(page.getByRole('button', { name: 'Next' })).not.toBeDisabled();
@@ -143,7 +143,7 @@ describe('CreateNewCos wizard', () => {
   describe('Step navigation', () => {
     it('advances to step 2 when Next is clicked', async () => {
       await setupWizardTest();
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await page.getByRole('button', { name: 'Next' }).click();
 
       await expect.element(page.getByRole('button', { name: 'BACK' })).toBeVisible();
@@ -152,7 +152,7 @@ describe('CreateNewCos wizard', () => {
 
     it('returns to step 1 when Back is clicked', async () => {
       await setupWizardTest();
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('button', { name: 'BACK' }).click();
 
@@ -161,7 +161,7 @@ describe('CreateNewCos wizard', () => {
 
     it('keeps the entered cos name when navigating back', async () => {
       await setupWizardTest();
-      const cosNameInput = page.getByRole('textbox', { name: 'Class of service name*' });
+      const cosNameInput = page.getByRole('textbox', { name: /^Class of service name/ });
       await userEvent.fill(cosNameInput, 'testcos');
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('button', { name: 'BACK' }).click();
@@ -207,7 +207,7 @@ describe('CreateNewCos wizard', () => {
   describe('Step 2 content', () => {
     it('navigates back from workspace edition step 2 to step 1', async () => {
       await setupWizardTest();
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await page.getByRole('radio', { name: 'Workspace edition' }).click();
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('button', { name: 'BACK' }).click();
@@ -493,7 +493,7 @@ describe('CreateNewCos wizard', () => {
 
     it('auto-lowercases uppercase letters as the cos name is typed', async () => {
       await setupWizardTest();
-      const cosNameInput = page.getByRole('textbox', { name: 'Class of service name*' });
+      const cosNameInput = page.getByRole('textbox', { name: /^Class of service name/ });
       await userEvent.fill(cosNameInput, 'TestCOS');
       await expect.element(cosNameInput).toHaveValue('testcos');
     });
@@ -501,7 +501,7 @@ describe('CreateNewCos wizard', () => {
     it('allows hyphens in the cos name and advances to step 2', async () => {
       await setupWizardTest();
       await userEvent.fill(
-        page.getByRole('textbox', { name: 'Class of service name*' }),
+        page.getByRole('textbox', { name: /^Class of service name/ }),
         'test-cos',
       );
       await page.getByRole('button', { name: 'Next' }).click();
@@ -513,7 +513,7 @@ describe('CreateNewCos wizard', () => {
     it('shows a lowercase validation error when the cos name contains disallowed characters', async () => {
       await setupWizardTest();
       await userEvent.fill(
-        page.getByRole('textbox', { name: 'Class of service name*' }),
+        page.getByRole('textbox', { name: /^Class of service name/ }),
         'test_cos',
       );
       await page.getByRole('button', { name: 'Next' }).click();
@@ -538,7 +538,7 @@ describe('CreateNewCos wizard', () => {
       await expect.element(page.getByText('Submit failed')).toBeVisible();
       await page.getByRole('button', { name: 'BACK' }).click();
 
-      const cosNameInput = page.getByRole('textbox', { name: 'Class of service name*' });
+      const cosNameInput = page.getByRole('textbox', { name: /^Class of service name/ });
       await userEvent.clear(cosNameInput);
 
       await expect.element(page.getByText('COS name is required')).toBeVisible();
@@ -567,7 +567,7 @@ describe('CreateNewCos wizard', () => {
       const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
       await setupWizardTest();
 
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await userEvent.fill(page.getByRole('textbox', { name: 'Description' }), 'A test COS');
       await userEvent.fill(page.getByRole('textbox', { name: 'Notes' }), 'Some notes');
       await page.getByRole('button', { name: 'Next' }).click();
@@ -640,7 +640,7 @@ describe('CreateNewCos wizard', () => {
       const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
       await setupWizardTest();
 
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await page.getByRole('radio', { name: 'Workspace edition' }).click();
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('button', { name: 'create' }).click();
@@ -664,7 +664,7 @@ describe('CreateNewCos wizard', () => {
       const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
       await setupWizardTest();
 
-      await userEvent.fill(page.getByRole('textbox', { name: 'Class of service name*' }), 'testcos');
+      await userEvent.fill(page.getByRole('textbox', { name: /^Class of service name/ }), 'testcos');
       await page.getByRole('button', { name: 'Next' }).click();
       await page.getByRole('switch', { name: 'Enable mail' }).click();
       await page.getByRole('switch', { name: 'Enable tasks' }).click();
