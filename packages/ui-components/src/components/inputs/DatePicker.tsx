@@ -39,17 +39,6 @@ type DatePickerProps = {
   required?: boolean;
 };
 
-function closeOnEscape(
-  e: React.KeyboardEvent<HTMLElement>,
-  isOpen: boolean,
-  close: () => void,
-): void {
-  if (e.key === 'Escape' && isOpen) {
-    e.preventDefault();
-    close();
-  }
-}
-
 const dayPickerStyles: Partial<Styles> = {
   month_caption: {
     width: '100%',
@@ -115,10 +104,6 @@ export const DatePicker = ({
 
   const showClear = isClearable && !!selected;
 
-  const closePopover = useCallback(() => {
-    setIsOpen(false);
-  }, []);
-
   useLayoutEffect(() => {
     const anchor = inputRef.current?.parentElement;
     const popover = popoverRef.current;
@@ -150,8 +135,18 @@ export const DatePicker = ({
         return;
       setIsOpen(false);
     };
+    const handleKeyDown = (e: KeyboardEvent): void => {
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        setIsOpen(false);
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, [isOpen]);
 
   const handleSelect = useCallback(
@@ -182,21 +177,13 @@ export const DatePicker = ({
 
   const handleInputKeyDown = useCallback(
     (e: React.KeyboardEvent<HTMLInputElement>): void => {
-      closeOnEscape(e, isOpen, closePopover);
       if (isOpen) return;
       if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
         e.preventDefault();
         openPopover();
       }
     },
-    [isOpen, closePopover, openPopover],
-  );
-
-  const handleCalendarKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLButtonElement>): void => {
-      closeOnEscape(e, isOpen, closePopover);
-    },
-    [isOpen, closePopover],
+    [isOpen, openPopover],
   );
 
   const disabledMatcher = useMemo(() => {
@@ -260,7 +247,6 @@ export const DatePicker = ({
             {...expandedAttrs}
             disabled={disabled}
             onClick={toggleOpen}
-            onKeyDown={handleCalendarKeyDown}
           >
             <ds-icon
               icon="CalendarOutline"
@@ -277,9 +263,6 @@ export const DatePicker = ({
         ref={popoverRef}
         className={styles.popover}
         data-open={isOpen || undefined}
-        onKeyDown={(e) => {
-          closeOnEscape(e, isOpen, closePopover);
-        }}
       >
         <DayPicker
           mode="single"
