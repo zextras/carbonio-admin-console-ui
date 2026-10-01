@@ -1,3 +1,9 @@
+## [0.22.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.22.0...v0.22.1) (2026-10-01)
+
+### Bug Fixes
+
+* repair date picker accessibility ([#1398](https://github.com/zextras/carbonio-admin-console-ui/issues/1398)) ([9a08712](https://github.com/zextras/carbonio-admin-console-ui/commit/9a08712bde76ad2b240276e1b334dc71edf90d7a))
+
 ## [0.22.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.21.0...v0.22.0) (2026-10-01)
 
 ### Features

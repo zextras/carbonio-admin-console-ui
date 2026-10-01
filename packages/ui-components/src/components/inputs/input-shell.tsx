@@ -21,6 +21,8 @@ type InputShellProps = {
 	infoIcon?: boolean;
 	/** Custom node rendered at the right edge of the field box, before the info icon. */
 	icon?: ReactNode;
+	/** Lets the box grow with multi-line controls (textarea) instead of the fixed field height. */
+	multiline?: boolean;
 	children: ReactNode;
 };
 
@@ -34,6 +36,7 @@ const InputShell = ({
 	hasError = false,
 	infoIcon = false,
 	icon,
+	multiline = false,
 	children,
 }: InputShellProps) => {
 	return (
@@ -44,6 +47,7 @@ const InputShell = ({
 			</label>
 			<div
 				className={styles.box}
+				data-multiline={multiline || undefined}
 				data-disabled={disabled || undefined}
 				data-error={hasError || undefined}
 			>
