@@ -66,4 +66,12 @@ describe('LabeledValue', () => {
     const computed = getComputedStyle(label);
     expect(parseFloat(computed.fontSize)).toBeCloseTo(14, 0);
   });
+
+  it('aligns the label and the value on the same left edge', async () => {
+    await render(<LabeledValue label="Accounts" value="42" />);
+
+    const label = (await page.getByText('Accounts').element()) as HTMLElement;
+    const value = (await page.getByText('42').element()) as HTMLElement;
+    expect(value.getBoundingClientRect().left).toBeCloseTo(label.getBoundingClientRect().left, 0);
+  });
 });
