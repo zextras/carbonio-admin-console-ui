@@ -4,7 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, ListRow, Row, Select, SelectItem } from '@zextras/ui-components';
+import {
+  Container,
+  ListRow,
+  NumberInput,
+  PlainSelect,
+  Row,
+  SelectItem,
+} from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { findSelectItemWithFallback } from '../../utils';
@@ -87,28 +94,23 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
                 return (
                   <>
                     <Container padding={{ right: 'small' }}>
-                      <Input
-                        inputName="zimbraPrefMailMinPollingInterval"
+                      <NumberInput
+                        name="zimbraPrefMailMinPollingInterval"
                         label={t(
                           'cos.minimum_mail_polling_interval',
                           'Minimum mail polling interval',
                         )}
-                        backgroundColor="gray5"
                         value={pollingIntervalNum}
-                        type="number"
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                          const num = e.target.value;
+                        onChange={(num): void => {
                           field.handleChange(num ? `${num}${pollingIntervalType}` : '');
                         }}
                         disabled={readonlyCOS}
                       />
                     </Container>
                     <Container padding={{ left: 'small' }}>
-                      <Select
+                      <PlainSelect
                         items={TIME_TYPES}
-                        background={'gray5'}
                         label={t('cos.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
-                        showCheckbox={false}
                         selection={
                           pollingIntervalType === ''
                             ? (TIME_TYPES.at(-1) ?? TIME_TYPES[0])
@@ -116,11 +118,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
                               TIME_TYPES[0]
                         }
                         onChange={(value): void => {
-                          const v =
-                            typeof value === 'object' && value !== null && 'value' in value
-                              ? (value as SelectItem).value
-                              : (value as string);
-                          field.handleChange(pollingIntervalNum ? `${pollingIntervalNum}${v}` : '');
+                          field.handleChange(pollingIntervalNum ? `${pollingIntervalNum}${value}` : '');
                         }}
                         disabled={readonlyCOS}
                       />
@@ -143,11 +141,9 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
             <Container crossAlignment="flex-start">
               <form.Field name="zimbraPrefMailPollingInterval">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={POLLING_INTERVAL}
-                    background={'gray5'}
                     label={t('cos.polling_interval', 'Polling interval')}
-                    showCheckbox={false}
                     selection={
                       field.state.value === ''
                         ? (POLLING_INTERVAL.at(-1) ?? POLLING_INTERVAL[0])
@@ -155,11 +151,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
                           POLLING_INTERVAL[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -180,21 +172,15 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
             <Container>
               <form.Field name="zimbraPrefMailSendReadReceipts">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={SEND_READ_RECEIPTS}
-                    background="gray5"
                     label={t('cos.read_receipt_settings', 'Read Receipt settings')}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(SEND_READ_RECEIPTS, field.state.value) ??
                       SEND_READ_RECEIPTS[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
