@@ -40,6 +40,13 @@
   flex-shrink: 0;
 }
 
+.box[data-multiline] {
+  height: auto;
+  min-height: 2.5rem;
+  align-items: stretch;
+  padding: 0.5rem 0.75rem;
+}
+
 .box[data-disabled] {
   background: var(--color-gray5-regular);
   border-color: var(--color-gray3-regular);
