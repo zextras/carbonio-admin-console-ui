@@ -1,3 +1,9 @@
+## [0.21.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.1...v0.21.0) (2026-10-01)
+
+### Features
+
+* **ui-components/number-input:** add NumberInput component ([#1396](https://github.com/zextras/carbonio-admin-console-ui/issues/1396)) ([0615a18](https://github.com/zextras/carbonio-admin-console-ui/commit/0615a1883fad22e1a62455c3fa1a4a2526b34c6b))
+
 ## [0.20.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.0...v0.20.1) (2026-09-25)
 
 ### Bug Fixes
