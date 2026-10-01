@@ -63,11 +63,11 @@ function lastEnabledIndexOf<T>(items: Array<SelectItem<T>>): number | null {
 }
 
 type PlainSelectOptionProps<T> = {
-  item: SelectItem<T>;
-  optionId: string;
-  active: boolean;
-  selected: boolean;
-  onPick: (item: SelectItem<T>) => void;
+  readonly item: SelectItem<T>;
+  readonly optionId: string;
+  readonly active: boolean;
+  readonly selected: boolean;
+  readonly onPick: (item: SelectItem<T>) => void;
 };
 
 function PlainSelectOption<T>({
@@ -102,6 +102,34 @@ function PlainSelectOption<T>({
       {item.label}
     </option>
   );
+}
+
+type SelectKeyAction =
+  | { type: 'move'; direction: 1 | -1 }
+  | { type: 'jump'; to: 'first' | 'last' }
+  | { type: 'pick' }
+  | { type: 'close'; preventDefault: boolean }
+  | { type: 'passThrough' };
+
+function resolveSelectKeyAction(key: string, open: boolean): SelectKeyAction {
+  switch (key) {
+    case 'ArrowDown':
+    case 'ArrowUp':
+      return { type: 'move', direction: key === 'ArrowDown' ? 1 : -1 };
+    case 'Home':
+      return { type: 'jump', to: 'first' };
+    case 'End':
+      return { type: 'jump', to: 'last' };
+    case 'Enter':
+    case ' ':
+      return open ? { type: 'pick' } : { type: 'passThrough' };
+    case 'Escape':
+      return open ? { type: 'close', preventDefault: true } : { type: 'passThrough' };
+    case 'Tab':
+      return { type: 'close', preventDefault: false };
+    default:
+      return { type: 'passThrough' };
+  }
 }
 
 export const PlainSelect = <T,>({
@@ -145,45 +173,32 @@ export const PlainSelect = <T,>({
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLButtonElement>): void {
-    switch (e.key) {
-      case 'ArrowDown':
-      case 'ArrowUp': {
+    const action = resolveSelectKeyAction(e.key, open);
+    switch (action.type) {
+      case 'move':
         e.preventDefault();
-        const direction = e.key === 'ArrowDown' ? 1 : -1;
-        if (!open) {
+        if (open) {
+          setActiveIndex((current) => enabledIndexInDirection(items, current, action.direction));
+        } else {
           openList();
           setActiveIndex(
-            direction === 1 ? selectedIndexOf(items, selection) : lastEnabledIndexOf(items),
+            action.direction === 1 ? selectedIndexOf(items, selection) : lastEnabledIndexOf(items),
           );
-        } else {
-          setActiveIndex((current) => enabledIndexInDirection(items, current, direction));
         }
         break;
-      }
-      case 'Home':
+      case 'jump':
         e.preventDefault();
-        if (!open) setOpen(true);
-        setActiveIndex(firstEnabledIndexOf(items));
+        setOpen(true);
+        setActiveIndex(
+          action.to === 'first' ? firstEnabledIndexOf(items) : lastEnabledIndexOf(items),
+        );
         break;
-      case 'End':
+      case 'pick':
         e.preventDefault();
-        if (!open) setOpen(true);
-        setActiveIndex(lastEnabledIndexOf(items));
+        pickActive();
         break;
-      case 'Enter':
-      case ' ':
-        if (open) {
-          e.preventDefault();
-          pickActive();
-        }
-        break;
-      case 'Escape':
-        if (open) {
-          e.preventDefault();
-          closeList();
-        }
-        break;
-      case 'Tab':
+      case 'close':
+        if (action.preventDefault) e.preventDefault();
         closeList();
         break;
       default:
