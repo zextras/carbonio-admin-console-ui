@@ -77,42 +77,40 @@ describe('PlainTextarea', () => {
       .toHaveAttribute('placeholder', 'Type here');
   });
 
-  it('starts at the single-line box height and grows with multi-line content', async () => {
+  it('reserves two lines when empty and keeps the height fixed while typing', async () => {
     await render(<ControlledTextarea />);
 
     const textarea = (await page
       .getByRole('textbox', { name: 'Notes' })
       .element()) as HTMLTextAreaElement;
-    expect(textarea.offsetHeight).toBeLessThanOrEqual(40);
+    expect(textarea.offsetHeight).toBeCloseTo(48, 0);
 
-    await userEvent.type(page.getByRole('textbox', { name: 'Notes' }), 'one[Enter]two[Enter]three');
+    await userEvent.type(page.getByRole('textbox', { name: 'Notes' }), 'one[Enter]two');
 
-    expect(textarea.offsetHeight).toBeGreaterThan(40);
+    expect(textarea.offsetHeight).toBeCloseTo(48, 0);
   });
 
-  it('scrolls once the content exceeds maxHeight', async () => {
-    function TallTextarea(): React.JSX.Element {
-      const [value, setValue] = useState('');
-      return (
-        <PlainTextarea
-          label="Notes"
-          value={value}
-          onChange={(e) => setValue(e.target.value)}
-          maxHeight="6rem"
-        />
-      );
-    }
-    await render(<TallTextarea />);
+  it('is vertically resizable', async () => {
+    await render(<PlainTextarea label="Notes" value="" onChange={() => {}} />);
+
+    const textarea = (await page
+      .getByRole('textbox', { name: 'Notes' })
+      .element()) as HTMLTextAreaElement;
+    expect(getComputedStyle(textarea).resize).toBe('vertical');
+  });
+
+  it('shows a scrollbar when the content overflows the reserved lines', async () => {
+    await render(<ControlledTextarea />);
 
     await userEvent.type(
       page.getByRole('textbox', { name: 'Notes' }),
-      '1[Enter]2[Enter]3[Enter]4[Enter]5[Enter]6[Enter]7[Enter]8',
+      '1[Enter]2[Enter]3[Enter]4[Enter]5',
     );
 
     const textarea = (await page
       .getByRole('textbox', { name: 'Notes' })
       .element()) as HTMLTextAreaElement;
-    expect(textarea.offsetHeight).toBeLessThanOrEqual(96);
+    expect(textarea.offsetHeight).toBeLessThanOrEqual(48);
     expect(textarea.scrollHeight).toBeGreaterThan(textarea.clientHeight);
   });
 });
