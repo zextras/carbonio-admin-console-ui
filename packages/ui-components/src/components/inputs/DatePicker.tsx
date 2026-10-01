@@ -9,13 +9,12 @@ import '@daypicker/react/style.css';
 import { DayPicker, type Styles } from '@daypicker/react';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import { format } from 'date-fns';
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
-import { Button, ButtonProps } from '../basic/button/Button';
-import { INPUT_BACKGROUND_COLOR } from '../constants';
-import { Container, ContainerProps } from '../layout/Container';
+import popupStyles from './combobox-input.module.css';
 import styles from './DatePicker.module.css';
-import { Input, InputProps } from './Input';
+import { InputShell } from './input-shell';
+import shellStyles from './input-shell.module.css';
 
 type DatePickerProps = {
   /** Close icon to clear Input */
@@ -27,53 +26,29 @@ type DatePickerProps = {
   /** Date format using date-fns tokens */
   dateFormat?: string;
   disabled?: boolean;
-  width?: ContainerProps['width'];
+  /** Width of the field; defaults to 15.625rem */
+  width?: React.CSSProperties['width'];
   minDate?: Date;
   maxDate?: Date;
   /** Controlled selected date */
   selected?: Date | null;
+  /** Renders the description below the field and links it via aria-describedby. `null` is treated as absent. */
+  description?: string | null;
+  /** Marks the field as invalid (aria-invalid) and applies the error styling. */
+  hasError?: boolean;
+  required?: boolean;
 };
 
-type InputIconsProps = Pick<ButtonProps, 'onClick' | 'disabled'> & {
-  showClear: boolean;
-  onClear: ButtonProps['onClick'];
-};
-
-const buildInputIcons = ({
-  showClear,
-  onClear,
-  onClick,
-  disabled,
-}: InputIconsProps): NonNullable<InputProps['CustomIcon']> =>
-  function InputIcons(): React.JSX.Element {
-    return (
-      <div className={styles.inputIconsContainer}>
-        {showClear && (
-          <Button
-            icon="CloseOutline"
-            size="large"
-            onClick={onClear}
-            backgroundColor="transparent"
-            disabled={disabled}
-            className={styles.customButton}
-            aria-label="Clear"
-          />
-        )}
-        <Button
-          icon="CalendarOutline"
-          size="large"
-          backgroundColor="transparent"
-          onClick={onClick}
-          labelColor={'text'}
-          disabled={disabled}
-          className={styles.customButton}
-          aria-label="Calendar"
-        />
-      </div>
-    );
-  };
-
-const noopOnChange = (): void => undefined;
+function closeOnEscape(
+  e: React.KeyboardEvent<HTMLElement>,
+  isOpen: boolean,
+  close: () => void,
+): void {
+  if (e.key === 'Escape' && isOpen) {
+    e.preventDefault();
+    close();
+  }
+}
 
 const dayPickerStyles: Partial<Styles> = {
   month_caption: {
@@ -118,13 +93,19 @@ export const DatePicker = ({
   isClearable = false,
   onChange,
   selected,
-  disabled,
+  disabled = false,
   width,
   minDate,
   maxDate,
+  description,
+  hasError = false,
+  required = false,
 }: DatePickerProps) => {
-  const anchorRef = useRef<HTMLDivElement>(null);
-  const popoverRef = useRef<HTMLDivElement>(null);
+  const inputId = useId();
+  const descriptionId = useId();
+  const popoverId = useId();
+  const inputRef = useRef<HTMLInputElement | null>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
   const inputValue = useMemo(
@@ -132,8 +113,14 @@ export const DatePicker = ({
     [selected, dateFormat],
   );
 
+  const showClear = isClearable && !!selected;
+
+  const closePopover = useCallback(() => {
+    setIsOpen(false);
+  }, []);
+
   useLayoutEffect(() => {
-    const anchor = anchorRef.current;
+    const anchor = inputRef.current?.parentElement;
     const popover = popoverRef.current;
     if (!anchor || !popover) return;
 
@@ -159,7 +146,8 @@ export const DatePicker = ({
     if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent): void => {
       const target = e.target as Node;
-      if (popoverRef.current?.contains(target) || anchorRef.current?.contains(target)) return;
+      if (popoverRef.current?.contains(target) || inputRef.current?.parentElement?.contains(target))
+        return;
       setIsOpen(false);
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -175,7 +163,7 @@ export const DatePicker = ({
   );
 
   const handleClear = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => {
+    (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
       onChange?.(null);
     },
@@ -188,15 +176,27 @@ export const DatePicker = ({
     }
   }, [disabled]);
 
-  const InputIconsComponent = useMemo<InputProps['CustomIcon']>(
-    () =>
-      buildInputIcons({
-        showClear: isClearable && !!selected,
-        onClear: handleClear,
-        onClick: toggleOpen,
-        disabled,
-      }),
-    [isClearable, selected, handleClear, toggleOpen, disabled],
+  const openPopover = useCallback(() => {
+    if (!disabled) setIsOpen(true);
+  }, [disabled]);
+
+  const handleInputKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLInputElement>): void => {
+      closeOnEscape(e, isOpen, closePopover);
+      if (isOpen) return;
+      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        openPopover();
+      }
+    },
+    [isOpen, closePopover, openPopover],
+  );
+
+  const handleCalendarKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>): void => {
+      closeOnEscape(e, isOpen, closePopover);
+    },
+    [isOpen, closePopover],
   );
 
   const disabledMatcher = useMemo(() => {
@@ -206,30 +206,78 @@ export const DatePicker = ({
     return matchers.length > 0 ? matchers : undefined;
   }, [minDate, maxDate]);
 
+  const expandedAttrs = {
+    'aria-haspopup': 'dialog',
+    'aria-expanded': isOpen,
+    'aria-controls': isOpen ? popoverId : undefined,
+  } as const;
+
   return (
-    <Container
-      orientation="horizontal"
-      height="fit"
-      mainAlignment="flex-start"
-      className={styles.styler}
-    >
-      <div ref={anchorRef}>
-        <Container width={width ?? '15.625rem'}>
-          <Input
-            backgroundColor={INPUT_BACKGROUND_COLOR}
-            label={label}
-            value={inputValue}
-            onChange={noopOnChange}
-            CustomIcon={InputIconsComponent}
+    <div style={{ width: width ?? '15.625rem' }}>
+      <InputShell
+        id={inputId}
+        label={label}
+        disabled={disabled}
+        required={required}
+        hasError={hasError}
+        description={description ?? ''}
+        descriptionId={descriptionId}
+      >
+        <input
+          id={inputId}
+          ref={inputRef}
+          className={shellStyles.control}
+          value={inputValue}
+          readOnly
+          disabled={disabled}
+          required={required}
+          aria-invalid={hasError || undefined}
+          aria-describedby={description ? descriptionId : undefined}
+          {...expandedAttrs}
+          onKeyDown={handleInputKeyDown}
+        />
+        {showClear && (
+          <button
+            type="button"
+            className={popupStyles.iconButton}
+            aria-label="Clear"
             disabled={disabled}
+            onClick={handleClear}
+          >
+            <ds-icon
+              icon="CloseOutline"
+              size="1rem"
+              color="var(--color-gray0-regular)"
+              aria-hidden="true"
+            />
+          </button>
+        )}
+        <button
+          type="button"
+          className={popupStyles.iconButton}
+          aria-label="Calendar"
+          {...expandedAttrs}
+          disabled={disabled}
+          onClick={toggleOpen}
+          onKeyDown={handleCalendarKeyDown}
+        >
+          <ds-icon
+            icon="CalendarOutline"
+            size="1rem"
+            color="var(--color-gray1-focus)"
+            aria-hidden="true"
           />
-        </Container>
-      </div>
+        </button>
+      </InputShell>
       <div
         popover="manual"
+        id={popoverId}
         ref={popoverRef}
         className={styles.popover}
         data-open={isOpen || undefined}
+        onKeyDown={(e) => {
+          closeOnEscape(e, isOpen, closePopover);
+        }}
       >
         <DayPicker
           mode="single"
@@ -245,6 +293,6 @@ export const DatePicker = ({
           autoFocus
         />
       </div>
-    </Container>
+    </div>
   );
 };

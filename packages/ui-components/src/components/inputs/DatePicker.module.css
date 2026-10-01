@@ -4,22 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-.styler {
-  font-family: var(--font-family);
-  font-size: var(--font-size-medium);
-  font-weight: var(--font-weight-regular);
-}
-
-.inputIconsContainer {
-  display: flex;
-  gap: 0.5rem;
-  width: fit-content;
-}
-
-.customButton {
-  padding: 0.125rem;
-}
-
 .popover {
   position: fixed;
   inset: unset;
