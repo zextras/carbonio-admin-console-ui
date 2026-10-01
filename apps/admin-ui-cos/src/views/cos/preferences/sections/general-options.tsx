@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, Row, Select, SelectItem } from '@zextras/ui-components';
+import { Container, ListRow, PlainSelect, Row, SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { CosPreferencesFormApi } from '../types';
@@ -39,20 +39,14 @@ export const GeneralOptions = ({ form, readonlyCOS, locales }: GeneralOptionsPro
             <Container>
               <form.Field name="zimbraPrefLocale">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={locales}
-                    background={'gray5'}
                     label={t('label.language', 'Language')}
-                    showCheckbox={false}
                     selection={
                       locales.find((item) => item.value === field.state.value) || locales[0]
                     }
                     onChange={(value): void => {
-                      const newValue =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(newValue);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
