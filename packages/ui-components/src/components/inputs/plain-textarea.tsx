@@ -5,7 +5,7 @@
  */
 
 import clsx from 'clsx';
-import { useId, useLayoutEffect, useRef } from 'react';
+import { useId } from 'react';
 
 import { InputShell } from './input-shell';
 import styles from './input-shell.module.css';
@@ -25,7 +25,7 @@ export type PlainTextareaProps = Omit<
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. */
   hasError?: boolean;
-  /** Auto-grow limit beyond which the field scrolls. */
+  /** Cap on the user-resizable height; unlimited when not provided. */
   maxHeight?: string;
 };
 
@@ -38,23 +38,15 @@ export const PlainTextarea = ({
   className,
   hasError = false,
   description,
-  maxHeight = '10.313rem',
+  maxHeight,
   ref: callerRef,
   'aria-describedby': callerDescribedBy,
   ...rest
 }: PlainTextareaProps) => {
   const textareaId = useId();
   const descriptionId = useId();
-  const textareaRef = useRef<HTMLTextAreaElement | null>(null);
   const textareaClassName = clsx(styles.control, textareaStyles.textarea, className);
   const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
-
-  useLayoutEffect(() => {
-    const textarea = textareaRef.current;
-    if (!textarea) return;
-    textarea.style.height = '0px';
-    textarea.style.height = `${textarea.scrollHeight}px`;
-  }, [value]);
 
   return (
     <InputShell
@@ -73,16 +65,12 @@ export const PlainTextarea = ({
         onChange={onChange}
         disabled={disabled}
         required={required}
-        rows={1}
+        rows={2}
         className={textareaClassName}
-        style={{ maxHeight }}
+        style={maxHeight ? { maxHeight } : undefined}
         aria-invalid={hasError || undefined}
         aria-describedby={describedBy || undefined}
-        ref={(node: HTMLTextAreaElement | null) => {
-          textareaRef.current = node;
-          if (typeof callerRef === 'function') callerRef(node);
-          else if (callerRef) callerRef.current = node;
-        }}
+        ref={callerRef}
         {...rest}
       />
     </InputShell>
