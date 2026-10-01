@@ -1,3 +1,9 @@
+## [0.22.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.21.0...v0.22.0) (2026-10-01)
+
+### Features
+
+* **ui-components/plain-select:** add plain select component ([#1397](https://github.com/zextras/carbonio-admin-console-ui/issues/1397)) ([28f5569](https://github.com/zextras/carbonio-admin-console-ui/commit/28f556903b6ca1e0ba66449b0eb3f81acb21cb60))
+
 ## [0.21.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.1...v0.21.0) (2026-10-01)
 
 ### Features
