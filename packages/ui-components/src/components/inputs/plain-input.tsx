@@ -5,6 +5,7 @@
  */
 
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import { useId } from 'react';
 
 import { InputShell } from './input-shell';
@@ -26,6 +27,8 @@ export type PlainInputProps = Omit<
   hasError?: boolean;
   /** Renders the InfoOutline icon at the right edge of the field box. */
   infoIcon?: boolean;
+  /** Renders a custom node at the right edge of the field box, before the info icon. */
+  icon?: ReactNode;
 };
 
 export const PlainInput = ({
@@ -38,6 +41,7 @@ export const PlainInput = ({
 	hasError = false,
 	description,
 	infoIcon = false,
+	icon,
 	'aria-describedby': callerDescribedBy,
 	...rest
 }: PlainInputProps) => {
@@ -57,6 +61,7 @@ export const PlainInput = ({
       description={resolvedDescription}
       descriptionId={descriptionId}
       infoIcon={infoIcon}
+      icon={icon}
     >
       <input
         id={inputId}

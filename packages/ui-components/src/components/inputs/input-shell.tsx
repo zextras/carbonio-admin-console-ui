@@ -19,6 +19,8 @@ type InputShellProps = {
 	required?: boolean;
 	hasError?: boolean;
 	infoIcon?: boolean;
+	/** Custom node rendered at the right edge of the field box, before the info icon. */
+	icon?: ReactNode;
 	children: ReactNode;
 };
 
@@ -31,6 +33,7 @@ const InputShell = ({
 	required = false,
 	hasError = false,
 	infoIcon = false,
+	icon,
 	children,
 }: InputShellProps) => {
 	return (
@@ -45,6 +48,7 @@ const InputShell = ({
 				data-error={hasError || undefined}
 			>
 				{children}
+				{icon}
 				{infoIcon && (
 					<ds-icon
 						icon="InfoOutline"

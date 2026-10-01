@@ -328,6 +328,54 @@ describe('PlainInput', () => {
     });
   });
 
+  describe('icon slot', () => {
+    it('renders a custom icon node inside the field box', async () => {
+      await render(
+        <PlainInput label="Name" value="" onChange={() => {}} icon={<span>custom icon</span>} />,
+      );
+
+      const customIcon = await page.getByText('custom icon').element();
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const box = input.parentElement as HTMLElement;
+      expect(box.contains(customIcon)).toBe(true);
+    });
+
+    it('renders the custom icon after the input', async () => {
+      await render(
+        <PlainInput label="Name" value="" onChange={() => {}} icon={<span>custom icon</span>} />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      expect(input.nextElementSibling?.textContent).toBe('custom icon');
+    });
+
+    it('renders the custom icon before the info icon when both are provided', async () => {
+      await render(
+        <PlainInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          infoIcon
+          icon={<span>custom icon</span>}
+        />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const customIcon = input.nextElementSibling as HTMLElement;
+      const infoIconHost = customIcon.nextElementSibling as HTMLElement;
+      expect(customIcon.textContent).toBe('custom icon');
+      expect(infoIconHost.tagName).toBe('DS-ICON');
+      expect(infoIconHost.getAttribute('icon')).toBe('InfoOutline');
+    });
+
+    it('does not render any extra node inside the box without icon', async () => {
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      expect(input.nextElementSibling).toBeNull();
+    });
+  });
+
   describe('error and description support', () => {
     it('renders the description below the input and links it via aria-describedby', async () => {
       await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" />);
