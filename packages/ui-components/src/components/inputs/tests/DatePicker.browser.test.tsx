@@ -52,6 +52,27 @@ describe('DatePicker', () => {
       expect(input.labels?.[0]?.textContent).toBe('Pick a date');
     });
 
+    it('aligns the field to the left of a wide container and keeps the requested width', async () => {
+      await render(
+        <DatePicker label="Pick a date" selected={null} onChange={() => {}} width="21.625rem" />,
+      );
+
+      const input = (await page
+        .getByRole('textbox', { name: 'Pick a date' })
+        .element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const fieldWrapper = (box.parentElement as HTMLElement).parentElement as HTMLElement;
+      const datePickerRoot = fieldWrapper.parentElement as HTMLElement;
+      const boxRect = box.getBoundingClientRect();
+      const fieldRect = fieldWrapper.getBoundingClientRect();
+      const rootRect = datePickerRoot.getBoundingClientRect();
+
+      expect(rootRect.width).toBeGreaterThan(21.625 * 16 + 16);
+      expect(boxRect.left).toBeCloseTo(fieldRect.left, 0);
+      expect(fieldRect.left).toBeCloseTo(rootRect.left, 0);
+      expect(boxRect.width).toBeCloseTo(21.625 * 16, 0);
+    });
+
     it('renders the input as a read-only display of the date', async () => {
       await render(<ControlledDatePicker />);
 

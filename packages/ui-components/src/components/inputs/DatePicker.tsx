@@ -213,62 +213,64 @@ export const DatePicker = ({
   } as const;
 
   return (
-    <div style={{ width: width ?? '15.625rem' }}>
-      <InputShell
-        id={inputId}
-        label={label}
-        disabled={disabled}
-        required={required}
-        hasError={hasError}
-        description={description ?? ''}
-        descriptionId={descriptionId}
-      >
-        <input
+    <div style={{ width: '100%' }}>
+      <div style={{ width: width ?? '15.625rem' }}>
+        <InputShell
           id={inputId}
-          ref={inputRef}
-          className={shellStyles.control}
-          value={inputValue}
-          readOnly
+          label={label}
           disabled={disabled}
           required={required}
-          aria-invalid={hasError || undefined}
-          aria-describedby={description ? descriptionId : undefined}
-          {...expandedAttrs}
-          onKeyDown={handleInputKeyDown}
-        />
-        {showClear && (
+          hasError={hasError}
+          description={description ?? ''}
+          descriptionId={descriptionId}
+        >
+          <input
+            id={inputId}
+            ref={inputRef}
+            className={shellStyles.control}
+            value={inputValue}
+            readOnly
+            disabled={disabled}
+            required={required}
+            aria-invalid={hasError || undefined}
+            aria-describedby={description ? descriptionId : undefined}
+            {...expandedAttrs}
+            onKeyDown={handleInputKeyDown}
+          />
+          {showClear && (
+            <button
+              type="button"
+              className={popupStyles.iconButton}
+              aria-label="Clear"
+              disabled={disabled}
+              onClick={handleClear}
+            >
+              <ds-icon
+                icon="CloseOutline"
+                size="1rem"
+                color="var(--color-gray0-regular)"
+                aria-hidden="true"
+              />
+            </button>
+          )}
           <button
             type="button"
             className={popupStyles.iconButton}
-            aria-label="Clear"
+            aria-label="Calendar"
+            {...expandedAttrs}
             disabled={disabled}
-            onClick={handleClear}
+            onClick={toggleOpen}
+            onKeyDown={handleCalendarKeyDown}
           >
             <ds-icon
-              icon="CloseOutline"
+              icon="CalendarOutline"
               size="1rem"
-              color="var(--color-gray0-regular)"
+              color="var(--color-gray1-focus)"
               aria-hidden="true"
             />
           </button>
-        )}
-        <button
-          type="button"
-          className={popupStyles.iconButton}
-          aria-label="Calendar"
-          {...expandedAttrs}
-          disabled={disabled}
-          onClick={toggleOpen}
-          onKeyDown={handleCalendarKeyDown}
-        >
-          <ds-icon
-            icon="CalendarOutline"
-            size="1rem"
-            color="var(--color-gray1-focus)"
-            aria-hidden="true"
-          />
-        </button>
-      </InputShell>
+        </InputShell>
+      </div>
       <div
         popover="manual"
         id={popoverId}
