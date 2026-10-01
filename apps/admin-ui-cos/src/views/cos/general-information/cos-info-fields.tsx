@@ -6,11 +6,11 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import {
   Container,
-  CustomTextArea,
   LabeledValue,
   ListRow,
   PlainInput,
   PlainSelect,
+  PlainTextarea,
   Row,
   type SelectItem,
 } from '@zextras/ui-components';
@@ -170,10 +170,9 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="zimbraNotes">
               {(field) => (
-                <CustomTextArea
+                <PlainTextarea
                   label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     field.handleChange(e.target.value);
                   }}
