@@ -8,10 +8,10 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
   Modal,
   Padding,
-  Select,
+  PlainInput,
+  PlainSelect,
   SelectItem,
   Switch,
   Table,
@@ -125,9 +125,8 @@ export const AntivirusDefinitionsSection = ({
           height="auto"
         >
           <Container width="60%" padding={{ right: 'medium' }}>
-            <Input
+            <PlainInput
               label={t('mta.definition_mirrors', 'Definition Mirrors')}
-              backgroundColor="gray5"
               value={antiVirusMirrorsAddText}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setAntiVirusMirrorsAddText(e.target.value);
@@ -165,9 +164,8 @@ export const AntivirusDefinitionsSection = ({
             height="auto"
           >
             <Container width="60%" padding={{ right: 'medium' }}>
-              <Input
+              <PlainInput
                 label={t('mta.additional_virus_definition', 'Additional Virus Definition')}
-                backgroundColor="gray5"
                 value={additionalAntiVirusDefinitionAddText}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setAdditionalAntiVirusDefinitionAddText(e.target.value);
@@ -217,7 +215,6 @@ export const AntivirusDefinitionsSection = ({
           <Table
             rows={antiVirusMirrorTableRow}
             headers={antiVirusMirrorHeader}
-            showCheckbox={false}
             selectedRows={selectedAntivirusMirrors}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
@@ -233,7 +230,6 @@ export const AntivirusDefinitionsSection = ({
           <Table
             rows={additionalAntiVirusDefinitionTableRow}
             headers={additionalVirusDefinitionHeader}
-            showCheckbox={false}
             selectedRows={selectedAdditionalAntivirusDefinition}
             RowFactory={HoverableRowFactory}
             HeaderFactory={CustomHeaderFactory}
@@ -248,9 +244,8 @@ export const AntivirusDefinitionsSection = ({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
-          <Input
+          <PlainInput
             label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
-            backgroundColor="gray5"
             value={updateFrequncy}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setUpdateFrequncy(e.target.value);
@@ -259,10 +254,9 @@ export const AntivirusDefinitionsSection = ({
           />
         </Container>
         <Container crossAlignment="flex-start" width="30%">
-          <Select
+          <PlainSelect
             items={intervalOptions}
-            background="gray5"
-            showCheckbox={false}
+            label={t('mta.frequency_unit', 'Frequency unit')}
             selection={updateMesurementUnit}
             onChange={onUpdateMesurementChange}
             disabled={!allowSetMTA}
