@@ -1,3 +1,9 @@
+## [0.23.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.22.1...v0.23.0) (2026-10-02)
+
+### Features
+
+* create new plain textarea component ([#1400](https://github.com/zextras/carbonio-admin-console-ui/issues/1400)) ([f65a244](https://github.com/zextras/carbonio-admin-console-ui/commit/f65a244eeb3ce49be45907ad8c91e6cdcc1a71f2))
+
 ## [0.22.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.22.0...v0.22.1) (2026-10-01)
 
 ### Bug Fixes
