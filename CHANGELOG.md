@@ -1,3 +1,9 @@
+## [0.24.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.23.0...v0.24.0) (2026-10-02)
+
+### Features
+
+* admin UI cos migrate to new input family ([#1401](https://github.com/zextras/carbonio-admin-console-ui/issues/1401)) ([2688ef4](https://github.com/zextras/carbonio-admin-console-ui/commit/2688ef4944c8b700f8415a4806ae4ab38be9ac14))
+
 ## [0.23.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.22.1...v0.23.0) (2026-10-02)
 
 ### Features
