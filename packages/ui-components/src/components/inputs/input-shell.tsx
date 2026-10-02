@@ -8,6 +8,7 @@ import '../../web-components/ds-icon';
 
 import type { ReactNode } from 'react';
 
+import { Tooltip } from '../display/Tooltip';
 import styles from './input-shell.module.css';
 
 type InputShellProps = {
@@ -42,7 +43,9 @@ const InputShell = ({
 	return (
 		<div className={styles.root}>
 			<label className={styles.label} htmlFor={id}>
-				{label}
+				<Tooltip label={label} placement="top" overflowTooltip>
+					<span className={styles.labelText}>{label}</span>
+				</Tooltip>
 				{required && <span className={styles.requiredMark} aria-hidden="true">*</span>}
 			</label>
 			<div

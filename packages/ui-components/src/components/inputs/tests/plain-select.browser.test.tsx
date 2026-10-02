@@ -77,7 +77,7 @@ describe('PlainSelect', () => {
         .getByRole('button', { name: 'Fruit' })
         .element()) as HTMLButtonElement;
       expect(trigger.labels?.[0]?.textContent).toBe('Fruit*');
-      const mark = trigger.labels?.[0]?.querySelector('span');
+      const mark = trigger.labels?.[0]?.lastElementChild;
       expect(mark?.textContent).toBe('*');
       expect(mark?.getAttribute('aria-hidden')).toBe('true');
     });
