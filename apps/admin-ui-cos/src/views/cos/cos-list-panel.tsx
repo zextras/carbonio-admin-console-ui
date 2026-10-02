@@ -6,13 +6,12 @@
 
 import { useQueryClient } from '@tanstack/react-query';
 import {
+  ComboboxInput,
+  type ComboboxItem,
   Container,
-  DropDownInput,
   ListItems,
   type ListItemType,
   ListPanelItem,
-  Padding,
-  Row,
   useSnackbar,
 } from '@zextras/ui-components';
 import { replaceHistory, useCosList, useDebouncedValue, useLocalStorage } from '@zextras/ui-shared';
@@ -20,7 +19,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
 
-import { type SearchDirectoryEntry } from '../../../types/cos';
 import {
   COS_LIST,
   COS_ROUTE_ID,
@@ -43,7 +41,6 @@ export const CosListPanel = () => {
   const [searchCosName, setSearchCosName] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebouncedValue(searchQuery, 700);
-  const [isCosListExpand, setIsCosListExpand] = useState(false);
   const cosDetailMatch = matchPath(`/${MANAGE_APP_ID}/${COS_ROUTE_ID}/:cosId/:operation`, pathname);
   const selectedCosId = cosDetailMatch?.params.cosId;
   const isCosSelect = !!selectedCosId;
@@ -88,7 +85,6 @@ export const CosListPanel = () => {
     if (cosInformation?.name) {
       setSearchCosName(cosInformation.name);
       setSearchQuery('');
-      setIsCosListExpand(false);
     }
   }
 
@@ -101,11 +97,10 @@ export const CosListPanel = () => {
     }
   }
 
-  const selectedCos = (cosData: SearchDirectoryEntry) => {
-    setSearchCosName(cosData?.name);
+  const selectedCos = (item: ComboboxItem) => {
+    setSearchCosName(item.label);
     setSearchQuery('');
-    setIsCosListExpand(false);
-    replaceHistory(`/${cosData.id}/${GENERAL_INFORMATION}`);
+    replaceHistory(`/${item.id}/${GENERAL_INFORMATION}`);
   };
 
   const toggleDetailView = (): void => {
@@ -139,14 +134,6 @@ export const CosListPanel = () => {
     }),
   );
 
-  const customIconDetail = {
-    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
-    size: '20px',
-    onClick: (): void => {
-      setIsCosListExpand(!isCosListExpand);
-    },
-  };
-
   const globalOptionItems: Array<ListItemType> = [
     {
       id: COS_LIST,
@@ -159,55 +146,20 @@ export const CosListPanel = () => {
     if (featureFlag === null) setFeatureFlag(false);
   }, [featureFlag, setFeatureFlag]);
 
-  const items =
+  const comboboxItems: Array<ComboboxItem> =
     cosList.length > MAX_COS_DISPLAY
       ? [
           {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <ds-icon icon="InfoOutline" style={{ width: '20px', height: '20px' }}></ds-icon>
-                  </Padding>
-                </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
-                  <ds-text as="p" overflow="break-word">
-                    {t(
-                      'many_cos_info_msg',
-                      'So many COSes! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </ds-text>
-                </Row>
-              </>
+            id: 'too-many-cos',
+            label: t(
+              'many_cos_info_msg',
+              'So many COSes! Which one would you like to see? Start typing to filter.',
             ),
+            disabled: true,
+            icon: 'InfoOutline',
           },
         ]
-      : cosList.map((cosData) => ({
-          id: cosData.id,
-          label: cosData.name,
-          customComponent: (
-            <Row
-              style={{
-                display: 'block',
-                textAlign: 'left',
-                height: 'inherit',
-                padding: '3px',
-                width: 'inherit',
-              }}
-              onClick={(): void => {
-                selectedCos(cosData);
-              }}
-            >
-              {cosData?.name}
-            </Row>
-          ),
-        }));
+      : cosList.map((cosData) => ({ id: cosData.id, label: cosData.name }));
 
   return (
     <Container
@@ -218,37 +170,31 @@ export const CosListPanel = () => {
       style={{ overflow: 'auto', borderTop: '1px solid #FFFFFF', maxWidth: '265px' }}
     >
       <GeneralListPanel generalOptionItems={globalOptionItems} selectedOperationItem={cosView} />
-      <Row padding={{ all: 'medium' }} width="100%" mainAlignment="space-between"></Row>
-      <Row mainAlignment="flex-start" width="100%">
-        <DropDownInput
-          items={items}
-          inputLabel={
+      <div className="box-border w-full px-lg pt-lg">
+        <ComboboxInput
+          label={
             isCosSelect
               ? t('cos.i_want_to_see_this_cos', 'I want to see this COS')
               : t('cos.search_class_of_service', 'Select a Class of Service')
           }
-          onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-            setSearchCosName(ev.target.value);
-            setSearchQuery(ev.target.value);
+          items={comboboxItems}
+          value={searchCosName}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            setSearchCosName(e.target.value);
+            setSearchQuery(e.target.value);
           }}
-          inputValue={searchCosName}
+          onSelect={selectedCos}
           hasError={isShowError}
-          isCustomIcon
-          customIconDetail={customIconDetail}
-        />
-        {isShowError && (
-          <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-            <Padding top="large" left="small">
-              <ds-text as="span" size="extrasmall" weight="regular" color="error">
-                {t(
+          description={
+            isShowError
+              ? t(
                   'label.not_found_check_the_text_and_try_again',
                   'Not found - check the text and try again',
-                )}
-              </ds-text>
-            </Padding>
-          </Container>
-        )}
-      </Row>
+                )
+              : undefined
+          }
+        />
+      </div>
       <ListPanelItem
         title={t('label.details', 'Details')}
         isListExpanded={isDetailListExpanded}

@@ -52,6 +52,6 @@
   box-sizing: border-box;
   width: 100%;
   border-radius: var(--border-radius) var(--border-radius) 0 0;
-  padding: 0 0.75rem;
+  padding: 0 0.75rem 0 0;
   gap: 0.5rem;
 }

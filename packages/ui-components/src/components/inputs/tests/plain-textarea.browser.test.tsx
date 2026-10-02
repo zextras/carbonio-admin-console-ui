@@ -64,7 +64,7 @@ describe('PlainTextarea', () => {
       .element()) as HTMLTextAreaElement;
     const label = textarea.labels?.[0];
     expect(label?.textContent).toBe('Notes*');
-    expect(label?.querySelector('span')?.getAttribute('aria-hidden')).toBe('true');
+    expect(label?.lastElementChild?.getAttribute('aria-hidden')).toBe('true');
   });
 
   it('passes native props through to the textarea', async () => {

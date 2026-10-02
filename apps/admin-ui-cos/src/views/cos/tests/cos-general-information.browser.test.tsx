@@ -252,9 +252,8 @@ describe('CosGeneralInformation', () => {
     it('should render the ID field', async () => {
       await setupGeneralInfoTest();
 
-      const idInput = page.getByRole('textbox', { name: 'ID' });
-      await expect.element(idInput).toBeVisible();
-      await expect.element(idInput).toHaveValue(COS_ID);
+      await expect.element(page.getByText('ID')).toBeVisible();
+      await expect.element(page.getByText(COS_ID)).toBeVisible();
     });
 
     it('should render the Description field', async () => {
@@ -290,9 +289,10 @@ describe('CosGeneralInformation', () => {
     it('should render Creation Date field with a value when timestamp is present', async () => {
       await setupGeneralInfoTest();
 
-      const creationDateInput = page.getByRole('textbox', { name: 'Creation Date' });
-      await expect.element(creationDateInput).toBeVisible();
-      await expect.element(creationDateInput).not.toHaveValue('');
+      await expect.element(page.getByText('Creation Date')).toBeVisible();
+      await expect
+        .element(page.getByText(/^\d{4}\/\d{1,2}\/\d{1,2} \| \d{2}:\d{2}:\d{2}$/))
+        .toBeVisible();
     });
 
     it('should render Notes textarea with initial value', async () => {
@@ -317,11 +317,11 @@ describe('CosGeneralInformation', () => {
   });
 
   describe('Default COS', () => {
-    it('should disable Name field for default COS', async () => {
+    it('should show the Name as a read-only value for default COS', async () => {
       await setupGeneralInfoTest(mockDefaultCosData);
 
-      const nameInput = page.getByRole('textbox', { name: /^Name/ });
-      await expect.element(nameInput).toBeDisabled();
+      await expect.element(page.getByText('default')).toBeVisible();
+      expect(page.getByRole('textbox', { name: /^Name/ }).elements()).toHaveLength(0);
     });
 
     it('should disable DELETE button for default COS', async () => {
@@ -583,8 +583,8 @@ describe('CosGeneralInformation', () => {
       );
       await expect.element(page.getByText('General Information')).toBeVisible();
 
-      const nameInput = page.getByRole('textbox', { name: /^Name/ });
-      await expect.element(nameInput).toBeDisabled();
+      await expect.element(page.getByText('testcos')).toBeVisible();
+      expect(page.getByRole('textbox', { name: /^Name/ }).elements()).toHaveLength(0);
     });
   });
 

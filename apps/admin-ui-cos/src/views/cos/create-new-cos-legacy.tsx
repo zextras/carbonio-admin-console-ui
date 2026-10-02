@@ -7,10 +7,10 @@
 import {
   Button,
   Container,
-  CustomTextArea,
   ListRow,
   Padding,
   PlainInput,
+  PlainTextarea,
   Row,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
@@ -144,9 +144,8 @@ export const CreateCosLegacy = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <CustomTextArea
+                <PlainTextarea
                   label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
                   value={zimbraNotes}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     setZimbraNotes(e.target.value);
