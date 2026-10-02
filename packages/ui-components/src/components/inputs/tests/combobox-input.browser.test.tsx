@@ -93,8 +93,9 @@ describe('ComboboxInput', () => {
 			);
 
 			const input = (await getCombobox('Server')) as HTMLInputElement;
+			const label = input.labels?.[0] as HTMLLabelElement;
 			expect(input.id).toBeTruthy();
-			await expect.element(page.getByText('Server')).toHaveAttribute('for', input.id);
+			expect(label.getAttribute('for')).toBe(input.id);
 		});
 
 		it('renders a hidden red asterisk when required, outside the accessible name', async () => {
@@ -102,10 +103,10 @@ describe('ComboboxInput', () => {
 
 			const input = (await getCombobox('Server')) as HTMLInputElement;
 			const label = input.labels?.[0] as HTMLLabelElement;
-			const mark = label.querySelector('span');
-			expect(mark?.textContent).toBe('*');
-			expect(mark?.getAttribute('aria-hidden')).toBe('true');
-			expectColor(getComputedStyle(mark as HTMLElement).color, '#BE3028');
+			const mark = label.lastElementChild as HTMLElement;
+			expect(mark.textContent).toBe('*');
+			expect(mark.getAttribute('aria-hidden')).toBe('true');
+			expectColor(getComputedStyle(mark).color, '#BE3028');
 
 			await expect.element(page.getByRole('combobox', { name: 'Server' })).toBeVisible();
 		});
