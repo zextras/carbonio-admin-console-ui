@@ -3,12 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  ComboboxInput,
-  type ComboboxItem,
-  Container,
-  ListItems,
-} from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, Container, ListItems } from '@zextras/ui-components';
 import { replaceHistory, useMtaServers, useRelativePathname } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -134,27 +129,25 @@ export const MTAListPanel = () => {
           setToggleView={toggleServerSpecific}
         />
         {isServerSpecificsExpanded && (
-          <>
-            <div className="box-border w-full px-lg pt-lg">
-              <ComboboxInput
-                label={t('label.select_a_server', 'Select a Server')}
-                items={serverComboboxItems}
-                value={searchServer}
-                onChange={handleInputChange}
-                onSelect={handleSelectServer}
-                onClear={handleClearServer}
-                hasError={isShowError}
-                description={
-                  isShowError
-                    ? t(
-                        'label.not_found_check_the_text_and_try_again',
-                        'Not found - check the text and try again',
-                      )
-                    : undefined
-                }
-              />
-            </div>
-          </>
+          <div className="box-border w-full px-lg pt-lg">
+            <ComboboxInput
+              label={t('label.select_a_server', 'Select a Server')}
+              items={serverComboboxItems}
+              value={searchServer}
+              onChange={handleInputChange}
+              onSelect={handleSelectServer}
+              onClear={handleClearServer}
+              hasError={isShowError}
+              description={
+                isShowError
+                  ? t(
+                      'label.not_found_check_the_text_and_try_again',
+                      'Not found - check the text and try again',
+                    )
+                  : undefined
+              }
+            />
+          </div>
         )}
 
         {isServerSpecificsExpanded && (
@@ -167,4 +160,4 @@ export const MTAListPanel = () => {
       </Container>
     </Container>
   );
-}
+};
