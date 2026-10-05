@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Select, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, PlainInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -76,15 +76,10 @@ export const TuningSection = ({
           <Container crossAlignment="flex-end">
             <form.Field name="zimbraMtaPostscreenBareNewlineAction">
               {(field) => (
-                <Select
+                <PlainSelect
                   items={ignoreEnforceDropOptions}
-                  background="gray5"
                   label={t('mta.action', 'Action')}
-                  showCheckbox={false}
-                  selection={ignoreEnforceDropOptions.find(
-                    (item) => item.value === field.state.value,
-                  )}
-                  // @ts-expect-error - needs a fix
+                  selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
                   onChange={(v: string) => field.handleChange(v)}
                 />
               )}
@@ -100,10 +95,9 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenBareNewlineTTL">
               {(field) => (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-                  backgroundColor="gray5"
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     const digits = e.target.value;
@@ -115,11 +109,9 @@ export const TuningSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
-            <Select
+            <PlainSelect
               items={intervalOptions}
-              background="gray5"
               label={t('mta.interval', 'Interval')}
-              showCheckbox={false}
               selection={bareNewLineTTLUnit}
               onChange={onBareNewLineTTLUnitChange}
             />
@@ -155,15 +147,10 @@ export const TuningSection = ({
           <Container crossAlignment="flex-end">
             <form.Field name="zimbraMtaPostscreenNonSmtpCommandAction">
               {(field) => (
-                <Select
+                <PlainSelect
                   items={ignoreEnforceDropOptions}
-                  background="gray5"
                   label={t('mta.action', 'Action')}
-                  showCheckbox={false}
-                  selection={ignoreEnforceDropOptions.find(
-                    (item) => item.value === field.state.value,
-                  )}
-                  // @ts-expect-error - needs a fix
+                  selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
                   onChange={(v: string) => field.handleChange(v)}
                 />
               )}
@@ -179,10 +166,9 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenNonSmtpCommandTTL">
               {(field) => (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-                  backgroundColor="gray5"
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     const digits = e.target.value;
@@ -194,11 +180,9 @@ export const TuningSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
-            <Select
+            <PlainSelect
               items={intervalOptions}
-              background="gray5"
               label={t('mta.interval', 'Interval')}
-              showCheckbox={false}
               selection={nonSMTPCommandTTLUnit}
               onChange={onNonSMTPCommandTTLUnitChange}
             />
@@ -234,15 +218,10 @@ export const TuningSection = ({
           <Container crossAlignment="flex-end">
             <form.Field name="zimbraMtaPostscreenPipeliningAction">
               {(field) => (
-                <Select
+                <PlainSelect
                   items={ignoreEnforceDropOptions}
-                  background="gray5"
                   label={t('mta.action', 'Action')}
-                  showCheckbox={false}
-                  selection={ignoreEnforceDropOptions.find(
-                    (item) => item.value === field.state.value,
-                  )}
-                  // @ts-expect-error - needs a fix
+                  selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
                   onChange={(v: string) => field.handleChange(v)}
                 />
               )}
@@ -258,10 +237,9 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenPipeliningTTL">
               {(field) => (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
-                  backgroundColor="gray5"
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     const digits = e.target.value;
@@ -273,11 +251,9 @@ export const TuningSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
-            <Select
+            <PlainSelect
               items={intervalOptions}
-              background="gray5"
               label={t('mta.interval', 'Interval')}
-              showCheckbox={false}
               selection={pipeliningTTLUnit}
               onChange={onPipelinginTTLUnitChange}
             />

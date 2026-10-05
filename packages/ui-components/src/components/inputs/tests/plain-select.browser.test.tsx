@@ -260,5 +260,29 @@ describe('PlainSelect', () => {
       const box = trigger.parentElement as HTMLElement;
       expect(box.getAttribute('data-error')).toBeNull();
     });
+
+    it('renders a custom icon inside the field box after the chevron', async () => {
+      await render(
+        <PlainSelect
+          label="Fruit"
+          items={FRUITS}
+          selection={FRUITS[0]}
+          onChange={() => {}}
+          icon={<span>custom icon</span>}
+        />,
+      );
+
+      const trigger = (await page.getByRole('button', { name: 'Fruit' }).element()) as HTMLElement;
+      const box = trigger.parentElement as HTMLElement;
+      const customIcon = (await page.getByText('custom icon').element()) as HTMLElement;
+      expect(box.contains(customIcon)).toBe(true);
+      const chevron = box.querySelector('ds-icon[icon="ChevronDown"]');
+      expect(chevron).not.toBeNull();
+      expect(
+        chevron
+          ? chevron.compareDocumentPosition(customIcon) & Node.DOCUMENT_POSITION_FOLLOWING
+          : 0,
+      ).not.toBe(0);
+    });
   });
 });

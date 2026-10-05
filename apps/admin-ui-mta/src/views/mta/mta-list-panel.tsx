@@ -3,13 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  DropDownInput,
-  ListItems,
-  Padding,
-  Row,
-} from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, Container, ListItems } from '@zextras/ui-components';
 import { replaceHistory, useMtaServers, useRelativePathname } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,7 +14,7 @@ import {
   IS_SERVER_SPECIFICS_EXPANDED,
   MTA_SERVER_GENERAL,
 } from '../../constants';
-import type { DropdownItem, MtaServer } from '../../types/mta';
+import type { MtaServer } from '../../types/mta';
 import { ListPanelItem } from '../list/list-panel-item';
 import { SECTION_ROUTES } from './mta-section-routes';
 
@@ -50,28 +44,10 @@ export const MTAListPanel = () => {
   const isShowError =
     mtaServerList.length > 0 && filteredServers.length === 0 && searchServer !== '';
 
-  const serverDropdownItems = filteredServers.map((serverItem: MtaServer) => ({
+  const serverComboboxItems: Array<ComboboxItem> = filteredServers.map((serverItem: MtaServer) => ({
     id: serverItem.id || '',
     label: serverItem.name || '',
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '0.18rem',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          const serverName = serverItem.name || '';
-          setSearchServer(serverName);
-          replaceHistory(`/${serverName}/${MTA_SERVER_GENERAL}`);
-        }}
-      >
-        {serverItem.name}
-      </Row>
-    ),
-  })) as Array<DropdownItem>;
+  }));
 
   const mailTransferAgentOptions = SECTION_ROUTES.filter((route) => !route.prefix).map((route) => ({
     id: route.id,
@@ -107,17 +83,15 @@ export const MTAListPanel = () => {
     setSearchServer(e.target.value);
   }
 
-  function handleCustomIconClick(): void {
-    if (searchServer !== '') {
-      setSearchServer('');
-      replaceHistory(`/${INBOUND_FLOW_SECURITY}`);
-    }
+  function handleSelectServer(item: ComboboxItem): void {
+    setSearchServer(item.label);
+    replaceHistory(`/${item.label}/${MTA_SERVER_GENERAL}`);
   }
 
-  const customIconDetail = {
-    icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
-    onClick: handleCustomIconClick,
-  };
+  function handleClearServer(): void {
+    setSearchServer('');
+    replaceHistory(`/${INBOUND_FLOW_SECURITY}`);
+  }
 
   function handleSelectOperation(id: string): void {
     if (id === MTA_SERVER_GENERAL) {
@@ -155,34 +129,25 @@ export const MTAListPanel = () => {
           setToggleView={toggleServerSpecific}
         />
         {isServerSpecificsExpanded && (
-          <>
-            <Row mainAlignment="flex-start" width="100%">
-              <DropDownInput
-                items={serverDropdownItems || []}
-                maxWidth="18.75rem"
-                width="16.56rem"
-                inputLabel={t('label.select_a_server', 'Select a Server')}
-                onChange={handleInputChange}
-                inputValue={searchServer}
-                isCustomIcon
-                hasError={isShowError}
-                inputDisabled={false}
-                customIconDetail={customIconDetail}
-              />
-              {isShowError && (
-                <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                  <Padding top="large" left="small">
-                    <ds-text as="span" size="extrasmall" weight="regular" color="error">
-                      {t(
-                        'label.not_found_check_the_text_and_try_again',
-                        'Not found - check the text and try again',
-                      )}
-                    </ds-text>
-                  </Padding>
-                </Container>
-              )}
-            </Row>
-          </>
+          <div className="box-border w-full px-lg pt-lg">
+            <ComboboxInput
+              label={t('label.select_a_server', 'Select a Server')}
+              items={serverComboboxItems}
+              value={searchServer}
+              onChange={handleInputChange}
+              onSelect={handleSelectServer}
+              onClear={handleClearServer}
+              hasError={isShowError}
+              description={
+                isShowError
+                  ? t(
+                      'label.not_found_check_the_text_and_try_again',
+                      'Not found - check the text and try again',
+                    )
+                  : undefined
+              }
+            />
+          </div>
         )}
 
         {isServerSpecificsExpanded && (
@@ -195,4 +160,4 @@ export const MTAListPanel = () => {
       </Container>
     </Container>
   );
-}
+};

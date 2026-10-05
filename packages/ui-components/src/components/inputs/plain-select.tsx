@@ -6,6 +6,7 @@
 
 import { flip, limitShift, offset, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
+import type { ReactNode } from 'react';
 import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 import { setupFloating } from '../../utils/floating-ui';
@@ -31,6 +32,8 @@ export type PlainSelectProps<T = string> = {
   hasError?: boolean;
   disabled?: boolean;
   required?: boolean;
+  /** Renders a custom node at the right edge of the field box, after the chevron. */
+  icon?: ReactNode;
 };
 
 function selectedIndexOf<T>(items: Array<SelectItem<T>>, selection: SelectItem<T>): number | null {
@@ -141,6 +144,7 @@ export const PlainSelect = <T,>({
   required = false,
   description,
   hasError = false,
+  icon,
 }: PlainSelectProps<T>) => {
   const triggerId = useId();
   const descriptionId = useId();
@@ -241,6 +245,7 @@ export const PlainSelect = <T,>({
       hasError={hasError}
       description={resolvedDescription}
       descriptionId={descriptionId}
+      icon={icon}
     >
       <button
         type="button"
