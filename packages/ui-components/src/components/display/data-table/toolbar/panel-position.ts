@@ -62,7 +62,7 @@ export function useAnchoredPanelPosition(
 ): AnchoredPanelPositionApi {
   const [position, setPosition] = useState<ToolbarPanelPosition | null>(null);
 
-  function capturePosition(): void {
+  function syncFromTrigger(): void {
     if (!triggerRef.current) {
       return;
     }
@@ -74,26 +74,19 @@ export function useAnchoredPanelPosition(
       return undefined;
     }
 
-    function updatePosition(): void {
-      if (!triggerRef.current) {
-        return;
-      }
-      setPosition(getPosition(triggerRef.current));
-    }
-
     // Refresh after open in case layout shifted; listeners keep the portal aligned.
-    const frameId = globalThis.requestAnimationFrame(updatePosition);
-    globalThis.addEventListener('resize', updatePosition);
-    document.addEventListener('scroll', updatePosition, true);
+    const frameId = globalThis.requestAnimationFrame(syncFromTrigger);
+    globalThis.addEventListener('resize', syncFromTrigger);
+    document.addEventListener('scroll', syncFromTrigger, true);
     return () => {
       globalThis.cancelAnimationFrame(frameId);
-      globalThis.removeEventListener('resize', updatePosition);
-      document.removeEventListener('scroll', updatePosition, true);
+      globalThis.removeEventListener('resize', syncFromTrigger);
+      document.removeEventListener('scroll', syncFromTrigger, true);
     };
   }, [open, triggerRef, getPosition]);
 
   return {
     position: open ? position : null,
-    capturePosition,
+    capturePosition: syncFromTrigger,
   };
 }
