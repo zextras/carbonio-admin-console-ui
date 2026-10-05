@@ -568,7 +568,8 @@ export function EditS3ConnectorDetailPanel({
                     return (
                       <div className="w-full">
                         <PlainInput
-                          label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
+                          label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
+                          required
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                             field.handleChange(e.target.value)
@@ -593,7 +594,8 @@ export function EditS3ConnectorDetailPanel({
                     return (
                       <div className="w-full">
                         <PlainInput
-                          label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
+                          label={t('storages.s3Connectors.bucketName', 'Bucket name')}
+                          required
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                             field.handleChange(e.target.value)
@@ -611,7 +613,8 @@ export function EditS3ConnectorDetailPanel({
                   {(field) => (
                     <div className="w-full">
                       <PlainInput
-                        label={t('label.access_key', 'Access Key ID*')}
+                        label={t('label.access_key', 'Access Key ID')}
+                        required
                         value={field.state.value}
                         onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                           field.handleChange(e.target.value)
@@ -696,7 +699,8 @@ export function EditS3ConnectorDetailPanel({
                       <Container width="fill" crossAlignment="flex-start">
                         <div className="w-full">
                           <PlainInput
-                            label={t('label.secret_key', 'Secret Access Key*')}
+                            label={t('label.secret_key', 'Secret Access Key')}
+                            required
                             value={field.state.value}
                             type={showSecretKeyValue ? 'text' : 'password'}
                             onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -797,11 +801,8 @@ export function EditS3ConnectorDetailPanel({
                     return (
                       <div className="w-full">
                         <PlainInput
-                          label={
-                            isEndpointUrlRequired
-                              ? t('label.endpoint_url_required', 'Endpoint URL*')
-                              : t('label.endpoint_url', 'Endpoint URL')
-                          }
+                          label={t('label.endpoint_url', 'Endpoint URL')}
+                          required={isEndpointUrlRequired}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                             field.handleChange(e.target.value)
