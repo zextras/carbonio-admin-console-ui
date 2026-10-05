@@ -9,9 +9,9 @@ import {
   Container,
   getFieldErrorProps,
   Input,
+  LegacyPasswordInput,
   ListRow,
   Padding,
-  PasswordInput,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
@@ -123,7 +123,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchBindPassword">
             {(field) => (
-              <PasswordInput
+              <LegacyPasswordInput
                 label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
                 backgroundColor="gray5"
                 inputName="zimbraQuotaWarnInterval"

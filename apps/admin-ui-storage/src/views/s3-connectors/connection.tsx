@@ -11,8 +11,8 @@ import {
   Container,
   getFieldErrorProps,
   Input,
+  LegacyPasswordInput,
   Padding,
-  PasswordInput,
   Row,
   Select,
   type SelectItem as UISelectItem,
@@ -270,7 +270,7 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <PasswordInput
+                  <LegacyPasswordInput
                     backgroundColor="gray5"
                     label={t('label.secret_key', 'Secret Access Key*')}
                     value={field.state.value}
