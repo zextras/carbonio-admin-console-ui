@@ -1,3 +1,9 @@
+## [0.27.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.26.0...v0.27.0) (2026-10-05)
+
+### Features
+
+* **ui-components:** create new password input component ([#1404](https://github.com/zextras/carbonio-admin-console-ui/issues/1404)) ([6f6e0a2](https://github.com/zextras/carbonio-admin-console-ui/commit/6f6e0a2618baeb72fd30f507306395096ba1564a))
+
 ## [0.26.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.25.0...v0.26.0) (2026-10-05)
 
 ### Features
