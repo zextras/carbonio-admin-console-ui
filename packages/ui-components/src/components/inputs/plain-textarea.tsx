@@ -5,73 +5,72 @@
  */
 
 import clsx from 'clsx';
-import type { ReactNode } from 'react';
 import { useId } from 'react';
 
 import { InputShell } from './input-shell';
 import styles from './input-shell.module.css';
+import textareaStyles from './plain-textarea.module.css';
 
-export type PlainInputProps = Omit<
-  React.ComponentPropsWithRef<'input'>,
+export type PlainTextareaProps = Omit<
+  React.ComponentPropsWithRef<'textarea'>,
   'value' | 'onChange' | 'defaultValue' | 'id'
 > & {
   /** Always rendered as a visible <label> above the field. */
   label: string;
   /** Controlled value. The field is fully controlled by design: `value` and `onChange` are required and `defaultValue` is not accepted. */
-  value: string | number | readonly string[];
+  value: string;
   /** Fired on every keystroke; the caller owns the text. */
-  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  onChange: React.ChangeEventHandler<HTMLTextAreaElement>;
   /** Renders the description below the field and links it via aria-describedby. `null` is treated as absent. */
   description?: string | null;
-  /** Marks the field as invalid (aria-invalid) and applies the error styling. Pair with `description` so the invalid state carries a visible and announced explanation. */
+  /** Marks the field as invalid (aria-invalid) and applies the error styling. */
   hasError?: boolean;
-  /** Renders the InfoOutline icon at the right edge of the field box. */
-  infoIcon?: boolean;
-  /** Renders a custom node at the right edge of the field box, before the info icon. */
-  icon?: ReactNode;
+  /** Cap on the user-resizable height; unlimited when not provided. */
+  maxHeight?: string;
 };
 
-export const PlainInput = ({
-	label,
-	value,
-	onChange,
-	disabled,
-	required,
-	className,
-	hasError = false,
-	description,
-	infoIcon = false,
-	icon,
-	'aria-describedby': callerDescribedBy,
-	...rest
-}: PlainInputProps) => {
-	const inputId = useId();
+export const PlainTextarea = ({
+  label,
+  value,
+  onChange,
+  disabled,
+  required,
+  className,
+  hasError = false,
+  description,
+  maxHeight,
+  ref: callerRef,
+  'aria-describedby': callerDescribedBy,
+  ...rest
+}: PlainTextareaProps) => {
+  const textareaId = useId();
   const descriptionId = useId();
-  const resolvedDescription = description ?? '';
-  const inputClassName = clsx(styles.control, className);
+  const textareaClassName = clsx(styles.control, textareaStyles.textarea, className);
   const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
 
   return (
     <InputShell
-      id={inputId}
+      id={textareaId}
       label={label}
       disabled={disabled}
       required={required}
       hasError={hasError}
-      description={resolvedDescription}
+      description={description ?? ''}
       descriptionId={descriptionId}
-      infoIcon={infoIcon}
-      icon={icon}
+      multiline
     >
-      <input
-        id={inputId}
+      <textarea
+        id={textareaId}
         value={value}
         onChange={onChange}
         disabled={disabled}
         required={required}
-        className={inputClassName}
+        rows={2}
+        className={textareaClassName}
+        style={maxHeight ? { maxHeight } : undefined}
         aria-invalid={hasError || undefined}
         aria-describedby={describedBy || undefined}
+        ref={callerRef}
         {...rest}
       />
     </InputShell>

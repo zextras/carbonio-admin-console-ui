@@ -1,3 +1,45 @@
+## [0.26.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.25.0...v0.26.0) (2026-10-05)
+
+### Features
+
+* **admin-ui-legalhold:** migrate to new input ([#1403](https://github.com/zextras/carbonio-admin-console-ui/issues/1403)) ([1be7984](https://github.com/zextras/carbonio-admin-console-ui/commit/1be7984fe94cf6b7016e800b97273b0b1aa7b85a))
+
+## [0.25.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.24.0...v0.25.0) (2026-10-05)
+
+### Features
+
+* admin UI mta migrate to new input components ([#1402](https://github.com/zextras/carbonio-admin-console-ui/issues/1402)) ([6665b50](https://github.com/zextras/carbonio-admin-console-ui/commit/6665b5067bef15aa5909b5ba71b5bea19e5d8b9d))
+
+## [0.24.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.23.0...v0.24.0) (2026-10-02)
+
+### Features
+
+* admin UI cos migrate to new input family ([#1401](https://github.com/zextras/carbonio-admin-console-ui/issues/1401)) ([2688ef4](https://github.com/zextras/carbonio-admin-console-ui/commit/2688ef4944c8b700f8415a4806ae4ab38be9ac14))
+
+## [0.23.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.22.1...v0.23.0) (2026-10-02)
+
+### Features
+
+* create new plain textarea component ([#1400](https://github.com/zextras/carbonio-admin-console-ui/issues/1400)) ([f65a244](https://github.com/zextras/carbonio-admin-console-ui/commit/f65a244eeb3ce49be45907ad8c91e6cdcc1a71f2))
+
+## [0.22.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.22.0...v0.22.1) (2026-10-01)
+
+### Bug Fixes
+
+* repair date picker accessibility ([#1398](https://github.com/zextras/carbonio-admin-console-ui/issues/1398)) ([9a08712](https://github.com/zextras/carbonio-admin-console-ui/commit/9a08712bde76ad2b240276e1b334dc71edf90d7a))
+
+## [0.22.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.21.0...v0.22.0) (2026-10-01)
+
+### Features
+
+* **ui-components/plain-select:** add plain select component ([#1397](https://github.com/zextras/carbonio-admin-console-ui/issues/1397)) ([28f5569](https://github.com/zextras/carbonio-admin-console-ui/commit/28f556903b6ca1e0ba66449b0eb3f81acb21cb60))
+
+## [0.21.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.1...v0.21.0) (2026-10-01)
+
+### Features
+
+* **ui-components/number-input:** add NumberInput component ([#1396](https://github.com/zextras/carbonio-admin-console-ui/issues/1396)) ([0615a18](https://github.com/zextras/carbonio-admin-console-ui/commit/0615a1883fad22e1a62455c3fa1a4a2526b34c6b))
+
 ## [0.20.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.0...v0.20.1) (2026-09-25)
 
 ### Bug Fixes

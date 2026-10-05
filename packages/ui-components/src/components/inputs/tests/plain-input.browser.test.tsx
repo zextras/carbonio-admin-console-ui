@@ -8,6 +8,8 @@ import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
+import { Container } from '../../layout/Container';
+import { Row } from '../../layout/Row';
 import { PlainInput } from '../plain-input';
 
 async function getBox(label: string): Promise<HTMLElement> {
@@ -78,8 +80,9 @@ describe('PlainInput', () => {
       const input = (await page
         .getByRole('textbox', { name: 'Display Name' })
         .element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
       expect(input.id).toBeTruthy();
-      await expect.element(page.getByText('Display Name')).toHaveAttribute('for', input.id);
+      expect(label.getAttribute('for')).toBe(input.id);
     });
 
     it('renders a red hidden asterisk after the label when required', async () => {
@@ -87,10 +90,10 @@ describe('PlainInput', () => {
 
       const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
       const label = input.labels?.[0] as HTMLLabelElement;
-      const mark = label.querySelector('span');
-      expect(mark?.textContent).toBe('*');
-      expect(mark?.getAttribute('aria-hidden')).toBe('true');
-      expectColor(getComputedStyle(mark as HTMLElement).color, '#BE3028');
+      const mark = label.lastElementChild as HTMLElement;
+      expect(mark.textContent).toBe('*');
+      expect(mark.getAttribute('aria-hidden')).toBe('true');
+      expectColor(getComputedStyle(mark).color, '#BE3028');
     });
 
     it('keeps the accessible name free of the required asterisk', async () => {
@@ -104,7 +107,7 @@ describe('PlainInput', () => {
 
       const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
       const label = input.labels?.[0] as HTMLLabelElement;
-      expect(label.querySelector('span')).toBeNull();
+      expect(label.children).toHaveLength(1);
     });
   });
 
@@ -328,6 +331,54 @@ describe('PlainInput', () => {
     });
   });
 
+  describe('icon slot', () => {
+    it('renders a custom icon node inside the field box', async () => {
+      await render(
+        <PlainInput label="Name" value="" onChange={() => {}} icon={<span>custom icon</span>} />,
+      );
+
+      const customIcon = await page.getByText('custom icon').element();
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const box = input.parentElement as HTMLElement;
+      expect(box.contains(customIcon)).toBe(true);
+    });
+
+    it('renders the custom icon after the input', async () => {
+      await render(
+        <PlainInput label="Name" value="" onChange={() => {}} icon={<span>custom icon</span>} />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      expect(input.nextElementSibling?.textContent).toBe('custom icon');
+    });
+
+    it('renders the custom icon before the info icon when both are provided', async () => {
+      await render(
+        <PlainInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          infoIcon
+          icon={<span>custom icon</span>}
+        />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const customIcon = input.nextElementSibling as HTMLElement;
+      const infoIconHost = customIcon.nextElementSibling as HTMLElement;
+      expect(customIcon.textContent).toBe('custom icon');
+      expect(infoIconHost.tagName).toBe('DS-ICON');
+      expect(infoIconHost.getAttribute('icon')).toBe('InfoOutline');
+    });
+
+    it('does not render any extra node inside the box without icon', async () => {
+      await render(<PlainInput label="Name" value="" onChange={() => {}} />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      expect(input.nextElementSibling).toBeNull();
+    });
+  });
+
   describe('error and description support', () => {
     it('renders the description below the input and links it via aria-describedby', async () => {
       await render(<PlainInput label="Token" value="" onChange={() => {}} description="Invalid token" />);
@@ -492,6 +543,127 @@ describe('PlainInput', () => {
       expect(style.display).toBe('flex');
       expect(style.height).toBe('19px');
       expect(style.alignItems).toBe('center');
+    });
+  });
+
+  describe('long labels', () => {
+    const LONG_LABEL = 'Set grace period expiration date for this class of service account';
+    const LONG_TOKEN = `a`.repeat(80);
+
+    async function getShellElements(): Promise<{
+      root: HTMLElement;
+      label: HTMLElement;
+      labelText: HTMLElement;
+    }> {
+      const input = (await page.getByRole('textbox').element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const root = box.parentElement as HTMLElement;
+      const label = root.firstElementChild as HTMLElement;
+      const labelText = label.firstElementChild as HTMLElement;
+      return { root, label, labelText };
+    }
+
+    async function renderInNarrowContainer(label: string, required = false): Promise<void> {
+      await render(
+        <div style={{ width: '200px' }}>
+          <PlainInput label={label} value="" onChange={() => {}} required={required} />
+        </div>,
+      );
+    }
+
+    it('truncates a long label to a single line without horizontal overflow', async () => {
+      await renderInNarrowContainer(LONG_LABEL);
+
+      const { root, label, labelText } = await getShellElements();
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+      expect(labelText.scrollWidth).toBeGreaterThan(labelText.clientWidth);
+      expect(label.offsetHeight).toBeLessThanOrEqual(22);
+    });
+
+    it('truncates an unbreakable label token without horizontal overflow', async () => {
+      await renderInNarrowContainer(LONG_TOKEN);
+
+      const { root, label, labelText } = await getShellElements();
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+      expect(labelText.scrollWidth).toBeGreaterThan(labelText.clientWidth);
+      expect(label.offsetHeight).toBeLessThanOrEqual(22);
+    });
+
+    it('keeps the required mark visible while the label truncates', async () => {
+      await renderInNarrowContainer(LONG_TOKEN, true);
+
+      const { label } = await getShellElements();
+      const mark = label.lastElementChild as HTMLElement;
+      expect(mark.textContent).toBe('*');
+      expect(mark.offsetWidth).toBeGreaterThan(0);
+    });
+
+    it('shows the full label in a tooltip on hover when truncated', async () => {
+      await renderInNarrowContainer(LONG_TOKEN);
+
+      await userEvent.hover(page.getByText(LONG_TOKEN));
+
+      await expect.element(page.getByTestId('tooltip')).toBeVisible();
+      const tooltip = (await page.getByTestId('tooltip').element()) as HTMLElement;
+      expect(tooltip.textContent).toBe(LONG_TOKEN);
+    });
+
+    it('does not show a tooltip when the label is not truncated', async () => {
+      await render(
+        <div style={{ width: '400px' }}>
+          <PlainInput label="Name" value="" onChange={() => {}} />
+        </div>,
+      );
+
+      await userEvent.hover(page.getByText('Name'));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 800);
+      });
+
+      await expect.element(page.getByTestId('tooltip')).not.toBeInTheDocument();
+    });
+
+    it('truncates with ellipsis and tooltip inside nested flex containers', async () => {
+      await render(
+        <div style={{ width: '400px' }}>
+          <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
+            <Row mainAlignment="flex-start" width="100%">
+              <Container height="fit" crossAlignment="flex-start" width="100%">
+                <Row mainAlignment="flex-start" width="100%">
+                  <Container width="72%" padding={{ right: 'small' }}>
+                    <PlainInput
+                      label="Time window in which the failed logins must occur to lock the account:"
+                      value=""
+                      onChange={() => {}}
+                    />
+                  </Container>
+                  <Container width="28%">
+                    <PlainInput label="Time Range" value="" onChange={() => {}} />
+                  </Container>
+                </Row>
+              </Container>
+            </Row>
+          </Row>
+        </div>,
+      );
+
+      const input = (await page
+        .getByRole('textbox', { name: /Time window/ })
+        .element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const root = box.parentElement as HTMLElement;
+      const labelText = (root.firstElementChild as HTMLElement).firstElementChild as HTMLElement;
+      const computed = getComputedStyle(labelText);
+      expect(computed.whiteSpace).toBe('nowrap');
+      expect(computed.overflow).toBe('hidden');
+      expect(computed.textOverflow).toBe('ellipsis');
+      expect(labelText.scrollWidth).toBeGreaterThan(labelText.clientWidth);
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+
+      await userEvent.hover(
+        page.getByText('Time window in which the failed logins must occur to lock the account:'),
+      );
+      await expect.element(page.getByTestId('tooltip')).toBeVisible();
     });
   });
 });

@@ -6,9 +6,10 @@
 
 import {
   Button,
+  ComboboxInput,
+  type ComboboxItem,
   Container,
   CustomHeaderFactory,
-  DropDownInput,
   HoverableRowFactory,
   Padding,
   Table,
@@ -85,23 +86,9 @@ export const LegalAccessSection = ({
     },
   ];
 
-  const items = searchAccountResult.map((item) => ({
+  const items: Array<ComboboxItem> = searchAccountResult.map((item) => ({
     id: item.id,
     label: getDisplayName(item),
-    customComponent: [
-      <ds-text
-        as="span"
-        size="small"
-        key={item.id}
-        color="gray0"
-        weight="regular"
-        onClick={(): void => {
-          onSelectSearchResult(item.name);
-        }}
-      >
-        {item.name || ' '}
-      </ds-text>,
-    ],
   }));
 
   const tableRows = buildLegalAccessRows(accountList);
@@ -120,26 +107,27 @@ export const LegalAccessSection = ({
       </Container>
       <Container crossAlignment="flex-start" height="auto">
         <Container
-          crossAlignment="flex-start"
+          crossAlignment="flex-end"
           padding={{ right: 'medium' }}
           orientation="horizontal"
           mainAlignment="space-between"
           height="auto"
         >
           <Container width="70%" padding={{ right: 'medium' }} height="auto">
-            <DropDownInput
-              width="100%"
+            <ComboboxInput
+              label={t('label.search_an_account', 'Search an Account')}
               items={items}
-              inputLabel={t('label.search_an_account', 'Search an Account')}
-              size="medium"
+              value={searchAccount}
               onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 onSearchChange(e.target.value);
               }}
-              inputValue={searchAccount}
-              isCustomIcon={false}
+              onSelect={(picked) => {
+                const account = searchAccountResult.find((candidate) => candidate.id === picked.id);
+                if (account) onSelectSearchResult(account.name);
+              }}
             />
           </Container>
-          <Container width="auto" crossAlignment="flex-end" height="auto">
+          <Container width="auto">
             <Button
               type="outlined"
               size="large"
@@ -148,7 +136,7 @@ export const LegalAccessSection = ({
               onClick={onAdd}
             />
           </Container>
-          <Container width="auto" crossAlignment="flex-end" mainAlignment="flex-end" height="auto">
+          <Container width="auto">
             <Button
               type="ghost"
               size="large"
@@ -160,7 +148,11 @@ export const LegalAccessSection = ({
           </Container>
         </Container>
       </Container>
-      <Container mainAlignment="flex-start" padding={{ top: 'medium', bottom: 'large' }} height="auto">
+      <Container
+        mainAlignment="flex-start"
+        padding={{ top: 'medium', bottom: 'large' }}
+        height="auto"
+      >
         <Table
           rows={tableRows}
           headers={header}
