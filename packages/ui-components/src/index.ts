@@ -43,6 +43,7 @@ export * from './components/inputs/IconCheckbox';
 export * from './components/inputs/Input';
 export * from './components/inputs/labeled-value';
 export * from './components/inputs/number-input';
+export * from './components/inputs/password-input';
 export * from './components/inputs/PasswordInput';
 export * from './components/inputs/plain-input';
 export * from './components/inputs/plain-select';
