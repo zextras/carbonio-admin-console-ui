@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Select, SelectItem } from '@zextras/ui-components';
+import { Container, PlainInput, PlainSelect, SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -57,9 +57,8 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaPostscreenDnsblSites">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
-                backgroundColor="gray5"
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
@@ -71,15 +70,10 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaPostscreenDnsblAction">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={ignoreEnforceDropOptions}
-                background="gray5"
                 label={t('mta.dns_blacklist_action', 'DNS Blacklist Action')}
-                showCheckbox={false}
-                selection={ignoreEnforceDropOptions.find(
-                  (item) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
               />
             )}
@@ -97,10 +91,9 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaPostscreenDnsblThreshold">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('mta.dns_blacklist_threshold_value', 'DNS Blacklist Threshold (value)')}
-                backgroundColor="gray5"
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
@@ -112,13 +105,12 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaPostscreenDnsblWhitelistThreshold">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t(
                   'mta.dns_blacklist_whitelist_threshold_value',
                   'DNS Blacklist Whitelist Threshold  (value)',
                 )}
-                backgroundColor="gray5"
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
@@ -152,13 +144,12 @@ export const DnsBlacklistingSection = ({
           >
             <form.Field name="zimbraMtaPostscreenDnsblMinTTL">
               {(field) => (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t(
                     'mta.dns_blacklist_min_time_to_live',
                     'DNS Blacklist Min Time to Live (value)',
                   )}
-                  backgroundColor="gray5"
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     const digits = e.target.value;
@@ -170,11 +161,9 @@ export const DnsBlacklistingSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-start" mainAlignment="flex-start" width="25%">
-            <Select
+            <PlainSelect
               items={intervalOptions}
-              background="gray5"
               label={t('mta.interval', 'Interval')}
-              showCheckbox={false}
               selection={dnsblMinTTLUnit}
               onChange={onDNSMinTTLUnitChange}
             />
@@ -189,13 +178,12 @@ export const DnsBlacklistingSection = ({
           <Container padding={{ right: 'medium' }} width="75%">
             <form.Field name="zimbraMtaPostscreenDnsblMaxTTL">
               {(field) => (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t(
                     'mta.dns_blacklist_max_time_to_live',
                     'DNS Blacklist Max Time to Live (value)',
                   )}
-                  backgroundColor="gray5"
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     const digits = e.target.value;
@@ -207,11 +195,9 @@ export const DnsBlacklistingSection = ({
             </form.Field>
           </Container>
           <Container width="25%">
-            <Select
+            <PlainSelect
               items={intervalOptions}
-              background="gray5"
               label={t('mta.interval', 'Interval')}
-              showCheckbox={false}
               selection={dnsblMaxTTLUnit}
               onChange={onDNSMaxTTLUnitChange}
             />
@@ -237,10 +223,9 @@ export const DnsBlacklistingSection = ({
           <Container padding={{ right: 'small' }} width="75%">
             <form.Field name="zimbraMtaPostscreenDnsblTTL">
               {(field) => (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
-                  backgroundColor="gray5"
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     const digits = e.target.value;
@@ -252,11 +237,9 @@ export const DnsBlacklistingSection = ({
             </form.Field>
           </Container>
           <Container width="25%">
-            <Select
+            <PlainSelect
               items={intervalOptions}
-              background="gray5"
               label={t('mta.interval', 'Interval')}
-              showCheckbox={false}
               selection={dnsblTTLUnit}
               onChange={onDNSTTLUnitChange}
             />
