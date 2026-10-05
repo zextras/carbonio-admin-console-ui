@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Button, Input, ListRow, Padding, PasswordInput } from '@zextras/ui-components';
+import { Button, Input, LegacyPasswordInput, ListRow, Padding } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -93,7 +93,7 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
           />
         </Padding>
         <Padding vertical="small" horizontal="small" width="38%">
-          <PasswordInput
+          <LegacyPasswordInput
             label={t('label.password', 'Password')}
             backgroundColor="gray5"
             inputName="verifyAuthPassword"

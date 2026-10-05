@@ -11,7 +11,7 @@ import React, { useCallback, useRef, useState } from 'react';
 import { Container } from '../layout/Container';
 import { Input, InputProps } from './Input';
 
-const PasswordInput = (props: InputProps) => {
+const LegacyPasswordInput = (props: InputProps) => {
   const [show, setShow] = useState(false);
   const showRef = useRef(show);
 
@@ -57,4 +57,4 @@ const PasswordInput = (props: InputProps) => {
   );
 };
 
-export { PasswordInput };
+export { LegacyPasswordInput };
