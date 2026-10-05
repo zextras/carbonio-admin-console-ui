@@ -1,3 +1,9 @@
+## [0.25.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.24.0...v0.25.0) (2026-10-05)
+
+### Features
+
+* admin UI mta migrate to new input components ([#1402](https://github.com/zextras/carbonio-admin-console-ui/issues/1402)) ([6665b50](https://github.com/zextras/carbonio-admin-console-ui/commit/6665b5067bef15aa5909b5ba71b5bea19e5d8b9d))
+
 ## [0.24.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.23.0...v0.24.0) (2026-10-02)
 
 ### Features
