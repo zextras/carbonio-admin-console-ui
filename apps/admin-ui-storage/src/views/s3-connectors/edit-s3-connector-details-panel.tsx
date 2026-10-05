@@ -298,52 +298,55 @@ export function EditS3ConnectorDetailPanel({
 
   const currentRegionValue = isCustomRegion ? values.customRegion : regionValue;
 
-  const changedFields: Array<{ label: string; value: string }> = [];
-  if (values.bucketLabel !== (connectorDetail?.label ?? '')) {
-    changedFields.push({
+  const changedFieldSummaries = [
+    {
       label: t('label.descriptive_name', 'Descriptive name'),
       value: values.bucketLabel.trim() || '-',
-    });
-  }
-  if (values.url !== (connectorDetail?.url ?? '')) {
-    changedFields.push({
+      changed: values.bucketLabel !== (connectorDetail?.label ?? ''),
+    },
+    {
       label: t('label.endpoint_url', 'Endpoint URL'),
       value: values.url.trim() || '-',
-    });
-  }
-  if (currentRegionValue !== initialRegionValue) {
-    const regionLabel =
-      regionValue === NO_REGION_VALUE
-        ? t('label.region_none', 'None')
-        : buildRegionLabel(
-            regionValue,
-            isCustomRegion,
-            values.customRegion,
-            regionSelection?.label,
-          );
-    changedFields.push({ label: t('label.region', 'Region'), value: regionLabel });
-  }
-  if (values.bucketName !== (connectorDetail?.bucketName ?? '')) {
-    changedFields.push({
+      changed: values.url !== (connectorDetail?.url ?? ''),
+    },
+    {
+      label: t('label.region', 'Region'),
+      value:
+        regionValue === NO_REGION_VALUE
+          ? t('label.region_none', 'None')
+          : buildRegionLabel(
+              regionValue,
+              isCustomRegion,
+              values.customRegion,
+              regionSelection?.label,
+            ),
+      changed: currentRegionValue !== initialRegionValue,
+    },
+    {
       label: t('label.bucket_name', 'Bucket name'),
       value: values.bucketName.trim() || '-',
-    });
-  }
-  if (values.accessKey !== (connectorDetail?.accessKey ?? '')) {
-    changedFields.push({
+      changed: values.bucketName !== (connectorDetail?.bucketName ?? ''),
+    },
+    {
       label: t('label.access_key', 'Access Key ID'),
       value: values.accessKey.trim() || '-',
-    });
-  }
-  if (values.shouldChangeSecret && values.secretKey.trim() !== '') {
-    changedFields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
-  }
-  if (values.acceptUntrustedSSL !== initialInsecureHttps) {
-    changedFields.push({
+      changed: values.accessKey !== (connectorDetail?.accessKey ?? ''),
+    },
+    {
+      label: t('label.secret_key', 'Secret Access Key'),
+      value: '********',
+      changed: values.shouldChangeSecret && values.secretKey.trim() !== '',
+    },
+    {
       label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
       value: values.acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
-    });
-  }
+      changed: values.acceptUntrustedSSL !== initialInsecureHttps,
+    },
+  ];
+
+  const changedFields: Array<{ label: string; value: string }> = changedFieldSummaries
+    .filter((field) => field.changed)
+    .map(({ label, value }) => ({ label, value }));
 
   const showDeleteConnector = isConnectorUnused(connectorDetail);
 
