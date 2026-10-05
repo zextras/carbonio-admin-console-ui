@@ -118,7 +118,7 @@ export const AntivirusDefinitionsSection = ({
         height="auto"
       >
         <Container
-          crossAlignment="flex-start"
+          crossAlignment="center"
           padding={{ right: 'medium' }}
           orientation="horizontal"
           mainAlignment="space-between"
@@ -134,7 +134,7 @@ export const AntivirusDefinitionsSection = ({
               disabled={!allowSetMTA}
             />
           </Container>
-          <Container width="15%" crossAlignment="flex-start">
+          <Container width="15%">
             <Button
               type="outlined"
               size="large"
@@ -144,7 +144,7 @@ export const AntivirusDefinitionsSection = ({
               disabled={antiVirusMirrorsAddText === '' || !allowSetMTA}
             />
           </Container>
-          <Container width="25%" crossAlignment="flex-start" mainAlignment="flex-start">
+          <Container width="25%">
             <Button
               type="ghost"
               size="large"
@@ -157,7 +157,7 @@ export const AntivirusDefinitionsSection = ({
         </Container>
         <Container crossAlignment="flex-start">
           <Container
-            crossAlignment="flex-start"
+            crossAlignment="center"
             padding={{ right: 'medium' }}
             orientation="horizontal"
             mainAlignment="space-between"
@@ -173,7 +173,7 @@ export const AntivirusDefinitionsSection = ({
                 disabled={!allowSetMTA}
               />
             </Container>
-            <Container width="15%" crossAlignment="flex-start">
+            <Container width="15%">
               <Button
                 type="outlined"
                 size="large"
@@ -183,7 +183,7 @@ export const AntivirusDefinitionsSection = ({
                 onClick={onAddAdditionalAntivirusDefinition}
               />
             </Container>
-            <Container width="25%" crossAlignment="flex-start" mainAlignment="flex-start">
+            <Container width="25%">
               <Button
                 type="ghost"
                 size="large"
@@ -390,4 +390,4 @@ export const AntivirusDefinitionsSection = ({
       </Modal>
     </>
   );
-}
+};
