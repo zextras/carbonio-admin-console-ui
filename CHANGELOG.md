@@ -1,3 +1,9 @@
+## [0.26.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.25.0...v0.26.0) (2026-10-05)
+
+### Features
+
+* **admin-ui-legalhold:** migrate to new input ([#1403](https://github.com/zextras/carbonio-admin-console-ui/issues/1403)) ([1be7984](https://github.com/zextras/carbonio-admin-console-ui/commit/1be7984fe94cf6b7016e800b97273b0b1aa7b85a))
+
 ## [0.25.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.24.0...v0.25.0) (2026-10-05)
 
 ### Features
