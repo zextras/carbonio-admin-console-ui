@@ -10,11 +10,11 @@ import {
   Button,
   Container,
   getFieldErrorProps,
-  Input,
-  LegacyPasswordInput,
   Padding,
+  PasswordInput,
+  PlainInput,
+  PlainSelect,
   Row,
-  Select,
   type SelectItem as UISelectItem,
   Switch,
   Tooltip,
@@ -93,9 +93,7 @@ export function Connection({
       setIsProgressActive(true);
 
       const selectedRegion =
-        value.regionValue === CUSTOM_REGION_VALUE
-          ? value.customRegion.trim()
-          : value.regionValue;
+        value.regionValue === CUSTOM_REGION_VALUE ? value.customRegion.trim() : value.regionValue;
 
       const payload: CreateS3ConnectorRequest = {
         _jsns: ZIMBRA_ADMIN_URN,
@@ -194,16 +192,18 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  backgroundColor="gray5"
-                  label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                    field.handleChange(e.target.value)
-                  }
-                  hasError={error.hasError}
-                  description={error.description}
-                />
+                <div className="w-full">
+                  <PlainInput
+                    label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
+                    required
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                      field.handleChange(e.target.value)
+                    }
+                    hasError={error.hasError}
+                    description={error.description}
+                  />
+                </div>
               );
             }}
           </form.Field>
@@ -219,16 +219,18 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                      field.handleChange(e.target.value)
-                    }
-                    hasError={error.hasError}
-                    description={error.description}
-                  />
+                  <div className="w-full">
+                    <PlainInput
+                      label={t('storages.s3Connectors.bucketName', 'Bucket name')}
+                      required
+                      value={field.state.value}
+                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        field.handleChange(e.target.value)
+                      }
+                      hasError={error.hasError}
+                      description={error.description}
+                    />
+                  </div>
                 );
               }}
             </form.Field>
@@ -245,9 +247,9 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
+                  <PlainInput
+                    label={t('storages.s3Connectors.accessKey', 'Access Key ID')}
+                    required
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -270,9 +272,9 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <LegacyPasswordInput
-                    backgroundColor="gray5"
-                    label={t('label.secret_key', 'Secret Access Key*')}
+                  <PasswordInput
+                    label={t('label.secret_key', 'Secret Access Key')}
+                    required
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -289,14 +291,14 @@ export function Connection({
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <form.Field name="regionValue">
             {(field) => (
-              <Select
-                items={regionItems}
-                background="gray5"
-                label={t('label.region', 'Region')}
-                selection={regionSelection}
-                onChange={(e: string | null): void => field.handleChange(e ?? NO_REGION_VALUE)}
-                showCheckbox={false}
-              />
+              <div className="w-full">
+                <PlainSelect
+                  items={regionItems}
+                  label={t('label.region', 'Region')}
+                  selection={regionSelection}
+                  onChange={(value) => field.handleChange(value)}
+                />
+              </div>
             )}
           </form.Field>
         </Row>
@@ -311,16 +313,17 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('label.custom_region', 'Custom region')}
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                      field.handleChange(e.target.value)
-                    }
-                    hasError={error.hasError}
-                    description={error.description}
-                  />
+                  <div className="w-full">
+                    <PlainInput
+                      label={t('label.custom_region', 'Custom region')}
+                      value={field.state.value}
+                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        field.handleChange(e.target.value)
+                      }
+                      hasError={error.hasError}
+                      description={error.description}
+                    />
+                  </div>
                 );
               }}
             </form.Field>
@@ -336,20 +339,18 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  label={
-                    isEndpointUrlRequired
-                      ? t('label.endpoint_url_required', 'Endpoint URL*')
-                      : t('label.endpoint_url', 'Endpoint URL')
-                  }
-                  backgroundColor="gray5"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                    field.handleChange(e.target.value)
-                  }
-                  hasError={error.hasError}
-                  description={error.description}
-                />
+                <div className="w-full">
+                  <PlainInput
+                    label={t('label.endpoint_url_required', 'Endpoint URL')}
+                    required={isEndpointUrlRequired}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                      field.handleChange(e.target.value)
+                    }
+                    hasError={error.hasError}
+                    description={error.description}
+                  />
+                </div>
               );
             }}
           </form.Field>
@@ -372,16 +373,17 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  label={t('label.prefix', 'Prefix')}
-                  backgroundColor="gray5"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                    field.handleChange(e.target.value)
-                  }
-                  hasError={error.hasError}
-                  description={error.description}
-                />
+                <div className="w-full">
+                  <PlainInput
+                    label={t('label.prefix', 'Prefix')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                      field.handleChange(e.target.value)
+                    }
+                    hasError={error.hasError}
+                    description={error.description}
+                  />
+                </div>
               );
             }}
           </form.Field>
@@ -471,7 +473,10 @@ export function Connection({
             </Padding>
             <Button
               type="default"
-              label={t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR')}
+              label={t(
+                'buckets.connection.verify_and_create_connector',
+                'VERIFY & CREATE CONNECTOR',
+              )}
               color="primary"
               onClick={(): void => {
                 void form.handleSubmit();
@@ -483,9 +488,7 @@ export function Connection({
       {isProgressActive && (
         <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
       )}
-      {showVerifyResult && isVerifySuccess && (
-        <VerifySuccess onComplete={handleSuccessComplete} />
-      )}
+      {showVerifyResult && isVerifySuccess && <VerifySuccess onComplete={handleSuccessComplete} />}
       {showVerifyResult && isVerifyError && (
         <VerifyError
           checkDetails={checkDetails}
@@ -496,5 +499,3 @@ export function Connection({
     </Container>
   );
 }
-
-
