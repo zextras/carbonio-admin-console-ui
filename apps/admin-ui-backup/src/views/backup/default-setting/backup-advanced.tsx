@@ -9,9 +9,9 @@ import {
   Container,
   ListRow,
   PlainInput,
+  PlainSelect,
   RouteLeavingGuard,
   Row,
-  Select,
   Switch,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useGlobalSettings } from '@zextras/ui-shared';
@@ -248,16 +248,15 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="compressionLevel">
                       {(field) => (
-                        <Select
+                        <PlainSelect
                           items={COMPRESS_LEVEL_ITEMS}
-                          background="gray5"
                           label={t('backup.compression_level', 'Compression Level')}
-                          defaultSelection={COMPRESS_LEVEL_ITEMS.find(
-                            (item) =>
-                              item.value === String(globalConfig.backupCompressionLevel ?? ''),
-                          )}
-                          onChange={(v) => field.handleChange(v ?? '')}
-                          showCheckbox={false}
+                          selection={
+                            COMPRESS_LEVEL_ITEMS.find(
+                              (item) => item.value === field.state.value,
+                            ) ?? COMPRESS_LEVEL_ITEMS[0]
+                          }
+                          onChange={(value) => field.handleChange(value)}
                           disabled={!allowSetBackup}
                         />
                       )}
