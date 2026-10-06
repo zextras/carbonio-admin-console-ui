@@ -10,9 +10,10 @@ import {
   Button,
   Container,
   getFieldErrorProps,
-  Input,
-  LegacyPasswordInput,
   Padding,
+  PasswordInput,
+  PlainInput,
+  PlainSelect,
   Row,
   type SelectItem as UISelectItem,
   Switch,
@@ -271,9 +272,9 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <LegacyPasswordInput
-                    backgroundColor="gray5"
-                    label={t('label.secret_key', 'Secret Access Key*')}
+                  <PasswordInput
+                    label={t('label.secret_key', 'Secret Access Key')}
+                    required
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
