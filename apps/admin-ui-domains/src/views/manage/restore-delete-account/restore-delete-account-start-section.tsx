@@ -48,14 +48,14 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('label.account', 'Account')}
-                  defaultValue={restoreAccountDetail?.name}
+                  value={restoreAccountDetail?.name}
                 />
               </Container>
               <Container padding={{ bottom: 'medium' }}>
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('label.destination_account', 'Destination Account')}
-                  defaultValue={
+                  value={
                     restoreAccountDetail?.copyAccount === ''
                       ? ''
                       : `${restoreAccountDetail?.copyAccount.split('@')[0]}@${
@@ -70,7 +70,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('label.use_last_available_status', 'Use last available status')}
-                  defaultValue={
+                  value={
                     restoreAccountDetail?.lastAvailableStatus
                       ? t('label.yes', 'Yes')
                       : t('label.no', 'NO')
@@ -81,7 +81,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('label.date_and_hour', 'Date & Hour')}
-                  defaultValue={restoreDateTimeValue}
+                  value={restoreDateTimeValue}
                 />
               </Container>
             </ListRow>
@@ -93,7 +93,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
                     'label.apply_hsm_policy_after_the_restore',
                     'Apply HSM Policies after the restore',
                   )}
-                  defaultValue={
+                  value={
                     restoreAccountDetail?.hsmApply ? t('label.yes', 'Yes') : t('label.no', 'NO')
                   }
                 />
@@ -104,7 +104,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
                 <LabeledValue
                   backgroundColor="gray6"
                   label={t('label.mail_notifications', 'Email Notifications')}
-                  defaultValue={
+                  value={
                     restoreAccountDetail?.notificationReceiver === ''
                       ? '-'
                       : restoreAccountDetail?.notificationReceiver

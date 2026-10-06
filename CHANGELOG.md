@@ -1,3 +1,30 @@
+## [0.28.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.27.0...v0.28.0) (2026-10-06)
+
+### Features
+
+* admin UI cos migrate to new input family ([#1401](https://github.com/zextras/carbonio-admin-console-ui/issues/1401)) ([c8f345b](https://github.com/zextras/carbonio-admin-console-ui/commit/c8f345b5f5a29a70c0cbc3bd9132fe4ee3d5a470))
+* admin UI mta migrate to new input components ([#1402](https://github.com/zextras/carbonio-admin-console-ui/issues/1402)) ([f77d943](https://github.com/zextras/carbonio-admin-console-ui/commit/f77d94350f3077db49b207ad063f0153aa4d7c99))
+* **admin-ui-legalhold:** migrate to new input ([#1403](https://github.com/zextras/carbonio-admin-console-ui/issues/1403)) ([d8e4628](https://github.com/zextras/carbonio-admin-console-ui/commit/d8e46287a96b8268fcc08edb697b1a329a24b7fc))
+* create new plain textarea component ([#1400](https://github.com/zextras/carbonio-admin-console-ui/issues/1400)) ([f220860](https://github.com/zextras/carbonio-admin-console-ui/commit/f220860792a8e9ea89d0e441a47aa9b916eaf317))
+* **ui-components/number-input:** add NumberInput component ([#1396](https://github.com/zextras/carbonio-admin-console-ui/issues/1396)) ([19fb874](https://github.com/zextras/carbonio-admin-console-ui/commit/19fb8746233e73469f43a161edef2fece0fd1915))
+* **ui-components/plain-select:** add plain select component ([#1397](https://github.com/zextras/carbonio-admin-console-ui/issues/1397)) ([9368f18](https://github.com/zextras/carbonio-admin-console-ui/commit/9368f186d9aebe2150ab208f937816d8dacfcbe8))
+* **ui-components:** create new password input component ([#1404](https://github.com/zextras/carbonio-admin-console-ui/issues/1404)) ([6495aac](https://github.com/zextras/carbonio-admin-console-ui/commit/6495aacc2f3873895d30ad0ba7d4a8caadc8b745))
+
+### Bug Fixes
+
+* repair date picker accessibility ([#1398](https://github.com/zextras/carbonio-admin-console-ui/issues/1398)) ([f72029a](https://github.com/zextras/carbonio-admin-console-ui/commit/f72029aee4b725d8260fe13831e138416bdda7ae))
+* rework restore account config with full restore options ([cd796ce](https://github.com/zextras/carbonio-admin-console-ui/commit/cd796ceb812a9e569a876958ffde4c1013bfe173))
+
+### Other changes
+
+* bump jenkins-lib-common to v4.13.0 ([3c24f58](https://github.com/zextras/carbonio-admin-console-ui/commit/3c24f58742164ea04470c4fd0a43cabbc75bdbed))
+
+## [0.27.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.26.0...v0.27.0) (2026-10-05)
+
+### Features
+
+* **ui-components:** create new password input component ([#1404](https://github.com/zextras/carbonio-admin-console-ui/issues/1404)) ([6f6e0a2](https://github.com/zextras/carbonio-admin-console-ui/commit/6f6e0a2618baeb72fd30f507306395096ba1564a))
+
 ## [0.26.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.25.0...v0.26.0) (2026-10-05)
 
 ### Features
