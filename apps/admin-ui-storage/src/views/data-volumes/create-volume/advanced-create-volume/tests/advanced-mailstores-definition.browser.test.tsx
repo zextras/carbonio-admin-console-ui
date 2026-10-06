@@ -117,10 +117,10 @@ describe('AdvancedMailstoresDefinition (browser)', () => {
   it('should show and clear volume name validation message', async () => {
     await setupBrowserTest(renderHarness());
 
-    await page.getByLabelText('Volume Name').fill('Volume A');
+    await page.getByLabelText(/^Volume Name/).fill('Volume A');
     expect(page.getByText('Volume name is required.', { exact: true }).elements()).toHaveLength(0);
 
-    await page.getByLabelText('Volume Name').fill('');
+    await page.getByLabelText(/^Volume Name/).fill('');
     await expect.element(page.getByText('Volume name is required.', { exact: true })).toBeVisible();
   });
 
