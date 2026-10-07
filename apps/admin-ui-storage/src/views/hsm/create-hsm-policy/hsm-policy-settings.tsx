@@ -10,12 +10,12 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
   LabeledValue,
   ListRow,
   Padding,
+  PlainInput,
+  PlainSelect,
   Row,
-  Select,
   Switch,
   Table,
   useSnackbar,
@@ -405,12 +405,10 @@ export function HSMpolicySettings() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <Select
+          <PlainSelect
             items={options}
-            background="gray5"
             label={t('hsm.option', 'Option')}
-            showCheckbox={false}
-            defaultSelection={selectedOption}
+            selection={selectedOption ?? options[0]}
             onChange={onOptionChange}
           />
         </Container>
@@ -421,12 +419,10 @@ export function HSMpolicySettings() {
             crossAlignment="flex-start"
             padding={{ right: 'large' }}
           >
-            <Select
+            <PlainSelect
               items={dateScaleOption}
-              background="gray5"
               label={t('hsm.value', 'Value')}
-              showCheckbox={false}
-              defaultSelection={selectedScale}
+              selection={selectedScale ?? dateScaleOption[0]}
               onChange={onDateScaleChange}
             />
           </Container>
@@ -437,12 +433,10 @@ export function HSMpolicySettings() {
             crossAlignment="flex-start"
             padding={{ right: 'large' }}
           >
-            <Select
+            <PlainSelect
               items={scaleOptions}
-              background="gray5"
               label={t('hsm.value', 'Value')}
-              showCheckbox={false}
-              defaultSelection={selectedScale}
+              selection={selectedScale ?? scaleOptions[0]}
               onChange={onScaleChange}
             />
           </Container>
@@ -453,10 +447,9 @@ export function HSMpolicySettings() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <Input
+          <PlainInput
             label={t('hsm.value', 'Value')}
-            backgroundColor="gray5"
-            value={value}
+            value={value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setValue(e.target.value);
             }}
@@ -495,7 +488,6 @@ export function HSMpolicySettings() {
           <Table
             rows={policyCriteriaRows}
             headers={headers}
-            showCheckbox={false}
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
             RowFactory={ClickableRowFactory}

@@ -651,23 +651,9 @@ describe('tiering hidden on bucket change', () => {
     // Verify tiering switches are initially visible
     await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
 
-    // Open the bucket select dropdown via DOM (custom web-component select)
-    const selectTrigger = Array.from(document.querySelectorAll('div[tabindex="0"]')).find((el) =>
-      el.textContent?.includes('Available S3 Connectors List'),
-    ) as HTMLElement | undefined;
-    expect(selectTrigger).toBeTruthy();
-    selectTrigger?.click();
-
-    // Wait for the dropdown item to appear, then click the non-tiering option
-    await vi.waitFor(() => {
-      const items = document.querySelectorAll('[data-testid="dropdown-item"]');
-      expect(items.length).toBeGreaterThan(0);
-    });
-    const dropdownItems = Array.from(document.querySelectorAll('[data-testid="dropdown-item"]'));
-    const nonTieringItem = dropdownItems.find((el) =>
-      el.textContent?.includes('Non-tiering connector'),
-    ) as HTMLElement | undefined;
-    nonTieringItem?.click();
+    // Open the bucket select dropdown and pick the non-tiering option
+    await page.getByRole('button', { name: /Available S3 Connectors List/ }).click();
+    await page.getByRole('option', { name: /Non-tiering connector/ }).click();
 
     // Verify tiering switches are no longer visible
     await vi.waitFor(() => {

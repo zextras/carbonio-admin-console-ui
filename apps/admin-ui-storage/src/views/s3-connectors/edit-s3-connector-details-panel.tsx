@@ -11,24 +11,17 @@ import {
   Container,
   DefaultTabBarItem,
   getFieldErrorProps,
-  Input,
   Padding,
+  PlainInput,
+  PlainSelect,
   Row,
-  Select,
   type SelectItem,
   Switch,
   TabBar,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
-import {
-  type ChangeEvent,
-  createContext,
-  type SyntheticEvent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react';
+import { type ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -105,103 +98,51 @@ function ReusedDefaultTabBar({ item, index, selected, onClick }: ReusedDefaultTa
   );
 }
 
-type SecretKeyCustomIconProps = {
-  readonly hasError: boolean;
-  readonly hasFocus: boolean;
-  readonly disabled: boolean;
-  readonly showSecretKeyValue: boolean;
-  readonly onToggleSecretVisibility: () => void;
-  readonly onCancelSecretKeyChange: () => void;
-};
-
-type SecretKeyCustomIconRendererProps = {
-  readonly hasError?: boolean;
-  readonly hasFocus?: boolean;
-  readonly disabled?: boolean;
-};
-
-type SecretKeyCustomIconContextValue = {
-  readonly showSecretKeyValue: boolean;
-  readonly onToggleSecretVisibility: () => void;
-  readonly onCancelSecretKeyChange: () => void;
-};
-
-const secretKeyCustomIconContext = createContext<SecretKeyCustomIconContextValue | null>(null);
-
-function useSecretKeyCustomIconContext(): SecretKeyCustomIconContextValue {
-  const context = useContext(secretKeyCustomIconContext);
-  if (!context) {
-    throw new Error('SecretKeyCustomIconRenderer must be used within SecretKeyCustomIconContext');
-  }
-  return context;
-}
-
-function SecretKeyCustomIcon({
-  hasError,
-  hasFocus,
-  disabled,
-  showSecretKeyValue,
-  onToggleSecretVisibility,
-  onCancelSecretKeyChange,
-}: SecretKeyCustomIconProps) {
-  const iconColor = (hasError && 'error') || (hasFocus && 'primary') || 'secondary';
-
-  function handleIconClick(event: SyntheticEvent, action: () => void): void {
-    event.stopPropagation();
-    if (disabled) {
-      return;
-    }
-    action();
-  }
-
+function SecretKeyFieldIcons({
+  visible,
+  onToggleVisibility,
+  onCancel,
+}: {
+  readonly visible: boolean;
+  readonly onToggleVisibility: () => void;
+  readonly onCancel: () => void;
+}) {
   return (
-    <Container
-      mainAlignment="flex-end"
-      crossAlignment="center"
-      style={{ flexDirection: 'row' }}
-      gap="0.5rem"
-    >
-      <ds-icon
-        icon={showSecretKeyValue ? 'EyeOutline' : 'EyeOffOutline'}
-        size="large"
-        color={iconColor}
-        disabled={disabled}
-        onClick={(event: SyntheticEvent): void => {
-          handleIconClick(event, onToggleSecretVisibility);
+    <span className="flex items-center gap-1">
+      <button
+        type="button"
+        className="cursor-pointer border-0 bg-transparent p-0"
+        aria-label={visible ? 'Hide password' : 'Show password'}
+        aria-pressed={visible}
+        onMouseDown={(e) => {
+          e.preventDefault();
         }}
-        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
-      ></ds-icon>
-      <ds-icon
-        icon="CloseOutline"
-        size="large"
-        color={iconColor}
-        disabled={disabled}
-        onClick={(event: SyntheticEvent): void => {
-          handleIconClick(event, onCancelSecretKeyChange);
+        onClick={onToggleVisibility}
+      >
+        <ds-icon
+          icon={visible ? 'EyeOffOutline' : 'EyeOutline'}
+          size="1rem"
+          color="var(--color-gray1-focus)"
+          aria-hidden="true"
+        />
+      </button>
+      <button
+        type="button"
+        className="cursor-pointer border-0 bg-transparent p-0"
+        aria-label="Cancel secret key change"
+        onMouseDown={(e) => {
+          e.preventDefault();
         }}
-        style={{ cursor: disabled ? 'not-allowed' : 'pointer' }}
-      ></ds-icon>
-    </Container>
-  );
-}
-
-function SecretKeyCustomIconRenderer({
-  hasError,
-  hasFocus,
-  disabled,
-}: SecretKeyCustomIconRendererProps) {
-  const { showSecretKeyValue, onToggleSecretVisibility, onCancelSecretKeyChange } =
-    useSecretKeyCustomIconContext();
-
-  return (
-    <SecretKeyCustomIcon
-      hasError={Boolean(hasError)}
-      hasFocus={Boolean(hasFocus)}
-      disabled={Boolean(disabled)}
-      showSecretKeyValue={showSecretKeyValue}
-      onToggleSecretVisibility={onToggleSecretVisibility}
-      onCancelSecretKeyChange={onCancelSecretKeyChange}
-    />
+        onClick={onCancel}
+      >
+        <ds-icon
+          icon="CloseOutline"
+          size="1rem"
+          color="var(--color-gray1-focus)"
+          aria-hidden="true"
+        />
+      </button>
+    </span>
   );
 }
 
@@ -310,8 +251,10 @@ export function EditS3ConnectorDetailPanel({
     { label: t('label.region_set_custom', 'Set custom'), value: CUSTOM_REGION_VALUE },
     ...baseRegions,
   ];
-  const regionSelection =
-    regionItems.find((item) => item.value === regionValue) ?? { value: '', label: '' };
+  const regionSelection = regionItems.find((item) => item.value === regionValue) ?? {
+    value: '',
+    label: '',
+  };
 
   const volumeUsageRows = parseVolumeUsage(connectorDetail?.['usage in powerstore volumes']).map(
     (row) => ({
@@ -355,52 +298,55 @@ export function EditS3ConnectorDetailPanel({
 
   const currentRegionValue = isCustomRegion ? values.customRegion : regionValue;
 
-  const changedFields: Array<{ label: string; value: string }> = [];
-  if (values.bucketLabel !== (connectorDetail?.label ?? '')) {
-    changedFields.push({
+  const changedFieldSummaries = [
+    {
       label: t('label.descriptive_name', 'Descriptive name'),
       value: values.bucketLabel.trim() || '-',
-    });
-  }
-  if (values.url !== (connectorDetail?.url ?? '')) {
-    changedFields.push({
+      changed: values.bucketLabel !== (connectorDetail?.label ?? ''),
+    },
+    {
       label: t('label.endpoint_url', 'Endpoint URL'),
       value: values.url.trim() || '-',
-    });
-  }
-  if (currentRegionValue !== initialRegionValue) {
-    const regionLabel =
-      regionValue === NO_REGION_VALUE
-        ? t('label.region_none', 'None')
-        : buildRegionLabel(
-            regionValue,
-            isCustomRegion,
-            values.customRegion,
-            regionSelection?.label,
-          );
-    changedFields.push({ label: t('label.region', 'Region'), value: regionLabel });
-  }
-  if (values.bucketName !== (connectorDetail?.bucketName ?? '')) {
-    changedFields.push({
+      changed: values.url !== (connectorDetail?.url ?? ''),
+    },
+    {
+      label: t('label.region', 'Region'),
+      value:
+        regionValue === NO_REGION_VALUE
+          ? t('label.region_none', 'None')
+          : buildRegionLabel(
+              regionValue,
+              isCustomRegion,
+              values.customRegion,
+              regionSelection?.label,
+            ),
+      changed: currentRegionValue !== initialRegionValue,
+    },
+    {
       label: t('label.bucket_name', 'Bucket name'),
       value: values.bucketName.trim() || '-',
-    });
-  }
-  if (values.accessKey !== (connectorDetail?.accessKey ?? '')) {
-    changedFields.push({
+      changed: values.bucketName !== (connectorDetail?.bucketName ?? ''),
+    },
+    {
       label: t('label.access_key', 'Access Key ID'),
       value: values.accessKey.trim() || '-',
-    });
-  }
-  if (values.shouldChangeSecret && values.secretKey.trim() !== '') {
-    changedFields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
-  }
-  if (values.acceptUntrustedSSL !== initialInsecureHttps) {
-    changedFields.push({
+      changed: values.accessKey !== (connectorDetail?.accessKey ?? ''),
+    },
+    {
+      label: t('label.secret_key', 'Secret Access Key'),
+      value: '********',
+      changed: values.shouldChangeSecret && values.secretKey.trim() !== '',
+    },
+    {
       label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
       value: values.acceptUntrustedSSL ? t('label.yes', 'Yes') : t('label.no', 'No'),
-    });
-  }
+      changed: values.acceptUntrustedSSL !== initialInsecureHttps,
+    },
+  ];
+
+  const changedFields: Array<{ label: string; value: string }> = changedFieldSummaries
+    .filter((field) => field.changed)
+    .map(({ label, value }) => ({ label, value }));
 
   const showDeleteConnector = isConnectorUnused(connectorDetail);
 
@@ -623,16 +569,18 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <Input
-                        backgroundColor="gray5"
-                        label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                          field.handleChange(e.target.value)
-                        }
-                        hasError={error.hasError}
-                        description={error.description}
-                      />
+                      <div className="w-full">
+                        <PlainInput
+                          label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
+                          required
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
+                          hasError={error.hasError}
+                          description={error.description}
+                        />
+                      </div>
                     );
                   }}
                 </form.Field>
@@ -647,16 +595,18 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <Input
-                        backgroundColor="gray5"
-                        label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                          field.handleChange(e.target.value)
-                        }
-                        hasError={error.hasError}
-                        description={error.description}
-                      />
+                      <div className="w-full">
+                        <PlainInput
+                          label={t('storages.s3Connectors.bucketName', 'Bucket name')}
+                          required
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
+                          hasError={error.hasError}
+                          description={error.description}
+                        />
+                      </div>
                     );
                   }}
                 </form.Field>
@@ -664,22 +614,20 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="accessKey">
                   {(field) => (
-                    <Input
-                      backgroundColor="gray5"
-                      label={t('label.access_key', 'Access Key ID*')}
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        field.handleChange(e.target.value)
-                      }
-                    />
+                    <div className="w-full">
+                      <PlainInput
+                        label={t('label.access_key', 'Access Key ID')}
+                        required
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
+                      />
+                    </div>
                   )}
                 </form.Field>
               </Row>
-              <Row
-                width="100%"
-                mainAlignment="flex-start"
-                padding={{ top: 'large' }}
-              >
+              <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
                 <form.Field name="secretKey">
                   {(field) => {
                     const error = getFieldErrorProps(
@@ -697,7 +645,7 @@ export function EditS3ConnectorDetailPanel({
                             mainAlignment="space-between"
                             crossAlignment="center"
                             padding={{ bottom: 'small' }}
-                          > 
+                          >
                             <Row mainAlignment="flex-start" crossAlignment="center" width="48%">
                               <Row
                                 width="100%"
@@ -708,9 +656,17 @@ export function EditS3ConnectorDetailPanel({
                                   {t('label.secret_key', 'Secret Access Key*')}
                                 </ds-text>
                               </Row>
-                              <ds-icon icon="LockOutline" color="gray0" size="medium" style={{ marginRight: '0.25rem' }}></ds-icon>
+                              <ds-icon
+                                icon="LockOutline"
+                                color="gray0"
+                                size="medium"
+                                style={{ marginRight: '0.25rem' }}
+                              ></ds-icon>
                               <ds-text as="span" size="small">
-                                {t('storages.s3Connectors.secretSavedOnServer', 'Saved on this server')}
+                                {t(
+                                  'storages.s3Connectors.secretSavedOnServer',
+                                  'Saved on this server',
+                                )}
                               </ds-text>
                             </Row>
                             <Button
@@ -726,7 +682,12 @@ export function EditS3ConnectorDetailPanel({
                             mainAlignment="flex-start"
                             padding={{ top: 'extrasmall' }}
                           >
-                            <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+                            <ds-text
+                              as="span"
+                              color="secondary"
+                              overflow="break-word"
+                              size="extrasmall"
+                            >
                               {t(
                                 'storages.s3Connectors.savedSecretTestConnectionHelp',
                                 "TEST CONNECTION uses the saved key - you don't need to re-enter it. For security it can't be displayed.",
@@ -739,16 +700,10 @@ export function EditS3ConnectorDetailPanel({
 
                     return (
                       <Container width="fill" crossAlignment="flex-start">
-                        <secretKeyCustomIconContext.Provider
-                          value={{
-                            showSecretKeyValue,
-                            onToggleSecretVisibility: toggleSecretKeyVisibility,
-                            onCancelSecretKeyChange,
-                          }}
-                        >
-                          <Input
-                            backgroundColor="gray5"
-                            label={t('label.secret_key', 'Secret Access Key*')}
+                        <div className="w-full">
+                          <PlainInput
+                            label={t('label.secret_key', 'Secret Access Key')}
+                            required
                             value={field.state.value}
                             type={showSecretKeyValue ? 'text' : 'password'}
                             onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -756,11 +711,26 @@ export function EditS3ConnectorDetailPanel({
                             }
                             hasError={error.hasError}
                             description={error.description}
-                            CustomIcon={SecretKeyCustomIconRenderer}
+                            icon={
+                              <SecretKeyFieldIcons
+                                visible={showSecretKeyValue}
+                                onToggleVisibility={toggleSecretKeyVisibility}
+                                onCancel={onCancelSecretKeyChange}
+                              />
+                            }
                           />
-                        </secretKeyCustomIconContext.Provider>
-                        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'extrasmall' }}>
-                          <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
+                        </div>
+                        <Row
+                          width="100%"
+                          mainAlignment="flex-start"
+                          padding={{ top: 'extrasmall' }}
+                        >
+                          <ds-text
+                            as="span"
+                            color="secondary"
+                            overflow="break-word"
+                            size="extrasmall"
+                          >
                             {t(
                               'storages.s3Connectors.newSecretWillReplaceHint',
                               'The new key will replace the saved one when you verify and save changes.',
@@ -775,23 +745,21 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="regionValue">
                   {(field) => (
-                    <Select
-                      items={[
-                        { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
-                        {
-                          label: t('label.region_set_custom', 'Set custom'),
-                          value: CUSTOM_REGION_VALUE,
-                        },
-                        ...baseRegions,
-                      ]}
-                      background="gray5"
-                      label={t('label.region', 'Region')}
-                      selection={regionSelection}
-                      showCheckbox={false}
-                      onChange={(e: string | null): void =>
-                        field.handleChange(e ?? NO_REGION_VALUE)
-                      }
-                    />
+                    <div className="w-full">
+                      <PlainSelect
+                        items={[
+                          { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
+                          {
+                            label: t('label.region_set_custom', 'Set custom'),
+                            value: CUSTOM_REGION_VALUE,
+                          },
+                          ...baseRegions,
+                        ]}
+                        label={t('label.region', 'Region')}
+                        selection={regionSelection}
+                        onChange={(value) => field.handleChange(value)}
+                      />
+                    </div>
                   )}
                 </form.Field>
               </Row>
@@ -807,16 +775,17 @@ export function EditS3ConnectorDetailPanel({
                         S3_CONNECTOR_VALIDATION_MESSAGES,
                       );
                       return (
-                        <Input
-                          backgroundColor="gray5"
-                          label={t('label.custom_region', 'Custom region')}
-                          value={field.state.value}
-                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                            field.handleChange(e.target.value)
-                          }
-                          hasError={error.hasError}
-                          description={error.description}
-                        />
+                        <div className="w-full">
+                          <PlainInput
+                            label={t('label.custom_region', 'Custom region')}
+                            value={field.state.value}
+                            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                              field.handleChange(e.target.value)
+                            }
+                            hasError={error.hasError}
+                            description={error.description}
+                          />
+                        </div>
                       );
                     }}
                   </form.Field>
@@ -833,20 +802,18 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <Input
-                        backgroundColor="gray5"
-                        label={
-                          isEndpointUrlRequired
-                            ? t('label.endpoint_url_required', 'Endpoint URL*')
-                            : t('label.endpoint_url', 'Endpoint URL')
-                        }
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                          field.handleChange(e.target.value)
-                        }
-                        hasError={error.hasError}
-                        description={error.description}
-                      />
+                      <div className="w-full">
+                        <PlainInput
+                          label={t('label.endpoint_url', 'Endpoint URL')}
+                          required={isEndpointUrlRequired}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
+                          hasError={error.hasError}
+                          description={error.description}
+                        />
+                      </div>
                     );
                   }}
                 </form.Field>
@@ -861,13 +828,14 @@ export function EditS3ConnectorDetailPanel({
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <Input
-                  backgroundColor="gray5"
-                  disabled
-                  label={t('label.prefix', 'Prefix')}
-                  defaultValue={connectorDetail?.prefix ?? ''}
-                  onChange={(): void => {}}
-                />
+                <div className="w-full">
+                  <PlainInput
+                    disabled
+                    label={t('label.prefix', 'Prefix')}
+                    value={connectorDetail?.prefix ?? ''}
+                    onChange={(): void => {}}
+                  />
+                </div>
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
@@ -997,9 +965,7 @@ export function EditS3ConnectorDetailPanel({
       {isProgressActive && (
         <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
       )}
-      {showVerifyResult && isVerifySuccess && (
-        <VerifySuccess onComplete={handleSuccessComplete} />
-      )}
+      {showVerifyResult && isVerifySuccess && <VerifySuccess onComplete={handleSuccessComplete} />}
       {showVerifyResult && isVerifyError && (
         <VerifyError
           checkDetails={checkDetails}

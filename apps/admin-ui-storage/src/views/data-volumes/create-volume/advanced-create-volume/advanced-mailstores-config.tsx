@@ -6,9 +6,10 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  Input,
   ListRow,
+  NumberInput,
   Padding,
+  PlainInput,
   Radio,
   Row,
   Switch,
@@ -244,18 +245,18 @@ export function AdvancedMailstoresConfig({
       {isLocalBlockDevice ? (
         <>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-            <Input
-              inputName="path"
-              label={t('label.volume_path', 'Volume path')}
-              value={path}
-              backgroundColor="gray5"
-              onChange={changeVolDetail}
-            />
-            <Padding top="extrasmall">
-              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                {t('storage.dataVolumes.volumePathMustExistHint', 'The volume path must already exist')}
-              </ds-text>
-            </Padding>
+            <div className="w-full">
+              <PlainInput
+                name="path"
+                label={t('label.volume_path', 'Volume path')}
+                value={path}
+                onChange={changeVolDetail}
+                description={t(
+                  'storage.dataVolumes.volumePathMustExistHint',
+                  'The volume path must already exist',
+                )}
+              />
+            </div>
           </Row>
           {volumeMain !== INDEX_TYPE_VALUE && (
             <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
@@ -276,19 +277,18 @@ export function AdvancedMailstoresConfig({
               </Row>
               <Padding horizontal="small" />
               <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
-                <Input
-                  inputName="compressionThreshold"
-                  label={t('label.volume_compression_thresold', 'Compression Threshold')}
-                  value={compressionThreshold}
-                  backgroundColor="gray5"
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    if (/^\d*$/.test(e.target.value)) {
-                      form.setFieldValue('compressionThreshold', e.target.value);
-                    }
-                  }}
-                  disabled={!isCompression}
-                  CustomIcon={CompressionThresholdIcon}
-                />
+                <div className="w-full">
+                  <NumberInput
+                    name="compressionThreshold"
+                    label={t('label.volume_compression_thresold', 'Compression Threshold')}
+                    value={compressionThreshold}
+                    onChange={(value): void => {
+                      form.setFieldValue('compressionThreshold', value);
+                    }}
+                    disabled={!isCompression}
+                    icon={<CompressionThresholdIcon />}
+                  />
+                </div>
               </Row>
             </Row>
           )}
@@ -296,16 +296,17 @@ export function AdvancedMailstoresConfig({
       ) : (
         <>
           <Row padding={{ top: 'large' }} width="100%">
-            <Input
-              inputName="prefix"
-              label={t(
-                'label.prefix_name',
-                'Prefix - all objects will have this prefix in their name',
-              )}
-              value={prefix}
-              backgroundColor="gray5"
-              onChange={changeVolDetail}
-            />
+            <div className="w-full">
+              <PlainInput
+                name="prefix"
+                label={t(
+                  'label.prefix_name',
+                  'Prefix - all objects will have this prefix in their name',
+                )}
+                value={prefix}
+                onChange={changeVolDetail}
+              />
+            </div>
           </Row>
           {showTieringSettings && (
             <>
@@ -332,7 +333,13 @@ export function AdvancedMailstoresConfig({
                     }}
                     iconColor="primary"
                   />
-                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonStorageDocumentation', 'Amazon Storage Class Documentation')}>
+                  <Tooltip
+                    placement="top"
+                    label={t(
+                      'storage.dataVolumes.amazonStorageDocumentation',
+                      'Amazon Storage Class Documentation',
+                    )}
+                  >
                     <button
                       type="button"
                       className={styles.tieringDocIconButton}
@@ -347,20 +354,29 @@ export function AdvancedMailstoresConfig({
                   </Tooltip>
                 </Row>
               </Row>
-              <Row padding={{ top: 'small', left: 'small' }} width="100%" mainAlignment="flex-start">
+              <Row
+                padding={{ top: 'small', left: 'small' }}
+                width="100%"
+                mainAlignment="flex-start"
+              >
                 <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
-                  <Input
-                    inputName="infrequentAccessThreshold"
+                  <NumberInput
+                    name="infrequentAccessThreshold"
                     label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                    type="number"
                     value={infrequentAccessThreshold || ''}
-                    backgroundColor="gray5"
-                    onChange={changeVolDetail}
+                    onChange={(value): void => {
+                      form.setFieldValue('infrequentAccessThreshold', value);
+                    }}
                     disabled={!useInfrequentAccess}
                   />
                 </Row>
               </Row>
-              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%" crossAlignment="center">
+              <Row
+                padding={{ top: 'large' }}
+                mainAlignment="flex-start"
+                width="100%"
+                crossAlignment="center"
+              >
                 <Switch
                   value={useIntelligentTiering}
                   label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
@@ -377,7 +393,13 @@ export function AdvancedMailstoresConfig({
                   }}
                   iconColor="primary"
                 />
-                <Tooltip placement="top" label={t('storage.dataVolumes.amazonTieringDocumentation', 'Amazon Tiering Documentation')}>
+                <Tooltip
+                  placement="top"
+                  label={t(
+                    'storage.dataVolumes.amazonTieringDocumentation',
+                    'Amazon Tiering Documentation',
+                  )}
+                >
                   <button
                     type="button"
                     className={styles.tieringDocIconButton}
@@ -385,7 +407,9 @@ export function AdvancedMailstoresConfig({
                       'label.use_intelligent_tiering_helptext',
                       'Open Amazon Tiering Documentation',
                     )}
-                    onClick={(): void => openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)}
+                    onClick={(): void =>
+                      openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)
+                    }
                   >
                     <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
                   </button>
