@@ -9,10 +9,10 @@ import {
   Button,
   Container,
   DefaultTabBarItem,
-  InheritedSelect,
   type Item as TabBarItem,
   ListRow,
   Padding,
+  PlainSelect,
   Row,
   TabBar,
 } from '@zextras/ui-components';
@@ -23,6 +23,7 @@ import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../constants';
+import { RevertToInheritedIcon } from '../../views/utility/revert-to-inherited-icon';
 import { AdminPanelThemeConfig } from './admin-panel-theme-configs';
 import { EndUserThemeConfigs } from './end-user-theme-configs';
 import { ThemeFieldInput } from './theme-field-input';
@@ -87,6 +88,9 @@ export const ThemeConfigs = ({
     (s) => (s.values as themeConfigStore).carbonioWebUiDarkMode,
   );
 
+  const isInheritedMode = globalTheme !== undefined;
+  const isDarkModeOverridden = isInheritedMode && darkMode !== undefined;
+
   const items = [
     {
       id: 'end_user',
@@ -129,20 +133,38 @@ export const ThemeConfigs = ({
             </Padding>
           </ListRow>
           <ListRow>
-            <InheritedSelect
+            <PlainSelect
               label={t('cos.dark_mode', 'Dark Mode')}
               items={THEME_MODE}
-              subValue={darkMode}
-              inheritedValue={globalTheme?.carbonioWebUiDarkMode}
-              fromSubValue={globalTheme ? darkMode : ''}
-              background="gray5"
-              selectName="carbonioWebUiDarkMode"
-              onChange={(v): void => {
-                form.setFieldValue('carbonioWebUiDarkMode', v as string | undefined);
+              selection={
+                THEME_MODE.find((item) => item.value === darkMode) ??
+                THEME_MODE.find((item) => item.value === globalTheme?.carbonioWebUiDarkMode) ??
+                THEME_MODE[0]
+              }
+              onChange={(v: string): void => {
+                form.setFieldValue('carbonioWebUiDarkMode', v);
               }}
-              onChangeReset={(): void => {
-                form.setFieldValue('carbonioWebUiDarkMode', undefined);
-              }}
+              description={
+                isInheritedMode && !isDarkModeOverridden
+                  ? t(
+                      'label.inherited_from_global_configuration',
+                      'Inherited from the global configuration',
+                    )
+                  : undefined
+              }
+              icon={
+                isDarkModeOverridden ? (
+                  <RevertToInheritedIcon
+                    label={t(
+                      'label.click_to_revert_to_the_inherited_value',
+                      'Click to revert to the inherited value',
+                    )}
+                    onClick={(): void => {
+                      form.setFieldValue('carbonioWebUiDarkMode', undefined);
+                    }}
+                  />
+                ) : undefined
+              }
             />
           </ListRow>
           <ListRow>

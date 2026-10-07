@@ -5,10 +5,11 @@
  */
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { InheritedInput } from '@zextras/ui-components';
+import { PlainInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { themeConfigStore } from '../../../types';
+import { RevertToInheritedIcon } from '../../views/utility/revert-to-inherited-icon';
 
 type ThemeFieldInputProps = {
   form: AnyFormApi;
@@ -40,28 +41,43 @@ export const ThemeFieldInput = ({
       ((s.fieldMeta as Record<string, { errors: Array<unknown> }>)[name]?.errors.length ?? 0) > 0,
   );
 
+  const isInheritedMode = globalTheme !== undefined;
+  const isOverridden = isInheritedMode && value !== undefined;
+
   return (
-    <>
-      <InheritedInput
-        label={label}
-        subValue={value}
-        inheritedValue={globalTheme?.[name]}
-        fromSubValue={globalTheme ? value : ''}
-        inputName={name}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-          form.setFieldValue(name, e.target.value);
-        }}
-        onChangeReset={(): void => {
-          form.setFieldValue(name, undefined);
-        }}
-        hasError={hasError}
-        disabled={isGlobalTheme && !hasModifyRights}
-      />
-      {hasError && errorLabel && errorLabelDefault && (
-        <ds-text as="span" size="extrasmall" weight="regular" color="error">
-          {t(errorLabel, errorLabelDefault)}
-        </ds-text>
-      )}
-    </>
+    <PlainInput
+      label={label}
+      name={name}
+      autoComplete="off"
+      value={value ?? globalTheme?.[name] ?? ''}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+        form.setFieldValue(name, e.target.value);
+      }}
+      hasError={hasError}
+      description={
+        hasError && errorLabel && errorLabelDefault
+          ? t(errorLabel, errorLabelDefault)
+          : isInheritedMode && !isOverridden
+            ? t(
+                'label.inherited_from_global_configuration',
+                'Inherited from the global configuration',
+              )
+            : undefined
+      }
+      disabled={isGlobalTheme && !hasModifyRights}
+      icon={
+        isOverridden ? (
+          <RevertToInheritedIcon
+            label={t(
+              'label.click_to_revert_to_the_inherited_value',
+              'Click to revert to the inherited value',
+            )}
+            onClick={(): void => {
+              form.setFieldValue(name, undefined);
+            }}
+          />
+        ) : undefined
+      }
+    />
   );
 };
