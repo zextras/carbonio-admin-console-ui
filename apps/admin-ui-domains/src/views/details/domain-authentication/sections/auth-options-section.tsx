@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Input, ListRow, Padding, Switch, Tooltip } from '@zextras/ui-components';
+import { ListRow, Padding, PlainInput, Switch, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { isValidLdapBaseUrl } from '../../../utility/utils';
@@ -101,13 +101,13 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraPasswordChangeListener">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t(
                   'label.external_password_change_listener',
                   'Endpoint to be used for password change',
                 )}
-                backgroundColor="gray5"
-                value={field.state.value}
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}

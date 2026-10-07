@@ -232,7 +232,7 @@ describe('DomainAuthentication (browser)', () => {
         it('should show Save and Cancel buttons when URL is changed', async () => {
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const urlInput = page.getByLabelText('URL');
+            const urlInput = page.getByLabelText(/^URL/);
             await userEvent.type(urlInput, 'ldap://ldap.example.com');
 
             await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
@@ -270,7 +270,7 @@ describe('DomainAuthentication (browser)', () => {
         it('should revert changes when Cancel is clicked', async () => {
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const urlInput = page.getByLabelText('URL');
+            const urlInput = page.getByLabelText(/^URL/);
             await userEvent.type(urlInput, 'ldap://ldap.example.com');
 
             await expect.element(page.getByRole('button', { name: /cancel/i })).toBeVisible();
@@ -313,7 +313,7 @@ describe('DomainAuthentication (browser)', () => {
             setupDomainStore([{ n: 'zimbraAuthMech', _content: 'ldap' }]);
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const urlInput = page.getByLabelText('URL');
+            const urlInput = page.getByLabelText(/^URL/);
             await userEvent.type(urlInput, 'not-a-valid-url');
 
             await expect.element(page.getByText('Ldap url is not valid')).toBeVisible();
@@ -326,7 +326,7 @@ describe('DomainAuthentication (browser)', () => {
             ]);
             await setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const urlInput = page.getByLabelText('URL');
+            const urlInput = page.getByLabelText(/^URL/);
             await expect.element(urlInput).toHaveValue('ldap://ldap.example.com');
             await userEvent.clear(urlInput);
 
@@ -385,7 +385,7 @@ describe('DomainAuthentication (browser)', () => {
 
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const urlInput = page.getByLabelText('URL');
+            const urlInput = page.getByLabelText(/^URL/);
             await userEvent.type(urlInput, 'ldap://ldap.test.com');
 
             const saveButton = page.getByRole('button', { name: /save/i });
@@ -435,7 +435,7 @@ describe('DomainAuthentication (browser)', () => {
 
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const urlInput = page.getByLabelText('URL');
+            const urlInput = page.getByLabelText(/^URL/);
             await userEvent.type(urlInput, 'ldap://ldap.fail.com');
 
             const saveButton = page.getByRole('button', { name: /save/i });

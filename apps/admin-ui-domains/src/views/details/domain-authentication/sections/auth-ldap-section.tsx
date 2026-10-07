@@ -8,10 +8,10 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   getFieldErrorProps,
-  Input,
-  LegacyPasswordInput,
   ListRow,
   Padding,
+  PasswordInput,
+  PlainInput,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
@@ -41,17 +41,17 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
               );
               return (
                 <>
-                  <Input
-                    isRequired
+                  <PlainInput
+                    required
                     label={t('label.url', 'URL')}
-                    value={field.state.value}
-                    backgroundColor="gray5"
+                    value={field.state.value ?? ''}
+                    autoComplete="off"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       field.handleChange(e.target.value);
                     }}
                     onBlur={(): void => field.handleBlur()}
                     hasError={error.hasError}
-                    CustomIcon={AuthLdapUrlHelpIcon}
+                    icon={<AuthLdapUrlHelpIcon />}
                   />
                   {error.hasError && (
                     <Container
@@ -76,14 +76,14 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchFilter">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('label.filter', 'Filter')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
-                CustomIcon={AuthLdapFilterHelpIcon}
+                icon={<AuthLdapFilterHelpIcon />}
               />
             )}
           </form.Field>
@@ -91,10 +91,10 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchBase">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('label.search_base', 'Basic Search')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
@@ -107,12 +107,11 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchBindDn">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('domain.authentication.search_bind_user', 'Search Bind User')}
-                value={field.state.value}
-                backgroundColor="gray5"
-                inputName="searchBindUser"
-                autoComplete="new-password"
+                value={field.state.value ?? ''}
+                name="searchBindUser"
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
@@ -123,12 +122,11 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchBindPassword">
             {(field) => (
-              <LegacyPasswordInput
+              <PasswordInput
                 label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
-                backgroundColor="gray5"
-                inputName="zimbraQuotaWarnInterval"
+                name="zimbraQuotaWarnInterval"
                 autoComplete="new-password"
-                value={field.state.value}
+                value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
