@@ -4,7 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { AnyFormApi } from '@tanstack/react-form';
-import { Button, ChipInput, type ChipItem, CustomChip, PlainSelect, type SelectItem } from '@zextras/ui-components';
+import {
+  Button,
+  ChipInput,
+  type ChipItem,
+  CustomChip,
+  PlainSelect,
+  type SelectItem,
+} from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

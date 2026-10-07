@@ -85,7 +85,8 @@ const NumericSettingInput = ({ form, field, label }: NumericSettingInputProps) =
   const value = useSelector(form.store, (s) => (s.values as GlobalActiveSyncFormValues)[field]);
   const hasError = useSelector(
     form.store,
-    (s) => ((s.fieldMeta as Record<string, { errors: Array<unknown> }>)[field]?.errors.length ?? 0) > 0,
+    (s) =>
+      ((s.fieldMeta as Record<string, { errors: Array<unknown> }>)[field]?.errors.length ?? 0) > 0,
   );
 
   return (
@@ -93,7 +94,7 @@ const NumericSettingInput = ({ form, field, label }: NumericSettingInputProps) =
       label={label}
       value={value ?? ''}
       hasError={hasError}
-      description={hasError ? t('error.invalid_number', 'Please enter a valid number') : ''}
+      description={hasError ? t('error.invalid_number', 'Please enter a valid number') : undefined}
       onChange={(value: string): void => {
         form.setFieldValue(field, value);
       }}
