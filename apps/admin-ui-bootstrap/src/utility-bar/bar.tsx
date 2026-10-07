@@ -6,18 +6,22 @@
 
 import { Button, Container, Dropdown, type IconName, Tooltip } from '@zextras/ui-components';
 import {
-  CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   logout,
-  useConfigAttribute,
   useIsAdvanced,
+  useServerVersion,
   useUserAccount,
   useUtilityBarStore,
   UtilityView,
 } from '@zextras/ui-shared';
+import clsx from 'clsx';
 import { map, noop } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
+import styles from './bar.module.css';
+import { buildDocumentationUrl } from './build-documentation-url';
+import { useDocumentationBaseUrl } from './use-documentation-base-url';
+import { useDocumentationContext } from './use-documentation-context';
 import { openLink, useUtilityViews } from './utils';
 
 const UtilityBarItem = ({ view }: { view: UtilityView }) => {
@@ -54,20 +58,23 @@ export const ShellUtilityBar = () => {
   const acct = useUserAccount();
   const accountName = acct?.name ? clipTextAfterWords(acct.name) : '';
   const isAdvanced = useIsAdvanced();
-  const { data: helpDocumentationUrlAttribute } = useConfigAttribute(
-    CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
-  );
-  const helpDocumentationUrl = isAdvanced
-    ? helpDocumentationUrlAttribute || CARBONIO_CE_ADMIN_DOCUMENTATION_URL
-    : CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
+  const baseUrl = useDocumentationBaseUrl();
+  const { serverVersion } = useServerVersion();
+  const docContext = useDocumentationContext();
   const [t] = useTranslation();
+
+  const helpDocumentationUrl = isAdvanced
+    ? buildDocumentationUrl(baseUrl, {
+        v: serverVersion || undefined,
+        m: docContext.module,
+        c: docContext.context,
+      })
+    : CARBONIO_CE_ADMIN_DOCUMENTATION_URL;
+  const moduleLabel = t(docContext.moduleLabelKey, docContext.moduleLabelFallback);
+  const helpTooltipLabel = t('label.documentation_for_module', 'Documentation: {{module}}', {
+    module: moduleLabel,
+  });
   const accountItems = [
-    {
-      id: 'help',
-      label: t('label.help_and_documentation', 'Help & Documentation'),
-      onClick: () => openLink(helpDocumentationUrl),
-      icon: 'QuestionMarkOutline' as IconName,
-    },
     {
       id: 'logout',
       label: t('label.logout', 'Logout'),
@@ -83,23 +90,39 @@ export const ShellUtilityBar = () => {
       {map(views, (view) => (
         <UtilityBarItem view={view} key={view.id} />
       ))}
-      <Container margin={{ right: 'small' }}>
-        <ds-text as="span" color="primary" style={{ whiteSpace: 'pre-line', textAlign: 'left' }}>
-          {accountName}
-        </ds-text>
+      <Container orientation="horizontal" width="fit" gap="0.25rem">
+        <Tooltip label={helpTooltipLabel} placement="bottom-end">
+          <button
+            type="button"
+            className={clsx(styles.trigger, styles.helpTrigger)}
+            onClick={() => {
+              openLink(helpDocumentationUrl);
+            }}
+            aria-label={helpTooltipLabel}
+          >
+            <ds-icon icon="QuestionMarkCircleOutline" color="currentColor" size="large" />
+          </button>
+        </Tooltip>
+        <Tooltip label={t('label.account_menu', 'Account menu')} placement="right-end">
+          <Dropdown items={accountItems}>
+            <button
+              type="button"
+              className={clsx(styles.trigger, styles.accountTrigger)}
+              onClick={noop}
+              aria-label={t('label.account_menu', 'Account menu')}
+            >
+              <ds-text
+                as="span"
+                color="currentColor"
+                style={{ whiteSpace: 'pre-line', textAlign: 'left' }}
+              >
+                {accountName}
+              </ds-text>
+              <ds-icon icon="AvatarOutline" color="currentColor" size="large" />
+            </button>
+          </Dropdown>
+        </Tooltip>
       </Container>
-      <Tooltip label={t('label.account_menu', 'Account menu')} placement="left-end">
-        <Dropdown items={accountItems}>
-          <Button
-            type="ghost"
-            icon="AvatarOutline"
-            size={'extralarge'}
-            color="primary"
-            onClick={noop}
-            aria-label={t('label.account_menu', 'Account menu')}
-          />
-        </Dropdown>
-      </Tooltip>
     </Container>
   );
 };

@@ -11,8 +11,9 @@ import {
   getAllConfigResponseMock,
   resetMockWorker,
   setupBrowserTest,
+  worker,
 } from 'admin-ui-test-utils';
-import { HttpResponse } from 'msw';
+import { http, HttpResponse } from 'msw';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -46,13 +47,13 @@ function getQuarantinedMessage(options: { withAttachment?: boolean } = {}) {
 async function setupQuarantineView(
   options: {
     withQuarantineAccount?: boolean;
-    emptyAfterFirstRefetch?: boolean;
+    emptyAfterDelete?: boolean;
     delayedConfig?: boolean;
     withAttachment?: boolean;
   } = {},
 ): Promise<{ getSearchCalls: () => number }> {
   const withQuarantineAccount = options.withQuarantineAccount ?? true;
-  const emptyAfterFirstRefetch = options.emptyAfterFirstRefetch ?? false;
+  const emptyAfterDelete = options.emptyAfterDelete ?? false;
 
   if (options.delayedConfig) {
     delayedSoapApiForBrowser(
@@ -87,17 +88,23 @@ async function setupQuarantineView(
   });
 
   let searchCalls = 0;
+  let listEmpty = false;
+  if (emptyAfterDelete) {
+    worker.use(
+      http.post('/service/admin/soap/MsgActionRequest', () => {
+        listEmpty = true;
+        return;
+      }),
+    );
+  }
   await createBrowserAPIInterceptor('post', '/service/admin/soap/SearchRequest', () => {
     searchCalls += 1;
-    const messages =
-      emptyAfterFirstRefetch && searchCalls > 1 ? [] : [{ id: 'msg-1', d: 1750000000000 }];
+    const messages = listEmpty ? [] : [{ id: 'msg-1', d: 1750000000000 }];
     return HttpResponse.json({ Body: { SearchResponse: { m: messages } } });
   });
 
-  let batchCalls = 0;
   await createBrowserAPIInterceptor('post', '/service/admin/soap/BatchRequest', () => {
-    batchCalls += 1;
-    const getMsgResponse = emptyAfterFirstRefetch && batchCalls > 1 ? [] : [{ m: [getQuarantinedMessage(options)] }];
+    const getMsgResponse = listEmpty ? [] : [{ m: [getQuarantinedMessage(options)] }];
     return HttpResponse.json({ Body: { BatchResponse: { GetMsgResponse: getMsgResponse } } });
   });
 
@@ -152,7 +159,7 @@ describe('GlobalQuarantine', () => {
     { timeout: 20_000 },
     async () => {
       const msgActionParams = createBrowserSoapAPIInterceptor('MsgAction', {});
-      await setupQuarantineView({ emptyAfterFirstRefetch: true });
+      await setupQuarantineView({ emptyAfterDelete: true });
 
       await page.getByText('Spam subject').click();
       await page.getByRole('button', { name: 'DELETE', exact: true }).click();

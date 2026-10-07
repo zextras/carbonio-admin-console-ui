@@ -9,11 +9,10 @@ import {
   delayedSoapApiForBrowser,
   getQueryClient,
   grantUserCosRights,
-  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { Route, Routes } from 'react-router';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { type ModifyCosBody } from '../../../../services/modify-cos-service';
@@ -155,10 +154,6 @@ async function expectCalendarOptionsVisible() {
 describe('COSPreferences', () => {
   beforeEach(async () => {
     vi.resetAllMocks();
-  });
-
-  afterEach(() => {
-    resetMockWorker();
   });
 
   describe('Rendering', () => {
@@ -350,53 +345,33 @@ describe('COSPreferences', () => {
   });
 
   describe('Mail Options interactions', () => {
-    it('should mark as dirty when toggling View mail as HTML', async () => {
+    it('should mark as dirty when changing each mail option control', async () => {
       await setupCosPreferencesTest();
+
       const viewHtmlSwitch = page.getByRole('switch', { name: 'View mail as HTML (when possible)' });
       await expect.element(viewHtmlSwitch).not.toBeChecked();
       await viewHtmlSwitch.click();
       await expect.element(viewHtmlSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when changing Display by select', async () => {
-      await setupCosPreferencesTest();
       await page.getByText('Display by').click();
       const messageOption = page.getByText('Message', { exact: true }).first();
       await messageOption.click();
       await expect.element(page.getByText('Message', { exact: true })).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when changing Default Charset select', async () => {
-      createBrowserSoapAPIInterceptor('FlushCache', {});
-      await setupCosPreferencesTest();
       await page.getByText('Default Charset').click();
       await page.getByText('KOI8-R').click();
       await expect.element(page.getByText('KOI8-R')).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when toggling Auto-Delete duplicate messages', async () => {
-      await setupCosPreferencesTest();
       const autoDeleteSwitch = page.getByRole('switch', { name: 'Auto-Delete duplicate messages' });
       await expect.element(autoDeleteSwitch).not.toBeChecked();
       await autoDeleteSwitch.click();
       await expect.element(autoDeleteSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Enable New Mail Toast Notification', async () => {
-      await setupCosPreferencesTest();
       const toastNotificationSwitch = page.getByRole('switch', { name: 'Enable New Mail Toast Notification' });
       await expect.element(toastNotificationSwitch).not.toBeChecked();
       await toastNotificationSwitch.click();
       await expect.element(toastNotificationSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when changing attachment max size', async () => {
-      await setupCosPreferencesTest();
       const attachmentInput = page.getByLabelText(
         'Maximum size (bytes) allowed for each attachment',
       );
@@ -404,6 +379,7 @@ describe('COSPreferences', () => {
       await attachmentInput.clear();
       await attachmentInput.fill('1073741824');
       await expect.element(attachmentInput).toHaveValue(1073741824);
+
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     }, 20_000);
 
@@ -424,101 +400,73 @@ describe('COSPreferences', () => {
   });
 
   describe('Receiving Mails interactions', () => {
-    it('should mark as dirty when changing Read Receipt settings select', async () => {
+    it('should mark as dirty when changing each receiving mails control', async () => {
       await setupCosPreferencesTest();
+
       const readReceiptSettingsLabel = page.getByText('Read Receipt settings');
       await expect.element(readReceiptSettingsLabel).toBeVisible();
       await readReceiptSettingsLabel.click();
       await page.getByText('Always send a read receipt').click();
       await expect.element(page.getByText('Always send a read receipt')).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when changing Polling interval select', async () => {
-      await setupCosPreferencesTest();
       await page.getByText('Polling interval', { exact: true }).click();
       await page.getByText('10 minutes').click();
       await expect.element(page.getByText('10 minutes')).toBeVisible();
+
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     }, 20_000);
   });
 
-  describe('Forwarding interactions', () => {
-    it('should mark as dirty when toggling User can specify forwarding address', async () => {
+  describe('Forwarding, Sending Mails and Contact Options interactions', () => {
+    it('should mark as dirty when toggling each section control', async () => {
       await setupCosPreferencesTest();
+
       const forwardingAddressSwitch = page.getByRole('switch', { name: 'User can specify forwarding address' });
       await expect.element(forwardingAddressSwitch).not.toBeChecked();
       await forwardingAddressSwitch.click();
       await expect.element(forwardingAddressSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling User can specify mail forwarding filter', async () => {
-      await setupCosPreferencesTest();
       const forwardingFilterSwitch = page.getByRole('switch', { name: 'User can specify mail forwarding filter' });
       await expect.element(forwardingFilterSwitch).not.toBeChecked();
       await forwardingFilterSwitch.click();
       await expect.element(forwardingFilterSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
 
-  describe('Sending Mails interactions', () => {
-    it('should mark as dirty when toggling Save to sent', async () => {
-      await setupCosPreferencesTest();
       const saveToSentSwitch = page.getByRole('switch', { name: 'Save to sent' });
       await expect.element(saveToSentSwitch).toBeChecked();
       await saveToSentSwitch.click();
       await expect.element(saveToSentSwitch).not.toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Allow the user to ask for a read receipt', async () => {
-      await setupCosPreferencesTest();
       const readReceiptSwitch = page.getByRole('switch', {
         name: 'Allow the user to ask for a read receipt',
       });
       await expect.element(readReceiptSwitch).not.toBeChecked();
       await readReceiptSwitch.click();
       await expect.element(readReceiptSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
-  });
 
-  describe('Contact Options interactions', () => {
-    it('should mark as dirty when toggling Enable auto-add contacts', async () => {
-      await setupCosPreferencesTest();
       const autoAddContactsSwitch = page.getByRole('switch', { name: 'Enable auto-add contacts' });
       await expect.element(autoAddContactsSwitch).not.toBeChecked();
       await autoAddContactsSwitch.click();
       await expect.element(autoAddContactsSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Use GAL to auto-fill', async () => {
-      await setupCosPreferencesTest();
       const galAutoFillSwitch = page.getByRole('switch', { name: 'Use GAL to auto-fill' });
       await expect.element(galAutoFillSwitch).not.toBeChecked();
       await galAutoFillSwitch.click();
       await expect.element(galAutoFillSwitch).toBeChecked();
+
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     });
   });
 
   describe('Calendar Options interactions', () => {
-    it('should mark as dirty when changing Time Zone select', async () => {
+    it('should mark as dirty when changing each calendar select', async () => {
       await setupCosPreferencesTest();
+
       await page.getByText('Time Zone').click();
       await page.getByText('GMT +01:00 Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna').click();
       await expect
         .element(page.getByText('GMT +01:00 Amsterdam, Berlin, Bern, Rome, Stockholm, Vienna'))
         .toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when changing Appointment Duration select', async () => {
-      createBrowserSoapAPIInterceptor('FlushCache', {});
-      await setupCosPreferencesTest();
       const apptDurationLabel = page
         .getByText(/Appointment/)
         .filter({ hasText: /Default Duration/ });
@@ -526,124 +474,83 @@ describe('COSPreferences', () => {
       const option90 = page.getByText('90 minutes', { exact: true }).first();
       await option90.click();
       await expect.element(page.getByText('90 minutes', { exact: true })).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when changing Appointment Reminder select', async () => {
-      await setupCosPreferencesTest();
       await page.getByText('Appointment Reminder (minutes before)').click();
       await page.getByText('30').click();
       await expect.element(page.getByText('30')).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when changing Default Calendar View select', async () => {
-      await setupCosPreferencesTest();
       await page.getByText('Default Calendar View').click();
       await page.getByText('Day View').click();
       await expect.element(page.getByText('Day View')).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when changing The Week starts on select', async () => {
-      await setupCosPreferencesTest();
       await page.getByText('The Week starts on').click();
       await page.getByText('Monday').click();
       await expect.element(page.getByText('Monday')).toBeVisible();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    }, 20_000);
 
-    it('should mark as dirty when changing Default appointment visibility select', async () => {
-      await setupCosPreferencesTest();
       await page.getByText('Default appointment visibility').click();
       await page.getByText('Private').click();
       await expect.element(page.getByText('Private')).toBeVisible();
+
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
     }, 20_000);
 
-    it('should mark as dirty when toggling Enable reminders of appointments in the past', async () => {
+    it('should mark as dirty when toggling each calendar switch', async () => {
       await setupCosPreferencesTest();
+
       const pastRemindersSwitch = page.getByRole('switch', {
         name: 'Enable reminders of appointments in the past',
       });
       await expect.element(pastRemindersSwitch).not.toBeChecked();
       await pastRemindersSwitch.click();
       await expect.element(pastRemindersSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Allow sending cancellation mail', async () => {
-      await setupCosPreferencesTest();
       const cancelEmailSwitch = page.getByRole('switch', { name: 'Allow sending cancellation mail' });
       await expect.element(cancelEmailSwitch).not.toBeChecked();
       await cancelEmailSwitch.click();
       await expect.element(cancelEmailSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Automatically add forwarded appointments', async () => {
-      await setupCosPreferencesTest();
       const forwardedApptsSwitch = page.getByRole('switch', {
         name: 'Automatically add forwarded appointments to the calendar',
       });
       await expect.element(forwardedApptsSwitch).not.toBeChecked();
       await forwardedApptsSwitch.click();
       await expect.element(forwardedApptsSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Add invites with PUBLISH method', async () => {
-      await setupCosPreferencesTest();
       const publishInviteSwitch = page.getByRole('switch', { name: 'Add invites with PUBLISH method' });
       await expect.element(publishInviteSwitch).not.toBeChecked();
       await publishInviteSwitch.click();
       await expect.element(publishInviteSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Automatically add appointments when invited', async () => {
-      await setupCosPreferencesTest();
       const autoAddInvitesSwitch = page.getByRole('switch', {
         name: 'Automatically add appointments when the user is invited',
       });
       await expect.element(autoAddInvitesSwitch).not.toBeChecked();
       await autoAddInvitesSwitch.click();
       await expect.element(autoAddInvitesSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Auto-decline if the sender is blacklisted', async () => {
-      await setupCosPreferencesTest();
       const autoDeclineSwitch = page.getByRole('switch', {
         name: 'Auto-decline if the sender is blacklisted',
       });
       await expect.element(autoDeclineSwitch).not.toBeChecked();
       await autoDeclineSwitch.click();
       await expect.element(autoDeclineSwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Notify changes made by delegated accounts', async () => {
-      await setupCosPreferencesTest();
       const delegatedNotifySwitch = page.getByRole('switch', {
         name: 'Notify changes made by delegated accounts',
       });
       await expect.element(delegatedNotifySwitch).not.toBeChecked();
       await delegatedNotifySwitch.click();
       await expect.element(delegatedNotifySwitch).toBeChecked();
-      await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
 
-    it('should mark as dirty when toggling Use iCal delegation model', async () => {
-      await setupCosPreferencesTest();
       const iCalDelegationSwitch = page.getByRole('switch', {
         name: 'Use iCal delegation model for shared calendars',
       });
       await expect.element(iCalDelegationSwitch).not.toBeChecked();
       await iCalDelegationSwitch.click();
       await expect.element(iCalDelegationSwitch).toBeChecked();
+
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
-    });
+    }, 20_000);
   });
 
   describe('Multiple interactions', () => {
@@ -697,28 +604,17 @@ describe('COSPreferences', () => {
   });
 
   describe('Switch round-trip toggles (both directions)', () => {
-    it('should toggle Mail Options switches FALSE→TRUE→FALSE', async () => {
+    it('should toggle mail, forwarding, sending and contact switches FALSE→TRUE→FALSE', async () => {
       await setupCosPreferencesTest();
       const labels = [
         'View mail as HTML (when possible)',
         'Auto-Delete duplicate messages',
         'Enable New Mail Toast Notification',
-      ];
-      for (const label of labels) {
-        const switchElement = page.getByRole('switch', { name: label });
-        await expect.element(switchElement).not.toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).not.toBeChecked();
-      }
-    }, 20_000);
-
-    it('should toggle Forwarding switches FALSE→TRUE→FALSE', async () => {
-      await setupCosPreferencesTest();
-      const labels = [
         'User can specify forwarding address',
         'User can specify mail forwarding filter',
+        'Allow the user to ask for a read receipt',
+        'Enable auto-add contacts',
+        'Use GAL to auto-fill',
       ];
       for (const label of labels) {
         const switchElement = page.getByRole('switch', { name: label });
@@ -728,39 +624,15 @@ describe('COSPreferences', () => {
         await switchElement.click();
         await expect.element(switchElement).not.toBeChecked();
       }
-    });
 
-    it('should toggle Sending Mails switches in both directions', async () => {
-      await setupCosPreferencesTest();
+      // 'Save to sent' starts checked, so it round-trips TRUE→FALSE→TRUE.
       const saveToSentSwitch = page.getByRole('switch', { name: 'Save to sent' });
       await expect.element(saveToSentSwitch).toBeChecked();
       await saveToSentSwitch.click();
       await expect.element(saveToSentSwitch).not.toBeChecked();
       await saveToSentSwitch.click();
       await expect.element(saveToSentSwitch).toBeChecked();
-
-      const readReceiptSwitch = page.getByRole('switch', {
-        name: 'Allow the user to ask for a read receipt',
-      });
-      await expect.element(readReceiptSwitch).not.toBeChecked();
-      await readReceiptSwitch.click();
-      await expect.element(readReceiptSwitch).toBeChecked();
-      await readReceiptSwitch.click();
-      await expect.element(readReceiptSwitch).not.toBeChecked();
-    });
-
-    it('should toggle Contact Options switches FALSE→TRUE→FALSE', async () => {
-      await setupCosPreferencesTest();
-      const labels = ['Enable auto-add contacts', 'Use GAL to auto-fill'];
-      for (const label of labels) {
-        const switchElement = page.getByRole('switch', { name: label });
-        await expect.element(switchElement).not.toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).toBeChecked();
-        await switchElement.click();
-        await expect.element(switchElement).not.toBeChecked();
-      }
-    });
+    }, 20_000);
 
     it('should toggle all Calendar Options switches FALSE→TRUE→FALSE', async () => {
       await setupCosPreferencesTest();

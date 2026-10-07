@@ -4,13 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
+  ComboboxInput,
+  type ComboboxItem,
   Container,
-  DropDownInput,
   ListItems,
-  type ListItemType,
   ListPanelItem,
-  Padding,
-  Row,
 } from '@zextras/ui-components';
 import {
   getRights,
@@ -71,33 +69,12 @@ export const BackupListPanel = () => {
     (item: Record<string, string>) => item?.n === LIST_SERVER,
   );
 
-  const filteredServers = (isError || isLoading)
-    ? []
-    : serverList.filter((item) => item.name?.includes(searchServer));
+  const filteredServers =
+    isError || isLoading ? [] : serverList.filter((item) => item.name?.includes(searchServer));
 
-  const serverNames: Array<ListItemType> = filteredServers.map((serverItem) => ({
+  const serverItems: Array<ComboboxItem> = filteredServers.map((serverItem) => ({
     id: serverItem?.id ?? '',
-    name: serverItem?.name ?? '',
-    isSelected: false,
     label: serverItem?.name ?? '',
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '0.18rem',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          const serverName = serverItem?.name ?? '';
-          setSearchServer(serverName);
-          replaceHistory(`/${serverName}/${CONFIGURATION_BACKUP}`);
-        }}
-      >
-        {serverItem?.name}
-      </Row>
-    ),
   }));
 
   const isShowError = serverList.length > 0 && filteredServers.length === 0;
@@ -151,16 +128,6 @@ export const BackupListPanel = () => {
     setIsServerSpecificsExpanded(!isServerSpecificsExpanded);
   };
 
-  const customIconDetail = {
-    icon: searchServer === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
-    onClick: (): void => {
-      if (searchServer !== '') {
-        setSearchServer('');
-        replaceHistory(`/${SERVER_CONFIG}`);
-      }
-    },
-  };
-
   return (
     <Container
       orientation="column"
@@ -181,7 +148,34 @@ export const BackupListPanel = () => {
           setSelectedOperationItem={handleSelectOperationItem}
         />
       )}
-
+      <div className="box-border w-full max-w-[18.75rem] px-lg pt-lg">
+        <ComboboxInput
+          label={t('label.select_a_server', 'Select a Server')}
+          items={isBackupModuleLicensed ? serverItems : []}
+          value={searchServer}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            setSearchServer(e.target.value);
+          }}
+          onSelect={(item: ComboboxItem): void => {
+            setSearchServer(item.label);
+            replaceHistory(`/${item.label}/${CONFIGURATION_BACKUP}`);
+          }}
+          onClear={(): void => {
+            setSearchServer('');
+            replaceHistory(`/${SERVER_CONFIG}`);
+          }}
+          hasError={isShowError}
+          disabled={!isBackupModuleLicensed}
+          description={
+            isShowError
+              ? t(
+                  'label.not_found_check_the_text_and_try_again',
+                  'Not found - check the text and try again',
+                )
+              : undefined
+          }
+        />
+      </div>
       {hasListServerRights && (
         <Container mainAlignment="flex-start">
           <ListPanelItem
@@ -189,38 +183,6 @@ export const BackupListPanel = () => {
             isListExpanded={isServerSpecificsExpanded}
             setToggleView={toggleServerSpecific}
           />
-          {isServerSpecificsExpanded && (
-            <>
-              <Row mainAlignment="flex-start" width="100%">
-                <DropDownInput
-                  items={isBackupModuleLicensed ? serverNames : []}
-                  maxWidth="18.75rem"
-                  width="16.56rem"
-                  inputLabel={t('label.select_a_server', 'Select a Server')}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                    setSearchServer(e.target.value);
-                  }}
-                  inputValue={searchServer}
-                  isCustomIcon
-                  hasError={isShowError}
-                  inputDisabled={!isBackupModuleLicensed}
-                  customIconDetail={customIconDetail}
-                />
-                {isShowError && (
-                  <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                    <Padding top="large" left="small">
-                      <ds-text as="span" size="extrasmall" weight="regular" color="error">
-                        {t(
-                          'label.not_found_check_the_text_and_try_again',
-                          'Not found - check the text and try again',
-                        )}
-                      </ds-text>
-                    </Padding>
-                  </Container>
-                )}
-              </Row>
-            </>
-          )}
 
           {isServerSpecificsExpanded && (
             <ListItems

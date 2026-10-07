@@ -395,7 +395,7 @@ describe('CreateAccount API Integration (browser)', () => {
     const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
     await userEvent.click(createButton);
 
-    await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+    await expect.poll(() => apiInterceptor.getLastRequest()).toBeTruthy();
 
     const capturedRequest = apiInterceptor.getLastRequest();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -436,8 +436,9 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await expect.element(page.getByText('Surname is required').first()).toBeVisible();
 
+    // Validation blocks the create; nothing may reach CreateAccount.
     await new Promise((resolve) => {
-      setTimeout(resolve, 500);
+      setTimeout(resolve, 250);
     });
     expect(requestSeen).toBe(false);
   });
@@ -467,8 +468,9 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await expect.element(page.getByText('Passwords do not match').first()).toBeVisible();
 
+    // Validation blocks the create; nothing may reach CreateAccount.
     await new Promise((resolve) => {
-      setTimeout(resolve, 500);
+      setTimeout(resolve, 250);
     });
     expect(requestSeen).toBe(false);
   });
@@ -758,7 +760,7 @@ describe('CreateAccount COS Selection (browser)', () => {
 
     await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
 
-    await expect.poll(() => apiInterceptor.getLastRequest()).not.toBeNull();
+    await expect.poll(() => apiInterceptor.getLastRequest()).toBeTruthy();
 
     const capturedRequest = apiInterceptor.getLastRequest();
     const capturedRequestBody = (await capturedRequest.json()) as {

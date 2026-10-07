@@ -149,7 +149,7 @@ function browserProjectConfig() {
       setupFiles: [path.resolve(import.meta.dirname, './vitest-browser-setup.ts')],
       sequence: { groupOrder: 2 },
       fileParallelism: true,
-      maxWorkers: '50%',
+      maxWorkers: 8,
       minWorkers: 1,
       maxConcurrency: 1,
       retry: isCI ? 2 : 0,
@@ -192,7 +192,7 @@ export default defineConfig({
     passWithNoTests: true,
     projects: [jsdomProjectConfig(), browserProjectConfig()],
     coverage: {
-      provider: 'istanbul',
+      provider: 'v8',
       reporter: ['text', 'json', 'html', 'lcov'],
       reportsDirectory: './coverage',
       exclude: [

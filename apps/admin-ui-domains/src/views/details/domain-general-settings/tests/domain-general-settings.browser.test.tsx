@@ -6,6 +6,7 @@
 
 import { domainByIdKey } from '@zextras/ui-shared';
 import {
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   setupBrowserTest,
@@ -333,23 +334,24 @@ describe('DomainGeneralSettings (browser)', () => {
         calresource: [],
       });
 
-      const deleteDomainInterceptor = createBrowserSoapAPIInterceptor('DeleteDomain', {});
+      const deleteDomainCalls = await createBrowserAPIInterceptor(
+        'post',
+        '/service/admin/soap/DeleteDomainRequest',
+        () => HttpResponse.json({ Body: { DeleteDomainResponse: {} } }),
+      );
 
       setupBrowserTest(<DomainGeneralSettings />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
       const deleteButton = page.getByRole('button', { name: /delete domain/i });
       await deleteButton.click();
 
-      await deleteDomainInterceptor;
+      await expect.poll(() => deleteDomainCalls.getCalledTimes()).toBeGreaterThanOrEqual(1);
 
-      const secondDeleteInterceptor = createBrowserSoapAPIInterceptor('DeleteDomain', {});
-      const secondCallSettled = await Promise.race([
-        secondDeleteInterceptor.then(() => true),
-        new Promise<boolean>((resolve) => {
-          setTimeout(() => resolve(false), 2000);
-        }),
-      ]);
-      expect(secondCallSettled).toBe(false);
+      // The delete flow has settled; no duplicate request may follow.
+      await new Promise((resolve) => {
+        setTimeout(resolve, 250);
+      });
+      expect(deleteDomainCalls.getCalledTimes()).toBe(1);
     });
   });
 

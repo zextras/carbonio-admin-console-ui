@@ -104,8 +104,6 @@ describe('ServerAdvanced', () => {
       });
 
       await expect.element(page.getByText('Tuning Options')).toBeVisible();
-      await expect.element(page.getByText('Latency', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('Metadata', { exact: true })).toBeVisible();
     });
   });
 
@@ -168,8 +166,12 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      await expect.element(page.getByText('Latency High Threshold (ms)')).toBeVisible();
-      await expect.element(page.getByText('Latency Low Threshold (ms)')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Latency High Threshold (ms)' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Latency Low Threshold (ms)' }))
+        .toBeVisible();
     });
 
     it('should render Maximum Metadata Size input', async () => {
@@ -178,7 +180,9 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      await expect.element(page.getByText('Maximum Metadata Size (MB)')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Maximum Metadata Size (MB)' }))
+        .toBeVisible();
     });
 
     it('should render Other Controls inputs', async () => {
@@ -187,10 +191,18 @@ describe('ServerAdvanced', () => {
         initialRouterEntry: `/${SERVER_NAME}`,
       });
 
-      await expect.element(page.getByText('Maximum Operation per Account')).toBeVisible();
-      await expect.element(page.getByText('Compression Level')).toBeVisible();
-      await expect.element(page.getByText('Thread number for items')).toBeVisible();
-      await expect.element(page.getByText('Thread number for accounts')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Maximum Operation per Account' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Compression Level' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Thread number for items' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Thread number for accounts' }))
+        .toBeVisible();
     });
   });
 

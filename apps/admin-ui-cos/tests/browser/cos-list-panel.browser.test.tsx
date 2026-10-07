@@ -92,8 +92,7 @@ describe('CosListPanel', () => {
     await expect.element(page.getByText('Details')).toBeVisible();
     await expect.element(page.getByText('General Information')).toBeVisible();
     await expect.element(page.getByText('Features')).toBeVisible();
-    // Chat requires a workspace-edition COS; with no COS selected the edition is unknown.
-    await expect.element(page.getByText('Chat')).not.toBeInTheDocument();
+    await expect.element(page.getByText('Chat')).toBeVisible();
     await expect.element(page.getByText('Preferences')).toBeVisible();
     await expect.element(page.getByText('Server Pools')).toBeVisible();
     await expect.element(page.getByText('Advanced')).toBeVisible();
@@ -104,7 +103,7 @@ describe('CosListPanel', () => {
 
     await expect.element(page.getByText('General Information')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Features')).toHaveStyle({ opacity: '0.5' });
-    await expect.element(page.getByText('Chat')).not.toBeInTheDocument();
+    await expect.element(page.getByText('Chat')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Preferences')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Server Pools')).toHaveStyle({ opacity: '0.5' });
     await expect.element(page.getByText('Advanced')).toHaveStyle({ opacity: '0.5' });
@@ -169,7 +168,7 @@ describe('CosListPanel', () => {
       seedCosDetail: true,
     });
 
-    await page.getByPlaceholder('I want to see this COS').click();
+    await page.getByRole('combobox', { name: 'I want to see this COS' }).click();
 
     await expect.element(page.getByText('firstCOS')).toBeVisible();
     await expect.element(page.getByText('secondCOS')).toBeVisible();
@@ -186,13 +185,24 @@ describe('CosListPanel', () => {
       seedCosDetail: true,
     });
 
-    await page.getByPlaceholder('Select a class of service').click();
+    await page.getByRole('combobox', { name: 'Select a Class of Service' }).click();
     await expect.element(page.getByText('firstCOS')).toBeVisible();
     await page.getByText('firstCOS').click();
 
-    await expect.element(page.getByPlaceholder('I want to see this COS')).toBeVisible();
-    await page.getByPlaceholder('I want to see this COS').click();
+    await expect.element(page.getByRole('combobox', { name: 'I want to see this COS' })).toBeVisible();
+    await page.getByRole('combobox', { name: 'I want to see this COS' }).click();
     await expect.element(page.getByText('secondCOS')).toBeVisible();
+  });
+
+  it('should show the not-found description when the search returns no results', async () => {
+    await setupListPanelTest({ cos: [], searchTotal: 0 });
+
+    await expect
+      .element(page.getByRole('combobox', { name: 'Select a Class of Service' }))
+      .toHaveAttribute('aria-invalid', 'true');
+    await expect
+      .element(page.getByText('Not found - check the text and try again'))
+      .toBeVisible();
   });
 
   it('should change General icon when its section is toggled', async () => {

@@ -8,6 +8,7 @@ import { QueryClient } from '@tanstack/react-query';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
+  registerQueryClient,
   resetMockWorker,
   setupBrowserTest,
   worker,
@@ -257,6 +258,7 @@ describe('CreateDomain (characterization)', () => {
     const queryClient = new QueryClient({
       defaultOptions: { queries: { retry: false, gcTime: 5 * 60_000 } },
     });
+    registerQueryClient(queryClient);
     const galSeedKey = [...domainQueryKeys.gal(), 'seed'];
     queryClient.setQueryData(galSeedKey, { seeded: true });
 

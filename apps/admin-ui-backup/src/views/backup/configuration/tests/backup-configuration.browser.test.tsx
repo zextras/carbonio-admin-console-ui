@@ -702,7 +702,9 @@ describe('BackupConfiguration', () => {
         .element(page.getByText('Backup is enabled at startup'))
         .toBeVisible();
 
-      const input = page.getByRole('textbox', { name: 'Local Volume (reload if you changed this value)' });
+      const input = page.getByRole('textbox', {
+        name: 'Local Volume (reload if you changed this value)',
+      });
       await userEvent.fill(input, '/new/backup/path');
 
       await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();

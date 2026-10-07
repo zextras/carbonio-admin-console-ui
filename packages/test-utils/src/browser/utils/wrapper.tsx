@@ -14,9 +14,16 @@ import React, { useMemo } from 'react';
 import { I18nextProvider } from 'react-i18next';
 import { createMemoryRouter, RouterProvider, useLocation, useNavigate } from 'react-router';
 
+let cachedAppI18n: i18n | undefined;
+
 const getAppI18n = (): i18n => {
-  const newI18n = i18next.createInstance();
-  newI18n.init({
+  // One instance per browser test file: mounting is frequent and i18next init
+  // is identical every time, so reusing it keeps per-mount cost low.
+  if (cachedAppI18n) {
+    return cachedAppI18n;
+  }
+  cachedAppI18n = i18next.createInstance();
+  cachedAppI18n.init({
     lng: 'en',
     fallbackLng: 'en',
     debug: false,
@@ -25,7 +32,7 @@ const getAppI18n = (): i18n => {
     },
     resources: { en: { translation: {} } },
   });
-  return newI18n;
+  return cachedAppI18n;
 };
 
 export type WrapperProps = {
@@ -35,8 +42,10 @@ export type WrapperProps = {
   withDomainIdRoute?: boolean;
 };
 
+import { registerQueryClient } from './query-client-registry';
+
 export const getQueryClient = (): QueryClient => {
-  return new QueryClient({
+  const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
         retry: false,
@@ -48,6 +57,8 @@ export const getQueryClient = (): QueryClient => {
       },
     },
   });
+  registerQueryClient(queryClient);
+  return queryClient;
 };
 
 export const I18NextTestProvider = ({

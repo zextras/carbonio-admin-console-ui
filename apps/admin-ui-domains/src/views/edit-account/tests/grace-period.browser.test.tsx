@@ -150,7 +150,10 @@ describe('GracePeriodDatePicker interactions (browser)', () => {
       await page.getByRole('button', { name: 'Go to the Next Month' }).click();
     }
     await expect.element(nextMonthGrid).toBeVisible();
-    await page.getByRole('gridcell').filter({ hasText: String(pickDay) }).click();
+    await nextMonthGrid
+      .getByRole('gridcell')
+      .filter({ hasText: new RegExp(`^${pickDay}$`) })
+      .click();
 
     await expect.element(page.getByText(/^probe-grace:\d{14}Z$/)).toBeVisible();
     await expect.element(input).toHaveValue(format(expectedDate, 'dd/MM/yyyy'));
@@ -187,7 +190,11 @@ describe('GracePeriodDatePicker interactions (browser)', () => {
       .element(page.getByRole('grid', { name: format(target, 'LLLL yyyy') }))
       .toBeVisible();
 
-    await page.getByRole('gridcell').filter({ hasText: '15' }).click();
+    await page
+      .getByRole('grid', { name: format(target, 'LLLL yyyy') })
+      .getByRole('gridcell')
+      .filter({ hasText: /^15$/ })
+      .click();
 
     await expect.element(page.getByText('probe-grace:', { exact: true })).toBeVisible();
     const fallbackMonth = new Date();

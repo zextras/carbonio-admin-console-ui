@@ -231,6 +231,7 @@ describe('EditAccount (browser)', () => {
 
     const displayNameInput = page.getByRole('textbox', { name: 'Display Name' });
     await expect.element(displayNameInput).toBeVisible();
+    await expect.element(displayNameInput).toHaveValue('Test User');
     await userEvent.clear(displayNameInput);
     await userEvent.type(displayNameInput, 'Updated Name');
     await expect.element(displayNameInput).toHaveValue('Updated Name');

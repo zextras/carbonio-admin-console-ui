@@ -9,11 +9,10 @@ import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
   grantUserConfigRights,
-  resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
-import { afterEach, beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { backupQueryKeys } from '../../services/backup-query-keys';
@@ -49,8 +48,16 @@ function mockDumpGlobalConfigWithData() {
 }
 
 function mockDumpGlobalConfigEmpty() {
+  // A well-formed response with an empty config: the query resolves instantly
+  // instead of throwing on missing content, which would retry for ~7s.
   return createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
-    HttpResponse.json({ Body: {} }),
+    HttpResponse.json({
+      Body: {
+        response: {
+          content: JSON.stringify({ ok: true, response: {} }),
+        },
+      },
+    }),
   );
 }
 
@@ -84,13 +91,8 @@ describe('AppView', () => {
     queryClient.removeQueries({ queryKey: backupQueryKeys.all });
   });
 
-  afterEach(() => {
-    resetMockWorker();
-    queryClient.removeQueries({ queryKey: backupQueryKeys.all });
-  });
-
   describe('Layout', () => {
-    it('should render the Global Server Settings section', async () => {
+    it('should render the Global Server Settings, Server Config and Advanced options', async () => {
       createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
       mockDumpGlobalConfigEmpty();
 
@@ -100,17 +102,6 @@ describe('AppView', () => {
       });
 
       await expect.element(page.getByText('Global Server Settings')).toBeVisible();
-    });
-
-    it('should render Server Config and Advanced options', async () => {
-      createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
-      mockDumpGlobalConfigEmpty();
-
-      await setupBrowserTest(<AppView />, {
-        queryClient,
-        initialRouterEntry: '/servers_list',
-      });
-
       await expect.element(page.getByText('Server Config')).toBeVisible();
       await expect.element(page.getByText('Advanced', { exact: true })).toBeVisible();
     });
@@ -153,7 +144,7 @@ describe('AppView', () => {
   });
 
   describe('Server rights', () => {
-    it('should show Servers List option when user has list server rights', async () => {
+    it('should show Servers List and Server Specifics when user has list server rights', async () => {
       createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
       mockDumpGlobalConfigEmpty();
       grantServerRights(queryClient);
@@ -164,22 +155,10 @@ describe('AppView', () => {
       });
 
       await expect.element(page.getByText('Servers List')).toBeVisible();
-    });
-
-    it('should show Server Specifics section when user has list server rights', async () => {
-      createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
-      mockDumpGlobalConfigEmpty();
-      grantServerRights(queryClient);
-
-      await setupBrowserTest(<AppView />, {
-        queryClient,
-        initialRouterEntry: '/servers_list',
-      });
-
       await expect.element(page.getByText('Server Specifics')).toBeVisible();
     });
 
-    it('should not show Servers List option when user lacks server rights', async () => {
+    it('should hide Servers List and Server Specifics when user lacks server rights', async () => {
       createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
       mockDumpGlobalConfigEmpty();
 
@@ -189,17 +168,6 @@ describe('AppView', () => {
       });
 
       expect(page.getByText('Servers List').elements()).toHaveLength(0);
-    });
-
-    it('should not show Server Specifics section when user lacks server rights', async () => {
-      createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
-      mockDumpGlobalConfigEmpty();
-
-      await setupBrowserTest(<AppView />, {
-        queryClient,
-        initialRouterEntry: '/servers_list',
-      });
-
       expect(page.getByText('Server Specifics').elements()).toHaveLength(0);
     });
   });
@@ -228,7 +196,7 @@ describe('AppView', () => {
   });
 
   describe('Collapsible sections', () => {
-    it('should hide Global Server Settings options when section is collapsed', async () => {
+    it('should hide Global Server Settings options when collapsed and show them again when expanded', async () => {
       createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
       mockDumpGlobalConfigEmpty();
 
@@ -238,20 +206,6 @@ describe('AppView', () => {
       });
 
       await expect.element(page.getByText('Server Config')).toBeVisible();
-
-      await page.getByText('Global Server Settings').click();
-
-      expect(page.getByText('Server Config').elements()).toHaveLength(0);
-    });
-
-    it('should show Global Server Settings options when section is expanded again', async () => {
-      createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
-      mockDumpGlobalConfigEmpty();
-
-      await setupBrowserTest(<AppView />, {
-        queryClient,
-        initialRouterEntry: '/servers_list',
-      });
 
       await page.getByText('Global Server Settings').click();
       expect(page.getByText('Server Config').elements()).toHaveLength(0);

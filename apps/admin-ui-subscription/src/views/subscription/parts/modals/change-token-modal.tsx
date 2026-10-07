@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Input } from '@zextras/ui-components';
+import { Button, PlainInput } from '@zextras/ui-components';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
 
+import { handleTrimmedPaste } from '../../trim-paste';
 import styles from './change-token-modal.module.css';
 
 type ChangeTokenModalProps = {
@@ -58,6 +59,13 @@ export const ChangeTokenModal = ({ onClose, onConfirm }: ChangeTokenModalProps) 
     onConfirm(token.trim());
   }
 
+  function handleTokenChange(value: string): void {
+    setToken(value);
+    if (validationError !== null) {
+      setValidationError(null);
+    }
+  }
+
   return (
     <div popover="manual" ref={popoverRef} className={styles.popover}>
       <div className={styles.header}>
@@ -83,18 +91,15 @@ export const ChangeTokenModal = ({ onClose, onConfirm }: ChangeTokenModalProps) 
         </ds-text>
       </div>
       <div className={styles.inputWrapper}>
-        <Input
+        <PlainInput
           label={t('core.subscription.token', 'Token')}
-          trimOnPaste
-          backgroundColor="gray5"
           hasError={validationError !== null}
+          description={validationError}
           value={token}
-          onChange={(event: ChangeEvent<HTMLInputElement>): void => {
-            setToken(event.target.value);
-            if (validationError !== null) {
-              setValidationError(null);
-            }
-          }}
+          onChange={(event: ChangeEvent<HTMLInputElement>): void => handleTokenChange(event.target.value)}
+          onPaste={(event: React.ClipboardEvent<HTMLInputElement>): void =>
+            handleTrimmedPaste(event, handleTokenChange)
+          }
           onBlur={(): void => {
             if (token.length > 0) {
               validate(token);
@@ -106,11 +111,6 @@ export const ChangeTokenModal = ({ onClose, onConfirm }: ChangeTokenModalProps) 
             }
           }}
         />
-        {validationError !== null && (
-          <ds-text as="span" color="error" size="small" className={styles.errorMessage}>
-            {validationError}
-          </ds-text>
-        )}
       </div>
       <ds-divider className={styles.divider} />
       <div className={styles.actions}>

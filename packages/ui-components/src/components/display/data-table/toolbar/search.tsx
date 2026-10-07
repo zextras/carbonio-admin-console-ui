@@ -44,11 +44,11 @@ export const DataTableSearch = ({
   const [sync, setSync] = useState({ prop: value, emitted: value });
 
   if (value !== sync.prop) {
-    if (value !== sync.emitted) {
+    if (value === sync.emitted) {
+      setSync({ ...sync, prop: value });
+    } else {
       setSync({ prop: value, emitted: value });
       setLocalValue(value);
-    } else {
-      setSync({ ...sync, prop: value });
     }
   }
 
@@ -63,7 +63,6 @@ export const DataTableSearch = ({
         className={styles.searchInput}
         value={localValue}
         placeholder={resolvedPlaceholder}
-        aria-label={resolvedLabel}
         onChange={(event) => {
           const next = event.target.value;
           setLocalValue(next);

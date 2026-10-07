@@ -4,11 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import '../../web-components/ds-divider';
-
 import React, { useMemo } from 'react';
 
-import { getPaddingVar, resolveThemeColor } from '../../theme/theme-utils';
+import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import styles from './labeled-value.module.css';
 
@@ -27,7 +25,7 @@ export const LabeledValue = ({
   value,
   CustomIcon,
 }: LabeledValueProps) => {
-  const computedTextColor = {
+  const valueStyle = {
     '--text-color': resolveThemeColor(textColor, 'regular'),
   } as React.CSSProperties;
 
@@ -37,25 +35,19 @@ export const LabeledValue = ({
     } as React.CSSProperties;
   }, [backgroundColor]);
 
-  const innerStyle = {
-    ...computedTextColor,
-    padding: getPaddingVar({ vertical: label ? '0.0625rem' : '0.625rem' }),
-  } as React.CSSProperties;
-
   return (
     <div className={styles.outerWrapper}>
+      {label && <span className={styles.label}>{label}</span>}
       <div className={styles.fieldWrapper} style={wrapperStyle}>
-        <div className={styles.relativeContainer} style={innerStyle}>
-          <span className={styles.value}>{value}</span>
-          {label && <span className={styles.label}>{label}</span>}
-        </div>
+        <span className={styles.value} style={valueStyle}>
+          {value}
+        </span>
         {CustomIcon && (
           <span className={styles.iconWrapper}>
             <CustomIcon />
           </span>
         )}
       </div>
-      <ds-divider color={'gray3'}></ds-divider>
     </div>
   );
 };

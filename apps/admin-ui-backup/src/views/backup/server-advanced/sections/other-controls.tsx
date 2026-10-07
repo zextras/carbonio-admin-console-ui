@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow } from '@zextras/ui-components';
+import { Container, ListRow, PlainInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,29 +19,28 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
 
   return (
     <>
-      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'extralarge' }} height="fit">
-        <ds-text as="h3" size="medium" weight="bold">
-          {t('backup.other_controls', 'Other Controls')}
-        </ds-text>
-      </Container>
       <ListRow>
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-start"
           orientation="horizontal"
           padding={{ top: 'large', right: 'large' }}
-          width="500%"
+          width="50%"
         >
           <form.Field name="backupMaxOperationPerAccount">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!allowSetBackup}
-              />
+              <div className="w-full">
+                <PlainInput
+                  required
+                  label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
+                  autoComplete="off"
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={!allowSetBackup}
+                />
+              </div>
             )}
           </form.Field>
         </Container>
@@ -50,18 +49,22 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
           crossAlignment="flex-start"
           orientation="horizontal"
           padding={{ top: 'large', right: 'large' }}
-          width="500%"
+          width="50%"
         >
           <form.Field name="backupCompressionLevel">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.compression_level', 'Compression Level')}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!allowSetBackup}
-              />
+              <div className="w-full">
+                <PlainInput
+                  required
+                  label={t('backup.compression_level', 'Compression Level')}
+                  autoComplete="off"
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={!allowSetBackup}
+                />
+              </div>
             )}
           </form.Field>
         </Container>
@@ -72,18 +75,22 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
           crossAlignment="flex-start"
           orientation="horizontal"
           padding={{ top: 'large', right: 'large' }}
-          width="500%"
+          width="50%"
         >
           <form.Field name="backupNumberThreadsForItems">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.thread_number_for_items', 'Thread number for items')}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!allowSetBackup}
-              />
+              <div className="w-full">
+                <PlainInput
+                  required
+                  label={t('backup.thread_number_for_items', 'Thread number for items')}
+                  autoComplete="off"
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={!allowSetBackup}
+                />
+              </div>
             )}
           </form.Field>
         </Container>
@@ -92,18 +99,22 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
           crossAlignment="flex-start"
           orientation="horizontal"
           padding={{ top: 'large', right: 'large' }}
-          width="500%"
+          width="50%"
         >
           <form.Field name="backupNumberThreadsForAccounts">
             {(field) => (
-              <Input
-                isRequired
-                label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
-                backgroundColor="gray5"
-                value={field.state.value}
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                disabled={!allowSetBackup}
-              />
+              <div className="w-full">
+                <PlainInput
+                  required
+                  label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
+                  autoComplete="off"
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  disabled={!allowSetBackup}
+                />
+              </div>
             )}
           </form.Field>
         </Container>

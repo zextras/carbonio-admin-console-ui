@@ -115,6 +115,13 @@ describe('DomainVirtualHosts (browser)', () => {
       domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: domainAttributes }],
     });
     createBrowserSoapAPIInterceptor('FlushCache', {});
+    const savedAttributes = [
+      ...domainAttributes,
+      { n: 'zimbraVirtualHostname', _content: 'virtual3.test-domain.com' },
+    ];
+    createBrowserSoapAPIInterceptor('GetDomain', {
+      domain: [{ name: DOMAIN_NAME, id: DOMAIN_ID, a: savedAttributes }],
+    });
 
     await setupBrowserTest(<DomainVirtualHosts />, {
       queryClient,
@@ -132,6 +139,10 @@ describe('DomainVirtualHosts (browser)', () => {
     };
     const hosts = requestParams.a?.filter((attr) => attr.n === 'zimbraVirtualHostname') ?? [];
     expect(hosts.map((attr) => attr._content)).toContain('virtual3.test-domain.com');
+    await expect
+      .element(page.getByText('The change has been saved successfully'))
+      .toBeVisible();
+    await expect.element(page.getByRole('button', { name: /save/i })).not.toBeInTheDocument();
   });
 
   it('should hide Save and Cancel after a successful save', async () => {
@@ -279,7 +290,7 @@ describe('DomainVirtualHosts (browser)', () => {
 
       await expect.element(page.getByText('Delete Certificates?')).toBeVisible();
       await expect
-        .element(page.getByText('You are deleting All Certificates.'))
+        .element(page.getByText('You are deleting All Certificates. Are you sure you want to delete it?'))
         .toBeVisible();
       await expect.element(page.getByRole('button', { name: 'NO' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: 'DELETE' })).toBeVisible();

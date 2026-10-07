@@ -76,7 +76,7 @@ export const DataTableDecoratedCell = ({
 
   return (
     <span className={styles.editableCell}>
-      {valueNode}
+      <span>{valueNode}</span>
       {editable && (
         <DataTableEditTrigger
           ariaLabel={t('data_table.edit', 'Edit {{column}} for {{row}}', {

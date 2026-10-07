@@ -8,7 +8,8 @@ import '../../../../web-components/ds-icon';
 
 import type { ColumnOrderState, ColumnVisibilityState, RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { type Ref, useEffect, useId, useRef, useState } from 'react';
+import { type CSSProperties, type Ref, useEffect, useId, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../data-table.module.css';
@@ -30,6 +31,7 @@ import {
 import type { DataTableState } from '../models/types';
 import { useTableConfig } from '../table-config-context';
 import { type DataTableDensity, useTableUi } from '../table-ui-store';
+import { getCustomizePanelPosition, useAnchoredPanelPosition } from './panel-position';
 
 export type DataTableCustomizeProps = {
   /**
@@ -53,8 +55,9 @@ const CUSTOMIZE_LAYOUT_SLICES = (state: DataTableState) =>
   [state.columnVisibility, state.columnOrder] as const;
 
 type CustomizePanelProps = {
-  ref?: Ref<HTMLDivElement>;
+  ref?: Ref<HTMLDialogElement>;
   id: string;
+  style?: CSSProperties;
   density: DataTableDensity;
   onDensityChange: (density: DataTableDensity) => void;
   columnItems: Array<CustomizeColumnItem>;
@@ -79,6 +82,7 @@ type CustomizePanelProps = {
 const CustomizePanel = ({
   ref,
   id,
+  style,
   density,
   onDensityChange,
   columnItems,
@@ -104,7 +108,14 @@ const CustomizePanel = ({
   const orderedItems = orderCustomizeItems(columnItems, columnOrder);
 
   return (
-    <div id={id} ref={ref} role="dialog" aria-label={dialogLabel} className={styles.customizePanel}>
+    <dialog
+      id={id}
+      ref={ref}
+      open
+      aria-label={dialogLabel}
+      className={styles.customizePanel}
+      style={style}
+    >
       <div className={styles.customizeSectionLabel}>{densityLabel}</div>
       <div className={styles.densityGroup} role="radiogroup" aria-label={densityLabel}>
         <button
@@ -262,7 +273,7 @@ const CustomizePanel = ({
           {resetLabel}
         </button>
       )}
-    </div>
+    </dialog>
   );
 };
 
@@ -295,8 +306,13 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
   const density = useTableUi((s) => s.density);
   const setDensity = useTableUi((s) => s.setDensity);
   const triggerRef = useRef<HTMLButtonElement>(null);
-  const panelRef = useRef<HTMLDivElement>(null);
+  const panelRef = useRef<HTMLDialogElement>(null);
   const panelId = useId();
+  const { position: panelPosition, capturePosition } = useAnchoredPanelPosition(
+    open,
+    triggerRef,
+    getCustomizePanelPosition,
+  );
 
   const primaryColumnId = config?.primaryColumnId;
   const columnItems = buildCustomizeColumnItems(config?.columns ?? [], primaryColumnId);
@@ -350,13 +366,18 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
         aria-haspopup="dialog"
         aria-controls={panelId}
         onClick={() => {
-          setOpenPanel(open ? null : 'customize');
+          if (open) {
+            setOpenPanel(null);
+          } else {
+            capturePosition();
+            setOpenPanel('customize');
+          }
         }}
       >
         <ds-icon icon="Settings" size="small"></ds-icon>
         <span>{labels.customizeLabel}</span>
       </button>
-      {open && (
+      {panelPosition && (
         <table.Subscribe selector={CUSTOMIZE_LAYOUT_SLICES}>
           {([columnVisibility, columnOrder]) => {
             // Internal ids cannot be reordered out of the order slice, so
@@ -367,10 +388,15 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
               columnOrder.includes(SELECT_COLUMN_ID),
               columnOrder.includes(ACTIONS_COLUMN_ID),
             );
-            return (
+            return createPortal(
               <CustomizePanel
                 ref={panelRef}
                 id={panelId}
+                style={{
+                  top: panelPosition.top,
+                  left: panelPosition.left,
+                  maxHeight: panelPosition.maxHeight,
+                }}
                 density={density}
                 onDensityChange={handleDensityChange}
                 columnItems={columnItems}
@@ -401,7 +427,8 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
                 columnsHint={labels.columnsHint}
                 requiredColumnLabel={labels.requiredColumnLabel}
                 resetLabel={labels.resetLabel}
-              />
+              />,
+              document.body,
             );
           }}
         </table.Subscribe>

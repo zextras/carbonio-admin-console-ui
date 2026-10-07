@@ -67,13 +67,10 @@ describe('DataTableConfirmDialog', () => {
       </TableUiProvider>,
     );
     const dialog = screen.getByRole('dialog');
-    fireEvent.click(dialog);
-    fireEvent.pointerDown(dialog);
-    expect(dialogProps.onCancel).not.toHaveBeenCalled();
     fireEvent.click(screen.getByText('Delete 3 items? This cannot be undone.'));
     expect(dialogProps.onCancel).not.toHaveBeenCalled();
-    // The overlay is the dialog's parent element; a press targeting it dismisses.
-    fireEvent.pointerDown(dialog.parentElement as HTMLElement);
+    // Native dialog: a click whose target is the dialog element itself is backdrop.
+    fireEvent.click(dialog);
     expect(dialogProps.onCancel).toHaveBeenCalledTimes(1);
   });
 

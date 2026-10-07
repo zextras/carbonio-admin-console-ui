@@ -9,8 +9,8 @@ import {
   Container,
   DatePicker,
   getFieldErrorProps,
-  Input,
   LabeledValue,
+  PlainInput,
   Switch,
 } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
@@ -51,14 +51,13 @@ export const RestoreSettings = ({ form, legalHoldAccount, account }: RestoreSett
         padding={{ bottom: 'large', top: 'large' }}
         height="auto"
       >
-        <Container crossAlignment="flex-start">
+        <Container crossAlignment="flex-start" mainAlignment="flex-start">
           <form.Field name="legalHoldPrefix">
             {(field) => {
               const error = getFieldErrorProps(field, isSubmitted, t, RESTORE_VALIDATION_MESSAGES);
               return (
-                <Input
+                <PlainInput
                   label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
-                  backgroundColor="gray5"
                   value={field.state.value}
                   hasError={error.hasError}
                   description={error.description}
@@ -71,10 +70,14 @@ export const RestoreSettings = ({ form, legalHoldAccount, account }: RestoreSett
             }}
           </form.Field>
         </Container>
-        <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
+        <Container
+          crossAlignment="flex-start"
+          mainAlignment="flex-start"
+          padding={{ left: 'medium' }}
+        >
           <LabeledValue
             label={t('label.account', 'Account')}
-            backgroundColor="gray5"
+            backgroundColor="gray6"
             value={account}
           />
         </Container>

@@ -60,10 +60,18 @@ describe('BackupAdvanced', () => {
 
       await expect.element(page.getByText(/Latency High Threshold/)).toBeVisible();
       await expect.element(page.getByText(/Latency Low Threshold/)).toBeVisible();
-      await expect.element(page.getByText('Metadata Size')).toBeVisible();
-      await expect.element(page.getByText('Max Operations / Account')).toBeVisible();
-      await expect.element(page.getByText('Threads For Items')).toBeVisible();
-      await expect.element(page.getByText('Threads For Account')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Metadata Size' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Max Operations / Account' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Threads For Items' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Threads For Account' }))
+        .toBeVisible();
     });
 
     it('should render all switch options', async () => {

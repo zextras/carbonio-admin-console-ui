@@ -6,7 +6,7 @@
 import { format } from 'date-fns';
 import React, { useState } from 'react';
 import { describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
 import { DatePicker } from '../DatePicker';
@@ -43,12 +43,41 @@ const ControlledDatePicker = ({
 
 describe('DatePicker', () => {
   describe('Rendering', () => {
-    it('renders the input with the provided label as placeholder', async () => {
+    it('renders a visible label associated with the input', async () => {
       await render(<ControlledDatePicker />);
 
-      const input = page.getByRole('textbox');
-      await expect.element(input).toBeVisible();
-      await expect.element(input).toHaveAttribute('placeholder', 'Pick a date');
+      const input = (await page
+        .getByRole('textbox', { name: 'Pick a date' })
+        .element()) as HTMLInputElement;
+      expect(input.labels?.[0]?.textContent).toBe('Pick a date');
+    });
+
+    it('aligns the field to the left of a wide container and keeps the requested width', async () => {
+      await render(
+        <DatePicker label="Pick a date" selected={null} onChange={() => {}} width="21.625rem" />,
+      );
+
+      const input = (await page
+        .getByRole('textbox', { name: 'Pick a date' })
+        .element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const fieldWrapper = (box.parentElement as HTMLElement).parentElement as HTMLElement;
+      const datePickerRoot = fieldWrapper.parentElement as HTMLElement;
+      const boxRect = box.getBoundingClientRect();
+      const fieldRect = fieldWrapper.getBoundingClientRect();
+      const rootRect = datePickerRoot.getBoundingClientRect();
+
+      expect(rootRect.width).toBeGreaterThan(21.625 * 16 + 16);
+      expect(boxRect.left).toBeCloseTo(fieldRect.left, 0);
+      expect(fieldRect.left).toBeCloseTo(rootRect.left, 0);
+      expect(boxRect.width).toBeCloseTo(21.625 * 16, 0);
+    });
+
+    it('renders the input as a read-only display of the date', async () => {
+      await render(<ControlledDatePicker />);
+
+      const input = (await page.getByRole('textbox', { name: 'Pick a date' }).element()) as HTMLInputElement;
+      expect(input.hasAttribute('readonly')).toBe(true);
     });
 
     it('renders the selected date formatted in the input', async () => {
@@ -211,6 +240,95 @@ describe('DatePicker', () => {
 
       const selects = page.getByRole('combobox');
       await expect.element(selects.first()).toBeVisible();
+    });
+  });
+
+  describe('Accessibility wiring', () => {
+    it('links the description via aria-describedby', async () => {
+      await render(
+        <DatePicker
+          label="Pick a date"
+          selected={null}
+          onChange={() => {}}
+          description="Pick the expiration date"
+        />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Pick a date' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      expect(describedBy).toBeTruthy();
+      expect(document.getElementById(describedBy as string)?.textContent).toBe(
+        'Pick the expiration date',
+      );
+    });
+
+    it('marks the field invalid and styles the box with hasError', async () => {
+      await render(<DatePicker label="Pick a date" selected={null} onChange={() => {}} hasError />);
+
+      const input = await page.getByRole('textbox', { name: 'Pick a date' }).element();
+      expect(input.getAttribute('aria-invalid')).toBe('true');
+      const box = input.parentElement as HTMLElement;
+      expect(box.getAttribute('data-error')).toBe('true');
+    });
+
+    it('wires the calendar button to the popover with aria-expanded and aria-controls', async () => {
+      await render(<ControlledDatePicker />);
+
+      const calendarButton = page.getByRole('button', { name: 'Calendar' });
+      await expect.element(calendarButton).toHaveAttribute('aria-haspopup', 'dialog');
+      await expect.element(calendarButton).toHaveAttribute('aria-expanded', 'false');
+
+      await calendarButton.click();
+
+      await expect.element(calendarButton).toHaveAttribute('aria-expanded', 'true');
+      const controls = (await calendarButton.element()).getAttribute('aria-controls');
+      expect(controls).toBeTruthy();
+      expect(document.getElementById(controls as string)).not.toBeNull();
+    });
+
+    it('mirrors the expanded state on the input', async () => {
+      await render(<ControlledDatePicker />);
+
+      const input = page.getByRole('textbox', { name: 'Pick a date' });
+      await expect.element(input).toHaveAttribute('aria-haspopup', 'dialog');
+      await expect.element(input).toHaveAttribute('aria-expanded', 'false');
+
+      await page.getByRole('button', { name: 'Calendar' }).click();
+
+      await expect.element(input).toHaveAttribute('aria-expanded', 'true');
+    });
+  });
+
+  describe('Keyboard interaction', () => {
+    it('opens the popover from the input with Enter', async () => {
+      await render(<ControlledDatePicker />);
+
+      const input = page.getByRole('textbox', { name: 'Pick a date' });
+      await input.click();
+      await userEvent.keyboard('[Enter]');
+
+      await expect.element(page.getByRole('grid')).toBeVisible();
+    });
+
+    it('opens the popover from the input with ArrowDown', async () => {
+      await render(<ControlledDatePicker />);
+
+      const input = page.getByRole('textbox', { name: 'Pick a date' });
+      await input.click();
+      await userEvent.keyboard('[ArrowDown]');
+
+      await expect.element(page.getByRole('grid')).toBeVisible();
+    });
+
+    it('closes the popover with Escape while it has focus', async () => {
+      await render(<ControlledDatePicker />);
+
+      await page.getByRole('button', { name: 'Calendar' }).click();
+      await expect.element(page.getByRole('grid')).toBeVisible();
+
+      await userEvent.keyboard('[Escape]');
+
+      await expect.element(page.getByRole('grid')).not.toBeInTheDocument();
     });
   });
 });

@@ -6,12 +6,12 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import {
   Container,
-  CustomTextArea,
-  Input,
   LabeledValue,
   ListRow,
+  PlainInput,
+  PlainSelect,
+  PlainTextarea,
   Row,
-  Select,
   type SelectItem,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
@@ -75,38 +75,40 @@ export const CosInfoFields = ({
         <ListRow>
           <Container padding={{ all: 'small' }}>
             <form.Field name="cn">
-              {(field) => (
-                <Input
-                  isRequired
-                  label={t('label.name', 'Name')}
-                  backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    field.handleChange(e.target.value);
-                  }}
-                  disabled={canDeleteCOS || readonlyCOS}
-                />
-              )}
+              {(field) =>
+                canDeleteCOS || readonlyCOS ? (
+                  <LabeledValue
+                    label={t('label.name', 'Name')}
+                    backgroundColor="gray6"
+                    value={field.state.value ?? ''}
+                  />
+                ) : (
+                  <PlainInput
+                    required
+                    label={t('label.name', 'Name')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                      field.handleChange(e.target.value);
+                    }}
+                  />
+                )
+              }
             </form.Field>
           </Container>
         </ListRow>
         <ListRow>
           <Container padding={{ all: 'small' }}>
-            <Input
+            <LabeledValue
               label={t('label.id_lbl', 'ID')}
               backgroundColor="gray6"
-              value={cosId}
-              disabled
-              onChange={(): void => {}}
+              value={cosId ?? ''}
             />
           </Container>
           <Container padding={{ all: 'small' }}>
-            <Input
+            <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
-              value={cosCreationDate}
               backgroundColor="gray6"
-              disabled
-              onChange={(): void => {}}
+              value={cosCreationDate}
             />
           </Container>
         </ListRow>
@@ -135,11 +137,9 @@ export const CosInfoFields = ({
               <form.Field name="edition">
                 {(field) => {
                   return (
-                    <Select
+                    <PlainSelect
                       items={EDITION_ITEMS}
                       label={t('label.associated_edition', 'Associated edition')}
-                      background="gray5"
-                      showCheckbox={false}
                       selection={
                         EDITION_ITEMS.find((item) => item.value === field.state.value) ??
                         EDITION_ITEMS[0]
@@ -159,9 +159,8 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="description">
               {(field) => (
-                <Input
+                <PlainInput
                   label={t('label.description', 'Description')}
-                  backgroundColor="gray5"
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
@@ -176,10 +175,9 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="zimbraNotes">
               {(field) => (
-                <CustomTextArea
+                <PlainTextarea
                   label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     field.handleChange(e.target.value);
                   }}

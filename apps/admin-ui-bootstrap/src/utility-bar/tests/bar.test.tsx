@@ -42,18 +42,30 @@ vi.mock('@zextras/ui-components', () => ({
 }));
 
 vi.mock('@zextras/ui-shared', () => ({
-	CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE: 'carbonioAdminDocumentationUrl',
 	CARBONIO_CE_ADMIN_DOCUMENTATION_URL: 'https://docs.example.com/ce',
 	logout: vi.fn(),
-	useConfigAttribute: vi.fn(),
 	useIsAdvanced: vi.fn(),
+	useServerVersion: vi.fn(),
 	useUserAccount: vi.fn(),
 	useUtilityBarStore: vi.fn(),
 }));
 
+vi.mock('../use-documentation-base-url', () => ({
+	useDocumentationBaseUrl: vi.fn(),
+}));
+
+vi.mock('../use-documentation-context', () => ({
+	useDocumentationContext: vi.fn(),
+}));
+
 vi.mock('react-i18next', () => ({
 	useTranslation: () => [
-		(key: string, fallback?: string): string => fallback ?? key,
+		(key: string, fallback?: string, options?: Record<string, string>): string => {
+			const text = fallback ?? key;
+			return options
+				? text.replace(/{{(\w+)}}/g, (_match, token: string) => options[token] ?? '')
+				: text;
+		},
 	],
 }));
 
@@ -64,13 +76,15 @@ vi.mock('../utils', () => ({
 
 import {
 	logout,
-	useConfigAttribute,
 	useIsAdvanced,
+	useServerVersion,
 	useUserAccount,
 	useUtilityBarStore,
 } from '@zextras/ui-shared';
 
 import { ShellUtilityBar } from '../bar';
+import { useDocumentationBaseUrl } from '../use-documentation-base-url';
+import { useDocumentationContext } from '../use-documentation-context';
 import { openLink, useUtilityViews } from '../utils';
 
 describe('ShellUtilityBar', () => {
@@ -79,7 +93,13 @@ describe('ShellUtilityBar', () => {
 		vi.mocked(useUtilityViews).mockReturnValue([]);
 		vi.mocked(useUserAccount).mockReturnValue({ name: 'Test User' } as never);
 		vi.mocked(useIsAdvanced).mockReturnValue(false);
-		vi.mocked(useConfigAttribute).mockReturnValue({ data: undefined } as never);
+		vi.mocked(useDocumentationBaseUrl).mockReturnValue('https://docs.example.com/landing');
+		vi.mocked(useServerVersion).mockReturnValue({ serverVersion: '', isLoading: false });
+		vi.mocked(useDocumentationContext).mockReturnValue({
+			module: 'admin',
+			moduleLabelKey: 'label.admin',
+			moduleLabelFallback: 'Admin',
+		});
 		vi.mocked(useUtilityBarStore).mockReturnValue({
 			mode: 'closed',
 			current: undefined,
@@ -110,20 +130,59 @@ describe('ShellUtilityBar', () => {
 		expect(screen.getByRole('button', { name: 'Account menu' })).toBeTruthy();
 	});
 
-	it('renders help and logout dropdown items', () => {
+	it('renders the standalone help button and the logout dropdown item', () => {
 		render(<ShellUtilityBar />);
 		expect(
-			screen.getByRole('button', { name: 'Help & Documentation' }),
+			screen.getByRole('button', { name: 'Documentation: Admin' }),
 		).toBeTruthy();
 		expect(screen.getByRole('button', { name: 'Logout' })).toBeTruthy();
 	});
 
-	it('calls openLink with the help URL when Help & Documentation is clicked', () => {
+	it('labels the help button with the current module (e.g. Domains)', () => {
+		vi.mocked(useDocumentationContext).mockReturnValue({
+			module: 'domains',
+			moduleLabelKey: 'label.domains',
+			moduleLabelFallback: 'Domains',
+		});
+		render(<ShellUtilityBar />);
+		expect(
+			screen.getByRole('button', { name: 'Documentation: Domains' }),
+		).toBeTruthy();
+	});
+
+	it('calls openLink with the help URL when the help button is clicked', () => {
 		render(<ShellUtilityBar />);
 		fireEvent.click(
-			screen.getByRole('button', { name: 'Help & Documentation' }),
+			screen.getByRole('button', { name: 'Documentation: Admin' }),
 		);
 		expect(openLink).toHaveBeenCalledWith('https://docs.example.com/ce');
+	});
+
+	it('builds the doc URL from base URL, server version and module/context when advanced', () => {
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+		vi.mocked(useServerVersion).mockReturnValue({ serverVersion: '26.9.0', isLoading: false });
+		vi.mocked(useDocumentationContext).mockReturnValue({
+			module: 'domains',
+			context: 'general',
+			moduleLabelKey: 'label.domains',
+			moduleLabelFallback: 'Domains',
+		});
+		render(<ShellUtilityBar />);
+		fireEvent.click(
+			screen.getByRole('button', { name: 'Documentation: Domains' }),
+		);
+		expect(openLink).toHaveBeenCalledWith(
+			'https://docs.example.com/landing/?v=26.9.0&m=domains&c=general',
+		);
+	});
+
+	it('omits version and context from the built doc URL when unavailable (advanced)', () => {
+		vi.mocked(useIsAdvanced).mockReturnValue(true);
+		render(<ShellUtilityBar />);
+		fireEvent.click(
+			screen.getByRole('button', { name: 'Documentation: Admin' }),
+		);
+		expect(openLink).toHaveBeenCalledWith('https://docs.example.com/landing/?m=admin');
 	});
 
 	it('calls logout when Logout is clicked', () => {

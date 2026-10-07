@@ -8,9 +8,9 @@ import {
 	Banner,
 	BoxLayout,
 	Container,
-	Input,
+	NumberInput,
 	Padding,
-	Select,
+	PlainSelect,
 	SelectItem,
 	SettingLayout,
 	Switch,
@@ -186,23 +186,18 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMessageDeleteTimeLimit">
 								{(field) => (
-									<Select
+									<PlainSelect
 										label={t(
 											'wsc.section.content.select.deletionLimit',
 											'Message deletion time limit',
 										)}
 										items={deleteMessageOptions}
-										showCheckbox={false}
 										selection={
 											deleteMessageOptions.find((item) => item.value === field.state.value) ||
 											deleteMessageOptions[0]
 										}
 										onChange={(value): void => {
-											const newValue =
-												typeof value === 'object' && value !== null && 'value' in value
-													? (value as SelectItem).value
-													: (value as string);
-											field.handleChange(newValue);
+											field.handleChange(value);
 										}}
 										disabled={disableWscSettings}
 									/>
@@ -219,23 +214,18 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMessageEditTimeLimit">
 								{(field) => (
-									<Select
+									<PlainSelect
 										label={t(
 											'wsc.section.content.select.editLimit',
 											'Message editing time limit',
 										)}
 										items={editMessageOptions}
-										showCheckbox={false}
 										selection={
 											editMessageOptions.find((item) => item.value === field.state.value) ||
 											editMessageOptions[0]
 										}
 										onChange={(value): void => {
-											const newValue =
-												typeof value === 'object' && value !== null && 'value' in value
-													? (value as SelectItem).value
-													: (value as string);
-											field.handleChange(newValue);
+											field.handleChange(value);
 										}}
 										disabled={disableWscSettings}
 									/>
@@ -308,21 +298,15 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMaxGroupMembers">
 								{(field) => (
-									<Input
-										type="number"
+									<NumberInput
 										label={t(
 											'wsc.section.content.input.groupMembers',
 											'Maximum number of group members',
 										)}
 										value={field.state.value}
-										onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-											let inputValue = ev.target.value || '0';
-											if (/^\d*$/.test(inputValue)) {
-												inputValue = inputValue.replace(/^0+/, '') || '0';
-												field.handleChange(inputValue);
-											}
+										onChange={(value): void => {
+											field.handleChange(value || '0');
 										}}
-										backgroundColor="gray5"
 										disabled={disableWscSettings}
 									/>
 								)}
@@ -337,21 +321,15 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMaxRoomPictureSize">
 								{(field) => (
-									<Input
-										type="number"
+									<NumberInput
 										label={t(
 											'wsc.section.content.input.groupPicture',
 											'Maximum group picture size in MB',
 										)}
 										value={field.state.value}
-										onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-											let inputValue = ev.target.value || '0';
-											if (/^\d*$/.test(inputValue)) {
-												inputValue = inputValue.replace(/^0+/, '') || '0';
-												field.handleChange(inputValue);
-											}
+										onChange={(value): void => {
+											field.handleChange(value || '0');
 										}}
-										backgroundColor="gray5"
 										disabled={disableWscSettings}
 									/>
 								)}
@@ -484,21 +462,15 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMaxAttachmentSize">
 								{(field) => (
-									<Input
-										type="number"
+									<NumberInput
 										label={t(
 											'wsc.section.content.input.attachmentSize',
 											'Maximum attachment size in MB',
 										)}
 										value={field.state.value}
-										onChange={(ev: React.ChangeEvent<HTMLInputElement>): void => {
-											let inputValue = ev.target.value || '0';
-											if (/^\d*$/.test(inputValue)) {
-												inputValue = inputValue.replace(/^0+/, '') || '0';
-												field.handleChange(inputValue);
-											}
+										onChange={(value): void => {
+											field.handleChange(value || '0');
 										}}
-										backgroundColor="gray5"
 										disabled={disableWscSettings || attachmentUploadEnabled === 'FALSE'}
 									/>
 								)}

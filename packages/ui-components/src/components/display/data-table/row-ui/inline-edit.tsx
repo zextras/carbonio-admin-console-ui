@@ -60,7 +60,7 @@ export const DataTableInlineEdit = ({
         className={styles.inlineEditInput}
         aria-label={columnLabel}
         aria-invalid={error !== null}
-        aria-describedby={error !== null ? errorId : undefined}
+        aria-describedby={error === null ? undefined : errorId}
         value={value}
         onClick={stopEventPropagation}
         onChange={(event) => {

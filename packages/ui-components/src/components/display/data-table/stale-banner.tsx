@@ -37,7 +37,7 @@ export const DataTableStaleBanner = ({
   const { t } = useTranslation();
 
   return (
-    <div role="status" className={styles.staleBanner}>
+    <output className={styles.staleBanner}>
       <span>{message ?? t('data_table.stale_message', 'Data changed on the server.')}</span>
       <button
         type="button"
@@ -59,6 +59,6 @@ export const DataTableStaleBanner = ({
       >
         {dismissLabel ?? t('data_table.stale_dismiss', 'Dismiss')}
       </button>
-    </div>
+    </output>
   );
 };

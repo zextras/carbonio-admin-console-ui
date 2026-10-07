@@ -114,9 +114,9 @@ describe('LegalHoldPanel', () => {
         await expect.element(page.getByText('Show only accounts on Legal Hold')).toBeVisible();
     });
 
-    it('should render the Set legal hold and Restore buttons', async () => {
+    it('should render the Unset legal hold and Restore buttons', async () => {
         await setupBrowserTest(<LegalHoldPanel />);
-        await expect.element(page.getByText('Set legal hold')).toBeVisible();
+        await expect.element(page.getByText('Unset legal hold')).toBeVisible();
         await expect.element(page.getByText('Restore')).toBeVisible();
     });
 
@@ -158,10 +158,10 @@ describe('LegalHoldPanel', () => {
         await expect.element(page.getByText('This list is empty.')).toBeVisible();
     });
 
-    it('should have the Set legal hold button disabled when no account is selected', async () => {
+    it('should have the Unset legal hold button disabled when no account is selected', async () => {
         await setupBrowserTest(<LegalHoldPanel />);
         await expect.element(page.getByText('admin@test.com')).toBeVisible();
-        const button = page.getByRole('button', { name: 'Set legal hold' });
+        const button = page.getByRole('button', { name: 'Unset legal hold' });
         await expect.element(button).toBeDisabled();
     });
 
@@ -208,7 +208,7 @@ describe('LegalHoldPanel', () => {
         await expect.element(setButton).toBeEnabled();
         await setButton.click();
 
-        await expect.element(page.getByRole('button', { name: 'Set legal hold' })).toBeDisabled();
+        await expect.element(page.getByRole('button', { name: 'Unset legal hold' })).toBeDisabled();
     });
 
     it('should open the restore panel from the restore route', async () => {

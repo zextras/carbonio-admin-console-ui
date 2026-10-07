@@ -5,12 +5,14 @@
  */
 
 import {
+  createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
   getAllConfigRightsResponseMock,
   getGetInfoResponseMock,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -126,7 +128,11 @@ describe('MTAInboundFlowSecurity', () => {
   });
 
   it('submits a ModifyConfig request with changed data on save', async () => {
-    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const modifyConfigCalls = await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/ModifyConfigRequest',
+      () => HttpResponse.json({ Body: { ModifyConfigResponse: {} } }),
+    );
 
     await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
@@ -136,7 +142,8 @@ describe('MTAInboundFlowSecurity', () => {
     await expect.element(saveButton).toBeVisible();
     await saveButton.click();
 
-    const request = await modifyConfigInterceptor;
+    await expect.poll(() => modifyConfigCalls.getCalledTimes()).toBeGreaterThanOrEqual(1);
+    const request = await modifyConfigCalls.getLastRequest()?.json();
     const attributes = extractModifyAttributes(request);
 
     expect(attributes.length).toBeGreaterThan(0);
@@ -150,18 +157,17 @@ describe('MTAInboundFlowSecurity', () => {
       ]),
     );
 
-    const secondModifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
-    const secondCallSettled = await Promise.race([
-      secondModifyConfigInterceptor.then(() => true),
-      new Promise<boolean>((resolve) => {
-        setTimeout(() => resolve(false), 2000);
-      }),
-    ]);
-    expect(secondCallSettled).toBe(false);
-  }, 20000);
+    // The save mutation has settled; no duplicate request may follow.
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    expect(modifyConfigCalls.getCalledTimes()).toBe(1);
+  });
 
   it('does not call ModifyConfig when adding commonly blocked extensions until Save', async () => {
-    const modifyConfigInterceptor = createBrowserSoapAPIInterceptor('ModifyConfig', {});
+    const modifyConfigCalls = await createBrowserAPIInterceptor(
+      'post',
+      '/service/admin/soap/ModifyConfigRequest',
+      () => HttpResponse.json({ Body: { ModifyConfigResponse: {} } }),
+    );
 
     await setupBrowserTest(<MTAInboundFlowSecurity />, { grantRights: 'config' });
 
@@ -171,17 +177,14 @@ describe('MTAInboundFlowSecurity', () => {
     await expect.element(page.getByText('zip', { exact: true })).toBeVisible();
     await expect.element(page.getByText('js', { exact: true })).toBeVisible();
 
-    const settledEarly = await Promise.race([
-      modifyConfigInterceptor.then(() => true),
-      new Promise<boolean>((resolve) => {
-        setTimeout(() => resolve(false), 2000);
-      }),
-    ]);
-    expect(settledEarly).toBe(false);
+    // The UI has settled from the click; nothing may hit ModifyConfig before Save.
+    await new Promise((resolve) => setTimeout(resolve, 250));
+    expect(modifyConfigCalls.getCalledTimes()).toBe(0);
 
     await page.getByRole('button', { name: 'Save' }).click();
 
-    const request = await modifyConfigInterceptor;
+    await expect.poll(() => modifyConfigCalls.getCalledTimes()).toBeGreaterThanOrEqual(1);
+    const request = await modifyConfigCalls.getLastRequest()?.json();
     const attributes = extractModifyAttributes(request);
 
     expect(attributes).toEqual(
@@ -192,5 +195,5 @@ describe('MTAInboundFlowSecurity', () => {
         expect.objectContaining({ n: 'zimbraMtaBlockedExtension', _content: 'js' }),
       ]),
     );
-  }, 20_000);
+  });
 });

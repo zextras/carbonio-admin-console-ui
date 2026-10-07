@@ -90,6 +90,7 @@ describe('CosDetailPanel', () => {
     await expect.element(page.getByText('50')).toBeVisible();
     await expect.element(page.getByText('100')).toBeVisible();
 
+    await expect.element(page.getByText('10').nth(1)).toBeVisible();
     const listOfElements = page.getByText('10').elements();
     const dsText =
       listOfElements[1].closest('ds-text') ??
@@ -98,7 +99,7 @@ describe('CosDetailPanel', () => {
     expect(dsText.getAttribute('weight')).toBe('bold');
 
     await page.getByText('15').click();
-    expect(page.getByText('10').elements()).toHaveLength(0);
-    expect(page.getByText('15').elements()).toHaveLength(1);
+    await expect.poll(() => page.getByText('10').elements().length).toBe(0);
+    await expect.poll(() => page.getByText('15').elements().length).toBe(1);
   });
 });

@@ -7,8 +7,8 @@ import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  Input,
   ListRow,
+  PlainInput,
   RouteLeavingGuard,
   Row,
   Select,
@@ -87,8 +87,8 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="latencyHighThreshold">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={`${t(
                             'backup.latency_high_threshold',
                             'Latency High Threshold',
@@ -97,7 +97,7 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -108,8 +108,8 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="latencyLowThreshold">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={`${t(
                             'backup.latency_low_threshold',
                             'Latency Low Threshold',
@@ -118,7 +118,7 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -212,14 +212,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="maxMetadataSize">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={t('backup.metatdata_size', 'Metadata Size')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -230,14 +230,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="maxOperationsPerAccount">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={t('backup.max_operations_account', 'Max Operations / Account')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -268,14 +268,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="threadsForItems">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={t('backup.threads_for_items', 'Threads For Items')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -286,14 +286,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="threadsForAccounts">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={t('backup.threads_for_account', 'Threads For Account')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}

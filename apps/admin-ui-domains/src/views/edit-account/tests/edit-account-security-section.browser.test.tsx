@@ -961,21 +961,21 @@ describe('EditAccountSecuritySection (browser)', () => {
     it('should render grace period expiration date picker when grace period is enabled', async () => {
       setupAdvancedSecurityTest(wrapSecuritySection(enabledOtpOverrides));
 
-      await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeVisible();
+      await expect.element(page.getByRole('textbox', { name: /set grace period expiration date/i })).toBeVisible();
     });
 
     it('should disable the date picker when grace period is disabled', async () => {
       setupAdvancedSecurityTest(wrapSecuritySection(overrides_disabledOtpContext));
 
       await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
+        .element(page.getByRole('textbox', { name: /set grace period expiration date/i }))
         .toBeDisabled();
     });
 
     it('should enable the date picker when all OTP features are enabled', async () => {
       setupAdvancedSecurityTest(wrapSecuritySection(enabledOtpOverrides));
 
-      await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeEnabled();
+      await expect.element(page.getByRole('textbox', { name: /set grace period expiration date/i })).toBeEnabled();
     });
 
     it('should open the calendar popover when the calendar icon is clicked', async () => {

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Select, Switch } from '@zextras/ui-components';
+import { Container, PlainSelect, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { MtaAdvancedFormApi } from '../types';
@@ -84,11 +84,9 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraAmavisLogLevel">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={amavisLogLevelOptions}
-                background="gray5"
                 label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
-                showCheckbox={false}
                 selection={
                   amavisLogLevelOptions.find(
                     (item: Record<string, string>) => item.value === field.state.value,
@@ -106,15 +104,10 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraAmavisSALogLevel">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={amavisSALogLevelOptions}
-                background="gray5"
                 label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
-                showCheckbox={false}
-                selection={amavisSALogLevelOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={amavisSALogLevelOptions.find((item) => item.value === field.state.value) ?? amavisSALogLevelOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -133,18 +126,13 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaSmtpdTlsLoglevel">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={zimbraMtaSmtpdLoglevelOptions}
-                background="gray5"
                 label={t(
                   'mta.smtp_client_logging_of_tls_activity',
                   'SMTP client logging of TLS Activity',
                 )}
-                showCheckbox={false}
-                selection={zimbraMtaSmtpdLoglevelOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={zimbraMtaSmtpdLoglevelOptions.find((item) => item.value === field.state.value) ?? zimbraMtaSmtpdLoglevelOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -155,18 +143,13 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraMtaLmtpTlsLoglevel">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={zimbraMtaLmtpTlsLoglevelOptions}
-                background="gray5"
                 label={t(
                   'mta.lmtp_client_logging_of_tls_activity',
                   'LMTP client logging of TLS activity',
                 )}
-                showCheckbox={false}
-                selection={zimbraMtaLmtpTlsLoglevelOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={zimbraMtaLmtpTlsLoglevelOptions.find((item) => item.value === field.state.value) ?? zimbraMtaLmtpTlsLoglevelOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />

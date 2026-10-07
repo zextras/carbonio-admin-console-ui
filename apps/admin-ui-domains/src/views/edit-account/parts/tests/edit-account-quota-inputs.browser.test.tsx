@@ -325,7 +325,7 @@ describe('QuotaLimitInput', () => {
 
       // Verify tooltip shows inherited value with the calculated value (10)
       await expect.element(page.getByText(/The inherited value was: 10/)).toBeVisible();
-      await expect.element(page.getByText('Click to revert')).toBeVisible();
+      await expect.element(page.getByText('Click to revert.')).toBeVisible();
     });
 
     it('should show tooltip with inherited value (5 GB) from COS when source is account', async () => {

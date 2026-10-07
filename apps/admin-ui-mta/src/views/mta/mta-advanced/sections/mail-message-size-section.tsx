@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Radio, RadioGroup, Row } from '@zextras/ui-components';
+import { Container, PlainInput, Radio, RadioGroup, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { MtaAdvancedFormApi } from '../types';
@@ -67,13 +67,12 @@ export const MailMessageSizeSection = ({
                         Number(sizeField.state.value) <= 0 ||
                         Number.isNaN(Number(sizeField.state.value));
                       return (
-                        <Input
-                          isRequired
+                        <PlainInput
+                          required
                           label={t(
                             'mta.advanced.max_size_for_mail_messages',
                             'Max size for mail messages (MB)',
                           )}
-                          backgroundColor="gray5"
                           value={sizeField.state.value}
                           onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                             const { value } = e.target;

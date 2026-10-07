@@ -161,13 +161,13 @@ describe('DataTableFilters', () => {
     render(<FiltersHarness filters={{ status: ['active'] }} onFiltersChange={onFiltersChange} />);
     fireEvent.click(getTrigger());
     fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
-    expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
-      'false',
+    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
+      false,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
     expect(onFiltersChange).not.toHaveBeenCalled();
-    expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
-      'false',
+    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
+      false,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
     expect(onFiltersChange).toHaveBeenCalledWith({});
@@ -176,20 +176,20 @@ describe('DataTableFilters', () => {
   it('discards the draft on close and re-clones the filters on reopen', () => {
     render(<FiltersHarness filters={{ status: ['active'] }} />);
     fireEvent.click(getTrigger());
-    expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
-      'true',
+    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
+      true,
     );
     // dirty the draft without applying
     fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
-    expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
-      'false',
+    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
+      false,
     );
     fireEvent.click(screen.getByRole('button', { name: 'Close filters' }));
     expect(screen.queryByRole('dialog')).toBeNull();
     // reopening must re-clone from the (unchanged) applied filters, not keep the draft
     fireEvent.click(getTrigger());
-    expect(screen.getByRole('checkbox', { name: 'Active' }).getAttribute('aria-checked')).toBe(
-      'true',
+    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
+      true,
     );
   });
 

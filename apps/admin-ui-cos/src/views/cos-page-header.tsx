@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { buildSectionMenu, getSegmentAfterBase, PageHeader } from '@zextras/ui-components';
+import { useLocalStorage } from '@zextras/ui-shared';
+import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -26,7 +28,12 @@ export const CosPageHeader = () => {
   const cosName = cosDetail?.cos?.[0]?.name;
   const isWorkspaceEdition = useIsWorkspaceEdition(segmentAfterBase);
 
-  const visibleSectionRoutes = getVisibleSectionRoutes(isWorkspaceEdition);
+  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
+    'new_subscription_feature_flag',
+    null,
+  );
+
+  const visibleSectionRoutes = getVisibleSectionRoutes(isWorkspaceEdition, featureFlag ?? false);
   const sectionMenu =
     isCosId && visibleSectionRoutes.length > 1
       ? buildSectionMenu(`${cosAppPath}/${segmentAfterBase}`, visibleSectionRoutes, t)
@@ -38,6 +45,10 @@ export const CosPageHeader = () => {
     isCosId && cosName && segmentAfterBase ? { [segmentAfterBase]: cosName } : undefined;
   const loading = isCosId && !cosName;
   const crumbMenuHeaders = isCosId && cosName ? { [pathname]: cosName } : undefined;
+
+  useEffect(() => {
+    if (featureFlag === null) setFeatureFlag(false);
+  }, [featureFlag, setFeatureFlag]);
 
   return (
     <PageHeader

@@ -21,6 +21,12 @@ function setupTest(
 ) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
+  // WscSettings reads the license; the query retries 3x with backoff when the
+  // catch-all response makes fetchLicenseInfo throw, so pre-seed it instead.
+  queryClient.setQueryData(['subscription', 'license'], {
+    ok: true,
+    response: { type: 'REGULAR' },
+  });
 
   createBrowserSoapAPIInterceptor('SearchDirectory', {
     searchTotal: 1,

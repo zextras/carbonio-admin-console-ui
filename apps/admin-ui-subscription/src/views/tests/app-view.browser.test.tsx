@@ -91,14 +91,18 @@ describe('AppView', () => {
     it('should render ActivateSubscription when license data is null', async () => {
       setupTest(null);
 
-      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('Insert here the activation token'))
+        .toBeVisible();
     });
 
     it('should render ActivateSubscription when license type is None', async () => {
       const noneLicense = { ok: true, response: { type: 'None', features: [] } };
       setupTest(noneLicense as Record<string, unknown>);
 
-      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('Insert here the activation token'))
+        .toBeVisible();
     });
 
     it('should not render legacy Subscription when no license', async () => {
@@ -267,7 +271,9 @@ describe('AppView', () => {
       setupTest(null);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
+      await expect
+        .element(page.getByText('Insert here the activation token'))
+        .toBeVisible();
     });
   });
 });

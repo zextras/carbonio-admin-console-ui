@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, InheritedSelect } from '@zextras/ui-components';
+import { Container, PlainSelect } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,23 +12,15 @@ import {
   ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
   ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
 } from '../../../../../constants';
-import {
-  ConfigItem,
-  MtaServerGeneralFormApi,
-  MtaServerGeneralFormValues,
-} from '../types';
+import { RevertToInheritedIcon } from '../../../../utility/revert-to-inherited-icon';
+import { ConfigItem, MtaServerGeneralFormApi } from '../types';
 
 type LoggingSectionProps = Readonly<{
   form: MtaServerGeneralFormApi;
-  mtaServerSpecificGeneralDetail: MtaServerGeneralFormValues | undefined;
   configInformation: Array<ConfigItem>;
 }>;
 
-export const LoggingSection = ({
-  form,
-  mtaServerSpecificGeneralDetail,
-  configInformation,
-}: LoggingSectionProps) => {
+export const LoggingSection = ({ form, configInformation }: LoggingSectionProps) => {
   const [t] = useTranslation();
 
   const amavisLogLevelOptions = [
@@ -82,45 +74,85 @@ export const LoggingSection = ({
       >
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraAmavisLogLevel">
-            {(field) => (
-              <InheritedSelect
-                label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
-                items={amavisLogLevelOptions}
-                subValue={field.state.value}
-                inheritedValue={
-                  configInformation?.find(
-                    (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL,
-                  )?._content
-                }
-                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisLogLevel}
-                background="gray5"
-                selectName="zimbraAmavisLogLevel"
-                onChange={(v) => field.handleChange(v)}
-                onChangeReset={() => field.handleChange(undefined)}
-              />
-            )}
+            {(field) => {
+              const inheritedValue = configInformation?.find(
+                (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_LOG_LEVEL,
+              )?._content;
+              const isOverridden = field.state.value !== undefined;
+              return (
+                <PlainSelect
+                  label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
+                  items={amavisLogLevelOptions}
+                  selection={
+                    amavisLogLevelOptions.find((item) => item.value === field.state.value) ??
+                    amavisLogLevelOptions.find((item) => item.value === inheritedValue) ??
+                    amavisLogLevelOptions[0]
+                  }
+                  onChange={(value) => field.handleChange(value)}
+                  description={
+                    isOverridden
+                      ? undefined
+                      : t(
+                          'mta.inherited_from_global_configuration',
+                          'Inherited from the global configuration',
+                        )
+                  }
+                  icon={
+                    isOverridden ? (
+                      <RevertToInheritedIcon
+                        label={t(
+                          'mta.click_to_revert',
+                          'Click to revert to the inherited value',
+                        )}
+                        onClick={() => field.handleChange(undefined)}
+                      />
+                    ) : undefined
+                  }
+                />
+              );
+            }}
           </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraAmavisSALogLevel">
-            {(field) => (
-              <InheritedSelect
-                label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
-                items={amavisSALogLevelOptions}
-                subValue={field.state.value}
-                inheritedValue={
-                  configInformation?.find(
-                    (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL,
-                  )?._content
-                }
-                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraAmavisSALogLevel}
-                background="gray5"
-                selectName="zimbraAmavisSALogLevel"
-                onChange={(v) => field.handleChange(v)}
-                onChangeReset={() => field.handleChange(undefined)}
-              />
-            )}
+            {(field) => {
+              const inheritedValue = configInformation?.find(
+                (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_SA_LOG_LEVEL,
+              )?._content;
+              const isOverridden = field.state.value !== undefined;
+              return (
+                <PlainSelect
+                  label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
+                  items={amavisSALogLevelOptions}
+                  selection={
+                    amavisSALogLevelOptions.find((item) => item.value === field.state.value) ??
+                    amavisSALogLevelOptions.find((item) => item.value === inheritedValue) ??
+                    amavisSALogLevelOptions[0]
+                  }
+                  onChange={(value) => field.handleChange(value)}
+                  description={
+                    isOverridden
+                      ? undefined
+                      : t(
+                          'mta.inherited_from_global_configuration',
+                          'Inherited from the global configuration',
+                        )
+                  }
+                  icon={
+                    isOverridden ? (
+                      <RevertToInheritedIcon
+                        label={t(
+                          'mta.click_to_revert',
+                          'Click to revert to the inherited value',
+                        )}
+                        onClick={() => field.handleChange(undefined)}
+                      />
+                    ) : undefined
+                  }
+                />
+              );
+            }}
           </form.Field>
         </Container>
       </Container>
@@ -134,51 +166,95 @@ export const LoggingSection = ({
       >
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaSmtpdTlsLoglevel">
-            {(field) => (
-              <InheritedSelect
-                label={t(
-                  'mta.smtp_client_logging_of_tls_activity',
-                  'SMTP client logging of TLS Activity',
-                )}
-                items={zimbraMtaSmtpdLoglevelOptions}
-                subValue={field.state.value}
-                inheritedValue={
-                  configInformation?.find(
-                    (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
-                  )?._content
-                }
-                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaSmtpdTlsLoglevel}
-                background="gray5"
-                selectName="zimbraMtaSmtpdTlsLoglevel"
-                onChange={(v) => field.handleChange(v)}
-                onChangeReset={() => field.handleChange(undefined)}
-              />
-            )}
+            {(field) => {
+              const inheritedValue = configInformation?.find(
+                (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SMTPD_TLS_LOG_LEVEL,
+              )?._content;
+              const isOverridden = field.state.value !== undefined;
+              return (
+                <PlainSelect
+                  label={t(
+                    'mta.smtp_client_logging_of_tls_activity',
+                    'SMTP client logging of TLS Activity',
+                  )}
+                  items={zimbraMtaSmtpdLoglevelOptions}
+                  selection={
+                    zimbraMtaSmtpdLoglevelOptions.find(
+                      (item) => item.value === field.state.value,
+                    ) ??
+                    zimbraMtaSmtpdLoglevelOptions.find((item) => item.value === inheritedValue) ??
+                    zimbraMtaSmtpdLoglevelOptions[0]
+                  }
+                  onChange={(value) => field.handleChange(value)}
+                  description={
+                    isOverridden
+                      ? undefined
+                      : t(
+                          'mta.inherited_from_global_configuration',
+                          'Inherited from the global configuration',
+                        )
+                  }
+                  icon={
+                    isOverridden ? (
+                      <RevertToInheritedIcon
+                        label={t(
+                          'mta.click_to_revert',
+                          'Click to revert to the inherited value',
+                        )}
+                        onClick={() => field.handleChange(undefined)}
+                      />
+                    ) : undefined
+                  }
+                />
+              );
+            }}
           </form.Field>
         </Container>
 
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraMtaLmtpTlsLoglevel">
-            {(field) => (
-              <InheritedSelect
-                label={t(
-                  'mta.lmtp_client_logging_of_tls_activity',
-                  'LMTP client logging of TLS activity',
-                )}
-                items={zimbraMtaLmtpTlsLoglevelOptions}
-                subValue={field.state.value}
-                inheritedValue={
-                  configInformation?.find(
-                    (item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
-                  )?._content
-                }
-                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaLmtpTlsLoglevel}
-                background="gray5"
-                selectName="zimbraMtaLmtpTlsLoglevel"
-                onChange={(v) => field.handleChange(v)}
-                onChangeReset={() => field.handleChange(undefined)}
-              />
-            )}
+            {(field) => {
+              const inheritedValue = configInformation?.find(
+                (item: Record<string, string>) => item?.n === ZIMBRA_MTA_LMTP_TLS_LOG_LEVEL,
+              )?._content;
+              const isOverridden = field.state.value !== undefined;
+              return (
+                <PlainSelect
+                  label={t(
+                    'mta.lmtp_client_logging_of_tls_activity',
+                    'LMTP client logging of TLS activity',
+                  )}
+                  items={zimbraMtaLmtpTlsLoglevelOptions}
+                  selection={
+                    zimbraMtaLmtpTlsLoglevelOptions.find(
+                      (item) => item.value === field.state.value,
+                    ) ??
+                    zimbraMtaLmtpTlsLoglevelOptions.find((item) => item.value === inheritedValue) ??
+                    zimbraMtaLmtpTlsLoglevelOptions[0]
+                  }
+                  onChange={(value) => field.handleChange(value)}
+                  description={
+                    isOverridden
+                      ? undefined
+                      : t(
+                          'mta.inherited_from_global_configuration',
+                          'Inherited from the global configuration',
+                        )
+                  }
+                  icon={
+                    isOverridden ? (
+                      <RevertToInheritedIcon
+                        label={t(
+                          'mta.click_to_revert',
+                          'Click to revert to the inherited value',
+                        )}
+                        onClick={() => field.handleChange(undefined)}
+                      />
+                    ) : undefined
+                  }
+                />
+              );
+            }}
           </form.Field>
         </Container>
       </Container>
