@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, TextInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { D_PASS } from '../../../../constants';
@@ -48,7 +48,7 @@ export const AntispamSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraSpamSubjectTag">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t(
                   'mta.add_this_prefix_to_spam_mail_subject',
                   'Add this prefix to the Spam mail subject',

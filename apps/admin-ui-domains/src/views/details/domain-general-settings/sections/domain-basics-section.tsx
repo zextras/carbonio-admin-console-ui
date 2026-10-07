@@ -11,7 +11,7 @@ import {
   LabeledValue,
   ListRow,
   NumberInput,
-  PlainInput,
+  TextInput,
   PlainSelect,
   PlainTextarea,
 } from '@zextras/ui-components';
@@ -161,7 +161,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPublicServiceHostname">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('label.public_service_hostname', 'Public Service Host Name')}
                 value={field.state.value ?? ''}
@@ -176,7 +176,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPublicServicePort">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('label.public_service_port', 'Public Service Port')}
                 value={field.state.value ?? ''}
                 autoComplete="off"
@@ -251,7 +251,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="description">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('label.description', 'Description')}
                 value={field.state.value ?? ''}
                 autoComplete="off"

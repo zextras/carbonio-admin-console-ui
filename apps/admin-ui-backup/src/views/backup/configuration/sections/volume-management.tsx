@@ -9,7 +9,7 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
   useSnackbar,
@@ -195,7 +195,7 @@ export const VolumeManagement = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="backupDestPath">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t(
                   'backup.local_volume_reload_if_you_changed_this_value',
@@ -213,7 +213,7 @@ export const VolumeManagement = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="spaceThreshold">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
                 value={field.state.value}
                 autoComplete="off"
@@ -268,7 +268,7 @@ export const VolumeManagement = ({
       )}
       {isShowSetExternalVolume && externalVolume?.value === MOUNTPOINT && (
         <Container>
-          <PlainInput
+          <TextInput
             label={t('label.path', 'Path')}
             value={rootVolumePath || ''}
             autoComplete="off"
@@ -339,7 +339,7 @@ export const VolumeManagement = ({
         <Container>
           <ListRow>
             <Container padding={{ bottom: 'large' }}>
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.local_mountpoint', 'Local Mountpoint')}
                 value={manageExternalVolumeNewLocalMountpoint || ''}

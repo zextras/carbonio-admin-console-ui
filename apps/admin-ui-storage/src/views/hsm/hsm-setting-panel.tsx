@@ -15,7 +15,7 @@ import {
   ListRow,
   ModalOverlay,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
   Switch,
   Table,
@@ -504,7 +504,7 @@ export function HSMsettingPanel() {
         </ListRow>
         <ListRow>
           <Container padding={{ bottom: 'large' }}>
-            <PlainInput
+            <TextInput
               label={`${t('hsm.schedule', 'Schedule')} (${t(
                 'hsm.example_shedule',
                 'E.g. 0 2 * * 3',
@@ -629,7 +629,7 @@ export function HSMsettingPanel() {
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <PlainInput
+            <TextInput
               label={t('hsm.minimum_space_threshold', 'Minimum Space Threshold')}
               value={powerstoreSpaceThreshold}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

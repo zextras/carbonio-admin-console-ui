@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, ListRow, PlainInput, PlainSelect, Row, Switch } from '@zextras/ui-components';
+import { Container, ListRow, TextInput, PlainSelect, Row, Switch } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -78,7 +78,7 @@ export const ForgottenPassword = () => {
               />
             </Container>
             <Container width="40%" padding={{ right: 'small', left: 'small' }}>
-              <PlainInput
+              <TextInput
                 label={t('label.user_recovery_email', 'User Recovery Email')}
                 name="zimbraPrefPasswordRecoveryAddress"
                 autoComplete="off"

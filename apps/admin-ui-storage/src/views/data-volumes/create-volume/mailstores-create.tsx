@@ -11,7 +11,7 @@ import {
   LabeledValue,
   NumberInput,
   Padding,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Radio,
   Row,
@@ -101,7 +101,7 @@ export function MailstoresCreate({
               VOLUME_CREATE_VALIDATION_MESSAGES,
             );
             return (
-              <PlainInput
+              <TextInput
                 name="volumeName"
                 label={t('label.volume_name', 'Volume Name')}
                 value={field.state.value}
@@ -156,7 +156,7 @@ export function MailstoresCreate({
               VOLUME_CREATE_VALIDATION_MESSAGES,
             );
             return (
-              <PlainInput
+              <TextInput
                 name="path"
                 label={t('label.volume_path', 'Volume path')}
                 value={field.state.value}

@@ -8,7 +8,7 @@ import {
   Container,
   InheritedSwitch,
   ListRow,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
 } from '@zextras/ui-components';
@@ -180,7 +180,7 @@ export const FailedLoginPolicy = () => {
         >
           <ListRow>
             <Container crossAlignment="flex-start">
-              <PlainInput
+              <TextInput
                 required
                 label={t(
                   'cos.number_of_consecutive_failed_login_allowed',
@@ -221,7 +221,7 @@ export const FailedLoginPolicy = () => {
         >
           <ListRow>
             <Container width="75%" padding={{ right: 'small' }}>
-              <PlainInput
+              <TextInput
                 required
                 label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
                 name="zimbraPasswordLockoutDuration"
@@ -278,7 +278,7 @@ export const FailedLoginPolicy = () => {
         >
           <ListRow>
             <Container width="75%" padding={{ right: 'small' }}>
-              <PlainInput
+              <TextInput
                 required
                 label={t(
                   'cos.time_window_failed_logins_must_occur_to_lock_account',

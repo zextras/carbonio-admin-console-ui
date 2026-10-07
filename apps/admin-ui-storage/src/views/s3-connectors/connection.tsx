@@ -12,7 +12,7 @@ import {
   getFieldErrorProps,
   Padding,
   PasswordInput,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
   type SelectItem as UISelectItem,
@@ -192,7 +192,7 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <PlainInput
+                <TextInput
                   label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
                   required
                   value={field.state.value}
@@ -217,7 +217,7 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <PlainInput
+                  <TextInput
                     label={t('storages.s3Connectors.bucketName', 'Bucket name')}
                     required
                     value={field.state.value}
@@ -243,7 +243,7 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <PlainInput
+                  <TextInput
                     label={t('storages.s3Connectors.accessKey', 'Access Key ID')}
                     required
                     value={field.state.value}
@@ -307,7 +307,7 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <PlainInput
+                  <TextInput
                     label={t('label.custom_region', 'Custom region')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -331,7 +331,7 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <PlainInput
+                <TextInput
                   label={t('label.endpoint_url_required', 'Endpoint URL')}
                   required={isEndpointUrlRequired}
                   value={field.state.value}
@@ -363,7 +363,7 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <PlainInput
+                <TextInput
                   label={t('label.prefix', 'Prefix')}
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void =>

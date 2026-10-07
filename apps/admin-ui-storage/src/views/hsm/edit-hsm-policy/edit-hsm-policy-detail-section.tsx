@@ -14,7 +14,7 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Table,
 } from '@zextras/ui-components';
@@ -384,7 +384,7 @@ export function EditHsmPolicyDetailSection() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <PlainInput
+          <TextInput
             label={t('hsm.value', 'Value')}
             value={value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

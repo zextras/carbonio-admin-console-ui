@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSwitch, PlainInput, PlainSelect, Row } from '@zextras/ui-components';
+import { InheritedSwitch, TextInput, PlainSelect, Row } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -261,7 +261,7 @@ export const EmailPreferences = () => {
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="48%" mainAlignment="flex-start">
-          <PlainInput
+          <TextInput
             label={t('label.out_of_office_cache_lifetime', 'Out of office cache lifetime')}
             name="zimbraPrefOutOfOfficeCacheDuration"
             type="number"

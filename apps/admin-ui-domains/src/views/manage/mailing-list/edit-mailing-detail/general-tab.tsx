@@ -9,7 +9,7 @@ import {
   Container,
   LabeledValue,
   ListRow,
-  PlainInput,
+  TextInput,
   PlainSelect,
   PlainTextarea,
   Row,
@@ -72,7 +72,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ top: 'small' }}>
           <form.Field name="displayName">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('label.display_name', 'Display Name')}
                 value={field.state.value ?? ''}
@@ -87,7 +87,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ left: 'large', top: 'small' }}>
           <form.Field name="distributionName">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('label.address', 'Address')}
                 value={field.state.value ?? ''}
@@ -226,7 +226,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ bottom: 'medium' }}>
           <form.Field name="description">
             {(field) => (
-              <PlainInput
+              <TextInput
                 value={field.state.value ?? ''}
                 label={t(
                   'label.note_label',

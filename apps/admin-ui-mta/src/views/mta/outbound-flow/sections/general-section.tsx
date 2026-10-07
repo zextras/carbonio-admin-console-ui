@@ -8,7 +8,7 @@ import {
   type ChipItem,
   Container,
   CustomChip,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Switch,
   Tooltip,
@@ -181,7 +181,7 @@ export const GeneralSection = ({
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaSmtpHeloName">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,7 +196,7 @@ export const GeneralSection = ({
         <Container>
           <form.Field name="zimbraMtaMyHostname">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.my_hostname', 'My Hostname')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,7 +220,7 @@ export const GeneralSection = ({
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaFallbackRelayHost">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -235,7 +235,7 @@ export const GeneralSection = ({
         <Container>
           <form.Field name="zimbraMtaRelayHost">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.relay_host', 'Relay Host')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,7 +256,7 @@ export const GeneralSection = ({
       >
         <form.Field name="zimbraMtaMyOrigin">
           {(field) => (
-            <PlainInput
+            <TextInput
               label={t('mta.my_origin', 'My Origin')}
               value={field.state.value || ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

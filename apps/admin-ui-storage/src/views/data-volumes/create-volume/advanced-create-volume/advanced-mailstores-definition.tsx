@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Padding, PlainInput, PlainSelect, Row } from '@zextras/ui-components';
+import { Container, Padding, TextInput, PlainSelect, Row } from '@zextras/ui-components';
 import { type ChangeEvent, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -133,7 +133,7 @@ export function AdvancedMailstoresDefinition({ externalData }: AdvancedMailstore
         </div>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-        <PlainInput
+        <TextInput
           name="volumeName"
           required
           label={t('label.volume_name', 'Volume Name')}

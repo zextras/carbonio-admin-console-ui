@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, ListRow, PlainInput, Switch } from '@zextras/ui-components';
+import { Button, Container, ListRow, TextInput, Switch } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -74,7 +74,7 @@ export const DataRetention = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="retentionPolicySchedule">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.schedule', 'Schedule')}
                 autoComplete="off"
@@ -95,7 +95,7 @@ export const DataRetention = ({
         >
           <form.Field name="keepDeletedItemInBackup">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 autoComplete="off"
                 label={t(
@@ -121,7 +121,7 @@ export const DataRetention = ({
         >
           <form.Field name="keepDeletedAccountsInBackup">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 autoComplete="off"
                 label={t(

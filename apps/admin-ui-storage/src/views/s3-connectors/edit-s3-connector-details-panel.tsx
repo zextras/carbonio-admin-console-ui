@@ -12,7 +12,7 @@ import {
   DefaultTabBarItem,
   getFieldErrorProps,
   Padding,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
   type SelectItem,
@@ -569,7 +569,7 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <PlainInput
+                      <TextInput
                         label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
                         required
                         value={field.state.value}
@@ -593,7 +593,7 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <PlainInput
+                      <TextInput
                         label={t('storages.s3Connectors.bucketName', 'Bucket name')}
                         required
                         value={field.state.value}
@@ -610,7 +610,7 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="accessKey">
                   {(field) => (
-                    <PlainInput
+                    <TextInput
                       label={t('label.access_key', 'Access Key ID')}
                       required
                       value={field.state.value}
@@ -694,7 +694,7 @@ export function EditS3ConnectorDetailPanel({
 
                     return (
                       <Container width="fill" crossAlignment="flex-start">
-                        <PlainInput
+                        <TextInput
                           label={t('label.secret_key', 'Secret Access Key')}
                           required
                           value={field.state.value}
@@ -765,7 +765,7 @@ export function EditS3ConnectorDetailPanel({
                         S3_CONNECTOR_VALIDATION_MESSAGES,
                       );
                       return (
-                        <PlainInput
+                        <TextInput
                           label={t('label.custom_region', 'Custom region')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -790,7 +790,7 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <PlainInput
+                      <TextInput
                         label={t('label.endpoint_url', 'Endpoint URL')}
                         required={isEndpointUrlRequired}
                         value={field.state.value}
@@ -814,7 +814,7 @@ export function EditS3ConnectorDetailPanel({
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <PlainInput
+                <TextInput
                   disabled
                   label={t('label.prefix', 'Prefix')}
                   value={connectorDetail?.prefix ?? ''}

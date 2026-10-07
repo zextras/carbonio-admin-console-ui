@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, TextInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -95,7 +95,7 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenBareNewlineTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
@@ -166,7 +166,7 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenNonSmtpCommandTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
@@ -237,7 +237,7 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenPipeliningTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}

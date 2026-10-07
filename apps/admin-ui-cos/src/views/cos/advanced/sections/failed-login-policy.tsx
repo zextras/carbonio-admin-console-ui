@@ -8,7 +8,7 @@ import {
 	Container,
 	getFieldErrorProps,
 	ListRow,
-	PlainInput,
+	TextInput,
 	PlainSelect,
 	Row,
 	Switch,
@@ -124,7 +124,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								return (
 									<>
 										<Container width="72%" padding={{ right: 'small' }}>
-											<PlainInput
+											<TextInput
 												label={labels.passwordLockout.duration}
 												value={num}
 												name="zimbraPasswordLockoutDuration"
@@ -162,7 +162,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								return (
 									<>
 										<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-											<PlainInput
+											<TextInput
 												label={labels.passwordLockout.failureLifetime}
 												value={num}
 												name="zimbraPasswordLockoutFailureLifetime"

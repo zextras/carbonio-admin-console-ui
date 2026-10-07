@@ -10,7 +10,7 @@ import {
   Container,
   FormPageLayout,
   ListRow,
-  PlainInput,
+  TextInput,
   Row,
   Switch,
   useSnackbar,
@@ -187,7 +187,7 @@ const GlobalDetailPanelContent = ({
               {(field) => {
                 const hasError = field.state.meta.errors.length > 0;
                 return (
-                  <PlainInput
+                  <TextInput
                     required
                     name="carbonioNotificationFrom"
                     label={t('label.notification_sender', 'Notification Sender')}

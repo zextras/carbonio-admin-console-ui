@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PlainInput } from '@zextras/ui-components';
+import { TextInput } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -35,7 +35,7 @@ export const ExternalLdapField = (): ReactElement => {
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-full flex-wrap justify-between">
-          <PlainInput
+          <TextInput
             data-testid="zimbraAuthLdapExternalDn"
             label={t(
               'domain.accounts.editAccount.externalldapReferenceForAuthentication',

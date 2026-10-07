@@ -12,7 +12,7 @@ import {
   ListRow,
   Modal,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
   Tooltip,
   useSnackbar,
@@ -589,7 +589,7 @@ export function ModifyVolumeForm({
               >
                 <form.Field name="name">
                   {(field) => (
-                    <PlainInput
+                    <TextInput
                       label={t('label.volume_name', 'Volume name')}
                       value={field.state.value}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
@@ -607,7 +607,7 @@ export function ModifyVolumeForm({
                 >
                   <form.Field name="rootpath">
                     {(field) => (
-                      <PlainInput
+                      <TextInput
                         label={t('label.path', 'Path')}
                         value={field.state.value}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, PlainInput } from '@zextras/ui-components';
+import { Container, ListRow, TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,7 +39,7 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
         >
           <form.Field name="backupLatencyHighThreshold">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
                 autoComplete="off"
@@ -59,7 +59,7 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
         >
           <form.Field name="backupLatencyLowThreshold">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
                 autoComplete="off"

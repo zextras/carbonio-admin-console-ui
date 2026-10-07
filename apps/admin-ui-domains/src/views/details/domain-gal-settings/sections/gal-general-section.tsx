@@ -14,7 +14,7 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
 } from '@zextras/ui-components';
 import { useState } from 'react';
@@ -109,7 +109,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
               GAL_VALIDATION_MESSAGES,
             );
             return (
-              <PlainInput
+              <TextInput
                 required
                 label={t(
                   'label.limit_search_results_from_address_book_list_to',
@@ -140,7 +140,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
               GAL_VALIDATION_MESSAGES,
             );
             return (
-              <PlainInput
+              <TextInput
                 required
                 label={t('domain.page_size', 'Page Size')}
                 value={field.state.value ?? ''}

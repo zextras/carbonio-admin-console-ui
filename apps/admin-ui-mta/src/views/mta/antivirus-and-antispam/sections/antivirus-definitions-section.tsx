@@ -10,7 +10,7 @@ import {
   HoverableRowFactory,
   Modal,
   Padding,
-  PlainInput,
+  TextInput,
   PlainSelect,
   SelectItem,
   Switch,
@@ -125,7 +125,7 @@ export const AntivirusDefinitionsSection = ({
           height="auto"
         >
           <Container width="60%" padding={{ right: 'medium' }}>
-            <PlainInput
+            <TextInput
               label={t('mta.definition_mirrors', 'Definition Mirrors')}
               value={antiVirusMirrorsAddText}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -164,7 +164,7 @@ export const AntivirusDefinitionsSection = ({
             height="auto"
           >
             <Container width="60%" padding={{ right: 'medium' }}>
-              <PlainInput
+              <TextInput
                 label={t('mta.additional_virus_definition', 'Additional Virus Definition')}
                 value={additionalAntiVirusDefinitionAddText}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -244,7 +244,7 @@ export const AntivirusDefinitionsSection = ({
         height="auto"
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }} width="70%">
-          <PlainInput
+          <TextInput
             label={t('mta.definition_update_frequency', 'Definition Update Frenquency')}
             value={updateFrequncy}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

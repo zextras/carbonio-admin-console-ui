@@ -5,7 +5,7 @@
  */
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { PlainInput } from '@zextras/ui-components';
+import { TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { themeConfigStore } from '../../../types';
@@ -45,7 +45,7 @@ export const ThemeFieldInput = ({
   const isOverridden = isInheritedMode && value !== undefined;
 
   return (
-    <PlainInput
+    <TextInput
       label={label}
       name={name}
       autoComplete="off"

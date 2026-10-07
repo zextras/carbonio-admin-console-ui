@@ -9,7 +9,7 @@ import {
   CustomChip,
   LabeledValue,
   Modal,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
 } from '@zextras/ui-components';
@@ -136,7 +136,7 @@ export const ManageAliases: FC<{
             wrap={'nowrap'}
           >
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="40%">
-              <PlainInput
+              <TextInput
                 label={t('account_details.new_alias_name', 'New Alias Name')}
                 autoComplete="off"
                 value={aliasNameValue}

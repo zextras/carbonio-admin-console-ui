@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainInput, Switch } from '@zextras/ui-components';
+import { Container, TextInput, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { MtaAdvancedFormApi } from '../types';
@@ -41,7 +41,7 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraClamAVMaxThreads">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
                 value={field.state.value}
@@ -57,7 +57,7 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraLmtpNumThreads">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
                 value={field.state.value}
@@ -72,7 +72,7 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraMilterNumThreads">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('mta.milter_threads', 'MILTER threads (value)')}
                 value={field.state.value}
@@ -97,7 +97,7 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start" height="auto">
           <form.Field name="zimbraMilterMaxConnections">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t(
                   'mta.reject_concurrent_milter_connection_above',
@@ -117,7 +117,7 @@ export const TuningSection = ({
       <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
         <form.Field name="zimbraMtaSmtpdSenderLoginMaps">
           {(field) => (
-            <PlainInput
+            <TextInput
               label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
               value={field.state.value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

@@ -7,7 +7,7 @@ import {
   ComboboxInput,
   type ComboboxItem,
   DatePicker,
-  PlainInput,
+  TextInput,
   Switch,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
@@ -85,7 +85,7 @@ export const RestoreDeleteAccountConfigSection = () => {
         </ds-text>
 
         <div className="flex w-full flex-wrap items-center gap-sm">
-          <PlainInput
+          <TextInput
             label={t('label.email_address', 'Email address')}
             value={restoreAccountDetail?.copyAccount ?? ''}
             autoComplete="off"
@@ -177,7 +177,7 @@ export const RestoreDeleteAccountConfigSection = () => {
           iconColor="primary"
         />
 
-        <PlainInput
+        <TextInput
           label={t('label.who_needs_receive_this_email', 'Who needs to receive this email?')}
           value={restoreAccountDetail?.notificationReceiver ?? ''}
           disabled={!restoreAccountDetail?.isEmailNotificationEnable}

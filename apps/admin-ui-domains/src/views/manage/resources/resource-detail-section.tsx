@@ -9,7 +9,7 @@ import {
   LabeledValue,
   ListRow,
   NumberInput,
-  PlainInput,
+  TextInput,
   PlainSelect,
   PlainTextarea,
   Row,
@@ -194,7 +194,7 @@ export const ResourceDetailSection = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <PlainInput
+            <TextInput
               required
               label={t('label.resource_name', 'ResourceName')}
               value={displayName ?? ''}
@@ -212,7 +212,7 @@ export const ResourceDetailSection = () => {
             padding={{ top: 'large' }}
           >
             <Row width="45%">
-              <PlainInput
+              <TextInput
                 required
                 label={t('label.name', 'Name')}
                 value={name ?? ''}

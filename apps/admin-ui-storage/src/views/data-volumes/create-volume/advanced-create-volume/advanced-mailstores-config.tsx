@@ -9,7 +9,7 @@ import {
   ListRow,
   NumberInput,
   Padding,
-  PlainInput,
+  TextInput,
   Radio,
   Row,
   Switch,
@@ -245,7 +245,7 @@ export function AdvancedMailstoresConfig({
       {isLocalBlockDevice ? (
         <>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               name="path"
               label={t('label.volume_path', 'Volume path')}
               value={path}
@@ -292,7 +292,7 @@ export function AdvancedMailstoresConfig({
       ) : (
         <>
           <Row padding={{ top: 'large' }} width="100%">
-            <PlainInput
+            <TextInput
               name="prefix"
               label={t(
                 'label.prefix_name',

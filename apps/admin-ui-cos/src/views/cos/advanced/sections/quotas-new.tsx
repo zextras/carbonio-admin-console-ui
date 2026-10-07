@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainInput, Switch, Tooltip } from '@zextras/ui-components';
+import { Container, TextInput, Switch, Tooltip } from '@zextras/ui-components';
 import type { ComputedLimit, QuotaSource } from '@zextras/ui-shared';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -123,7 +123,7 @@ export const COSQuotasNew = ({
         mainAlignment={'flex-start'}
         crossAlignment={'center'}
       >
-        <PlainInput
+        <TextInput
           label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
           value={inputValue}
           name="totalQuota"

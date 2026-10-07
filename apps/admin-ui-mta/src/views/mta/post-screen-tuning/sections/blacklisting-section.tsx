@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, PlainInput, PlainSelect, SelectItem } from '@zextras/ui-components';
+import { Button, Container, Padding, TextInput, PlainSelect, SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -120,7 +120,7 @@ export const BlacklistingSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaPostscreenAccessList">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('mta.access_list_path', 'Access List Path')}
                 value={field.state.value ?? ''}

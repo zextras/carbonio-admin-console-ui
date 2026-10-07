@@ -10,7 +10,7 @@ import {
   Container,
   CustomChip,
   InheritedSwitch,
-  PlainInput,
+  TextInput,
   Row,
   Tooltip,
 } from '@zextras/ui-components';
@@ -213,7 +213,7 @@ export const EditAccountConfigurationSection = () => {
           </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <PlainInput
+          <TextInput
             onChange={changeAccDetail}
             name="zimbraMailTransport"
             label={t('label.mail_transport_map', 'Mail Transport Map')}

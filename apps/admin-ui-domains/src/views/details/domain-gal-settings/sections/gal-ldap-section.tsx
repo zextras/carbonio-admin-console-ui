@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, PlainInput, Row, Switch } from '@zextras/ui-components';
+import { Container, TextInput, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FALSE, TRUE } from '../../../../constants';
@@ -56,7 +56,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraGalLdapURL">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('label.external_server_address', 'External Server Address')}
                 value={field.state.value ?? ''}
                 autoComplete="off"
@@ -94,7 +94,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
       <Container padding={{ all: 'small' }}>
         <form.Field name="zimbraGalLdapFilter">
           {(field) => (
-            <PlainInput
+            <TextInput
               label={t('label.ldap_filter', 'LDAP Filter')}
               value={field.state.value ?? ''}
               autoComplete="off"
@@ -110,7 +110,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
       <Container padding={{ all: 'small' }}>
         <form.Field name="zimbraGalLdapSearchBase">
           {(field) => (
-            <PlainInput
+            <TextInput
               label={t('label.ldap_search_base', 'LDAP based search')}
               value={field.state.value ?? ''}
               autoComplete="off"

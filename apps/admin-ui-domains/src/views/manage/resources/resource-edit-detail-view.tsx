@@ -15,7 +15,7 @@ import {
   NumberInput,
   Padding,
   PasswordInput,
-  PlainInput,
+  TextInput,
   PlainSelect,
   PlainTextarea,
   RouteLeavingGuard,
@@ -497,7 +497,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <form.Field name="displayName">
                     {(field) => (
-                      <PlainInput
+                      <TextInput
                         required
                         name="displayName"
                         label={t('label.name', 'Name')}
@@ -520,7 +520,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="mail">
                     {(field) => (
-                      <PlainInput
+                      <TextInput
                         required
                         name="mail"
                         label={t('label.email', 'Email')}

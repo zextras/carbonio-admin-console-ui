@@ -7,7 +7,7 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   LabeledValue,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
   useSnackbar,
@@ -219,7 +219,7 @@ export const ServicesPassphrase = () => {
         ))}
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="19%" mainAlignment="space-between">
-            <PlainInput
+            <TextInput
               onChange={changeCredLabel}
               name="label"
               label={t('account_details.label', 'Label')}

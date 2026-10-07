@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding, PlainInput, Row } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, TextInput, Row } from '@zextras/ui-components';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -80,7 +80,7 @@ export const SignatureEditorDialog = ({
         padding={{ top: 'extralarge', bottom: 'extralarge' }}
       >
         <Container padding={{ bottom: 'medium' }}>
-          <PlainInput
+          <TextInput
             label={t('label.name_of_signature', 'Name of Signature')}
             value={signatureName}
             autoComplete="off"

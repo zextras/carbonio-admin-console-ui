@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { ComboboxInput, type ComboboxItem, PlainInput, Row } from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, TextInput, Row } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -87,7 +87,7 @@ export const DomainRenameFields = () => {
   return (
     <>
       <Row width="47%" mainAlignment="flex-start">
-        <PlainInput
+        <TextInput
           label={t('label.advance_edit_user', 'User')}
           autoComplete="off"
           onChange={changeUserNaneDetail}

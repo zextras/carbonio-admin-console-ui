@@ -8,7 +8,7 @@ import {
   ListRow,
   NumberInput,
   Padding,
-  PlainInput,
+  TextInput,
   PlainSelect,
   Row,
   Switch,
@@ -94,7 +94,7 @@ export function ModifyVolumeBucketSection({
         <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
           <form.Field name="volumePrefix">
             {(field) => (
-              <PlainInput
+              <TextInput
                 name="prefix"
                 label={t(
                   'label.prefix_name',
@@ -394,7 +394,7 @@ export function ModifyVolumeOptionsSection({
                 <Row padding={{ top: 'small' }} width="100%">
                   <form.Field name="compressionThreshold">
                     {(field) => (
-                      <PlainInput
+                      <TextInput
                         label={t('label.compression_threshold', 'Compression Threshold')}
                         value={field.state.value}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

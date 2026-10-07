@@ -8,7 +8,7 @@ import { useField } from '@tanstack/react-form';
 import {
   LabeledValue,
   PasswordInput,
-  PlainInput,
+  TextInput,
   Switch,
 } from '@zextras/ui-components';
 import { find } from 'lodash-es';
@@ -75,7 +75,7 @@ export const AccountInfoFields = (): ReactElement => {
       </ds-text>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-[32%] flex-wrap justify-between">
-          <PlainInput
+          <TextInput
             label={t('label.surname', 'Surname')}
             name="sn"
             autoComplete="off"
@@ -88,7 +88,7 @@ export const AccountInfoFields = (): ReactElement => {
           />
         </div>
         <div className="flex w-[32%] flex-wrap justify-between">
-          <PlainInput
+          <TextInput
             label={t('label.second_name_initials', 'Middle Name Initials')}
             name="initials"
             autoComplete="off"
@@ -99,7 +99,7 @@ export const AccountInfoFields = (): ReactElement => {
           />
         </div>
         <div className="flex w-[32%] flex-wrap justify-between">
-          <PlainInput
+          <TextInput
             label={t('label.person_name', 'Name')}
             name="givenName"
             autoComplete="off"
@@ -112,7 +112,7 @@ export const AccountInfoFields = (): ReactElement => {
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-[48%] flex-wrap justify-start">
-          <PlainInput
+          <TextInput
             label={t('label.user_auto_fill', 'user (Auto-fill)')}
             name="name"
             autoComplete="off"
@@ -142,7 +142,7 @@ export const AccountInfoFields = (): ReactElement => {
         </div>
       </div>
       <div className="flex w-full flex-wrap pt-lg pl-lg">
-        <PlainInput
+        <TextInput
           label={t('label.display_name_auto_fill', 'Display Name (Auto-fill)')}
           name="displayName"
           autoComplete="off"

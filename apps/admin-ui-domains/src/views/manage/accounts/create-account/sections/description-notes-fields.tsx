@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { PlainInput, PlainTextarea } from '@zextras/ui-components';
+import { TextInput, PlainTextarea } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +27,7 @@ export const DescriptionNotesFields = (): ReactElement => {
           </ds-text>
         </div>
         <div className="flex w-full flex-wrap justify-center pt-lg pl-lg">
-          <PlainInput
+          <TextInput
             label={t('label.description', 'Description')}
             name="description"
             autoComplete="off"

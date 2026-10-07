@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, ListRow, PasswordInput, PlainInput, Row, Switch } from '@zextras/ui-components';
+import { Container, ListRow, PasswordInput, TextInput, Row, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
@@ -74,7 +74,7 @@ export const GalAuthSection = ({ form }: GalAuthSectionProps) => {
           <Container padding={{ all: 'small' }}>
             <form.Field name="zimbraGalLdapBindDn">
               {(field) => (
-                <PlainInput
+                <TextInput
                   label={t('label.bind_dn', 'Bind DN')}
                   value={field.state.value ?? ''}
                   autoComplete="off"

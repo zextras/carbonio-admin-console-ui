@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainInput, PlainSelect, SelectItem } from '@zextras/ui-components';
+import { Container, TextInput, PlainSelect, SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -57,7 +57,7 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaPostscreenDnsblSites">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.dns_blacklist_sites', 'DNS Blacklist Sites')}
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -91,7 +91,7 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaPostscreenDnsblThreshold">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('mta.dns_blacklist_threshold_value', 'DNS Blacklist Threshold (value)')}
                 value={field.state.value ?? ''}
@@ -105,7 +105,7 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaPostscreenDnsblWhitelistThreshold">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t(
                   'mta.dns_blacklist_whitelist_threshold_value',
@@ -144,7 +144,7 @@ export const DnsBlacklistingSection = ({
           >
             <form.Field name="zimbraMtaPostscreenDnsblMinTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t(
                     'mta.dns_blacklist_min_time_to_live',
@@ -178,7 +178,7 @@ export const DnsBlacklistingSection = ({
           <Container padding={{ right: 'medium' }} width="75%">
             <form.Field name="zimbraMtaPostscreenDnsblMaxTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t(
                     'mta.dns_blacklist_max_time_to_live',
@@ -223,7 +223,7 @@ export const DnsBlacklistingSection = ({
           <Container padding={{ right: 'small' }} width="75%">
             <form.Field name="zimbraMtaPostscreenDnsblTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.dns_blacklist_time_to_live', 'DNS Blacklist Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}

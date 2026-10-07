@@ -9,7 +9,7 @@ import {
   InheritedSwitch,
   ListRow,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
@@ -49,7 +49,7 @@ const InheritedPolicyInput = ({
   const isOverridden = isInheritedOverridden(liveValue, accountValue, inheritedValue);
 
   return (
-    <PlainInput
+    <TextInput
       required
       label={label}
       name={inputName}

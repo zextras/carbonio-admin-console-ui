@@ -8,7 +8,7 @@ import {
   Container,
   LabeledValue,
   ListRow,
-  PlainInput,
+  TextInput,
   PlainSelect,
   PlainTextarea,
   Row,
@@ -83,7 +83,7 @@ export const CosInfoFields = ({
                     value={field.state.value ?? ''}
                   />
                 ) : (
-                  <PlainInput
+                  <TextInput
                     required
                     label={t('label.name', 'Name')}
                     value={field.state.value}
@@ -159,7 +159,7 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="description">
               {(field) => (
-                <PlainInput
+                <TextInput
                   label={t('label.description', 'Description')}
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {

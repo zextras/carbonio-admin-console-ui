@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, PlainInput } from '@zextras/ui-components';
+import { Container, ListRow, TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,7 +29,7 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupMaxOperationPerAccount">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
                 autoComplete="off"
@@ -49,7 +49,7 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupCompressionLevel">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.compression_level', 'Compression Level')}
                 autoComplete="off"
@@ -71,7 +71,7 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupNumberThreadsForItems">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.thread_number_for_items', 'Thread number for items')}
                 autoComplete="off"
@@ -91,7 +91,7 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupNumberThreadsForAccounts">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
                 autoComplete="off"

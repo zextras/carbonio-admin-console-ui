@@ -11,7 +11,7 @@ import { useId } from 'react';
 import { InputShell } from './input-shell';
 import styles from './input-shell.module.css';
 
-export type PlainInputProps = Omit<
+export type TextInputProps = Omit<
   React.ComponentPropsWithRef<'input'>,
   'value' | 'onChange' | 'defaultValue' | 'id'
 > & {
@@ -31,7 +31,7 @@ export type PlainInputProps = Omit<
   icon?: ReactNode;
 };
 
-export const PlainInput = ({
+export const TextInput = ({
 	label,
 	value,
 	onChange,
@@ -44,7 +44,7 @@ export const PlainInput = ({
 	icon,
 	'aria-describedby': callerDescribedBy,
 	...rest
-}: PlainInputProps) => {
+}: TextInputProps) => {
 	const inputId = useId();
   const descriptionId = useId();
   const resolvedDescription = description ?? '';

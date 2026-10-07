@@ -5,7 +5,7 @@
  */
 
 import { type AnyFormApi,useField } from '@tanstack/react-form';
-import { PlainInput, Tooltip } from '@zextras/ui-components';
+import { TextInput, Tooltip } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,7 +34,7 @@ function PhoneInputField({
 
   return (
     <Tooltip placement="top" label={tooltipLabel}>
-      <PlainInput
+      <TextInput
         label={label}
         name={name}
         autoComplete="off"
@@ -57,7 +57,7 @@ type TextFieldLike = {
 
 function textField(field: TextFieldLike, label: string): ReactElement {
   return (
-    <PlainInput
+    <TextInput
       label={label}
       name={field.name}
       autoComplete="off"

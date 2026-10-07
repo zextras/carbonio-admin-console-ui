@@ -10,7 +10,7 @@ import {
   FormPageLayout,
   HoverableRowFactory,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
   Switch,
   Table,
@@ -291,7 +291,7 @@ export const DomainSaml = () => {
             />
           </Container>
           <Container mainAlignment="flex-start" width="72%">
-            <PlainInput
+            <TextInput
               label={t(
                 'label.import_saml_metadata_from_idp',
                 'Import the SAML Metadata from the IDP',
@@ -452,7 +452,7 @@ export const DomainSaml = () => {
           padding={{ all: 'large' }}
         >
           <Container mainAlignment="flex-start" crossAlignment="flex-end" orientation="vertical">
-            <PlainInput
+            <TextInput
               label={t(
                 'label.select_an_attribute_to_show_its_value',
                 'Select an Attribute to show its value',
@@ -480,7 +480,7 @@ export const DomainSaml = () => {
           padding={{ left: 'large', bottom: 'large', right: 'large' }}
         >
           <Container mainAlignment="flex-start" crossAlignment="flex-end" orientation="vertical">
-            <PlainInput
+            <TextInput
               label={t(
                 'label.here_will_be_shown_the_attribute_value',
                 'The Attribute Value will be displayed here',

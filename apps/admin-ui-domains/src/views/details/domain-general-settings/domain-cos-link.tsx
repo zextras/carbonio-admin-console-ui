@@ -13,7 +13,7 @@ import {
   HoverableRowFactory,
   ListRow,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
   Table,
   type THeader,
@@ -279,7 +279,7 @@ export const DomainCosLink = ({
           </Container>
 
           <Container padding={{ all: 'small' }}>
-            <PlainInput
+            <TextInput
               label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
               value={maxAccountValue}
               type="number"

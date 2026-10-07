@@ -11,7 +11,7 @@ import {
   LabeledValue,
   ListRow,
   Paging,
-  PlainInput,
+  TextInput,
   PlainTextarea,
   Row,
   Switch,
@@ -190,7 +190,7 @@ export const ListSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <PlainInput
+            <TextInput
               required
               label={t('label.display_name', 'Display Name')}
               value={mailingListDetail?.displayName ?? ''}
@@ -208,7 +208,7 @@ export const ListSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <PlainInput
+            <TextInput
               required
               label={t('label.list_name', 'List Name')}
               value={mailingListDetail?.prefixName ?? ''}
@@ -246,7 +246,7 @@ export const ListSection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'small', bottom: 'medium' }}
           >
-            <PlainInput
+            <TextInput
               label={t('label.description', 'Description')}
               value={mailingListDetail?.description ?? ''}
               name="description"
@@ -313,7 +313,7 @@ export const ListSection: FC<any> = () => {
                 padding={{ top: 'small', bottom: 'medium' }}
               >
                 <LdapQueryLoaderContext.Provider value={{ loadMembers: getMemberFromLdapQuery }}>
-                  <PlainInput
+                  <TextInput
                     required
                     label={t('label.distribution_list_url', "Distribution List's URL")}
                     value={mailingListDetail?.memberURL ?? ''}

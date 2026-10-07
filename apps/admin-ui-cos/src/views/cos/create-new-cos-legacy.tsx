@@ -9,7 +9,7 @@ import {
   Container,
   ListRow,
   Padding,
-  PlainInput,
+  TextInput,
   PlainTextarea,
   Row,
 } from '@zextras/ui-components';
@@ -114,7 +114,7 @@ export const CreateCosLegacy = () => {
             </Row>
             <ListRow>
               <Container padding={{ all: 'small' }} crossAlignment="flex-start">
-                <PlainInput
+                <TextInput
                   label={t('label.cos_name', 'Cos Name')}
                   value={cosName}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
@@ -133,7 +133,7 @@ export const CreateCosLegacy = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <PlainInput
+                <TextInput
                   label={t('label.description', 'Description')}
                   value={description}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {

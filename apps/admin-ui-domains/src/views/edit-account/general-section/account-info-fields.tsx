@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { LabeledValue, PlainInput, Row } from '@zextras/ui-components';
+import { LabeledValue, TextInput, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { ChangeEvent, ReactElement, useState } from 'react';
@@ -76,7 +76,7 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="32%" mainAlignment="space-between">
-          <PlainInput
+          <TextInput
             required
             data-testid="surname-input"
             label={t('label.surname', 'Surname')}
@@ -87,7 +87,7 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
           />
         </Row>
         <Row width="32%" mainAlignment="space-between">
-          <PlainInput
+          <TextInput
             data-testid="middlename-input"
             label={t('label.second_name_initials', 'Middle Name Initials')}
             autoComplete="off"
@@ -97,7 +97,7 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
           />
         </Row>
         <Row width="32%" mainAlignment="space-between">
-          <PlainInput
+          <TextInput
             data-testid="name-input"
             label={t('label.person_name', 'Name')}
             autoComplete="off"
@@ -135,7 +135,7 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
         <Row width={isAdvanced ? '49%' : '100%'} mainAlignment="flex-start">
-          <PlainInput
+          <TextInput
             label={t('label.advance_edit_display_name', 'Display Name')}
             autoComplete="off"
             value={values?.displayName ?? ''}

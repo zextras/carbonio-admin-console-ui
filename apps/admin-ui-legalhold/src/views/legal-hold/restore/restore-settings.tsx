@@ -10,7 +10,7 @@ import {
   DatePicker,
   getFieldErrorProps,
   LabeledValue,
-  PlainInput,
+  TextInput,
   Switch,
 } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
@@ -56,7 +56,7 @@ export const RestoreSettings = ({ form, legalHoldAccount, account }: RestoreSett
             {(field) => {
               const error = getFieldErrorProps(field, isSubmitted, t, RESTORE_VALIDATION_MESSAGES);
               return (
-                <PlainInput
+                <TextInput
                   label={t('legal_hold.legalhold_prefix', 'Legal Hold prefix')}
                   value={field.state.value}
                   hasError={error.hasError}

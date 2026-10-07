@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Button, ListRow, Padding, PasswordInput, PlainInput } from '@zextras/ui-components';
+import { Button, ListRow, Padding, PasswordInput, TextInput } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -80,7 +80,7 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
       </ListRow>
       <ListRow>
         <Padding vertical="small" horizontal="small" width="38%">
-          <PlainInput
+          <TextInput
             label={t('label.user_name', 'User Name')}
             value={verifyUserName}
             name="verifyAuthUser"

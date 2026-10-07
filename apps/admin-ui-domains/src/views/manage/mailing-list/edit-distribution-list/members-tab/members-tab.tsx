@@ -12,7 +12,7 @@ import {
   ListRow,
   Padding,
   Paging,
-  PlainInput,
+  TextInput,
   Row,
   Table,
   useSnackbar,
@@ -305,7 +305,7 @@ export const MembersTab: FC<MembersTabProps> = ({
             <ListRow padding={{ all: 'small' }}>
               <Container orientation="horizontal">
                 <Container>
-                  <PlainInput
+                  <TextInput
                     label={t('label.distribution_list_url', "Distribution List's URL")}
                     value={memberURL ?? ''}
                     autoComplete="off"

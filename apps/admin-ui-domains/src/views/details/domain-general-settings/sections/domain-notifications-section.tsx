@@ -11,7 +11,7 @@ import {
   Container,
   getFieldErrorProps,
   ListRow,
-  PlainInput,
+  TextInput,
   Row,
 } from '@zextras/ui-components';
 import { some } from 'lodash-es';
@@ -51,7 +51,7 @@ export const DomainNotificationsSection = ({ form }: DomainNotificationsSectionP
                 DOMAIN_GENERAL_VALIDATION_MESSAGES,
               );
               return (
-                <PlainInput
+                <TextInput
                   required
                   label={t('label.notification_sender', 'Notification Sender')}
                   value={field.state.value ?? ''}

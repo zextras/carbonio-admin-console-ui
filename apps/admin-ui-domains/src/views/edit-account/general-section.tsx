@@ -8,7 +8,7 @@ import {
   ChipInput,
   Container,
   CustomChip,
-  PlainInput,
+  TextInput,
   PlainTextarea,
   Row,
 } from '@zextras/ui-components';
@@ -79,7 +79,7 @@ export const EditAccountGeneralSection = ({
               mainAlignment="space-between"
             >
               <Row width="100%" mainAlignment="space-between">
-                <PlainInput
+                <TextInput
                   data-testid="zimbraAuthLdapExternalDn"
                   label={t(
                     'domain.accounts.editAccount.externalldapReferenceForAuthentication',
@@ -147,7 +147,7 @@ export const EditAccountGeneralSection = ({
           </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <PlainInput
+          <TextInput
             label={t('label.description', 'Description')}
             autoComplete="off"
             value={values?.description ?? ''}

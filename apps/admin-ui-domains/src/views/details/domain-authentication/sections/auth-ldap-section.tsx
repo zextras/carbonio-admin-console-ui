@@ -10,7 +10,7 @@ import {
   ListRow,
   Padding,
   PasswordInput,
-  PlainInput,
+  TextInput,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
@@ -39,7 +39,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
                 DOMAIN_AUTH_VALIDATION_MESSAGES,
               );
               return (
-                <PlainInput
+                <TextInput
                   required
                   label={t('label.url', 'URL')}
                   value={field.state.value ?? ''}
@@ -61,7 +61,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchFilter">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('label.filter', 'Filter')}
                 value={field.state.value ?? ''}
                 autoComplete="off"
@@ -76,7 +76,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchBase">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('label.search_base', 'Basic Search')}
                 value={field.state.value ?? ''}
                 autoComplete="off"
@@ -92,7 +92,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraAuthLdapSearchBindDn">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('domain.authentication.search_bind_user', 'Search Bind User')}
                 value={field.state.value ?? ''}
                 name="searchBindUser"

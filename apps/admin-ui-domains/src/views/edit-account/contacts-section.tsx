@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, PlainInput, Row } from '@zextras/ui-components';
+import { Container, TextInput, Row } from '@zextras/ui-components';
 import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -62,7 +62,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="space-between">
-            <PlainInput
+            <TextInput
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 changeValidatedPhoneDetail(e, setIsValidPhone);
               }}
@@ -75,7 +75,7 @@ export const EditAccountContactsSection: React.FC = () => {
             />
           </Row>
           <Row width="48%" mainAlignment="space-between">
-            <PlainInput
+            <TextInput
               label={t('label.home', 'Home')}
               autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -90,7 +90,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               label={t('label.mobile', 'Mobile')}
               autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -103,7 +103,7 @@ export const EditAccountContactsSection: React.FC = () => {
             />
           </Row>
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               label={t('label.pager', 'Pager')}
               autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -118,7 +118,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               label={t('label.fax_number', 'Fax Number')}
               autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -140,7 +140,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.company', 'Company')}
               onChange={changeAccDetail}
@@ -149,7 +149,7 @@ export const EditAccountContactsSection: React.FC = () => {
             />
           </Row>
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.job_title', 'Job Title')}
               onChange={changeAccDetail}
@@ -167,7 +167,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.country', 'Country')}
               onChange={changeAccDetail}
@@ -176,7 +176,7 @@ export const EditAccountContactsSection: React.FC = () => {
             />
           </Row>
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.state', 'State')}
               onChange={changeAccDetail}
@@ -187,7 +187,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.city', 'City')}
               onChange={changeAccDetail}
@@ -196,7 +196,7 @@ export const EditAccountContactsSection: React.FC = () => {
             />
           </Row>
           <Row width="48%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.postal_code', 'Postal Code')}
               onChange={changeAccDetail}
@@ -207,7 +207,7 @@ export const EditAccountContactsSection: React.FC = () => {
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="100%" mainAlignment="flex-start">
-            <PlainInput
+            <TextInput
               autoComplete="off"
               label={t('label.address', 'Address')}
               onChange={changeAccDetail}

@@ -10,7 +10,7 @@ import {
   Container,
   InheritedSwitch,
   Padding,
-  PlainInput,
+  TextInput,
   SettingLayout,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
@@ -51,7 +51,7 @@ const WscInheritedInput = ({
   const isOverridden = isInheritedOverridden(liveValue, accountValue, inheritedValue);
 
   return (
-    <PlainInput
+    <TextInput
       required
       label={label}
       name={inputName}

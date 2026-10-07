@@ -10,7 +10,7 @@ import {
   ListRow,
   Modal,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
 } from '@zextras/ui-components';
 import { useState } from 'react';
@@ -100,7 +100,7 @@ export const CreateGalsyncAccountModel = ({
       >
         <Container padding={{ horizontal: 'small', bottom: 'small' }}>
           <Padding top="medium" bottom="small" horizontal="small" width="100%">
-            <PlainInput
+            <TextInput
               label={t('label.account_name', 'Account Name')}
               autoComplete="off"
               value={galDomainName}

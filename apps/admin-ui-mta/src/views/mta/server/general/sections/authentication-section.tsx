@@ -7,7 +7,7 @@ import {
   Container,
   CustomChip,
   InheritedSwitch,
-  PlainInput,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { some } from 'lodash-es';
@@ -139,7 +139,7 @@ export const AuthenticationSection = ({
               )?._content;
               const isOverridden = field.state.value !== undefined;
               return (
-                <PlainInput
+                <TextInput
                   label={t('mta.relay_host', 'Relay Host')}
                   name="zimbraMtaRelayHost"
                   value={field.state.value ?? inheritedRelayHost ?? ''}
@@ -179,7 +179,7 @@ export const AuthenticationSection = ({
               )?._content;
               const isOverridden = field.state.value !== undefined;
               return (
-                <PlainInput
+                <TextInput
                   label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
                   name="zimbraMtaFallbackRelayHost"
                   value={field.state.value ?? inheritedFallbackRelayHost ?? ''}

@@ -8,7 +8,7 @@ import {
   Container,
   getFieldErrorProps,
   ListRow,
-  PlainInput,
+  TextInput,
   PlainSelect,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
@@ -50,7 +50,7 @@ export const TimeFieldGroup = ({
         return (
           <ListRow>
             <Container width="83%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-              <PlainInput
+              <TextInput
                 label={label}
                 value={num}
                 name={String(name)}

@@ -10,7 +10,7 @@ import {
   ListRow,
   Modal,
   Padding,
-  PlainInput,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { type DomainDirectories, replaceHistory } from '@zextras/ui-shared';
@@ -327,7 +327,7 @@ export const DomainDeleteSection = ({
             </ds-text>
             <ListRow>
               <Container padding={{ top: 'large' }}>
-                <PlainInput
+                <TextInput
                   label={t('label.domain_name', 'Domain Name')}
                   value={confirmDomainName}
                   autoComplete="off"

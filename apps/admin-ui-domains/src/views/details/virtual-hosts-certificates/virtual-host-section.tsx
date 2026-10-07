@@ -11,7 +11,7 @@ import {
   List,
   ListItem,
   Padding,
-  PlainInput,
+  TextInput,
   Row,
   Tooltip,
 } from '@zextras/ui-components';
@@ -88,7 +88,7 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
         padding={{ vertical: '1rem' }}
       >
         <Row takeAvailableSpace>
-          <PlainInput
+          <TextInput
             label={t(
               'label.add_virtual_host_name',
               'Type a new Virtual Host Name and click on “Add +” to add it to the list',
