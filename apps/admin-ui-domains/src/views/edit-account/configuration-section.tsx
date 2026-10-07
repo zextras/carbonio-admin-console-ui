@@ -10,12 +10,12 @@ import {
   Container,
   CustomChip,
   InheritedSwitch,
-  Input,
+  PlainInput,
   Row,
   Tooltip,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';
-import React, { ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../wsc/wsc-settings';
@@ -25,23 +25,17 @@ import { Features } from './features';
 import { chipsToValue, useChipList } from './use-chip-list';
 
 type MailTransportTooltipIconProps = {
-  hasError: boolean;
-  hasFocus: boolean;
-  disabled: boolean;
+  label: string;
 };
 
-function createMailTransportTooltipIcon(
-  label: string,
-): React.ComponentType<MailTransportTooltipIconProps> {
-  return function MailTransportTooltipIcon() {
-    return (
-      <Tooltip placement="top" label={label}>
-        <ds-text as="span">
-          <ds-icon icon="InfoOutline" size="large" color="secondary"></ds-icon>
-        </ds-text>
-      </Tooltip>
-    );
-  };
+function MailTransportTooltipIcon({ label }: MailTransportTooltipIconProps) {
+  return (
+    <Tooltip placement="top" label={label}>
+      <ds-text as="span">
+        <ds-icon icon="InfoOutline" size="large" color="secondary"></ds-icon>
+      </ds-text>
+    </Tooltip>
+  );
 }
 
 export const EditAccountConfigurationSection = () => {
@@ -219,18 +213,20 @@ export const EditAccountConfigurationSection = () => {
           </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <Input
+          <PlainInput
             onChange={changeAccDetail}
-            inputName="zimbraMailTransport"
+            name="zimbraMailTransport"
             label={t('label.mail_transport_map', 'Mail Transport Map')}
-            backgroundColor="gray5"
-            value={values?.zimbraMailTransport || ''}
-            CustomIcon={createMailTransportTooltipIcon(
-              `${t('label.format', 'Format')} :  ${t(
-                'label.protocol_server_port',
-                'protocol:server:port',
-              )} | : lmtp:server.demo.zextras.io:7025`,
-            )}
+            autoComplete="off"
+            value={values?.zimbraMailTransport ?? ''}
+            icon={
+              <MailTransportTooltipIcon
+                label={`${t('label.format', 'Format')} :  ${t(
+                  'label.protocol_server_port',
+                  'protocol:server:port',
+                )} | : lmtp:server.demo.zextras.io:7025`}
+              />
+            }
           />
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>

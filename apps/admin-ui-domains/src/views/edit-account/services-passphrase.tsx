@@ -6,10 +6,10 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
-  Input,
   LabeledValue,
+  PlainInput,
+  PlainSelect,
   Row,
-  Select,
   useSnackbar,
 } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
@@ -173,30 +173,29 @@ export const ServicesPassphrase = () => {
               style={{ pointerEvents: 'none' }}
               padding={{ right: 'medium' }}
             >
-              <Select
+              <PlainSelect
                 items={SERVICE_PASSPHRASE_SERVICES}
-                background="gray5"
                 label={t('account_details.services', 'Services')}
-                showCheckbox={false}
-                selection={SERVICE_PASSPHRASE_SERVICES.find(
-                  (el: SelectServiceType) =>
-                    el.value?.toLowerCase() === item.services?.toLowerCase(),
-                )}
+                selection={
+                  SERVICE_PASSPHRASE_SERVICES.find(
+                    (el: SelectServiceType) =>
+                      el.value?.toLowerCase() === item.services?.toLowerCase(),
+                  ) ?? { label: '', value: '' }
+                }
                 disabled
                 onChange={(): void => undefined}
               />
             </Row>
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
-              <Select
+              <PlainSelect<boolean>
                 items={SERVICE_PASSPHRASE_STATUS}
-                background="gray5"
                 label={t('account_details.status', 'Status')}
-                showCheckbox={false}
-                defaultSelection={SERVICE_PASSPHRASE_STATUS.find(
-                  (el: SelectStatusType) => el.value === item?.enabled,
-                )}
-                onChange={(): null => null}
-                style={{ paddingRight: 'medium' }}
+                selection={
+                  SERVICE_PASSPHRASE_STATUS.find(
+                    (el: SelectStatusType) => el.value === item?.enabled,
+                  ) ?? SERVICE_PASSPHRASE_STATUS[0]
+                }
+                onChange={(): void => undefined}
                 disabled
               />
             </Row>
@@ -220,22 +219,24 @@ export const ServicesPassphrase = () => {
         ))}
         <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
           <Row width="19%" mainAlignment="space-between">
-            <Input
+            <PlainInput
               onChange={changeCredLabel}
-              inputName="label"
+              name="label"
               label={t('account_details.label', 'Label')}
-              backgroundColor="gray5"
-              value={createCredential.label}
+              autoComplete="off"
+              value={createCredential.label ?? ''}
             />
           </Row>
           <Row width="19%" mainAlignment="space-between" padding={{ right: 'medium' }}>
-            <Select
+            <PlainSelect
               items={SERVICE_PASSPHRASE_SERVICES}
-              background="gray5"
               label={t('account_details.services', 'Services')}
-              showCheckbox={false}
+              selection={
+                SERVICE_PASSPHRASE_SERVICES.find(
+                  (el: SelectServiceType) => el.value === createCredential.services,
+                ) ?? SERVICE_PASSPHRASE_SERVICES[0]
+              }
               onChange={onServicesPassphraseServicesChange}
-              defaultSelection={SERVICE_PASSPHRASE_SERVICES[0]}
             />
           </Row>
 

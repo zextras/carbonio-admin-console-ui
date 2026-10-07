@@ -7,10 +7,14 @@ import { useSelector } from '@tanstack/react-store';
 import { InheritedSwitch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import { InheritedPrefSelect } from '../../utility/inherited-pref-select';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
-import { useAccountForm, useSetAccountValues, useToggleAccountValue } from '../account-form-context';
+import {
+  useAccountForm,
+  useSetAccountValues,
+  useToggleAccountValue,
+} from '../account-form-context';
 import styles from './calendar-options.module.css';
-import { InheritedPrefSelect } from './inherited-pref-select';
 
 /**
  * Calendar Options cluster of the user-preferences section: time zone,
@@ -97,7 +101,10 @@ export const CalendarOptionsSection = () => {
     }));
   };
   const onCalendarInitialViewChange = (v: string): void => {
-    setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefCalendarInitialView: v }));
+    setAccountValues((prev: Record<string, any>) => ({
+      ...prev,
+      zimbraPrefCalendarInitialView: v,
+    }));
   };
   const onFirstDayOfWeekChange = (v: string): void => {
     setAccountValues((prev: Record<string, any>) => ({
@@ -308,9 +315,7 @@ export const CalendarOptionsSection = () => {
             inheritedValue={cosDetail.zimbraPrefCalendarSendInviteDeniedAutoReply}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
             inputName={'zimbraPrefCalendarSendInviteDeniedAutoReply'}
-            onChangeReset={(): void =>
-              setEmptyValue('zimbraPrefCalendarSendInviteDeniedAutoReply')
-            }
+            onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarSendInviteDeniedAutoReply')}
           />
         </div>
       </div>

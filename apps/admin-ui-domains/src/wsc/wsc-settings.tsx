@@ -8,10 +8,9 @@ import {
   Banner,
   BoxLayout,
   Container,
-  InheritedInput,
-  InheritedSelect,
   InheritedSwitch,
   Padding,
+  PlainInput,
   SettingLayout,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
@@ -20,6 +19,62 @@ import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
 import { AccountDetail } from '../views/manage/accounts/account-detail-types';
+import { InheritedPrefSelect } from '../views/utility/inherited-pref-select';
+import { isInheritedOverridden } from '../views/utility/is-inherited-overridden';
+import { RevertToInheritedIcon } from '../views/utility/revert-to-inherited-icon';
+
+type WscInheritedInputProps = {
+  readonly label: string;
+  readonly inputName: keyof AccountDetail;
+  readonly featuresDetail: AccountDetail;
+  readonly cosDetail?: AccountDetail;
+  readonly accSpecificDetail?: AccountDetail;
+  readonly changeValue: (ev: ChangeEvent<HTMLInputElement>) => void;
+  readonly onChangeReset: () => void;
+  readonly disabled?: boolean;
+};
+
+const WscInheritedInput = ({
+  label,
+  inputName,
+  featuresDetail,
+  cosDetail,
+  accSpecificDetail,
+  changeValue,
+  onChangeReset,
+  disabled,
+}: WscInheritedInputProps) => {
+  const [t] = useTranslation();
+  const liveValue = featuresDetail?.[inputName] as string | undefined;
+  const accountValue = accSpecificDetail?.[inputName] as string | undefined;
+  const inheritedValue = cosDetail?.[inputName] as string | undefined;
+  const isOverridden = isInheritedOverridden(liveValue, accountValue, inheritedValue);
+
+  return (
+    <PlainInput
+      required
+      label={label}
+      name={inputName}
+      autoComplete="off"
+      disabled={disabled}
+      value={liveValue ?? inheritedValue ?? ''}
+      onChange={changeValue}
+      description={
+        isOverridden
+          ? undefined
+          : t('label.inherited_from_cos', 'Inherited from the Class of Service')
+      }
+      icon={
+        isOverridden ? (
+          <RevertToInheritedIcon
+            label={t('label.click_to_revert', 'Click to revert to the inherited value')}
+            onClick={onChangeReset}
+          />
+        ) : undefined
+      }
+    />
+  );
+};
 
 export const WscSettings: FC<{
   featuresDetail: AccountDetail;
@@ -62,7 +117,8 @@ export const WscSettings: FC<{
     }));
   };
 
-  const changeSelectOption = (key: keyof AccountDetail) =>
+  const changeSelectOption =
+    (key: keyof AccountDetail) =>
     (value: string): void => {
       setFeaturesDetail((prev) => ({
         ...prev,
@@ -70,7 +126,8 @@ export const WscSettings: FC<{
       }));
     };
 
-  const changeInputOption = (key: keyof AccountDetail) =>
+  const changeInputOption =
+    (key: keyof AccountDetail) =>
     (ev: ChangeEvent<HTMLInputElement>): void => {
       let inputValue = ev.target.value || '0';
       if (/^\d*$/.test(inputValue)) {
@@ -88,14 +145,20 @@ export const WscSettings: FC<{
     (requiresLicenseCheck && !isLicensed);
 
   const deleteMessageOptions = [
-    { value: '0m', label: t('wsc.section.content.select.deleteLimit.zero', 'User cannot delete sent messages') },
+    {
+      value: '0m',
+      label: t('wsc.section.content.select.deleteLimit.zero', 'User cannot delete sent messages'),
+    },
     { value: '5m', label: `5 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
     { value: '10m', label: `10 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
     { value: '30m', label: `30 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
   ];
 
   const editMessageOptions = [
-    { value: '0m', label: t('wsc.section.content.select.zero.editLimit', 'User cannot edit sent messages') },
+    {
+      value: '0m',
+      label: t('wsc.section.content.select.zero.editLimit', 'User cannot edit sent messages'),
+    },
     { value: '5m', label: `5 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
     { value: '10m', label: `10 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
     { value: '30m', label: `30 ${t('wsc.section.content.select.timeLimit', 'minute time limit')}` },
@@ -193,15 +256,17 @@ export const WscSettings: FC<{
                 'Set the time limit for deleting a sent message.',
               )}
             >
-              <InheritedSelect
+              <InheritedPrefSelect
                 label={t('wsc.section.content.select.deletionLimit', 'Message deletion time limit')}
                 items={deleteMessageOptions}
-                subValue={featuresDetail?.carbonioWscMessageDeleteTimeLimit}
-                inheritedValue={cosDetail?.carbonioWscMessageDeleteTimeLimit}
-                fromSubValue={accSpecificDetail?.carbonioWscMessageDeleteTimeLimit}
+                values={featuresDetail}
+                cosDetail={cosDetail}
+                accSpecificDetail={accSpecificDetail}
                 selectName="carbonioWscMessageDeleteTimeLimit"
                 onChange={changeSelectOption('carbonioWscMessageDeleteTimeLimit')}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageDeleteTimeLimit')}
+                setEmptyValue={(keyName: string): void => {
+                  setEmptyValue?.(keyName);
+                }}
                 disabled={disableWscSettings}
               />
               <Padding top="small" />
@@ -213,15 +278,17 @@ export const WscSettings: FC<{
               )}
               descriptionGap
             >
-              <InheritedSelect
+              <InheritedPrefSelect
                 label={t('wsc.section.content.select.editLimit', 'Message editing time limit')}
                 items={editMessageOptions}
-                subValue={featuresDetail?.carbonioWscMessageEditTimeLimit}
-                inheritedValue={cosDetail?.carbonioWscMessageEditTimeLimit}
-                fromSubValue={accSpecificDetail?.carbonioWscMessageEditTimeLimit}
+                values={featuresDetail}
+                cosDetail={cosDetail}
+                accSpecificDetail={accSpecificDetail}
                 selectName="carbonioWscMessageEditTimeLimit"
                 onChange={changeSelectOption('carbonioWscMessageEditTimeLimit')}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscMessageEditTimeLimit')}
+                setEmptyValue={(keyName: string): void => {
+                  setEmptyValue?.(keyName);
+                }}
                 disabled={disableWscSettings}
               />
             </SettingLayout>
@@ -282,17 +349,16 @@ export const WscSettings: FC<{
               )}
               descriptionGap
             >
-              <InheritedInput
-                isRequired
+              <WscInheritedInput
                 label={t(
                   'wsc.section.content.input.groupMembers',
                   'Maximum number of group members',
                 )}
-                subValue={featuresDetail?.carbonioWscMaxGroupMembers}
-                inheritedValue={cosDetail?.carbonioWscMaxGroupMembers}
-                fromSubValue={accSpecificDetail?.carbonioWscMaxGroupMembers}
                 inputName="carbonioWscMaxGroupMembers"
-                onChange={changeInputOption('carbonioWscMaxGroupMembers')}
+                featuresDetail={featuresDetail}
+                cosDetail={cosDetail}
+                accSpecificDetail={accSpecificDetail}
+                changeValue={changeInputOption('carbonioWscMaxGroupMembers')}
                 onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxGroupMembers')}
                 disabled={disableWscSettings}
               />
@@ -304,17 +370,16 @@ export const WscSettings: FC<{
               )}
               descriptionGap
             >
-              <InheritedInput
-                isRequired
+              <WscInheritedInput
                 label={t(
                   'wsc.section.content.input.groupPicture',
                   'Maximum group picture size in MB',
                 )}
-                subValue={featuresDetail?.carbonioWscMaxRoomPictureSize}
-                inheritedValue={cosDetail?.carbonioWscMaxRoomPictureSize}
-                fromSubValue={accSpecificDetail?.carbonioWscMaxRoomPictureSize}
                 inputName="carbonioWscMaxRoomPictureSize"
-                onChange={changeInputOption('carbonioWscMaxRoomPictureSize')}
+                featuresDetail={featuresDetail}
+                cosDetail={cosDetail}
+                accSpecificDetail={accSpecificDetail}
+                changeValue={changeInputOption('carbonioWscMaxRoomPictureSize')}
                 onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxRoomPictureSize')}
                 disabled={disableWscSettings}
               />
@@ -434,17 +499,16 @@ export const WscSettings: FC<{
               )}
               descriptionGap
             >
-              <InheritedInput
-                isRequired
+              <WscInheritedInput
                 label={t(
                   'wsc.section.content.input.attachmentSize',
                   'Maximum attachment size in MB',
                 )}
-                subValue={featuresDetail?.carbonioWscMaxAttachmentSize}
-                inheritedValue={cosDetail?.carbonioWscMaxAttachmentSize}
-                fromSubValue={accSpecificDetail?.carbonioWscMaxAttachmentSize}
                 inputName="carbonioWscMaxAttachmentSize"
-                onChange={changeInputOption('carbonioWscMaxAttachmentSize')}
+                featuresDetail={featuresDetail}
+                cosDetail={cosDetail}
+                accSpecificDetail={accSpecificDetail}
+                changeValue={changeInputOption('carbonioWscMaxAttachmentSize')}
                 onChangeReset={(): void => setEmptyValue?.('carbonioWscMaxAttachmentSize')}
                 disabled={
                   disableWscSettings || featuresDetail?.carbonioWscAttachmentUpload === 'FALSE'

@@ -6,8 +6,8 @@
 import { PlainSelect } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
-import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
+import { isInheritedOverridden } from './is-inherited-overridden';
+import { RevertToInheritedIcon } from './revert-to-inherited-icon';
 
 type PrefSelectItem = { value: string; label: string };
 
@@ -16,10 +16,11 @@ type InheritedPrefSelectProps = {
   readonly selectName: string;
   readonly items: Array<PrefSelectItem>;
   readonly values: Record<string, any>;
-  readonly cosDetail: Record<string, any>;
-  readonly accSpecificDetail: Record<string, any>;
+  readonly cosDetail?: Record<string, any>;
+  readonly accSpecificDetail?: Record<string, any>;
   readonly onChange: (value: string) => void;
   readonly setEmptyValue: (keyName: string) => void;
+  readonly disabled?: boolean;
 };
 
 export const InheritedPrefSelect = ({
@@ -31,6 +32,7 @@ export const InheritedPrefSelect = ({
   accSpecificDetail,
   onChange,
   setEmptyValue,
+  disabled,
 }: InheritedPrefSelectProps) => {
   const [t] = useTranslation();
   const liveValue = values?.[selectName] as string | undefined;
@@ -54,6 +56,7 @@ export const InheritedPrefSelect = ({
         selectItems[0]
       }
       onChange={onChange}
+      disabled={disabled}
       description={
         isOverridden
           ? undefined

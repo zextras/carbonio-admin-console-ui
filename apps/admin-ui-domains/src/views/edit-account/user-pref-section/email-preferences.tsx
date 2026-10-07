@@ -9,6 +9,7 @@ import { InheritedSwitch, PlainInput, PlainSelect, Row } from '@zextras/ui-compo
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { InheritedPrefSelect } from '../../utility/inherited-pref-select';
 import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
 import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import { charactorSet, conversationGroupBy } from '../../utility/utils';
@@ -17,7 +18,6 @@ import {
   useSetAccountValues,
   useToggleAccountValue,
 } from '../account-form-context';
-import { InheritedPrefSelect } from './inherited-pref-select';
 
 export const EmailPreferences = () => {
   const [t] = useTranslation();
@@ -68,9 +68,7 @@ export const EmailPreferences = () => {
     { label: t('label.ask_me', 'Ask me'), value: 'prompt' },
   ];
 
-  const cacheDurationLive = accountDetail?.zimbraPrefOutOfOfficeCacheDuration as
-    | string
-    | undefined;
+  const cacheDurationLive = accountDetail?.zimbraPrefOutOfOfficeCacheDuration as string | undefined;
   const cacheDurationInherited = cosDetail?.zimbraPrefOutOfOfficeCacheDuration as
     | string
     | undefined;
@@ -80,10 +78,7 @@ export const EmailPreferences = () => {
     cacheDurationInherited,
   );
 
-  const inheritedDescription = t(
-    'label.inherited_from_cos',
-    'Inherited from the Class of Service',
-  );
+  const inheritedDescription = t('label.inherited_from_cos', 'Inherited from the Class of Service');
   const revertLabel = t('label.click_to_revert', 'Click to revert to the inherited value');
 
   const changeOutOfOfficeDurationetail = (e: ChangeEvent<HTMLInputElement>) => {
