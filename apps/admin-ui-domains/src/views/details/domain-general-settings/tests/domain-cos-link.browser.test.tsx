@@ -198,9 +198,11 @@ describe('DomainCosLink (browser)', () => {
 		});
 	}
 
-	async function selectCosFromDropdown(cosName: string, matchIndex = 0): Promise<void> {
-		await page.getByLabelText(/select a cos to include in this domain/i).click();
-		await page.getByText(cosName).nth(matchIndex).click();
+	async function selectCosFromDropdown(cosName: string): Promise<void> {
+		await page
+			.getByRole('combobox', { name: /select a cos to include in this domain/i })
+			.click();
+		await page.getByRole('option', { name: cosName }).click();
 	}
 
 	describe('Global admin rendering', () => {
@@ -214,10 +216,12 @@ describe('DomainCosLink (browser)', () => {
 				/>,
 			);
 
-			await expect
-				.element(page.getByLabelText(/select a cos to include in this domain/i))
-				.toBeVisible();
-			await expect.element(page.getByLabelText(/handle accounts/i)).toBeVisible();
+		await expect
+			.element(
+				page.getByRole('combobox', { name: /select a cos to include in this domain/i }),
+			)
+			.toBeVisible();
+		await expect.element(page.getByLabelText(/handle accounts/i)).toBeVisible();
 			await expect.element(page.getByRole('button', { name: 'Duplicate' })).toBeVisible();
 			await expect.element(page.getByRole('button', { name: 'Link' })).toBeVisible();
 		});
@@ -256,13 +260,15 @@ describe('DomainCosLink (browser)', () => {
 				MANY_COS_LIST,
 			);
 
-			await page.getByLabelText(/select a cos to include in this domain/i).click();
+			await page
+				.getByRole('combobox', { name: /select a cos to include in this domain/i })
+				.click();
 
 			await expect
 				.element(
-					page.getByText(
-						'So many COSes! Which one would you like to see? Start typing to filter.',
-					),
+					page.getByRole('option', {
+						name: 'So many COSes! Which one would you like to see? Start typing to filter.',
+					}),
 				)
 				.toBeVisible();
 		});
@@ -330,11 +336,10 @@ describe('DomainCosLink (browser)', () => {
 			await expect
 				.poll(() => page.getByText('Standard COS').elements().length)
 				.toBe(1);
-			await page.getByLabelText(/select a cos to include in this domain/i).click();
-			await expect
-				.poll(() => page.getByText('Standard COS').elements().length)
-				.toBe(2);
-			await page.getByText('Standard COS').nth(1).click();
+			await page
+				.getByRole('combobox', { name: /select a cos to include in this domain/i })
+				.click();
+			await page.getByRole('option', { name: 'Standard COS' }).click();
 			// Baseline capture: a straggler request from an earlier test must not
 			// fail this assertion.
 			const grantRightCallsBeforeLink = grantRightCalls;

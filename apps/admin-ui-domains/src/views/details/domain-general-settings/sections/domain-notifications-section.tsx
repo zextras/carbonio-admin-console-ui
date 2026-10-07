@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { ChipInput, type ChipItem, Container, getFieldErrorProps, Input, ListRow, Row } from '@zextras/ui-components';
+import { ChipInput, type ChipItem, Container, getFieldErrorProps, ListRow, PlainInput, Row } from '@zextras/ui-components';
 import { some } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
@@ -43,12 +43,12 @@ export const DomainNotificationsSection = ({ form }: DomainNotificationsSectionP
                 DOMAIN_GENERAL_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  isRequired
+                <PlainInput
+                  required
                   label={t('label.notification_sender', 'Notification Sender')}
-                  backgroundColor="gray5"
-                  value={field.state.value}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  value={field.state.value ?? ''}
+                  autoComplete="off"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
                   }}
                   onBlur={() => field.handleBlur()}

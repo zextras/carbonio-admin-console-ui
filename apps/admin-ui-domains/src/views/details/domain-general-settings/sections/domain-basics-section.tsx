@@ -7,12 +7,13 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  CustomTextArea,
   getFieldErrorProps,
-  Input,
   LabeledValue,
   ListRow,
-  Select,
+  NumberInput,
+  PlainInput,
+  PlainSelect,
+  PlainTextarea,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
@@ -113,15 +114,14 @@ export const DomainBasicsSection = ({
                 DOMAIN_GENERAL_VALIDATION_MESSAGES,
               );
               return (
-                <Input
+                <NumberInput
                   label={t(
                     'label.max_manageable_account_for_the_domain',
                     'Max manageable account for the domain (0=unlimited)',
                   )}
-                  value={field.state.value}
-                  backgroundColor="gray6"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    field.handleChange(e.target.value);
+                  value={field.state.value ?? ''}
+                  onChange={(value: string): void => {
+                    field.handleChange(value);
                   }}
                   onBlur={() => field.handleBlur()}
                   disabled={!isGlobalAdmin}
@@ -147,15 +147,13 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPublicServiceProtocol">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={serviceProtocolItems}
-                background="gray5"
                 label={t('label.public_service_protocol', 'Public Service Protocol')}
-                showCheckbox={false}
-                onChange={(value: string | null) => {
-                  field.handleChange(value ?? NOT_SET);
-                }}
                 selection={selectedOption(serviceProtocolItems, field.state.value)}
+                onChange={(value: string): void => {
+                  field.handleChange(value);
+                }}
               />
             )}
           </form.Field>
@@ -163,12 +161,12 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPublicServiceHostname">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('label.public_service_hostname', 'Public Service Host Name')}
-                value={field.state.value}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                value={field.state.value ?? ''}
+                autoComplete="off"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
               />
@@ -178,11 +176,11 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPublicServicePort">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('label.public_service_port', 'Public Service Port')}
-                value={field.state.value}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                value={field.state.value ?? ''}
+                autoComplete="off"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
               />
@@ -195,15 +193,13 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPrefTimeZoneId">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={timezones}
-                background="gray5"
                 label={t('label.timezone', 'Time Zone')}
-                showCheckbox={false}
-                onChange={(value: string | null) => {
-                  field.handleChange(value ?? NOT_SET);
-                }}
                 selection={selectedOption(timezones, field.state.value)}
+                onChange={(value: string): void => {
+                  field.handleChange(value);
+                }}
               />
             )}
           </form.Field>
@@ -224,15 +220,13 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraDomainDefaultCOSId">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={cosItems}
-                background="gray5"
                 label={t('label.default_class_of_service', 'Default Class of Service')}
-                showCheckbox={false}
-                onChange={(value: string | null) => {
-                  field.handleChange(value ?? '');
-                }}
                 selection={selectedOption(cosItems, field.state.value)}
+                onChange={(value: string): void => {
+                  field.handleChange(value);
+                }}
               />
             )}
           </form.Field>
@@ -240,15 +234,13 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraDomainStatus">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={domainStatusItems}
-                background="gray5"
                 label={t('label.status', 'Status')}
-                showCheckbox={false}
-                onChange={(value: string | null) => {
-                  field.handleChange(value ?? ACTIVE);
-                }}
                 selection={selectedOption(domainStatusItems, field.state.value)}
+                onChange={(value: string): void => {
+                  field.handleChange(value);
+                }}
               />
             )}
           </form.Field>
@@ -259,11 +251,11 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="description">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t('label.description', 'Description')}
-                value={field.state.value}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                value={field.state.value ?? ''}
+                autoComplete="off"
+                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
               />
@@ -276,11 +268,10 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraNotes">
             {(field) => (
-              <CustomTextArea
+              <PlainTextarea
                 label={t('label.notes', 'Notes')}
-                value={field.state.value}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                value={field.state.value ?? ''}
+                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
                   field.handleChange(e.target.value);
                 }}
               />
