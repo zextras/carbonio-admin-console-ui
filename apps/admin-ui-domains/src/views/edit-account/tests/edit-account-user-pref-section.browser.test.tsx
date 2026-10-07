@@ -292,8 +292,8 @@ describe('EditAccountUserPreferencesSection (browser)', () => {
     };
     setupBrowserTest(wrapUserPref(overrides_contextWithReadReceipt));
     await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
-    const resetButton = page.getByTestId('reset-zimbraPrefMailSendReadReceipts');
-    await expect.element(resetButton).toBeVisible();
+    await expect.element(page.getByText('Always send a read receipt')).toBeVisible();
+    await expect.element(page.getByTestId('icon: RefreshOutline').first()).toBeVisible();
   });
 
   it('should render with different out of office cache duration', async () => {

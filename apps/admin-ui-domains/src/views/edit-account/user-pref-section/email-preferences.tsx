@@ -5,24 +5,19 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import {
-  InheritedInput,
-  InheritedSelect,
-  InheritedSwitch,
-  Row,
-} from '@zextras/ui-components';
+import { InheritedSwitch, PlainInput, PlainSelect, Row } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import {
-  charactorSet,
-  conversationGroupBy,
-} from '../../utility/utils';
+import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
+import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
+import { charactorSet, conversationGroupBy } from '../../utility/utils';
 import {
   useAccountForm,
   useSetAccountValues,
   useToggleAccountValue,
 } from '../account-form-context';
+import { InheritedPrefSelect } from './inherited-pref-select';
 
 export const EmailPreferences = () => {
   const [t] = useTranslation();
@@ -73,6 +68,24 @@ export const EmailPreferences = () => {
     { label: t('label.ask_me', 'Ask me'), value: 'prompt' },
   ];
 
+  const cacheDurationLive = accountDetail?.zimbraPrefOutOfOfficeCacheDuration as
+    | string
+    | undefined;
+  const cacheDurationInherited = cosDetail?.zimbraPrefOutOfOfficeCacheDuration as
+    | string
+    | undefined;
+  const isCacheDurationOverridden = isInheritedOverridden(
+    cacheDurationLive,
+    accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration as string | undefined,
+    cacheDurationInherited,
+  );
+
+  const inheritedDescription = t(
+    'label.inherited_from_cos',
+    'Inherited from the Class of Service',
+  );
+  const revertLabel = t('label.click_to_revert', 'Click to revert to the inherited value');
+
   const changeOutOfOfficeDurationetail = (e: ChangeEvent<HTMLInputElement>) => {
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
@@ -113,6 +126,13 @@ export const EmailPreferences = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
 
+  const prefSelectProps = {
+    values: accountDetail,
+    cosDetail,
+    accSpecificDetail,
+    setEmptyValue,
+  };
+
   return (
     <>
       <Row mainAlignment="flex-start" width="100%">
@@ -138,30 +158,30 @@ export const EmailPreferences = () => {
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="48%" mainAlignment="flex-start">
-          <InheritedSelect
-            label={t('label.group_by', 'Group by')}
-            items={GROUP_BY}
-            subValue={accountDetail.zimbraPrefGroupMailBy}
-            inheritedValue={cosDetail.zimbraPrefGroupMailBy}
-            fromSubValue={accSpecificDetail?.zimbraPrefGroupMailBy}
-            background="gray5"
-            selectName="zimbraPrefGroupMailBy"
-            onChange={onGroupByChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefGroupMailBy')}
-          />
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.group_by', 'Group by')}
+              selectName="zimbraPrefGroupMailBy"
+              items={GROUP_BY}
+              onChange={onGroupByChange}
+            />
+          ) : (
+            <></>
+          )}
         </Row>
         <Row width="48%" mainAlignment="flex-start">
-          <InheritedSelect
-            label={t('label.default_charset', 'Default Charset')}
-            items={CHARACTOR_SET}
-            subValue={accountDetail.zimbraPrefMailDefaultCharset}
-            inheritedValue={cosDetail.zimbraPrefMailDefaultCharset}
-            fromSubValue={accSpecificDetail?.zimbraPrefMailDefaultCharset}
-            background="gray5"
-            selectName="zimbraPrefMailDefaultCharset"
-            onChange={onCharactorSetChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefMailDefaultCharset')}
-          />
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.default_charset', 'Default Charset')}
+              selectName="zimbraPrefMailDefaultCharset"
+              items={CHARACTOR_SET}
+              onChange={onCharactorSetChange}
+            />
+          ) : (
+            <></>
+          )}
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
@@ -208,17 +228,17 @@ export const EmailPreferences = () => {
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="100%" mainAlignment="flex-start">
-          <InheritedSelect
-            label={t('label.check_new_mail_every', 'Check new mail every')}
-            items={POLLING_INTERVAL}
-            subValue={accountDetail.zimbraPrefMailPollingInterval}
-            inheritedValue={cosDetail.zimbraPrefMailPollingInterval}
-            fromSubValue={accSpecificDetail?.zimbraPrefMailPollingInterval}
-            background="gray5"
-            selectName="zimbraPrefMailPollingInterval"
-            onChange={onPollingIntervalChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefMailPollingInterval')}
-          />
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.check_new_mail_every', 'Check new mail every')}
+              selectName="zimbraPrefMailPollingInterval"
+              items={POLLING_INTERVAL}
+              onChange={onPollingIntervalChange}
+            />
+          ) : (
+            <></>
+          )}
         </Row>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
@@ -240,45 +260,63 @@ export const EmailPreferences = () => {
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="48%" mainAlignment="flex-start">
-          <InheritedInput
+          <PlainInput
             label={t('label.out_of_office_cache_lifetime', 'Out of office cache lifetime')}
-            subValue={accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1) || ''}
-            inheritedValue={cosDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(0, -1) || ''}
-            fromSubValue={accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration}
-            background="gray5"
-            inputName="zimbraPrefOutOfOfficeCacheDuration"
+            name="zimbraPrefOutOfOfficeCacheDuration"
+            type="number"
+            autoComplete="off"
+            value={cacheDurationLive?.slice(0, -1) ?? cacheDurationInherited?.slice(0, -1) ?? ''}
             onChange={changeOutOfOfficeDurationetail}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefOutOfOfficeCacheDuration')}
-            pref={{ type: 'number' }}
+            description={isCacheDurationOverridden ? undefined : inheritedDescription}
+            icon={
+              isCacheDurationOverridden ? (
+                <RevertToInheritedIcon
+                  label={revertLabel}
+                  onClick={(): void => setEmptyValue('zimbraPrefOutOfOfficeCacheDuration')}
+                />
+              ) : undefined
+            }
           />
         </Row>
         <Row width="48%" mainAlignment="flex-start">
-          <InheritedSelect
-            label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
-            items={TIME_TYPES}
-            subValue={accountDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''}
-            inheritedValue={cosDetail?.zimbraPrefOutOfOfficeCacheDuration?.slice(-1) || ''}
-            fromSubValue={accSpecificDetail?.zimbraPrefOutOfOfficeCacheDuration}
-            background="gray5"
-            selectName="zimbraPrefOutOfOfficeCacheDuration"
-            onChange={onOutOfOfficeCacheDurationTypeChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefOutOfOfficeCacheDuration')}
-          />
+          {accountDetail?.zimbraId ? (
+            <PlainSelect
+              label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
+              items={TIME_TYPES}
+              selection={
+                TIME_TYPES.find((item) => item.value === cacheDurationLive?.slice(-1)) ??
+                TIME_TYPES.find((item) => item.value === cacheDurationInherited?.slice(-1)) ??
+                TIME_TYPES[0]
+              }
+              onChange={onOutOfOfficeCacheDurationTypeChange}
+              description={isCacheDurationOverridden ? undefined : inheritedDescription}
+              icon={
+                isCacheDurationOverridden ? (
+                  <RevertToInheritedIcon
+                    label={revertLabel}
+                    onClick={(): void => setEmptyValue('zimbraPrefOutOfOfficeCacheDuration')}
+                  />
+                ) : undefined
+              }
+            />
+          ) : (
+            <></>
+          )}
         </Row>
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="48%" mainAlignment="flex-start">
-          <InheritedSelect
-            label={t('label.read_receipt_settings', 'Read Receipt settings')}
-            items={SEND_READ_RECEIPTS}
-            subValue={accountDetail?.zimbraPrefMailSendReadReceipts}
-            inheritedValue={cosDetail.zimbraPrefMailSendReadReceipts}
-            fromSubValue={accSpecificDetail?.zimbraPrefMailSendReadReceipts}
-            background="gray5"
-            selectName="zimbraPrefMailSendReadReceipts"
-            onChange={onReadReceiptChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefMailSendReadReceipts')}
-          />
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.read_receipt_settings', 'Read Receipt settings')}
+              selectName="zimbraPrefMailSendReadReceipts"
+              items={SEND_READ_RECEIPTS}
+              onChange={onReadReceiptChange}
+            />
+          ) : (
+            <></>
+          )}
         </Row>
       </Row>
     </>
