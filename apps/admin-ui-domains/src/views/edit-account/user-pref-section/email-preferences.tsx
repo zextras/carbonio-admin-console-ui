@@ -89,14 +89,20 @@ export const EmailPreferences = () => {
   const changeOutOfOfficeDurationetail = (e: ChangeEvent<HTMLInputElement>) => {
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
-      zimbraPrefOutOfOfficeCacheDuration: `${e.target.value}${outOfOfficeCacheDurationType}`,
+      zimbraPrefOutOfOfficeCacheDuration: e.target.value
+        ? `${e.target.value}${outOfOfficeCacheDurationType}`
+        : '',
     }));
     setOutOfOfficeCacheDurationNum(e.target.value);
   };
   const onOutOfOfficeCacheDurationTypeChange = (v: string) => {
+    const num =
+      (cacheDurationLive ?? cacheDurationInherited ?? '').slice(0, -1) ||
+      outOfOfficeCacheDurationNum ||
+      '';
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
-      zimbraPrefOutOfOfficeCacheDuration: `${outOfOfficeCacheDurationNum}${v}`,
+      zimbraPrefOutOfOfficeCacheDuration: num ? `${num}${v}` : '',
     }));
   };
   const onGroupByChange = (v: string): void => {

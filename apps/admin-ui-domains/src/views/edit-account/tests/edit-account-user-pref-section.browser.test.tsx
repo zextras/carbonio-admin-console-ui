@@ -292,8 +292,9 @@ describe('EditAccountUserPreferencesSection (browser)', () => {
     };
     setupBrowserTest(wrapUserPref(overrides_contextWithReadReceipt));
     await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
-    await expect.element(page.getByText('Always send a read receipt')).toBeVisible();
-    await expect.element(page.getByTestId('icon: RefreshOutline').first()).toBeVisible();
+    const readReceiptTrigger = page.getByRole('button', { name: 'Read Receipt settings' });
+    await expect.element(readReceiptTrigger).toBeVisible();
+    await expect.element(readReceiptTrigger).toHaveTextContent('Always send a read receipt');
   });
 
   it('should render with different out of office cache duration', async () => {
