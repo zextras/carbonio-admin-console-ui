@@ -9,15 +9,17 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
-  CustomTextArea,
   Displayer,
-  Input,
   LabeledValue,
   ListRow,
+  NumberInput,
   Padding,
+  PasswordInput,
+  PlainInput,
+  PlainSelect,
+  PlainTextarea,
   RouteLeavingGuard,
   Row,
-  Select,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useCosList, useStickyBarStore } from '@zextras/ui-shared';
@@ -495,11 +497,11 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <form.Field name="displayName">
                     {(field) => (
-                      <Input
-                        isRequired
+                      <PlainInput
+                        required
                         label={t('label.name', 'Name')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
+                        value={field.state.value ?? ''}
+                        autoComplete="off"
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           field.handleChange(e.target.value)
                         }
@@ -517,11 +519,11 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="mail">
                     {(field) => (
-                      <Input
-                        isRequired
+                      <PlainInput
+                        required
                         label={t('label.email', 'Email')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
+                        value={field.state.value ?? ''}
+                        autoComplete="off"
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           field.handleChange(e.target.value)
                         }
@@ -555,12 +557,12 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="zimbraCalResType">
                     {(field) => (
-                      <Select
+                      <PlainSelect
                         items={resourceTypeOptions}
-                        background="gray5"
                         label={t('label.type', 'Type')}
-                        showCheckbox={false}
-                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        onChange={(v) => {
+                          field.handleChange(v);
+                        }}
                         selection={selectedResourceType}
                       />
                     )}
@@ -578,12 +580,12 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <form.Field name="zimbraAccountStatus">
                     {(field) => (
-                      <Select
+                      <PlainSelect
                         items={accountStatusOptions}
-                        background="gray5"
                         label={t('label.status', 'Status')}
-                        showCheckbox={false}
-                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        onChange={(v) => {
+                          field.handleChange(v);
+                        }}
                         selection={selectedStatus}
                       />
                     )}
@@ -599,12 +601,12 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="zimbraCOSId">
                     {(field) => (
-                      <Select
+                      <PlainSelect
                         items={cosItems}
-                        background="gray5"
                         label={t('label.class_of_service', 'Class of Service')}
-                        showCheckbox={false}
-                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        onChange={(v) => {
+                          field.handleChange(v);
+                        }}
                         selection={selectedCosItem}
                       />
                     )}
@@ -622,12 +624,12 @@ const ResourceEditForm = ({
                 <Row width="100%">
                   <form.Field name="zimbraCalResAutoDeclineRecurring">
                     {(field) => (
-                      <Select
+                      <PlainSelect
                         items={autoRefuseOptions}
-                        background="gray5"
                         label={t('label.auto_refuse', 'Auto-Refuse')}
-                        showCheckbox={false}
-                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        onChange={(v) => {
+                          field.handleChange(v);
+                        }}
                         selection={selectedAutoRefuse}
                       />
                     )}
@@ -645,12 +647,12 @@ const ResourceEditForm = ({
                 <Row width="100%">
                   <form.Field name="schedulePolicyType">
                     {(field) => (
-                      <Select
+                      <PlainSelect
                         items={schedulePolicyOptions}
-                        background="gray5"
                         label={t('label.schedule_policy', 'Set Policy')}
-                        showCheckbox={false}
-                        onChange={(v) => { if (v !== null) field.handleChange(v); }}
+                        onChange={(v) => {
+                          field.handleChange(v);
+                        }}
                         selection={selectedSchedulePolicy}
                       />
                     )}
@@ -668,13 +670,12 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <form.Field name="zimbraCalResMaxNumConflictsAllowed">
                     {(field) => (
-                      <Input
+                      <NumberInput
                         label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          field.handleChange(e.target.value)
-                        }
+                        value={field.state.value ?? ''}
+                        onChange={(value: string) => {
+                          field.handleChange(value);
+                        }}
                       />
                     )}
                   </form.Field>
@@ -689,16 +690,15 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="zimbraCalResMaxPercentConflictsAllowed">
                     {(field) => (
-                      <Input
+                      <NumberInput
                         label={t(
                           'label.percentage_maximum_conflict_allowed',
                           '% Maximum Conflict Allowed',
                         )}
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          field.handleChange(e.target.value)
-                        }
+                        value={field.state.value ?? ''}
+                        onChange={(value: string) => {
+                          field.handleChange(value);
+                        }}
                       />
                     )}
                   </form.Field>
@@ -765,13 +765,12 @@ const ResourceEditForm = ({
                 <Row width="100%">
                   <form.Field name="password">
                     {(field) => (
-                      <Input
-                        isRequired
+                      <PasswordInput
+                        required
                         label={t('label.password', 'Password')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        inputName="password"
-                        type="password"
+                        value={field.state.value ?? ''}
+                        name="password"
+                        autoComplete="new-password"
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           field.handleChange(e.target.value)
                         }
@@ -791,13 +790,12 @@ const ResourceEditForm = ({
                 <Row width="100%">
                   <form.Field name="repeatPassword">
                     {(field) => (
-                      <Input
-                        isRequired
+                      <PasswordInput
+                        required
                         label={t('label.repeat_password', 'Repeat Password')}
-                        backgroundColor="gray5"
-                        value={field.state.value}
-                        inputName="repeatPassword"
-                        type="password"
+                        value={field.state.value ?? ''}
+                        name="repeatPassword"
+                        autoComplete="new-password"
                         onChange={(e: ChangeEvent<HTMLInputElement>) =>
                           field.handleChange(e.target.value)
                         }
@@ -823,11 +821,10 @@ const ResourceEditForm = ({
             <Row padding={{ top: 'extralarge' }} width="100%">
               <form.Field name="zimbraNotes">
                 {(field) => (
-                  <CustomTextArea
+                  <PlainTextarea
                     label={t('label.description', 'Description')}
-                    backgroundColor="gray5"
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    value={field.state.value ?? ''}
+                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
                       field.handleChange(e.target.value)
                     }
                   />

@@ -5,9 +5,10 @@
  */
 import {
   Button,
+  ComboboxInput,
+  type ComboboxItem,
   Container,
   CustomHeaderFactory,
-  DropDownInput,
   HoverableRowFactory,
   Input,
   ListRow,
@@ -58,6 +59,7 @@ export const SendInviteAccounts = ({
   const [searchMemberResult, setSearchMemberResult] = useState<Array<{ id: string; name: string }>>(
     [],
   );
+  const [searchMemberFetching, setSearchMemberFetching] = useState(false);
 
   const sendInviteHeaders = [
     { id: 'account', label: t('label.accounts', 'Accounts'), width: '100%', bold: true },
@@ -107,6 +109,7 @@ export const SendInviteAccounts = ({
     const types = 'accounts,distributionlists,aliases';
     const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
 
+    setSearchMemberFetching(true);
     searchDirectory({
       attr: attrs,
       type: types,
@@ -133,6 +136,9 @@ export const SendInviteAccounts = ({
       .catch((error: Error) => {
         const snackbarConfig = generateSnackbarFromError(error, t);
         createSnackbar(snackbarConfig);
+      })
+      .finally(() => {
+        setSearchMemberFetching(false);
       });
   }
 
@@ -142,27 +148,18 @@ export const SendInviteAccounts = ({
     }
   }, 700);
 
-  const searchMemberItems = searchMemberResult.map((item) => ({
+  const searchMemberItems: Array<ComboboxItem> = searchMemberResult.map((item) => ({
     id: item.id,
     label: item.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={() => {
-          setNewSentInviteValue(item.name);
-          setSendInviteAddBtnDisabled(!isValidEmail(item.name));
-        }}
-      >
-        {item.name}
-      </Row>
-    ),
   }));
+
+  function onSelectSearchMember(item: ComboboxItem): void {
+    const entry = searchMemberResult.find((result) => result.id === item.id);
+    if (entry) {
+      setNewSentInviteValue(entry.name);
+      setSendInviteAddBtnDisabled(!isValidEmail(entry.name));
+    }
+  }
 
   return (
     <>
@@ -184,18 +181,17 @@ export const SendInviteAccounts = ({
             padding={{ top: 'large' }}
           >
             <Row mainAlignment="flex-start" style={{ width: '60%' }}>
-              <DropDownInput
-                maxWidth="19rem"
-                width="19rem"
+              <ComboboxInput
+                label={t('label.enter_email_address', 'Enter E-mail address')}
                 items={searchMemberItems}
-                inputLabel={t('label.enter_email_address', 'Enter E-mail address')}
+                value={newSentInviteValue}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setNewSentInviteValue(e.target.value);
                   setSendInviteAddBtnDisabled(!isValidEmail(e.target.value));
                   searchMemberCall(e.target.value);
                 }}
-                inputValue={newSentInviteValue}
-                isCustomIcon={false}
+                onSelect={onSelectSearchMember}
+                loading={searchMemberFetching}
               />
             </Row>
             <Row

@@ -104,7 +104,7 @@ describe('ResourceEditDetailView (browser)', () => {
         />,
       );
 
-      await expect.element(page.getByLabelText('Name', { exact: true })).toBeVisible();
+      await expect.element(page.getByLabelText(/^Name/)).toBeVisible();
     });
 
     it('renders the Email input after data loads', async () => {
@@ -117,7 +117,7 @@ describe('ResourceEditDetailView (browser)', () => {
         />,
       );
 
-      await expect.element(page.getByLabelText('Email')).toBeVisible();
+      await expect.element(page.getByLabelText(/^Email/)).toBeVisible();
     });
 
     it('renders the Password section', async () => {
@@ -222,7 +222,7 @@ describe('ResourceEditDetailView (browser)', () => {
         />,
       );
 
-      const passwordInput = page.getByLabelText('Password', { exact: true });
+      const passwordInput = page.getByLabelText(/^Password/);
       await userEvent.type(passwordInput, 'newpassword');
 
       await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
@@ -241,7 +241,7 @@ describe('ResourceEditDetailView (browser)', () => {
         />,
       );
 
-      const nameInput = page.getByLabelText('Name', { exact: true });
+      const nameInput = page.getByLabelText(/^Name/);
       await userEvent.type(nameInput, ' Updated');
 
       await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
@@ -255,7 +255,7 @@ describe('ResourceEditDetailView (browser)', () => {
         />,
       );
 
-      const nameInput = page.getByLabelText('Name', { exact: true });
+      const nameInput = page.getByLabelText(/^Name/);
       await userEvent.type(nameInput, ' Updated');
       await expect.element(page.getByRole('button', { name: /cancel/i })).toBeVisible();
 
@@ -285,7 +285,7 @@ describe('ResourceEditDetailView (browser)', () => {
         />,
       );
 
-      await userEvent.type(page.getByLabelText('Password', { exact: true }), '123');
+      await userEvent.type(page.getByLabelText(/^Password/), '123');
       await userEvent.click(page.getByRole('button', { name: /save/i }));
 
       await expect
