@@ -182,13 +182,13 @@ export const AdminRightsSection = ({
     ),
   }));
 
-	const onAdd = (): void => {
-		if (!selectedOption) return;
-		addMutation.mutateAsync(
-			{
-				listId: selectedOption.value,
-				member: accountName,
-			},
+  const onAdd = (): void => {
+    if (!selectedOption) return;
+    addMutation.mutateAsync(
+      {
+        listId: selectedOption.value,
+        member: accountName,
+      },
       {
         onSuccess: (): void => {
           successSnackbar(
@@ -256,13 +256,13 @@ export const AdminRightsSection = ({
             disabled={options?.length < 1}
             items={options}
             label={t('label.rights_access_control_lists', 'Rights (Access Control Lists)')}
-					selection={
-						options.find(
-							(item: { label: string; value: string }) => item.value === selectedOption?.value,
-						) ?? { label: '', value: '' }
-					}
+            selection={
+              options.find(
+                (item: { label: string; value: string }) => item.value === selectedOption?.value,
+              ) ?? { label: '', value: '' }
+            }
             onChange={(v: string): void => {
-              const it = options.find((item: any) => item.value === v);
+              const it = options.find((item: { label: string; value: string }) => item.value === v);
               setSelectedOption(it);
             }}
           />

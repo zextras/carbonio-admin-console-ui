@@ -12,7 +12,7 @@ import {
   Row,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
-import { useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAccountListDirectory } from '../../../services/use-account-list-directory';
@@ -84,7 +84,7 @@ export const DelegateSelectModeSection = () => {
 
   const delegateAccountList = buildDelegateAccountItems(delegateAccounts, accountDetail.zimbraId);
 
-  const onGroupByChange = (v: any): any => {
+  const onGroupByChange = (v: string): void => {
     setDeligateDetail((prev: any) => ({
       ...prev,
       grantee: [{ type: v, name: deligateDetail?.grantee?.[0]?.name || '' }],
@@ -108,12 +108,12 @@ export const DelegateSelectModeSection = () => {
           <PlainSelect
             label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
             items={DELEGETES_TYPE}
-						selection={
-							DELEGETES_TYPE.find(
-								(item: { value: string; label: string }) =>
-									item.value === deligateDetail?.grantee?.[0]?.type,
-							) ?? { label: '', value: '' }
-						}
+            selection={
+              DELEGETES_TYPE.find(
+                (item: { value: string; label: string }) =>
+                  item.value === deligateDetail?.grantee?.[0]?.type,
+              ) ?? { label: '', value: '' }
+            }
             onChange={onGroupByChange}
           />
         </Row>
@@ -123,16 +123,16 @@ export const DelegateSelectModeSection = () => {
           <ComboboxInput
             items={delegateAccountList}
             label={t('account_details.search_here_for_an_account', 'Search here for an Account')}
-            onChange={(ev: any): void => {
+            onChange={(ev: ChangeEvent<HTMLInputElement>): void => {
               setSearchDelegateAccountName(ev.target.value);
             }}
             value={searchDelegateAccountName ?? deligateDetail?.grantee?.[0]?.name ?? ''}
-						onSelect={(item: ComboboxItem): void => {
-							const entry = delegateAccounts.find(
-								(account: DelegateAccount) => account.id === item.id,
-							);
-							if (entry) selectedDelegateAccount(entry);
-						}}
+            onSelect={(item: ComboboxItem): void => {
+              const entry = delegateAccounts.find(
+                (account: DelegateAccount) => account.id === item.id,
+              );
+              if (entry) selectedDelegateAccount(entry);
+            }}
             loading={isFetching}
           />
         </Row>

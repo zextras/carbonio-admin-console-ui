@@ -53,7 +53,7 @@ export const InheritedPrefSelect = ({
       selection={
         selectItems.find((item) => item.value === liveValue) ??
         selectItems.find((item) => item.value === inheritedValue) ??
-        selectItems[0]
+        selectItems[0] ?? { label: '', value: '' }
       }
       onChange={onChange}
       disabled={disabled}

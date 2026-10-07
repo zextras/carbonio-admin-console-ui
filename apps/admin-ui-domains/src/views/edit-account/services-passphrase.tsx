@@ -193,7 +193,7 @@ export const ServicesPassphrase = () => {
                 selection={
                   SERVICE_PASSPHRASE_STATUS.find(
                     (el: SelectStatusType) => el.value === item?.enabled,
-                  ) ?? SERVICE_PASSPHRASE_STATUS[0]
+                  ) ?? { label: '', value: false }
                 }
                 onChange={(): void => undefined}
                 disabled

@@ -117,6 +117,10 @@ export const WscSettings: FC<{
     }));
   };
 
+  const resetInherited = (keyName: string): void => {
+    setEmptyValue?.(keyName);
+  };
+
   const changeSelectOption =
     (key: keyof AccountDetail) =>
     (value: string): void => {
@@ -264,9 +268,7 @@ export const WscSettings: FC<{
                 accSpecificDetail={accSpecificDetail}
                 selectName="carbonioWscMessageDeleteTimeLimit"
                 onChange={changeSelectOption('carbonioWscMessageDeleteTimeLimit')}
-                setEmptyValue={(keyName: string): void => {
-                  setEmptyValue?.(keyName);
-                }}
+                setEmptyValue={resetInherited}
                 disabled={disableWscSettings}
               />
               <Padding top="small" />
@@ -286,9 +288,7 @@ export const WscSettings: FC<{
                 accSpecificDetail={accSpecificDetail}
                 selectName="carbonioWscMessageEditTimeLimit"
                 onChange={changeSelectOption('carbonioWscMessageEditTimeLimit')}
-                setEmptyValue={(keyName: string): void => {
-                  setEmptyValue?.(keyName);
-                }}
+                setEmptyValue={resetInherited}
                 disabled={disableWscSettings}
               />
             </SettingLayout>
