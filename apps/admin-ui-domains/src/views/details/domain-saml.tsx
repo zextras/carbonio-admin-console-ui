@@ -9,8 +9,8 @@ import {
   CustomHeaderFactory,
   FormPageLayout,
   HoverableRowFactory,
-  Input,
   Padding,
+  PlainInput,
   Row,
   Switch,
   Table,
@@ -41,20 +41,16 @@ const SNACKBAR_TIMEOUT = 3000;
 
 type DomainAttribute = { n: string; _content?: string };
 
-type ClearIconProps = { hasError: boolean; hasFocus: boolean; disabled: boolean };
-
 function createInputClearIcon(
   visible: boolean,
   onClear: () => void,
   ariaLabel: string,
-): React.ComponentType<ClearIconProps> {
-  return function InputClearIcon() {
-    return visible ? (
-      <button type="button" aria-label={ariaLabel} className={styles.clearButton} onClick={onClear}>
-        <ds-icon icon="CloseOutline" size="large" color="secondary" />
-      </button>
-    ) : null;
-  };
+): React.ReactNode {
+  return visible ? (
+    <button type="button" aria-label={ariaLabel} className={styles.clearButton} onClick={onClear}>
+      <ds-icon icon="CloseOutline" size="large" color="secondary" />
+    </button>
+  ) : null;
 }
 
 function buildTableHeaders(
@@ -295,13 +291,13 @@ export const DomainSaml = () => {
             />
           </Container>
           <Container mainAlignment="flex-start" width="72%">
-            <Input
+            <PlainInput
               label={t(
                 'label.import_saml_metadata_from_idp',
                 'Import the SAML Metadata from the IDP',
               )}
-              backgroundColor="gray5"
               value={metadataUrl}
+              autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setMetadataUrl(e.target.value);
               }}
@@ -456,17 +452,17 @@ export const DomainSaml = () => {
           padding={{ all: 'large' }}
         >
           <Container mainAlignment="flex-start" crossAlignment="flex-end" orientation="vertical">
-            <Input
+            <PlainInput
               label={t(
                 'label.select_an_attribute_to_show_its_value',
                 'Select an Attribute to show its value',
               )}
-              backgroundColor="gray5"
               value={samlAttrKey}
+              autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setSamlAttrKey(e.target.value);
               }}
-              CustomIcon={createInputClearIcon(
+              icon={createInputClearIcon(
                 Boolean(samlAttrKey),
                 () => {
                   setSamlAttrKey('');
@@ -484,17 +480,17 @@ export const DomainSaml = () => {
           padding={{ left: 'large', bottom: 'large', right: 'large' }}
         >
           <Container mainAlignment="flex-start" crossAlignment="flex-end" orientation="vertical">
-            <Input
+            <PlainInput
               label={t(
                 'label.here_will_be_shown_the_attribute_value',
                 'The Attribute Value will be displayed here',
               )}
-              backgroundColor="gray5"
               value={samlAttrValue}
+              autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 setSamlAttrValue(e.target.value);
               }}
-              CustomIcon={createInputClearIcon(
+              icon={createInputClearIcon(
                 Boolean(samlAttrValue),
                 () => {
                   setSamlAttrValue('');

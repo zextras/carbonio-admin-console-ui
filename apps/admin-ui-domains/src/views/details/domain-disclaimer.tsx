@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { FormPageLayout, Switch, TextArea } from '@zextras/ui-components';
+import { FormPageLayout, PlainTextarea, Switch } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -62,11 +62,10 @@ export const DomainDisclaimer = () => {
             </ds-text>
             <form.Field name="zimbraAmavisDomainDisclaimerText">
               {(field) => (
-                <TextArea
+                <PlainTextarea
                   label={''}
                   value={field.state.value}
-                  // @ts-expect-error - needs a fix
-                  onChange={(event: ChangeEvent<HTMLInputElement>): void => {
+                  onChange={(event: ChangeEvent<HTMLTextAreaElement>): void => {
                     field.handleChange(event.currentTarget.value);
                   }}
                   maxHeight="20.5rem"
