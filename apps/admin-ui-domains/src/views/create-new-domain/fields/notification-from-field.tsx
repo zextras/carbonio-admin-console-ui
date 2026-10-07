@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Input } from '@zextras/ui-components';
+import { PlainInput } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,10 +26,10 @@ export const NotificationFromField = ({ form }: NotificationFromFieldProps) => {
 
 	return (
 		<div className={styles.fieldStart}>
-			<Input
+			<PlainInput
 				label={t('label.notification_sender', 'Notification Sender')}
-				backgroundColor="gray5"
-				value={field.state.value}
+				autoComplete="off"
+				value={field.state.value ?? ''}
 				hasError={error.hasError}
 				description={error.description}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

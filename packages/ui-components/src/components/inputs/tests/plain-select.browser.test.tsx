@@ -59,6 +59,22 @@ describe('PlainSelect', () => {
       expect(trigger.textContent).toBe('Banana');
     });
 
+    it('keeps the trigger visible and clickable when the selection label is empty', async () => {
+      await render(
+        <PlainSelect
+          label="Fruit"
+          items={FRUITS}
+          selection={{ label: '', value: '' }}
+          onChange={() => {}}
+        />,
+      );
+
+      const trigger = page.getByRole('button', { name: 'Fruit' });
+      await expect.element(trigger).toBeVisible();
+      await trigger.click();
+      await expect.element(page.getByRole('option', { name: 'Apple' })).toBeVisible();
+    });
+
     it('declares a listbox popup, collapsed by default', async () => {
       await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
 

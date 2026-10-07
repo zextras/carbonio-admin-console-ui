@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Input } from '@zextras/ui-components';
+import { PlainInput } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -26,11 +26,11 @@ export const DomainNameField = ({ form }: DomainNameFieldProps) => {
 
 	return (
 		<div className={styles.fieldStart}>
-			<Input
+			<PlainInput
 				label={t('label.type_name_your_domain_will_have', 'Type the name your domain will have')}
-				isRequired
-				backgroundColor="gray5"
-				value={field.state.value}
+				required
+				autoComplete="off"
+				value={field.state.value ?? ''}
 				hasError={error.hasError}
 				description={error.description}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

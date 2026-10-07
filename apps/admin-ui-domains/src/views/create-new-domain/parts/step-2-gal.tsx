@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Input, ListRow, type SelectItem, Tooltip } from '@zextras/ui-components';
+import { LabeledValue, ListRow, type SelectItem, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { DatasourceNameField } from '../fields/datasource-name-field';
@@ -57,15 +57,13 @@ export const Step2Gal = ({
 							</Tooltip>
 						</div>
 						<ListRow>
-							<div className={styles.fieldStart}>
-								<Input
-									label={t('label.gal_mode', 'GAL Mode')}
-									value="Internal"
-									disabled
-									backgroundColor="gray5"
-									onChange={(): void => undefined}
-								/>
-							</div>
+						<div className={styles.fieldStart}>
+							<LabeledValue
+								label={t('label.gal_mode', 'GAL Mode')}
+								backgroundColor="gray6"
+								value="Internal"
+							/>
+						</div>
 						</ListRow>
 						<ListRow>
 							<GalFolderNameField form={form} />
