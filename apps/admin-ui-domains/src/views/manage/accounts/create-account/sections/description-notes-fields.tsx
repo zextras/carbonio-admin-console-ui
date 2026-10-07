@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { CustomTextArea, Input } from '@zextras/ui-components';
+import { PlainInput, PlainTextarea } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,14 +27,14 @@ export const DescriptionNotesFields = (): ReactElement => {
           </ds-text>
         </div>
         <div className="flex w-full flex-wrap justify-center pt-lg pl-lg">
-          <Input
-            backgroundColor="gray5"
+          <PlainInput
             label={t('label.description', 'Description')}
-            value={descriptionField.state.value}
+            name="description"
+            autoComplete="off"
+            value={descriptionField.state.value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               descriptionField.handleChange(e.target.value);
             }}
-            inputName="description"
           />
         </div>
       </div>
@@ -45,12 +45,11 @@ export const DescriptionNotesFields = (): ReactElement => {
           </ds-text>
         </div>
         <div className="flex w-full flex-wrap justify-center pt-lg pl-lg">
-          <CustomTextArea
+          <PlainTextarea
             label={t('label.notes', 'Notes')}
-            value={notesField.state.value}
-            backgroundColor="gray5"
-            inputName="zimbraNotes"
-            onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+            name="zimbraNotes"
+            value={notesField.state.value ?? ''}
+            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
               notesField.handleChange(e.target.value);
             }}
           />
