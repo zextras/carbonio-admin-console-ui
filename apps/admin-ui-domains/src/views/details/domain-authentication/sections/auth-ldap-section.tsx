@@ -6,7 +6,6 @@
 
 import { useSelector } from '@tanstack/react-store';
 import {
-  Container,
   getFieldErrorProps,
   ListRow,
   Padding,
@@ -40,33 +39,19 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
                 DOMAIN_AUTH_VALIDATION_MESSAGES,
               );
               return (
-                <>
-                  <PlainInput
-                    required
-                    label={t('label.url', 'URL')}
-                    value={field.state.value ?? ''}
-                    autoComplete="off"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                      field.handleChange(e.target.value);
-                    }}
-                    onBlur={(): void => field.handleBlur()}
-                    hasError={error.hasError}
-                    icon={<AuthLdapUrlHelpIcon />}
-                  />
-                  {error.hasError && (
-                    <Container
-                      mainAlignment="flex-start"
-                      crossAlignment="flex-start"
-                      width="fill"
-                    >
-                      <Padding top="small">
-                        <ds-text as="span" size="extrasmall" weight="regular" color="error">
-                          {error.description}
-                        </ds-text>
-                      </Padding>
-                    </Container>
-                  )}
-                </>
+                <PlainInput
+                  required
+                  label={t('label.url', 'URL')}
+                  value={field.state.value ?? ''}
+                  autoComplete="off"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+                    field.handleChange(e.target.value);
+                  }}
+                  onBlur={(): void => field.handleBlur()}
+                  hasError={error.hasError}
+                  description={error.description}
+                  icon={<AuthLdapUrlHelpIcon />}
+                />
               );
             }}
           </form.Field>
@@ -124,7 +109,7 @@ export const AuthLdapSection = ({ form }: AuthLdapSectionProps) => {
             {(field) => (
               <PasswordInput
                 label={t('domain.authentication.search_bind_password', 'Search Bind Password')}
-                name="zimbraQuotaWarnInterval"
+                name="zimbraAuthLdapSearchBindPassword"
                 autoComplete="new-password"
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
