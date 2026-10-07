@@ -164,14 +164,16 @@ export const AddAddressBookPanel = ({
       );
     }
 
+    const showFolderError = folderTouched && folderError !== null;
+
     if (hasValidSelectedAccount) {
       return (
         <PlainSelect
           items={folderItems}
           label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
           selection={selectedFolder ?? EMPTY_SELECTION}
-          hasError={folderTouched && folderError !== null}
-          description={folderTouched && folderError !== null ? folderError : undefined}
+          hasError={showFolderError}
+          description={showFolderError ? folderError : undefined}
           onChange={(value: string): void => {
             setFolderTouched(true);
             form.setFieldValue('folderId', value);

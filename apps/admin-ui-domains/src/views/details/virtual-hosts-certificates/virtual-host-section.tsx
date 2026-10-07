@@ -102,7 +102,7 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
             description={
               isDraftInvalid
                 ? t('domain.virtual_host_name_error', 'Please enter valid virtual host name!')
-                : ''
+                : undefined
             }
           />
         </Row>

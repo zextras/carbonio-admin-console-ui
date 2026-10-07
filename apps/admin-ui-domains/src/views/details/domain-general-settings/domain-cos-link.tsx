@@ -60,7 +60,7 @@ export const DomainCosLink = ({
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
   const debouncedSearch = useDebouncedValue(searchCosName, 700);
-  const { data: cosData, isLoading } = useCosList({
+  const { data: cosData, isFetching } = useCosList({
     searchQuery: debouncedSearch,
     limit: 0,
     offset: 0,
@@ -274,7 +274,7 @@ export const DomainCosLink = ({
                 setSearchCosName(ev.target.value);
               }}
               onSelect={handleSelectCos}
-              loading={isLoading}
+              loading={isFetching}
             />
           </Container>
 

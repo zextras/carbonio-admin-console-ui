@@ -56,7 +56,7 @@ export const Step2Gal = ({
 								</ds-text>
 							</Tooltip>
 						</div>
-						<ListRow>
+					<ListRow>
 						<div className={styles.fieldStart}>
 							<LabeledValue
 								label={t('label.gal_mode', 'GAL Mode')}
@@ -64,7 +64,7 @@ export const Step2Gal = ({
 								value="Internal"
 							/>
 						</div>
-						</ListRow>
+					</ListRow>
 						<ListRow>
 							<GalFolderNameField form={form} />
 						</ListRow>

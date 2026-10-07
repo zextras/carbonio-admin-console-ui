@@ -499,6 +499,7 @@ const ResourceEditForm = ({
                     {(field) => (
                       <PlainInput
                         required
+                        name="displayName"
                         label={t('label.name', 'Name')}
                         value={field.state.value ?? ''}
                         autoComplete="off"
@@ -521,6 +522,7 @@ const ResourceEditForm = ({
                     {(field) => (
                       <PlainInput
                         required
+                        name="mail"
                         label={t('label.email', 'Email')}
                         value={field.state.value ?? ''}
                         autoComplete="off"

@@ -117,6 +117,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
                 )}
                 value={field.state.value ?? ''}
                 autoComplete="off"
+                inputMode="numeric"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
@@ -144,6 +145,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
                 label={t('domain.page_size', 'Page Size')}
                 value={field.state.value ?? ''}
                 autoComplete="off"
+                inputMode="numeric"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
