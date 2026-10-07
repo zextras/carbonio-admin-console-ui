@@ -6,13 +6,12 @@
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { type ComboboxItem, useSnackbar } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
+import { searchDirectory, useDebouncedValue } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { generateSnackbarFromError } from '../../../utils/generate-snackbar-error';
-import { useDebouncedValue } from './edit-mailing-detail/hooks/use-debounced-value';
+import { RECORD_DISPLAY_LIMIT } from '../../constants';
+import { generateSnackbarFromError } from '../../utils/generate-snackbar-error';
 
 export type DirectorySearchConfig = {
   attrs: string;
@@ -32,7 +31,7 @@ export function useDirectoryEmailSearch(config: DirectorySearchConfig) {
   const createSnackbar = useSnackbar();
   const [searchValue, setSearchValue] = useState('');
 
-  const debouncedSearchValue = useDebouncedValue(searchValue);
+  const debouncedSearchValue = useDebouncedValue(searchValue, 700);
   const query = config.buildQuery(debouncedSearchValue);
 
   const searchQuery = useQuery({

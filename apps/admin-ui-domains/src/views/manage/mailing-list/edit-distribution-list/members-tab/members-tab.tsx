@@ -24,11 +24,11 @@ import { useTranslation } from 'react-i18next';
 import helmetLogo from '../../../../../assets/helmet_logo.svg';
 import { useAddDistributionListMember } from '../../../../../services/use-add-distribution-list-member';
 import { useRemoveDistributionListMember } from '../../../../../services/use-remove-distribution-list-member';
-import { FilterColumnIcon } from '../../filter-column-icon';
 import {
   type DirectorySearchConfig,
   useDirectoryEmailSearch,
-} from '../../use-directory-email-search';
+} from '../../../../utility/use-directory-email-search';
+import { FilterColumnIcon } from '../../filter-column-icon';
 import type { EditDistributionListFormApi } from '../types';
 import { AddMemberRow } from './add-member-row';
 import { filterMemberRows, pageRows, resolveNewMembers } from './filter-members';

@@ -19,7 +19,7 @@ import { uniq } from 'lodash-es';
 import React, { type FC, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { type DirectorySearchConfig, useDirectoryEmailSearch } from '../use-directory-email-search';
+import { type DirectorySearchConfig, useDirectoryEmailSearch } from '../../../utility/use-directory-email-search';
 import { HelmetEmptyState } from './helmet-empty-state';
 import { MailingListContext } from './mailinglist-context';
 import { parseEmailInput } from './parse-email-input';

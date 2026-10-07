@@ -16,16 +16,15 @@ import {
   Row,
   Table,
   type TRow,
-  useSnackbar,
 } from '@zextras/ui-components';
-import { searchDirectory } from '@zextras/ui-shared';
-import { debounce } from 'lodash-es';
 import { ChangeEvent, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import { RECORD_DISPLAY_LIMIT } from '../../../constants';
-import { generateSnackbarFromError } from '../../../utils/generate-snackbar-error';
+import {
+  type DirectorySearchConfig,
+  useDirectoryEmailSearch,
+} from '../../utility/use-directory-email-search';
 import { isValidEmail } from '../../utility/utils';
 
 type SendInviteItem = { id: string; n: string; _content: string };
@@ -42,6 +41,14 @@ const SearchFunnelIcon = (): ReactElement => (
   <ds-icon icon="FunnelOutline" size="large" color="primary"></ds-icon>
 );
 
+const SEARCH_MEMBER_CONFIG: DirectorySearchConfig = {
+  attrs:
+    'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus',
+  types: 'accounts,distributionlists,aliases',
+  buildQuery: (keyword: string): string =>
+    `(&(!(zimbraAccountStatus=closed))(|(mail=*${keyword}*)(cn=*${keyword}*)(sn=*${keyword}*)(gn=*${keyword}*)(displayName=*${keyword}*)(zimbraMailDeliveryAddress=*${keyword}*)(zimbraMailAlias=*${keyword}*)(uid=*${keyword}*)(zimbraDomainName=*${keyword}*)(uid=*${keyword}*)))`,
+};
+
 export const SendInviteAccounts = ({
   isEditable,
   sendInviteList,
@@ -50,16 +57,16 @@ export const SendInviteAccounts = ({
   hideHeaderBar,
 }: SendInviteAccountsProps) => {
   const [t] = useTranslation();
-  const createSnackbar = useSnackbar();
-  const [newSentInviteValue, setNewSentInviteValue] = useState<string>('');
   const [selectedSendInvite, setSelectedSendInvite] = useState<Array<string>>([]);
   const [sendInviteAddBtnDisabled, setSendInviteAddBtnDisabled] = useState(true);
   const [sendInviteDeleteBtnDisabled, setSendInviteDeleteBtnDisabled] = useState(true);
   const [searchAccountName, setSearchAccountName] = useState<string>('');
-  const [searchMemberResult, setSearchMemberResult] = useState<Array<{ id: string; name: string }>>(
-    [],
-  );
-  const [searchMemberFetching, setSearchMemberFetching] = useState(false);
+  const {
+    searchValue: newSentInviteValue,
+    setSearchValue: setNewSentInviteValue,
+    items: searchMemberItems,
+    isFetching: searchMemberFetching,
+  } = useDirectoryEmailSearch(SEARCH_MEMBER_CONFIG);
 
   const sendInviteHeaders = [
     { id: 'account', label: t('label.accounts', 'Accounts'), width: '100%', bold: true },
@@ -103,62 +110,9 @@ export const SendInviteAccounts = ({
     }
   }
 
-  function getSearchMemberList(mem: string): void {
-    const attrs =
-      'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus';
-    const types = 'accounts,distributionlists,aliases';
-    const query = `(&(!(zimbraAccountStatus=closed))(|(mail=*${mem}*)(cn=*${mem}*)(sn=*${mem}*)(gn=*${mem}*)(displayName=*${mem}*)(zimbraMailDeliveryAddress=*${mem}*)(zimbraMailAlias=*${mem}*)(uid=*${mem}*)(zimbraDomainName=*${mem}*)(uid=*${mem}*)))`;
-
-    setSearchMemberFetching(true);
-    searchDirectory({
-      attr: attrs,
-      type: types,
-      domainName: '',
-      query,
-      offset: 0,
-      limit: RECORD_DISPLAY_LIMIT,
-      sortBy: 'name',
-    })
-      .then(
-        (data: {
-          dl?: Array<{ id: string; name: string }>;
-          account?: Array<{ id: string; name: string }>;
-          alias?: Array<{ id: string; name: string }>;
-        }) => {
-          const result: Array<{ id: string; name: string }> = [
-            ...(data?.dl ?? []),
-            ...(data?.account ?? []),
-            ...(data?.alias ?? []),
-          ];
-          setSearchMemberResult(result);
-        },
-      )
-      .catch((error: Error) => {
-        const snackbarConfig = generateSnackbarFromError(error, t);
-        createSnackbar(snackbarConfig);
-      })
-      .finally(() => {
-        setSearchMemberFetching(false);
-      });
-  }
-
-  const searchMemberCall = debounce((mem: string) => {
-    if (mem !== '') {
-      getSearchMemberList(mem);
-    }
-  }, 700);
-
-  const searchMemberItems: Array<ComboboxItem> = searchMemberResult.map((item) => ({
-    id: item.id,
-    label: item.name,
-  }));
-
   function onSelectSearchMember(item: ComboboxItem): void {
-    const entry = searchMemberResult.find((result) => result.id === item.id);
-    if (entry) {
-      setNewSentInviteValue(entry.name);
-      setSendInviteAddBtnDisabled(!isValidEmail(entry.name));
-    }
+    setNewSentInviteValue(item.label);
+    setSendInviteAddBtnDisabled(!isValidEmail(item.label));
   }
 
   return (
@@ -188,7 +142,6 @@ export const SendInviteAccounts = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setNewSentInviteValue(e.target.value);
                   setSendInviteAddBtnDisabled(!isValidEmail(e.target.value));
-                  searchMemberCall(e.target.value);
                 }}
                 onSelect={onSelectSearchMember}
                 loading={searchMemberFetching}

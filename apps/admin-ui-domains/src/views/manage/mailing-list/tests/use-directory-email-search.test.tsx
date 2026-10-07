@@ -23,7 +23,7 @@ vi.mock('react-i18next', () => ({
   useTranslation: () => [(key: string, fallback?: string) => fallback ?? key],
 }));
 
-import { useDirectoryEmailSearch } from '../use-directory-email-search';
+import { useDirectoryEmailSearch } from '../../../utility/use-directory-email-search';
 
 const CONFIG = {
   attrs: 'mail,cn,sn',
