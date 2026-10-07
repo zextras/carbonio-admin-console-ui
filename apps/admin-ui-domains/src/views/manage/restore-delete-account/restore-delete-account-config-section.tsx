@@ -35,6 +35,7 @@ export const RestoreDeleteAccountConfigSection = () => {
   const {
     data: domainSearchData,
     error: domainSearchError,
+    isFetching,
     isPending,
   } = useDomainSearch({
     searchQuery: debouncedDomainSearchQuery,
@@ -112,7 +113,7 @@ export const RestoreDeleteAccountConfigSection = () => {
               updateDetail({ copyDomain: '' });
             }}
             onSelect={handleDomainPick}
-            loading={isPending}
+            loading={isFetching}
           />
         </div>
 
