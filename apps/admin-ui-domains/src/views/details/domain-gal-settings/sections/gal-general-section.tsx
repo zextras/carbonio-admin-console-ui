@@ -11,10 +11,10 @@ import {
   Dropdown,
   DropdownItem,
   getFieldErrorProps,
-  Input,
   LabeledValue,
   ListRow,
   Padding,
+  PlainInput,
   Row,
 } from '@zextras/ui-components';
 import { useState } from 'react';
@@ -109,15 +109,14 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
               GAL_VALIDATION_MESSAGES,
             );
             return (
-              <Input
-                isRequired
-                type="number"
+              <PlainInput
+                required
                 label={t(
                   'label.limit_search_results_from_address_book_list_to',
                   'Limit search results from Address Book List to',
                 )}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
@@ -140,12 +139,11 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
               GAL_VALIDATION_MESSAGES,
             );
             return (
-              <Input
-                isRequired
-                type="number"
+              <PlainInput
+                required
                 label={t('domain.page_size', 'Page Size')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
