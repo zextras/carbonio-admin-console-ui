@@ -7,13 +7,15 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
+  ComboboxInput,
+  type ComboboxItem,
   Container,
-  DropDownInput,
   Padding,
+  PlainSelect,
   Radio,
   RadioGroup,
   Row,
-  Select,
+  type SelectItem,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { type ChangeEvent, type ReactNode, useState } from 'react';
@@ -43,6 +45,8 @@ type FolderSelectItem = {
   label: string;
   value: string;
 };
+
+const EMPTY_SELECTION: SelectItem = { label: '', value: '' };
 
 type TranslateFn = (key: string, defaultValue: string) => string;
 
@@ -162,25 +166,17 @@ export const AddAddressBookPanel = ({
 
     if (hasValidSelectedAccount) {
       return (
-        <>
-          <Select
-            key={selectedFolder?.value ?? 'folder-unselected'}
-            items={folderItems}
-            background="gray5"
-            label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
-            showCheckbox={false}
-            defaultSelection={selectedFolder}
-            onChange={(value: string | null): void => {
-              setFolderTouched(true);
-              form.setFieldValue('folderId', value ?? '');
-            }}
-          />
-          {folderTouched && folderError && (
-            <ds-text as="span" size="small" color="error">
-              {folderError}
-            </ds-text>
-          )}
-        </>
+        <PlainSelect
+          items={folderItems}
+          label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
+          selection={selectedFolder ?? EMPTY_SELECTION}
+          hasError={folderTouched && folderError !== null}
+          description={folderTouched && folderError !== null ? folderError : undefined}
+          onChange={(value: string): void => {
+            setFolderTouched(true);
+            form.setFieldValue('folderId', value);
+          }}
+        />
       );
     }
 
@@ -191,25 +187,9 @@ export const AddAddressBookPanel = ({
     );
   }
 
-  const dropdownItems = (searchQuery.data ?? []).map((item) => ({
+  const accountItems: Array<ComboboxItem> = (searchQuery.data ?? []).map((item) => ({
     id: item.id,
     label: item.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          selectAccount(item.name);
-        }}
-      >
-        {item.name}
-      </Row>
-    ),
   }));
 
   return (
@@ -253,27 +233,27 @@ export const AddAddressBookPanel = ({
         <ds-text as="span" size="small" weight="bold">
           {t('label.account', 'Account')}
         </ds-text>
-        <Container height="fit" width="100%" crossAlignment="flex-start" gap="0.35rem">
-          <DropDownInput
-            width="100%"
-            items={dropdownItems}
-            inputLabel={t('label.start_typing_an_account_email', 'Start typing an account e-mail')}
-            size="medium"
+        <Container height="fit" width="100%" crossAlignment="flex-start">
+          <ComboboxInput
+            label={t('label.start_typing_an_account_email', 'Start typing an account e-mail')}
+            items={accountItems}
+            value={account}
             onChange={(e: ChangeEvent<HTMLInputElement>): void => {
               onAccountInputChange(e.target.value);
             }}
-            inputValue={account}
-            isCustomIcon={false}
+            onSelect={(item: ComboboxItem): void => {
+              const entry = (searchQuery.data ?? []).find((result) => result.id === item.id);
+              if (entry) {
+                selectAccount(entry.name);
+              }
+            }}
+            loading={searchQuery.isFetching}
             hasError={
               (accountTouched && Boolean(accountError)) ||
               (folderMode === 'specific' && !hasValidSelectedAccount)
             }
+            description={accountTouched && accountError !== null ? accountError : undefined}
           />
-          {accountTouched && accountError && (
-            <ds-text as="span" size="small" color="error">
-              {accountError}
-            </ds-text>
-          )}
         </Container>
 
         <ds-text as="span" size="small" weight="bold">
