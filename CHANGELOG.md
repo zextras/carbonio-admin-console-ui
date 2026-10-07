@@ -1,3 +1,28 @@
+## [0.29.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.28.0...v0.29.0) (2026-10-07)
+
+### Features
+
+* **ui-components/password-input:** add PasswordInput with visibility toggle ([e1b62f3](https://github.com/zextras/carbonio-admin-console-ui/commit/e1b62f3d162526b7a54c7b5050fe8494be55d16d))
+
+### Bug Fixes
+
+* **admin-ui-storage/edit-s3-connector-details-panel:** use required prop instead of asterisk in labels ([9daddbb](https://github.com/zextras/carbonio-admin-console-ui/commit/9daddbb21b1a2a5a66d6bb22931b8f26060b13f8))
+
+### Other changes
+
+* **admin-ui-backup/backup-advanced:** replace Select with PlainSelect for compression level ([d9c4a3c](https://github.com/zextras/carbonio-admin-console-ui/commit/d9c4a3c3b87dca143e8ae5bbeddad975c41589eb))
+* **admin-ui-storage/connection:** switch to plain input components ([5ed076a](https://github.com/zextras/carbonio-admin-console-ui/commit/5ed076ae4af9f1f6200a346f41f18db686d1cad9))
+* **admin-ui-storage/edit-s3-connector-details-panel:** restructure changed fields computation ([8d916d9](https://github.com/zextras/carbonio-admin-console-ui/commit/8d916d96e0189c7174b94b7278fbdc7ae404ede3))
+* **admin-ui-storage/edit-s3-connector-details-panel:** use PlainInput/PlainSelect and inline secret key icons ([c926417](https://github.com/zextras/carbonio-admin-console-ui/commit/c926417c86012442edb3258c177672452360857e))
+* **admin-ui-storage/mailstores-create:** migrate inputs and selects to plain ui-components ([bb536b6](https://github.com/zextras/carbonio-admin-console-ui/commit/bb536b6c04449beaf1a7a30490bd655008039f64))
+* **admin-ui-storage/mailstores:** replace Input and Select with PlainInput and PlainSelect ([f3866a5](https://github.com/zextras/carbonio-admin-console-ui/commit/f3866a599aab3a1630c1b3a54e8bbcbcdb4fc330))
+* **admin-ui-storage/storage-sidebar:** replace DropDownInput with ComboboxInput ([dccb4b8](https://github.com/zextras/carbonio-admin-console-ui/commit/dccb4b82b5e2cbf35c192c63599ac7fc44a02463))
+* **admin-ui/s3-connectors:** replace legacy password input in connection form ([fe0c6e6](https://github.com/zextras/carbonio-admin-console-ui/commit/fe0c6e60fb86ba59bc5e233f5ba131748f986be1))
+* **backup/volume-management:** replace Select with PlainSelect and update backgrounds ([3ea0a3d](https://github.com/zextras/carbonio-admin-console-ui/commit/3ea0a3dbce53f53b4b36b7f4f2d1bc853df94851))
+* **hsm/settings:** switch to PlainInput and PlainSelect components ([e6c35be](https://github.com/zextras/carbonio-admin-console-ui/commit/e6c35bea802139d95d434d0de1c83748f8632149))
+* **storage/modify-volume:** switch to plain input and select components ([9cf9cf1](https://github.com/zextras/carbonio-admin-console-ui/commit/9cf9cf1ace999a084be3e0f1dd26b89a8f69e8a5))
+* **ui-components/passwordinput:** rename PasswordInput to LegacyPasswordInput and update usages ([65e1b6f](https://github.com/zextras/carbonio-admin-console-ui/commit/65e1b6f5744629e8dbbe58dffdb105125c7e9dc9))
+
 ## [0.28.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.27.0...v0.28.0) (2026-10-06)
 
 ### Features
