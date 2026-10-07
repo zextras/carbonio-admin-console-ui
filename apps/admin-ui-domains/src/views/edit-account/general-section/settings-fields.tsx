@@ -54,7 +54,20 @@ export const SettingsFields = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
 
-  const isLocaleOverridden = accSpecificDetail?.zimbraPrefLocale !== undefined;
+  const accountLocale = accSpecificDetail?.zimbraPrefLocale as string | undefined;
+  const inheritedLocale = cosDetail?.zimbraPrefLocale as string | undefined;
+  const liveLocale = values?.zimbraPrefLocale as string | undefined;
+  const isLocaleOverridden =
+    liveLocale !== undefined &&
+    (accountLocale !== undefined ||
+      (inheritedLocale !== undefined && liveLocale !== inheritedLocale));
+
+  const effectiveLocale = liveLocale ?? inheritedLocale;
+  const localeItems =
+    effectiveLocale !== undefined &&
+    !localeZone.some((item) => item.value === effectiveLocale)
+      ? [...localeZone, { label: effectiveLocale, value: effectiveLocale }]
+      : localeZone;
 
   return (
     <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
@@ -85,11 +98,11 @@ export const SettingsFields = () => {
           {values?.zimbraId && localeZone?.length ? (
             <PlainSelect
               label={t('label.language', 'Language')}
-              items={localeZone}
+              items={localeItems}
               selection={
-                localeZone.find((item) => item.value === values?.zimbraPrefLocale) ??
-                localeZone.find((item) => item.value === cosDetail?.zimbraPrefLocale) ??
-                localeZone[0]
+                localeItems.find((item) => item.value === liveLocale) ??
+                localeItems.find((item) => item.value === inheritedLocale) ??
+                localeItems[0]
               }
               onChange={onPrefLocaleChange}
               description={

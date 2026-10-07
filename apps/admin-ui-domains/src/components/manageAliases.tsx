@@ -54,6 +54,7 @@ export const ManageAliases: FC<{
     label: ele.name,
     value: ele.name,
   }));
+  const effectiveDomainName = selectedDomainName || domainName || domainItems[0]?.value;
   const onDomainOptionChange = (v: string): void => {
     setSelectedDomainName(v);
   };
@@ -159,9 +160,8 @@ export const ManageAliases: FC<{
                   label={t('account_details.domain', 'Domain')}
                   onChange={onDomainOptionChange}
                   selection={
-                    domainItems.find(
-                      (item) => item.value === (selectedDomainName || domainName),
-                    ) ?? domainItems[0]
+                    domainItems.find((item) => item.value === effectiveDomainName) ??
+                    domainItems[0]
                   }
                 />
               )}
@@ -176,7 +176,7 @@ export const ManageAliases: FC<{
                   if (!aliasNameValue.trim()) return;
                   const aliaes: Array<{ label: string }> = cloneDeep(listAliases);
                   aliaes.push({
-                    label: `${aliasNameValue.trim()}@${selectedDomainName || domainName}`,
+                    label: `${aliasNameValue.trim()}@${effectiveDomainName}`,
                   });
                   const aliaesUniq: Array<{ label: string }> = uniqBy(aliaes, 'label');
                   setListAliases(aliaesUniq);

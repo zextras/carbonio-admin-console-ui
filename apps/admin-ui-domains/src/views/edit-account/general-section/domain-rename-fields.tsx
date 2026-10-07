@@ -38,7 +38,7 @@ export const DomainRenameFields = () => {
 
   const debouncedSearchDomain = useDebouncedValue(searchDomainName ?? '', 700);
 
-  const { data: domainSearchData, error, isLoading } = useDomainSearch({
+  const { data: domainSearchData, error, isFetching } = useDomainSearch({
     searchQuery: debouncedSearchDomain,
     limit: 50,
     offset: 0,
@@ -116,7 +116,7 @@ export const DomainRenameFields = () => {
               const domain = domainList.find((d) => d.id === item.id);
               if (domain) selectedDomain(domain.name);
             }}
-            loading={isLoading}
+            loading={isFetching}
           />
         </Row>
       </Row>
