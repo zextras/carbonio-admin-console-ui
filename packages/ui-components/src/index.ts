@@ -44,7 +44,6 @@ export * from './components/inputs/Input';
 export * from './components/inputs/labeled-value';
 export * from './components/inputs/number-input';
 export * from './components/inputs/password-input';
-export * from './components/inputs/PasswordInput';
 export * from './components/inputs/plain-input';
 export * from './components/inputs/plain-select';
 export * from './components/inputs/plain-textarea';
@@ -58,7 +57,6 @@ export {
   type SingleSelectionOnChange,
 } from './components/inputs/Select';
 export * from './components/inputs/Switch';
-export * from './components/inputs/TextArea';
 
 /** navigation components */
 export * from './components/navigation/route-leaving-guard';
@@ -73,17 +71,13 @@ export {
   type ClickableRowFactoryProps,
 } from './components/custom/clickable-row-factory';
 export * from './components/custom/custom-table-header-factory';
-export * from './components/custom/custom-text-area';
 export * from './components/custom/displayer';
-export * from './components/custom/dropdown-input';
 export * from './components/custom/horizontal-wizard-layout';
 export {
   type TRow as HoverableRow,
   default as HoverableRowFactory,
   type HoverableRowProps,
 } from './components/custom/hoverable-row-factory';
-export * from './components/custom/inherited-input';
-export * from './components/custom/inherited-select';
 export * from './components/custom/inherited-switch';
 export * from './components/custom/list-items';
 export * from './components/custom/list-panel-item';
