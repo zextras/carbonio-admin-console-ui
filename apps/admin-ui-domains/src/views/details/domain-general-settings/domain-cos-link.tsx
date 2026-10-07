@@ -285,6 +285,7 @@ export const DomainCosLink = ({
               type="number"
               autoComplete="off"
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                if (e.ctrlKey || e.metaKey || e.altKey || e.key === 'Tab') return;
                 if (
                   ![
                     'Backspace',

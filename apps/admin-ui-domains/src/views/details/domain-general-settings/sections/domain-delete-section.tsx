@@ -328,7 +328,7 @@ export const DomainDeleteSection = ({
             <ListRow>
               <Container padding={{ top: 'large' }}>
                 <PlainInput
-                  label={domainName}
+                  label={t('label.domain_name', 'Domain Name')}
                   value={confirmDomainName}
                   autoComplete="off"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

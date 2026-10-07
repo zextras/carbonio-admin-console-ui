@@ -5,7 +5,15 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { ChipInput, type ChipItem, Container, getFieldErrorProps, ListRow, PlainInput, Row } from '@zextras/ui-components';
+import {
+  ChipInput,
+  type ChipItem,
+  Container,
+  getFieldErrorProps,
+  ListRow,
+  PlainInput,
+  Row,
+} from '@zextras/ui-components';
 import { some } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 

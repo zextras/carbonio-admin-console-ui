@@ -216,12 +216,10 @@ describe('DomainCosLink (browser)', () => {
 				/>,
 			);
 
-		await expect
-			.element(
-				page.getByRole('combobox', { name: /select a cos to include in this domain/i }),
-			)
-			.toBeVisible();
-		await expect.element(page.getByLabelText(/handle accounts/i)).toBeVisible();
+			await expect
+				.element(page.getByRole('combobox', { name: /select a cos to include in this domain/i }))
+				.toBeVisible();
+			await expect.element(page.getByLabelText(/handle accounts/i)).toBeVisible();
 			await expect.element(page.getByRole('button', { name: 'Duplicate' })).toBeVisible();
 			await expect.element(page.getByRole('button', { name: 'Link' })).toBeVisible();
 		});
