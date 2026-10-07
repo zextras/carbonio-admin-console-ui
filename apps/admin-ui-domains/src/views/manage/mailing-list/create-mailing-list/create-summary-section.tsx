@@ -6,7 +6,6 @@
 import {
   Container,
   CustomHeaderFactory,
-  CustomTextArea,
   HoverableRowFactory,
   LabeledValue,
   ListRow,
@@ -147,7 +146,7 @@ export const CreateSummarySection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <CustomTextArea
+            <LabeledValue
               label={t('label.notes', 'Notes')}
               backgroundColor="gray6"
               value={mailingListDetail?.zimbraNotes}

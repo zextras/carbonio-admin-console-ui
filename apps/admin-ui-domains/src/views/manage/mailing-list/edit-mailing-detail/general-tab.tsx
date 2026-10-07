@@ -7,12 +7,12 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  CustomTextArea,
-  Input,
   LabeledValue,
   ListRow,
+  PlainInput,
+  PlainSelect,
+  PlainTextarea,
   Row,
-  Select,
   Switch,
 } from '@zextras/ui-components';
 import { type FC } from 'react';
@@ -72,11 +72,11 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ top: 'small' }}>
           <form.Field name="displayName">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('label.display_name', 'Display Name')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: any): any => {
                   field.handleChange(e.target.value);
                 }}
@@ -87,11 +87,11 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ left: 'large', top: 'small' }}>
           <form.Field name="distributionName">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('label.address', 'Address')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: any): any => {
                   field.handleChange(e.target.value);
                 }}
@@ -104,11 +104,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ right: 'small', top: 'small' }}>
           <form.Field name="zimbraMailStatusValue">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={rightsOptions}
-                background="gray5"
                 label={t('label.status', 'Status')}
-                showCheckbox={false}
                 onChange={(v: any): void => {
                   field.handleChange(v);
                 }}
@@ -228,13 +226,13 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ bottom: 'medium' }}>
           <form.Field name="description">
             {(field) => (
-              <Input
-                value={field.state.value}
+              <PlainInput
+                value={field.state.value ?? ''}
                 label={t(
                   'label.note_label',
                   'Write something that will easily make you remember this element',
                 )}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: any): any => {
                   field.handleChange(e.target.value);
                 }}
@@ -252,10 +250,9 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ bottom: 'medium' }}>
           <form.Field name="zimbraNotes">
             {(field) => (
-              <CustomTextArea
-                value={field.state.value}
+              <PlainTextarea
+                value={field.state.value ?? ''}
                 label={t('label.notes', 'Notes')}
-                backgroundColor="gray5"
                 onChange={(e: any): any => {
                   field.handleChange(e.target.value);
                 }}

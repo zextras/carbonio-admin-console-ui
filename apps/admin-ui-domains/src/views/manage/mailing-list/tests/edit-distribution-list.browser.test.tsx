@@ -83,7 +83,9 @@ function registerEditViewData({
   createBrowserSoapAPIInterceptor('GetGrants', { grant: grants });
   // resolves ManageAliases' useDomainById query (suffix for new aliases)
   createBrowserSoapAPIInterceptor('GetDomain', {
-    domain: [{ id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] }],
+    domain: [
+      { id: DOMAIN_ID, name: DOMAIN_NAME, a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }] },
+    ],
   });
 }
 
@@ -119,17 +121,13 @@ async function waitForLoad(): Promise<void> {
 }
 
 async function makeDirty(): Promise<void> {
-  await userEvent.clear(page.getByLabelText('Display Name'));
-  await userEvent.type(page.getByLabelText('Display Name'), 'Team List Updated');
-  await expect
-    .element(page.getByRole('button', { name: 'Save', exact: true }))
-    .toBeInTheDocument();
+  await userEvent.clear(page.getByLabelText(/^Display Name/));
+  await userEvent.type(page.getByLabelText(/^Display Name/), 'Team List Updated');
+  await expect.element(page.getByRole('button', { name: 'Save', exact: true })).toBeInTheDocument();
 }
 
 async function expectHeaderSaveCancelVisible(): Promise<void> {
-  await expect
-    .element(page.getByRole('button', { name: 'Save', exact: true }))
-    .toBeInTheDocument();
+  await expect.element(page.getByRole('button', { name: 'Save', exact: true })).toBeInTheDocument();
   await expect
     .element(page.getByRole('button', { name: 'Cancel', exact: true }))
     .toBeInTheDocument();
@@ -162,8 +160,8 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('OWNERS', { exact: true })).toBeInTheDocument();
       await expect.element(page.getByText('SEND AS', { exact: true })).toBeInTheDocument();
       await expect.element(page.getByText('SEND TO', { exact: true })).toBeInTheDocument();
-      await expect.element(page.getByLabelText('Display Name')).toHaveValue(DL_DISPLAY_NAME);
-      await expect.element(page.getByLabelText('Address')).toHaveValue(DL_EMAIL);
+      await expect.element(page.getByLabelText(/^Display Name/)).toHaveValue(DL_DISPLAY_NAME);
+      await expect.element(page.getByLabelText(/^Address/)).toHaveValue(DL_EMAIL);
     });
   });
 
@@ -175,9 +173,7 @@ describe('EditDistributionList (browser)', () => {
       await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
       await expect.element(page.getByText('user2@example.com')).toBeInTheDocument();
       await page.getByText('OWNERS', { exact: true }).click();
-      await expect
-        .element(page.getByRole('button', { name: 'Add Owners' }))
-        .toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: 'Add Owners' })).toBeInTheDocument();
       await page.getByText('SEND AS', { exact: true }).click();
       await expect
         .element(page.getByText('Send on behalf of', { exact: true }))
@@ -197,9 +193,7 @@ describe('EditDistributionList (browser)', () => {
       await expect
         .element(page.getByRole('button', { name: 'Exit without Save' }))
         .toBeInTheDocument();
-      await expect
-        .element(page.getByRole('button', { name: 'Save & Exit' }))
-        .toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: 'Save & Exit' })).toBeInTheDocument();
     });
 
     it('Exit without Save discards the change and switches tab', async () => {
@@ -210,7 +204,7 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'Exit without Save' }).click();
       await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
       await page.getByText('GENERAL', { exact: true }).click();
-      await expect.element(page.getByLabelText('Display Name')).toHaveValue(DL_DISPLAY_NAME);
+      await expect.element(page.getByLabelText(/^Display Name/)).toHaveValue(DL_DISPLAY_NAME);
     });
 
     it('Save & Exit persists the change and switches tab', async () => {
@@ -235,14 +229,12 @@ describe('EditDistributionList (browser)', () => {
       const rename = createBrowserSoapAPIInterceptor('RenameDistributionList', {});
       await setupEditView();
       await waitForLoad();
-      await userEvent.clear(page.getByLabelText('Address'));
-      await userEvent.type(page.getByLabelText('Address'), 'newteam@example.com');
+      await userEvent.clear(page.getByLabelText(/^Address/));
+      await userEvent.type(page.getByLabelText(/^Address/), 'newteam@example.com');
       await page.getByRole('button', { name: 'Save', exact: true }).click();
       const params = await rename;
       expect(params).toMatchObject({ id: DL_ID, newName: 'newteam@example.com' });
-      await expect
-        .element(page.getByText('The changes have been saved'))
-        .toBeInTheDocument();
+      await expect.element(page.getByText('The changes have been saved')).toBeInTheDocument();
     });
 
     it('adds a new alias and sends AddDistributionListAlias on save', async () => {
@@ -259,9 +251,7 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'Save', exact: true }).click();
       const params = await addAlias;
       expect(params).toMatchObject({ id: DL_ID, alias: 'alias2@example.com' });
-      await expect
-        .element(page.getByText('The changes have been saved'))
-        .toBeInTheDocument();
+      await expect.element(page.getByText('The changes have been saved')).toBeInTheDocument();
     });
 
     it('removes an existing alias and sends RemoveDistributionListAlias on save', async () => {
@@ -275,9 +265,7 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'Save', exact: true }).click();
       const params = await removeAlias;
       expect(params).toMatchObject({ id: DL_ID, alias: 'alias1@example.com' });
-      await expect
-        .element(page.getByText('The changes have been saved'))
-        .toBeInTheDocument();
+      await expect.element(page.getByText('The changes have been saved')).toBeInTheDocument();
     });
 
     it('shows an error snackbar when the save request fails', async () => {
@@ -331,32 +319,26 @@ describe('EditDistributionList (browser)', () => {
       await waitForLoad();
       await makeDirty();
       await page.getByRole('button', { name: 'Save', exact: true }).click();
-      await expect
-        .element(page.getByText('The changes have been saved'))
-        .toBeInTheDocument();
-      await expect
-        .element(page.getByLabelText('Display Name'))
-        .toHaveValue('Team List Updated');
+      await expect.element(page.getByText('The changes have been saved')).toBeInTheDocument();
+      await expect.element(page.getByLabelText(/^Display Name/)).toHaveValue('Team List Updated');
     });
   });
 
   describe('Delete', () => {
     it('cancels, then confirms deletion, deletes the list and closes the detail view', async () => {
       let deleteRequested = false;
-      const remove = createBrowserSoapAPIInterceptor('DeleteDistributionList', {}).then((params) => {
-        deleteRequested = true;
-        return params;
-      });
+      const remove = createBrowserSoapAPIInterceptor('DeleteDistributionList', {}).then(
+        (params) => {
+          deleteRequested = true;
+          return params;
+        },
+      );
       const { setShowMailingListDetailView } = await setupEditView();
       await waitForLoad();
       await page.getByRole('button', { name: 'delete' }).click();
-      await expect
-        .element(page.getByText('You are deleting Team List'))
-        .toBeInTheDocument();
+      await expect.element(page.getByText('You are deleting Team List')).toBeInTheDocument();
       await page.getByRole('button', { name: 'Cancel', exact: true }).click();
-      await expect
-        .element(page.getByText('You are deleting Team List'))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('You are deleting Team List')).not.toBeInTheDocument();
       expect(deleteRequested).toBe(false);
 
       await page.getByRole('button', { name: 'delete' }).click();
@@ -373,9 +355,7 @@ describe('EditDistributionList (browser)', () => {
       await setupEditView();
       await waitForLoad();
       await page.getByRole('button', { name: 'delete' }).click();
-      await expect
-        .element(page.getByText(/shared accounts rights/))
-        .toBeInTheDocument();
+      await expect.element(page.getByText(/shared accounts rights/)).toBeInTheDocument();
       await expect.element(page.getByText('4')).toBeInTheDocument();
     });
 
@@ -404,9 +384,7 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'delete' }).click();
       await expect.poll(() => getGrantsCalls).toBeGreaterThanOrEqual(1);
       await new Promise((resolve) => setTimeout(resolve, 250));
-      await expect
-        .element(page.getByText('You are deleting Team List'))
-        .not.toBeInTheDocument();
+      await expect.element(page.getByText('You are deleting Team List')).not.toBeInTheDocument();
     });
   });
 
@@ -477,9 +455,7 @@ describe('EditDistributionList (browser)', () => {
       await page.getByRole('button', { name: 'Add Owners' }).click();
       const addParams = (await addAction) as { action: Record<string, unknown> };
       expect(addParams.action).toMatchObject({ op: 'addOwners' });
-      await expect
-        .element(page.getByText('Owner has been added successfully'))
-        .toBeInTheDocument();
+      await expect.element(page.getByText('Owner has been added successfully')).toBeInTheDocument();
 
       const removeAction = createBrowserSoapAPIInterceptor('DistributionListAction', {});
       // the newly added owner row is prepended, so the seeded owner is last
@@ -654,9 +630,7 @@ describe('EditDistributionList (browser)', () => {
       });
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
-      await expect
-        .element(page.getByText("There aren't members here."))
-        .toBeInTheDocument();
+      await expect.element(page.getByText("There aren't members here.")).toBeInTheDocument();
       await expect
         .element(page.getByText('Search for a user and click on the ADD button.'))
         .toBeInTheDocument();
@@ -671,7 +645,10 @@ describe('EditDistributionList (browser)', () => {
       await setupEditView();
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
-      await userEvent.type(page.getByLabelText('Add senders by email address'), 'as-new@example.com');
+      await userEvent.type(
+        page.getByLabelText('Add senders by email address'),
+        'as-new@example.com',
+      );
       await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
       await expect.element(page.getByText('Grant failed')).toBeInTheDocument();
       await expect.element(page.getByText('as-new@example.com')).not.toBeInTheDocument();
@@ -689,7 +666,10 @@ describe('EditDistributionList (browser)', () => {
       await setupEditView();
       await waitForLoad();
       await page.getByText('SEND AS', { exact: true }).click();
-      await userEvent.type(page.getByLabelText('Add senders by email address'), 'as-new@example.com');
+      await userEvent.type(
+        page.getByLabelText('Add senders by email address'),
+        'as-new@example.com',
+      );
       await page.getByRole('button', { name: 'ADD ACCOUNT' }).click();
       await expect.element(page.getByText('Network error')).toBeInTheDocument();
       await expect.element(page.getByText('as-new@example.com')).not.toBeInTheDocument();
@@ -748,9 +728,7 @@ describe('EditDistributionList (browser)', () => {
       );
       await expect.poll(() => debouncedGalSearchFired).toBe(true);
       await page.getByRole('button', { name: 'Add Owners' }).click();
-      await expect
-        .element(page.getByText('Owner has been added successfully'))
-        .toBeInTheDocument();
+      await expect.element(page.getByText('Owner has been added successfully')).toBeInTheDocument();
       await expectHeaderSaveCancelHidden();
       await expectHeaderDeleteVisible();
     });
