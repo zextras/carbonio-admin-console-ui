@@ -245,18 +245,16 @@ export function AdvancedMailstoresConfig({
       {isLocalBlockDevice ? (
         <>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-            <div className="w-full">
-              <PlainInput
-                name="path"
-                label={t('label.volume_path', 'Volume path')}
-                value={path}
-                onChange={changeVolDetail}
-                description={t(
-                  'storage.dataVolumes.volumePathMustExistHint',
-                  'The volume path must already exist',
-                )}
-              />
-            </div>
+            <PlainInput
+              name="path"
+              label={t('label.volume_path', 'Volume path')}
+              value={path}
+              onChange={changeVolDetail}
+              description={t(
+                'storage.dataVolumes.volumePathMustExistHint',
+                'The volume path must already exist',
+              )}
+            />
           </Row>
           {volumeMain !== INDEX_TYPE_VALUE && (
             <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
@@ -277,18 +275,16 @@ export function AdvancedMailstoresConfig({
               </Row>
               <Padding horizontal="small" />
               <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
-                <div className="w-full">
-                  <NumberInput
-                    name="compressionThreshold"
-                    label={t('label.volume_compression_thresold', 'Compression Threshold')}
-                    value={compressionThreshold}
-                    onChange={(value): void => {
-                      form.setFieldValue('compressionThreshold', value);
-                    }}
-                    disabled={!isCompression}
-                    icon={<CompressionThresholdIcon />}
-                  />
-                </div>
+                <NumberInput
+                  name="compressionThreshold"
+                  label={t('label.volume_compression_thresold', 'Compression Threshold')}
+                  value={compressionThreshold}
+                  onChange={(value): void => {
+                    form.setFieldValue('compressionThreshold', value);
+                  }}
+                  disabled={!isCompression}
+                  icon={<CompressionThresholdIcon />}
+                />
               </Row>
             </Row>
           )}
@@ -296,17 +292,15 @@ export function AdvancedMailstoresConfig({
       ) : (
         <>
           <Row padding={{ top: 'large' }} width="100%">
-            <div className="w-full">
-              <PlainInput
-                name="prefix"
-                label={t(
-                  'label.prefix_name',
-                  'Prefix - all objects will have this prefix in their name',
-                )}
-                value={prefix}
-                onChange={changeVolDetail}
-              />
-            </div>
+            <PlainInput
+              name="prefix"
+              label={t(
+                'label.prefix_name',
+                'Prefix - all objects will have this prefix in their name',
+              )}
+              value={prefix}
+              onChange={changeVolDetail}
+            />
           </Row>
           {showTieringSettings && (
             <>

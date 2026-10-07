@@ -569,18 +569,16 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <div className="w-full">
-                        <PlainInput
-                          label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
-                          required
-                          value={field.state.value}
-                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                            field.handleChange(e.target.value)
-                          }
-                          hasError={error.hasError}
-                          description={error.description}
-                        />
-                      </div>
+                      <PlainInput
+                        label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
+                        required
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
+                        hasError={error.hasError}
+                        description={error.description}
+                      />
                     );
                   }}
                 </form.Field>
@@ -595,18 +593,16 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <div className="w-full">
-                        <PlainInput
-                          label={t('storages.s3Connectors.bucketName', 'Bucket name')}
-                          required
-                          value={field.state.value}
-                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                            field.handleChange(e.target.value)
-                          }
-                          hasError={error.hasError}
-                          description={error.description}
-                        />
-                      </div>
+                      <PlainInput
+                        label={t('storages.s3Connectors.bucketName', 'Bucket name')}
+                        required
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
+                        hasError={error.hasError}
+                        description={error.description}
+                      />
                     );
                   }}
                 </form.Field>
@@ -614,16 +610,14 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="accessKey">
                   {(field) => (
-                    <div className="w-full">
-                      <PlainInput
-                        label={t('label.access_key', 'Access Key ID')}
-                        required
-                        value={field.state.value}
-                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                          field.handleChange(e.target.value)
-                        }
-                      />
-                    </div>
+                    <PlainInput
+                      label={t('label.access_key', 'Access Key ID')}
+                      required
+                      value={field.state.value}
+                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                        field.handleChange(e.target.value)
+                      }
+                    />
                   )}
                 </form.Field>
               </Row>
@@ -700,26 +694,24 @@ export function EditS3ConnectorDetailPanel({
 
                     return (
                       <Container width="fill" crossAlignment="flex-start">
-                        <div className="w-full">
-                          <PlainInput
-                            label={t('label.secret_key', 'Secret Access Key')}
-                            required
-                            value={field.state.value}
-                            type={showSecretKeyValue ? 'text' : 'password'}
-                            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                              field.handleChange(e.target.value)
-                            }
-                            hasError={error.hasError}
-                            description={error.description}
-                            icon={
-                              <SecretKeyFieldIcons
-                                visible={showSecretKeyValue}
-                                onToggleVisibility={toggleSecretKeyVisibility}
-                                onCancel={onCancelSecretKeyChange}
-                              />
-                            }
-                          />
-                        </div>
+                        <PlainInput
+                          label={t('label.secret_key', 'Secret Access Key')}
+                          required
+                          value={field.state.value}
+                          type={showSecretKeyValue ? 'text' : 'password'}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
+                          hasError={error.hasError}
+                          description={error.description}
+                          icon={
+                            <SecretKeyFieldIcons
+                              visible={showSecretKeyValue}
+                              onToggleVisibility={toggleSecretKeyVisibility}
+                              onCancel={onCancelSecretKeyChange}
+                            />
+                          }
+                        />
                         <Row
                           width="100%"
                           mainAlignment="flex-start"
@@ -745,21 +737,19 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="regionValue">
                   {(field) => (
-                    <div className="w-full">
-                      <PlainSelect
-                        items={[
-                          { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
-                          {
-                            label: t('label.region_set_custom', 'Set custom'),
-                            value: CUSTOM_REGION_VALUE,
-                          },
-                          ...baseRegions,
-                        ]}
-                        label={t('label.region', 'Region')}
-                        selection={regionSelection}
-                        onChange={(value) => field.handleChange(value)}
-                      />
-                    </div>
+                    <PlainSelect
+                      items={[
+                        { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
+                        {
+                          label: t('label.region_set_custom', 'Set custom'),
+                          value: CUSTOM_REGION_VALUE,
+                        },
+                        ...baseRegions,
+                      ]}
+                      label={t('label.region', 'Region')}
+                      selection={regionSelection}
+                      onChange={(value) => field.handleChange(value)}
+                    />
                   )}
                 </form.Field>
               </Row>
@@ -775,17 +765,15 @@ export function EditS3ConnectorDetailPanel({
                         S3_CONNECTOR_VALIDATION_MESSAGES,
                       );
                       return (
-                        <div className="w-full">
-                          <PlainInput
-                            label={t('label.custom_region', 'Custom region')}
-                            value={field.state.value}
-                            onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                              field.handleChange(e.target.value)
-                            }
-                            hasError={error.hasError}
-                            description={error.description}
-                          />
-                        </div>
+                        <PlainInput
+                          label={t('label.custom_region', 'Custom region')}
+                          value={field.state.value}
+                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                            field.handleChange(e.target.value)
+                          }
+                          hasError={error.hasError}
+                          description={error.description}
+                        />
                       );
                     }}
                   </form.Field>
@@ -802,18 +790,16 @@ export function EditS3ConnectorDetailPanel({
                       S3_CONNECTOR_VALIDATION_MESSAGES,
                     );
                     return (
-                      <div className="w-full">
-                        <PlainInput
-                          label={t('label.endpoint_url', 'Endpoint URL')}
-                          required={isEndpointUrlRequired}
-                          value={field.state.value}
-                          onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                            field.handleChange(e.target.value)
-                          }
-                          hasError={error.hasError}
-                          description={error.description}
-                        />
-                      </div>
+                      <PlainInput
+                        label={t('label.endpoint_url', 'Endpoint URL')}
+                        required={isEndpointUrlRequired}
+                        value={field.state.value}
+                        onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
+                        hasError={error.hasError}
+                        description={error.description}
+                      />
                     );
                   }}
                 </form.Field>
@@ -828,14 +814,12 @@ export function EditS3ConnectorDetailPanel({
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
-                <div className="w-full">
-                  <PlainInput
-                    disabled
-                    label={t('label.prefix', 'Prefix')}
-                    value={connectorDetail?.prefix ?? ''}
-                    onChange={(): void => {}}
-                  />
-                </div>
+                <PlainInput
+                  disabled
+                  label={t('label.prefix', 'Prefix')}
+                  value={connectorDetail?.prefix ?? ''}
+                  onChange={(): void => {}}
+                />
               </Row>
 
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">

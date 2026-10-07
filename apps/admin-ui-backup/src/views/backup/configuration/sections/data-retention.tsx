@@ -95,25 +95,21 @@ export const DataRetention = ({
         >
           <form.Field name="keepDeletedItemInBackup">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  autoComplete="off"
-                  label={t(
-                    'backup.keep_deleted_item_in_backup',
-                    'Keep deleted items in the backup (Days)',
-                  )}
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  description={t(
-                    'backup.keep_deleted_items_warning_message',
-                    'If you set 0, items will be kept in backup forever',
-                  )}
-                  disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                />
-              </div>
+              <PlainInput
+                required
+                autoComplete="off"
+                label={t(
+                  'backup.keep_deleted_item_in_backup',
+                  'Keep deleted items in the backup (Days)',
+                )}
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                description={t(
+                  'backup.keep_deleted_items_warning_message',
+                  'If you set 0, items will be kept in backup forever',
+                )}
+                disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>
@@ -125,25 +121,21 @@ export const DataRetention = ({
         >
           <form.Field name="keepDeletedAccountsInBackup">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  autoComplete="off"
-                  label={t(
-                    'backup.keep_deleted_account_in_the_backup',
-                    'Keep deleted account in the backup (Days)',
-                  )}
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
-                  description={t(
-                    'backup.keep_deleted_accounts_warning_message',
-                    'If you set 0, accounts will be kept in backup forever',
-                  )}
-                />
-              </div>
+              <PlainInput
+                required
+                autoComplete="off"
+                label={t(
+                  'backup.keep_deleted_account_in_the_backup',
+                  'Keep deleted account in the backup (Days)',
+                )}
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!form.state.values.scheduleAutomaticRetentionPolicy || !allowSetBackup}
+                description={t(
+                  'backup.keep_deleted_accounts_warning_message',
+                  'If you set 0, accounts will be kept in backup forever',
+                )}
+              />
             )}
           </form.Field>
         </Container>

@@ -20,9 +20,7 @@ type COSQuotasNewProps = {
   showRevertButton: boolean;
 };
 
-function getDerivedQuotaValue(
-  limit: ComputedLimit | undefined,
-): number | 'unlimited' | undefined {
+function getDerivedQuotaValue(limit: ComputedLimit | undefined): number | 'unlimited' | undefined {
   if (limit === undefined) return undefined;
   if (limit.type === 'unlimited') return 'unlimited';
   if (limit.value > 0) return BytesToGB(limit.value);
@@ -125,20 +123,18 @@ export const COSQuotasNew = ({
         mainAlignment={'flex-start'}
         crossAlignment={'center'}
       >
-        <div className="w-full">
-          <PlainInput
-            label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-            value={inputValue}
-            name="totalQuota"
-            onChange={inputOnChange}
-            disabled={readonlyCOS || switchValue}
-            icon={
-              showRevertButton ? (
-                <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
-              ) : undefined
-            }
-          />
-        </div>
+        <PlainInput
+          label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
+          value={inputValue}
+          name="totalQuota"
+          onChange={inputOnChange}
+          disabled={readonlyCOS || switchValue}
+          icon={
+            showRevertButton ? (
+              <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
+            ) : undefined
+          }
+        />
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>
             <ds-icon icon={icon} size="large" />

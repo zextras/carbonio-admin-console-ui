@@ -29,18 +29,14 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
         >
           <form.Field name="backupMaxMetaDataSize">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <PlainInput
+                required
+                label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>
