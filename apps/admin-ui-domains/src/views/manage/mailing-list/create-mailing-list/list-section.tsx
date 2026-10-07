@@ -321,11 +321,7 @@ export const ListSection: FC<any> = () => {
                     autoComplete="off"
                     onChange={changeLdapDetail}
                     hasError={!isValidQuery}
-                    description={
-                      isShowLdapQueryMessage && ldapQueryErrorMessage
-                        ? ldapQueryErrorMessage
-                        : undefined
-                    }
+                    description={isShowLdapQueryMessage ? ldapQueryErrorMessage : undefined}
                     icon={<LdapQueryIcon />}
                   />
                 </LdapQueryLoaderContext.Provider>

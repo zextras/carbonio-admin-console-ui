@@ -30,12 +30,17 @@ export function useGalEmailSearch() {
     label: item?._attrs?.email,
   }));
 
+  const onSelectItem = (item: ComboboxItem): void => {
+    setSearchValue(item.label);
+  };
+
   return {
     searchValue,
     setSearchValue,
     items,
     contactList,
     isFetching: galQuery.isFetching,
+    onSelectItem,
     isDebouncing: debouncedSearchValue !== searchValue,
   };
 }

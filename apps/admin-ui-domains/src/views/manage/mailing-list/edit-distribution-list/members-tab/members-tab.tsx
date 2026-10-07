@@ -81,6 +81,8 @@ export const MembersTab: FC<MembersTabProps> = ({
     searchValue: searchMember,
     setSearchValue: setSearchMember,
     items: searchMemberItems,
+    isFetching: searchMemberFetching,
+    onSelectItem: onSelectMemberItem,
   } = useDirectoryEmailSearch(MEMBER_SEARCH_CONFIG);
 
   const addMemberMutation = useAddDistributionListMember();
@@ -331,12 +333,8 @@ export const MembersTab: FC<MembersTabProps> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setSearchMember(e.target.value);
                 }}
-                onSelect={(item): void => {
-                  const entry = searchMemberItems.find((result) => result.id === item.id);
-                  if (entry) {
-                    setSearchMember(entry.label);
-                  }
-                }}
+                onSelect={onSelectMemberItem}
+                loading={searchMemberFetching}
                 hasError={isShowMemberError}
                 errorMessage={memberErrorMessage}
                 onAdd={onAdd}

@@ -13,6 +13,7 @@ type AddMemberRowProps = {
   inputValue: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onSelect: (item: ComboboxItem) => void;
+  loading?: boolean;
   hasError: boolean;
   errorMessage: string | null;
   onAdd: () => void;
@@ -23,6 +24,7 @@ export const AddMemberRow: FC<AddMemberRowProps> = ({
   inputValue,
   onChange,
   onSelect,
+  loading,
   hasError,
   errorMessage,
   onAdd,
@@ -43,8 +45,9 @@ export const AddMemberRow: FC<AddMemberRowProps> = ({
           value={inputValue}
           onChange={onChange}
           onSelect={onSelect}
+          loading={loading}
           hasError={hasError}
-          description={hasError && errorMessage ? errorMessage : undefined}
+          description={hasError ? errorMessage : undefined}
         />
       </Row>
       <Row

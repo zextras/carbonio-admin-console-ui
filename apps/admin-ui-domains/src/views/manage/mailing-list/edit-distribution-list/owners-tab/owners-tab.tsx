@@ -7,7 +7,6 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   ComboboxInput,
-  type ComboboxItem,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -68,6 +67,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
     setSearchValue: setSearchOwner,
     items: searchOwnerList,
     isFetching: searchOwnerFetching,
+    onSelectItem: onSelectOwnerItem,
   } = useGalEmailSearch();
 
   const getOwnerType = useGalContactTypeResolver();
@@ -331,14 +331,9 @@ export const OwnersTab: FC<OwnersTabProps> = ({
                 onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setSearchOwner(e.target.value);
                 }}
-                onSelect={(item: ComboboxItem): void => {
-                  const entry = searchOwnerList.find((result) => result.id === item.id);
-                  if (entry) {
-                    setSearchOwner(entry.label);
-                  }
-                }}
+                onSelect={onSelectOwnerItem}
                 hasError={isShowOwnerError}
-                description={isShowOwnerError && ownerErrorMessage ? ownerErrorMessage : undefined}
+                description={isShowOwnerError ? ownerErrorMessage : undefined}
               />
             </Row>
             <Row

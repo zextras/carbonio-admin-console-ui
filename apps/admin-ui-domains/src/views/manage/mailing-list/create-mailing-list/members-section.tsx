@@ -6,7 +6,6 @@
 import {
   Button,
   ComboboxInput,
-  type ComboboxItem,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -47,6 +46,7 @@ export const MembersSection: FC<any> = () => {
     setSearchValue: setMember,
     items,
     isFetching,
+    onSelectItem,
   } = useDirectoryEmailSearch(WIZARD_MEMBER_SEARCH_CONFIG);
 
   const memberHeaders: any[] = [
@@ -154,12 +154,7 @@ export const MembersSection: FC<any> = () => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setMember(e.target.value);
               }}
-              onSelect={(item: ComboboxItem): void => {
-                const entry = items.find((result) => result.id === item.id);
-                if (entry) {
-                  setMember(entry.label);
-                }
-              }}
+              onSelect={onSelectItem}
             />
           </Container>
           <Container

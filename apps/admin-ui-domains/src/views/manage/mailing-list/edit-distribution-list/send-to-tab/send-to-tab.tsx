@@ -7,7 +7,6 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   ComboboxInput,
-  type ComboboxItem,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -98,6 +97,7 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
     setSearchValue: setGrantEmailItem,
     items: grantItems,
     isFetching: grantItemsFetching,
+    onSelectItem: onSelectGrantItem,
   } = useGalEmailSearch();
 
   const grantEmailHeaders: Array<any> = [
@@ -231,17 +231,10 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setGrantEmailItem(e.target.value);
                   }}
-                  onSelect={(item: ComboboxItem): void => {
-                    const entry = grantItems.find((result) => result.id === item.id);
-                    if (entry) {
-                      setGrantEmailItem(entry.label);
-                    }
-                  }}
+                  onSelect={onSelectGrantItem}
                   disabled={grantTypeValue !== EMAIL}
                   hasError={isShowSenderToError}
-                  description={
-                    isShowSenderToError && senderToErrorMessage ? senderToErrorMessage : undefined
-                  }
+                  description={isShowSenderToError ? senderToErrorMessage : undefined}
                 />
               </Row>
               <Row

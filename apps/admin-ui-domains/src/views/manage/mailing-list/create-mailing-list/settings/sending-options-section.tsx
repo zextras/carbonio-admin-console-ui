@@ -7,7 +7,6 @@
 import {
   Button,
   ComboboxInput,
-  type ComboboxItem,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -78,6 +77,7 @@ export const SendingOptionsSection: FC = () => {
     setSearchValue: setGrantEmailItem,
     items: grantItems,
     isFetching: grantItemsFetching,
+    onSelectItem: onSelectGrantItem,
   } = useGalEmailSearch();
 
   const onAddGrantEmail = (): void => {
@@ -190,12 +190,7 @@ export const SendingOptionsSection: FC = () => {
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 setGrantEmailItem(e.target.value);
               }}
-              onSelect={(item: ComboboxItem): void => {
-                const entry = grantItems.find((result) => result.id === item.id);
-                if (entry) {
-                  setGrantEmailItem(entry.label);
-                }
-              }}
+              onSelect={onSelectGrantItem}
               disabled={grantType?.value !== EMAIL}
             />
           </Row>

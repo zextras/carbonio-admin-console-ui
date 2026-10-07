@@ -74,5 +74,9 @@ export function useDirectoryEmailSearch(config: DirectorySearchConfig) {
     label: item?.name,
   }));
 
-  return { searchValue, setSearchValue, items, isFetching: searchQuery.isFetching };
+  const onSelectItem = (item: ComboboxItem): void => {
+    setSearchValue(item.label);
+  };
+
+  return { searchValue, setSearchValue, items, isFetching: searchQuery.isFetching, onSelectItem };
 }

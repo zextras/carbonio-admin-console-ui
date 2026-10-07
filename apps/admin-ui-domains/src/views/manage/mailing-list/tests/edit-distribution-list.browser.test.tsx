@@ -468,6 +468,32 @@ describe('EditDistributionList (browser)', () => {
       expect(removeParams.action).toMatchObject({ op: 'removeOwners' });
       await expect.element(page.getByText('owner@example.com')).not.toBeInTheDocument();
     });
+
+    it('fills the owners combobox with the picked suggestion', async () => {
+      createBrowserSoapAPIInterceptor('SearchGal', {
+        cn: [{ id: 'gal-pick', _attrs: { email: 'picked@example.com', type: 'account' } }],
+      });
+      // Fires only for the debounced search of the typed email, not the mount-time one.
+      let debouncedGalSearchFired = false;
+      worker.use(
+        http.post('/service/admin/soap/SearchGalRequest', async ({ request }) => {
+          const body = await request.clone().json();
+          if (JSON.stringify(body).includes('picked@example.com')) {
+            debouncedGalSearchFired = true;
+          }
+        }),
+      );
+      await setupEditView();
+      await waitForLoad();
+      await page.getByText('OWNERS', { exact: true }).click();
+      const ownerInput = page.getByLabelText('Add owners by email address');
+      await userEvent.type(ownerInput, 'picked@example.com');
+      await expect.poll(() => debouncedGalSearchFired).toBe(true);
+      const pickedOption = page.getByRole('option', { name: 'picked@example.com' });
+      await expect.element(pickedOption).toBeInTheDocument();
+      await pickedOption.click();
+      await expect.element(ownerInput).toHaveValue('picked@example.com');
+    });
   });
 
   describe('Send-as tab interactions', () => {

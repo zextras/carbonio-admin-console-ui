@@ -7,7 +7,6 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   ComboboxInput,
-  type ComboboxItem,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -107,6 +106,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
     setSearchValue: setSendEmailItem,
     items: sendItems,
     isFetching: sendItemsFetching,
+    onSelectItem: onSelectSendItem,
   } = useGalEmailSearch();
 
   const sendEmailHeaders: Array<any> = [
@@ -464,16 +464,9 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                 setSendEmailItem(e.target.value);
               }}
-              onSelect={(item: ComboboxItem): void => {
-                const entry = sendItems.find((result) => result.id === item.id);
-                if (entry) {
-                  setSendEmailItem(entry.label);
-                }
-              }}
+              onSelect={onSelectSendItem}
               hasError={isShowSendEmailError}
-              description={
-                isShowSendEmailError && sendEmailErrorMessage ? sendEmailErrorMessage : undefined
-              }
+              description={isShowSendEmailError ? sendEmailErrorMessage : undefined}
             />
           </Row>
           <Container mainAlignment="flex-start">

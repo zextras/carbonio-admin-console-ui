@@ -7,7 +7,6 @@
 import {
   Button,
   ComboboxInput,
-  type ComboboxItem,
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
@@ -44,7 +43,13 @@ export const OwnersSettingsSection: FC = () => {
     },
   ];
 
-  const { searchValue: member, setSearchValue: setMember, items, isFetching } = useGalEmailSearch();
+  const {
+    searchValue: member,
+    setSearchValue: setMember,
+    items,
+    isFetching,
+    onSelectItem,
+  } = useGalEmailSearch();
 
   const ownerTableRows: Array<any> = (ownersList ?? []).map((item: any) => ({
     id: item,
@@ -149,12 +154,7 @@ export const OwnersSettingsSection: FC = () => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setMember(e.target.value);
               }}
-              onSelect={(item: ComboboxItem): void => {
-                const entry = items.find((result) => result.id === item.id);
-                if (entry) {
-                  setMember(entry.label);
-                }
-              }}
+              onSelect={onSelectItem}
             />
           </Row>
           <Row width="35%" mainAlignment="flex-start" crossAlignment="flex-start">
