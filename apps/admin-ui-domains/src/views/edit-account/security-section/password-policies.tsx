@@ -15,6 +15,7 @@ import {
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
 import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import {
   useAccountForm,
@@ -45,10 +46,7 @@ const InheritedPolicyInput = ({
   const liveValue = values?.[inputName] as string | undefined;
   const accountValue = accSpecificDetail?.[inputName] as string | undefined;
   const inheritedValue = cosDetail?.[inputName] as string | undefined;
-  const isOverridden =
-    liveValue !== undefined &&
-    (accountValue !== undefined ||
-      (inheritedValue !== undefined && liveValue !== inheritedValue));
+  const isOverridden = isInheritedOverridden(liveValue, accountValue, inheritedValue);
 
   return (
     <PlainInput

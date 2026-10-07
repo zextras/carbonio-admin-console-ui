@@ -9,6 +9,7 @@ import { useCosList } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { DEFAULT } from '../../../constants';
+import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
 import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import { AccountStatus, localeList } from '../../utility/utils';
 import { useAccountForm, useSetAccountValues } from '../account-form-context';
@@ -57,10 +58,7 @@ export const SettingsFields = () => {
   const accountLocale = accSpecificDetail?.zimbraPrefLocale as string | undefined;
   const inheritedLocale = cosDetail?.zimbraPrefLocale as string | undefined;
   const liveLocale = values?.zimbraPrefLocale as string | undefined;
-  const isLocaleOverridden =
-    liveLocale !== undefined &&
-    (accountLocale !== undefined ||
-      (inheritedLocale !== undefined && liveLocale !== inheritedLocale));
+  const isLocaleOverridden = isInheritedOverridden(liveLocale, accountLocale, inheritedLocale);
 
   const effectiveLocale = liveLocale ?? inheritedLocale;
   const localeItems =

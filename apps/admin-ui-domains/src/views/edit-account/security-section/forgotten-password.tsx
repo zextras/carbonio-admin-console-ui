@@ -99,16 +99,20 @@ export const ForgottenPassword = () => {
               />
             </Container>
             <Container width="30%" padding={{ left: 'small' }}>
-              <PlainSelect
-                label={t('label.status', 'Status')}
-                items={recoveryStatus}
-                selection={
-                  recoveryStatus.find(
-                    (item) => item.value === values?.zimbraPrefPasswordRecoveryAddressStatus,
-                  ) ?? recoveryStatus[0]
-                }
-                onChange={onRecoveryStatusChange}
-              />
+              {values?.zimbraId ? (
+                <PlainSelect
+                  label={t('label.status', 'Status')}
+                  items={recoveryStatus}
+                  selection={
+                    recoveryStatus.find(
+                      (item) => item.value === values?.zimbraPrefPasswordRecoveryAddressStatus,
+                    ) ?? recoveryStatus[0]
+                  }
+                  onChange={onRecoveryStatusChange}
+                />
+              ) : (
+                <></>
+              )}
             </Container>
           </ListRow>
         </Container>
