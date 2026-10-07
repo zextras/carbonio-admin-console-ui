@@ -8,7 +8,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   ListRow,
   Padding,
   Paging,
@@ -364,7 +364,7 @@ export const MembersTab: FC<MembersTabProps> = ({
             {(dlmTableRows.length > 0 || filterMember !== '') && (
               <ListRow>
                 <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-                  <Input
+                  <LegacyInput
                     label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
                     value={filterMember}
                     backgroundColor="gray5"

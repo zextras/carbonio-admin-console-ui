@@ -10,7 +10,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   ListRow,
   Padding,
   Row,
@@ -527,7 +527,7 @@ export const SendAsTab: FC<SendAsTabProps> = ({
               {sendEmailTableRows.length > 0 && (
                 <ListRow>
                   <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-                    <Input
+                    <LegacyInput
                       label={t('domain.distributionList.sendAs.searchSenders', 'Search senders')}
                       value={filterSendEmail}
                       backgroundColor="gray5"

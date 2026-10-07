@@ -10,7 +10,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   ListRow,
   Padding,
   Row,
@@ -376,7 +376,7 @@ export const OwnersTab: FC<OwnersTabProps> = ({
             {ownerTableRows.length > 0 && (
               <ListRow>
                 <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-                  <Input
+                  <LegacyInput
                     label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
                     value={filterOwner}
                     backgroundColor="gray5"

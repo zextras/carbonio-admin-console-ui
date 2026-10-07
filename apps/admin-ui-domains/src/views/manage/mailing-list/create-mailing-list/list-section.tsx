@@ -7,7 +7,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   LabeledValue,
   ListRow,
   Paging,
@@ -345,7 +345,7 @@ export const ListSection: FC<any> = () => {
               <Container padding={{ bottom: 'large', top: 'large' }}>
                 {dynamicListMemberRows.length > 0 && (
                   <>
-                    <Input
+                    <LegacyInput
                       label={t('label.filter', 'Filter') + ' ' + t('label.address', 'Address')}
                       value={filterMember}
                       backgroundColor="gray5"

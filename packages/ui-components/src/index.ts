@@ -40,7 +40,7 @@ export {
 export * from './components/inputs/combobox-input';
 export * from './components/inputs/DatePicker';
 export * from './components/inputs/IconCheckbox';
-export * from './components/inputs/Input';
+export * from './components/inputs/LegacyInput';
 export * from './components/inputs/labeled-value';
 export * from './components/inputs/number-input';
 export * from './components/inputs/password-input';

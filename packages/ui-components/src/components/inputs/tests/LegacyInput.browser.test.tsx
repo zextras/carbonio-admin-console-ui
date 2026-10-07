@@ -8,12 +8,12 @@ import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { Input } from '../Input';
+import { LegacyInput } from '../LegacyInput';
 
 const TrimOnPasteInput = ({ trimOnPaste }: { trimOnPaste: boolean }): React.JSX.Element => {
   const [value, setValue] = useState('');
   return (
-    <Input
+    <LegacyInput
       label="Test"
       value={value}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
@@ -25,7 +25,7 @@ const TrimOnPasteInput = ({ trimOnPaste }: { trimOnPaste: boolean }): React.JSX.
 const PrefilledTrimOnPasteInput = (): React.JSX.Element => {
   const [value, setValue] = useState('some pre-existing value');
   return (
-    <Input
+    <LegacyInput
       label="Test"
       value={value}
       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setValue(e.target.value)}
@@ -45,7 +45,7 @@ function dispatchPaste(element: HTMLElement, text: string): void {
   element.dispatchEvent(pasteEvent);
 }
 
-describe('Input', () => {
+describe('LegacyInput', () => {
   describe('trimOnPaste', () => {
     it('should trim pasted text when trimOnPaste is true', async () => {
       await render(<TrimOnPasteInput trimOnPaste />);

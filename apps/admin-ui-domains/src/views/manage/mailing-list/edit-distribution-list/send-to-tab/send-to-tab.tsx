@@ -10,7 +10,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   ListRow,
   Padding,
   Row,
@@ -275,7 +275,7 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
               {grantEmailTableRows.length > 0 && (
                 <ListRow>
                   <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-                    <Input
+                    <LegacyInput
                       label={t('domain.distributionList.sendTo.searchSenders', 'Search senders')}
                       value={filterGrantEmail}
                       backgroundColor="gray5"

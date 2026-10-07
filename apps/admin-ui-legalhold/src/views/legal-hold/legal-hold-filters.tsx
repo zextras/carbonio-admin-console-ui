@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { ComboboxInput, type ComboboxItem, Input, Row } from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, LegacyInput, Row } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -86,7 +86,7 @@ export const LegalHoldFilters = ({
         />
       </Row>
       <Row width="65%" mainAlignment="flex-start" crossAlignment="flex-start">
-        <Input
+        <LegacyInput
           label={t('label.search_an_account', 'Search an Account')}
           backgroundColor="gray5"
           CustomIcon={FunnelSearchIcon}

@@ -10,7 +10,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   ListRow,
   Padding,
   Row,
@@ -188,7 +188,7 @@ export const SendInviteAccounts = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%">
-              <Input
+              <LegacyInput
                 disabled={sendInviteList.length === 0 && searchAccountName.length === 0}
                 label={t('label.search_an_account', 'Search for an account')}
                 backgroundColor="gray5"

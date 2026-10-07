@@ -8,7 +8,7 @@ import {
   CustomHeaderFactory,
   Dropdown,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   PlainSelect,
   Table,
   useSnackbar,
@@ -239,7 +239,7 @@ export const AdminRightsSection = ({
             width="100%"
             style={{ width: '100%' }}
           >
-            <Input
+            <LegacyInput
               label={t('label.domain', 'Domain')}
               onChange={(ev: any): void => {
                 setIsDomainSelect(false);

@@ -8,7 +8,7 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
+  LegacyInput,
   Paging,
   Row,
   Table,
@@ -198,7 +198,7 @@ export const CosList = () => {
               padding={{ bottom: 'large' }}
             >
               <Container>
-                <Input
+                <LegacyInput
                   label={t('label.i_am_looking_for_this_Cos', `I'm looking for this Cos…`)}
                   disabled={showEmptyState && searchString.length === 0 && isError}
                   value={searchString}
