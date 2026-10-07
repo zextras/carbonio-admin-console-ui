@@ -63,7 +63,7 @@ export const DomainDisclaimer = () => {
             <form.Field name="zimbraAmavisDomainDisclaimerText">
               {(field) => (
                 <PlainTextarea
-                  label={''}
+                  label={t('label.disclaimer', 'Disclaimer')}
                   value={field.state.value}
                   onChange={(event: ChangeEvent<HTMLTextAreaElement>): void => {
                     field.handleChange(event.currentTarget.value);
