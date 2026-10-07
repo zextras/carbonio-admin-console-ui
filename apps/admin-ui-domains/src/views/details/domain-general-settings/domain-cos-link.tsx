@@ -11,9 +11,9 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
   ListRow,
   Padding,
+  PlainInput,
   Row,
   Table,
   type THeader,
@@ -279,11 +279,11 @@ export const DomainCosLink = ({
           </Container>
 
           <Container padding={{ all: 'small' }}>
-            <Input
+            <PlainInput
               label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
               value={maxAccountValue}
-              backgroundColor="gray6"
               type="number"
+              autoComplete="off"
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
                 if (
                   ![
