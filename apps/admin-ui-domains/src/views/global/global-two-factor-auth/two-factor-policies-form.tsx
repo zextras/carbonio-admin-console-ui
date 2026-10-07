@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { AnyFormApi } from '@tanstack/react-form';
-import { Button, ChipInput, type ChipItem, CustomChip, Select } from '@zextras/ui-components';
+import { Button, ChipInput, type ChipItem, CustomChip, PlainSelect, type SelectItem } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +18,9 @@ type TwoFactorPoliciesFormProps = {
   form: AnyFormApi;
   services: Array<TwoFactorPolicy>;
 };
+
+/** Placeholder matching no trusted-device value (0/1/2): renders as no selection. */
+const EMPTY_APPLY_ALL_SELECTION: SelectItem<number> = { value: -1, label: '' };
 
 export const TwoFactorPoliciesForm = ({ form, services }: TwoFactorPoliciesFormProps) => {
   const [t] = useTranslation();
@@ -58,13 +61,16 @@ export const TwoFactorPoliciesForm = ({ form, services }: TwoFactorPoliciesFormP
         </div>
         <div className={styles.applyAllRow}>
           <div className={styles.applyAllSelect}>
-            <Select
+            <PlainSelect<number>
               items={whatToTrust}
               label={t('label.what_to_trust', 'What to trust?')}
-              onChange={(value: number | null): void => {
-                setApplyAllTrustedDevice(value ?? undefined);
+              onChange={(value: number): void => {
+                setApplyAllTrustedDevice(value);
               }}
-              showCheckbox={false}
+              selection={
+                whatToTrust.find((item) => item.value === applyAllTrustedDevice) ??
+                EMPTY_APPLY_ALL_SELECTION
+              }
             />
           </div>
           <div className={styles.applyAllChips}>

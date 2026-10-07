@@ -9,8 +9,8 @@ import {
   ChipInput,
   Container,
   FormPageLayout,
-  Input,
   ListRow,
+  PlainInput,
   Row,
   Switch,
   useSnackbar,
@@ -187,12 +187,12 @@ const GlobalDetailPanelContent = ({
               {(field) => {
                 const hasError = field.state.meta.errors.length > 0;
                 return (
-                  <Input
-                    isRequired
-                    inputName="carbonioNotificationFrom"
+                  <PlainInput
+                    required
+                    name="carbonioNotificationFrom"
                     label={t('label.notification_sender', 'Notification Sender')}
-                    backgroundColor="gray5"
-                    value={field.state.value}
+                    value={field.state.value ?? ''}
+                    autoComplete="off"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       field.handleChange(e.target.value);
                     }}
