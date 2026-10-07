@@ -10,8 +10,8 @@ import {
   Displayer,
   LabeledValue,
   ListRow,
+  PlainSelect,
   Row,
-  Select,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
@@ -207,14 +207,12 @@ export const ActiveDeviceDetail = ({
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <Select
+            <PlainSelect<number>
               items={abqStatusOptions}
-              background="gray5"
               label={t('label.abq_status', 'ABQ Status')}
-              showCheckbox={false}
               selection={abqStatus}
-              onChange={(ev: string | number | null): void => {
-                const dataItem = abqStatusOptions.find((item) => item.value === ev);
+              onChange={(value: number): void => {
+                const dataItem = abqStatusOptions.find((item) => item.value === value);
                 if (dataItem) setAbqStatus(dataItem);
               }}
             />
@@ -245,14 +243,12 @@ export const ActiveDeviceDetail = ({
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <Select
+            <PlainSelect<number>
               items={statusOptions}
-              background="gray5"
               label={t('label.status_lbl', 'Status')}
-              showCheckbox={false}
               selection={status}
-              onChange={(ev: string | number | null): void => {
-                const dataItem = statusOptions.find((item) => item.value === ev);
+              onChange={(value: number): void => {
+                const dataItem = statusOptions.find((item) => item.value === value);
                 if (dataItem) setStatus(dataItem);
               }}
             />
