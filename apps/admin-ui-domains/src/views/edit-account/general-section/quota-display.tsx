@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { LabeledValue, Row, Select } from '@zextras/ui-components';
+import { LabeledValue, PlainSelect, Row } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
@@ -35,29 +35,29 @@ export const QuotaDisplay = () => {
       {isAdvanced && (
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
-            <Select
+            <PlainSelect
               disabled={!values?.abqMode}
               items={ABQ_STATUS}
-              background="gray5"
               label={t('account_details.abq_status', 'ABQ Status')}
-              showCheckbox={false}
               onChange={onAccountABQStatusChange}
               selection={
-                ABQ_STATUS.find((item: any) => item.value === values?.abqMode) || ABQ_STATUS[0]
+                ABQ_STATUS.find(
+                  (item: { value: string; label: string }) => item.value === values?.abqMode,
+                ) ?? ABQ_STATUS[0]
               }
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            <Select
+            <PlainSelect
               disabled={values?.backupEnabled === undefined}
               items={BACKUP_ENABLED_STATUS}
-              background="gray5"
               label={t('account_details.included_in_backup', 'Included in Backup')}
-              showCheckbox={false}
               onChange={onAccountBackupEnabledStatusChange}
               selection={
-                BACKUP_ENABLED_STATUS.find((item: any) => item.value === values?.backupEnabled) ||
-                BACKUP_ENABLED_STATUS[0]
+                BACKUP_ENABLED_STATUS.find(
+                  (item: { value: boolean; label: string }) =>
+                    item.value === values?.backupEnabled,
+                ) ?? BACKUP_ENABLED_STATUS[0]
               }
             />
           </Row>

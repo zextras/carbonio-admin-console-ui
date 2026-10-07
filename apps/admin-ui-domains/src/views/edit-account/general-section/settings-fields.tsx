@@ -4,16 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSelect, Row, Select, Switch } from '@zextras/ui-components';
+import { PlainSelect, Row, Switch } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { DEFAULT } from '../../../constants';
+import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import { AccountStatus, localeList } from '../../utility/utils';
-import {
-  useAccountForm,
-  useSetAccountValues,
-} from '../account-form-context';
+import { useAccountForm, useSetAccountValues } from '../account-form-context';
 
 export const SettingsFields = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
@@ -56,6 +54,8 @@ export const SettingsFields = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
 
+  const isLocaleOverridden = accSpecificDetail?.zimbraPrefLocale !== undefined;
+
   return (
     <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
       <Row padding={{ top: 'large' }}>
@@ -66,11 +66,9 @@ export const SettingsFields = () => {
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="49%" mainAlignment="flex-start">
           {values?.zimbraId ? (
-            <Select
+            <PlainSelect
               items={ACCOUNT_STATUS}
-              background="gray5"
               label={t('label.account_status', 'Account Status')}
-              showCheckbox={false}
               onChange={onAccountStatusChange}
               selection={
                 ACCOUNT_STATUS.find(
@@ -85,16 +83,34 @@ export const SettingsFields = () => {
         </Row>
         <Row width="49%" mainAlignment="flex-start">
           {values?.zimbraId && localeZone?.length ? (
-            <InheritedSelect
+            <PlainSelect
               label={t('label.language', 'Language')}
               items={localeZone}
-              subValue={values.zimbraPrefLocale}
-              inheritedValue={cosDetail.zimbraPrefLocale}
-              fromSubValue={accSpecificDetail?.zimbraPrefLocale}
-              background="gray5"
-              selectName="zimbraPrefLocale"
+              selection={
+                localeZone.find((item) => item.value === values?.zimbraPrefLocale) ??
+                localeZone.find((item) => item.value === cosDetail?.zimbraPrefLocale) ??
+                localeZone[0]
+              }
               onChange={onPrefLocaleChange}
-              onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
+              description={
+                isLocaleOverridden
+                  ? undefined
+                  : t(
+                      'label.inherited_from_cos',
+                      'Inherited from the Class of Service',
+                    )
+              }
+              icon={
+                isLocaleOverridden ? (
+                  <RevertToInheritedIcon
+                    label={t(
+                      'label.click_to_revert',
+                      'Click to revert to the inherited value',
+                    )}
+                    onClick={(): void => setEmptyValue('zimbraPrefLocale')}
+                  />
+                ) : undefined
+              }
             />
           ) : (
             <></>
@@ -112,12 +128,10 @@ export const SettingsFields = () => {
         </Row>
         <Row width="84.5%" mainAlignment="flex-start">
           {cosItems?.length ? (
-            <Select
+            <PlainSelect
               disabled={isDefaultCos}
               items={cosItems}
-              background="gray5"
               label={t('label.default_class_of_service', 'Default Class of Service')}
-              showCheckbox={false}
               selection={selection ?? cosItems[0]}
               onChange={onCOSIdChange}
             />

@@ -8,8 +8,8 @@ import {
   ChipInput,
   Container,
   CustomChip,
-  CustomTextArea,
-  Input,
+  PlainInput,
+  PlainTextarea,
   Row,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
@@ -42,7 +42,7 @@ export const EditAccountGeneralSection = ({
   const isHidePassword = isLdapAuthWithoutFallback(domainInformation);
   const extLdapAuth = hasExternalLdapUrl(domainInformation);
 
-  const changeAccDetail = (e: ChangeEvent<HTMLInputElement>) => {
+  const changeAccDetail = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -79,16 +79,16 @@ export const EditAccountGeneralSection = ({
               mainAlignment="space-between"
             >
               <Row width="100%" mainAlignment="space-between">
-                <Input
+                <PlainInput
                   data-testid="zimbraAuthLdapExternalDn"
                   label={t(
                     'domain.accounts.editAccount.externalldapReferenceForAuthentication',
                     'External LDAP Reference for Authentication',
                   )}
-                  backgroundColor="gray5"
+                  autoComplete="off"
                   onChange={changeAccDetail}
-                  inputName="zimbraAuthLdapExternalDn"
-                  value={values?.zimbraAuthLdapExternalDn || ''}
+                  name="zimbraAuthLdapExternalDn"
+                  value={values?.zimbraAuthLdapExternalDn ?? ''}
                 />
               </Row>
             </Row>
@@ -147,12 +147,12 @@ export const EditAccountGeneralSection = ({
           </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <Input
-            backgroundColor="gray5"
+          <PlainInput
             label={t('label.description', 'Description')}
-            value={values?.description || ''}
+            autoComplete="off"
+            value={values?.description ?? ''}
             onChange={changeAccDetail}
-            inputName="description"
+            name="description"
           />
         </Row>
         <Row padding={{ top: 'large' }}>
@@ -161,11 +161,10 @@ export const EditAccountGeneralSection = ({
           </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <CustomTextArea
+          <PlainTextarea
             label={t('label.notes', 'Notes')}
-            value={values?.zimbraNotes || ''}
-            backgroundColor="gray5"
-            inputName="zimbraNotes"
+            value={values?.zimbraNotes ?? ''}
+            name="zimbraNotes"
             onChange={changeAccDetail}
           />
         </Row>
