@@ -1,3 +1,9 @@
+## [0.29.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.0...v0.29.1) (2026-10-08)
+
+### Bug Fixes
+
+* cos advanced tab never loads in ce ([#1409](https://github.com/zextras/carbonio-admin-console-ui/issues/1409)) ([6ad1b1a](https://github.com/zextras/carbonio-admin-console-ui/commit/6ad1b1a6cc961fe13579bbd752f54d5ef66324ee))
+
 ## [0.29.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.28.0...v0.29.0) (2026-10-07)
 
 ### Features
