@@ -17,6 +17,7 @@ vi.mock('@zextras/ui-components', () => ({
 
 vi.mock('@zextras/ui-shared', () => ({
   searchDirectory: (...args: Array<Record<string, unknown>>) => mockSearchDirectory(...args),
+  useDebouncedValue: <T,>(value: T): T => value,
 }));
 
 vi.mock('react-i18next', () => ({
