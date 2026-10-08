@@ -10,8 +10,8 @@ import {
   DatePicker,
   getFieldErrorProps,
   LabeledValue,
-  TextInput,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';

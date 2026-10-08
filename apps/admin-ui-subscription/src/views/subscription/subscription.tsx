@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, LicenseBanner, Modal, TextInput, Row } from '@zextras/ui-components';
+import { Button, Container, LicenseBanner, Modal, Row,TextInput } from '@zextras/ui-components';
 import {
   type LicenseInfo,
   useActivateLicense,
