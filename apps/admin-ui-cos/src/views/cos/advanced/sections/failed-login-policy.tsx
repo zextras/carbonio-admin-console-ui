@@ -8,10 +8,10 @@ import {
 	Container,
 	getFieldErrorProps,
 	ListRow,
-	TextInput,
-	PlainSelect,
 	Row,
+	Select,
 	Switch,
+	TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -138,7 +138,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 											/>
 										</Container>
 										<Container width="28%" padding={{ left: 'small', right: 'small' }}>
-											<PlainSelect
+											<Select
 												items={timeItems}
 												label={labels.timeRange}
 												selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}
@@ -176,7 +176,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 											/>
 										</Container>
 										<Container width="28%" padding={{ left: 'small' }}>
-											<PlainSelect
+											<Select
 												items={timeItems}
 												label={labels.timeRange}
 												selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}

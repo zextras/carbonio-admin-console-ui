@@ -12,12 +12,12 @@ import {
   DefaultTabBarItem,
   getFieldErrorProps,
   Padding,
-  TextInput,
-  PlainSelect,
   Row,
+  Select,
   type SelectItem,
   Switch,
   TabBar,
+  TextInput,
   Tooltip,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -737,7 +737,7 @@ export function EditS3ConnectorDetailPanel({
               <Row width="100%" padding={{ top: 'large' }} mainAlignment="flex-start">
                 <form.Field name="regionValue">
                   {(field) => (
-                    <PlainSelect
+                    <Select
                       items={[
                         { label: t('label.region_none', 'None'), value: NO_REGION_VALUE },
                         {

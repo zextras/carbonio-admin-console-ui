@@ -9,10 +9,10 @@ import {
   ListRow,
   NumberInput,
   Padding,
-  TextInput,
   Radio,
   Row,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { type ChangeEvent, useEffect } from 'react';

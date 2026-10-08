@@ -9,7 +9,7 @@ import {
   ChipInput,
   type ChipItem,
   CustomChip,
-  PlainSelect,
+  Select,
   type SelectItem,
 } from '@zextras/ui-components';
 import { useState } from 'react';
@@ -68,7 +68,7 @@ export const TwoFactorPoliciesForm = ({ form, services }: TwoFactorPoliciesFormP
         </div>
         <div className={styles.applyAllRow}>
           <div className={styles.applyAllSelect}>
-            <PlainSelect<number>
+            <Select<number>
               items={whatToTrust}
               label={t('label.what_to_trust', 'What to trust?')}
               onChange={(value: number): void => {

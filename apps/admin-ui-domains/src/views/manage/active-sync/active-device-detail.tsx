@@ -10,8 +10,8 @@ import {
   Displayer,
   LabeledValue,
   ListRow,
-  PlainSelect,
   Row,
+  Select,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
@@ -207,7 +207,7 @@ export const ActiveDeviceDetail = ({
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <PlainSelect<number>
+            <Select<number>
               items={abqStatusOptions}
               label={t('label.abq_status', 'ABQ Status')}
               selection={abqStatus}
@@ -243,7 +243,7 @@ export const ActiveDeviceDetail = ({
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <PlainSelect<number>
+            <Select<number>
               items={statusOptions}
               label={t('label.status_lbl', 'Status')}
               selection={status}

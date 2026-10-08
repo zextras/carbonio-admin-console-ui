@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { PlainSelect } from '@zextras/ui-components';
+import { Select } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { isInheritedOverridden } from './is-inherited-overridden';
@@ -47,7 +47,7 @@ export const InheritedPrefSelect = ({
       : items;
 
   return (
-    <PlainSelect
+    <Select
       label={label}
       items={selectItems}
       selection={

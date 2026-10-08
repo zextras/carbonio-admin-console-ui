@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, TextInput, Radio, RadioGroup, Row } from '@zextras/ui-components';
+import { Container, Radio, RadioGroup, Row,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { MtaAdvancedFormApi } from '../types';

@@ -8,11 +8,11 @@ import {
   Container,
   LabeledValue,
   ListRow,
-  TextInput,
-  PlainSelect,
   PlainTextarea,
   Row,
+  Select,
   type SelectItem,
+  TextInput,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -137,7 +137,7 @@ export const CosInfoFields = ({
               <form.Field name="edition">
                 {(field) => {
                   return (
-                    <PlainSelect
+                    <Select
                       items={EDITION_ITEMS}
                       label={t('label.associated_edition', 'Associated edition')}
                       selection={

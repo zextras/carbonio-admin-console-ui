@@ -9,9 +9,9 @@ import {
   Container,
   LabeledValue,
   ListRow,
-  PlainSelect,
   PlainTextarea,
   Row,
+  Select,
   Switch,
   TextInput,
 } from '@zextras/ui-components';
@@ -104,7 +104,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
         <Container padding={{ right: 'small', top: 'small' }}>
           <form.Field name="zimbraMailStatusValue">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={rightsOptions}
                 label={t('label.status', 'Status')}
                 onChange={(v: any): void => {

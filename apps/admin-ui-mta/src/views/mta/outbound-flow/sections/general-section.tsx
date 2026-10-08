@@ -8,9 +8,9 @@ import {
   type ChipItem,
   Container,
   CustomChip,
-  TextInput,
-  PlainSelect,
+  Select,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { some } from 'lodash-es';
@@ -135,7 +135,7 @@ export const GeneralSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaTlsSecurityLevel">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={tlsSecurityOptions}
                 label={t('mta.tls_security_level', 'TLS Security Level')}
                 selection={tlsSecurityOptions.find((item) => item.value === field.state.value) ?? tlsSecurityOptions[0]}

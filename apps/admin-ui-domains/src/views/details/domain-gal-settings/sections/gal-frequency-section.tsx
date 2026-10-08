@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, ListRow, NumberInput, PlainSelect, Row } from '@zextras/ui-components';
+import { Container, ListRow, NumberInput, Row,Select } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
@@ -58,7 +58,7 @@ export const GalFrequencySection = ({ form }: GalFrequencySectionProps) => {
             {(field) => {
               const selection = unitItems.find((item) => item.value === field.state.value) ?? unitItems[0];
               return (
-                <PlainSelect
+                <Select
                   label={t('label.interval', 'Interval')}
                   items={unitItems}
                   selection={selection}

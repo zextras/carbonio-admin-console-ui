@@ -11,8 +11,8 @@ import {
   LabeledValue,
   ListRow,
   NumberInput,
-  PlainSelect,
   PlainTextarea,
+  Select,
   TextInput,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -147,7 +147,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPublicServiceProtocol">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={serviceProtocolItems}
                 label={t('label.public_service_protocol', 'Public Service Protocol')}
                 selection={selectedOption(serviceProtocolItems, field.state.value)}
@@ -193,7 +193,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraPrefTimeZoneId">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={timezones}
                 label={t('label.timezone', 'Time Zone')}
                 selection={selectedOption(timezones, field.state.value)}
@@ -220,7 +220,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraDomainDefaultCOSId">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={cosItems}
                 label={t('label.default_class_of_service', 'Default Class of Service')}
                 selection={selectedOption(cosItems, field.state.value)}
@@ -234,7 +234,7 @@ export const DomainBasicsSection = ({
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraDomainStatus">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={domainStatusItems}
                 label={t('label.status', 'Status')}
                 selection={selectedOption(domainStatusItems, field.state.value)}

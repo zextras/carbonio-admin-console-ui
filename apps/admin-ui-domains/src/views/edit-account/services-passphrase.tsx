@@ -7,8 +7,8 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   LabeledValue,
-  PlainSelect,
   Row,
+  Select,
   TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -173,7 +173,7 @@ export const ServicesPassphrase = () => {
               style={{ pointerEvents: 'none' }}
               padding={{ right: 'medium' }}
             >
-              <PlainSelect
+              <Select
                 items={SERVICE_PASSPHRASE_SERVICES}
                 label={t('account_details.services', 'Services')}
                 selection={
@@ -187,7 +187,7 @@ export const ServicesPassphrase = () => {
               />
             </Row>
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
-              <PlainSelect<boolean>
+              <Select<boolean>
                 items={SERVICE_PASSPHRASE_STATUS}
                 label={t('account_details.status', 'Status')}
                 selection={
@@ -228,7 +228,7 @@ export const ServicesPassphrase = () => {
             />
           </Row>
           <Row width="19%" mainAlignment="space-between" padding={{ right: 'medium' }}>
-            <PlainSelect
+            <Select
               items={SERVICE_PASSPHRASE_SERVICES}
               label={t('account_details.services', 'Services')}
               selection={

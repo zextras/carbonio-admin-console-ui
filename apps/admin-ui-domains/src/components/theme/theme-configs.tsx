@@ -12,8 +12,8 @@ import {
   type Item as TabBarItem,
   ListRow,
   Padding,
-  PlainSelect,
   Row,
+  Select,
   TabBar,
 } from '@zextras/ui-components';
 import { getAllRights, useCurrentUserRights } from '@zextras/ui-shared';
@@ -133,7 +133,7 @@ export const ThemeConfigs = ({
             </Padding>
           </ListRow>
           <ListRow>
-            <PlainSelect
+            <Select
               label={t('cos.dark_mode', 'Dark Mode')}
               items={THEME_MODE}
               selection={

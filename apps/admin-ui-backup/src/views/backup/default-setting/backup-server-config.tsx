@@ -9,10 +9,10 @@ import {
   Container,
   ListRow,
   Padding,
-  TextInput,
   RouteLeavingGuard,
   Row,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useGlobalSettings, useModuleLicenseInfo } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';

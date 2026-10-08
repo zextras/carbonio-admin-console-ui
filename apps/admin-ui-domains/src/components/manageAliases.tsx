@@ -9,8 +9,8 @@ import {
   CustomChip,
   LabeledValue,
   Modal,
-  PlainSelect,
   Row,
+  Select,
   TextInput,
 } from '@zextras/ui-components';
 import { useDomainById } from '@zextras/ui-shared';
@@ -155,7 +155,7 @@ export const ManageAliases: FC<{
               width="40%"
             >
               {!!domainItems.length && (
-                <PlainSelect
+                <Select
                   items={domainItems}
                   label={t('account_details.domain', 'Domain')}
                   onChange={onDomainOptionChange}

@@ -9,7 +9,7 @@ import {
   ChipInput,
   type ChipItem,
   CustomChip,
-  PlainSelect,
+  Select,
   type SelectItem,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -51,7 +51,7 @@ export const ServicePolicyRow = ({
         <ds-text as="span">{serviceLabel}</ds-text>
       </div>
       <div className={styles.serviceSelect}>
-        <PlainSelect<number>
+        <Select<number>
           items={whatToTrust}
           label={t('label.what_to_trust', 'What to trust?')}
           onChange={(value: number): void => {

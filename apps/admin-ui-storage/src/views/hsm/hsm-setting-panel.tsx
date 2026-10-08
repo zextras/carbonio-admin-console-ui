@@ -15,10 +15,10 @@ import {
   ListRow,
   ModalOverlay,
   Padding,
-  TextInput,
   Row,
   Switch,
   Table,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { setCoreAttributes, useAllServers } from '@zextras/ui-shared';

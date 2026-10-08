@@ -7,7 +7,7 @@
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Select } from '../inputs/Select';
+import { LegacySelect } from '../inputs/LegacySelect';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
 
@@ -62,7 +62,7 @@ const TrackNumberPerPage: FC<TrackNumberPerPageProps> = ({ setPageSize }) => {
         <ds-text as="span" size="small">{t('label.showing', 'Showing')}</ds-text>
       </Row>
       <Row padding={{ right: 'small' }}>
-        <Select
+        <LegacySelect
           items={paginationItems}
           data-testid="pagination-select"
           background="gray5"

@@ -8,8 +8,8 @@ import {
   Container,
   InheritedSwitch,
   ListRow,
-  PlainSelect,
   Row,
+  Select,
   TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
@@ -245,7 +245,7 @@ export const FailedLoginPolicy = () => {
               />
             </Container>
             <Container width="25%" padding={{ left: 'small' }}>
-              <PlainSelect
+              <Select
                 label={t('cos.time_range', 'Time Range')}
                 items={timeItems}
                 selection={
@@ -307,7 +307,7 @@ export const FailedLoginPolicy = () => {
               />
             </Container>
             <Container width="25%" padding={{ left: 'small' }}>
-              <PlainSelect
+              <Select
                 label={t('cos.time_range', 'Time Range')}
                 items={timeItems}
                 selection={

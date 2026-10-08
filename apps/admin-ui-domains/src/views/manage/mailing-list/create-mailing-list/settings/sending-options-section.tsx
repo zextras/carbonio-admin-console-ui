@@ -12,8 +12,8 @@ import {
   HoverableRowFactory,
   ListRow,
   Padding,
-  PlainSelect,
   Row,
+  Select,
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -159,7 +159,7 @@ export const SendingOptionsSection: FC = () => {
       </Row>
       <ListRow>
         <Container padding={{ top: 'large' }}>
-          <PlainSelect
+          <Select
             items={grantTypeOptions}
             label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
             onChange={onGrantTypeChange}

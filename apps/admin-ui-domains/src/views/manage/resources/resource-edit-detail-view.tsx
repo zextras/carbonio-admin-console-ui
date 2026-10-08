@@ -15,10 +15,10 @@ import {
   NumberInput,
   Padding,
   PasswordInput,
-  PlainSelect,
   PlainTextarea,
   RouteLeavingGuard,
   Row,
+  Select,
   TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -559,7 +559,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="zimbraCalResType">
                     {(field) => (
-                      <PlainSelect
+                      <Select
                         items={resourceTypeOptions}
                         label={t('label.type', 'Type')}
                         onChange={(v) => {
@@ -582,7 +582,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <form.Field name="zimbraAccountStatus">
                     {(field) => (
-                      <PlainSelect
+                      <Select
                         items={accountStatusOptions}
                         label={t('label.status', 'Status')}
                         onChange={(v) => {
@@ -603,7 +603,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <form.Field name="zimbraCOSId">
                     {(field) => (
-                      <PlainSelect
+                      <Select
                         items={cosItems}
                         label={t('label.class_of_service', 'Class of Service')}
                         onChange={(v) => {
@@ -626,7 +626,7 @@ const ResourceEditForm = ({
                 <Row width="100%">
                   <form.Field name="zimbraCalResAutoDeclineRecurring">
                     {(field) => (
-                      <PlainSelect
+                      <Select
                         items={autoRefuseOptions}
                         label={t('label.auto_refuse', 'Auto-Refuse')}
                         onChange={(v) => {
@@ -649,7 +649,7 @@ const ResourceEditForm = ({
                 <Row width="100%">
                   <form.Field name="schedulePolicyType">
                     {(field) => (
-                      <PlainSelect
+                      <Select
                         items={schedulePolicyOptions}
                         label={t('label.schedule_policy', 'Set Policy')}
                         onChange={(v) => {

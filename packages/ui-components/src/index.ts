@@ -40,23 +40,22 @@ export {
 export * from './components/inputs/combobox-input';
 export * from './components/inputs/DatePicker';
 export * from './components/inputs/IconCheckbox';
-export * from './components/inputs/LegacyInput';
 export * from './components/inputs/labeled-value';
+export * from './components/inputs/LegacyInput';
+export {
+  LegacySelect,
+  type LegacySelectProps,
+  type MultipleSelectionOnChange,
+  type SingleSelectionOnChange,
+} from './components/inputs/LegacySelect';
 export * from './components/inputs/number-input';
 export * from './components/inputs/password-input';
-export * from './components/inputs/text-input';
-export * from './components/inputs/plain-select';
 export * from './components/inputs/plain-textarea';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
-export {
-  type MultipleSelectionOnChange,
-  Select,
-  type SelectItem,
-  type SelectProps,
-  type SingleSelectionOnChange,
-} from './components/inputs/Select';
+export * from './components/inputs/select';
 export * from './components/inputs/Switch';
+export * from './components/inputs/text-input';
 
 /** navigation components */
 export * from './components/navigation/route-leaving-guard';

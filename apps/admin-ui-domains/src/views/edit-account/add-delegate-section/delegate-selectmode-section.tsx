@@ -8,8 +8,8 @@ import {
   ComboboxInput,
   type ComboboxItem,
   Container,
-  PlainSelect,
   Row,
+  Select,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { type ChangeEvent, useState } from 'react';
@@ -105,7 +105,7 @@ export const DelegateSelectModeSection = () => {
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="100%" mainAlignment="flex-start">
-          <PlainSelect
+          <Select
             label={t('account_details.who_will_be_delegates', 'Who will be the delegates?')}
             items={DELEGETES_TYPE}
             selection={

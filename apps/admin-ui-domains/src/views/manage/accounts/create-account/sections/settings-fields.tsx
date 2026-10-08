@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { PlainSelect, type SelectItem, Switch } from '@zextras/ui-components';
+import { Select, type SelectItem, Switch } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import type { ReactElement } from 'react';
@@ -41,7 +41,7 @@ export const SettingsFields = (): ReactElement => {
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-full flex-wrap justify-start">
-          <PlainSelect
+          <Select
             items={ACCOUNT_STATUS}
             label={t('label.account_status', 'Account Status')}
             selection={find(ACCOUNT_STATUS, { value: statusField.state.value }) ?? EMPTY_SELECTION}
@@ -64,7 +64,7 @@ export const SettingsFields = (): ReactElement => {
         </div>
         <div className="flex w-[80%] flex-wrap justify-start">
           {cosItems.length > 0 && (
-            <PlainSelect
+            <Select
               items={cosItems}
               label={t('label.default_class_of_service', 'Default Class of Service')}
               selection={find(cosItems, { value: cosField.state.value }) ?? EMPTY_SELECTION}

@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSwitch, PlainSelect, Row,TextInput } from '@zextras/ui-components';
+import { InheritedSwitch, Row,Select, TextInput } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -281,7 +281,7 @@ export const EmailPreferences = () => {
         </Row>
         <Row width="48%" mainAlignment="flex-start">
           {accountDetail?.zimbraId ? (
-            <PlainSelect
+            <Select
               label={t('label.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
               items={TIME_TYPES}
               selection={

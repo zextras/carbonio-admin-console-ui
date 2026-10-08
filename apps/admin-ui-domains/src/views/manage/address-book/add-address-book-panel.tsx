@@ -11,10 +11,10 @@ import {
   type ComboboxItem,
   Container,
   Padding,
-  PlainSelect,
   Radio,
   RadioGroup,
   Row,
+  Select,
   type SelectItem,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
@@ -168,7 +168,7 @@ export const AddAddressBookPanel = ({
 
     if (hasValidSelectedAccount) {
       return (
-        <PlainSelect
+        <Select
           items={folderItems}
           label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
           selection={selectedFolder ?? EMPTY_SELECTION}

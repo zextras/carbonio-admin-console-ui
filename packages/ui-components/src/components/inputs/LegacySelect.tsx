@@ -14,14 +14,8 @@ import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
-import styles from './Select.module.css';
-
-type SelectItem<T = string> = {
-  label: string;
-  value: T;
-  disabled?: boolean;
-  customComponent?: React.ReactElement;
-};
+import styles from './LegacySelect.module.css';
+import type { SelectItem } from './select';
 
 type LabelFactoryProps<T = string> = {
   label: string | undefined;
@@ -34,8 +28,10 @@ type LabelFactoryProps<T = string> = {
   selected: SelectItem<T>[];
 };
 
+/** @deprecated Use the new input family Select instead. */
 type MultipleSelectionOnChange<T = string> = (value: Array<SelectItem<T>>) => void;
 
+/** @deprecated Use the new input family Select instead. */
 type SingleSelectionOnChange<T = string> = (value: T | null) => void;
 
 type UncontrolledMultipleSelection<T> = {
@@ -93,10 +89,11 @@ type SelectComponentProps<T> = {
   | ControlledSingleSelection<T>
 );
 
-type SelectProps<T = string> = SelectComponentProps<T> &
+/** @deprecated Use the new input family Select instead. */
+type LegacySelectProps<T = string> = SelectComponentProps<T> &
   Omit<DropdownProps, keyof SelectComponentProps<T> | 'children'>;
 
-type SelectType = <T = string>(p: SelectProps<T>) => React.ReactElement | null;
+type SelectType = <T = string>(p: LegacySelectProps<T>) => React.ReactElement | null;
 
 const DefaultLabelFactory = <T,>({
   selected,
@@ -188,7 +185,7 @@ const SelectComponent = function SelectFn<T = string>({
   disablePortal = false,
   showCheckbox = true,
   ...rest
-}: SelectProps<T>): React.JSX.Element {
+}: LegacySelectProps<T>): React.JSX.Element {
   const initialState = defaultSelection ?? selection ?? [];
   const [selected, setSelected] = useState<SelectItem<T>[]>(
     Array.isArray(initialState) ? initialState : [initialState],
@@ -331,12 +328,13 @@ const SelectComponent = function SelectFn<T = string>({
   );
 };
 
-const Select = SelectComponent as SelectType;
+/** @deprecated Use the new input family Select instead. */
+const LegacySelect = SelectComponent as SelectType;
 
 export {
+  LegacySelect,
+  type LegacySelectProps,
   type MultipleSelectionOnChange,
-  Select,
   type SelectItem,
-  type SelectProps,
   type SingleSelectionOnChange,
 };

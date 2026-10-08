@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, TextInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, Select, SelectItem, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { D_PASS } from '../../../../constants';
@@ -65,7 +65,7 @@ export const AntispamSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraSpamTagPercent">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={spamTagPercentOptions}
                 label={t('mta.tolerance_for_spam_delivery', 'Tolerance for Spam Delivery')}
                 selection={spamTagPercentOptions.find((item) => item.value === field.state.value) ?? spamTagPercentOptions[0]}
@@ -87,7 +87,7 @@ export const AntispamSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraAmavisFinalSpamDestiny">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={discardPassOptions}
                 label={t('mta.block_spam_destiny', 'Block Spam destiny')}
                 selection={discardPassOptions.find((item) => item.value === field.state.value) ?? discardPassOptions[0]}
@@ -102,7 +102,7 @@ export const AntispamSection = ({
             {(field) => (
               <form.Subscribe selector={(state) => state.values.zimbraAmavisFinalSpamDestiny}>
                 {(spamDestiny) => (
-                  <PlainSelect
+                  <Select
                     items={spamKillPercentOptions}
                     label={t('mta.tolerance_for_spam_blocking', 'Tolerance for Spam Blocking')}
                     selection={spamKillPercentOptions.find((item) => item.value === field.state.value) ?? spamKillPercentOptions[0]}

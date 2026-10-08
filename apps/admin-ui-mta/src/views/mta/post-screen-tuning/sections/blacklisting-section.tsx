@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Padding, TextInput, PlainSelect, SelectItem } from '@zextras/ui-components';
+import { Button, Container, Padding, Select, SelectItem,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -108,7 +108,7 @@ export const BlacklistingSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaPostscreenBlacklistAction">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={ignoreEnforceDropOptions}
                 label={t('mta.black_list_action', 'Blacklist Action')}
                 selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}

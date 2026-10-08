@@ -12,11 +12,11 @@ import {
   getFieldErrorProps,
   Padding,
   PasswordInput,
-  TextInput,
-  PlainSelect,
   Row,
+  Select,
   type SelectItem as UISelectItem,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { type ChangeEvent, useState } from 'react';
@@ -287,7 +287,7 @@ export function Connection({
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <form.Field name="regionValue">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={regionItems}
                 label={t('label.region', 'Region')}
                 selection={regionSelection}

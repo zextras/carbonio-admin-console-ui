@@ -9,9 +9,9 @@ import {
   LabeledValue,
   ListRow,
   NumberInput,
-  PlainSelect,
   PlainTextarea,
   Row,
+  Select,
   TextInput,
 } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
@@ -241,7 +241,7 @@ export const ResourceDetailSection = () => {
             padding={{ top: 'large' }}
           >
             <Container padding={{ right: 'large' }}>
-              <PlainSelect
+              <Select
                 items={resourceTypeOptions}
                 label={t('label.type', 'Type')}
                 selection={selectedResourceType ?? resourceTypeOptions[0]}
@@ -249,7 +249,7 @@ export const ResourceDetailSection = () => {
               />
             </Container>
             <Container padding={{ right: 'large' }}>
-              <PlainSelect
+              <Select
                 items={accountStatusOptions}
                 label={t('label.status', 'Status')}
                 selection={selectedAccountStatus ?? accountStatusOptions[0]}
@@ -257,7 +257,7 @@ export const ResourceDetailSection = () => {
               />
             </Container>
             <Container>
-              <PlainSelect
+              <Select
                 items={cosItems}
                 label={t('label.class_of_service', 'Class of Service')}
                 selection={selectedCOS}
@@ -274,7 +274,7 @@ export const ResourceDetailSection = () => {
             padding={{ top: 'large' }}
           >
             <Container padding={{ right: 'large' }}>
-              <PlainSelect
+              <Select
                 items={autoRefuseOptions}
                 label={t('label.auto_refuse', 'Auto-Refuse')}
                 selection={selectedAutoRefuse ?? autoRefuseOptions[1]}
@@ -306,7 +306,7 @@ export const ResourceDetailSection = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <PlainSelect
+            <Select
               items={schedulePolicyItems}
               label={t('label.schedule_policy', 'Set Policy')}
               selection={selectedSchedulePolicy ?? schedulePolicyItems[0]}

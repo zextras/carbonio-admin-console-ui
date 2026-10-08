@@ -9,7 +9,7 @@ import {
   Dropdown,
   HoverableRowFactory,
   LegacyInput,
-  PlainSelect,
+  Select,
   Table,
   useSnackbar,
 } from '@zextras/ui-components';
@@ -252,7 +252,7 @@ export const AdminRightsSection = ({
           </Dropdown>
         </div>
         <div className={styles.addCol}>
-          <PlainSelect
+          <Select
             disabled={options?.length < 1}
             items={options}
             label={t('label.rights_access_control_lists', 'Rights (Access Control Lists)')}

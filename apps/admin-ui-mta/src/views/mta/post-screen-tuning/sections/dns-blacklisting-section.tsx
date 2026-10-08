@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, TextInput, PlainSelect, SelectItem } from '@zextras/ui-components';
+import { Container, Select, SelectItem,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -70,7 +70,7 @@ export const DnsBlacklistingSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaPostscreenDnsblAction">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={ignoreEnforceDropOptions}
                 label={t('mta.dns_blacklist_action', 'DNS Blacklist Action')}
                 selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
@@ -161,7 +161,7 @@ export const DnsBlacklistingSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-start" mainAlignment="flex-start" width="25%">
-            <PlainSelect
+            <Select
               items={intervalOptions}
               label={t('mta.interval', 'Interval')}
               selection={dnsblMinTTLUnit}
@@ -195,7 +195,7 @@ export const DnsBlacklistingSection = ({
             </form.Field>
           </Container>
           <Container width="25%">
-            <PlainSelect
+            <Select
               items={intervalOptions}
               label={t('mta.interval', 'Interval')}
               selection={dnsblMaxTTLUnit}
@@ -237,7 +237,7 @@ export const DnsBlacklistingSection = ({
             </form.Field>
           </Container>
           <Container width="25%">
-            <PlainSelect
+            <Select
               items={intervalOptions}
               label={t('mta.interval', 'Interval')}
               selection={dnsblTTLUnit}

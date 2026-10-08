@@ -10,10 +10,10 @@ import {
   Container,
   Modal,
   Padding,
-  PlainSelect,
   Radio,
   RadioGroup,
   Row,
+  Select,
   type SelectItem,
   Tooltip,
 } from '@zextras/ui-components';
@@ -187,7 +187,7 @@ const InlineExposeForm = ({
         />
       </RadioGroup>
       {folderMode === 'specific' && (
-        <PlainSelect
+        <Select
           items={availableFolderItems}
           label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
           selection={selectedFolder ?? EMPTY_SELECTION}

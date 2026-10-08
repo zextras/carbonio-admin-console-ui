@@ -9,9 +9,9 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  TextInput,
-  PlainSelect,
   Row,
+  Select,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
@@ -253,7 +253,7 @@ export const VolumeManagement = ({
       {isShowSetExternalVolume && (
         <ListRow>
           <Container padding={{ top: 'large', bottom: 'large' }}>
-            <PlainSelect
+            <Select
               items={externalVolumeOptions}
               label={t('label.select_an_external_volume', 'Select an External Volume')}
               onChange={(value) => {
@@ -277,7 +277,7 @@ export const VolumeManagement = ({
         </Container>
       )}
       {isShowSetExternalVolume && externalVolume?.value === S3_BUCKET && (
-        <PlainSelect
+        <Select
           items={bucketListOption}
           label={t('label.select_a_bucket_configuration', 'Select a Bucket Configuration')}
           selection={bucketConfiguration}
@@ -307,7 +307,7 @@ export const VolumeManagement = ({
       {isManageExternalVolumeEnable && (
         <ListRow>
           <Container padding={{ bottom: 'large' }}>
-            <PlainSelect
+            <Select
               items={destinationOptions}
               label={t('label.destination', 'Destination')}
               onChange={(value) => {
@@ -324,7 +324,7 @@ export const VolumeManagement = ({
         <Container>
           <ListRow>
             <Container padding={{ bottom: 'large' }}>
-              <PlainSelect
+              <Select
                 items={bucketListOption}
                 label={t('backup.bucket_list', 'Buckets List')}
                 selection={manageExternalVolumeBucketList}

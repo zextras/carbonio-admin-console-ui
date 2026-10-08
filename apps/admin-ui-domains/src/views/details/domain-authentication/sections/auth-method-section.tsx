@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { ListRow, Padding, PlainSelect } from '@zextras/ui-components';
+import { ListRow, Padding, Select } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainAuthenticationFormApi } from '../use-domain-auth-form';
@@ -37,7 +37,7 @@ export const AuthMethodSection = ({ form, isAdvanced }: AuthMethodSectionProps) 
       </ListRow>
       <ListRow>
         <Padding vertical="small" horizontal="small" width="100%">
-          <PlainSelect
+          <Select
             label={t('label.your_auth_method_is', 'Your Auth Method is')}
             items={items}
             selection={selected}

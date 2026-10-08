@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { LabeledValue, PlainSelect, Row } from '@zextras/ui-components';
+import { LabeledValue, Row,Select } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
@@ -35,7 +35,7 @@ export const QuotaDisplay = () => {
       {isAdvanced && (
         <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
           <Row width="49%" mainAlignment="flex-start">
-            <PlainSelect
+            <Select
               disabled={!values?.abqMode}
               items={ABQ_STATUS}
               label={t('account_details.abq_status', 'ABQ Status')}
@@ -48,7 +48,7 @@ export const QuotaDisplay = () => {
             />
           </Row>
           <Row width="49%" mainAlignment="flex-start">
-            <PlainSelect
+            <Select
               disabled={values?.backupEnabled === undefined}
               items={BACKUP_ENABLED_STATUS}
               label={t('account_details.included_in_backup', 'Included in Backup')}

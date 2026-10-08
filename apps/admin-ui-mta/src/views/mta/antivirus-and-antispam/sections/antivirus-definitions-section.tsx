@@ -10,11 +10,11 @@ import {
   HoverableRowFactory,
   Modal,
   Padding,
-  TextInput,
-  PlainSelect,
+  Select,
   SelectItem,
   Switch,
   Table,
+  TextInput,
 } from '@zextras/ui-components';
 import React, { ReactElement } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
@@ -254,7 +254,7 @@ export const AntivirusDefinitionsSection = ({
           />
         </Container>
         <Container crossAlignment="flex-start" width="30%">
-          <PlainSelect
+          <Select
             items={intervalOptions}
             label={t('mta.frequency_unit', 'Frequency unit')}
             selection={updateMesurementUnit}

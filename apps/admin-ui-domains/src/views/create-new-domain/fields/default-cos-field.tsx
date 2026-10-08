@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { PlainSelect, type SelectItem } from '@zextras/ui-components';
+import { Select, type SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../parts/steps.module.css';
@@ -24,7 +24,7 @@ export const DefaultCosField = ({ form, items }: DefaultCosFieldProps) => {
 
 	return (
 		<div className={styles.fieldStart}>
-			<PlainSelect
+			<Select
 				items={items}
 				label={t('label.default_class_of_service', 'Default Class of Service')}
 				selection={items.find((item) => item.value === field.state.value) ?? EMPTY_SELECTION}

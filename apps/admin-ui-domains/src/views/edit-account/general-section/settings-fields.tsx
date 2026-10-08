@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { PlainSelect, Row, Switch } from '@zextras/ui-components';
+import { Row, Select, Switch } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
@@ -77,7 +77,7 @@ export const SettingsFields = () => {
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="49%" mainAlignment="flex-start">
           {values?.zimbraId ? (
-            <PlainSelect
+            <Select
               items={ACCOUNT_STATUS}
               label={t('label.account_status', 'Account Status')}
               onChange={onAccountStatusChange}
@@ -94,7 +94,7 @@ export const SettingsFields = () => {
         </Row>
         <Row width="49%" mainAlignment="flex-start">
           {values?.zimbraId && localeZone?.length ? (
-            <PlainSelect
+            <Select
               label={t('label.language', 'Language')}
               items={localeItems}
               selection={
@@ -139,7 +139,7 @@ export const SettingsFields = () => {
         </Row>
         <Row width="84.5%" mainAlignment="flex-start">
           {cosItems?.length ? (
-            <PlainSelect
+            <Select
               disabled={isDefaultCos}
               items={cosItems}
               label={t('label.default_class_of_service', 'Default Class of Service')}

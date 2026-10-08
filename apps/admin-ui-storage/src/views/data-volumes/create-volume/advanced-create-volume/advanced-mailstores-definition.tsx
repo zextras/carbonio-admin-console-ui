@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Padding, TextInput, PlainSelect, Row } from '@zextras/ui-components';
+import { Container, Padding, Row,Select, TextInput } from '@zextras/ui-components';
 import { type ChangeEvent, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -150,7 +150,7 @@ export function AdvancedMailstoresDefinition({ externalData }: AdvancedMailstore
         )}
       </Row>
       <Row padding={{ top: 'large' }} width="100%">
-        <PlainSelect
+        <Select
           items={volAllocationList}
           required
           label={t('label.storage_type', 'Storage Type')}
@@ -160,7 +160,7 @@ export function AdvancedMailstoresDefinition({ externalData }: AdvancedMailstore
       </Row>
       {basicVolumeAllocation === EXTERNAL_TYPE_VALUE && backupUnusedConnectorList?.length !== 0 && (
         <Row padding={{ top: 'large' }} width="100%">
-          <PlainSelect
+          <Select
             items={backupUnusedConnectorList}
             required
             label={t(

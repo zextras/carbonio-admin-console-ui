@@ -8,8 +8,8 @@ import {
   Container,
   getFieldErrorProps,
   ListRow,
+  Select,
   TextInput,
-  PlainSelect,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -65,7 +65,7 @@ export const TimeFieldGroup = ({
               />
             </Container>
             <Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
-              <PlainSelect
+              <Select
                 items={timeItems}
                 label={t('cos.time_range', 'Time Range')}
                 selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}

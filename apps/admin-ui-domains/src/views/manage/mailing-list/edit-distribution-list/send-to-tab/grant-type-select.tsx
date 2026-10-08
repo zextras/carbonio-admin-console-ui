@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, PlainSelect } from '@zextras/ui-components';
+import { Container, Select } from '@zextras/ui-components';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,7 +19,7 @@ export const GrantTypeSelect: FC<GrantTypeSelectProps> = ({ items, selection, on
 
   return (
     <Container>
-      <PlainSelect
+      <Select
         items={items}
         label={t('domain.distributionList.sendTo.acceptMessageFrom', 'Accept message from')}
         onChange={onChange}

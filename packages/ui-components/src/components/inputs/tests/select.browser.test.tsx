@@ -8,8 +8,8 @@ import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { PlainSelect } from '../plain-select';
-import type { SelectItem } from '../Select';
+import type { SelectItem } from '../select';
+import { Select } from '../select';
 
 const FRUITS: Array<SelectItem> = [
   { label: 'Apple', value: 'apple' },
@@ -32,7 +32,7 @@ function ControlledFruitSelect({
 }): React.JSX.Element {
   const [selection, setSelection] = useState(initialSelection);
   return (
-    <PlainSelect
+    <Select
       label="Fruit"
       items={FRUITS}
       selection={selection}
@@ -44,16 +44,16 @@ function ControlledFruitSelect({
   );
 }
 
-describe('PlainSelect', () => {
+describe('Select', () => {
   describe('trigger semantics', () => {
     it('renders a button trigger whose accessible name is the label', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
 
       await expect.element(page.getByRole('button', { name: 'Fruit' })).toBeVisible();
     });
 
     it('shows the selected item label inside the field box', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[1]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[1]} onChange={() => {}} />);
 
       const trigger = (await page.getByRole('button', { name: 'Fruit' }).element()) as HTMLButtonElement;
       expect(trigger.textContent).toBe('Banana');
@@ -61,7 +61,7 @@ describe('PlainSelect', () => {
 
     it('keeps the trigger visible and clickable when the selection label is empty', async () => {
       await render(
-        <PlainSelect
+        <Select
           label="Fruit"
           items={FRUITS}
           selection={{ label: '', value: '' }}
@@ -76,7 +76,7 @@ describe('PlainSelect', () => {
     });
 
     it('declares a listbox popup, collapsed by default', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
 
       const trigger = page.getByRole('button', { name: 'Fruit' });
       await expect.element(trigger).toHaveAttribute('aria-haspopup', 'listbox');
@@ -86,7 +86,7 @@ describe('PlainSelect', () => {
 
     it('renders the required asterisk in the label while keeping the accessible name clean', async () => {
       await render(
-        <PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} required />,
+        <Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} required />,
       );
 
       const trigger = (await page
@@ -100,7 +100,7 @@ describe('PlainSelect', () => {
 
     it('cannot be interacted with when disabled', async () => {
       await render(
-        <PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} disabled />,
+        <Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} disabled />,
       );
 
       await expect.element(page.getByRole('button', { name: 'Fruit' })).toBeDisabled();
@@ -110,7 +110,7 @@ describe('PlainSelect', () => {
 
   describe('popup behavior', () => {
     it('opens on click: aria-expanded flips, options are listed, aria-controls wires to the popup', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
 
       await page.getByRole('button', { name: 'Fruit' }).click();
 
@@ -125,7 +125,7 @@ describe('PlainSelect', () => {
     });
 
     it('marks the current selection as selected', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[1]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[1]} onChange={() => {}} />);
 
       await page.getByRole('button', { name: 'Fruit' }).click();
 
@@ -153,7 +153,7 @@ describe('PlainSelect', () => {
     it('does not pick disabled items', async () => {
       const picks: Array<string> = [];
       await render(
-        <PlainSelect
+        <Select
           label="Fruit"
           items={FRUITS_WITH_DISABLED}
           selection={FRUITS_WITH_DISABLED[0]}
@@ -171,7 +171,7 @@ describe('PlainSelect', () => {
     });
 
     it('flips the chevron icon while open', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
 
       await expect.element(page.getByTestId('icon: ChevronDown')).toBeVisible();
       await page.getByRole('button', { name: 'Fruit' }).click();
@@ -181,7 +181,7 @@ describe('PlainSelect', () => {
 
   describe('keyboard interaction', () => {
     it('reopens with ArrowDown after Escape, starting from the current selection', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[1]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[1]} onChange={() => {}} />);
 
       await page.getByRole('button', { name: 'Fruit' }).click();
       await userEvent.keyboard('[Escape]');
@@ -197,7 +197,7 @@ describe('PlainSelect', () => {
     it('moves the active option with ArrowDown and picks it with Enter', async () => {
       const picks: Array<string> = [];
       await render(
-        <PlainSelect
+        <Select
           label="Fruit"
           items={FRUITS}
           selection={FRUITS[0]}
@@ -221,7 +221,7 @@ describe('PlainSelect', () => {
     it('closes with Escape without picking', async () => {
       const picks: Array<string> = [];
       await render(
-        <PlainSelect
+        <Select
           label="Fruit"
           items={FRUITS}
           selection={FRUITS[0]}
@@ -244,7 +244,7 @@ describe('PlainSelect', () => {
   describe('input shell parity', () => {
     it('links the description via aria-describedby', async () => {
       await render(
-        <PlainSelect
+        <Select
           label="Fruit"
           items={FRUITS}
           selection={FRUITS[0]}
@@ -261,7 +261,7 @@ describe('PlainSelect', () => {
 
     it('applies the error styling to the field box with hasError', async () => {
       await render(
-        <PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} hasError />,
+        <Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} hasError />,
       );
 
       const trigger = (await page.getByRole('button', { name: 'Fruit' }).element()) as HTMLElement;
@@ -270,7 +270,7 @@ describe('PlainSelect', () => {
     });
 
     it('does not apply the error styling without hasError', async () => {
-      await render(<PlainSelect label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
 
       const trigger = (await page.getByRole('button', { name: 'Fruit' }).element()) as HTMLElement;
       const box = trigger.parentElement as HTMLElement;
@@ -279,7 +279,7 @@ describe('PlainSelect', () => {
 
     it('renders a custom icon inside the field box after the chevron', async () => {
       await render(
-        <PlainSelect
+        <Select
           label="Fruit"
           items={FRUITS}
           selection={FRUITS[0]}

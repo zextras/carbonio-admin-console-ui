@@ -8,11 +8,11 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   ListRow,
-  TextInput,
-  PlainSelect,
   RouteLeavingGuard,
   Row,
+  Select,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useGlobalSettings } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -248,7 +248,7 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="compressionLevel">
                       {(field) => (
-                        <PlainSelect
+                        <Select
                           items={COMPRESS_LEVEL_ITEMS}
                           label={t('backup.compression_level', 'Compression Level')}
                           selection={

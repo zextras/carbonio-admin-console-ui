@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { LabeledValue, TextInput, Row } from '@zextras/ui-components';
+import { LabeledValue, Row,TextInput } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { ChangeEvent, ReactElement, useState } from 'react';
