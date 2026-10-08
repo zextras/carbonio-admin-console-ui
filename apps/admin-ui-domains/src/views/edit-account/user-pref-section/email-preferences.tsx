@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSwitch, TextInput, PlainSelect, Row } from '@zextras/ui-components';
+import { InheritedSwitch, PlainSelect, Row,TextInput } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

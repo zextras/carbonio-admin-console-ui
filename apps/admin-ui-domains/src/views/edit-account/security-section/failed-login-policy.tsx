@@ -8,9 +8,9 @@ import {
   Container,
   InheritedSwitch,
   ListRow,
-  TextInput,
   PlainSelect,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';

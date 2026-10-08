@@ -13,9 +13,9 @@ import {
   HoverableRowFactory,
   ListRow,
   Padding,
-  TextInput,
   Row,
   Table,
+  TextInput,
   type THeader,
   type TRow,
 } from '@zextras/ui-components';

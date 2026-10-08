@@ -10,9 +10,9 @@ import {
   Container,
   FormPageLayout,
   ListRow,
-  TextInput,
   Row,
   Switch,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig, useModifyConfig } from '@zextras/ui-shared';

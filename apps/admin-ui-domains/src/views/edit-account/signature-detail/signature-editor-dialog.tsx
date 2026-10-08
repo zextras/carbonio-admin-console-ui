@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Modal, Padding, TextInput, Row } from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, Row,TextInput } from '@zextras/ui-components';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 

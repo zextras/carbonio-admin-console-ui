@@ -12,9 +12,9 @@ import {
   ListRow,
   Padding,
   Paging,
-  TextInput,
   Row,
   Table,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { uniq } from 'lodash';

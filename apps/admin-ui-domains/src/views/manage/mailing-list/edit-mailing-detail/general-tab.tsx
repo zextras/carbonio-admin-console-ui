@@ -9,11 +9,11 @@ import {
   Container,
   LabeledValue,
   ListRow,
-  TextInput,
   PlainSelect,
   PlainTextarea,
   Row,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';

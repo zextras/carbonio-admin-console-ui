@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, TextInput, Row, Switch } from '@zextras/ui-components';
+import { Container, Row, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FALSE, TRUE } from '../../../../constants';

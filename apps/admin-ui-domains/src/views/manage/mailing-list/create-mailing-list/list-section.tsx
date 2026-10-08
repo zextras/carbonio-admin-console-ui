@@ -7,15 +7,15 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  LegacyInput,
   LabeledValue,
+  LegacyInput,
   ListRow,
   Paging,
-  TextInput,
   PlainTextarea,
   Row,
   Switch,
   Table,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { searchDirectory, useUserSettings } from '@zextras/ui-shared';

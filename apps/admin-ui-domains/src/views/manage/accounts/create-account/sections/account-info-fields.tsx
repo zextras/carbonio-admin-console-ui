@@ -8,8 +8,8 @@ import { useField } from '@tanstack/react-form';
 import {
   LabeledValue,
   PasswordInput,
-  TextInput,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import type { ReactElement } from 'react';

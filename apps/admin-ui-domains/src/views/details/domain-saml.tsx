@@ -10,10 +10,10 @@ import {
   FormPageLayout,
   HoverableRowFactory,
   Padding,
-  TextInput,
   Row,
   Switch,
   Table,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { TFunction } from 'i18next';

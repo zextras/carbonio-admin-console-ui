@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { TextInput, PlainTextarea } from '@zextras/ui-components';
+import { PlainTextarea,TextInput } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 

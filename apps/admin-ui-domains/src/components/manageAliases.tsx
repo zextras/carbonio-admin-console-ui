@@ -9,9 +9,9 @@ import {
   CustomChip,
   LabeledValue,
   Modal,
-  TextInput,
   PlainSelect,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { useDomainById } from '@zextras/ui-shared';
 import { cloneDeep, noop, uniqBy } from 'lodash-es';

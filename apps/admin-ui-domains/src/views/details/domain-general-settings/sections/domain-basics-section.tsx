@@ -11,9 +11,9 @@ import {
   LabeledValue,
   ListRow,
   NumberInput,
-  TextInput,
   PlainSelect,
   PlainTextarea,
+  TextInput,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 

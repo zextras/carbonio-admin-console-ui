@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { ListRow, Padding, TextInput, Switch, Tooltip } from '@zextras/ui-components';
+import { ListRow, Padding, Switch, TextInput, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { isValidLdapBaseUrl } from '../../../utility/utils';

@@ -7,9 +7,9 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   LabeledValue,
-  TextInput,
   PlainSelect,
   Row,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';

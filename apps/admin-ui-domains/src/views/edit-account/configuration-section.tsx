@@ -10,8 +10,8 @@ import {
   Container,
   CustomChip,
   InheritedSwitch,
-  TextInput,
   Row,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { map, some } from 'lodash-es';

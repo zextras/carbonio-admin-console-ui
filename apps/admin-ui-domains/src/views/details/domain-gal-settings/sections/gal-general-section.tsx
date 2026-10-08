@@ -14,8 +14,8 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  TextInput,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';

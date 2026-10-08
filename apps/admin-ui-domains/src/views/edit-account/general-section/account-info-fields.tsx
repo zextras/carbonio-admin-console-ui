@@ -110,7 +110,12 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
         <DomainRenameFields />
       </Row>
-      <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+      <Row
+        width="100%"
+        padding={{ top: 'large', left: 'large' }}
+        mainAlignment="space-between"
+        crossAlignment="flex-start"
+      >
         <Row width="49%" mainAlignment="flex-start">
           <ManageAliases
             viewType="small"
@@ -133,7 +138,12 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
           />
         </Row>
       </Row>
-      <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+      <Row
+        width="100%"
+        padding={{ top: 'large', left: 'large' }}
+        mainAlignment="space-between"
+        crossAlignment="flex-start"
+      >
         <Row width={isAdvanced ? '49%' : '100%'} mainAlignment="flex-start">
           <TextInput
             label={t('label.advance_edit_display_name', 'Display Name')}

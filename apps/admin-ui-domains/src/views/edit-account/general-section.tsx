@@ -8,9 +8,9 @@ import {
   ChipInput,
   Container,
   CustomChip,
-  TextInput,
   PlainTextarea,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';

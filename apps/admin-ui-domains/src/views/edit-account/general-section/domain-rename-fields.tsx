@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { ComboboxInput, type ComboboxItem, TextInput, Row } from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, Row,TextInput } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';

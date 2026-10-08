@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, ListRow, TextInput, PlainSelect, Row, Switch } from '@zextras/ui-components';
+import { Container, ListRow, PlainSelect, Row, Switch,TextInput } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 

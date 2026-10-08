@@ -10,8 +10,8 @@ import {
   Container,
   InheritedSwitch,
   Padding,
-  TextInput,
   SettingLayout,
+  TextInput,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction } from 'react';

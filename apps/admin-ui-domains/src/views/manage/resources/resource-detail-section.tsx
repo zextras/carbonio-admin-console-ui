@@ -9,10 +9,10 @@ import {
   LabeledValue,
   ListRow,
   NumberInput,
-  TextInput,
   PlainSelect,
   PlainTextarea,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { ChangeEvent } from 'react';

@@ -9,8 +9,8 @@ import {
   InheritedSwitch,
   ListRow,
   Padding,
-  TextInput,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';

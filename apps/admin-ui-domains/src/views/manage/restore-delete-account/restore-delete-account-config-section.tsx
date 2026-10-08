@@ -7,8 +7,8 @@ import {
   ComboboxInput,
   type ComboboxItem,
   DatePicker,
-  TextInput,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { useContext, useState } from 'react';
