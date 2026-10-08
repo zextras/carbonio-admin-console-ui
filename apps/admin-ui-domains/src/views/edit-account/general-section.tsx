@@ -141,11 +141,6 @@ export const EditAccountGeneralSection = ({
         <ds-divider></ds-divider>
       </Row>
       <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
-        <Row padding={{ top: 'large' }}>
-          <ds-text as="h2" size="small" color="gray0" weight="bold">
-            {t('label.description', 'Description')}
-          </ds-text>
-        </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <TextInput
             label={t('label.description', 'Description')}
@@ -154,11 +149,6 @@ export const EditAccountGeneralSection = ({
             onChange={changeAccDetail}
             name="description"
           />
-        </Row>
-        <Row padding={{ top: 'large' }}>
-          <ds-text as="h2" size="small" color="gray0" weight="bold">
-            {t('label.notes', 'Notes')}
-          </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
           <PlainTextarea
