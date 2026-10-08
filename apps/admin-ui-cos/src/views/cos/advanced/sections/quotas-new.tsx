@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Switch, Tooltip } from '@zextras/ui-components';
+import { Container, PlainInput, Switch, Tooltip } from '@zextras/ui-components';
 import type { ComputedLimit, QuotaSource } from '@zextras/ui-shared';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -105,10 +105,6 @@ export const COSQuotasNew = ({
 
   const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
 
-  const RevertIcon = showRevertButton
-    ? () => <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
-    : undefined;
-
   return (
     <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
@@ -129,15 +125,20 @@ export const COSQuotasNew = ({
         mainAlignment={'flex-start'}
         crossAlignment={'center'}
       >
-        <Input
-          label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-          value={inputValue}
-          backgroundColor="gray5"
-          inputName="totalQuota"
-          onChange={inputOnChange}
-          disabled={readonlyCOS || switchValue}
-          CustomIcon={RevertIcon}
-        />
+        <div className="w-full">
+          <PlainInput
+            label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
+            value={inputValue}
+            name="totalQuota"
+            onChange={inputOnChange}
+            disabled={readonlyCOS || switchValue}
+            icon={
+              showRevertButton ? (
+                <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
+              ) : undefined
+            }
+          />
+        </div>
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>
             <ds-icon icon={icon} size="large" />

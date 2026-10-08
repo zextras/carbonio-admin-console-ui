@@ -34,7 +34,6 @@ export const ListPanelItem = ({ title, isListExpanded, setToggleView }: ListPane
         width="100%"
         style={{ cursor: 'pointer' }}
       >
-        <Row padding={{ all: 'small' }} width="100%" mainAlignment="space-between"></Row>
         <Row
           padding={{ all: 'small' }}
           width="100%"

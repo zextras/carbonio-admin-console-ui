@@ -3,7 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, CustomChip, InheritedInput, InheritedSwitch, Tooltip } from '@zextras/ui-components';
+import {
+  Container,
+  CustomChip,
+  InheritedSwitch,
+  PlainInput,
+  Tooltip,
+} from '@zextras/ui-components';
 import { some } from 'lodash-es';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -17,6 +23,7 @@ import {
   ZIMBRA_MTA_SASL_AUTH_ENABLED,
 } from '../../../../../constants';
 import { InheritedChipInput } from '../../../../utility/inherited-components/inherited-chip-input';
+import { RevertToInheritedIcon } from '../../../../utility/revert-to-inherited-icon';
 import {
   ConfigItem,
   MtaServerGeneralFormApi,
@@ -126,44 +133,82 @@ export const AuthenticationSection = ({
       >
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }} height="auto">
           <form.Field name="zimbraMtaRelayHost">
-            {(field) => (
-              <InheritedInput
-                label={t('mta.relay_host', 'Relay Host')}
-                subValue={field.state.value}
-                inheritedValue={
-                  configInformation?.find(
-                    (item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST,
-                  )?._content
-                }
-                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaRelayHost}
-                background="gray5"
-                inputName="zimbraMtaRelayHost"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                onChangeReset={() => field.handleChange(undefined)}
-                disabled={!allowSetMTA}
-              />
-            )}
+            {(field) => {
+              const inheritedRelayHost = configInformation?.find(
+                (item: Record<string, string>) => item?.n === ZIMBRA_MTA_RELAY_HOST,
+              )?._content;
+              const isOverridden = field.state.value !== undefined;
+              return (
+                <PlainInput
+                  label={t('mta.relay_host', 'Relay Host')}
+                  name="zimbraMtaRelayHost"
+                  value={field.state.value ?? inheritedRelayHost ?? ''}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  description={
+                    isOverridden
+                      ? undefined
+                      : t(
+                          'mta.inherited_from_global_configuration',
+                          'Inherited from the global configuration',
+                        )
+                  }
+                  disabled={!allowSetMTA}
+                  icon={
+                    isOverridden ? (
+                      <RevertToInheritedIcon
+                        label={t(
+                          'mta.click_to_revert',
+                          'Click to revert to the inherited value',
+                        )}
+                        onClick={() => field.handleChange(undefined)}
+                      />
+                    ) : undefined
+                  }
+                />
+              );
+            }}
           </form.Field>
         </Container>
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaFallbackRelayHost">
-            {(field) => (
-              <InheritedInput
-                label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
-                subValue={field.state.value}
-                inheritedValue={
-                  configInformation?.find(
-                    (item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST,
-                  )?._content
-                }
-                fromSubValue={mtaServerSpecificGeneralDetail?.zimbraMtaFallbackRelayHost}
-                background="gray5"
-                inputName="zimbraMtaFallbackRelayHost"
-                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
-                onChangeReset={() => field.handleChange(undefined)}
-                disabled={!allowSetMTA}
-              />
-            )}
+            {(field) => {
+              const inheritedFallbackRelayHost = configInformation?.find(
+                (item: Record<string, string>) => item?.n === ZIMBRA_MTA_FALLBACK_RELAY_HOST,
+              )?._content;
+              const isOverridden = field.state.value !== undefined;
+              return (
+                <PlainInput
+                  label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
+                  name="zimbraMtaFallbackRelayHost"
+                  value={field.state.value ?? inheritedFallbackRelayHost ?? ''}
+                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                  description={
+                    isOverridden
+                      ? undefined
+                      : t(
+                          'mta.inherited_from_global_configuration',
+                          'Inherited from the global configuration',
+                        )
+                  }
+                  disabled={!allowSetMTA}
+                  icon={
+                    isOverridden ? (
+                      <RevertToInheritedIcon
+                        label={t(
+                          'mta.click_to_revert',
+                          'Click to revert to the inherited value',
+                        )}
+                        onClick={() => field.handleChange(undefined)}
+                      />
+                    ) : undefined
+                  }
+                />
+              );
+            }}
           </form.Field>
         </Container>
       </Container>

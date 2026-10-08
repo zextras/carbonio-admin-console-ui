@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Switch } from '@zextras/ui-components';
+import { Container, PlainInput, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { MtaAdvancedFormApi } from '../types';
@@ -41,10 +41,9 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraClamAVMaxThreads">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('mta.max_antivirus_threads', 'Max antivirus threads (value)')}
-                backgroundColor="gray5"
                 value={field.state.value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.handleChange(e.target.value);
@@ -58,10 +57,9 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraLmtpNumThreads">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('mta.lmtp_threads', 'LMTP threads (Value)')}
-                backgroundColor="gray5"
                 value={field.state.value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.handleChange(e.target.value);
@@ -74,10 +72,9 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraMilterNumThreads">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('mta.milter_threads', 'MILTER threads (value)')}
-                backgroundColor="gray5"
                 value={field.state.value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.handleChange(e.target.value);
@@ -100,13 +97,12 @@ export const TuningSection = ({
         <Container crossAlignment="flex-start" height="auto">
           <form.Field name="zimbraMilterMaxConnections">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t(
                   'mta.reject_concurrent_milter_connection_above',
                   'Reject concurrent MILTER connections above (value)',
                 )}
-                backgroundColor="gray5"
                 value={field.state.value}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                   field.handleChange(e.target.value);
@@ -121,9 +117,8 @@ export const TuningSection = ({
       <Container crossAlignment="flex-start" padding={{ bottom: 'large' }} height="auto">
         <form.Field name="zimbraMtaSmtpdSenderLoginMaps">
           {(field) => (
-            <Input
+            <PlainInput
               label={t('mta.smtpd_sender_login_maps', 'Smtpd sender login maps')}
-              backgroundColor="gray5"
               value={field.state.value}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                 const { value } = e.target;

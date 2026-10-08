@@ -8,7 +8,7 @@ import { useField } from '@tanstack/react-form';
 import {
   Input,
   LabeledValue,
-  PasswordInput,
+  LegacyPasswordInput,
   Switch,
 } from '@zextras/ui-components';
 import { find } from 'lodash-es';
@@ -160,7 +160,7 @@ export const AccountInfoFields = (): ReactElement => {
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-[48%] flex-wrap justify-start">
-          <PasswordInput
+          <LegacyPasswordInput
             isRequired
             backgroundColor="gray5"
             label={t('label.password', 'Password')}
@@ -175,7 +175,7 @@ export const AccountInfoFields = (): ReactElement => {
           />
         </div>
         <div className="flex w-[48%] flex-wrap justify-start">
-          <PasswordInput
+          <LegacyPasswordInput
             isRequired
             backgroundColor="gray5"
             label={t('label.repeat_password', 'Repeat Password')}

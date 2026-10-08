@@ -8,18 +8,31 @@
   display: flex;
   flex-direction: column;
   align-self: stretch;
+  min-width: 0;
   gap: 0.25rem;
 }
 
 .label {
-  color: var(--color-secondary-regular);
+  display: flex;
+  align-items: baseline;
+  color: var(--color-text-regular);
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-medium);
+  min-width: 0;
+}
+
+.labelText {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .requiredMark {
   color: var(--color-error-hover);
   margin-left: 0.125rem;
+  flex-shrink: 0;
 }
 
 .box {
@@ -38,6 +51,13 @@
 
 .box ds-icon {
   flex-shrink: 0;
+}
+
+.box[data-multiline] {
+  height: auto;
+  min-height: 2.5rem;
+  align-items: stretch;
+  padding: 0.5rem 0.75rem;
 }
 
 .box[data-disabled] {
@@ -70,9 +90,9 @@
 .description {
   margin: 0;
   min-height: 1rem;
-  font-size: var(--font-size-extrasmall);
+  font-size: var(--font-size-small);
   line-height: 1.5;
-  color: var(--color-secondary-regular);
+  color: var(--color-gray1-focus);
 }
 
 .description[data-error] {
