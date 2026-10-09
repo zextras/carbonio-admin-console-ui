@@ -4,14 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import {
-  Button,
-  LabeledValue,
-  Row,
-  Select,
-  TextInput,
-  useSnackbar,
-} from '@zextras/ui-components';
+import { Button, LabeledValue, Row, Select, TextInput, useSnackbar } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -158,11 +151,11 @@ export const ServicesPassphrase = () => {
             padding={{ top: 'large', left: 'large' }}
             width="100%"
             mainAlignment="space-between"
+            crossAlignment="flex-start"
           >
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
               <LabeledValue
                 label={t('account_details.label', 'Label')}
-                
                 value={item.label}
                 textColor="secondary"
               />
@@ -202,7 +195,6 @@ export const ServicesPassphrase = () => {
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
               <LabeledValue
                 label={t('account_details.passphrasaId', 'Passphrase ID')}
-                
                 value={item.id}
                 textColor="secondary"
               />
