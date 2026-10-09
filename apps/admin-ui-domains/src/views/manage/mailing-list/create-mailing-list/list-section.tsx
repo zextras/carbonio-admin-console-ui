@@ -235,7 +235,7 @@ export const ListSection: FC<any> = () => {
             <LabeledValue
               label={t('domain.type_here_a_domain', 'Type here a domain')}
               value={mailingListDetail?.suffixName}
-              backgroundColor="gray5"
+              
             />
           </Container>
         </ListRow>

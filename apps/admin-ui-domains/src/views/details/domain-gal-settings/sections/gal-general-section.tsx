@@ -93,7 +93,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
             <LabeledValue
               label={t('label.gal_mode', 'GAL Mode')}
               value={galModeLabel}
-              backgroundColor="gray6"
+              
             />
           </Padding>
         </Container>

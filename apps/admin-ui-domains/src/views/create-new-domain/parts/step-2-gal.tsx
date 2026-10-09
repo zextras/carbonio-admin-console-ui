@@ -60,7 +60,7 @@ export const Step2Gal = ({
 						<div className={styles.fieldStart}>
 							<LabeledValue
 								label={t('label.gal_mode', 'GAL Mode')}
-								backgroundColor="gray6"
+								
 								value="Internal"
 							/>
 						</div>

@@ -100,7 +100,7 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
             >
               <LabeledValue
                 label={t('label.retention_period', 'Retention Period (value)')}
-                backgroundColor="gray6"
+                
                 value={account?.retentionValue}
                 style={{ pointerEvents: 'none' }}
               />
@@ -113,7 +113,7 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
             >
               <LabeledValue
                 label={t('label.interval', 'Interval')}
-                backgroundColor="gray6"
+                
                 value={intervalLabel(account?.retentionInterval ?? '')}
               />
             </Container>

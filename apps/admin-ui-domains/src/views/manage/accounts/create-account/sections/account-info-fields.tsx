@@ -135,7 +135,7 @@ export const AccountInfoFields = (): ReactElement => {
           <div className="flex w-[90%] flex-wrap items-start justify-start">
             <LabeledValue
               label={t('label.domain_name', 'Domain Name')}
-              backgroundColor="gray6"
+              
               value={`${domainName} ${closedStatusLabel}`}
             />
           </div>

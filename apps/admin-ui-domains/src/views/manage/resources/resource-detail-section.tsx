@@ -227,7 +227,7 @@ export const ResourceDetailSection = () => {
             <Row width="45%">
               <LabeledValue
                 label={t('label.domain', 'Domain')}
-                backgroundColor="gray5"
+                
                 value={domainName}
               />
             </Row>

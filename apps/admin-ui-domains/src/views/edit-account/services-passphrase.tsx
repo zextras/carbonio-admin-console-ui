@@ -162,7 +162,7 @@ export const ServicesPassphrase = () => {
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
               <LabeledValue
                 label={t('account_details.label', 'Label')}
-                backgroundColor="gray5"
+                
                 value={item.label}
                 textColor="secondary"
               />
@@ -202,7 +202,7 @@ export const ServicesPassphrase = () => {
             <Row width="19%" mainAlignment="space-between" style={{ pointerEvents: 'none' }}>
               <LabeledValue
                 label={t('account_details.passphrasaId', 'Passphrase ID')}
-                backgroundColor="gray5"
+                
                 value={item.id}
                 textColor="secondary"
               />

@@ -77,7 +77,7 @@ export const RestoreSettings = ({ form, legalHoldAccount, account }: RestoreSett
         >
           <LabeledValue
             label={t('label.account', 'Account')}
-            backgroundColor="gray6"
+            
             value={account}
           />
         </Container>

@@ -47,7 +47,7 @@
   flex-shrink: 0;
   align-self: stretch;
   cursor: text;
-  background: var(--text-container-bg);
+  background: var(--color-gray6-regular);
   transition: background 0.2s ease-out;
   box-sizing: border-box;
   width: 100%;

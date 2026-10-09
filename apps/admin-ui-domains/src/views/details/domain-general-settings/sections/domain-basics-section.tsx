@@ -96,10 +96,10 @@ export const DomainBasicsSection = ({
     <Container height="fit" crossAlignment="flex-start" background="gray6" padding={{ all: 'small' }}>
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <LabeledValue label={t('label.name', 'Name')} value={domainName} backgroundColor="gray6" />
+          <LabeledValue label={t('label.name', 'Name')} value={domainName}  />
         </Container>
         <Container padding={{ all: 'small' }}>
-          <LabeledValue label={t('label.id', 'Id')} value={domainId} backgroundColor="gray6" />
+          <LabeledValue label={t('label.id', 'Id')} value={domainId}  />
         </Container>
       </ListRow>
 
@@ -136,7 +136,7 @@ export const DomainBasicsSection = ({
           <LabeledValue
             label={t('label.creation_date', 'Creation Date')}
             value={domainCreationDate}
-            backgroundColor="gray6"
+            
           />
         </Container>
       </ListRow>

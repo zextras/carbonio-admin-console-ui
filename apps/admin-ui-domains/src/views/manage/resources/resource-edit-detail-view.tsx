@@ -545,7 +545,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <LabeledValue
                     label={t('label.server', 'Server')}
-                    backgroundColor="gray6"
+                    
                     value={attrs.zimbraMailHost}
                   />
                 </Row>
@@ -717,7 +717,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ right: 'small' }}>
                   <LabeledValue
                     label={t('label.id_lbl', 'ID')}
-                    backgroundColor="gray6"
+                    
                     value={selectedResource.id}
                   />
                 </Row>
@@ -731,7 +731,7 @@ const ResourceEditForm = ({
                 <Row width="100%" padding={{ left: 'small' }}>
                   <LabeledValue
                     label={t('label.creation_date', 'Creation Date')}
-                    backgroundColor="gray6"
+                    
                     value={
                       attrs.zimbraCreateTimestamp
                         ? format(

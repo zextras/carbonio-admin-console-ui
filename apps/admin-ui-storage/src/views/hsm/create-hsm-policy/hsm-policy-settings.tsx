@@ -313,7 +313,7 @@ export function HSMpolicySettings() {
     >
       <ListRow>
         <Container padding={{ bottom: 'extralarge' }}>
-          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')}  value={server} />
         </Container>
       </ListRow>
       <ListRow>

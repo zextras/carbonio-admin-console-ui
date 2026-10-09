@@ -109,7 +109,7 @@ export const ResourceCreateSection = () => {
           >
             <LabeledValue
               label={t('label.resource_name', 'ResourceName')}
-              backgroundColor="gray6"
+              
               value={displayName}
             />
           </Container>
@@ -124,7 +124,7 @@ export const ResourceCreateSection = () => {
             <Row width="45%">
               <LabeledValue
                 label={t('label.name', 'Name')}
-                backgroundColor="gray6"
+                
                 value={name}
               />
             </Row>
@@ -134,7 +134,7 @@ export const ResourceCreateSection = () => {
             <Row width="45%">
               <LabeledValue
                 label={t('label.domain', 'Domain')}
-                backgroundColor="gray6"
+                
                 value={domainName}
               />
             </Row>
@@ -150,21 +150,21 @@ export const ResourceCreateSection = () => {
             <Container padding={{ right: 'large' }}>
               <LabeledValue
                 label={t('label.type', 'Type')}
-                backgroundColor="gray6"
+                
                 value={resourceTypeLabel}
               />
             </Container>
             <Container padding={{ right: 'large' }}>
               <LabeledValue
                 label={t('label.status', 'Status')}
-                backgroundColor="gray6"
+                
                 value={accountStatusLabel}
               />
             </Container>
             <Container>
               <LabeledValue
                 label={t('label.class_of_service', 'Class of Service')}
-                backgroundColor="gray6"
+                
                 value={cosLabel}
               />
             </Container>
@@ -180,21 +180,21 @@ export const ResourceCreateSection = () => {
             <Container padding={{ right: 'large' }}>
               <LabeledValue
                 label={t('label.auto_refuse', 'Auto-Refuse')}
-                backgroundColor="gray6"
+                
                 value={autoRefuseLabel}
               />
             </Container>
             <Container padding={{ right: 'large' }}>
               <LabeledValue
                 label={t('label.maximum_conflict', 'Maximum Conflict')}
-                backgroundColor="gray6"
+                
                 value={zimbraCalResMaxNumConflictsAllowed}
               />
             </Container>
             <Container>
               <LabeledValue
                 label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
-                backgroundColor="gray6"
+                
                 value={zimbraCalResMaxPercentConflictsAllowed}
               />
             </Container>
@@ -209,7 +209,7 @@ export const ResourceCreateSection = () => {
           >
             <LabeledValue
               label={t('label.schedule_policy', 'Set Policy')}
-              backgroundColor="gray6"
+              
               value={schedulePolicyLabel}
             />
           </Container>

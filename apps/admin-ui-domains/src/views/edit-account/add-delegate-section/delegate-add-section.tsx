@@ -58,7 +58,7 @@ export const DelegateAddSection: FC = () => {
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
           <LabeledValue
             label={t('account_details.delegate_rights', 'Delegate`s rights')}
-            backgroundColor="gray5"
+            
             value={
               DELEGETES_RIGHTS_TYPE.find(
                 (item: any) => item.value === deligateDetail?.delegeteRights,
@@ -74,7 +74,7 @@ export const DelegateAddSection: FC = () => {
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
             <LabeledValue
               label={t('account_details.sendin_options', 'Sending Options')}
-              backgroundColor="gray5"
+              
               defaultValue={t(
                 'account_details.send_recipients_see_the_mail',
                 'Send {{right}} (recipients will display this sender email {{targetEmail}})',

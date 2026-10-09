@@ -73,19 +73,19 @@ export const QuotaDisplay = () => {
         <Row width="49%" mainAlignment="flex-start">
           <LabeledValue
             label={t('label.server', 'Server')}
-            backgroundColor="gray5"
+            
             value={values?.zimbraMailHost}
           />
         </Row>
         <Row width="49%" mainAlignment="flex-start">
-          <LabeledValue label="ID" backgroundColor="gray5" value={values?.zimbraId} />
+          <LabeledValue label="ID"  value={values?.zimbraId} />
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
         <Row width="49%" mainAlignment="flex-start">
           <LabeledValue
             label={t('label.creation_date', 'Creation Date')}
-            backgroundColor="gray6"
+            
             value={formatZimbraDateOr(
               values?.zimbraCreateTimestamp,
               t('label.not_available', 'Not Available'),
@@ -95,7 +95,7 @@ export const QuotaDisplay = () => {
         <Row width="49%" mainAlignment="flex-start">
           <LabeledValue
             label={t('label.last_access', 'Last Access')}
-            backgroundColor="gray6"
+            
             value={formatZimbraDateOr(
               values?.zimbraLastLogonTimestamp,
               t('label.never_logged_in', 'Never logged in'),

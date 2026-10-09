@@ -79,7 +79,7 @@ export const CosInfoFields = ({
                 canDeleteCOS || readonlyCOS ? (
                   <LabeledValue
                     label={t('label.name', 'Name')}
-                    backgroundColor="gray6"
+                    
                     value={field.state.value ?? ''}
                   />
                 ) : (
@@ -100,14 +100,14 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.id_lbl', 'ID')}
-              backgroundColor="gray6"
+              
               value={cosId ?? ''}
             />
           </Container>
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
-              backgroundColor="gray6"
+              
               value={cosCreationDate}
             />
           </Container>
@@ -116,7 +116,7 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
-              backgroundColor="gray6"
+              
               value={totalAccount}
             />
           </Container>
@@ -127,7 +127,7 @@ export const CosInfoFields = ({
                 'Domains that use this CoS as default',
               )}
               value={totalDomain}
-              backgroundColor="gray6"
+              
             />
           </Container>
         </ListRow>

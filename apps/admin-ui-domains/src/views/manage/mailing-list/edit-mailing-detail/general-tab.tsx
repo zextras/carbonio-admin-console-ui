@@ -182,7 +182,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             <LabeledValue
               label={t('label.members', 'Members')}
               value={dlmCount}
-              backgroundColor="gray5"
+              
               textColor={'black'}
             />
           </Container>
@@ -190,7 +190,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             <LabeledValue
               label={t('label.alias_in_the_list', 'Alias in the List')}
               value={aliasCount}
-              backgroundColor="gray5"
+              
               textColor={'black'}
             />
           </Container>
@@ -203,7 +203,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             <LabeledValue
               label={t('label.id_lbl', 'ID')}
               value={dlId}
-              backgroundColor="gray5"
+              
               textColor={'black'}
             />
           </Container>
@@ -211,7 +211,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
               value={dlCreateDate}
-              backgroundColor="gray5"
+              
               textColor={'black'}
             />
           </Container>
@@ -274,7 +274,7 @@ export const GeneralTab: FC<GeneralTabProps> = ({
               <LabeledValue
                 label={t('label.distribution_lists', 'Distribution Lists')}
                 value={dlMembershipListNames}
-                backgroundColor="gray5"
+                
                 textColor={'black'}
               />
             </Container>

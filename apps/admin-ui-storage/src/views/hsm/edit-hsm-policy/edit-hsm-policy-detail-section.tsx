@@ -244,7 +244,7 @@ export function EditHsmPolicyDetailSection() {
     >
       <ListRow>
         <Container padding={{ bottom: 'large' }}>
-          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')}  value={server} />
         </Container>
       </ListRow>
       <ListRow>
