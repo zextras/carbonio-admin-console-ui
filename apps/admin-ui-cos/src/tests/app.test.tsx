@@ -26,7 +26,14 @@ vi.mock('../views/app-view', () => ({
   AppView: () => <div data-testid="app-view" />,
 }));
 
-import { addRoute, registerActions, removeRoute, useCurrentUserRights, useLicenseInfo } from '@zextras/ui-shared';
+import {
+  addRoute,
+  registerActions,
+  removeRoute,
+  useCurrentUserRights,
+  useIsAdvanced,
+  useLicenseInfo,
+} from '@zextras/ui-shared';
 import { useNavigate } from 'react-router';
 
 import App from '../app';
@@ -70,11 +77,13 @@ const RIGHTS_WITHOUT_COS = [
 
 describe('App', () => {
   const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
+  const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
 
   beforeEach(() => {
     (useCurrentUserRights as Mock).mockReturnValue({ data: RIGHTS_WITH_COS_AND_CREATE });
     (useNavigate as Mock).mockReturnValue(vi.fn());
     useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
+    useIsAdvancedMock.mockReturnValue(true);
   });
 
   it('should call addRoute with correct config when COS rights are present', () => {
@@ -192,7 +201,8 @@ describe('App', () => {
     expect(container.innerHTML).toBe('');
   });
 
-  it('should register create COS action as disabled with tooltip when there is no valid subscription', () => {
+  it('should register create COS action as disabled with tooltip when there is no valid subscription on advanced version', () => {
+    useIsAdvancedMock.mockReturnValue(true);
     useLicenseInfoMock.mockReturnValue({ data: null });
 
     render(<App />);
@@ -204,5 +214,20 @@ describe('App', () => {
     const action = registeredCall.action();
     expect(action.disabled).toBe(true);
     expect(action.tooltipLabel).toBeDefined();
+  });
+
+  it('should register create COS action as enabled without tooltip when there is no valid subscription on CE version', () => {
+    useIsAdvancedMock.mockReturnValue(false);
+    useLicenseInfoMock.mockReturnValue({ data: null });
+
+    render(<App />);
+
+    expect(registerActions).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'new-cos', type: 'new' }),
+    );
+    const registeredCall = (registerActions as Mock).mock.calls[0][0];
+    const action = registeredCall.action();
+    expect(action.disabled).toBe(false);
+    expect(action.tooltipLabel).toBeUndefined();
   });
 });
