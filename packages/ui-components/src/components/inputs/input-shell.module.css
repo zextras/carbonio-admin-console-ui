@@ -118,5 +118,5 @@
 }
 
 .control:disabled {
-  color: var(--color-text-disabled);
+  color: var(--color-gray0-regular);
 }
