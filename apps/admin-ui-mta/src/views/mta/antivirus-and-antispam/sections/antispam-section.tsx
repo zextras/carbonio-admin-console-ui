@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Select, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, PlainInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { D_PASS } from '../../../../constants';
@@ -48,12 +48,11 @@ export const AntispamSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraSpamSubjectTag">
             {(field) => (
-              <Input
+              <PlainInput
                 label={t(
                   'mta.add_this_prefix_to_spam_mail_subject',
                   'Add this prefix to the Spam mail subject',
                 )}
-                backgroundColor="gray5"
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
@@ -66,13 +65,10 @@ export const AntispamSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraSpamTagPercent">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={spamTagPercentOptions}
-                background="gray5"
                 label={t('mta.tolerance_for_spam_delivery', 'Tolerance for Spam Delivery')}
-                showCheckbox={false}
-                selection={spamTagPercentOptions.find((item) => item.value === field.state.value)}
-                // @ts-expect-error - needs a fix
+                selection={spamTagPercentOptions.find((item) => item.value === field.state.value) ?? spamTagPercentOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -91,13 +87,10 @@ export const AntispamSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraAmavisFinalSpamDestiny">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={discardPassOptions}
-                background="gray5"
                 label={t('mta.block_spam_destiny', 'Block Spam destiny')}
-                showCheckbox={false}
-                selection={discardPassOptions.find((item) => item.value === field.state.value)}
-                // @ts-expect-error - needs a fix
+                selection={discardPassOptions.find((item) => item.value === field.state.value) ?? discardPassOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -109,15 +102,10 @@ export const AntispamSection = ({
             {(field) => (
               <form.Subscribe selector={(state) => state.values.zimbraAmavisFinalSpamDestiny}>
                 {(spamDestiny) => (
-                  <Select
+                  <PlainSelect
                     items={spamKillPercentOptions}
-                    background="gray5"
                     label={t('mta.tolerance_for_spam_blocking', 'Tolerance for Spam Blocking')}
-                    showCheckbox={false}
-                    selection={spamKillPercentOptions.find(
-                      (item) => item.value === field.state.value,
-                    )}
-                    // @ts-expect-error - needs a fix
+                    selection={spamKillPercentOptions.find((item) => item.value === field.state.value) ?? spamKillPercentOptions[0]}
                     onChange={(v: string) => field.handleChange(v)}
                     disabled={spamDestiny === D_PASS || !allowSetMTA}
                   />

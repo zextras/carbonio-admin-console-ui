@@ -57,7 +57,8 @@ function getAllConfigResponse(zimbraMtaMaxMessageSize: string) {
 }
 
 async function waitForInputEnabled(label: string) {
-  const input = page.getByLabelText(label);
+  const escapedLabel = label.replaceAll(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const input = page.getByRole('textbox', { name: new RegExp(`^${escapedLabel}`) });
   await expect.element(input).toBeVisible();
   await expect.poll(() => {
     const element = input.element() as HTMLInputElement;
@@ -111,13 +112,13 @@ describe('MTAAdvanced', () => {
 
     await expect.element(customSizeRadio).toBeChecked();
 
-    await expect.element(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ })).toBeVisible();
 
     await noLimitRadio.click();
 
     await customSizeRadio.click();
 
-    await expect.element(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ })).toBeVisible();
   });
 
   it('should show error message for invalid message size input', async () => {
@@ -187,7 +188,7 @@ describe('MTAAdvanced', () => {
     await expect.element(customSizeRadio).toBeChecked();
 
     // Input field should be visible
-    const sizeInput = page.getByLabelText('Max size for mail messages (MB)');
+    const sizeInput = page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ });
     await expect.element(sizeInput).toBeVisible();
 
     // Click "No size limit" - this should trigger setLimitMaxMessageSize(false) and setValue(ZIMBRA_MTA_MESSAGE_SIZE, '')
@@ -197,7 +198,7 @@ describe('MTAAdvanced', () => {
     await customSizeRadio.click();
 
     // Input field should be visible again
-    await expect.element(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ })).toBeVisible();
   });
 
   it('should handle message size input changes', async () => {
@@ -252,7 +253,7 @@ describe('MTAAdvanced', () => {
     await customSizeRadio.click();
 
     // Input field should appear
-    await expect.element(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ })).toBeVisible();
   });
 
   it('should trigger setLimitMaxMessageSize(false) when clicking no limit radio', async () => {
@@ -263,7 +264,7 @@ describe('MTAAdvanced', () => {
     await expect.element(customSizeRadio).toBeChecked();
 
     // Input field should be visible
-    await expect.element(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ })).toBeVisible();
 
     // Click "No size limit" - this should trigger setLimitMaxMessageSize(false) and setValue(ZIMBRA_MTA_MESSAGE_SIZE, '')
     const noLimitRadio = page.getByRole('radio', { name: 'No size limit for mail messages' });
@@ -289,7 +290,7 @@ describe('MTAAdvanced', () => {
     await customSizeRadio.click();
 
     // Verify the input field appears (indicating the state change worked)
-    await expect.element(page.getByLabelText('Max size for mail messages (MB)')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: /^Max size for mail messages \(MB\)/ })).toBeVisible();
 
     // Verify both radio buttons are still visible (indicating the component didn't crash)
     await expect.element(noLimitRadio).toBeVisible();

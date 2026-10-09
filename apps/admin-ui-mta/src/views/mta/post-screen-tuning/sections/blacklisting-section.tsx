@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, Padding, Select, SelectItem } from '@zextras/ui-components';
+import { Button, Container, Padding, PlainInput, PlainSelect, SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -108,15 +108,10 @@ export const BlacklistingSection = ({
         <Container crossAlignment="flex-start" padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaPostscreenBlacklistAction">
             {(field) => (
-              <Select
+              <PlainSelect
                 items={ignoreEnforceDropOptions}
-                background="gray5"
                 label={t('mta.black_list_action', 'Blacklist Action')}
-                showCheckbox={false}
-                selection={ignoreEnforceDropOptions.find(
-                  (item) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
               />
             )}
@@ -125,10 +120,9 @@ export const BlacklistingSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaPostscreenAccessList">
             {(field) => (
-              <Input
-                isRequired
+              <PlainInput
+                required
                 label={t('mta.access_list_path', 'Access List Path')}
-                backgroundColor="gray5"
                 value={field.state.value ?? ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);

@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { CustomTextArea } from '@zextras/ui-components';
+import { PlainTextarea } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,10 +22,9 @@ export const NotesField = ({ form }: NotesFieldProps) => {
 
   return (
     <div className={styles.fieldCenter}>
-      <CustomTextArea
+      <PlainTextarea
         label={t('label.notes', 'Notes')}
-        backgroundColor="gray5"
-        value={field.state.value}
+        value={field.state.value ?? ''}
         onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
           field.handleChange(e.target.value);
         }}

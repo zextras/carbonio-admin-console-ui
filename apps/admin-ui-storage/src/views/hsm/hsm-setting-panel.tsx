@@ -12,10 +12,10 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
   ListRow,
   ModalOverlay,
   Padding,
+  PlainInput,
   Row,
   Switch,
   Table,
@@ -504,12 +504,11 @@ export function HSMsettingPanel() {
         </ListRow>
         <ListRow>
           <Container padding={{ bottom: 'large' }}>
-            <Input
+            <PlainInput
               label={`${t('hsm.schedule', 'Schedule')} (${t(
                 'hsm.example_shedule',
                 'E.g. 0 2 * * 3',
               )})`}
-              backgroundColor="gray5"
               value={powerstoreMoveSchedulerValue}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 form.setFieldValue('powerstoreMoveSchedulerValue', e.target.value);
@@ -622,7 +621,6 @@ export function HSMsettingPanel() {
           <Table
             rows={policiesRow}
             headers={headers}
-            showCheckbox={false}
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
             HeaderFactory={CustomHeaderFactory}
@@ -631,9 +629,8 @@ export function HSMsettingPanel() {
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <Input
+            <PlainInput
               label={t('hsm.minimum_space_threshold', 'Minimum Space Threshold')}
-              backgroundColor="gray5"
               value={powerstoreSpaceThreshold}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 form.setFieldValue('powerstoreSpaceThreshold', Number(e.target.value) || 0);

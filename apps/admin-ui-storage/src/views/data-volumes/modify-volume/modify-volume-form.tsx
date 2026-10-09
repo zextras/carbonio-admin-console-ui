@@ -9,10 +9,10 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
-  Input,
   ListRow,
   Modal,
   Padding,
+  PlainInput,
   Row,
   Tooltip,
   useSnackbar,
@@ -62,9 +62,7 @@ type VolumeDetailSnapshot = {
 
 type ConnectorOption = { label: string; value: string };
 
-function buildConnectorSelectItems(
-  connectors: Array<S3ConnectorVolume>,
-): Array<ConnectorOption> {
+function buildConnectorSelectItems(connectors: Array<S3ConnectorVolume>): Array<ConnectorOption> {
   return connectors.map((items) => ({
     label: items?.label ?? '',
     value: items?.uuid ?? '',
@@ -139,8 +137,7 @@ function buildChangedFields(
     );
     changedFields.push({
       label: t('storage.dataVolumes.availableS3ConnectorsList', 'Available S3 Connectors List'),
-      value:
-        selectedOption?.label || values.bucketConfigurationId || t('label.not_set', 'Not set'),
+      value: selectedOption?.label || values.bucketConfigurationId || t('label.not_set', 'Not set'),
     });
   }
 
@@ -245,11 +242,12 @@ export function ModifyVolumeForm({
   const volumeRoleLabel = volumeRoleLabelByType[Number(volumeDetail.type)] ?? '';
 
   const isObjectStorage = !(
-    storeType?.toUpperCase() === LOCAL_VALUE || (!storeType && !isExternal)
+    storeType?.toUpperCase() === LOCAL_VALUE ||
+    (!storeType && !isExternal)
   );
   const isLocalBlockDevice = !isObjectStorage;
   const storageTypeLabel = isObjectStorage
-    ? (getConnectorTypeLabel(storeType) ?? storeType ?? '')
+    ? getConnectorTypeLabel(storeType) ?? storeType ?? ''
     : t('volume.volume_allocation_list.local_block_device', 'Local Block Device');
   const showOptionsSection =
     Object.keys(externalVolDetail)?.length > 0 || volumeDetail?.type !== 10;
@@ -416,11 +414,7 @@ export function ModifyVolumeForm({
         minDisplayMs={0}
         onComplete={handleProgressComplete}
       />
-      <Container
-        background="gray6"
-        mainAlignment="flex-start"
-        orientation="vertical"
-      >
+      <Container background="gray6" mainAlignment="flex-start" orientation="vertical">
         <Row mainAlignment="space-between" crossAlignment="center" width="100%" height="4.15rem">
           <Row
             mainAlignment="flex-start"
@@ -437,11 +431,7 @@ export function ModifyVolumeForm({
               </Padding>
             )}
           </Row>
-          <Row
-            padding={{ all: 'small' }}
-            mainAlignment="flex-end"
-            crossAlignment="flex-end"
-          >
+          <Row padding={{ all: 'small' }} mainAlignment="flex-end" crossAlignment="flex-end">
             <Padding right="small">
               {isDirty && (
                 <Button
@@ -510,168 +500,161 @@ export function ModifyVolumeForm({
           orientation="vertical"
           style={{ overflowY: 'auto' }}
         >
-
-        {/* GENERAL section - always shown */}
-        <div className={styles.sectionHeader}>
-          <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
-            {t('label.general', 'GENERAL')}
-          </ds-text>
-          <ds-divider className={styles.sectionDivider}></ds-divider>
-        </div>
-        <Container
-          padding={{ horizontal: 'large' }}
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          height="auto"
-        >
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large', left: 'small' }}
-            >
-              <div className={styles.detailItem}>
-                <ds-text size="small" color="gray1">
-                  {t('label.volume_id', 'Volume ID')}
-                </ds-text>
-                <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} weight='bold' size="small">
-                    {id}
+          {/* GENERAL section - always shown */}
+          <div className={styles.sectionHeader}>
+            <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
+              {t('label.general', 'GENERAL')}
+            </ds-text>
+            <ds-divider className={styles.sectionDivider}></ds-divider>
+          </div>
+          <Container
+            padding={{ horizontal: 'large' }}
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            height="auto"
+          >
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large', left: 'small' }}
+              >
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.volume_id', 'Volume ID')}
                   </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} weight="bold" size="small">
+                      {id}
+                    </ds-text>
+                  </div>
                 </div>
-              </div>
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-            >
-              <div className={styles.detailItem}>
-                <ds-text size="small" color="gray1">
-                  {t('label.server', 'Server')}
-                </ds-text>
-                <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} weight='bold' size="small">
-                    {server ?? ''}
-                  </ds-text>
-                </div>
-              </div>
-            </Container>
-          </ListRow>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large', left: 'small' }}
-            >
-              <div className={styles.detailItem}>
-                <ds-text size="small" color="gray1">
-                  {t('label.volume_role', 'Volume role')}
-                </ds-text>
-                <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} weight='bold' size="small">
-                    {volumeRoleLabel}
-                  </ds-text>
-                </div>
-              </div>
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large' }}
-            >
-              <div className={styles.detailItem}>
-                <ds-text size="small" color="gray1">
-                  {t('label.storage_type', 'Storage type')}
-                </ds-text>
-                <div className={styles.detailValueRow}>
-                  <ds-text className={styles.detailValue} weight='bold' size="small">
-                    {storageTypeLabel}
-                  </ds-text>
-                </div>
-              </div>
-            </Container>
-          </ListRow>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ top: 'large', right: 'large' }}
-            >
-              <form.Field name="name">
-                {(field) => (
-                  <Input
-                    label={t('label.volume_name', 'Volume name')}
-                    value={field.state.value}
-                    backgroundColor="gray6"
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                      field.handleChange(e.target.value)
-                    }
-                  />
-                )}
-              </form.Field>
-            </Container>
-            {isLocalBlockDevice && (
+              </Container>
               <Container
                 mainAlignment="flex-start"
                 crossAlignment="flex-start"
                 padding={{ top: 'large' }}
               >
-                <form.Field name="rootpath">
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.server', 'Server')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} weight="bold" size="small">
+                      {server ?? ''}
+                    </ds-text>
+                  </div>
+                </div>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large', left: 'small' }}
+              >
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.volume_role', 'Volume role')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} weight="bold" size="small">
+                      {volumeRoleLabel}
+                    </ds-text>
+                  </div>
+                </div>
+              </Container>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large' }}
+              >
+                <div className={styles.detailItem}>
+                  <ds-text size="small" color="gray1">
+                    {t('label.storage_type', 'Storage type')}
+                  </ds-text>
+                  <div className={styles.detailValueRow}>
+                    <ds-text className={styles.detailValue} weight="bold" size="small">
+                      {storageTypeLabel}
+                    </ds-text>
+                  </div>
+                </div>
+              </Container>
+            </ListRow>
+            <ListRow>
+              <Container
+                mainAlignment="flex-start"
+                crossAlignment="flex-start"
+                padding={{ top: 'large', right: 'large' }}
+              >
+                <form.Field name="name">
                   {(field) => (
-                    <Input
-                      label={t('label.path', 'Path')}
+                    <PlainInput
+                      label={t('label.volume_name', 'Volume name')}
                       value={field.state.value}
-                      backgroundColor="gray6"
                       onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                         field.handleChange(e.target.value)
                       }
                     />
                   )}
                 </form.Field>
-                <Padding top="extrasmall">
-                  <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                    {t(
-                      'storage.dataVolumes.volumePathMustExistHint',
-                      'The volume path must already exist',
-                    )}
-                  </ds-text>
-                </Padding>
               </Container>
-            )}
-          </ListRow>
-        </Container>
+              {isLocalBlockDevice && (
+                <Container
+                  mainAlignment="flex-start"
+                  crossAlignment="flex-start"
+                  padding={{ top: 'large' }}
+                >
+                  <form.Field name="rootpath">
+                    {(field) => (
+                      <PlainInput
+                        label={t('label.path', 'Path')}
+                        value={field.state.value}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
+                          field.handleChange(e.target.value)
+                        }
+                        description={t(
+                          'storage.dataVolumes.volumePathMustExistHint',
+                          'The volume path must already exist',
+                        )}
+                      />
+                    )}
+                  </form.Field>
+                </Container>
+              )}
+            </ListRow>
+          </Container>
 
-        {/* BUCKET section - only for object storage */}
-        {isObjectStorage && (
-          <ModifyVolumeBucketSection
-            form={form as ModifyVolumeFormApi}
-            connectorName={connectorName}
-            backupUnusedConnectorList={backupUnusedConnectorList}
-            selectedConnectorOption={selectedConnectorOption}
-            onUnusedConnectorListChange={onUnusedConnectorListChange}
-          />
-        )}
+          {/* BUCKET section - only for object storage */}
+          {isObjectStorage && (
+            <ModifyVolumeBucketSection
+              form={form as ModifyVolumeFormApi}
+              connectorName={connectorName}
+              backupUnusedConnectorList={backupUnusedConnectorList}
+              selectedConnectorOption={selectedConnectorOption}
+              onUnusedConnectorListChange={onUnusedConnectorListChange}
+            />
+          )}
 
-        {/* CONFIGURATION section - only for object storage with tiering support */}
-        {isObjectStorage && showTieringSettings && (
-          <ModifyVolumeTieringSection
-            form={form as ModifyVolumeFormApi}
-            openDocumentation={openDocumentation}
-          />
-        )}
+          {/* CONFIGURATION section - only for object storage with tiering support */}
+          {isObjectStorage && showTieringSettings && (
+            <ModifyVolumeTieringSection
+              form={form as ModifyVolumeFormApi}
+              openDocumentation={openDocumentation}
+            />
+          )}
 
-        {/* OPTIONS section - conditional */}
-        {showOptionsSection && (
-          <ModifyVolumeOptionsSection
-            form={form as ModifyVolumeFormApi}
-            isLocalBlockDevice={isLocalBlockDevice}
-            volumeType={volumeDetail.type}
-            isAdvanced={isAdvanced}
-            isCurrentRef={isCurrentRef}
-            setIsCurrentToggle={setIsCurrentToggle}
-          />
-        )}
+          {/* OPTIONS section - conditional */}
+          {showOptionsSection && (
+            <ModifyVolumeOptionsSection
+              form={form as ModifyVolumeFormApi}
+              isLocalBlockDevice={isLocalBlockDevice}
+              volumeType={volumeDetail.type}
+              isAdvanced={isAdvanced}
+              isCurrentRef={isCurrentRef}
+              setIsCurrentToggle={setIsCurrentToggle}
+            />
+          )}
         </Container>
 
         <Modal

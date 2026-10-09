@@ -8,6 +8,7 @@ import '../../web-components/ds-icon';
 
 import type { ReactNode } from 'react';
 
+import { Tooltip } from '../display/Tooltip';
 import styles from './input-shell.module.css';
 
 type InputShellProps = {
@@ -19,6 +20,10 @@ type InputShellProps = {
 	required?: boolean;
 	hasError?: boolean;
 	infoIcon?: boolean;
+	/** Custom node rendered at the right edge of the field box, before the info icon. */
+	icon?: ReactNode;
+	/** Lets the box grow with multi-line controls (textarea) instead of the fixed field height. */
+	multiline?: boolean;
 	children: ReactNode;
 };
 
@@ -31,20 +36,26 @@ const InputShell = ({
 	required = false,
 	hasError = false,
 	infoIcon = false,
+	icon,
+	multiline = false,
 	children,
 }: InputShellProps) => {
 	return (
 		<div className={styles.root}>
 			<label className={styles.label} htmlFor={id}>
-				{label}
+				<Tooltip label={label} placement="top" overflowTooltip>
+					<span className={styles.labelText}>{label}</span>
+				</Tooltip>
 				{required && <span className={styles.requiredMark} aria-hidden="true">*</span>}
 			</label>
 			<div
 				className={styles.box}
+				data-multiline={multiline || undefined}
 				data-disabled={disabled || undefined}
 				data-error={hasError || undefined}
 			>
 				{children}
+				{icon}
 				{infoIcon && (
 					<ds-icon
 						icon="InfoOutline"

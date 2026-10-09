@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, Row, Select, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, ListRow, PlainSelect, Row, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { appointmentReminder, timeZoneList } from '../../../utility/utils';
@@ -68,18 +68,12 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefTimeZoneId">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={TIMEZONES}
-                    background="gray5"
                     label={t('label.time_zone', 'Time Zone')}
-                    showCheckbox={false}
                     selection={findSelectItemWithFallback(TIMEZONES, field.state.value) ?? TIMEZONES[0]}
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -89,24 +83,18 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefCalendarDefaultApptDuration">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={DEFAULT_APPOINTMENT_DURATION}
-                    background="gray5"
                     label={t(
                       'label.appointments_default_duration',
                       'Appointment\u2019s Default Duration',
                     )}
-                    showCheckbox={false}
                     selection={findSelectItemWithFallback(
                       DEFAULT_APPOINTMENT_DURATION,
                       field.state.value,
                     ) ?? DEFAULT_APPOINTMENT_DURATION[0]}
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -127,24 +115,18 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefCalendarApptReminderWarningTime">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={APPOINTMENT_REMINDER}
-                    background="gray5"
                     label={t(
                       'label.appointment_reminder_in_minutes',
                       'Appointment Reminder (minutes before)',
                     )}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(APPOINTMENT_REMINDER, field.state.value) ??
                       APPOINTMENT_REMINDER[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -154,21 +136,15 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefCalendarInitialView">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={DEFAULT_VIEW_OPTIONS}
-                    background="gray5"
                     label={t('label.default_calendar_view', 'Default Calendar View')}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(DEFAULT_VIEW_OPTIONS, field.state.value) ??
                       DEFAULT_VIEW_OPTIONS[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -189,21 +165,15 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefCalendarFirstDayOfWeek">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={FIRST_DAY_OF_WEEK}
-                    background="gray5"
                     label={t('label.the_week_starts_on', 'The Week starts on')}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(FIRST_DAY_OF_WEEK, field.state.value) ??
                       FIRST_DAY_OF_WEEK[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -213,24 +183,18 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefCalendarApptVisibility">
                 {(field) => (
-                  <Select
+                  <PlainSelect
                     items={APPOINTMENT_VISIBILITY}
-                    background="gray5"
                     label={t(
                       'label.default_appointment_visibility',
                       'Default appointment visibility',
                     )}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(APPOINTMENT_VISIBILITY, field.state.value) ??
                       APPOINTMENT_VISIBILITY[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
