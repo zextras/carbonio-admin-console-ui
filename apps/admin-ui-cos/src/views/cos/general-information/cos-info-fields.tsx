@@ -14,7 +14,7 @@ import {
   Row,
   type SelectItem,
 } from '@zextras/ui-components';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { useIsAdvanced, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -68,6 +68,7 @@ export const CosInfoFields = ({
 }: CosInfoFieldsProps) => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
+  const featureFlag = useNewSubscriptionFeatureFlag();
 
   return (
     <Row mainAlignment="flex-start" width="100%">
@@ -131,7 +132,7 @@ export const CosInfoFields = ({
             />
           </Container>
         </ListRow>
-        {isAdvanced && (
+        {isAdvanced && featureFlag && (
           <ListRow>
             <Container padding={{ all: 'small' }}>
               <form.Field name="edition">

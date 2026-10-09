@@ -14,7 +14,12 @@ import {
   ListPanelItem,
   useSnackbar,
 } from '@zextras/ui-components';
-import { replaceHistory, useCosList, useDebouncedValue, useLocalStorage } from '@zextras/ui-shared';
+import {
+  replaceHistory,
+  useCosList,
+  useDebouncedValue,
+  useNewSubscriptionFeatureFlag,
+} from '@zextras/ui-shared';
 import React, { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath, useLocation } from 'react-router';
@@ -119,12 +124,9 @@ export const CosListPanel = () => {
     }
   };
 
-  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
-    'new_subscription_feature_flag',
-    null,
-  );
+  const featureFlag = useNewSubscriptionFeatureFlag();
 
-  const visibleSectionRoutes = getVisibleSectionRoutes(isWorkspaceEdition, featureFlag ?? false);
+  const visibleSectionRoutes = getVisibleSectionRoutes(isWorkspaceEdition, featureFlag);
 
   const detailOptions: Array<ListItemType> = visibleSectionRoutes.map(
     ({ id, labelKey, labelDefault }) => ({
@@ -141,10 +143,6 @@ export const CosListPanel = () => {
       isSelected: true,
     },
   ];
-
-  useEffect(() => {
-    if (featureFlag === null) setFeatureFlag(false);
-  }, [featureFlag, setFeatureFlag]);
 
   const comboboxItems: Array<ComboboxItem> =
     cosList.length > MAX_COS_DISPLAY

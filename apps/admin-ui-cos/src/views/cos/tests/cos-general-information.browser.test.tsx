@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -161,6 +162,9 @@ async function setupAdvancedGeneralInfoTest(cosData = mockCosData): Promise<void
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
   queryClient.setQueryData(['advanced-supported'], { supported: true });
+  useLoginConfigStore.setState({
+    featureFlags: { enforceSubscriptionRequirements: true },
+  });
   createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
     HttpResponse.json({ items: ['carbonio-advanced'] }),
   );
@@ -232,6 +236,7 @@ async function expectEditionValue(value: string): Promise<void> {
 describe('CosGeneralInformation', () => {
   beforeEach(() => {
     vi.resetAllMocks();
+    useLoginConfigStore.setState({ featureFlags: null });
   });
 
   describe('Rendering', () => {
@@ -760,6 +765,9 @@ describe('CosGeneralInformation', () => {
       const queryClient = getQueryClient();
       await grantUserCosRights(queryClient);
       queryClient.setQueryData(['advanced-supported'], { supported: true });
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: true },
+      });
       createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
         HttpResponse.json({ items: ['carbonio-advanced'] }),
       );
