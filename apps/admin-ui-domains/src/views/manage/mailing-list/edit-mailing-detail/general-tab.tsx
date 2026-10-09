@@ -182,7 +182,6 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             <LabeledValue
               label={t('label.members', 'Members')}
               value={dlmCount}
-              
               textColor={'black'}
             />
           </Container>
@@ -190,7 +189,6 @@ export const GeneralTab: FC<GeneralTabProps> = ({
             <LabeledValue
               label={t('label.alias_in_the_list', 'Alias in the List')}
               value={aliasCount}
-              
               textColor={'black'}
             />
           </Container>
@@ -200,18 +198,12 @@ export const GeneralTab: FC<GeneralTabProps> = ({
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'small' }} orientation="horizontal">
           <Container padding={{ right: 'large' }}>
-            <LabeledValue
-              label={t('label.id_lbl', 'ID')}
-              value={dlId}
-              
-              textColor={'black'}
-            />
+            <LabeledValue label={t('label.id_lbl', 'ID')} value={dlId} textColor={'black'} />
           </Container>
           <Container>
             <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
               value={dlCreateDate}
-              
               textColor={'black'}
             />
           </Container>
@@ -241,11 +233,6 @@ export const GeneralTab: FC<GeneralTabProps> = ({
           </form.Field>
         </Container>
       </ListRow>
-      <Row padding={{ top: 'large' }}>
-        <ds-text as="h3" size="medium" weight="bold" color="gray0">
-          {t('label.notes', 'Notes')}
-        </ds-text>
-      </Row>
       <ListRow padding={{ all: 'small' }}>
         <Container padding={{ bottom: 'medium' }}>
           <form.Field name="zimbraNotes">
@@ -274,7 +261,6 @@ export const GeneralTab: FC<GeneralTabProps> = ({
               <LabeledValue
                 label={t('label.distribution_lists', 'Distribution Lists')}
                 value={dlMembershipListNames}
-                
                 textColor={'black'}
               />
             </Container>

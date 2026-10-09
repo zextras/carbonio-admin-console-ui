@@ -140,7 +140,7 @@ export const OwnersSettingsSection: FC = () => {
       <ListRow>
         <Container
           mainAlignment="flex-start"
-          crossAlignment="flex-start"
+          crossAlignment="center"
           orientation="horizontal"
           padding={{ top: 'large', right: 'small' }}
           width="100%"
