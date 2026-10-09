@@ -37,7 +37,7 @@ export const DomainSearchDropdown = ({
 
   useQueryErrorSnackbar(error, { key: 'domain-list-error', timeout: 5000, hideButton: false });
 
-  const selectedDomainName = isDomainSelect ? (domainInformation?.name ?? '') : '';
+  const selectedDomainName = isDomainSelect ? domainInformation?.name ?? '' : '';
   const inputValue = searchText ?? selectedDomainName;
 
   function handleDomainSelect(domain: SoapEntity): void {
@@ -72,7 +72,7 @@ export const DomainSearchDropdown = ({
       : domainList.map((domain) => ({ id: domain.id, label: domain.name }));
 
   return (
-    <div className="w-full pt-lg">
+    <div className="w-full box-border px-lg pt-lg">
       <ComboboxInput
         label={
           isDomainSelect
