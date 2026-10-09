@@ -239,12 +239,8 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
               {t('label.mobile_dos_protection', 'Mobile DOS Protection')}
             </ds-text>
           </Row>
-          <ListRow>
-            <Container
-              crossAlignment="flex-start"
-              mainAlignment="flex-start"
-              padding={{ top: 'extralarge' }}
-            >
+          <ListRow crossAlignment="center">
+            <Container padding={{ all: 'medium' }} crossAlignment="flex-start">
               <Switch
                 label={t(
                   'label.enable_the_mobile_dos_protection_service',
