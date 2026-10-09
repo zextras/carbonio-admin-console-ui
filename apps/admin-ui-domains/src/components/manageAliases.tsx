@@ -78,12 +78,12 @@ export const ManageAliases: FC<{
                   maxWidth="44rem"
                   style={{ gap: '0.5rem' }}
                 >
-              {listAliases?.map(
-                (ele, index) =>
-                  (aliasType !== 'accounts' || index > 0) && (
-                    <CustomChip key={ele.label} label={ele?.label} />
-                  ),
-              )}
+                  {listAliases?.map(
+                    (ele, index) =>
+                      (aliasType !== 'accounts' || index > 0) && (
+                        <CustomChip key={ele.label} label={ele?.label} />
+                      ),
+                  )}
                   <Row width="100%" padding={{ top: 'medium' }}>
                     <ds-divider></ds-divider>
                   </Row>
@@ -131,7 +131,7 @@ export const ManageAliases: FC<{
             padding={{ bottom: 'large' }}
             orientation="horizontal"
             mainAlignment="space-between"
-            crossAlignment="flex-start"
+            crossAlignment="center"
             width="100%"
             wrap={'nowrap'}
           >
@@ -145,7 +145,7 @@ export const ManageAliases: FC<{
                 }}
               />
             </Container>
-            <Container padding={{ top: 'large', left: 'small', right: 'small' }} width="10%">
+            <Container padding={{ left: 'small', right: 'small' }} width="10%">
               <ds-icon icon="AtOutline" size="large"></ds-icon>
             </Container>
             <Container
@@ -160,8 +160,7 @@ export const ManageAliases: FC<{
                   label={t('account_details.domain', 'Domain')}
                   onChange={onDomainOptionChange}
                   selection={
-                    domainItems.find((item) => item.value === effectiveDomainName) ??
-                    domainItems[0]
+                    domainItems.find((item) => item.value === effectiveDomainName) ?? domainItems[0]
                   }
                 />
               )}
