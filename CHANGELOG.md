@@ -1,3 +1,9 @@
+## [0.29.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.1...v0.29.2) (2026-10-09)
+
+### Bug Fixes
+
+* create a new cos in carbonio ce and use back end feature flag ([#1411](https://github.com/zextras/carbonio-admin-console-ui/issues/1411)) ([c397137](https://github.com/zextras/carbonio-admin-console-ui/commit/c39713778c59132342b3f22ac31901b0e3f9a3e7))
+
 ## [0.29.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.0...v0.29.1) (2026-10-08)
 
 ### Bug Fixes
