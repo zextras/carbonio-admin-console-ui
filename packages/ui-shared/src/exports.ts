@@ -94,6 +94,10 @@ import { useDebouncedValue } from './hooks/use-debounced-value';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
 import {
+  NEW_SUBSCRIPTION_FEATURE_FLAG_KEY,
+  useNewSubscriptionFeatureFlag,
+} from './hooks/use-new-subscription-feature-flag';
+import {
   type CloseSnackbarFn,
   type CreateSnackbarFn,
   type CreateSnackbarFnArgs,
@@ -297,6 +301,7 @@ export {
   loginConfig,
   logout,
   modifyConfigAttributes,
+  NEW_SUBSCRIPTION_FEATURE_FLAG_KEY,
   normalizeRoute,
   notificationsQueryKeys,
   OPEN_TICKET_URL,
@@ -357,6 +362,7 @@ export {
   useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,
+  useNewSubscriptionFeatureFlag,
   usePrimaryBarState,
   useReadUnreadNotification,
   useRelativePathname,

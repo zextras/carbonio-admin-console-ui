@@ -14,7 +14,7 @@ import {
   Select,
   type SelectItem,
 } from '@zextras/ui-components';
-import { useIsAdvanced, useLocalStorage } from '@zextras/ui-shared';
+import { useIsAdvanced, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -68,7 +68,7 @@ export const CosInfoFields = ({
 }: CosInfoFieldsProps) => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
-  const [featureFlag] = useLocalStorage<boolean | null>('new_subscription_feature_flag', null);
+  const featureFlag = useNewSubscriptionFeatureFlag();
 
   return (
     <Row mainAlignment="flex-start" width="100%">
