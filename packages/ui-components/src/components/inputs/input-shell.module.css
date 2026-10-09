@@ -117,6 +117,12 @@
   color: var(--color-text-regular);
 }
 
+.box:not([data-multiline]) > .control {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .control:disabled {
   color: var(--color-gray0-regular);
 }
