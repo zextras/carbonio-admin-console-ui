@@ -63,8 +63,8 @@ export const ForgottenPassword = () => {
           background="gray6"
           padding={{ top: 'large' }}
         >
-          <ListRow>
-            <Container crossAlignment="flex-start" width="30%" padding={{ right: 'small' }}>
+          <ListRow crossAlignment="center">
+            <Container crossAlignment="flex-start" mainAlignment="center" width="30%" padding={{ right: 'small' }}>
               <Switch
                 value={values?.zimbraFeatureResetPasswordStatus === 'enabled'}
                 onClick={(): void =>
