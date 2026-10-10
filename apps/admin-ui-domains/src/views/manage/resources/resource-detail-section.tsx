@@ -207,7 +207,7 @@ export const ResourceDetailSection = () => {
         <ListRow>
           <Container
             mainAlignment="space-between"
-            crossAlignment="flex-start"
+            crossAlignment="center"
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
@@ -224,12 +224,8 @@ export const ResourceDetailSection = () => {
             <Row width="10%" style={{ padding: '12px' }}>
               <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
-            <Row width="45%">
-              <LabeledValue
-                label={t('label.domain', 'Domain')}
-                
-                value={domainName}
-              />
+            <Row width="45%" mainAlignment="flex-start" crossAlignment="flex-start" height="100%">
+              <LabeledValue label={t('label.domain', 'Domain')} value={domainName} />
             </Row>
           </Container>
         </ListRow>
