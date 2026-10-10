@@ -78,7 +78,7 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
           </ds-text>
         </Padding>
       </ListRow>
-      <ListRow>
+      <ListRow crossAlignment="center">
         <Padding vertical="small" horizontal="small" width="38%">
           <TextInput
             label={t('label.user_name', 'User Name')}
