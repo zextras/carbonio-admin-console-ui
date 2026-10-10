@@ -8,10 +8,10 @@ import {
   ListRow,
   NumberInput,
   Padding,
-  PlainInput,
-  PlainSelect,
   Row,
+  Select,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import React, { type RefObject } from 'react';
@@ -94,7 +94,7 @@ export function ModifyVolumeBucketSection({
         <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
           <form.Field name="volumePrefix">
             {(field) => (
-              <PlainInput
+              <TextInput
                 name="prefix"
                 label={t(
                   'label.prefix_name',
@@ -115,7 +115,7 @@ export function ModifyVolumeBucketSection({
         </Row>
         {backupUnusedConnectorList.length !== 0 && (
           <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
-            <PlainSelect
+            <Select
               items={backupUnusedConnectorList}
               label={t(
                 'storage.dataVolumes.availableS3ConnectorsList',
@@ -394,7 +394,7 @@ export function ModifyVolumeOptionsSection({
                 <Row padding={{ top: 'small' }} width="100%">
                   <form.Field name="compressionThreshold">
                     {(field) => (
-                      <PlainInput
+                      <TextInput
                         label={t('label.compression_threshold', 'Compression Threshold')}
                         value={field.state.value}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

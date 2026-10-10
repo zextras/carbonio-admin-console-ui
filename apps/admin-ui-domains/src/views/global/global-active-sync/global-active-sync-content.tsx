@@ -9,15 +9,14 @@ import {
   Button,
   Container,
   FormPageLayout,
-  Input,
   ListRow,
+  NumberInput,
   Padding,
   Row,
   Switch,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useMailstoreServers } from '@zextras/ui-shared';
-import { type ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AntiDosConfig } from '../../../services/use-anti-dos-config';
@@ -38,10 +37,6 @@ const NUMERIC_FIELDS = ['jailDuration', 'maxRequests', 'timeWindow'] as const;
 type NumericField = (typeof NUMERIC_FIELDS)[number];
 
 type CreateSnackbar = ReturnType<typeof useSnackbar>;
-
-function isNumericInputValue(value: string): boolean {
-  return /^\d+$/.test(value);
-}
 
 function buildChangedSettingInputs(
   values: GlobalActiveSyncFormValues,
@@ -88,18 +83,20 @@ type NumericSettingInputProps = {
 const NumericSettingInput = ({ form, field, label }: NumericSettingInputProps) => {
   const [t] = useTranslation();
   const value = useSelector(form.store, (s) => (s.values as GlobalActiveSyncFormValues)[field]);
-  const hasError = !isNumericInputValue(value);
+  const hasError = useSelector(
+    form.store,
+    (s) =>
+      ((s.fieldMeta as Record<string, { errors: Array<unknown> }>)[field]?.errors.length ?? 0) > 0,
+  );
 
   return (
-    <Input
+    <NumberInput
       label={label}
-      backgroundColor="gray5"
-      value={value}
-      type="number"
+      value={value ?? ''}
       hasError={hasError}
-      description={hasError ? t('error.invalid_number', 'Please enter a valid number') : ''}
-      onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-        form.setFieldValue(field, e.target.value);
+      description={hasError ? t('error.invalid_number', 'Please enter a valid number') : undefined}
+      onChange={(value: string): void => {
+        form.setFieldValue(field, value);
       }}
     />
   );
@@ -242,12 +239,8 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
               {t('label.mobile_dos_protection', 'Mobile DOS Protection')}
             </ds-text>
           </Row>
-          <ListRow>
-            <Container
-              crossAlignment="flex-start"
-              mainAlignment="flex-start"
-              padding={{ top: 'extralarge' }}
-            >
+          <ListRow crossAlignment="center">
+            <Container padding={{ all: 'medium' }} crossAlignment="flex-start">
               <Switch
                 label={t(
                   'label.enable_the_mobile_dos_protection_service',

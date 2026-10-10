@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, ListRow, Row, Switch } from '@zextras/ui-components';
+import { Container, ListRow, PasswordInput, Row, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
@@ -74,14 +74,14 @@ export const GalAuthSection = ({ form }: GalAuthSectionProps) => {
           <Container padding={{ all: 'small' }}>
             <form.Field name="zimbraGalLdapBindDn">
               {(field) => (
-                <Input
+                <TextInput
                   label={t('label.bind_dn', 'Bind DN')}
-                  value={field.state.value}
-                  backgroundColor="gray5"
+                  value={field.state.value ?? ''}
+                  autoComplete="off"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
                   }}
-                  CustomIcon={GalBindDnInfoIcon}
+                  icon={<GalBindDnInfoIcon />}
                 />
               )}
             </form.Field>
@@ -89,10 +89,9 @@ export const GalAuthSection = ({ form }: GalAuthSectionProps) => {
           <Container padding={{ all: 'small' }}>
             <form.Field name="zimbraGalLdapBindPassword">
               {(field) => (
-                <Input
+                <PasswordInput
                   label={t('label.password', 'Password')}
-                  value={field.state.value}
-                  backgroundColor="gray5"
+                  value={field.state.value ?? ''}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
                   }}

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Input, LabeledValue, Row } from '@zextras/ui-components';
+import { LabeledValue, Row, TextInput } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { map } from 'lodash-es';
 import { ChangeEvent, ReactElement, useState } from 'react';
@@ -76,41 +76,46 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
       </Row>
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="32%" mainAlignment="space-between">
-          <Input
-            isRequired
+          <TextInput
+            required
             data-testid="surname-input"
             label={t('label.surname', 'Surname')}
-            backgroundColor="gray5"
+            autoComplete="off"
             onChange={changeAccDetail}
-            inputName="sn"
-            value={values?.sn || ''}
+            name="sn"
+            value={values?.sn ?? ''}
           />
         </Row>
         <Row width="32%" mainAlignment="space-between">
-          <Input
+          <TextInput
             data-testid="middlename-input"
             label={t('label.second_name_initials', 'Middle Name Initials')}
-            backgroundColor="gray5"
+            autoComplete="off"
             onChange={changeAccDetail}
-            inputName="initials"
-            value={values?.initials || ''}
+            name="initials"
+            value={values?.initials ?? ''}
           />
         </Row>
         <Row width="32%" mainAlignment="space-between">
-          <Input
+          <TextInput
             data-testid="name-input"
             label={t('label.person_name', 'Name')}
-            backgroundColor="gray5"
+            autoComplete="off"
             onChange={changeAccDetail}
-            inputName="givenName"
-            value={values?.givenName || ''}
+            name="givenName"
+            value={values?.givenName ?? ''}
           />
         </Row>
       </Row>
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
         <DomainRenameFields />
       </Row>
-      <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+      <Row
+        width="100%"
+        padding={{ top: 'large', left: 'large' }}
+        mainAlignment="space-between"
+        crossAlignment="flex-start"
+      >
         <Row width="49%" mainAlignment="flex-start">
           <ManageAliases
             viewType="small"
@@ -133,22 +138,26 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
           />
         </Row>
       </Row>
-      <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
+      <Row
+        width="100%"
+        padding={{ top: 'large', left: 'large' }}
+        mainAlignment="space-between"
+        crossAlignment="flex-start"
+      >
         <Row width={isAdvanced ? '49%' : '100%'} mainAlignment="flex-start">
-          <Input
+          <TextInput
             label={t('label.advance_edit_display_name', 'Display Name')}
-            backgroundColor="gray5"
-            value={values?.displayName || ''}
+            autoComplete="off"
+            value={values?.displayName ?? ''}
             onChange={changeAccDetail}
-            inputName="displayName"
-            autoComplete="new-password"
+            name="displayName"
           />
         </Row>
         {isAdvanced && (
           <Row width="49%" mainAlignment="flex-start">
             <LabeledValue
               label={t('account_details.otp_devices', 'OTP Devices')}
-              backgroundColor="gray5"
+              
               value={otpList?.length || 0}
               defaultValue={0}
             />

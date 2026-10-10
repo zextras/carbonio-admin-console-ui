@@ -14,10 +14,16 @@ import { Portal } from '../utilities/Portal';
 import popupStyles from './combobox-input.module.css';
 import { InputShell } from './input-shell';
 import styles from './input-shell.module.css';
-import triggerStyles from './plain-select.module.css';
-import type { SelectItem } from './Select';
+import triggerStyles from './select.module.css';
 
-export type PlainSelectProps<T = string> = {
+export type SelectItem<T = string> = {
+  label: string;
+  value: T;
+  disabled?: boolean;
+  customComponent?: React.ReactElement;
+};
+
+export type SelectProps<T = string> = {
   /** Always rendered as a visible <label> above the field. */
   label: string;
   /** Options shown in the listbox popup. */
@@ -65,7 +71,7 @@ function lastEnabledIndexOf<T>(items: Array<SelectItem<T>>): number | null {
   );
 }
 
-type PlainSelectOptionProps<T> = {
+type SelectOptionProps<T> = {
   readonly item: SelectItem<T>;
   readonly optionId: string;
   readonly active: boolean;
@@ -73,13 +79,13 @@ type PlainSelectOptionProps<T> = {
   readonly onPick: (item: SelectItem<T>) => void;
 };
 
-function PlainSelectOption<T>({
+function SelectOption<T>({
   item,
   optionId,
   active,
   selected,
   onPick,
-}: PlainSelectOptionProps<T>) {
+}: SelectOptionProps<T>) {
   return (
     <option
       id={optionId}
@@ -135,7 +141,7 @@ function resolveSelectKeyAction(key: string, open: boolean): SelectKeyAction {
   }
 }
 
-export const PlainSelect = <T,>({
+export const Select = <T,>({
   label,
   items,
   selection,
@@ -145,7 +151,7 @@ export const PlainSelect = <T,>({
   description,
   hasError = false,
   icon,
-}: PlainSelectProps<T>) => {
+}: SelectProps<T>) => {
   const triggerId = useId();
   const descriptionId = useId();
   const listboxId = useId();
@@ -280,7 +286,7 @@ export const PlainSelect = <T,>({
               className={popupStyles.listboxOptions}
             >
               {items.map((item, index) => (
-                <PlainSelectOption<T>
+                <SelectOption<T>
                   key={String(item.value)}
                   item={item}
                   optionId={`${listboxId}-${index}`}

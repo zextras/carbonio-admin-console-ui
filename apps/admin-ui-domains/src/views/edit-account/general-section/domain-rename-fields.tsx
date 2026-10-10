@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { DropDownInput, Input, Row } from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, Row,TextInput } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
-import { ChangeEvent, useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { MAX_DOMAIN_DISPLAY } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { useAccountForm, useSetAccountValues } from '../account-form-context';
-import { buildDomainDropdownItems } from './utils';
 
 type DomainSearchResponse = {
   searchTotal?: number;
@@ -38,7 +38,7 @@ export const DomainRenameFields = () => {
 
   const debouncedSearchDomain = useDebouncedValue(searchDomainName ?? '', 700);
 
-  const { data: domainSearchData, error } = useDomainSearch({
+  const { data: domainSearchData, error, isFetching } = useDomainSearch({
     searchQuery: debouncedSearchDomain,
     limit: 50,
     offset: 0,
@@ -59,7 +59,23 @@ export const DomainRenameFields = () => {
     setSearchDomainName(values?.domainName);
   }
 
-  const items = buildDomainDropdownItems(domainList, selectedDomain, t);
+  const items: Array<ComboboxItem> =
+    domainList.length > MAX_DOMAIN_DISPLAY
+      ? [
+          {
+            id: 'overflow',
+            label: t(
+              'many_domain_info_msg',
+              'So many domains! Which one would you like to see? Start typing to filter.',
+            ),
+            disabled: true,
+            icon: 'InfoOutline',
+          },
+        ]
+      : domainList.map((domain: { id: string; name: string }) => ({
+          id: domain.id,
+          label: domain.name,
+        }));
 
   const changeUserNaneDetail = (e: ChangeEvent<HTMLInputElement>) => {
     setAccountValues((prev: Record<string, any>) => ({
@@ -71,13 +87,12 @@ export const DomainRenameFields = () => {
   return (
     <>
       <Row width="47%" mainAlignment="flex-start">
-        <Input
-          backgroundColor="gray5"
+        <TextInput
           label={t('label.advance_edit_user', 'User')}
+          autoComplete="off"
           onChange={changeUserNaneDetail}
-          inputName="uid"
-          value={values?.uid}
-          autoComplete="new-password"
+          name="uid"
+          value={values?.uid ?? ''}
         />
       </Row>
       <Row mainAlignment="center" crossAlignment="center" padding={{ top: 'small' }}>
@@ -85,11 +100,9 @@ export const DomainRenameFields = () => {
       </Row>
       <Row width="47%" mainAlignment="flex-start">
         <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
-          <DropDownInput
+          <ComboboxInput
             items={items}
-            maxWidth="400px"
-            width="365px"
-            inputLabel={
+            label={
               isDomainSelect
                 ? t('label.domain_name', 'Domain Name')
                 : t('domain.type_here_a_domain', 'Type here a domain')
@@ -98,8 +111,12 @@ export const DomainRenameFields = () => {
               setIsDomainSelect(false);
               setSearchDomainName(ev.target.value);
             }}
-            inputValue={searchDomainName}
-            isCustomIcon={false}
+            value={searchDomainName ?? ''}
+            onSelect={(item: ComboboxItem): void => {
+              const domain = domainList.find((d) => d.id === item.id);
+              if (domain) selectedDomain(domain.name);
+            }}
+            loading={isFetching}
           />
         </Row>
       </Row>

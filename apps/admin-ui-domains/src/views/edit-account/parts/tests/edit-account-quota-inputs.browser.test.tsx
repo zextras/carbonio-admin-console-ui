@@ -65,10 +65,10 @@ describe('QuotaLimitInput', () => {
         onChange={vi.fn()}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
     await input.fill('123');
 
-    await expect.element(input).toHaveValue('123');
+    await expect.element(input).toHaveValue(123);
   });
 
   it('should render an empty input when a zero value is passed as prop', async () => {
@@ -78,9 +78,9 @@ describe('QuotaLimitInput', () => {
         onChange={vi.fn()}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
 
-    await expect.element(input).toHaveValue('');
+    await expect.element(input).toHaveValue(null);
   });
 
   it('should render an empty input when an undefined value is passed as prop', async () => {
@@ -90,9 +90,9 @@ describe('QuotaLimitInput', () => {
         onChange={vi.fn()}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
 
-    await expect.element(input).toHaveValue('');
+    await expect.element(input).toHaveValue(null);
   });
 
   it('should strip non-numeric characters from input', async () => {
@@ -102,10 +102,10 @@ describe('QuotaLimitInput', () => {
         onChange={vi.fn()}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
     await userEvent.type(input, 'abc');
 
-    await expect.element(input).toHaveValue('');
+    await expect.element(input).toHaveValue(null);
   });
 
   it('should strip a zero value from input', async () => {
@@ -115,10 +115,10 @@ describe('QuotaLimitInput', () => {
         onChange={vi.fn()}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
     await userEvent.type(input, '0');
-    await expect.element(input).toHaveValue('');
+    await expect.element(input).toHaveValue(null);
   });
 
   it('should call onChange with the value in bytes when input changes', async () => {
@@ -129,7 +129,7 @@ describe('QuotaLimitInput', () => {
         onChange={onChangeMock}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
     await userEvent.type(input, '10');
 
@@ -147,7 +147,7 @@ describe('QuotaLimitInput', () => {
         onChange={onChangeMock}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
 
     expect(onChangeMock).toHaveBeenLastCalledWith(undefined);
@@ -161,7 +161,7 @@ describe('QuotaLimitInput', () => {
         onChange={onChangeMock}
       />,
     );
-    const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+    const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
     await userEvent.clear(input);
     await userEvent.type(input, '0');
 
@@ -228,7 +228,7 @@ describe('QuotaLimitInput', () => {
         />,
       );
 
-      await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toBeVisible();
+      await expect.element(page.getByRole('spinbutton', { name: 'Total quota(GB)' })).toBeVisible();
 
       const resetIcons = document.querySelectorAll('[data-testid="icon: RefreshOutline"]');
       expect(resetIcons).toHaveLength(0);
@@ -245,7 +245,7 @@ describe('QuotaLimitInput', () => {
     );
 
     // Verify the input is rendered
-    await expect.element(page.getByRole('textbox', { name: 'Total quota(GB)' })).toBeVisible();
+    await expect.element(page.getByRole('spinbutton', { name: 'Total quota(GB)' })).toBeVisible();
 
     // Verify the reset icon is not rendered
     const resetIcons = document.querySelectorAll('[data-testid="icon: RefreshOutline"]');
@@ -293,7 +293,7 @@ describe('QuotaLimitInput', () => {
       );
 
       // Get the input and enter a value that exceeds the constraint (15 GB)
-      const input = page.getByRole('textbox', { name: 'Total quota(GB)' });
+      const input = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
       await userEvent.clear(input);
       await userEvent.type(input, '15');
 

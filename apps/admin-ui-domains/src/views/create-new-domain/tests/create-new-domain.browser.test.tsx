@@ -177,11 +177,11 @@ describe('CreateDomain (characterization)', () => {
 
     await fillDomainName('example.com');
     await userEvent.fill(
-      page.getByRole('textbox', { name: /Max manageable account for the domain/i }),
+      page.getByRole('spinbutton', { name: /Max manageable account for the domain/i }),
       '50',
     );
     await userEvent.fill(
-      page.getByRole('textbox', { name: /Max mailbox quota for the domain/i }),
+      page.getByRole('spinbutton', { name: /Max mailbox quota for the domain/i }),
       '2',
     );
     await advanceToFinalStep();
@@ -202,8 +202,8 @@ describe('CreateDomain (characterization)', () => {
     await fillDomainName('example.com');
     await advanceToFinalStep();
 
-    await page.getByText('Default Class of Service', { exact: true }).click();
-    await page.getByText('Premium COS').click();
+    await page.getByRole('button', { name: 'Default Class of Service' }).click();
+    await page.getByRole('option', { name: 'Premium COS' }).click();
     await clickCreate();
 
     const requestParams = (await createDomainInterceptor) as { a: Array<SoapAttribute> };

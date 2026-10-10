@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Padding, PlainInput, PlainSelect, Row } from '@zextras/ui-components';
+import { Container, Padding, Row,Select, TextInput } from '@zextras/ui-components';
 import { type ChangeEvent, useContext, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -133,16 +133,14 @@ export function AdvancedMailstoresDefinition({ externalData }: AdvancedMailstore
         </div>
       </Row>
       <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-        <div className="w-full">
-          <PlainInput
-            name="volumeName"
-            required
-            label={t('label.volume_name', 'Volume Name')}
-            value={volumeName}
-            onChange={changeVolName}
-            hasError={!errName}
-          />
-        </div>
+        <TextInput
+          name="volumeName"
+          required
+          label={t('label.volume_name', 'Volume Name')}
+          value={volumeName}
+          onChange={changeVolName}
+          hasError={!errName}
+        />
         {!errName && (
           <Padding top="extrasmall">
             <ds-text as="span" color="error" overflow="break-word" size="extrasmall">
@@ -152,30 +150,26 @@ export function AdvancedMailstoresDefinition({ externalData }: AdvancedMailstore
         )}
       </Row>
       <Row padding={{ top: 'large' }} width="100%">
-        <div className="w-full">
-          <PlainSelect
-            items={volAllocationList}
-            required
-            label={t('label.storage_type', 'Storage Type')}
-            selection={allocation || volAllocationList[0]}
-            onChange={onVolAllocationChange}
-          />
-        </div>
+        <Select
+          items={volAllocationList}
+          required
+          label={t('label.storage_type', 'Storage Type')}
+          selection={allocation || volAllocationList[0]}
+          onChange={onVolAllocationChange}
+        />
       </Row>
       {basicVolumeAllocation === EXTERNAL_TYPE_VALUE && backupUnusedConnectorList?.length !== 0 && (
         <Row padding={{ top: 'large' }} width="100%">
-          <div className="w-full">
-            <PlainSelect
-              items={backupUnusedConnectorList}
-              required
-              label={t(
-                'storage.dataVolumes.availableS3ConnectorsList',
-                'Available S3 Connectors List (that are not in use in the backup)',
-              )}
-              selection={unusedType || backupUnusedConnectorList[0]}
-              onChange={onUnusedConnectorListChange}
-            />
-          </div>
+          <Select
+            items={backupUnusedConnectorList}
+            required
+            label={t(
+              'storage.dataVolumes.availableS3ConnectorsList',
+              'Available S3 Connectors List (that are not in use in the backup)',
+            )}
+            selection={unusedType || backupUnusedConnectorList[0]}
+            onChange={onUnusedConnectorListChange}
+          />
         </Row>
       )}
     </Container>

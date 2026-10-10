@@ -6,15 +6,17 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  InheritedInput,
-  InheritedSelect,
   InheritedSwitch,
   ListRow,
   Row,
+  Select,
+  TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
+import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import {
   useAccountForm,
   useSetAccountValues,
@@ -38,16 +40,26 @@ export const FailedLoginPolicy = () => {
   const zimbraPasswordLockoutFailureLifetimeType =
     values?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || '';
 
+  const lockoutDurationValue = values.zimbraPasswordLockoutDuration as string | undefined;
+  const lockoutDurationInherited = cosDetail.zimbraPasswordLockoutDuration as string | undefined;
+  const lockoutFailureLifetimeValue = values.zimbraPasswordLockoutFailureLifetime as
+    | string
+    | undefined;
+  const lockoutFailureLifetimeInherited = cosDetail.zimbraPasswordLockoutFailureLifetime as
+    | string
+    | undefined;
+
   const setEmptyValue = (keyName: string) => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
 
   const onZimbraPasswordLockoutDurationTypeChange = (v: string) => {
+    const num =
+      (lockoutDurationValue ?? lockoutDurationInherited ?? '').slice(0, -1) ||
+      zimbraPasswordLockoutDurationNum;
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
-      zimbraPasswordLockoutDuration: zimbraPasswordLockoutDurationNum
-        ? `${zimbraPasswordLockoutDurationNum}${v}`
-        : '',
+      zimbraPasswordLockoutDuration: num ? `${num}${v}` : '',
     }));
   };
   const onZimbraPasswordLockoutDurationNumChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -61,11 +73,12 @@ export const FailedLoginPolicy = () => {
   };
 
   const onZimbraPasswordLockoutFailureLifetimeTypeChange = (v: string) => {
+    const num =
+      (lockoutFailureLifetimeValue ?? lockoutFailureLifetimeInherited ?? '').slice(0, -1) ||
+      zimbraPasswordLockoutFailureLifetimeNum;
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
-      zimbraPasswordLockoutFailureLifetime: zimbraPasswordLockoutFailureLifetimeNum
-        ? `${zimbraPasswordLockoutFailureLifetimeNum}${v}`
-        : '',
+      zimbraPasswordLockoutFailureLifetime: num ? `${num}${v}` : '',
     }));
   };
   const onZimbraPasswordLockoutFailureLifetimeNumChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -78,7 +91,7 @@ export const FailedLoginPolicy = () => {
     setZimbraPasswordLockoutFailureLifetimeNum(e.target.value);
   };
 
-  const timeItems: any[] = [
+  const timeItems: Array<{ label: string; value: string }> = [
     {
       label: t('label.days', 'Days'),
       value: 'd',
@@ -96,6 +109,34 @@ export const FailedLoginPolicy = () => {
       value: 's',
     },
   ];
+
+  const inheritedDescription = t(
+    'label.inherited_from_cos',
+    'Inherited from the Class of Service',
+  );
+  const revertLabel = t('label.click_to_revert', 'Click to revert to the inherited value');
+
+  const lockoutMaxFailuresValue = values.zimbraPasswordLockoutMaxFailures as string | undefined;
+  const lockoutMaxFailuresInherited = cosDetail.zimbraPasswordLockoutMaxFailures as
+    | string
+    | undefined;
+  const isLockoutMaxFailuresOverridden = isInheritedOverridden(
+    lockoutMaxFailuresValue,
+    accSpecificDetail?.zimbraPasswordLockoutMaxFailures as string | undefined,
+    lockoutMaxFailuresInherited,
+  );
+
+  const isLockoutDurationOverridden = isInheritedOverridden(
+    lockoutDurationValue,
+    accSpecificDetail?.zimbraPasswordLockoutDuration as string | undefined,
+    lockoutDurationInherited,
+  );
+
+  const isLockoutFailureLifetimeOverridden = isInheritedOverridden(
+    lockoutFailureLifetimeValue,
+    accSpecificDetail?.zimbraPasswordLockoutFailureLifetime as string | undefined,
+    lockoutFailureLifetimeInherited,
+  );
 
   return (
     <Row
@@ -139,25 +180,33 @@ export const FailedLoginPolicy = () => {
         >
           <ListRow>
             <Container crossAlignment="flex-start">
-              <InheritedInput
-                isRequired
+              <TextInput
+                required
                 label={t(
                   'cos.number_of_consecutive_failed_login_allowed',
                   'Number of consecutive failed logins allowed',
                 )}
-                subValue={values.zimbraPasswordLockoutMaxFailures}
-                inheritedValue={cosDetail.zimbraPasswordLockoutMaxFailures}
-                fromSubValue={accSpecificDetail?.zimbraPasswordLockoutMaxFailures}
-                background="gray5"
-                inputName="zimbraPasswordLockoutMaxFailures"
+                name="zimbraPasswordLockoutMaxFailures"
+                autoComplete="off"
+                value={lockoutMaxFailuresValue ?? lockoutMaxFailuresInherited ?? ''}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   setAccountValues((prev: Record<string, any>) => ({
                     ...prev,
                     [e.target.name]: e.target.value,
                   }));
                 }}
-                onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutMaxFailures')}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                description={
+                  isLockoutMaxFailuresOverridden ? undefined : inheritedDescription
+                }
+                icon={
+                  isLockoutMaxFailuresOverridden ? (
+                    <RevertToInheritedIcon
+                      label={revertLabel}
+                      onClick={(): void => setEmptyValue('zimbraPasswordLockoutMaxFailures')}
+                    />
+                  ) : undefined
+                }
               />
             </Container>
           </ListRow>
@@ -172,31 +221,49 @@ export const FailedLoginPolicy = () => {
         >
           <ListRow>
             <Container width="75%" padding={{ right: 'small' }}>
-              <InheritedInput
-                isRequired
+              <TextInput
+                required
                 label={t('cos.time_to_lockout_account', 'Time to lockout the account')}
-                subValue={values.zimbraPasswordLockoutDuration?.slice(0, -1)}
-                inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(0, -1)}
-                fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
-                background="gray5"
-                inputName="zimbraPasswordLockoutDuration"
+                name="zimbraPasswordLockoutDuration"
+                autoComplete="off"
+                value={
+                  lockoutDurationValue?.slice(0, -1) ??
+                  lockoutDurationInherited?.slice(0, -1) ??
+                  ''
+                }
                 onChange={onZimbraPasswordLockoutDurationNumChange}
-                onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                description={isLockoutDurationOverridden ? undefined : inheritedDescription}
+                icon={
+                  isLockoutDurationOverridden ? (
+                    <RevertToInheritedIcon
+                      label={revertLabel}
+                      onClick={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
+                    />
+                  ) : undefined
+                }
               />
             </Container>
             <Container width="25%" padding={{ left: 'small' }}>
-              <InheritedSelect
+              <Select
                 label={t('cos.time_range', 'Time Range')}
                 items={timeItems}
-                subValue={values?.zimbraPasswordLockoutDuration?.slice(-1) || ''}
-                inheritedValue={cosDetail.zimbraPasswordLockoutDuration?.slice(-1) || ''}
-                fromSubValue={accSpecificDetail?.zimbraPasswordLockoutDuration}
-                background="gray5"
-                selectName="zimbraPasswordLockoutDuration"
+                selection={
+                  timeItems.find((item) => item.value === lockoutDurationValue?.slice(-1)) ??
+                  timeItems.find((item) => item.value === lockoutDurationInherited?.slice(-1)) ??
+                  timeItems[0]
+                }
                 onChange={onZimbraPasswordLockoutDurationTypeChange}
-                onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                description={isLockoutDurationOverridden ? undefined : inheritedDescription}
+                icon={
+                  isLockoutDurationOverridden ? (
+                    <RevertToInheritedIcon
+                      label={revertLabel}
+                      onClick={(): void => setEmptyValue('zimbraPasswordLockoutDuration')}
+                    />
+                  ) : undefined
+                }
               />
             </Container>
           </ListRow>
@@ -211,36 +278,60 @@ export const FailedLoginPolicy = () => {
         >
           <ListRow>
             <Container width="75%" padding={{ right: 'small' }}>
-              <InheritedInput
-                isRequired
+              <TextInput
+                required
                 label={t(
                   'cos.time_window_failed_logins_must_occur_to_lock_account',
                   'Time window in which the failed logins must occur to lock the account:',
                 )}
-                subValue={values.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-                inheritedValue={cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(0, -1)}
-                fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
-                background="gray5"
-                inputName="zimbraPasswordLockoutFailureLifetime"
+                name="zimbraPasswordLockoutFailureLifetime"
+                autoComplete="off"
+                value={
+                  lockoutFailureLifetimeValue?.slice(0, -1) ??
+                  lockoutFailureLifetimeInherited?.slice(0, -1) ??
+                  ''
+                }
                 onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
-                onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutFailureLifetime')}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                description={
+                  isLockoutFailureLifetimeOverridden ? undefined : inheritedDescription
+                }
+                icon={
+                  isLockoutFailureLifetimeOverridden ? (
+                    <RevertToInheritedIcon
+                      label={revertLabel}
+                      onClick={(): void => setEmptyValue('zimbraPasswordLockoutFailureLifetime')}
+                    />
+                  ) : undefined
+                }
               />
             </Container>
             <Container width="25%" padding={{ left: 'small' }}>
-              <InheritedSelect
+              <Select
                 label={t('cos.time_range', 'Time Range')}
                 items={timeItems}
-                subValue={values?.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''}
-                inheritedValue={
-                  cosDetail.zimbraPasswordLockoutFailureLifetime?.slice(-1) || ''
+                selection={
+                  timeItems.find(
+                    (item) => item.value === lockoutFailureLifetimeValue?.slice(-1),
+                  ) ??
+                  timeItems.find(
+                    (item) => item.value === lockoutFailureLifetimeInherited?.slice(-1),
+                  ) ??
+                  timeItems[0]
                 }
-                fromSubValue={accSpecificDetail?.zimbraPasswordLockoutFailureLifetime}
-                background="gray5"
-                selectName="zimbraPasswordLockoutFailureLifetime"
                 onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
-                onChangeReset={(): void => setEmptyValue('zimbraPasswordLockoutFailureLifetime')}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
+                description={
+                  isLockoutFailureLifetimeOverridden ? undefined : inheritedDescription
+                }
+                icon={
+                  isLockoutFailureLifetimeOverridden ? (
+                    <RevertToInheritedIcon
+                      label={revertLabel}
+                      onClick={(): void => setEmptyValue('zimbraPasswordLockoutFailureLifetime')}
+                    />
+                  ) : undefined
+                }
               />
             </Container>
           </ListRow>

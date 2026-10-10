@@ -473,9 +473,11 @@ describe('AddressBookDetailPanel (browser)', () => {
 			.element(page.getByText('Add address books', { exact: true }))
 			.toBeInTheDocument();
 		await userEvent.click(page.getByText('A specific address book'));
-		await userEvent.click(page.getByText(/Select an address book/i));
+		await userEvent.click(
+			page.getByRole('button', { name: /Select an address book/i }),
+		);
 		await expect
-			.element(page.getByText('/Contacts/Sales', { exact: true }))
+			.element(page.getByRole('option', { name: '/Contacts/Sales' }))
 			.toBeInTheDocument();
 	});
 

@@ -7,11 +7,11 @@ import {
   Button,
   Container,
   CustomChip,
-  Input,
   LabeledValue,
   Modal,
   Row,
   Select,
+  TextInput,
 } from '@zextras/ui-components';
 import { useDomainById } from '@zextras/ui-shared';
 import { cloneDeep, noop, uniqBy } from 'lodash-es';
@@ -50,6 +50,11 @@ export const ManageAliases: FC<{
   const { data: domainList = [] } = useDomainList();
   const [aliasNameValue, setAliasNameValue] = useState<string>('');
   const [selectedDomainName, setSelectedDomainName] = useState<string>('');
+  const domainItems = domainList.map((ele) => ({
+    label: ele.name,
+    value: ele.name,
+  }));
+  const effectiveDomainName = selectedDomainName || domainName || domainItems[0]?.value;
   const onDomainOptionChange = (v: string): void => {
     setSelectedDomainName(v);
   };
@@ -73,12 +78,12 @@ export const ManageAliases: FC<{
                   maxWidth="44rem"
                   style={{ gap: '0.5rem' }}
                 >
-              {listAliases?.map(
-                (ele, index) =>
-                  (aliasType !== 'accounts' || index > 0) && (
-                    <CustomChip key={ele.label} label={ele?.label} />
-                  ),
-              )}
+                  {listAliases?.map(
+                    (ele, index) =>
+                      (aliasType !== 'accounts' || index > 0) && (
+                        <CustomChip key={ele.label} label={ele?.label} />
+                      ),
+                  )}
                   <Row width="100%" padding={{ top: 'medium' }}>
                     <ds-divider></ds-divider>
                   </Row>
@@ -126,21 +131,21 @@ export const ManageAliases: FC<{
             padding={{ bottom: 'large' }}
             orientation="horizontal"
             mainAlignment="space-between"
-            crossAlignment="flex-start"
+            crossAlignment="center"
             width="100%"
             wrap={'nowrap'}
           >
             <Container mainAlignment="flex-start" crossAlignment="flex-start" width="40%">
-              <Input
+              <TextInput
                 label={t('account_details.new_alias_name', 'New Alias Name')}
-                backgroundColor="gray5"
+                autoComplete="off"
                 value={aliasNameValue}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   setAliasNameValue(e.target.value);
                 }}
               />
             </Container>
-            <Container padding={{ top: 'large', left: 'small', right: 'small' }} width="10%">
+            <Container padding={{ left: 'small', right: 'small' }} width="10%">
               <ds-icon icon="AtOutline" size="large"></ds-icon>
             </Container>
             <Container
@@ -149,22 +154,16 @@ export const ManageAliases: FC<{
               padding={{ right: 'large' }}
               width="40%"
             >
-              <Select
-                items={domainList.map((ele) => ({
-                  label: ele.name,
-                  value: ele.name,
-                }))}
-                background="gray5"
-                label={t('account_details.domain', 'Domain')}
-                showCheckbox={false}
-                // @ts-expect-error - needs a fix
-                selection={{
-                  label: selectedDomainName || domainName,
-                  value: selectedDomainName || domainName,
-                }}
-                // @ts-expect-error - needs a fix // Need to fix it with custom soultion
-                onChange={onDomainOptionChange}
-              />
+              {!!domainItems.length && (
+                <Select
+                  items={domainItems}
+                  label={t('account_details.domain', 'Domain')}
+                  onChange={onDomainOptionChange}
+                  selection={
+                    domainItems.find((item) => item.value === effectiveDomainName) ?? domainItems[0]
+                  }
+                />
+              )}
             </Container>
             <Container width="10%">
               <Button
@@ -176,7 +175,7 @@ export const ManageAliases: FC<{
                   if (!aliasNameValue.trim()) return;
                   const aliaes: Array<{ label: string }> = cloneDeep(listAliases);
                   aliaes.push({
-                    label: `${aliasNameValue.trim()}@${selectedDomainName || domainName}`,
+                    label: `${aliasNameValue.trim()}@${effectiveDomainName}`,
                   });
                   const aliaesUniq: Array<{ label: string }> = uniqBy(aliaes, 'label');
                   setListAliases(aliaesUniq);

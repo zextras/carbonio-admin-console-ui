@@ -40,25 +40,22 @@ export {
 export * from './components/inputs/combobox-input';
 export * from './components/inputs/DatePicker';
 export * from './components/inputs/IconCheckbox';
-export * from './components/inputs/Input';
 export * from './components/inputs/labeled-value';
+export * from './components/inputs/LegacyInput';
+export {
+  LegacySelect,
+  type LegacySelectProps,
+  type MultipleSelectionOnChange,
+  type SingleSelectionOnChange,
+} from './components/inputs/LegacySelect';
 export * from './components/inputs/number-input';
 export * from './components/inputs/password-input';
-export * from './components/inputs/PasswordInput';
-export * from './components/inputs/plain-input';
-export * from './components/inputs/plain-select';
 export * from './components/inputs/plain-textarea';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
-export {
-  type MultipleSelectionOnChange,
-  Select,
-  type SelectItem,
-  type SelectProps,
-  type SingleSelectionOnChange,
-} from './components/inputs/Select';
+export * from './components/inputs/select';
 export * from './components/inputs/Switch';
-export * from './components/inputs/TextArea';
+export * from './components/inputs/text-input';
 
 /** navigation components */
 export * from './components/navigation/route-leaving-guard';
@@ -73,17 +70,13 @@ export {
   type ClickableRowFactoryProps,
 } from './components/custom/clickable-row-factory';
 export * from './components/custom/custom-table-header-factory';
-export * from './components/custom/custom-text-area';
 export * from './components/custom/displayer';
-export * from './components/custom/dropdown-input';
 export * from './components/custom/horizontal-wizard-layout';
 export {
   type TRow as HoverableRow,
   default as HoverableRowFactory,
   type HoverableRowProps,
 } from './components/custom/hoverable-row-factory';
-export * from './components/custom/inherited-input';
-export * from './components/custom/inherited-select';
 export * from './components/custom/inherited-switch';
 export * from './components/custom/list-items';
 export * from './components/custom/list-panel-item';

@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, getFieldErrorProps, Input, ListRow, Row } from '@zextras/ui-components';
+import { Container, getFieldErrorProps, ListRow, NumberInput, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { QuotaReportDownloadButton } from '../quota-report-download-button';
@@ -50,16 +50,14 @@ export const DomainQuotaSection = ({ form, domainName, isGlobalAdmin }: DomainQu
                 DOMAIN_GENERAL_VALIDATION_MESSAGES,
               );
               return (
-                <Input
+                <NumberInput
                   label={t(
                     'label.max_quota_per_account_in_this_domain',
                     'Max quota per account in this domain (GB)',
                   )}
-                  value={field.state.value}
-                  backgroundColor="gray5"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    const digits = e.target.value.replaceAll(/\D/g, '');
-                    field.handleChange(digits.replace(/^0+/, ''));
+                  value={field.state.value ?? ''}
+                  onChange={(value: string): void => {
+                    field.handleChange(value);
                   }}
                   onBlur={() => field.handleBlur()}
                   disabled={!isGlobalAdmin}

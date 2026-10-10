@@ -164,7 +164,7 @@ export const CertificateView = ({
         <Container padding={{ horizontal: 'small', top: 'small' }}>
           <LabeledValue
             label={t('label.subject_name_cname', 'Subject Name (Canonical Name record - CNAME)')}
-            backgroundColor="gray6"
+            
             value={domainCertiDetails?.subject || ''}
           />
         </Container>
@@ -174,7 +174,7 @@ export const CertificateView = ({
               'label.subject_name_fqdn',
               'Subject Alt Name (Fully Qualified Domain Name - FQDN)',
             )}
-            backgroundColor="gray6"
+            
             value={domainCertiDetails?.SubjectAltName || ''}
           />
         </Container>
@@ -182,7 +182,7 @@ export const CertificateView = ({
       <ListRow padding={{ top: 'large' }}>
         <Container padding={{ horizontal: 'small' }}>
           <LabeledValue
-            backgroundColor="gray6"
+            
             label={t('label.issuer', 'Issuer')}
             value={domainCertiDetails?.issuer || ''}
           />
@@ -192,14 +192,14 @@ export const CertificateView = ({
         <Container padding={{ horizontal: 'small' }}>
           <LabeledValue
             label={t('label.valid_not_before', 'Valid from (not before)')}
-            backgroundColor="gray6"
+            
             value={domainCertiDetails?.notBefore || ''}
           />
         </Container>
         <Container padding={{ horizontal: 'small' }}>
           <LabeledValue
             label={t('label.valid_not_after', 'Valid until (not after)')}
-            backgroundColor="gray6"
+            
             value={domainCertiDetails?.notAfter || ''}
           />
         </Container>

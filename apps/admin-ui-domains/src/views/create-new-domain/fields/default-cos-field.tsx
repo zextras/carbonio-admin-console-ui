@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Select,type SelectItem } from '@zextras/ui-components';
+import { Select, type SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../parts/steps.module.css';
@@ -26,12 +26,10 @@ export const DefaultCosField = ({ form, items }: DefaultCosFieldProps) => {
 		<div className={styles.fieldStart}>
 			<Select
 				items={items}
-				background="gray5"
 				label={t('label.default_class_of_service', 'Default Class of Service')}
-				showCheckbox={false}
 				selection={items.find((item) => item.value === field.state.value) ?? EMPTY_SELECTION}
-				onChange={(value: string | null): void => {
-					field.handleChange(value ?? '');
+				onChange={(value: string): void => {
+					field.handleChange(value);
 				}}
 			/>
 		</div>

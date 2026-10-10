@@ -5,8 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Input } from '@zextras/ui-components';
-import React from 'react';
+import { NumberInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../parts/steps.module.css';
@@ -26,17 +25,16 @@ export const QuotaField = ({ form }: QuotaFieldProps) => {
 
 	return (
 		<div className={styles.fieldStart}>
-			<Input
+			<NumberInput
 				label={t(
 					'label.max_mainbox_quota_for_the_domain_in_gb',
 					'Max mailbox quota for the domain (GB) (0=unlimited)',
 				)}
-				backgroundColor="gray5"
-				value={field.state.value}
+				value={field.state.value ?? ''}
 				hasError={error.hasError}
 				description={error.description}
-				onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-					field.handleChange(e.target.value);
+				onChange={(value: string): void => {
+					field.handleChange(value);
 				}}
 			/>
 		</div>

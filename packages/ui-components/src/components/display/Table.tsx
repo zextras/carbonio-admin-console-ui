@@ -8,7 +8,7 @@ import clsx from 'clsx';
 import React, { HTMLAttributes, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
 
 import { NonEmptyArray, SingleItemArray } from '../../types/utils';
-import { MultipleSelectionOnChange, SelectProps } from '../inputs/Select';
+import { type LegacySelectProps, MultipleSelectionOnChange } from '../inputs/LegacySelect';
 import { DefaultHeaderFactory } from './default-header-factory';
 import { DefaultRowFactory, TRowProps } from './default-row-factory';
 import styles from './Table.module.css';
@@ -92,7 +92,7 @@ type THeader = {
     }
   | {
       /** Items for the Select component of the header */
-      items: NonEmptyArray<SelectProps['items'][number]>;
+      items: NonEmptyArray<LegacySelectProps['items'][number]>;
       /** De/Select all rows callback */
       onChange: MultipleSelectionOnChange;
     }

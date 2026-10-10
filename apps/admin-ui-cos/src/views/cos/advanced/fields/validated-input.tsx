@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { getFieldErrorProps, PlainInput } from '@zextras/ui-components';
+import { getFieldErrorProps, TextInput } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -33,7 +33,7 @@ export const CosValidatedInput = ({
       {(field) => {
         const error = getFieldErrorProps(field, isSubmitted, t, COS_VALIDATION_MESSAGES);
         return (
-          <PlainInput
+          <TextInput
             label={label}
             value={field.state.value ?? ''}
             name={String(name)}

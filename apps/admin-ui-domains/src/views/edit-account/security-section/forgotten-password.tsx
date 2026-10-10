@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, ListRow, Row, Select, Switch } from '@zextras/ui-components';
+import { Container, ListRow, Row, Select, Switch,TextInput } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,14 +28,14 @@ export const ForgottenPassword = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const onRecoveryStatusChange = (v: unknown): void => {
+  const onRecoveryStatusChange = (v: string): void => {
     setAccountValues((prev: Record<string, any>) => ({
       ...prev,
       zimbraPrefPasswordRecoveryAddressStatus: v,
     }));
   };
 
-  const recoveryStatus: any[] = [
+  const recoveryStatus: Array<{ label: string; value: string }> = [
     {
       label: t('label.pending', 'Pending'),
       value: 'pending',
@@ -63,8 +63,8 @@ export const ForgottenPassword = () => {
           background="gray6"
           padding={{ top: 'large' }}
         >
-          <ListRow>
-            <Container crossAlignment="flex-start" width="30%" padding={{ right: 'small' }}>
+          <ListRow crossAlignment="center">
+            <Container crossAlignment="flex-start" mainAlignment="center" width="30%" padding={{ right: 'small' }}>
               <Switch
                 value={values?.zimbraFeatureResetPasswordStatus === 'enabled'}
                 onClick={(): void =>
@@ -78,10 +78,11 @@ export const ForgottenPassword = () => {
               />
             </Container>
             <Container width="40%" padding={{ right: 'small', left: 'small' }}>
-              <Input
-                backgroundColor="gray5"
+              <TextInput
                 label={t('label.user_recovery_email', 'User Recovery Email')}
-                value={values?.zimbraPrefPasswordRecoveryAddress || ''}
+                name="zimbraPrefPasswordRecoveryAddress"
+                autoComplete="off"
+                value={values?.zimbraPrefPasswordRecoveryAddress ?? ''}
                 onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   if (isValidEmail(e?.target?.value)) {
                     changeValue(e);
@@ -90,7 +91,6 @@ export const ForgottenPassword = () => {
                     setRecoveryEmailError(true);
                   }
                 }}
-                inputName="zimbraPrefPasswordRecoveryAddress"
                 description={t(
                   'label.enter_valid_email_address',
                   'Enter valid email Address',
@@ -99,18 +99,20 @@ export const ForgottenPassword = () => {
               />
             </Container>
             <Container width="30%" padding={{ left: 'small' }}>
-              <Select
-                items={recoveryStatus}
-                background="gray5"
-                label={t('label.status', 'Status')}
-                showCheckbox={false}
-                onChange={onRecoveryStatusChange}
-                defaultSelection={recoveryStatus.find(
-                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                  (item: any) =>
-                    item.value === values?.zimbraPrefPasswordRecoveryAddressStatus,
-                )}
-              />
+              {values?.zimbraId ? (
+                <Select
+                  label={t('label.status', 'Status')}
+                  items={recoveryStatus}
+                  selection={
+                    recoveryStatus.find(
+                      (item) => item.value === values?.zimbraPrefPasswordRecoveryAddressStatus,
+                    ) ?? recoveryStatus[0]
+                  }
+                  onChange={onRecoveryStatusChange}
+                />
+              ) : (
+                <></>
+              )}
             </Container>
           </ListRow>
         </Container>

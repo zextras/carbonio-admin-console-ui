@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, PlainInput } from '@zextras/ui-components';
+import { Button, TextInput } from '@zextras/ui-components';
 import { useActivateLicense, useBreakpoint } from '@zextras/ui-shared';
 import React, { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -78,7 +78,7 @@ export const ActivateSubscription = (): React.JSX.Element => {
       <div className={styles.content}>
         <div className={styles.inputRow}>
           <div className={styles.inputField}>
-            <PlainInput
+            <TextInput
               label={t('subscription.activate.insert_token', 'Insert here the activation token')}
               hasError={validationError !== null}
               description={validationError}

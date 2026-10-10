@@ -4,16 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSelect, Row, Select, Switch } from '@zextras/ui-components';
+import { Row, Select, Switch } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { DEFAULT } from '../../../constants';
+import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
+import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import { AccountStatus, localeList } from '../../utility/utils';
-import {
-  useAccountForm,
-  useSetAccountValues,
-} from '../account-form-context';
+import { useAccountForm, useSetAccountValues } from '../account-form-context';
 
 export const SettingsFields = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
@@ -56,6 +55,18 @@ export const SettingsFields = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
 
+  const accountLocale = accSpecificDetail?.zimbraPrefLocale as string | undefined;
+  const inheritedLocale = cosDetail?.zimbraPrefLocale as string | undefined;
+  const liveLocale = values?.zimbraPrefLocale as string | undefined;
+  const isLocaleOverridden = isInheritedOverridden(liveLocale, accountLocale, inheritedLocale);
+
+  const effectiveLocale = liveLocale ?? inheritedLocale;
+  const localeItems =
+    effectiveLocale !== undefined &&
+    !localeZone.some((item) => item.value === effectiveLocale)
+      ? [...localeZone, { label: effectiveLocale, value: effectiveLocale }]
+      : localeZone;
+
   return (
     <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
       <Row padding={{ top: 'large' }}>
@@ -68,9 +79,7 @@ export const SettingsFields = () => {
           {values?.zimbraId ? (
             <Select
               items={ACCOUNT_STATUS}
-              background="gray5"
               label={t('label.account_status', 'Account Status')}
-              showCheckbox={false}
               onChange={onAccountStatusChange}
               selection={
                 ACCOUNT_STATUS.find(
@@ -85,16 +94,34 @@ export const SettingsFields = () => {
         </Row>
         <Row width="49%" mainAlignment="flex-start">
           {values?.zimbraId && localeZone?.length ? (
-            <InheritedSelect
+            <Select
               label={t('label.language', 'Language')}
-              items={localeZone}
-              subValue={values.zimbraPrefLocale}
-              inheritedValue={cosDetail.zimbraPrefLocale}
-              fromSubValue={accSpecificDetail?.zimbraPrefLocale}
-              background="gray5"
-              selectName="zimbraPrefLocale"
+              items={localeItems}
+              selection={
+                localeItems.find((item) => item.value === liveLocale) ??
+                localeItems.find((item) => item.value === inheritedLocale) ??
+                localeItems[0]
+              }
               onChange={onPrefLocaleChange}
-              onChangeReset={(): void => setEmptyValue('zimbraPrefLocale')}
+              description={
+                isLocaleOverridden
+                  ? undefined
+                  : t(
+                      'label.inherited_from_cos',
+                      'Inherited from the Class of Service',
+                    )
+              }
+              icon={
+                isLocaleOverridden ? (
+                  <RevertToInheritedIcon
+                    label={t(
+                      'label.click_to_revert',
+                      'Click to revert to the inherited value',
+                    )}
+                    onClick={(): void => setEmptyValue('zimbraPrefLocale')}
+                  />
+                ) : undefined
+              }
             />
           ) : (
             <></>
@@ -115,9 +142,7 @@ export const SettingsFields = () => {
             <Select
               disabled={isDefaultCos}
               items={cosItems}
-              background="gray5"
               label={t('label.default_class_of_service', 'Default Class of Service')}
-              showCheckbox={false}
               selection={selection ?? cosItems[0]}
               onChange={onCOSIdChange}
             />

@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Button, Input, LegacyPasswordInput, ListRow, Padding } from '@zextras/ui-components';
+import { Button, ListRow, Padding, PasswordInput, TextInput } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -78,14 +78,13 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
           </ds-text>
         </Padding>
       </ListRow>
-      <ListRow>
+      <ListRow crossAlignment="center">
         <Padding vertical="small" horizontal="small" width="38%">
-          <Input
+          <TextInput
             label={t('label.user_name', 'User Name')}
             value={verifyUserName}
-            backgroundColor="gray5"
-            inputName="verifyAuthUser"
-            autoComplete="new-password"
+            name="verifyAuthUser"
+            autoComplete="off"
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setVerifyUserName(e.target.value);
               setIsVerified(false);
@@ -93,10 +92,9 @@ export const AuthVerifySection = ({ form }: AuthVerifySectionProps) => {
           />
         </Padding>
         <Padding vertical="small" horizontal="small" width="38%">
-          <LegacyPasswordInput
+          <PasswordInput
             label={t('label.password', 'Password')}
-            backgroundColor="gray5"
-            inputName="verifyAuthPassword"
+            name="verifyAuthPassword"
             autoComplete="new-password"
             value={verifyPassword}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

@@ -7,7 +7,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   Paging,
   Row,
   Table,
@@ -76,7 +76,7 @@ export const SearchableTable = ({
         width="fill"
       >
         <Container padding={{ all: 'small' }}>
-          <Input
+          <LegacyInput
             label={searchLabel}
             disabled={rows.length === 0 && searchValue.length === 0}
             value={searchValue}

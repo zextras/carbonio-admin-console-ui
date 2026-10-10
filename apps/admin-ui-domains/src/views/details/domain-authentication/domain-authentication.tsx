@@ -38,7 +38,13 @@ export const DomainAuthentication = () => {
   }
 
   return (
-    <Container background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
+    <Container
+      height="calc(100vh - 105px)"
+      background="gray6"
+      crossAlignment="flex-start"
+      mainAlignment="flex-start"
+      style={{ overflowY: 'auto' }}
+    >
       <FormPageLayout
         title={t('label.authentication', 'Authentication')}
         unsavedChanges={isDirty}

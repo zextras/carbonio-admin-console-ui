@@ -5,6 +5,7 @@
  */
 
 .trigger {
+  align-self: stretch;
   text-align: left;
   cursor: pointer;
 }

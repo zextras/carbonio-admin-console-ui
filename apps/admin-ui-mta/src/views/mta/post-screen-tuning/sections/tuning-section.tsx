@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainInput, PlainSelect, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, Select, SelectItem, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { MtaPostTuningFormApi } from '../types';
@@ -76,7 +76,7 @@ export const TuningSection = ({
           <Container crossAlignment="flex-end">
             <form.Field name="zimbraMtaPostscreenBareNewlineAction">
               {(field) => (
-                <PlainSelect
+                <Select
                   items={ignoreEnforceDropOptions}
                   label={t('mta.action', 'Action')}
                   selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
@@ -95,7 +95,7 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenBareNewlineTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
@@ -109,7 +109,7 @@ export const TuningSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
-            <PlainSelect
+            <Select
               items={intervalOptions}
               label={t('mta.interval', 'Interval')}
               selection={bareNewLineTTLUnit}
@@ -147,7 +147,7 @@ export const TuningSection = ({
           <Container crossAlignment="flex-end">
             <form.Field name="zimbraMtaPostscreenNonSmtpCommandAction">
               {(field) => (
-                <PlainSelect
+                <Select
                   items={ignoreEnforceDropOptions}
                   label={t('mta.action', 'Action')}
                   selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
@@ -166,7 +166,7 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenNonSmtpCommandTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
@@ -180,7 +180,7 @@ export const TuningSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
-            <PlainSelect
+            <Select
               items={intervalOptions}
               label={t('mta.interval', 'Interval')}
               selection={nonSMTPCommandTTLUnit}
@@ -218,7 +218,7 @@ export const TuningSection = ({
           <Container crossAlignment="flex-end">
             <form.Field name="zimbraMtaPostscreenPipeliningAction">
               {(field) => (
-                <PlainSelect
+                <Select
                   items={ignoreEnforceDropOptions}
                   label={t('mta.action', 'Action')}
                   selection={ignoreEnforceDropOptions.find((item) => item.value === field.state.value) ?? ignoreEnforceDropOptions[0]}
@@ -237,7 +237,7 @@ export const TuningSection = ({
           <Container padding={{ right: 'medium' }} crossAlignment="flex-start" width="70%">
             <form.Field name="zimbraMtaPostscreenPipeliningTTL">
               {(field) => (
-                <PlainInput
+                <TextInput
                   required
                   label={t('mta.command_time_to_live_value', 'Command Time to Live (value)')}
                   value={field.state.value?.replaceAll(/\D/g, '') ?? ''}
@@ -251,7 +251,7 @@ export const TuningSection = ({
             </form.Field>
           </Container>
           <Container crossAlignment="flex-end" width="30%">
-            <PlainSelect
+            <Select
               items={intervalOptions}
               label={t('mta.interval', 'Interval')}
               selection={pipeliningTTLUnit}

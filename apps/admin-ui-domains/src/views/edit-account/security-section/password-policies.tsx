@@ -6,15 +6,17 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  InheritedInput,
   InheritedSwitch,
   ListRow,
   Padding,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { isInheritedOverridden } from '../../utility/is-inherited-overridden';
+import { RevertToInheritedIcon } from '../../utility/revert-to-inherited-icon';
 import {
   useAccountForm,
   useSetAccountValues,
@@ -31,7 +33,7 @@ type InheritedInputFieldProps = {
   readonly setEmptyValue: (keyName: string) => void;
 };
 
-function InheritedPolicyInput({
+const InheritedPolicyInput = ({
   label,
   inputName,
   values,
@@ -39,21 +41,37 @@ function InheritedPolicyInput({
   accSpecificDetail,
   changeValue,
   setEmptyValue,
-}: InheritedInputFieldProps) {
+}: InheritedInputFieldProps) => {
+  const [t] = useTranslation();
+  const liveValue = values?.[inputName] as string | undefined;
+  const accountValue = accSpecificDetail?.[inputName] as string | undefined;
+  const inheritedValue = cosDetail?.[inputName] as string | undefined;
+  const isOverridden = isInheritedOverridden(liveValue, accountValue, inheritedValue);
+
   return (
-    <InheritedInput
-      isRequired
+    <TextInput
+      required
       label={label}
-      subValue={values[inputName]}
-      inheritedValue={cosDetail[inputName]}
-      fromSubValue={accSpecificDetail?.[inputName]}
-      background="gray5"
-      inputName={inputName}
+      name={inputName}
+      autoComplete="off"
+      value={liveValue ?? inheritedValue ?? ''}
       onChange={changeValue}
-      onChangeReset={(): void => setEmptyValue(inputName)}
+      description={
+        isOverridden
+          ? undefined
+          : t('label.inherited_from_cos', 'Inherited from the Class of Service')
+      }
+      icon={
+        isOverridden ? (
+          <RevertToInheritedIcon
+            label={t('label.click_to_revert', 'Click to revert to the inherited value')}
+            onClick={(): void => setEmptyValue(inputName)}
+          />
+        ) : undefined
+      }
     />
   );
-}
+};
 
 export const PasswordPolicies = () => {
   const { form, accSpecificDetail, cosDetail } = useAccountForm();

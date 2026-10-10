@@ -7,11 +7,11 @@
 import {
   Button,
   Container,
-  Input,
   ListRow,
   Modal,
   Padding,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -100,9 +100,9 @@ export const CreateGalsyncAccountModel = ({
       >
         <Container padding={{ horizontal: 'small', bottom: 'small' }}>
           <Padding top="medium" bottom="small" horizontal="small" width="100%">
-            <Input
+            <TextInput
               label={t('label.account_name', 'Account Name')}
-              backgroundColor="gray5"
+              autoComplete="off"
               value={galDomainName}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 setGalDomainName(e.target.value);

@@ -7,10 +7,10 @@
 import {
   Button,
   Container,
-  Input,
   ListRow,
   Modal,
   Padding,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { type DomainDirectories, replaceHistory } from '@zextras/ui-shared';
@@ -327,10 +327,11 @@ export const DomainDeleteSection = ({
             </ds-text>
             <ListRow>
               <Container padding={{ top: 'large' }}>
-                <Input
+                <TextInput
+                  label={t('label.domain_name', 'Domain Name')}
                   value={confirmDomainName}
-                  backgroundColor="gray5"
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  autoComplete="off"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     setConfirmDomainName(e.target.value);
                     if (isEqual(e.target.value, domainName)) {
                       setIsRequestInProgress(false);

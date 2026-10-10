@@ -8,6 +8,9 @@
   display: block;
   flex: 1 1 auto;
   min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   background: transparent !important;
   font-size: var(--font-size-medium);
   font-weight: var(--font-weight-regular);
@@ -21,6 +24,10 @@
   font-size: var(--font-size-small);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-regular);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .outerWrapper {
@@ -47,7 +54,7 @@
   flex-shrink: 0;
   align-self: stretch;
   cursor: text;
-  background: var(--text-container-bg);
+  background: var(--color-gray6-regular);
   transition: background 0.2s ease-out;
   box-sizing: border-box;
   width: 100%;

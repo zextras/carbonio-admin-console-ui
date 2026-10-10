@@ -8,8 +8,8 @@ import {
   Container,
   ListRow,
   NumberInput,
-  PlainSelect,
   Row,
+  Select,
   SelectItem,
 } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
@@ -108,7 +108,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
                       />
                     </Container>
                     <Container padding={{ left: 'small' }}>
-                      <PlainSelect
+                      <Select
                         items={TIME_TYPES}
                         label={t('cos.days_hours_minutes_sec', 'Days / Hours / Minutes / Sec')}
                         selection={
@@ -141,7 +141,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
             <Container crossAlignment="flex-start">
               <form.Field name="zimbraPrefMailPollingInterval">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={POLLING_INTERVAL}
                     label={t('cos.polling_interval', 'Polling interval')}
                     selection={
@@ -172,7 +172,7 @@ export const ReceivingMails = ({ form, readonlyCOS }: ReceivingMailsProps) => {
             <Container>
               <form.Field name="zimbraPrefMailSendReadReceipts">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={SEND_READ_RECEIPTS}
                     label={t('cos.read_receipt_settings', 'Read Receipt settings')}
                     selection={

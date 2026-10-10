@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Input, ListRow, Row, Select } from '@zextras/ui-components';
+import { Container, ListRow, NumberInput, Row,Select } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
@@ -40,15 +40,13 @@ export const GalFrequencySection = ({ form }: GalFrequencySectionProps) => {
         <Container padding={{ all: 'small' }}>
           <form.Field name="freqDigits">
             {(field) => (
-              <Input
+              <NumberInput
                 label={t('label.gal_update_frequencey_value', 'GAL Update Frequency (value)')}
-                value={field.state.value}
-                backgroundColor="gray5"
-                onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                  const val = e.target.value;
-                  const parsed = Number.parseInt(val, 10);
-                  if (val === '' || (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 9)) {
-                    field.handleChange(val);
+                value={field.state.value ?? ''}
+                onChange={(value: string): void => {
+                  const parsed = Number.parseInt(value, 10);
+                  if (value === '' || (!Number.isNaN(parsed) && parsed >= 0 && parsed <= 9)) {
+                    field.handleChange(value);
                   }
                 }}
               />
@@ -61,14 +59,12 @@ export const GalFrequencySection = ({ form }: GalFrequencySectionProps) => {
               const selection = unitItems.find((item) => item.value === field.state.value) ?? unitItems[0];
               return (
                 <Select
-                  items={unitItems}
-                  background="gray5"
                   label={t('label.interval', 'Interval')}
-                  onChange={(value: string | null): void => {
-                    field.handleChange(value ?? 'd');
-                  }}
-                  showCheckbox={false}
+                  items={unitItems}
                   selection={selection}
+                  onChange={(value: string): void => {
+                    field.handleChange(value);
+                  }}
                 />
               );
             }}

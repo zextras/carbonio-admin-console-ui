@@ -188,16 +188,16 @@ describe('DomainGalSettings (browser)', () => {
   describe('General inputs', () => {
     it('should render the max results input with value from domain', async () => {
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
+      const maxResultsInput = page.getByLabelText(/^Limit search results from Address Book List to/);
       await expect.element(maxResultsInput).toBeInTheDocument();
-      await expect.element(maxResultsInput).toHaveValue(100);
+      await expect.element(maxResultsInput).toHaveValue('100');
     });
 
     it('should render the Page Size input with value from domain', async () => {
       await setupAndRender();
-      const pageSizeInput = page.getByLabelText('Page Size');
+      const pageSizeInput = page.getByLabelText(/^Page Size/);
       await expect.element(pageSizeInput).toBeInTheDocument();
-      await expect.element(pageSizeInput).toHaveValue(1000);
+      await expect.element(pageSizeInput).toHaveValue('1000');
     });
   });
 
@@ -234,7 +234,7 @@ describe('DomainGalSettings (browser)', () => {
   describe('Editing fields', () => {
     it('should show Save and Cancel when max results is changed', async () => {
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
+      const maxResultsInput = page.getByLabelText(/^Limit search results from Address Book List to/);
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '200');
 
@@ -244,7 +244,7 @@ describe('DomainGalSettings (browser)', () => {
 
     it('should show Save and Cancel when page size is changed', async () => {
       await setupAndRender();
-      const pageSizeInput = page.getByLabelText('Page Size');
+      const pageSizeInput = page.getByLabelText(/^Page Size/);
       await userEvent.clear(pageSizeInput);
       await userEvent.type(pageSizeInput, '500');
 
@@ -254,7 +254,7 @@ describe('DomainGalSettings (browser)', () => {
 
     it('should revert changes when Cancel is clicked', async () => {
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
+      const maxResultsInput = page.getByLabelText(/^Limit search results from Address Book List to/);
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '999');
 
@@ -278,7 +278,7 @@ describe('DomainGalSettings (browser)', () => {
       });
 
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
+      const maxResultsInput = page.getByLabelText(/^Limit search results from Address Book List to/);
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '200');
 
@@ -323,7 +323,7 @@ describe('DomainGalSettings (browser)', () => {
         ],
       });
 
-      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
+      const maxResultsInput = page.getByLabelText(/^Limit search results from Address Book List to/);
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '200');
 
@@ -347,7 +347,7 @@ describe('DomainGalSettings (browser)', () => {
       );
 
       await setupAndRender();
-      const maxResultsInput = page.getByLabelText('Limit search results from Address Book List to');
+      const maxResultsInput = page.getByLabelText(/^Limit search results from Address Book List to/);
       await userEvent.clear(maxResultsInput);
       await userEvent.type(maxResultsInput, '250');
 

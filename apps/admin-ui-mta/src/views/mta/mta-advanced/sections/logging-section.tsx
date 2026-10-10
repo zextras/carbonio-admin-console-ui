@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainSelect, Switch } from '@zextras/ui-components';
+import { Container, Select, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { MtaAdvancedFormApi } from '../types';
@@ -84,7 +84,7 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraAmavisLogLevel">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={amavisLogLevelOptions}
                 label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
                 selection={
@@ -104,7 +104,7 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraAmavisSALogLevel">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={amavisSALogLevelOptions}
                 label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
                 selection={amavisSALogLevelOptions.find((item) => item.value === field.state.value) ?? amavisSALogLevelOptions[0]}
@@ -126,7 +126,7 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaSmtpdTlsLoglevel">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={zimbraMtaSmtpdLoglevelOptions}
                 label={t(
                   'mta.smtp_client_logging_of_tls_activity',
@@ -143,7 +143,7 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
         <Container crossAlignment="flex-start" padding={{ left: 'medium' }}>
           <form.Field name="zimbraMtaLmtpTlsLoglevel">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={zimbraMtaLmtpTlsLoglevelOptions}
                 label={t(
                   'mta.lmtp_client_logging_of_tls_activity',

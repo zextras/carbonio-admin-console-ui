@@ -5,7 +5,7 @@
  */
 
 import { type AnyFormApi,useField } from '@tanstack/react-form';
-import { Input, Tooltip } from '@zextras/ui-components';
+import { TextInput, Tooltip } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -34,16 +34,16 @@ function PhoneInputField({
 
   return (
     <Tooltip placement="top" label={tooltipLabel}>
-      <Input
+      <TextInput
+        label={label}
+        name={name}
+        autoComplete="off"
+        value={field.state.value ?? ''}
         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
           field.handleChange(e.target.value);
         }}
         hasError={error.hasError}
         description={error.description}
-        inputName={name}
-        label={label}
-        backgroundColor="gray5"
-        value={field.state.value}
       />
     </Tooltip>
   );
@@ -57,14 +57,14 @@ type TextFieldLike = {
 
 function textField(field: TextFieldLike, label: string): ReactElement {
   return (
-    <Input
-      backgroundColor="gray5"
+    <TextInput
       label={label}
-      value={field.state.value}
+      name={field.name}
+      autoComplete="off"
+      value={field.state.value ?? ''}
       onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
         field.handleChange(e.target.value);
       }}
-      inputName={field.name}
     />
   );
 }

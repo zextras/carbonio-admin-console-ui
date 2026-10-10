@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Input } from '@zextras/ui-components';
+import { TextInput } from '@zextras/ui-components';
 import type { ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -35,18 +35,18 @@ export const ExternalLdapField = (): ReactElement => {
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-full flex-wrap justify-between">
-          <Input
+          <TextInput
             data-testid="zimbraAuthLdapExternalDn"
             label={t(
               'domain.accounts.editAccount.externalldapReferenceForAuthentication',
               'External LDAP Reference for Authentication',
             )}
-            backgroundColor="gray5"
-            value={ldapDn}
+            name="zimbraAuthLdapExternalDn"
+            autoComplete="off"
+            value={ldapDn ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               form.setFieldValue('zimbraAuthLdapExternalDn', e.target.value);
             }}
-            inputName="zimbraAuthLdapExternalDn"
           />
         </div>
       </div>

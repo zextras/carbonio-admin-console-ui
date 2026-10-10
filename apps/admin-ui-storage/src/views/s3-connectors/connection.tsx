@@ -12,11 +12,11 @@ import {
   getFieldErrorProps,
   Padding,
   PasswordInput,
-  PlainInput,
-  PlainSelect,
   Row,
+  Select,
   type SelectItem as UISelectItem,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { type ChangeEvent, useState } from 'react';
@@ -192,18 +192,16 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <div className="w-full">
-                  <PlainInput
-                    label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
-                    required
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                      field.handleChange(e.target.value)
-                    }
-                    hasError={error.hasError}
-                    description={error.description}
-                  />
-                </div>
+                <TextInput
+                  label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
+                  required
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                    field.handleChange(e.target.value)
+                  }
+                  hasError={error.hasError}
+                  description={error.description}
+                />
               );
             }}
           </form.Field>
@@ -219,18 +217,16 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <div className="w-full">
-                    <PlainInput
-                      label={t('storages.s3Connectors.bucketName', 'Bucket name')}
-                      required
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        field.handleChange(e.target.value)
-                      }
-                      hasError={error.hasError}
-                      description={error.description}
-                    />
-                  </div>
+                  <TextInput
+                    label={t('storages.s3Connectors.bucketName', 'Bucket name')}
+                    required
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                      field.handleChange(e.target.value)
+                    }
+                    hasError={error.hasError}
+                    description={error.description}
+                  />
                 );
               }}
             </form.Field>
@@ -247,7 +243,7 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <PlainInput
+                  <TextInput
                     label={t('storages.s3Connectors.accessKey', 'Access Key ID')}
                     required
                     value={field.state.value}
@@ -291,14 +287,12 @@ export function Connection({
         <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
           <form.Field name="regionValue">
             {(field) => (
-              <div className="w-full">
-                <PlainSelect
-                  items={regionItems}
-                  label={t('label.region', 'Region')}
-                  selection={regionSelection}
-                  onChange={(value) => field.handleChange(value)}
-                />
-              </div>
+              <Select
+                items={regionItems}
+                label={t('label.region', 'Region')}
+                selection={regionSelection}
+                onChange={(value) => field.handleChange(value)}
+              />
             )}
           </form.Field>
         </Row>
@@ -313,17 +307,15 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <div className="w-full">
-                    <PlainInput
-                      label={t('label.custom_region', 'Custom region')}
-                      value={field.state.value}
-                      onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                        field.handleChange(e.target.value)
-                      }
-                      hasError={error.hasError}
-                      description={error.description}
-                    />
-                  </div>
+                  <TextInput
+                    label={t('label.custom_region', 'Custom region')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                      field.handleChange(e.target.value)
+                    }
+                    hasError={error.hasError}
+                    description={error.description}
+                  />
                 );
               }}
             </form.Field>
@@ -339,18 +331,16 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <div className="w-full">
-                  <PlainInput
-                    label={t('label.endpoint_url_required', 'Endpoint URL')}
-                    required={isEndpointUrlRequired}
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                      field.handleChange(e.target.value)
-                    }
-                    hasError={error.hasError}
-                    description={error.description}
-                  />
-                </div>
+                <TextInput
+                  label={t('label.endpoint_url_required', 'Endpoint URL')}
+                  required={isEndpointUrlRequired}
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                    field.handleChange(e.target.value)
+                  }
+                  hasError={error.hasError}
+                  description={error.description}
+                />
               );
             }}
           </form.Field>
@@ -373,17 +363,15 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <div className="w-full">
-                  <PlainInput
-                    label={t('label.prefix', 'Prefix')}
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void =>
-                      field.handleChange(e.target.value)
-                    }
-                    hasError={error.hasError}
-                    description={error.description}
-                  />
-                </div>
+                <TextInput
+                  label={t('label.prefix', 'Prefix')}
+                  value={field.state.value}
+                  onChange={(e: ChangeEvent<HTMLInputElement>): void =>
+                    field.handleChange(e.target.value)
+                  }
+                  hasError={error.hasError}
+                  description={error.description}
+                />
               );
             }}
           </form.Field>
