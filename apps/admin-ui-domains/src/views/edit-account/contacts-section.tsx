@@ -67,7 +67,7 @@ export const EditAccountContactsSection: React.FC = () => {
                 changeValidatedPhoneDetail(e, setIsValidPhone);
               }}
               hasError={!isValidPhone}
-              description={!isValidPhone ? phoneTooltipLabel : undefined}
+              description={isValidPhone ? undefined : phoneTooltipLabel}
               name="telephoneNumber"
               label={t('label.phone', 'Phone')}
               autoComplete="off"
@@ -82,7 +82,7 @@ export const EditAccountContactsSection: React.FC = () => {
                 changeValidatedPhoneDetail(e, setIsValidHomePhone);
               }}
               hasError={!isValidHomePhone}
-              description={!isValidHomePhone ? phoneTooltipLabel : undefined}
+              description={isValidHomePhone ? undefined : phoneTooltipLabel}
               name="homePhone"
               value={values?.homePhone ?? ''}
             />
@@ -97,7 +97,7 @@ export const EditAccountContactsSection: React.FC = () => {
                 changeValidatedPhoneDetail(e, setIsValidMobile);
               }}
               hasError={!isValidMobile}
-              description={!isValidMobile ? phoneTooltipLabel : undefined}
+              description={isValidMobile ? undefined : phoneTooltipLabel}
               name="mobile"
               value={values?.mobile ?? ''}
             />
@@ -110,7 +110,7 @@ export const EditAccountContactsSection: React.FC = () => {
                 changeValidatedPhoneDetail(e, setIsValidPager);
               }}
               hasError={!isValidPager}
-              description={!isValidPager ? phoneTooltipLabel : undefined}
+              description={isValidPager ? undefined : phoneTooltipLabel}
               name="pager"
               value={values?.pager ?? ''}
             />
@@ -125,7 +125,7 @@ export const EditAccountContactsSection: React.FC = () => {
                 changeValidatedPhoneDetail(e, setIsValidFaxNumber);
               }}
               hasError={!isValidFaxNumber}
-              description={!isValidFaxNumber ? phoneTooltipLabel : undefined}
+              description={isValidFaxNumber ? undefined : phoneTooltipLabel}
               name="facsimileTelephoneNumber"
               value={values?.facsimileTelephoneNumber ?? ''}
             />

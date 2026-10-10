@@ -28,10 +28,18 @@ type LabelFactoryProps<T = string> = {
   selected: SelectItem<T>[];
 };
 
-/** @deprecated Use the new input family Select instead. */
+/**
+ * Multiple-selection change callback of the LegacySelect family.
+ * Kept undeprecated because the shared Table header API depends on it and the
+ * new input family does not provide a multiple-selection Select yet.
+ */
 type MultipleSelectionOnChange<T = string> = (value: Array<SelectItem<T>>) => void;
 
-/** @deprecated Use the new input family Select instead. */
+/**
+ * Single-selection change callback of the LegacySelect family.
+ * Kept undeprecated because the new input family does not cover the
+ * uncontrolled/inline modes the legacy shared components still require.
+ */
 type SingleSelectionOnChange<T = string> = (value: T | null) => void;
 
 type UncontrolledMultipleSelection<T> = {
@@ -89,7 +97,11 @@ type SelectComponentProps<T> = {
   | ControlledSingleSelection<T>
 );
 
-/** @deprecated Use the new input family Select instead. */
+/**
+ * Props of the LegacySelect family. Undeprecated: it is part of the public API
+ * surface of the (non-deprecated) Table via THeader and has no full replacement
+ * in the new input family yet (no multiple selection, LabelFactory, inline mode).
+ */
 type LegacySelectProps<T = string> = SelectComponentProps<T> &
   Omit<DropdownProps, keyof SelectComponentProps<T> | 'children'>;
 
@@ -328,7 +340,12 @@ const SelectComponent = function SelectFn<T = string>({
   );
 };
 
-/** @deprecated Use the new input family Select instead. */
+/**
+ * Legacy select component. Undeprecated: the shared table header factories and
+ * the pagination selector still require its multiple-selection, LabelFactory and
+ * inline unlabeled modes, which the new input family does not provide yet.
+ * Prefer the new input family Select for new single-selection fields.
+ */
 const LegacySelect = SelectComponent as SelectType;
 
 export {

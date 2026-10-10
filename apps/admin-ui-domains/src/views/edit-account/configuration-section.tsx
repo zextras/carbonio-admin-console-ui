@@ -28,7 +28,7 @@ type MailTransportTooltipIconProps = {
   label: string;
 };
 
-function MailTransportTooltipIcon({ label }: MailTransportTooltipIconProps) {
+function MailTransportTooltipIcon({ label }: Readonly<MailTransportTooltipIconProps>) {
   return (
     <Tooltip placement="top" label={label}>
       <ds-text as="span">

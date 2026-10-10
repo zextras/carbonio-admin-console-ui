@@ -6,6 +6,7 @@
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { TextInput } from '@zextras/ui-components';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import type { themeConfigStore } from '../../../types';
@@ -22,6 +23,25 @@ type ThemeFieldInputProps = {
   errorLabel?: string;
   errorLabelDefault?: string;
 };
+
+function resolveFieldDescription(
+  t: TFunction,
+  hasError: boolean,
+  errorLabel: string | undefined,
+  errorLabelDefault: string | undefined,
+  showsInheritedHint: boolean,
+): string | undefined {
+  if (hasError && errorLabel && errorLabelDefault) {
+    return t(errorLabel, errorLabelDefault);
+  }
+  if (showsInheritedHint) {
+    return t(
+      'label.inherited_from_global_configuration',
+      'Inherited from the global configuration',
+    );
+  }
+  return undefined;
+}
 
 export const ThemeFieldInput = ({
   form,
@@ -44,6 +64,14 @@ export const ThemeFieldInput = ({
   const isInheritedMode = globalTheme !== undefined;
   const isOverridden = isInheritedMode && value !== undefined;
 
+  const description = resolveFieldDescription(
+    t,
+    hasError,
+    errorLabel,
+    errorLabelDefault,
+    isInheritedMode && !isOverridden,
+  );
+
   return (
     <TextInput
       label={label}
@@ -54,16 +82,7 @@ export const ThemeFieldInput = ({
         form.setFieldValue(name, e.target.value);
       }}
       hasError={hasError}
-      description={
-        hasError && errorLabel && errorLabelDefault
-          ? t(errorLabel, errorLabelDefault)
-          : isInheritedMode && !isOverridden
-            ? t(
-                'label.inherited_from_global_configuration',
-                'Inherited from the global configuration',
-              )
-            : undefined
-      }
+      description={description}
       disabled={isGlobalTheme && !hasModifyRights}
       icon={
         isOverridden ? (
