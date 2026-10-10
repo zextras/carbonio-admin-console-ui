@@ -304,7 +304,7 @@ export const DomainSaml = () => {
             />
           </Container>
           <Container
-            mainAlignment="flex-start"
+            mainAlignment="center"
             crossAlignment="flex-end"
             orientation="vertical"
             width="12%"
