@@ -79,27 +79,41 @@ export const DomainBasicsSection = ({
       value: CLOSED,
     },
     {
-      label: `${t('label.locked', 'Locked')} (${t('label.login_is_disabled', 'Login is disabled')})`,
+      label: `${t('label.locked', 'Locked')} (${t(
+        'label.login_is_disabled',
+        'Login is disabled',
+      )})`,
       value: LOCKED,
     },
     {
-      label: `${t('label.in_maintenance', 'In maintenance')} (${t('label.login_is_disabled', 'Login is disabled')})`,
+      label: `${t('label.in_maintenance', 'In maintenance')} (${t(
+        'label.login_is_disabled',
+        'Login is disabled',
+      )})`,
       value: MAINTENANCE,
     },
     {
-      label: `${t('label.suspended', 'Suspended')} (${t('label.login_is_disabled', 'Login is disabled')})`,
+      label: `${t('label.suspended', 'Suspended')} (${t(
+        'label.login_is_disabled',
+        'Login is disabled',
+      )})`,
       value: SUSPENDED,
     },
   ];
 
   return (
-    <Container height="fit" crossAlignment="flex-start" background="gray6" padding={{ all: 'small' }}>
+    <Container
+      height="fit"
+      crossAlignment="flex-start"
+      background="gray6"
+      padding={{ all: 'small' }}
+    >
       <ListRow>
         <Container padding={{ all: 'small' }}>
-          <LabeledValue label={t('label.name', 'Name')} value={domainName}  />
+          <LabeledValue label={t('label.name', 'Name')} value={domainName} />
         </Container>
         <Container padding={{ all: 'small' }}>
-          <LabeledValue label={t('label.id', 'Id')} value={domainId}  />
+          <LabeledValue label={t('label.id', 'Id')} value={domainId} />
         </Container>
       </ListRow>
 
@@ -132,11 +146,10 @@ export const DomainBasicsSection = ({
             }}
           </form.Field>
         </Container>
-        <Container padding={{ all: 'small' }}>
+        <Container padding={{ all: 'small' }} mainAlignment="flex-start">
           <LabeledValue
             label={t('label.creation_date', 'Creation Date')}
             value={domainCreationDate}
-            
           />
         </Container>
       </ListRow>
