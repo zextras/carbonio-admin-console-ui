@@ -271,12 +271,25 @@ export const Select = <T,>({
       >
         {selection.label}
       </button>
-      <ds-icon
-        icon={open ? 'ChevronUp' : 'ChevronDown'}
-        size="1rem"
-        color="var(--color-gray1-focus)"
-        aria-hidden="true"
-      />
+      <button
+        type="button"
+        className={clsx(popupStyles.iconButton, popupStyles.toggleButton)}
+        aria-label="Toggle options"
+        aria-expanded={open}
+        aria-controls={open ? listboxId : undefined}
+        disabled={disabled}
+        onClick={() => {
+          if (open) closeList();
+          else openList();
+        }}
+      >
+        <ds-icon
+          icon={open ? 'ChevronUp' : 'ChevronDown'}
+          size="1rem"
+          color="var(--color-gray1-focus)"
+          aria-hidden="true"
+        />
+      </button>
       {open && !disabled && (
         <Portal show>
           <div ref={popupRef} id={listboxId} className={popupStyles.listbox}>

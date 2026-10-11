@@ -177,6 +177,32 @@ describe('Select', () => {
       await page.getByRole('button', { name: 'Fruit' }).click();
       await expect.element(page.getByTestId('icon: ChevronUp')).toBeVisible();
     });
+
+    it('opens and closes the listbox from the chevron toggle button', async () => {
+      await render(<Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} />);
+
+      const toggle = page.getByRole('button', { name: 'Toggle options' });
+      await expect.element(toggle).toHaveAttribute('aria-expanded', 'false');
+      await toggle.click();
+
+      await expect.element(page.getByRole('listbox')).toBeVisible();
+      await expect.element(toggle).toHaveAttribute('aria-expanded', 'true');
+      await expect.element(page.getByTestId('icon: ChevronUp')).toBeVisible();
+
+      await toggle.click();
+
+      await expect.element(page.getByRole('listbox')).not.toBeInTheDocument();
+      await expect.element(toggle).toHaveAttribute('aria-expanded', 'false');
+      await expect.element(page.getByTestId('icon: ChevronDown')).toBeVisible();
+    });
+
+    it('is disabled with the field when disabled', async () => {
+      await render(
+        <Select label="Fruit" items={FRUITS} selection={FRUITS[0]} onChange={() => {}} disabled />,
+      );
+
+      await expect.element(page.getByRole('button', { name: 'Toggle options' })).toBeDisabled();
+    });
   });
 
   describe('keyboard interaction', () => {
