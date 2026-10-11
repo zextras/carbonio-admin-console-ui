@@ -4,13 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   getQueryClient,
   grantUserConfigRights,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { AppView } from '../app-view';
@@ -37,32 +38,11 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
-const localStorageStore: Record<string, string> = {};
-
-function mockLocalStorage() {
-  (globalThis.localStorage.getItem as ReturnType<typeof vi.fn>).mockImplementation(
-    (key: string) => localStorageStore[key] ?? null,
-  );
-  (globalThis.localStorage.setItem as ReturnType<typeof vi.fn>).mockImplementation(
-    (key: string, value: string) => {
-      localStorageStore[key] = String(value);
-    },
-  );
-  (globalThis.localStorage.removeItem as ReturnType<typeof vi.fn>).mockImplementation(
-    (key: string) => {
-      delete localStorageStore[key];
-    },
-  );
-}
-
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
   beforeEach(async () => {
-    mockLocalStorage();
-    for (const key of Object.keys(localStorageStore)) {
-      delete localStorageStore[key];
-    }
+    useLoginConfigStore.setState({ featureFlags: null });
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
   });
@@ -91,18 +71,14 @@ describe('AppView', () => {
     it('should render ActivateSubscription when license data is null', async () => {
       setupTest(null);
 
-      await expect
-        .element(page.getByText('Insert here the activation token'))
-        .toBeVisible();
+      await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
     });
 
     it('should render ActivateSubscription when license type is None', async () => {
       const noneLicense = { ok: true, response: { type: 'None', features: [] } };
       setupTest(noneLicense as Record<string, unknown>);
 
-      await expect
-        .element(page.getByText('Insert here the activation token'))
-        .toBeVisible();
+      await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
     });
 
     it('should not render legacy Subscription when no license', async () => {
@@ -115,7 +91,9 @@ describe('AppView', () => {
 
   describe('Feature flag off (default)', () => {
     it('should render legacy Subscription component when feature flag is false', async () => {
-      localStorageStore['new_subscription_feature_flag'] = 'false';
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: false },
+      });
       const licenseData = createMockLicenseData();
       setupTest(licenseData);
 
@@ -123,7 +101,9 @@ describe('AppView', () => {
     });
 
     it('should render legacy Subscription for Purchased + PERPETUAL with feature flag off', async () => {
-      localStorageStore['new_subscription_feature_flag'] = 'false';
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: false },
+      });
       const licenseData = createMockLicenseData({
         response: { type: 'Purchased', subType: 'PERPETUAL' },
       });
@@ -133,7 +113,9 @@ describe('AppView', () => {
     });
 
     it('should render legacy Subscription for ISP license with feature flag off', async () => {
-      localStorageStore['new_subscription_feature_flag'] = 'false';
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: false },
+      });
       const licenseData = createMockLicenseData({
         response: { type: 'ISP' },
       });
@@ -143,7 +125,9 @@ describe('AppView', () => {
     });
 
     it('should render legacy Subscription for Purchased + TRIAL with feature flag off', async () => {
-      localStorageStore['new_subscription_feature_flag'] = 'false';
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: false },
+      });
       const licenseData = createMockLicenseData({
         response: { type: 'Purchased', subType: 'TRIAL' },
       });
@@ -153,7 +137,9 @@ describe('AppView', () => {
     });
 
     it('should not render new subscription components when feature flag is off', async () => {
-      localStorageStore['new_subscription_feature_flag'] = 'false';
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: false },
+      });
       const licenseData = createMockLicenseData({
         response: { type: 'Purchased', subType: 'REGULAR' },
       });
@@ -167,7 +153,9 @@ describe('AppView', () => {
 
   describe('Feature flag on', () => {
     beforeEach(() => {
-      localStorageStore['new_subscription_feature_flag'] = 'true';
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: true },
+      });
     });
 
     it('should render RegularSubscription for Purchased + REGULAR', async () => {
@@ -271,9 +259,7 @@ describe('AppView', () => {
       setupTest(null);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
-      await expect
-        .element(page.getByText('Insert here the activation token'))
-        .toBeVisible();
+      await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
     });
   });
 });
