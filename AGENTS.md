@@ -83,7 +83,7 @@ Year is auto-updated by eslint. The header is required in all files except:
   ```
 
 ### React Compiler
-- This project uses the **React Compiler** (babel plugin)
+- This project uses the **React Compiler** via the **oxc option** (`react({ compiler: true })` from `@vitejs/plugin-react`, backed by `oxc-transform-react`); the `babel-plugin-react-compiler` was evaluated and dismissed in favor of it
 - **Do not use `useMemo` or `useCallback`** — the compiler handles memoization automatically
 - Writing manual memoization hooks is redundant and linters will flag them
 
