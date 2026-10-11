@@ -80,7 +80,6 @@ export const EditAccountGeneralSection = ({
             >
               <Row width="100%" mainAlignment="space-between">
                 <TextInput
-                  data-testid="zimbraAuthLdapExternalDn"
                   label={t(
                     'domain.accounts.editAccount.externalldapReferenceForAuthentication',
                     'External LDAP Reference for Authentication',

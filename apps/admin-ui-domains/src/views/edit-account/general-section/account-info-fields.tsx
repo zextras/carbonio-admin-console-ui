@@ -78,7 +78,6 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
         <Row width="32%" mainAlignment="space-between">
           <TextInput
             required
-            data-testid="surname-input"
             label={t('label.surname', 'Surname')}
             autoComplete="off"
             onChange={changeAccDetail}
@@ -88,7 +87,6 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
         </Row>
         <Row width="32%" mainAlignment="space-between">
           <TextInput
-            data-testid="middlename-input"
             label={t('label.second_name_initials', 'Middle Name Initials')}
             autoComplete="off"
             onChange={changeAccDetail}
@@ -98,7 +96,6 @@ export const AccountInfoFields = ({ onNavigateToAdministration }: AccountInfoFie
         </Row>
         <Row width="32%" mainAlignment="space-between">
           <TextInput
-            data-testid="name-input"
             label={t('label.person_name', 'Name')}
             autoComplete="off"
             onChange={changeAccDetail}

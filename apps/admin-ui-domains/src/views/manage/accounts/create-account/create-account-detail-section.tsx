@@ -36,7 +36,6 @@ export const ExternalLdapField = (): ReactElement => {
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-full flex-wrap justify-between">
           <TextInput
-            data-testid="zimbraAuthLdapExternalDn"
             label={t(
               'domain.accounts.editAccount.externalldapReferenceForAuthentication',
               'External LDAP Reference for Authentication',

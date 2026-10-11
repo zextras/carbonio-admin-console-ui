@@ -34,7 +34,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
             <form.Field name="zimbraFeatureResetPasswordStatus">
               {(field) => (
                 <Switch
-                  data-testid="reset-password-switch"
                   value={field.state.value}
                   label={t(
                     'label.show_forget_password_link',
@@ -84,7 +83,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
           <form.Field name="zimbraAuthLdapStartTlsEnabled">
             {(field) => (
               <Switch
-                data-testid="enable-secure-connection"
                 value={field.state.value}
                 label={t(
                   'label.enable_secure_connection',

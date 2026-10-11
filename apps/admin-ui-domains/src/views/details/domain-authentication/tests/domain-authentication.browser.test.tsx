@@ -285,7 +285,9 @@ describe('DomainAuthentication (browser)', () => {
         it('should toggle Enable Secure Connection switch and show dirty state', async () => {
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            const secureSwitch = page.getByTestId('enable-secure-connection');
+            const secureSwitch = page.getByRole('switch', {
+                name: 'Enable Secure Connection (StartTLS/SSL)',
+            });
             await secureSwitch.click();
 
             await expect.element(page.getByRole('button', { name: /save/i })).toBeVisible();
@@ -296,7 +298,11 @@ describe('DomainAuthentication (browser)', () => {
 
             await expect.element(page.getByText('Authentication')).toBeVisible();
             await expect
-                .element(page.getByTestId('reset-password-switch'))
+                .element(
+                    page.getByRole('switch', {
+                        name: 'Show "Forget Password" link in the login page',
+                    }),
+                )
                 .not.toBeInTheDocument();
         });
 
@@ -304,7 +310,13 @@ describe('DomainAuthentication (browser)', () => {
             await advancedSupportedApiForBrowser.withAdvancedSupported();
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            await expect.element(page.getByTestId('reset-password-switch')).toBeVisible();
+            await expect
+                .element(
+                    page.getByRole('switch', {
+                        name: 'Show "Forget Password" link in the login page',
+                    }),
+                )
+                .toBeVisible();
         });
     });
 
@@ -521,8 +533,16 @@ describe('DomainAuthentication (browser)', () => {
 
             setupBrowserTest(<DomainAuthentication />, { queryClient, initialRouterEntry: `/${DOMAIN_ID}/general-settings`, withDomainIdRoute: true });
 
-            await expect.element(page.getByTestId('reset-password-switch')).toBeVisible();
-            const resetSwitch = page.getByTestId('reset-password-switch');
+            await expect
+                .element(
+                    page.getByRole('switch', {
+                        name: 'Show "Forget Password" link in the login page',
+                    }),
+                )
+                .toBeVisible();
+            const resetSwitch = page.getByRole('switch', {
+                name: 'Show "Forget Password" link in the login page',
+            });
             await resetSwitch.click();
 
             const saveButton = page.getByRole('button', { name: /save/i });

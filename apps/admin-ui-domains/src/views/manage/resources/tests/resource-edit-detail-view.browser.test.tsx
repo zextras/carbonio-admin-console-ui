@@ -12,7 +12,7 @@ import { ResourceEditDetailView } from '../resource-edit-detail-view';
 
 vi.mock('../send-invite-accounts', () => ({
   SendInviteAccounts: (): ReactElement => (
-    <div data-testid="mock-send-invite">Send Invite Mock</div>
+    <div>Send Invite Mock</div>
   ),
 }));
 
