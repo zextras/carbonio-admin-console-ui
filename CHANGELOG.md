@@ -1,3 +1,9 @@
+## [0.30.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.2...v0.30.0) (2026-10-12)
+
+### Features
+
+* **adimn-ui-domains:** migrate to new input ([bf00750](https://github.com/zextras/carbonio-admin-console-ui/commit/bf007506dc5199d121f67c0c3b7976803bcf3b94))
+
 ## [0.29.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.1...v0.29.2) (2026-10-09)
 
 ### Bug Fixes
