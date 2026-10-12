@@ -125,14 +125,14 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
           <LabeledValue
             label={t('label.date', 'Date') ?? 'Date'}
             value={format(notification?.date, 'dd-MM-yyyy - HH:mm a')}
-            backgroundColor="gray6"
+            
           />
         </Container>
         <Container padding={{ bottom: 'large', left: 'small', right: 'extralarge' }}>
           <LabeledValue
             label={t('label.type', 'Type') ?? 'Type'}
             value={notification?.level}
-            backgroundColor="gray6"
+            
           />
         </Container>
       </ListRow>
@@ -143,7 +143,7 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
           <LabeledValue
             label={t('label.what_inside', "What's inside?") ?? "What's inside?"}
             value={notification?.subject}
-            backgroundColor="gray6"
+            
           />
         </Container>
       </ListRow>

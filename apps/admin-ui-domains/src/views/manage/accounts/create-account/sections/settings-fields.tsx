@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Select, Switch } from '@zextras/ui-components';
+import { Select, type SelectItem, Switch } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import type { ReactElement } from 'react';
@@ -13,6 +13,8 @@ import { useTranslation } from 'react-i18next';
 
 import { AccountStatus } from '../../../../utility/utils';
 import { useCreateAccountFormContext } from '../create-account-form-context';
+
+const EMPTY_SELECTION: SelectItem = { label: '', value: '' };
 
 export const SettingsFields = (): ReactElement => {
   const [t] = useTranslation();
@@ -41,13 +43,11 @@ export const SettingsFields = (): ReactElement => {
         <div className="flex w-full flex-wrap justify-start">
           <Select
             items={ACCOUNT_STATUS}
-            background="gray5"
             label={t('label.account_status', 'Account Status')}
-            showCheckbox={false}
-            onChange={(v: string | null): void => {
-              statusField.handleChange(v ?? '');
+            selection={find(ACCOUNT_STATUS, { value: statusField.state.value }) ?? EMPTY_SELECTION}
+            onChange={(value: string): void => {
+              statusField.handleChange(value);
             }}
-            defaultSelection={find(ACCOUNT_STATUS, { value: statusField.state.value })}
           />
         </div>
       </div>
@@ -66,12 +66,10 @@ export const SettingsFields = (): ReactElement => {
           {cosItems.length > 0 && (
             <Select
               items={cosItems}
-              background="gray5"
               label={t('label.default_class_of_service', 'Default Class of Service')}
-              showCheckbox={false}
-              defaultSelection={find(cosItems, { value: cosField.state.value })}
-              onChange={(v: string | null): void => {
-                cosField.handleChange(v ?? '');
+              selection={find(cosItems, { value: cosField.state.value }) ?? EMPTY_SELECTION}
+              onChange={(value: string): void => {
+                cosField.handleChange(value);
               }}
               disabled={defaultCOSField.state.value}
             />

@@ -7,9 +7,9 @@
 import { useState } from 'react';
 
 import iconStyles from './combobox-input.module.css';
-import { PlainInput, type PlainInputProps } from './plain-input';
+import { TextInput, type TextInputProps } from './text-input';
 
-export type PasswordInputProps = Omit<PlainInputProps, 'type' | 'autoComplete'> & {
+export type PasswordInputProps = Omit<TextInputProps, 'type' | 'autoComplete'> & {
   /** Defaults to 'off' so browser password managers do not capture admin secrets; override for login-style fields. */
   autoComplete?: string;
 };
@@ -22,7 +22,7 @@ export const PasswordInput = ({
   const [visible, setVisible] = useState(false);
 
   return (
-    <PlainInput
+    <TextInput
       {...rest}
       type={visible ? 'text' : 'password'}
       autoComplete={autoComplete}

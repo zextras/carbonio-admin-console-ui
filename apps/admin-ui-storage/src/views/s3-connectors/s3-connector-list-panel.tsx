@@ -9,7 +9,7 @@ import {
   Banner,
   Button,
   Container,
-  Input,
+  LegacyInput,
   ModalOverlay,
   Padding,
   Row,
@@ -241,7 +241,7 @@ export const S3ConnectorListPanel = () => {
         ) : (
           <>
             <Row width="100%" padding={{ all: 'large' }}>
-              <Input
+              <LegacyInput
                 disabled={connectorList.length === 0 && searchConnector.length === 0}
                 backgroundColor="gray5"
                 label={t('storages.s3Connectors.filterS3List', 'Filter S3 List')}

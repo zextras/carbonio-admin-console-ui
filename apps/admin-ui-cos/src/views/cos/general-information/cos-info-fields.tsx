@@ -8,11 +8,11 @@ import {
   Container,
   LabeledValue,
   ListRow,
-  PlainInput,
-  PlainSelect,
   PlainTextarea,
   Row,
+  Select,
   type SelectItem,
+  TextInput,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -80,11 +80,11 @@ export const CosInfoFields = ({
                 canDeleteCOS || readonlyCOS ? (
                   <LabeledValue
                     label={t('label.name', 'Name')}
-                    backgroundColor="gray6"
+                    
                     value={field.state.value ?? ''}
                   />
                 ) : (
-                  <PlainInput
+                  <TextInput
                     required
                     label={t('label.name', 'Name')}
                     value={field.state.value}
@@ -101,14 +101,14 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.id_lbl', 'ID')}
-              backgroundColor="gray6"
+              
               value={cosId ?? ''}
             />
           </Container>
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
-              backgroundColor="gray6"
+              
               value={cosCreationDate}
             />
           </Container>
@@ -117,7 +117,7 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
-              backgroundColor="gray6"
+              
               value={totalAccount}
             />
           </Container>
@@ -128,7 +128,7 @@ export const CosInfoFields = ({
                 'Domains that use this CoS as default',
               )}
               value={totalDomain}
-              backgroundColor="gray6"
+              
             />
           </Container>
         </ListRow>
@@ -138,7 +138,7 @@ export const CosInfoFields = ({
               <form.Field name="edition">
                 {(field) => {
                   return (
-                    <PlainSelect
+                    <Select
                       items={EDITION_ITEMS}
                       label={t('label.associated_edition', 'Associated edition')}
                       selection={
@@ -160,7 +160,7 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="description">
               {(field) => (
-                <PlainInput
+                <TextInput
                   label={t('label.description', 'Description')}
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {

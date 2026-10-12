@@ -11,11 +11,11 @@ import {
   LabeledValue,
   NumberInput,
   Padding,
-  PlainInput,
-  PlainSelect,
   Radio,
   Row,
+  Select,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { type ChangeEvent, useContext } from 'react';
@@ -66,7 +66,7 @@ export function MailstoresCreate({
       </Row>
       {!isAdvanced && (
         <Row padding={{ top: 'large' }} width="100%">
-          <PlainSelect
+          <Select
             items={volTypeList}
             label={t('label.volume_type', 'Volume Type')}
             selection={
@@ -79,7 +79,7 @@ export function MailstoresCreate({
       )}
       {isAdvanced && (
         <Row padding={{ top: 'large' }} width="100%">
-          <PlainSelect
+          <Select
             items={volAllocationList}
             label={t('label.volume_allocation', 'Allocation')}
             selection={
@@ -101,7 +101,7 @@ export function MailstoresCreate({
               VOLUME_CREATE_VALIDATION_MESSAGES,
             );
             return (
-              <PlainInput
+              <TextInput
                 name="volumeName"
                 label={t('label.volume_name', 'Volume Name')}
                 value={field.state.value}
@@ -156,7 +156,7 @@ export function MailstoresCreate({
               VOLUME_CREATE_VALIDATION_MESSAGES,
             );
             return (
-              <PlainInput
+              <TextInput
                 name="path"
                 label={t('label.volume_path', 'Volume path')}
                 value={field.state.value}

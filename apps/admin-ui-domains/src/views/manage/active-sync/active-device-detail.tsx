@@ -207,14 +207,12 @@ export const ActiveDeviceDetail = ({
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <Select
+            <Select<number>
               items={abqStatusOptions}
-              background="gray5"
               label={t('label.abq_status', 'ABQ Status')}
-              showCheckbox={false}
               selection={abqStatus}
-              onChange={(ev: string | number | null): void => {
-                const dataItem = abqStatusOptions.find((item) => item.value === ev);
+              onChange={(value: number): void => {
+                const dataItem = abqStatusOptions.find((item) => item.value === value);
                 if (dataItem) setAbqStatus(dataItem);
               }}
             />
@@ -231,28 +229,26 @@ export const ActiveDeviceDetail = ({
           <Container padding={{ top: 'large' }}>
             <LabeledValue
               label={t('label.server', 'Server')}
-              backgroundColor="gray5"
+              
               value={mobileDeviceDetail?.accountServer}
             />
           </Container>
           <Container padding={{ top: 'large', left: 'extralarge' }}>
             <LabeledValue
               label={t('label.e_mail', 'E-mail')}
-              backgroundColor="gray5"
+              
               value={mobileDeviceDetail?.accountEmail}
             />
           </Container>
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <Select
+            <Select<number>
               items={statusOptions}
-              background="gray5"
               label={t('label.status_lbl', 'Status')}
-              showCheckbox={false}
               selection={status}
-              onChange={(ev: string | number | null): void => {
-                const dataItem = statusOptions.find((item) => item.value === ev);
+              onChange={(value: number): void => {
+                const dataItem = statusOptions.find((item) => item.value === value);
                 if (dataItem) setStatus(dataItem);
               }}
             />
@@ -260,7 +256,7 @@ export const ActiveDeviceDetail = ({
           <Container padding={{ top: 'large', left: 'extralarge' }}>
             <LabeledValue
               label={t('label.mobile_password', 'Mobile Password')}
-              backgroundColor="gray5"
+              
               value={
                 mobileDeviceDetail?.hasMobilePassword
                   ? t('label.true', 'True')
@@ -273,14 +269,14 @@ export const ActiveDeviceDetail = ({
           <Container padding={{ top: 'large' }}>
             <LabeledValue
               label={t('label.device_id', 'Device ID')}
-              backgroundColor="gray5"
+              
               value={mobileDeviceDetail?.deviceId}
             />
           </Container>
           <Container padding={{ top: 'large', left: 'extralarge' }}>
             <LabeledValue
               label={t('label.device', 'Device')}
-              backgroundColor="gray5"
+              
               value={mobileDeviceDetail?.deviceType}
             />
           </Container>
@@ -289,26 +285,26 @@ export const ActiveDeviceDetail = ({
           <Container padding={{ top: 'large' }}>
             <LabeledValue
               label={t('label.user_agent', 'User Agent')}
-              backgroundColor="gray5"
+              
               value={mobileDeviceDetail?.userAgent}
             />
           </Container>
           <Container padding={{ top: 'large', left: 'extralarge' }}>
-            <LabeledValue label={t('label.eas', 'EAS')} backgroundColor="gray5" value={''} />
+            <LabeledValue label={t('label.eas', 'EAS')}  value={''} />
           </Container>
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
             <LabeledValue
               label={t('label.registration', 'Registration')}
-              backgroundColor="gray5"
+              
               value={''}
             />
           </Container>
           <Container padding={{ top: 'large', left: 'extralarge' }}>
             <LabeledValue
               label={t('label.last_access', 'Last Access')}
-              backgroundColor="gray5"
+              
               value={
                 mobileDeviceDetail?.lastSeen
                   ? format(new Date(mobileDeviceDetail.lastSeen), 'yy/MM/dd | hh:mm:ss a')

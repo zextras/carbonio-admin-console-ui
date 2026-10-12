@@ -6,7 +6,7 @@
 import {
   Button,
   Container,
-  Input,
+  LegacyInput,
   ListRow,
   Padding,
   Row,
@@ -169,7 +169,7 @@ export const SignatureDetail = ({
             padding={{ top: 'large' }}
           >
             <Row width="100%">
-              <Input
+              <LegacyInput
                 disabled={visibleSignatures.length === 0 && searchSignatureName.length === 0}
                 label={t('label.search_a_signature', 'Search for a signature')}
                 backgroundColor="gray5"

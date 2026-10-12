@@ -14,14 +14,8 @@ import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
-import styles from './Select.module.css';
-
-type SelectItem<T = string> = {
-  label: string;
-  value: T;
-  disabled?: boolean;
-  customComponent?: React.ReactElement;
-};
+import styles from './LegacySelect.module.css';
+import type { SelectItem } from './select';
 
 type LabelFactoryProps<T = string> = {
   label: string | undefined;
@@ -34,8 +28,18 @@ type LabelFactoryProps<T = string> = {
   selected: SelectItem<T>[];
 };
 
+/**
+ * Multiple-selection change callback of the LegacySelect family.
+ * Kept undeprecated because the shared Table header API depends on it and the
+ * new input family does not provide a multiple-selection Select yet.
+ */
 type MultipleSelectionOnChange<T = string> = (value: Array<SelectItem<T>>) => void;
 
+/**
+ * Single-selection change callback of the LegacySelect family.
+ * Kept undeprecated because the new input family does not cover the
+ * uncontrolled/inline modes the legacy shared components still require.
+ */
 type SingleSelectionOnChange<T = string> = (value: T | null) => void;
 
 type UncontrolledMultipleSelection<T> = {
@@ -93,10 +97,15 @@ type SelectComponentProps<T> = {
   | ControlledSingleSelection<T>
 );
 
-type SelectProps<T = string> = SelectComponentProps<T> &
+/**
+ * Props of the LegacySelect family. Undeprecated: it is part of the public API
+ * surface of the (non-deprecated) Table via THeader and has no full replacement
+ * in the new input family yet (no multiple selection, LabelFactory, inline mode).
+ */
+type LegacySelectProps<T = string> = SelectComponentProps<T> &
   Omit<DropdownProps, keyof SelectComponentProps<T> | 'children'>;
 
-type SelectType = <T = string>(p: SelectProps<T>) => React.ReactElement | null;
+type SelectType = <T = string>(p: LegacySelectProps<T>) => React.ReactElement | null;
 
 const DefaultLabelFactory = <T,>({
   selected,
@@ -188,7 +197,7 @@ const SelectComponent = function SelectFn<T = string>({
   disablePortal = false,
   showCheckbox = true,
   ...rest
-}: SelectProps<T>): React.JSX.Element {
+}: LegacySelectProps<T>): React.JSX.Element {
   const initialState = defaultSelection ?? selection ?? [];
   const [selected, setSelected] = useState<SelectItem<T>[]>(
     Array.isArray(initialState) ? initialState : [initialState],
@@ -331,12 +340,18 @@ const SelectComponent = function SelectFn<T = string>({
   );
 };
 
-const Select = SelectComponent as SelectType;
+/**
+ * Legacy select component. Undeprecated: the shared table header factories and
+ * the pagination selector still require its multiple-selection, LabelFactory and
+ * inline unlabeled modes, which the new input family does not provide yet.
+ * Prefer the new input family Select for new single-selection fields.
+ */
+const LegacySelect = SelectComponent as SelectType;
 
 export {
+  LegacySelect,
+  type LegacySelectProps,
   type MultipleSelectionOnChange,
-  Select,
   type SelectItem,
-  type SelectProps,
   type SingleSelectionOnChange,
 };

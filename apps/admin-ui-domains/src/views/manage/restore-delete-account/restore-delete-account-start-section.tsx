@@ -46,14 +46,14 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
             <ListRow>
               <Container padding={{ right: 'medium', bottom: 'medium' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('label.account', 'Account')}
                   value={restoreAccountDetail?.name}
                 />
               </Container>
               <Container padding={{ bottom: 'medium' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('label.destination_account', 'Destination Account')}
                   value={
                     restoreAccountDetail?.copyAccount === ''
@@ -68,7 +68,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
             <ListRow>
               <Container padding={{ bottom: 'large', right: 'medium' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('label.use_last_available_status', 'Use last available status')}
                   value={
                     restoreAccountDetail?.lastAvailableStatus
@@ -79,7 +79,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
               </Container>
               <Container padding={{ bottom: 'large' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('label.date_and_hour', 'Date & Hour')}
                   value={restoreDateTimeValue}
                 />
@@ -88,7 +88,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
             <ListRow>
               <Container>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t(
                     'label.apply_hsm_policy_after_the_restore',
                     'Apply HSM Policies after the restore',
@@ -102,7 +102,7 @@ export const RestoreDeleteAccountStartSection: FC<any> = () => {
             <ListRow>
               <Container padding={{ bottom: 'large', top: 'large' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('label.mail_notifications', 'Email Notifications')}
                   value={
                     restoreAccountDetail?.notificationReceiver === ''

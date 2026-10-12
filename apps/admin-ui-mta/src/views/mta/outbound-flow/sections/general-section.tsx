@@ -8,9 +8,9 @@ import {
   type ChipItem,
   Container,
   CustomChip,
-  PlainInput,
-  PlainSelect,
+  Select,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { some } from 'lodash-es';
@@ -135,7 +135,7 @@ export const GeneralSection = ({
         <Container crossAlignment="flex-start">
           <form.Field name="zimbraMtaTlsSecurityLevel">
             {(field) => (
-              <PlainSelect
+              <Select
                 items={tlsSecurityOptions}
                 label={t('mta.tls_security_level', 'TLS Security Level')}
                 selection={tlsSecurityOptions.find((item) => item.value === field.state.value) ?? tlsSecurityOptions[0]}
@@ -181,7 +181,7 @@ export const GeneralSection = ({
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaSmtpHeloName">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,7 +196,7 @@ export const GeneralSection = ({
         <Container>
           <form.Field name="zimbraMtaMyHostname">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.my_hostname', 'My Hostname')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -220,7 +220,7 @@ export const GeneralSection = ({
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaFallbackRelayHost">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -235,7 +235,7 @@ export const GeneralSection = ({
         <Container>
           <form.Field name="zimbraMtaRelayHost">
             {(field) => (
-              <PlainInput
+              <TextInput
                 label={t('mta.relay_host', 'Relay Host')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -256,7 +256,7 @@ export const GeneralSection = ({
       >
         <form.Field name="zimbraMtaMyOrigin">
           {(field) => (
-            <PlainInput
+            <TextInput
               label={t('mta.my_origin', 'My Origin')}
               value={field.state.value || ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {

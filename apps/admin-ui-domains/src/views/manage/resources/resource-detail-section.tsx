@@ -6,12 +6,13 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  CustomTextArea,
-  Input,
   LabeledValue,
   ListRow,
+  NumberInput,
+  PlainTextarea,
   Row,
   Select,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCosList } from '@zextras/ui-shared';
 import { ChangeEvent } from 'react';
@@ -28,8 +29,6 @@ import {
 import { useResourceForm } from './resource-form-context';
 
 type SelectOption = { label: string; value: string | number };
-
-type SelectChangeValue = string | number | null;
 
 function resolveGeneratedName(
   changeNameBool: boolean,
@@ -140,12 +139,12 @@ export const ResourceDetailSection = () => {
     form.setFieldValue('zimbraNotes', e.target.value);
   }
 
-  function changeMaxConflicts(e: ChangeEvent<HTMLInputElement>): void {
-    form.setFieldValue('zimbraCalResMaxNumConflictsAllowed', e.target.value);
+  function changeMaxConflicts(value: string): void {
+    form.setFieldValue('zimbraCalResMaxNumConflictsAllowed', value);
   }
 
-  function changeMaxPercentConflicts(e: ChangeEvent<HTMLInputElement>): void {
-    form.setFieldValue('zimbraCalResMaxPercentConflictsAllowed', e.target.value);
+  function changeMaxPercentConflicts(value: string): void {
+    form.setFieldValue('zimbraCalResMaxPercentConflictsAllowed', value);
   }
 
   function changeResourceName(e: ChangeEvent<HTMLInputElement>): void {
@@ -154,24 +153,24 @@ export const ResourceDetailSection = () => {
     form.setFieldValue('name', cleaned);
   }
 
-  function onResourceTypeChange(v: SelectChangeValue): void {
-    if (v !== null) form.setFieldValue('zimbraCalResType', String(v));
+  function onResourceTypeChange(v: string | number): void {
+    form.setFieldValue('zimbraCalResType', String(v));
   }
 
-  function onAccountStatusChange(v: SelectChangeValue): void {
-    if (v !== null) form.setFieldValue('zimbraAccountStatus', String(v));
+  function onAccountStatusChange(v: string | number): void {
+    form.setFieldValue('zimbraAccountStatus', String(v));
   }
 
-  function onAutoRefuseChange(v: SelectChangeValue): void {
-    if (v !== null) form.setFieldValue('zimbraCalResAutoDeclineRecurring', String(v));
+  function onAutoRefuseChange(v: string | number): void {
+    form.setFieldValue('zimbraCalResAutoDeclineRecurring', String(v));
   }
 
-  function onCOSIdChange(v: SelectChangeValue): void {
-    form.setFieldValue('zimbraCOSId', v === null ? '' : String(v));
+  function onCOSIdChange(v: string | number): void {
+    form.setFieldValue('zimbraCOSId', String(v));
   }
 
-  function onSchedulePolicyChange(v: SelectChangeValue): void {
-    if (v !== null) form.setFieldValue('schedulePolicyType', Number(v));
+  function onSchedulePolicyChange(v: string | number): void {
+    form.setFieldValue('schedulePolicyType', Number(v));
   }
 
   return (
@@ -195,12 +194,12 @@ export const ResourceDetailSection = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <Input
-              isRequired
+            <TextInput
+              required
               label={t('label.resource_name', 'ResourceName')}
-              backgroundColor="gray5"
-              value={displayName}
-              inputName="displayName"
+              value={displayName ?? ''}
+              name="displayName"
+              autoComplete="off"
               onChange={changeDisplayName}
             />
           </Container>
@@ -208,29 +207,25 @@ export const ResourceDetailSection = () => {
         <ListRow>
           <Container
             mainAlignment="space-between"
-            crossAlignment="flex-start"
+            crossAlignment="center"
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
             <Row width="45%">
-              <Input
-                isRequired
+              <TextInput
+                required
                 label={t('label.name', 'Name')}
-                backgroundColor="gray5"
-                value={name}
-                inputName="name"
+                value={name ?? ''}
+                name="name"
+                autoComplete="off"
                 onChange={changeResourceName}
               />
             </Row>
             <Row width="10%" style={{ padding: '12px' }}>
               <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
-            <Row width="45%">
-              <LabeledValue
-                label={t('label.domain', 'Domain')}
-                backgroundColor="gray5"
-                value={domainName}
-              />
+            <Row width="45%" mainAlignment="flex-start" crossAlignment="flex-start" height="100%">
+              <LabeledValue label={t('label.domain', 'Domain')} value={domainName} />
             </Row>
           </Container>
         </ListRow>
@@ -244,19 +239,15 @@ export const ResourceDetailSection = () => {
             <Container padding={{ right: 'large' }}>
               <Select
                 items={resourceTypeOptions}
-                background="gray5"
                 label={t('label.type', 'Type')}
-                showCheckbox={false}
-                onChange={onResourceTypeChange}
                 selection={selectedResourceType ?? resourceTypeOptions[0]}
+                onChange={onResourceTypeChange}
               />
             </Container>
             <Container padding={{ right: 'large' }}>
               <Select
                 items={accountStatusOptions}
-                background="gray5"
                 label={t('label.status', 'Status')}
-                showCheckbox={false}
                 selection={selectedAccountStatus ?? accountStatusOptions[0]}
                 onChange={onAccountStatusChange}
               />
@@ -264,9 +255,7 @@ export const ResourceDetailSection = () => {
             <Container>
               <Select
                 items={cosItems}
-                background="gray5"
                 label={t('label.class_of_service', 'Class of Service')}
-                showCheckbox={false}
                 selection={selectedCOS}
                 onChange={onCOSIdChange}
               />
@@ -283,28 +272,24 @@ export const ResourceDetailSection = () => {
             <Container padding={{ right: 'large' }}>
               <Select
                 items={autoRefuseOptions}
-                background="gray5"
                 label={t('label.auto_refuse', 'Auto-Refuse')}
-                showCheckbox={false}
                 selection={selectedAutoRefuse ?? autoRefuseOptions[1]}
                 onChange={onAutoRefuseChange}
               />
             </Container>
             <Container padding={{ right: 'large' }}>
-              <Input
+              <NumberInput
                 label={t('label.maximum_conflict', 'Maximum Conflict')}
-                backgroundColor="gray5"
-                value={zimbraCalResMaxNumConflictsAllowed}
-                inputName="zimbraCalResMaxNumConflictsAllowed"
+                value={zimbraCalResMaxNumConflictsAllowed ?? ''}
+                name="zimbraCalResMaxNumConflictsAllowed"
                 onChange={changeMaxConflicts}
               />
             </Container>
             <Container>
-              <Input
+              <NumberInput
                 label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
-                backgroundColor="gray5"
-                value={zimbraCalResMaxPercentConflictsAllowed}
-                inputName="zimbraCalResMaxPercentConflictsAllowed"
+                value={zimbraCalResMaxPercentConflictsAllowed ?? ''}
+                name="zimbraCalResMaxPercentConflictsAllowed"
                 onChange={changeMaxPercentConflicts}
               />
             </Container>
@@ -319,9 +304,7 @@ export const ResourceDetailSection = () => {
           >
             <Select
               items={schedulePolicyItems}
-              background="gray5"
               label={t('label.schedule_policy', 'Set Policy')}
-              showCheckbox={false}
               selection={selectedSchedulePolicy ?? schedulePolicyItems[0]}
               onChange={onSchedulePolicyChange}
             />
@@ -337,11 +320,10 @@ export const ResourceDetailSection = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <CustomTextArea
+            <PlainTextarea
               label={t('label.description', 'Description')}
-              backgroundColor="gray5"
-              value={zimbraNotes}
-              inputName="zimbraNotes"
+              value={zimbraNotes ?? ''}
+              name="zimbraNotes"
               onChange={changeDescription}
             />
           </Container>

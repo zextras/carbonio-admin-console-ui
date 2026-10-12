@@ -80,12 +80,7 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
               )}
             </ds-text>
           </Row>
-          <Row
-            padding={{ top: 'large' }}
-            orientation="horizontal"
-            width="100%"
-            background="gray6"
-          >
+          <Row padding={{ top: 'large' }} orientation="horizontal" width="100%" background="gray6">
             <ds-divider></ds-divider>
           </Row>
           <Row orientation="horizontal" width="100%" padding={{ vertical: 'large' }}>
@@ -105,7 +100,7 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
             >
               <LabeledValue
                 label={t('label.retention_period', 'Retention Period (value)')}
-                backgroundColor="gray5"
+                
                 value={account?.retentionValue}
                 style={{ pointerEvents: 'none' }}
               />
@@ -118,7 +113,7 @@ export const QuarantineAccountSection = ({ account }: QuarantineAccountSectionPr
             >
               <LabeledValue
                 label={t('label.interval', 'Interval')}
-                backgroundColor="gray5"
+                
                 value={intervalLabel(account?.retentionInterval ?? '')}
               />
             </Container>

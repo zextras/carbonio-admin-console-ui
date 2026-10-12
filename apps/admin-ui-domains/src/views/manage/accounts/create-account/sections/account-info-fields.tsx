@@ -6,10 +6,10 @@
 
 import { useField } from '@tanstack/react-form';
 import {
-  Input,
   LabeledValue,
-  LegacyPasswordInput,
+  PasswordInput,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { find } from 'lodash-es';
 import type { ReactElement } from 'react';
@@ -75,52 +75,52 @@ export const AccountInfoFields = (): ReactElement => {
       </ds-text>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-[32%] flex-wrap justify-between">
-          <Input
+          <TextInput
             label={t('label.surname', 'Surname')}
-            backgroundColor="gray5"
-            value={snField.state.value}
-            hasError={snError.hasError}
-            description={snError.description}
+            name="sn"
+            autoComplete="off"
+            value={snField.state.value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               snField.handleChange(e.target.value);
             }}
-            inputName="sn"
+            hasError={snError.hasError}
+            description={snError.description}
           />
         </div>
         <div className="flex w-[32%] flex-wrap justify-between">
-          <Input
+          <TextInput
             label={t('label.second_name_initials', 'Middle Name Initials')}
-            backgroundColor="gray5"
-            value={initialsField.state.value}
+            name="initials"
+            autoComplete="off"
+            value={initialsField.state.value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               initialsField.handleChange(e.target.value);
             }}
-            inputName="initials"
           />
         </div>
         <div className="flex w-[32%] flex-wrap justify-between">
-          <Input
-            value={givenNameField.state.value}
+          <TextInput
+            label={t('label.person_name', 'Name')}
+            name="givenName"
+            autoComplete="off"
+            value={givenNameField.state.value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               givenNameField.handleChange(e.target.value);
             }}
-            inputName="givenName"
-            label={t('label.person_name', 'Name')}
-            backgroundColor="gray5"
           />
         </div>
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-[48%] flex-wrap justify-start">
-          <Input
-            backgroundColor="gray5"
+          <TextInput
             label={t('label.user_auto_fill', 'user (Auto-fill)')}
+            name="name"
+            autoComplete="off"
             value={form.state.values.changeNameBool ? form.state.values.name : (autoFillName ?? '')}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               form.setFieldValue('changeNameBool', true);
               nameField.handleChange(e.target.value?.replaceAll(' ', '')?.toLowerCase() ?? '');
             }}
-            inputName="name"
           />
           {showAutoFillAlert && (
             <ds-text color="error" size="small" as="strong">
@@ -135,16 +135,17 @@ export const AccountInfoFields = (): ReactElement => {
           <div className="flex w-[90%] flex-wrap items-start justify-start">
             <LabeledValue
               label={t('label.domain_name', 'Domain Name')}
-              backgroundColor="gray6"
+              
               value={`${domainName} ${closedStatusLabel}`}
             />
           </div>
         </div>
       </div>
       <div className="flex w-full flex-wrap pt-lg pl-lg">
-        <Input
+        <TextInput
           label={t('label.display_name_auto_fill', 'Display Name (Auto-fill)')}
-          backgroundColor="gray5"
+          name="displayName"
+          autoComplete="off"
           value={
             form.state.values.changeDisplayNameBool
               ? form.state.values.displayName
@@ -154,39 +155,35 @@ export const AccountInfoFields = (): ReactElement => {
             form.setFieldValue('changeDisplayNameBool', true);
             displayNameField.handleChange(e.target.value);
           }}
-          inputName="displayName"
-          autoComplete="new-password"
         />
       </div>
       <div className="flex w-full flex-wrap justify-between pt-lg pl-lg">
         <div className="flex w-[48%] flex-wrap justify-start">
-          <LegacyPasswordInput
-            isRequired
-            backgroundColor="gray5"
+          <PasswordInput
             label={t('label.password', 'Password')}
-            value={passwordField.state.value}
-            hasError={passwordError.hasError}
-            description={passwordError.description}
+            name="password"
+            required
+            autoComplete="new-password"
+            value={passwordField.state.value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               passwordField.handleChange(e.target.value);
             }}
-            inputName="password"
-            autoComplete="new-password"
+            hasError={passwordError.hasError}
+            description={passwordError.description}
           />
         </div>
         <div className="flex w-[48%] flex-wrap justify-start">
-          <LegacyPasswordInput
-            isRequired
-            backgroundColor="gray5"
+          <PasswordInput
             label={t('label.repeat_password', 'Repeat Password')}
-            value={repeatPasswordField.state.value}
-            hasError={repeatPasswordError.hasError}
-            description={repeatPasswordError.description}
+            name="repeatPassword"
+            required
+            autoComplete="new-password"
+            value={repeatPasswordField.state.value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               repeatPasswordField.handleChange(e.target.value);
             }}
-            inputName="repeatPassword"
-            autoComplete="new-password"
+            hasError={repeatPasswordError.hasError}
+            description={repeatPasswordError.description}
           />
         </div>
       </div>

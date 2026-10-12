@@ -8,7 +8,7 @@ import {
 	Container,
 	CustomHeaderFactory,
 	HoverableRowFactory,
-	Input,
+	LegacyInput,
 	ListRow,
 	Paging,
 	Row,
@@ -204,7 +204,7 @@ export const RestoreDeleteInheritedSelectSection: FC<any> = () => {
 							}
 						</Container>
 						<Container padding={{ bottom: 'medium', top: 'large' }}>
-							<Input
+							<LegacyInput
 								disabled={accountRows.length === 0 && !searchString && !isError}
 								backgroundColor="gray5"
 								value={searchString}
