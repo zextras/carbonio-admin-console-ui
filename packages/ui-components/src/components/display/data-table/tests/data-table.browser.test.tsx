@@ -688,6 +688,17 @@ describe('DataTable (browser)', () => {
       .element(page.getByRole('button', { name: /Display name/ }))
       .not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: /Account/ })).toBeVisible();
+    // Body cells must follow visibility — not headers alone (compiler memo hole).
+    await expect
+      .poll(() => {
+        const cells = Array.from(document.querySelectorAll('tbody tr:first-child td'));
+        return (
+          cells.length === 2 &&
+          cells.every((cell) => !cell.textContent?.includes('User 0')) &&
+          cells.some((cell) => cell.textContent?.includes('user0@demo.zextras.io'))
+        );
+      })
+      .toBe(true);
   });
 
   it('reorders columns with move buttons and Reset restores defaults', async () => {
@@ -702,6 +713,15 @@ describe('DataTable (browser)', () => {
     const headerLabels = Array.from(headerButtons).map((button) => button.textContent ?? '');
     expect(headerLabels.indexOf('Status')).toBeLessThan(headerLabels.indexOf('Display name'));
 
+    const firstRowCells = Array.from(document.querySelectorAll('tbody tr:first-child td')).map(
+      (cell) => cell.textContent ?? '',
+    );
+    const statusIdx = firstRowCells.findIndex((text) => text.includes('Active'));
+    const displayIdx = firstRowCells.findIndex((text) => text.includes('User 0'));
+    expect(statusIdx).toBeGreaterThanOrEqual(0);
+    expect(displayIdx).toBeGreaterThanOrEqual(0);
+    expect(statusIdx).toBeLessThan(displayIdx);
+
     await userEvent.click(page.getByRole('button', { name: 'Reset' }));
     await expect.element(page.getByRole('button', { name: 'Reset' })).not.toBeInTheDocument();
 
@@ -709,6 +729,13 @@ describe('DataTable (browser)', () => {
       (button) => button.textContent ?? '',
     );
     expect(resetHeaders.indexOf('Display name')).toBeLessThan(resetHeaders.indexOf('Status'));
+
+    const resetRowCells = Array.from(document.querySelectorAll('tbody tr:first-child td')).map(
+      (cell) => cell.textContent ?? '',
+    );
+    const resetDisplayIdx = resetRowCells.findIndex((text) => text.includes('User 0'));
+    const resetStatusIdx = resetRowCells.findIndex((text) => text.includes('Active'));
+    expect(resetDisplayIdx).toBeLessThan(resetStatusIdx);
   });
 
   it('edits a cell with Enter and cancels with Escape', async () => {
