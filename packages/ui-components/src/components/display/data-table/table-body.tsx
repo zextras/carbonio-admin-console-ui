@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import type { Row, RowData } from '@tanstack/react-table';
+import type { Cell, Row, RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
 import { useEffect } from 'react';
 
@@ -143,6 +143,12 @@ const EditingReconciler = ({ pageRowIds }: EditingReconcilerProps) => {
 
 type DataTableBodyRowProps<TData extends RowData> = {
   row: Row<DataTableFeatures, TData>;
+  /**
+   * Visible cells from the parent Subscribe callback. Computed there so a
+   * fresh array identity forces this row to re-render when Customize changes
+   * column order/visibility (React Compiler would otherwise skip the row).
+   */
+  cells: Array<Cell<DataTableFeatures, TData>>;
   isSelected: boolean;
   isPeeking: boolean;
   isRowInteractive: boolean;
@@ -163,6 +169,7 @@ type DataTableBodyRowProps<TData extends RowData> = {
 
 const DataTableBodyRow = <TData extends RowData>({
   row,
+  cells,
   isSelected,
   isPeeking,
   isRowInteractive,
@@ -201,7 +208,7 @@ const DataTableBodyRow = <TData extends RowData>({
       onClick={isRowInteractive ? activateRow : undefined}
       onKeyDown={isRowInteractive ? handleRowKeyDown : undefined}
     >
-      {row.getVisibleCells().map((cell) => {
+      {cells.map((cell) => {
         const meta = cell.column.columnDef.meta as DataTableColumnMeta | undefined;
         const pinnedStart = cell.column.getIsPinned() === 'start';
         const pinnedEnd = cell.column.getIsPinned() === 'end';
@@ -379,6 +386,9 @@ export const DataTableTableBody = <TData extends RowData>({
       {() => {
         // Read inside the subscription callback: the part component itself
         // does not re-render on table state changes, only this callback does.
+        // Visible cells are resolved here (not inside DataTableBodyRow) so a
+        // fresh `cells` array identity defeats React Compiler memoization when
+        // only columnOrder / columnVisibility change.
         const pageRows = table.getRowModel().rows;
         const pageRowIds = pageRows.map((modelRow) => modelRow.id);
         const stateColSpan = table.getVisibleLeafColumns().length;
@@ -418,6 +428,7 @@ export const DataTableTableBody = <TData extends RowData>({
                   <DataTableBodyRow
                     key={row.id}
                     row={row}
+                    cells={row.getVisibleCells()}
                     isSelected={row.getIsSelected() || selectAllMatching}
                     isPeeking={enablePeek && peekRowId === row.id}
                     isRowInteractive={isRowInteractive}
