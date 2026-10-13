@@ -359,7 +359,7 @@ function buildActionsColumn<TData extends RowData>(options: {
 function mergeStateOptions(
   internal: Partial<DataTableState>,
   consumer: Partial<DataTableState> | undefined,
-  reservedKeys: Array<keyof DataTableState> = [],
+  reservedKeys: ReadonlyArray<Extract<keyof DataTableState, string>> = [],
 ): Partial<DataTableState> {
   const merged: Record<string, unknown> = { ...internal };
   const reserved = new Set<string>(reservedKeys);
