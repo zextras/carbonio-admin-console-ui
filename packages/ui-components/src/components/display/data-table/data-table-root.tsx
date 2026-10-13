@@ -81,6 +81,11 @@ export type DataTableRootProps<TData extends RowData> = {
   enableSorting?: boolean;
   enableMultiSort?: boolean;
   enableRowSelection?: boolean;
+  /**
+   * When row selection is on, show the header “select all rows on this page”
+   * checkbox. Defaults to true. Set false to keep per-row checkboxes only.
+   */
+  enableSelectAllPageRows?: boolean;
   rowActions?: Array<DataTableRowAction>;
   onRowAction?: (payload: { action: DataTableRowAction; row: TData }) => void;
   /** Accessible name for the sticky actions column header (defaults to visually empty). */
@@ -259,15 +264,17 @@ function buildSelectColumn<TData extends RowData>(options: {
   selectAllLabel: string;
   selectRowLabel: string;
   uiStore: DataTableUiStore;
+  enableSelectAllPageRows: boolean;
 }): DataTableColumnDef<TData> {
   return {
     id: SELECT_COLUMN_ID,
     enableSorting: false,
     enableColumnFilter: false,
     enableHiding: false,
-    header: () => (
-      <SelectAllCell uiStore={options.uiStore} selectAllLabel={options.selectAllLabel} />
-    ),
+    header: () =>
+      options.enableSelectAllPageRows ? (
+        <SelectAllCell uiStore={options.uiStore} selectAllLabel={options.selectAllLabel} />
+      ) : null,
     cell: ({ row }) => (
       <SelectRowCell
         row={row}
@@ -398,6 +405,7 @@ const DataTableRootShell = <TData extends RowData>({
   enableSorting = true,
   enableMultiSort = false,
   enableRowSelection = false,
+  enableSelectAllPageRows = true,
   rowActions,
   onRowAction,
   actionsColumnLabel = '',
@@ -472,6 +480,7 @@ const DataTableRootShell = <TData extends RowData>({
         selectAllLabel: t('data_table.select_all_page', 'Select all rows on this page'),
         selectRowLabel: t('data_table.select_row', 'Select row'),
         uiStore,
+        enableSelectAllPageRows,
       }),
       ...tableColumns,
     ];
