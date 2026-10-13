@@ -6,10 +6,9 @@
 import {
   useIsAdvanced,
   useLicenseInfo,
-  useLocalStorage,
+  useNewSubscriptionFeatureFlag,
   usePrimaryBarState,
 } from '@zextras/ui-shared';
-import { useEffect } from 'react';
 import { Route, Routes, useLocation } from 'react-router';
 
 import { CREATE_NEW_COS_ROUTE_ID } from '../constants';
@@ -21,14 +20,7 @@ import { CreateNewCos } from './cos/create-new-cos/create-new-cos';
 import { CosPageHeader } from './cos-page-header';
 
 export const AppView = () => {
-  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
-    'new_subscription_feature_flag',
-    null,
-  );
-
-  useEffect(() => {
-    if (featureFlag === null) setFeatureFlag(false);
-  }, [featureFlag, setFeatureFlag]);
+  const featureFlag = useNewSubscriptionFeatureFlag();
 
   const isAdvanced = useIsAdvanced();
   const { data: licenseData } = useLicenseInfo();

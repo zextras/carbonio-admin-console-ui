@@ -36,7 +36,7 @@ vi.mock('../create-new-cos-legacy', () => ({
   CreateCosLegacy: vi.fn(),
 }));
 
-import { useIsAdvanced, useLicenseInfo, useLocalStorage } from '@zextras/ui-shared';
+import { useIsAdvanced, useLicenseInfo, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 
 import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
 import { CosAdvanced } from '../advanced/cos-advanced';
@@ -58,7 +58,7 @@ const mocks = {
 };
 
 const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
-const useLocalStorageMock = useLocalStorage as unknown as Mock;
+const useNewSubscriptionFeatureFlagMock = useNewSubscriptionFeatureFlag as unknown as Mock;
 const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
 
 const COS_ID = 'cos-123';
@@ -68,7 +68,7 @@ beforeEach(() => {
     m.mockImplementation(() => null);
   }
   useIsAdvancedMock.mockReturnValue(false);
-  useLocalStorageMock.mockReturnValue([false, vi.fn()]);
+  useNewSubscriptionFeatureFlagMock.mockReturnValue(false);
   useLicenseInfoMock.mockReturnValue({ data: null });
 });
 
@@ -163,7 +163,7 @@ describe('CosDetailPanel routing', () => {
 
   describe('Create COS route', () => {
     it('should render CreateCosLegacy when featureFlag and isAdvanced are both false', () => {
-      useLocalStorageMock.mockReturnValue([false, vi.fn()]);
+      useNewSubscriptionFeatureFlagMock.mockReturnValue(false);
       useIsAdvancedMock.mockReturnValue(false);
 
       renderCosDetailPanelAt(`/create-new-cos`);
@@ -172,7 +172,7 @@ describe('CosDetailPanel routing', () => {
     });
 
     it('should render CreateCosLegacy when featureFlag is true but isAdvanced is false', () => {
-      useLocalStorageMock.mockReturnValue([true, vi.fn()]);
+      useNewSubscriptionFeatureFlagMock.mockReturnValue(true);
       useIsAdvancedMock.mockReturnValue(false);
 
       renderCosDetailPanelAt(`/create-new-cos`);
@@ -181,7 +181,7 @@ describe('CosDetailPanel routing', () => {
     });
 
     it('should not render CreateCosLegacy when featureFlag, isAdvanced, and subscription are all valid', () => {
-      useLocalStorageMock.mockReturnValue([true, vi.fn()]);
+      useNewSubscriptionFeatureFlagMock.mockReturnValue(true);
       useIsAdvancedMock.mockReturnValue(true);
       useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
 
@@ -191,7 +191,7 @@ describe('CosDetailPanel routing', () => {
     });
 
     it('should render CreateCosLegacy when featureFlag and isAdvanced are true but no valid subscription', () => {
-      useLocalStorageMock.mockReturnValue([true, vi.fn()]);
+      useNewSubscriptionFeatureFlagMock.mockReturnValue(true);
       useIsAdvancedMock.mockReturnValue(true);
       useLicenseInfoMock.mockReturnValue({ data: null });
 

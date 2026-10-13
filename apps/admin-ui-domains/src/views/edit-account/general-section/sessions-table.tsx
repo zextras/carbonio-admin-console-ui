@@ -9,7 +9,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   Paging,
   Row,
   Table,
@@ -157,12 +157,12 @@ export const SessionsTable = () => {
         crossAlignment="flex-start"
       >
         <Container width="calc(100% - 13rem)">
-          <Input
+          <LegacyInput
             label={t('label.i_m_looking_for_the_session', 'I`m looking for the session ...')}
             backgroundColor="gray5"
             width="100%"
             onChange={onSessionFilterInputChange}
-          ></Input>
+          ></LegacyInput>
         </Container>
         <Container width="12rem" mainAlignment="flex-end" crossAlignment="flex-end">
           <Button

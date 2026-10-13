@@ -81,8 +81,8 @@ describe('CreateAccountDetailSection (browser)', () => {
       await expect.element(page.getByLabelText(/user \(Auto-fill\)/i)).toBeVisible();
       await expect.element(page.getByText('Domain Name')).toBeVisible();
       await expect.element(page.getByLabelText(/Display Name \(Auto-fill\)/i)).toBeVisible();
-      await expect.element(page.getByPlaceholder('Password', { exact: true })).toBeVisible();
-      await expect.element(page.getByPlaceholder('Repeat Password')).toBeVisible();
+      await expect.element(page.getByLabelText(/^Password/)).toBeVisible();
+      await expect.element(page.getByLabelText(/^Repeat Password/)).toBeVisible();
     });
 
     it('should display domain name as read-only', async () => {
@@ -169,10 +169,10 @@ describe('CreateAccountDetailSection (browser)', () => {
         </CreateAccountFormTestProvider>,
       );
 
-      const passwordInput = page.getByPlaceholder('Password', { exact: true });
+      const passwordInput = page.getByLabelText(/^Password/);
       await userEvent.fill(passwordInput, 'SecurePassword123!');
 
-      const repeatPasswordInput = page.getByPlaceholder('Repeat Password');
+      const repeatPasswordInput = page.getByLabelText(/^Repeat Password/);
       await userEvent.fill(repeatPasswordInput, 'SecurePassword123!');
 
       await expect.element(passwordInput).toHaveValue('SecurePassword123!');
@@ -220,8 +220,8 @@ describe('CreateAccountDetailSection (browser)', () => {
         </CreateAccountFormTestProvider>,
       );
 
-      await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-      await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'DifferentPass456!');
+      await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+      await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'DifferentPass456!');
 
       await expect.element(page.getByText('Passwords do not match').first()).toBeVisible();
     });
@@ -389,8 +389,8 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
     await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
-    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'SecurePass123!');
 
     const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
     await userEvent.click(createButton);
@@ -428,8 +428,8 @@ describe('CreateAccount API Integration (browser)', () => {
 
     setupBrowserTest(<CreateAccount {...mockProps} />);
 
-    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'SecurePass123!');
 
     const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
     await userEvent.click(createButton);
@@ -460,8 +460,8 @@ describe('CreateAccount API Integration (browser)', () => {
 
     await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
     await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
-    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'DifferentPass456!');
+    await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'DifferentPass456!');
 
     const createButton = page.getByRole('button', { name: /CREATE WITH THESE DATA/i });
     await userEvent.click(createButton);
@@ -580,8 +580,8 @@ describe('CreateAccount OTP Step (browser)', () => {
   async function fillDetailsAndCreate(): Promise<void> {
     await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
     await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
-    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'SecurePass123!');
     await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
 
     await expect
@@ -653,8 +653,8 @@ describe('CreateAccount OTP Step (browser)', () => {
 
     await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
     await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
-    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'SecurePass123!');
     await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));
 
     await expect
@@ -750,12 +750,12 @@ describe('CreateAccount COS Selection (browser)', () => {
 
     await userEvent.fill(page.getByLabelText('Name', { exact: true }), 'John');
     await userEvent.fill(page.getByLabelText('Surname'), 'Doe');
-    await userEvent.fill(page.getByPlaceholder('Password', { exact: true }), 'SecurePass123!');
-    await userEvent.fill(page.getByPlaceholder('Repeat Password'), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Password/), 'SecurePass123!');
+    await userEvent.fill(page.getByLabelText(/^Repeat Password/), 'SecurePass123!');
 
     await page.getByRole('switch', { name: 'Default COS' }).click();
-    await page.getByText('Default Class of Service', { exact: true }).click();
-    await page.getByText('Premium COS').click();
+    await page.getByRole('button', { name: 'Default Class of Service' }).click();
+    await page.getByRole('option', { name: 'Premium COS' }).click();
     await page.getByRole('switch', { name: /User will change password on next login/i }).click();
 
     await userEvent.click(page.getByRole('button', { name: /CREATE WITH THESE DATA/i }));

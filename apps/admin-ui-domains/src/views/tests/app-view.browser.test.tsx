@@ -205,7 +205,7 @@ describe('AppView - restore account view', () => {
 
     // The Config step renders the Domain search field.
     await expect.element(page.getByText('Domain', { exact: true })).toBeVisible();
-    await expect.element(page.getByLabelText('Search')).toBeVisible();
+    await expect.element(page.getByLabelText('Domain')).toBeVisible();
   });
 
   it('resets to the select-account step when Cancel is clicked', async () => {
@@ -213,7 +213,7 @@ describe('AppView - restore account view', () => {
 
     await page.getByText('alice@example.com').click();
     await page.getByRole('button', { name: 'NEXT', exact: true }).click();
-    await expect.element(page.getByLabelText('Search')).toBeVisible();
+    await expect.element(page.getByLabelText('Domain')).toBeVisible();
 
     await page.getByRole('button', { name: /cancel/i }).click();
 
@@ -226,6 +226,6 @@ describe('AppView - restore account view', () => {
         ),
       )
       .toBeVisible();
-    await expect.element(page.getByLabelText('Search')).not.toBeInTheDocument();
+    await expect.element(page.getByLabelText('Domain')).not.toBeInTheDocument();
   });
 });

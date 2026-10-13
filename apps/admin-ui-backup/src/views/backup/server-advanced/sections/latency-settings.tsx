@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, PlainInput } from '@zextras/ui-components';
+import { Container, ListRow, TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -39,18 +39,14 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
         >
           <form.Field name="backupLatencyHighThreshold">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <TextInput
+                required
+                label={t('backup.latency_high_threshold_ms', 'Latency High Threshold (ms)')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>
@@ -63,18 +59,14 @@ export const LatencySettings = ({ form, allowSetBackup }: LatencySettingsProps) 
         >
           <form.Field name="backupLatencyLowThreshold">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <TextInput
+                required
+                label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>

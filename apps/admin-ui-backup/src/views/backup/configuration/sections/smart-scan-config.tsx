@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, ListRow, PlainInput, Switch } from '@zextras/ui-components';
+import { Button, Container, ListRow, Switch,TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -70,7 +70,7 @@ export const SmartScanConfig = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="scheduleSmartScan">
             {(field) => (
-              <PlainInput
+              <TextInput
                 required
                 autoComplete="off"
                 label={t('backup.schedule', 'Schedule')}

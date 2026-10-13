@@ -5,12 +5,13 @@
  */
 import {
   Container,
-  Input,
   ListRow,
+  NumberInput,
   Padding,
   Row,
   Select,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import React, { type RefObject } from 'react';
@@ -93,14 +94,13 @@ export function ModifyVolumeBucketSection({
         <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
           <form.Field name="volumePrefix">
             {(field) => (
-              <Input
-                inputName="prefix"
+              <TextInput
+                name="prefix"
                 label={t(
                   'label.prefix_name',
                   'Prefix - all objects will have this prefix in their name',
                 )}
                 value={field.state.value}
-                backgroundColor="gray5"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                   field.handleChange(e.target.value)
                 }
@@ -117,12 +117,10 @@ export function ModifyVolumeBucketSection({
           <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
             <Select
               items={backupUnusedConnectorList}
-              background="gray5"
               label={t(
                 'storage.dataVolumes.availableS3ConnectorsList',
                 'Available S3 Connectors List (that are not in use in the backup)',
               )}
-              showCheckbox={false}
               selection={selectedConnectorOption ?? backupUnusedConnectorList[0]}
               onChange={onUnusedConnectorListChange}
             />
@@ -203,15 +201,13 @@ export function ModifyVolumeTieringSection({
           <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
             <form.Field name="infrequentAccessThreshold">
               {(field) => (
-                <Input
-                  inputName="infrequentAccessThreshold"
+                <NumberInput
+                  name="infrequentAccessThreshold"
                   label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                  type="number"
-                  backgroundColor="gray5"
-                  value={field.state.value}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                    field.handleChange(e.target.value)
-                  }
+                  value={field.state.value ?? ''}
+                  onChange={(value): void => {
+                    field.handleChange(value);
+                  }}
                   disabled={!form.state.values.useInfrequentAccess}
                 />
               )}
@@ -398,10 +394,9 @@ export function ModifyVolumeOptionsSection({
                 <Row padding={{ top: 'small' }} width="100%">
                   <form.Field name="compressionThreshold">
                     {(field) => (
-                      <Input
+                      <TextInput
                         label={t('label.compression_threshold', 'Compression Threshold')}
                         value={field.state.value}
-                        backgroundColor="gray6"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                           if (/^\d*$/.test(e.target.value)) {
                             field.handleChange(e.target.value);

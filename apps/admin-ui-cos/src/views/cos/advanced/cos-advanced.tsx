@@ -86,8 +86,11 @@ export const CosAdvanced = () => {
   const readonlyCOS = !rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
   const isBackupLoading = isAdvanced && isCoreAttributesPending;
+  // On CE the quota query is disabled: a disabled query stays pending forever,
+  // so only wait for quota data when the advanced quota feature is active.
+  const isQuotaLoading = isAdvanced && isCosQuotaPending;
 
-  if (isPending || isBackupLoading || isCosQuotaPending) {
+  if (isPending || isBackupLoading || isQuotaLoading) {
     return <ds-page-shimmer></ds-page-shimmer>;
   }
 

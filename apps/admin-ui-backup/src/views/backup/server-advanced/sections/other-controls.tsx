@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, PlainInput } from '@zextras/ui-components';
+import { Container, ListRow, TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,18 +29,14 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupMaxOperationPerAccount">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <TextInput
+                required
+                label={t('backup.maximum_operation_per_account', 'Maximum Operation per Account')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>
@@ -53,18 +49,14 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupCompressionLevel">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.compression_level', 'Compression Level')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <TextInput
+                required
+                label={t('backup.compression_level', 'Compression Level')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>
@@ -79,18 +71,14 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupNumberThreadsForItems">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.thread_number_for_items', 'Thread number for items')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <TextInput
+                required
+                label={t('backup.thread_number_for_items', 'Thread number for items')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>
@@ -103,18 +91,14 @@ export const OtherControls = ({ form, allowSetBackup }: OtherControlsProps) => {
         >
           <form.Field name="backupNumberThreadsForAccounts">
             {(field) => (
-              <div className="w-full">
-                <PlainInput
-                  required
-                  label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
-                  autoComplete="off"
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                    field.handleChange(e.target.value)
-                  }
-                  disabled={!allowSetBackup}
-                />
-              </div>
+              <TextInput
+                required
+                label={t('backup.thread_number_for_accounts', 'Thread number for accounts')}
+                autoComplete="off"
+                value={field.state.value}
+                onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
+                disabled={!allowSetBackup}
+              />
             )}
           </form.Field>
         </Container>

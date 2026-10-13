@@ -259,7 +259,7 @@ describe('AppView', () => {
       });
 
       await expect
-        .element(page.getByPlaceholder('Select a Server'))
+        .element(page.getByRole('combobox', { name: 'Select a Server' }))
         .toHaveValue(SERVER_NAME);
       await expect
         .element(page.getByText(`${SERVER_NAME} Volumes`, { exact: true }))

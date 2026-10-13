@@ -4,14 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import styles from './labeled-value.module.css';
 
 type LabeledValueProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> & {
-  backgroundColor?: AnyColor;
   textColor?: AnyColor;
   label?: string;
   value?: string | number;
@@ -19,7 +18,6 @@ type LabeledValueProps = Omit<React.HTMLAttributes<HTMLDivElement>, 'children'> 
 };
 
 export const LabeledValue = ({
-  backgroundColor = 'gray5',
   textColor = 'text',
   label,
   value,
@@ -29,16 +27,10 @@ export const LabeledValue = ({
     '--text-color': resolveThemeColor(textColor, 'regular'),
   } as React.CSSProperties;
 
-  const wrapperStyle = useMemo(() => {
-    return {
-      '--text-container-bg': resolveThemeColor(backgroundColor, 'regular'),
-    } as React.CSSProperties;
-  }, [backgroundColor]);
-
   return (
     <div className={styles.outerWrapper}>
       {label && <span className={styles.label}>{label}</span>}
-      <div className={styles.fieldWrapper} style={wrapperStyle}>
+      <div className={styles.fieldWrapper}>
         <span className={styles.value} style={valueStyle}>
           {value}
         </span>

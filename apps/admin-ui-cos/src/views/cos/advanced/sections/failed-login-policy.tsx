@@ -8,10 +8,10 @@ import {
 	Container,
 	getFieldErrorProps,
 	ListRow,
-	PlainInput,
-	PlainSelect,
 	Row,
+	Select,
 	Switch,
+	TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -124,7 +124,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								return (
 									<>
 										<Container width="72%" padding={{ right: 'small' }}>
-											<PlainInput
+											<TextInput
 												label={labels.passwordLockout.duration}
 												value={num}
 												name="zimbraPasswordLockoutDuration"
@@ -138,7 +138,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 											/>
 										</Container>
 										<Container width="28%" padding={{ left: 'small', right: 'small' }}>
-											<PlainSelect
+											<Select
 												items={timeItems}
 												label={labels.timeRange}
 												selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}
@@ -162,7 +162,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								return (
 									<>
 										<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-											<PlainInput
+											<TextInput
 												label={labels.passwordLockout.failureLifetime}
 												value={num}
 												name="zimbraPasswordLockoutFailureLifetime"
@@ -176,7 +176,7 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 											/>
 										</Container>
 										<Container width="28%" padding={{ left: 'small' }}>
-											<PlainSelect
+											<Select
 												items={timeItems}
 												label={labels.timeRange}
 												selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}

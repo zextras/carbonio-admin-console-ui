@@ -49,6 +49,7 @@ import {
 	parseAccountListDirectory,
 	useAccountListDirectory,
 } from '../../../services/use-account-list-directory';
+import { useCountAccount } from '../../../services/use-count-account';
 import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
 import { getStatusDisplay } from '../../../utils/status';
 import { EditAccount } from '../../edit-account/edit-account';
@@ -229,6 +230,7 @@ export const ManageAccounts = () => {
 	}
 
 	const modifyAccountAttributes = useModifyAccountAttributes();
+	const { data: totalAccountCreated } = useCountAccount(domainName);
 
 	useQueryErrorSnackbar(error);
 
@@ -255,8 +257,15 @@ export const ManageAccounts = () => {
 		});
 	};
 
+	const handleAccountCreated = (created: boolean): void => {
+		if (created) {
+			void queryClient.invalidateQueries({ queryKey: domainQueryKeys.accountCount.base() });
+		}
+	};
+
 	const handleAccountDeleted = (): void => {
 		void queryClient.invalidateQueries({ queryKey: domainQueryKeys.accountListDirectory.base() });
+		void queryClient.invalidateQueries({ queryKey: domainQueryKeys.accountCount.base() });
 	};
 
 	const accounts: Array<AccountRowItem> = (data?.accounts ?? []).map(flattenAccountAttributes);
@@ -492,7 +501,12 @@ export const ManageAccounts = () => {
 								{t('domain.account_list', 'Accounts List')}
 							</ds-text>
 						</div>
-						<div className={styles.headerSide}></div>
+						<div className={styles.headerSide}>
+							<ds-text as="p" size="medium" overflow="break-word">
+								{t('domain.accounts.totalAccounts', 'Total Accounts')} :{' '}
+								{totalAccountCreated ?? 0}
+							</ds-text>
+						</div>
 						<div className={styles.headerActions}>
 							<Button
 								color="primary"
@@ -670,7 +684,7 @@ export const ManageAccounts = () => {
 				<ModalOverlay open={showCreateAccountView} maxWidth="58.75rem">
 					<CreateAccount
 						setShowCreateAccountView={setShowCreateAccountView}
-						setIsAccountCreated={noop}
+						setIsAccountCreated={handleAccountCreated}
 						getAccountList={refreshAccountList}
 						setShowEditAccountView={setShowEditAccountView}
 						openDetailView={openDetailView}
