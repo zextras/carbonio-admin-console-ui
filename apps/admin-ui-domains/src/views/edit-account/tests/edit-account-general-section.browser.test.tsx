@@ -164,21 +164,19 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
     );
 
     const defaultCosSwitch = page.getByRole('switch', { name: 'Default COS' });
-    const cosSelect = page.getByText('Default Class of Service', { exact: true });
+    const cosSelect = page.getByRole('button', { name: 'Default Class of Service' });
 
     await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
 
     await defaultCosSwitch.click();
     await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
-
-    await cosSelect.click();
-    await expect.element(page.getByTestId('dropdown-popper-list')).not.toBeInTheDocument();
+    await expect.element(cosSelect).toBeDisabled();
 
     await page.getByRole('button', { name: 'Cancel' }).click();
     await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
 
     await cosSelect.click();
-    await page.getByTestId('dropdown-popper-list').getByText('Premium COS').click();
+    await page.getByRole('option', { name: 'Premium COS' }).click();
     await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
   });
 
@@ -195,7 +193,7 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
     );
 
     const defaultCosSwitch = page.getByRole('switch', { name: 'Default COS' });
-    const cosSelect = page.getByText('Default Class of Service', { exact: true });
+    const cosSelect = page.getByRole('button', { name: 'Default Class of Service' });
 
     await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
 
@@ -204,6 +202,6 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
     await expect.element(page.getByText('default', { exact: true })).toBeVisible();
 
     await cosSelect.click();
-    await expect.element(page.getByTestId('dropdown-popper-list')).toBeVisible();
+    await expect.element(page.getByRole('option', { name: 'default' })).toBeVisible();
   });
 });

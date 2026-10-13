@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, Input, ModalOverlay, Paging, Row, useSnackbar } from '@zextras/ui-components';
+import { Container, LegacyInput, ModalOverlay, Paging, Row, useSnackbar } from '@zextras/ui-components';
 import { ChangeEvent, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -100,7 +100,7 @@ export const DoneDetailPanel = () => {
             width="fill"
           >
             <Container>
-              <Input
+              <LegacyInput
                 label={t(
                   'label.search_for_a_completed_operation',
                   `Search for a completed operation`,

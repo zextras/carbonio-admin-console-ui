@@ -281,5 +281,20 @@ describe('RestoreDeleteAccountSelectSection (browser)', () => {
                 .element(page.getByText('Selected: alice@example.com', { exact: true }))
                 .toBeInTheDocument();
         });
+
+        it('should visually highlight the selected account row', async () => {
+            setupGetBackupAccountsInterceptor();
+            await renderWithContext();
+
+            const aliceRow = page.getByRole('row').filter({ hasText: 'alice@example.com' });
+            await expect.element(aliceRow).toBeVisible();
+
+            await page.getByText('alice@example.com').first().click();
+
+            await expect.element(aliceRow).toHaveClass(/selected/);
+
+            const bobRow = page.getByRole('row').filter({ hasText: 'bob@example.com' });
+            await expect.element(bobRow).not.toHaveClass(/selected/);
+        });
     });
 });

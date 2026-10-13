@@ -174,19 +174,17 @@ async function selectAccountFromSearch(email: string = ACCOUNT_EMAIL): Promise<v
 		.poll(() => searchDirectoryMock.mock.calls.length)
 		.toBeGreaterThan(0);
 	await userEvent.click(accountInput);
-	await expect
-		.element(page.getByText(email, { exact: true }))
-		.toBeInTheDocument();
-	await userEvent.click(page.getByText(email, { exact: true }));
-	await expect
-		.element(page.getByLabelText(/Start typing an account e-mail/i))
-		.toHaveValue(email);
+	const accountOption = page.getByRole('option', { name: email });
+	await expect.element(accountOption).toBeInTheDocument();
+	await userEvent.click(accountOption);
+	await expect.element(accountInput).toHaveValue(email);
 }
 
 async function openFolderSelectAndChoose(folderLabel: string): Promise<void> {
-	await userEvent.click(page.getByText(/Select an address book/i));
-	await expect.element(page.getByText(folderLabel, { exact: true })).toBeInTheDocument();
-	await userEvent.click(page.getByText(folderLabel, { exact: true }));
+	await userEvent.click(page.getByRole('button', { name: /Select an address book/i }));
+	const folderOption = page.getByRole('option', { name: folderLabel });
+	await expect.element(folderOption).toBeInTheDocument();
+	await userEvent.click(folderOption);
 }
 
 describe('AddAddressBookPanel (browser)', () => {
@@ -317,10 +315,10 @@ describe('AddAddressBookPanel (browser)', () => {
 		await expect
 			.element(page.getByText('Select a valid account first'))
 			.toBeInTheDocument();
-		// DropDownInput highlights via error-colored divider when hasError is set
+		// ComboboxInput marks the field invalid when specific mode has no valid account
 		await expect
-			.poll(() => document.querySelector('ds-divider[color="error"]') !== null)
-			.toBe(true);
+			.element(page.getByRole('combobox', { name: /Start typing an account e-mail/i }))
+			.toHaveAttribute('aria-invalid', 'true');
 	});
 
 	it('should expose all address books after selecting an account', async () => {
@@ -372,7 +370,7 @@ describe('AddAddressBookPanel (browser)', () => {
 		await userEvent.click(page.getByText('A specific address book', { exact: true }));
 
 		await expect
-			.element(page.getByText(/Select an address book/i))
+			.element(page.getByRole('button', { name: /Select an address book/i }))
 			.toBeInTheDocument();
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeDisabled();
 
@@ -430,16 +428,16 @@ describe('AddAddressBookPanel (browser)', () => {
 
 		await selectAccountFromSearch();
 		await userEvent.click(page.getByText('A specific address book', { exact: true }));
-		await userEvent.click(page.getByText(/Select an address book/i));
+		await userEvent.click(page.getByRole('button', { name: /Select an address book/i }));
 
 		await expect
-			.element(page.getByText('/Contacts/Personal', { exact: true }))
+			.element(page.getByRole('option', { name: '/Contacts/Personal' }))
 			.toBeInTheDocument();
 		await expect
-			.element(page.getByText('/Contacts/External (Shared)', { exact: true }))
+			.element(page.getByRole('option', { name: '/Contacts/External (Shared)' }))
 			.toBeInTheDocument();
 		await expect
-			.element(page.getByText('/Contacts/Work', { exact: true }))
+			.element(page.getByRole('option', { name: '/Contacts/Work', exact: true }))
 			.not.toBeInTheDocument();
 	});
 

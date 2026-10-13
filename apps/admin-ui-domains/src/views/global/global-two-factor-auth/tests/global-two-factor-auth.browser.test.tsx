@@ -129,7 +129,7 @@ async function setup(
 }
 
 const firstServiceChipInput = () => page.getByPlaceholder('Trusted Networks (IP ranges)').nth(1);
-const firstServiceDropdown = () => page.getByText('What to trust?').nth(1);
+const firstServiceDropdown = () => page.getByRole('button', { name: 'What to trust?' }).nth(1);
 
 describe('GlobalTwoFactorAuth (browser)', () => {
   describe('Rendering', () => {
@@ -218,7 +218,7 @@ describe('GlobalTwoFactorAuth (browser)', () => {
       const { capturedSetPolicies } = await setup();
 
       await firstServiceDropdown().click();
-      await page.getByText('Trust the device', { exact: true }).first().click();
+      await page.getByRole('option', { name: 'Trust the device' }).click();
       await page.getByRole('button', { name: /^save$/i }).click();
 
       await expect.poll(() => capturedSetPolicies.length).toBe(1);
@@ -258,8 +258,8 @@ describe('GlobalTwoFactorAuth (browser)', () => {
     it('marks the form dirty without saving when APPLY TO ALL SERVICES is clicked', async () => {
       const { capturedSetPolicies } = await setup();
 
-      await page.getByText('What to trust?').nth(0).click();
-      await page.getByText('Trust the IP', { exact: true }).first().click();
+      await page.getByRole('button', { name: 'What to trust?' }).nth(0).click();
+      await page.getByRole('option', { name: 'Trust the IP' }).click();
       await page.getByRole('button', { name: /apply to all services/i }).click();
 
       await expect.element(page.getByRole('button', { name: /^save$/i })).toBeVisible();

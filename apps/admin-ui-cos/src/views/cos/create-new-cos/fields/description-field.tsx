@@ -6,7 +6,7 @@
 
 import { useField } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { getFieldErrorProps, PlainInput } from '@zextras/ui-components';
+import { getFieldErrorProps, TextInput } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -27,7 +27,7 @@ export const DescriptionField = ({ form }: DescriptionFieldProps) => {
 
   return (
     <div className={styles.fieldCenter}>
-      <PlainInput
+      <TextInput
         label={t('label.description', 'Description')}
         value={field.state.value}
         hasError={error.hasError}

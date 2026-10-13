@@ -7,10 +7,10 @@ import { PageHeader } from '@zextras/ui-components';
 import {
   useBreakpoint,
   useLicenseInfo,
-  useLocalStorage,
+  useNewSubscriptionFeatureFlag,
   usePrimaryBarState,
 } from '@zextras/ui-shared';
-import { type CSSProperties, type ReactNode, useEffect } from 'react';
+import { type CSSProperties, type ReactNode } from 'react';
 
 import styles from './app-view.module.css';
 import { ActivateSubscription } from './subscription/activate-subscription';
@@ -35,7 +35,7 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProper
 function getSubscriptionView(
   subscriptionType: string | undefined,
   subType: string | undefined,
-  featureFlag: boolean | null,
+  featureFlag: boolean,
 ): ReactNode {
   if (!subscriptionType) {
     return <ActivateSubscription />;
@@ -63,18 +63,11 @@ function getSubscriptionView(
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   const breakpoint = useBreakpoint();
-  const [featureFlag, setFeatureFlag] = useLocalStorage<boolean | null>(
-    'new_subscription_feature_flag',
-    null,
-  );
+  const featureFlag = useNewSubscriptionFeatureFlag();
 
   const { data: licenseData, isLoading } = useLicenseInfo();
   const subscriptionType = licenseData?.response?.type;
   const subType = licenseData?.response?.subType;
-
-  useEffect(() => {
-    if (featureFlag === null) setFeatureFlag(false);
-  }, [featureFlag, setFeatureFlag]);
 
   return (
     <div className={styles.root}>

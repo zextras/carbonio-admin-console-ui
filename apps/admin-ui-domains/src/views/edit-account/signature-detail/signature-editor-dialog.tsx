@@ -3,14 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Button,
-  Container,
-  Input,
-  Modal,
-  Padding,
-  Row,
-} from '@zextras/ui-components';
+import { Button, Container, Modal, Padding, Row,TextInput } from '@zextras/ui-components';
 import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -36,9 +29,7 @@ export const SignatureEditorDialog = ({
 }: SignatureEditorDialogProps) => {
   const [t] = useTranslation();
   const [signatureName, setSignatureName] = useState(editingSignature?.name ?? '');
-  const [signatureContent, setSignatureContent] = useState(
-    editingSignature?.defaultContent ?? '',
-  );
+  const [signatureContent, setSignatureContent] = useState(editingSignature?.defaultContent ?? '');
 
   return (
     <Modal
@@ -89,10 +80,10 @@ export const SignatureEditorDialog = ({
         padding={{ top: 'extralarge', bottom: 'extralarge' }}
       >
         <Container padding={{ bottom: 'medium' }}>
-          <Input
+          <TextInput
             label={t('label.name_of_signature', 'Name of Signature')}
             value={signatureName}
-            backgroundColor="gray5"
+            autoComplete="off"
             onChange={(e: any): any => {
               setSignatureName(e.target.value);
             }}

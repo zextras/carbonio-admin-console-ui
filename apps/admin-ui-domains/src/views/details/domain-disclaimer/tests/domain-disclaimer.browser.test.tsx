@@ -68,7 +68,7 @@ describe('DomainDisclaimer', () => {
   describe('Rendering', () => {
     it('should render the Disclaimer header', async () => {
       renderDisclaimer(setupDisclaimerTest());
-      await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+      await expect.element(page.getByRole('heading', { name: 'Disclaimer' })).toBeVisible();
     });
 
     it('should render the Disclaimer switch', async () => {
@@ -85,7 +85,7 @@ describe('DomainDisclaimer', () => {
 
     it('should not show Save and Cancel when not dirty', async () => {
       renderDisclaimer(setupDisclaimerTest());
-      await expect.element(page.getByText('Disclaimer', { exact: true })).toBeVisible();
+      await expect.element(page.getByRole('heading', { name: 'Disclaimer' })).toBeVisible();
       await expect.element(page.getByRole('button', { name: /^save$/i })).not.toBeInTheDocument();
       await expect.element(page.getByRole('button', { name: /^cancel$/i })).not.toBeInTheDocument();
     });

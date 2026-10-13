@@ -5,7 +5,15 @@
  */
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, Input, Modal, Row, Tooltip, useSnackbar } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  Modal,
+  PasswordInput,
+  Row,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
@@ -32,15 +40,13 @@ function PasswordFieldRow({
   tooltipLabel,
 }: PasswordFieldRowProps) {
   const input = (
-    <Input
-      isRequired
-      backgroundColor="gray5"
+    <PasswordInput
+      required
       label={label}
       onChange={onChange}
-      inputName={inputName}
-      type="password"
+      name={inputName}
       autoComplete="new-password"
-      value={value}
+      value={value ?? ''}
       disabled={disabled}
     />
   );

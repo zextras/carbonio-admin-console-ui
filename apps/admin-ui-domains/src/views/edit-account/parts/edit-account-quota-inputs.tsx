@@ -5,8 +5,7 @@
  */
 import {
   Container,
-  Input,
-  InputProps,
+  NumberInput,
   Padding,
   Row,
   Switch,
@@ -85,15 +84,6 @@ function getInheritedValue(
   return undefined;
 }
 
-function createRevertIcon(
-  inheritedValue: string | number | undefined,
-  onClick: () => void,
-): InputProps['CustomIcon'] {
-  return function RevertIcon() {
-    return <EditAccountQuotaRevertIcon inheritedValue={inheritedValue} onClick={onClick} />;
-  };
-}
-
 export const QuotaLimitInput = ({
   totalComputedQuotaLimit,
   initialTotalComputedQuotaLimit,
@@ -116,10 +106,8 @@ export const QuotaLimitInput = ({
     setQuotaValue(quotaValueFromLimit(totalComputedQuotaLimit));
   }
 
-  const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
-    const parsedValue =
-      filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
+  const inputOnChange = (value: string): void => {
+    const parsedValue = value === '' ? undefined : Number.parseInt(value, 10);
     const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
     const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
     onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
@@ -162,8 +150,6 @@ export const QuotaLimitInput = ({
 
   const inheritedValue = getInheritedValue(domainQuotaConstraint, cosComputedLimit, t);
 
-  const revertIcon = createRevertIcon(inheritedValue, onChangeReset);
-
   if (!isAdvanced) {
     return null;
   }
@@ -196,16 +182,22 @@ export const QuotaLimitInput = ({
           mainAlignment={'flex-start'}
           crossAlignment={'flex-start'}
         >
-          <Input
+          <NumberInput
             description={inputDescription}
             label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-            background={'gray5'}
-            inputName="totalQuota"
+            name="totalQuota"
             onChange={inputOnChange}
             value={inputValue}
             disabled={switchValue}
             hasError={hasError}
-            CustomIcon={totalQuotaSource === 'account' ? revertIcon : undefined}
+            icon={
+              totalQuotaSource === 'account' ? (
+                <EditAccountQuotaRevertIcon
+                  inheritedValue={inheritedValue}
+                  onClick={onChangeReset}
+                />
+              ) : undefined
+            }
           />
           {totalQuotaSource !== undefined && (
             <Padding top={'medium'}>

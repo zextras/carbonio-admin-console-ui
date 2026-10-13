@@ -96,43 +96,43 @@ export const DomainGeneralSettings = () => {
       mainAlignment="flex-start"
       style={{ overflowY: 'auto' }}
     >
-    <FormPageLayout
-      title={t('label.general_settings', 'General Settings')}
-      unsavedChanges={isDirty}
-      onSave={handleSave}
-      onCancel={handleCancel}
-    >
-      <DomainBasicsSection
-        form={form}
-        domainName={domainName}
-        domainId={zimbraId}
-        domainCreationDate={domainCreationDate}
-        cosItems={cosItems}
-        isGlobalAdmin={isGlobalAdmin}
-      />
+      <FormPageLayout
+        title={t('label.general_settings', 'General Settings')}
+        unsavedChanges={isDirty}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      >
+        <DomainBasicsSection
+          form={form}
+          domainName={domainName}
+          domainId={zimbraId}
+          domainCreationDate={domainCreationDate}
+          cosItems={cosItems}
+          isGlobalAdmin={isGlobalAdmin}
+        />
 
-      {isAdvanced && (
-        <DomainQuotaSection form={form} domainName={domainName} isGlobalAdmin={isGlobalAdmin} />
-      )}
+        {isAdvanced && (
+          <DomainQuotaSection form={form} domainName={domainName} isGlobalAdmin={isGlobalAdmin} />
+        )}
 
-      {isAdvanced && <DomainSearchSpecificDomainsSection form={form} domainName={domainName} />}
+        {isAdvanced && <DomainSearchSpecificDomainsSection form={form} domainName={domainName} />}
 
-      <DomainNotificationsSection form={form} />
+        <DomainNotificationsSection form={form} />
 
-      <DomainCosLink
-        cosMaxAccountList={cosMaxAccountList}
-        domainId={zimbraId}
-        defaultCosId={defaultValues.zimbraDomainDefaultCOSId}
-        domainName={domainName}
-      />
+        <DomainCosLink
+          cosMaxAccountList={cosMaxAccountList}
+          domainId={zimbraId}
+          defaultCosId={defaultValues.zimbraDomainDefaultCOSId}
+          domainName={domainName}
+        />
 
-      <DomainDeleteSection
-        domainId={zimbraId}
-        domainName={domainName}
-        domainStatusValue={form.state.values.zimbraDomainStatus}
-        closedStatusValue={CLOSED}
-      />
-    </FormPageLayout>
+        <DomainDeleteSection
+          domainId={zimbraId}
+          domainName={domainName}
+          domainStatusValue={form.state.values.zimbraDomainStatus}
+          closedStatusValue={CLOSED}
+        />
+      </FormPageLayout>
     </Container>
   );
 };
@@ -179,4 +179,3 @@ function buildCosMaxAccountList(
       value: item._content?.split(':')[1] ?? '-1',
     }));
 }
-

@@ -16,9 +16,9 @@ import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
 import { Container, ContainerProps } from '../layout/Container';
 import { InputContainer } from './commons/InputContainer';
 import { InputDescription } from './commons/InputDescription';
-import styles from './Input.module.css';
+import styles from './LegacyInput.module.css';
 
-type InputProps = ContainerProps & {
+type LegacyInputProps = ContainerProps & {
   backgroundColor?: AnyColor;
   disabled?: boolean;
   textColor?: AnyColor;
@@ -42,11 +42,11 @@ type InputProps = ContainerProps & {
   ref?: React.Ref<HTMLDivElement>;
 };
 
-type Input = React.Ref<InputProps & React.RefAttributes<HTMLDivElement>> & {
+type LegacyInput = React.Ref<LegacyInputProps & React.RefAttributes<HTMLDivElement>> & {
   _newId?: number;
 };
 
-const Input = ({
+const LegacyInput = ({
   autoFocus = false,
   autoComplete = 'off',
   borderColor = INPUT_DIVIDER_COLOR,
@@ -69,15 +69,15 @@ const Input = ({
   trimOnPaste = false,
   ref,
   ...rest
-}: InputProps) => {
+}: LegacyInputProps) => {
   const [hasFocus, setHasFocus] = useState(false);
   const innerRef = useCombinedRefs<HTMLInputElement>(inputRef);
   const [id] = useState(() => {
-    if (!Input._newId) {
-      Input._newId = 0;
+    if (!LegacyInput._newId) {
+      LegacyInput._newId = 0;
     }
 
-    return `input-${Input._newId++}`;
+    return `input-${LegacyInput._newId++}`;
   });
 
   const onInputFocus = useCallback(() => {
@@ -213,7 +213,7 @@ const Input = ({
   );
 };
 
-Input._newId = 0;
+LegacyInput._newId = 0;
 
-export { Input };
-export type { InputProps };
+export { LegacyInput };
+export type { LegacyInputProps };

@@ -6,7 +6,14 @@
 
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { Button, Container, CustomTextArea, Padding, Tooltip, useSnackbar } from '@zextras/ui-components';
+import {
+  Button,
+  Container,
+  Padding,
+  PlainTextarea,
+  Tooltip,
+  useSnackbar,
+} from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { INVALID } from '../../../constants';
@@ -150,12 +157,11 @@ export const LoadAndVerifyCert = ({
           {t('label.domain_certificate', 'Domain Certificate')}
         </ds-text>
         <Padding bottom="small" />
-        <CustomTextArea
-          isRequired
+        <PlainTextarea
+          required
           label={t('label.upload_paste_certificate', 'Upload or paste your Certificate')}
-          backgroundColor="gray5"
           value={certificate}
-          inputName="domainCertificate"
+          name="domainCertificate"
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
             form.setFieldValue('certificate', e.target.value);
           }}
@@ -179,15 +185,14 @@ export const LoadAndVerifyCert = ({
           {t('label.domain_certificate_ca_chain', 'Domain Certificate CA Chain')}
         </ds-text>
         <Padding bottom="small" />
-        <CustomTextArea
-          isRequired
+        <PlainTextarea
+          required
           label={t(
             'label.upload_paste_certificate_ca_chain',
             'Upload or paste your Certificate CA Chain',
           )}
-          backgroundColor="gray5"
           value={caChain}
-          inputName="domainCertificateCaChain"
+          name="domainCertificateCaChain"
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
             form.setFieldValue('caChain', e.target.value);
           }}
@@ -209,12 +214,11 @@ export const LoadAndVerifyCert = ({
           {t('label.domain_certificate_private_key', 'Domain Private Key')}
         </ds-text>
         <Padding bottom="small" />
-        <CustomTextArea
-          isRequired
+        <PlainTextarea
+          required
           label={t('label.upload_paste_private_key', 'Upload or paste your Private Key')}
-          backgroundColor="gray5"
           value={privateKey}
-          inputName="domainPrivateKey"
+          name="domainPrivateKey"
           onChange={(e: React.ChangeEvent<HTMLTextAreaElement>): void => {
             form.setFieldValue('privateKey', e.target.value);
           }}

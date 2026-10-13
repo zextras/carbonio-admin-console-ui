@@ -9,6 +9,7 @@ import {
   registerActions,
   removeRoute,
   useCurrentUserRights,
+  useIsAdvanced,
   useLicenseInfo,
 } from '@zextras/ui-shared';
 import { useEffect } from 'react';
@@ -33,6 +34,7 @@ const App = () => {
 
   const { data: rights } = useCurrentUserRights();
   const { data: licenseData } = useLicenseInfo();
+  const isAdvanced = useIsAdvanced();
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);
 
@@ -60,7 +62,7 @@ const App = () => {
   }, [showCOS, t]);
 
   useEffect(() => {
-    const canCreate = Boolean(licenseData) && createCosRight;
+    const canCreate = createCosRight && (!isAdvanced || Boolean(licenseData));
     const tooltipLabel = t(
       'tooltip.create_cos_disabled',
       'A valid subscription is needed to create a COS',
@@ -81,7 +83,7 @@ const App = () => {
       id: 'new-cos',
       type: 'new',
     });
-  }, [createCosRight, licenseData, navigate, t]);
+  }, [createCosRight, isAdvanced, licenseData, navigate, t]);
 
   return null;
 };

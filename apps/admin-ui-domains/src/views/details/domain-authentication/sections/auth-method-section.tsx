@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { ListRow, Padding, Select, type SelectItem } from '@zextras/ui-components';
+import { ListRow, Padding, Select } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainAuthenticationFormApi } from '../use-domain-auth-form';
@@ -22,8 +22,7 @@ export const AuthMethodSection = ({ form, isAdvanced }: AuthMethodSectionProps) 
   const authMech = useSelector(form.store, (s) => s.values.zimbraAuthMech);
   const selected = items.find((item) => item.value === authMech) ?? items[0];
 
-  function handleAuthMethodChange(value: Array<SelectItem> | string | null): void {
-    if (typeof value !== 'string') return;
+  function handleAuthMethodChange(value: string): void {
     form.setFieldValue('zimbraAuthMech', value);
   }
 
@@ -39,14 +38,11 @@ export const AuthMethodSection = ({ form, isAdvanced }: AuthMethodSectionProps) 
       <ListRow>
         <Padding vertical="small" horizontal="small" width="100%">
           <Select
-            data-testid="auth-method-select"
-            background="gray5"
             label={t('label.your_auth_method_is', 'Your Auth Method is')}
-            showCheckbox={false}
             items={items}
             selection={selected}
             onChange={handleAuthMethodChange}
-          ></Select>
+          />
           <Padding top="medium">
             <ds-text as="p" size="small" color="gray1">
               {isAdvanced ? selected.info_label : selected.info_label_ce}

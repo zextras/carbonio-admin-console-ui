@@ -125,7 +125,9 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
 
-      await expect.element(page.getByPlaceholder('I want to see this domain')).toBeVisible();
+      await expect
+        .element(page.getByRole('combobox', { name: 'I want to see this domain' }))
+        .toBeVisible();
     });
   });
 
@@ -190,11 +192,11 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
 
-      await page.getByPlaceholder('I want to see this domain').click();
+      await page.getByRole('combobox', { name: 'I want to see this domain' }).click();
 
-      await expect.element(page.getByText('example.com')).toBeVisible();
-      await expect.element(page.getByText('corp.org')).toBeVisible();
-      await expect.element(page.getByText('test.net')).toBeVisible();
+      await expect.element(page.getByRole('option', { name: 'example.com' })).toBeVisible();
+      await expect.element(page.getByRole('option', { name: 'corp.org' })).toBeVisible();
+      await expect.element(page.getByRole('option', { name: 'test.net' })).toBeVisible();
     });
 
     it('should populate the input with the domain name when a domain is clicked', async () => {
@@ -205,11 +207,11 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
 
-      await page.getByPlaceholder('I want to see this domain').click();
-      await page.getByText('corp.org').click();
+      await page.getByRole('combobox', { name: 'I want to see this domain' }).click();
+      await page.getByRole('option', { name: 'corp.org' }).click();
 
       await expect
-        .element(page.getByPlaceholder('I want to see this domain'))
+        .element(page.getByRole('combobox', { name: 'I want to see this domain' }))
         .toHaveValue('corp.org');
     });
   });
@@ -288,7 +290,7 @@ describe('DomainSidebar', () => {
       });
 
       await expect
-        .element(page.getByPlaceholder('Type the exact domain name'))
+        .element(page.getByRole('combobox', { name: 'Type the exact domain name' }))
         .toBeVisible();
     });
   });
@@ -305,13 +307,13 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
 
-      await page.getByPlaceholder('I want to see this domain').click();
+      await page.getByRole('combobox', { name: 'I want to see this domain' }).click();
 
       await expect
         .element(
-          page.getByText(
-            'So many domains! Which one would you like to see? Start typing to filter.',
-          ),
+          page.getByRole('option', {
+            name: 'So many domains! Which one would you like to see? Start typing to filter.',
+          }),
         )
         .toBeVisible();
     });
@@ -360,7 +362,7 @@ describe('DomainSidebar', () => {
       });
 
       await expect
-        .element(page.getByPlaceholder('I want to see this domain'))
+        .element(page.getByRole('combobox', { name: 'I want to see this domain' }))
         .toHaveValue('example.com');
     });
 
@@ -370,7 +372,7 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
 
-      const input = page.getByPlaceholder('I want to see this domain');
+      const input = page.getByRole('combobox', { name: 'I want to see this domain' });
       await input.fill('ex');
 
       await expect.element(input).toHaveValue('ex');
@@ -384,12 +386,12 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/general_settings`,
       });
 
-      const input = page.getByPlaceholder('I want to see this domain');
+      const input = page.getByRole('combobox', { name: 'I want to see this domain' });
       await input.fill('ex');
       await expect.element(input).toHaveValue('ex');
 
       await input.click();
-      await page.getByText('corp.org').click();
+      await page.getByRole('option', { name: 'corp.org' }).click();
 
       await expect.element(input).toHaveValue('corp.org');
     });
@@ -406,7 +408,9 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/global/settings`,
       });
 
-      await expect.element(page.getByPlaceholder('Type the exact domain name')).toHaveValue('');
+      await expect
+        .element(page.getByRole('combobox', { name: 'Type the exact domain name' }))
+        .toHaveValue('');
     });
 
     it('should populate the input when the same domain is re-selected after returning to the global list', async () => {
@@ -417,13 +421,13 @@ describe('DomainSidebar', () => {
         initialRouterEntry: `/${DOMAIN_ROUTE}/${DOMAIN_ID}/${GENERAL_SETTINGS}`,
       });
 
-      const domainInput = page.getByPlaceholder('I want to see this domain');
+      const domainInput = page.getByRole('combobox', { name: 'I want to see this domain' });
       await expect.element(domainInput).toHaveValue('example.com');
 
       // Same as clicking "Domains" in the global section: leave the domain page
       replaceHistory('/global/domains');
       await expect
-        .element(page.getByPlaceholder('Type the exact domain name'))
+        .element(page.getByRole('combobox', { name: 'Type the exact domain name' }))
         .toHaveValue('');
 
       // Same as clicking the domain row in the table (global-domain-list.tsx)

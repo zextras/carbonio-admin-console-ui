@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, Input, Row, Switch } from '@zextras/ui-components';
+import { Container, Row, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FALSE, TRUE } from '../../../../constants';
@@ -56,14 +56,14 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
         <Container padding={{ all: 'small' }}>
           <form.Field name="zimbraGalLdapURL">
             {(field) => (
-              <Input
+              <TextInput
                 label={t('label.external_server_address', 'External Server Address')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
-                CustomIcon={GalExternalServerInfoIcon}
+                icon={<GalExternalServerInfoIcon />}
               />
             )}
           </form.Field>
@@ -94,14 +94,14 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
       <Container padding={{ all: 'small' }}>
         <form.Field name="zimbraGalLdapFilter">
           {(field) => (
-            <Input
+            <TextInput
               label={t('label.ldap_filter', 'LDAP Filter')}
-              value={field.state.value}
-              backgroundColor="gray5"
+              value={field.state.value ?? ''}
+              autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 field.handleChange(e.target.value);
               }}
-              CustomIcon={GalLdapFilterInfoIcon}
+              icon={<GalLdapFilterInfoIcon />}
             />
           )}
         </form.Field>
@@ -110,14 +110,14 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
       <Container padding={{ all: 'small' }}>
         <form.Field name="zimbraGalLdapSearchBase">
           {(field) => (
-            <Input
+            <TextInput
               label={t('label.ldap_search_base', 'LDAP based search')}
-              value={field.state.value}
-              backgroundColor="gray5"
+              value={field.state.value ?? ''}
+              autoComplete="off"
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 field.handleChange(e.target.value);
               }}
-              CustomIcon={GalLdapSearchBaseInfoIcon}
+              icon={<GalLdapSearchBaseInfoIcon />}
             />
           )}
         </form.Field>
