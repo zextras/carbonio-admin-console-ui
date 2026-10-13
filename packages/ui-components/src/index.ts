@@ -47,6 +47,7 @@ export * from './components/inputs/password-input';
 export * from './components/inputs/PasswordInput';
 export * from './components/inputs/plain-input';
 export * from './components/inputs/plain-select';
+export * from './components/inputs/plain-switch';
 export * from './components/inputs/plain-textarea';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
