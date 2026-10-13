@@ -51,6 +51,7 @@ const rowActions: Array<DataTableRowAction> = [{ id: 'open', label: 'Open' }];
 
 type RootHarnessProps = {
   enableRowSelection?: boolean;
+  enableSelectAllPageRows?: boolean;
   rowActions?: Array<DataTableRowAction>;
   getRowLabel?: (row: TestRow) => string;
   manualSorting?: boolean;
@@ -60,6 +61,7 @@ type RootHarnessProps = {
 
 function RootHarness({
   enableRowSelection,
+  enableSelectAllPageRows,
   rowActions: rowActionsProp,
   getRowLabel,
   manualSorting = true,
@@ -71,6 +73,7 @@ function RootHarness({
       columns={columns}
       getRowId={(row) => row.id}
       enableRowSelection={enableRowSelection}
+      enableSelectAllPageRows={enableSelectAllPageRows}
       rowActions={rowActionsProp}
       getRowLabel={getRowLabel}
       manualSorting={manualSorting}
@@ -105,6 +108,12 @@ describe('DataTableRoot + DataTableTable shell', () => {
   it('renders the selection column when enableRowSelection is set', () => {
     render(<RootHarness enableRowSelection />);
     expect(screen.getByLabelText('Select all rows on this page')).toBeTruthy();
+    expect(screen.getAllByLabelText('Select row')).toHaveLength(3);
+  });
+
+  it('hides the header select-all when enableSelectAllPageRows is false', () => {
+    render(<RootHarness enableRowSelection enableSelectAllPageRows={false} />);
+    expect(screen.queryByLabelText('Select all rows on this page')).toBeNull();
     expect(screen.getAllByLabelText('Select row')).toHaveLength(3);
   });
 
