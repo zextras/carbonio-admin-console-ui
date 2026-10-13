@@ -525,6 +525,7 @@ export const ManageAccounts = () => {
 								onPaginationChange={setPagination}
 								onRowSelectionChange={setRowSelection}
 								enableRowSelection
+								enableSelectAllPageRows={false}
 								rowActions={rowActions}
 								onRowAction={({ action, row }) => {
 									if (action.id === 'edit') {
@@ -573,7 +574,6 @@ export const ManageAccounts = () => {
 									actions={bulkActions}
 									onBulkAction={handleBulkAction}
 									totalMatchingCount={totalAccount}
-									enableSelectAllMatching
 								/>
 								<DataTableTable
 									aria-label={t('domain.account_list', 'Accounts List')}
