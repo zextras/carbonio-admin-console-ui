@@ -10,6 +10,7 @@ import {
   ADDRESS_BOOK,
   ADMINISTRATORS,
   DOMAINS,
+  FILES,
   QUARANTINE,
   SETTINGS,
   TWO_FACTOR_AUTHENTICATION,
@@ -19,6 +20,7 @@ import { GlobalActiveSync } from './global/global-active-sync/global-active-sync
 import { GlobalAdministrators } from './global/global-administrators/global-administrators';
 import { GlobalDetailPanel } from './global/global-detail-panel/global-detail-panel';
 import { GlobalDomainList } from './global/global-domain-list/global-domain-list';
+import { GlobalFiles } from './global/global-files/global-files';
 import { GlobalQuarantine } from './global/global-quarantine/global-quarantine';
 import { GlobalServices } from './global/global-services/global-services';
 import { GlobalTwoFactorAuth } from './global/global-two-factor-auth/global-two-factor-auth';
@@ -53,6 +55,12 @@ export const GLOBAL_SECTION_ROUTES: Array<GlobalSectionRoute> = [
     labelKey: 'label.settings',
     labelDefault: 'Settings',
     Component: GlobalDetailPanel,
+  },
+  {
+    id: FILES,
+    labelKey: 'files_sharing.section_label',
+    labelDefault: 'Files',
+    Component: GlobalFiles,
   },
   {
     id: ADMINISTRATORS,

@@ -21,6 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { WscSettings } from '../../wsc/wsc-settings';
 import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
+import { EditAccountFilesSection } from './edit-account-files-section';
 import { Features } from './features';
 import { chipsToValue, useChipList } from './use-chip-list';
 
@@ -263,6 +264,7 @@ export const EditAccountConfigurationSection = () => {
             />
           </>
         )}
+        <EditAccountFilesSection />
       </Row>
     </Container>
   );

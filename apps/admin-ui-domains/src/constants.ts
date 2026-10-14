@@ -212,3 +212,8 @@ export const TRUE_FALSE = {
 export const STORAGES_API_BASE_URL = '/services/storages/admin';
 export const STORAGES_API_VERSION = '2';
 export const STORAGES_API_VERSION_HEADER = 'X-API-Version';
+
+// Files admin API constants
+export const FILES = 'files';
+export const FILES_ADMIN_API_BASE_URL = '/services/files/admin';
+export const SHARES_ENABLED = 'shares-enabled';
