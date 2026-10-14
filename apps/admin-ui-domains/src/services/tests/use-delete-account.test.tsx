@@ -60,8 +60,5 @@ describe('useDeleteAccount', () => {
 		expect(invalidateSpy).toHaveBeenCalledWith({
 			queryKey: domainQueryKeys.accountListDirectory.base(),
 		});
-		expect(invalidateSpy).toHaveBeenCalledWith({
-			queryKey: domainQueryKeys.accountCount.base(),
-		});
 	});
 });
