@@ -534,6 +534,7 @@ export const ManageAccounts = () => {
 								manualPagination
 								manualFiltering
 								rowCount={totalAccount}
+								persistenceKey="admin.domains.manage-accounts"
 								state={{ sorting, pagination, rowSelection }}
 								onSortingChange={handleSortingChange}
 								onPaginationChange={setPagination}
