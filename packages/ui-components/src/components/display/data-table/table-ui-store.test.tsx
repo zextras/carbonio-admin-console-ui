@@ -40,6 +40,11 @@ describe('table ui store', () => {
     expect(peekSpy.mock.calls.length).toBe(peekBefore);
   });
 
+  it('accepts an initial density seed', () => {
+    const store = createDataTableUiStore({ density: 'compact' });
+    expect(store.getState().density).toBe('compact');
+  });
+
   it('updates state through slice setters', () => {
     const store = createDataTableUiStore();
     expect(store.getState().density).toBe('comfortable');

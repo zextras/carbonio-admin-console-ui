@@ -15,9 +15,11 @@ import type {
   RowData,
   RowSelectionState,
   SortingState,
+  Updater,
 } from '@tanstack/react-table';
+import { functionalUpdate } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { Children, isValidElement, type ReactNode, useState } from 'react';
+import { Children, isValidElement, type ReactNode, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from './create-data-table';
@@ -30,6 +32,11 @@ import {
   resolveColumnId,
   SELECT_COLUMN_ID,
 } from './models/customize-model';
+import {
+  loadPersistedLayoutForTable,
+  type PersistedDataTableLayout,
+  writePersistedLayout,
+} from './models/layout-persistence';
 import { getCellDisplayValue } from './models/row-ui';
 import type { DataTableRowAction, DataTableState } from './models/types';
 import { DataTablePeekPanel } from './peek-panel';
@@ -121,8 +128,41 @@ export type DataTableRootProps<TData extends RowData> = {
   onRowSelectionChange?: OnChangeFn<RowSelectionState>;
   onColumnVisibilityChange?: OnChangeFn<ColumnVisibilityState>;
   onColumnOrderChange?: OnChangeFn<ColumnOrderState>;
+  /**
+   * Opt-in browser persistence for Customize layout prefs (column visibility,
+   * column order, density). When set, Root owns those slices (hydrated from /
+   * written to localStorage). Consumer `state.columnVisibility` /
+   * `state.columnOrder` are ignored; change handlers still fire. Stable per
+   * table identity, e.g. `admin.domains.manage-accounts`.
+   */
+  persistenceKey?: string;
   children: ReactNode;
 };
+
+function resolveDataColumnIds<TData extends RowData>(
+  columns: Array<DataTableColumnDef<TData>>,
+): Array<string> {
+  return columns.flatMap((column) => {
+    const id = resolveColumnId(column);
+    return id ? [id] : [];
+  });
+}
+
+function loadLayoutSeed<TData extends RowData>(
+  props: DataTableRootProps<TData>,
+): PersistedDataTableLayout | null {
+  if (!props.persistenceKey) {
+    return null;
+  }
+  const primaryColumnId = resolvePrimaryColumnId(props.columns, props.primaryColumnId);
+  return loadPersistedLayoutForTable(
+    props.persistenceKey,
+    resolveDataColumnIds(props.columns),
+    primaryColumnId,
+    props.enableRowSelection ?? false,
+    (props.rowActions?.length ?? 0) > 0,
+  );
+}
 
 function resolvePrimaryColumnId<TData extends RowData>(
   columns: Array<DataTableColumnDef<TData>>,
@@ -398,6 +438,10 @@ function stripUndefinedKeys<T extends Record<string, unknown>>(options: T): T {
   return defined as T;
 }
 
+type DataTableRootShellProps<TData extends RowData> = DataTableRootProps<TData> & {
+  persistedLayoutSeed: PersistedDataTableLayout | null;
+};
+
 const DataTableRootShell = <TData extends RowData>({
   data,
   columns,
@@ -423,27 +467,83 @@ const DataTableRootShell = <TData extends RowData>({
   onRowSelectionChange,
   onColumnVisibilityChange,
   onColumnOrderChange,
+  persistenceKey,
+  persistedLayoutSeed,
   primaryColumnId: primaryColumnIdProp,
   children,
-}: DataTableRootProps<TData>) => {
+}: DataTableRootShellProps<TData>) => {
   const { t } = useTranslation();
   const density = useTableUi((s) => s.density);
   const peekOpen = useTableUi((s) => s.peekRowId !== null);
   const uiStore = useTableUiStore();
+  const [layout, setLayout] = useState<PersistedDataTableLayout | null>(
+    () => persistedLayoutSeed,
+  );
 
   const resolvedRowActions = rowActions ?? [];
   const enableRowActions = resolvedRowActions.length > 0;
   const primaryColumnId = resolvePrimaryColumnId(columns, primaryColumnIdProp);
   const resolvedGetRowId = getRowId ?? defaultGetRowId<TData>;
   const defaultColumnOrder = buildDefaultColumnOrder(
-    columns.flatMap((column) => {
-      const id = resolveColumnId(column);
-      return id ? [id] : [];
-    }),
+    resolveDataColumnIds(columns),
     primaryColumnId,
     enableRowSelection,
     enableRowActions,
   );
+
+  useEffect(() => {
+    if (!persistenceKey || !layout) {
+      return;
+    }
+    writePersistedLayout(persistenceKey, layout);
+  }, [persistenceKey, layout]);
+
+  useEffect(() => {
+    if (!persistenceKey) {
+      return;
+    }
+    return uiStore.subscribe((state, prev) => {
+      if (state.density === prev.density) {
+        return;
+      }
+      setLayout((current) => {
+        if (!current || current.density === state.density) {
+          return current;
+        }
+        return { ...current, density: state.density };
+      });
+    });
+  }, [persistenceKey, uiStore]);
+
+  function handleColumnVisibilityChange(updater: Updater<ColumnVisibilityState>): void {
+    if (persistenceKey) {
+      setLayout((current) => {
+        if (!current) {
+          return current;
+        }
+        return {
+          ...current,
+          columnVisibility: functionalUpdate(updater, current.columnVisibility),
+        };
+      });
+    }
+    onColumnVisibilityChange?.(updater);
+  }
+
+  function handleColumnOrderChange(updater: Updater<ColumnOrderState>): void {
+    if (persistenceKey) {
+      setLayout((current) => {
+        if (!current) {
+          return current;
+        }
+        return {
+          ...current,
+          columnOrder: functionalUpdate(updater, current.columnOrder),
+        };
+      });
+    }
+    onColumnOrderChange?.(updater);
+  }
 
   function resolveRowLabel(row: TData): string {
     if (getRowLabelProp) {
@@ -545,13 +645,27 @@ const DataTableRootShell = <TData extends RowData>({
         }
         return true;
       },
-      state: mergeStateOptions({ columnPinning }, stateProp, ['columnPinning']),
+      state: mergeStateOptions(
+        layout
+          ? {
+              columnPinning,
+              columnVisibility: layout.columnVisibility,
+              columnOrder: layout.columnOrder,
+            }
+          : { columnPinning },
+        stateProp,
+        layout
+          ? ['columnPinning', 'columnVisibility', 'columnOrder']
+          : ['columnPinning'],
+      ),
       initialState: mergeStateOptions({ columnOrder: defaultColumnOrder }, initialStateProp),
       onSortingChange,
       onPaginationChange,
       onRowSelectionChange,
-      onColumnVisibilityChange,
-      onColumnOrderChange,
+      onColumnVisibilityChange: persistenceKey
+        ? handleColumnVisibilityChange
+        : onColumnVisibilityChange,
+      onColumnOrderChange: persistenceKey ? handleColumnOrderChange : onColumnOrderChange,
     }),
     () => null,
   );
@@ -584,8 +698,11 @@ const DataTableRootShell = <TData extends RowData>({
  * as children. The table UI store (density, peek, editing, scroll edges) is
  * scoped per instance by the provider below.
  */
-export const DataTableRoot = <TData extends RowData>(props: DataTableRootProps<TData>) => (
-  <TableUiProvider>
-    <DataTableRootShell<TData> {...props} />
-  </TableUiProvider>
-);
+export const DataTableRoot = <TData extends RowData>(props: DataTableRootProps<TData>) => {
+  const [persistedLayoutSeed] = useState(() => loadLayoutSeed(props));
+  return (
+    <TableUiProvider initialDensity={persistedLayoutSeed?.density}>
+      <DataTableRootShell<TData> {...props} persistedLayoutSeed={persistedLayoutSeed} />
+    </TableUiProvider>
+  );
+};

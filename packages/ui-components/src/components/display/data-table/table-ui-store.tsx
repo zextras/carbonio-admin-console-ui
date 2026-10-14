@@ -66,10 +66,14 @@ export type DataTableUiState = {
 
 export type DataTableUiStore = ReturnType<typeof createDataTableUiStore>;
 
-export function createDataTableUiStore() {
+export type CreateDataTableUiStoreOptions = {
+  density?: DataTableDensity;
+};
+
+export function createDataTableUiStore(options?: CreateDataTableUiStoreOptions) {
   let liveMessageClear: ReturnType<typeof setTimeout> | undefined;
   return createStore<DataTableUiState>()((set) => ({
-    density: 'comfortable',
+    density: options?.density ?? 'comfortable',
     peekRowId: null,
     editing: null,
     selectAllMatching: false,
@@ -127,8 +131,16 @@ export function createDataTableUiStore() {
 
 const TableUiStoreContext = createContext<DataTableUiStore | null>(null);
 
-export const TableUiProvider = ({ children }: { children: ReactNode }) => {
-  const [store] = useState<DataTableUiStore>(() => createDataTableUiStore());
+export type TableUiProviderProps = {
+  children: ReactNode;
+  /** Seed density before first paint (e.g. from layout persistence). */
+  initialDensity?: DataTableDensity;
+};
+
+export const TableUiProvider = ({ children, initialDensity }: TableUiProviderProps) => {
+  const [store] = useState<DataTableUiStore>(() =>
+    createDataTableUiStore({ density: initialDensity }),
+  );
   return <TableUiStoreContext.Provider value={store}>{children}</TableUiStoreContext.Provider>;
 };
 

@@ -18,6 +18,7 @@ import { DataTableBulkJob } from '../bulk/bulk-job';
 import { DataTableRoot } from '../data-table-root';
 import { DataTableLiveRegion } from '../live-region';
 import { buildFilterChips, removeFilterChip, toColumnFilters } from '../models/filter-model';
+import { layoutStorageKey } from '../models/layout-persistence';
 import { DataTablePagination } from '../pagination';
 import { DataTablePeekPanel } from '../peek-panel';
 import { DataTableStaleBanner } from '../stale-banner';
@@ -37,6 +38,8 @@ import type {
   DataTableRowAction,
   DataTableStatus,
 } from '../types';
+
+const PERSISTED_CUSTOMIZE_KEY = 'test.datatable.customize';
 
 // The parts default their labels through react-i18next; without an instance
 // the interpolated defaults ("Bulk actions, {{total}} selected") would leak
@@ -243,7 +246,7 @@ function FilteringDataTable() {
 }
 
 /** Customize-only toolbar harness for density/column layout scenarios. */
-function CustomizeDataTable() {
+function CustomizeDataTable({ persistenceKey }: { persistenceKey?: string } = {}) {
   return (
     <DataTableRoot
       data={ALL_ROWS}
@@ -253,6 +256,7 @@ function CustomizeDataTable() {
       manualPagination={false}
       manualFiltering={false}
       primaryColumnId="account"
+      persistenceKey={persistenceKey}
     >
       <DataTableLiveRegion />
       <DataTableToolbar>
@@ -261,6 +265,19 @@ function CustomizeDataTable() {
       <DataTableTable aria-label="Manage Accounts" />
       <DataTableTableFooter paginationThreshold={100} />
     </DataTableRoot>
+  );
+}
+
+/** Remountable wrapper so layout persistence can be asserted across lifecycles. */
+function PersistedCustomizeHarness() {
+  const [mountId, setMountId] = useState(0);
+  return (
+    <div>
+      <button type="button" onClick={() => setMountId((id) => id + 1)}>
+        Remount table
+      </button>
+      <CustomizeDataTable key={mountId} persistenceKey={PERSISTED_CUSTOMIZE_KEY} />
+    </div>
   );
 }
 
@@ -450,6 +467,7 @@ describe('DataTable (browser)', () => {
       configurable: true,
       value: { writeText: clipboardWriteText },
     });
+    globalThis.localStorage.removeItem(layoutStorageKey(PERSISTED_CUSTOMIZE_KEY));
   });
 
   afterEach(() => {
@@ -458,7 +476,7 @@ describe('DataTable (browser)', () => {
     } else {
       delete (navigator as { clipboard?: Clipboard }).clipboard;
     }
-    document.body.replaceChildren();
+    globalThis.localStorage.removeItem(layoutStorageKey(PERSISTED_CUSTOMIZE_KEY));
   });
 
   it('renders headers and rows', async () => {
@@ -736,6 +754,98 @@ describe('DataTable (browser)', () => {
     const resetDisplayIdx = resetRowCells.findIndex((text) => text.includes('User 0'));
     const resetStatusIdx = resetRowCells.findIndex((text) => text.includes('Active'));
     expect(resetDisplayIdx).toBeLessThan(resetStatusIdx);
+  });
+
+  it('restores Customize prefs from localStorage after remount', async () => {
+    await renderTable(<PersistedCustomizeHarness />);
+
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await userEvent.click(page.getByRole('menuitemcheckbox', { name: /Display name/ }));
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+
+    await expect
+      .element(page.getByRole('button', { name: /Display name/ }))
+      .not.toBeInTheDocument();
+    await expect
+      .poll(() => {
+        const cells = Array.from(document.querySelectorAll('tbody tr:first-child td'));
+        return (
+          cells.length === 2 &&
+          cells.every((cell) => !cell.textContent?.includes('User 0')) &&
+          cells.some((cell) => cell.textContent?.includes('user0@demo.zextras.io'))
+        );
+      })
+      .toBe(true);
+    await expect
+      .poll(() => {
+        const raw = globalThis.localStorage.getItem(layoutStorageKey(PERSISTED_CUSTOMIZE_KEY));
+        if (!raw) {
+          return false;
+        }
+        const parsed = JSON.parse(raw) as { columnVisibility?: Record<string, boolean> };
+        return parsed.columnVisibility?.displayName === false;
+      })
+      .toBe(true);
+
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await userEvent.click(page.getByRole('radio', { name: 'Compact' }));
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await expect
+      .element(page.getByRole('dialog', { name: 'Customize table' }))
+      .not.toBeInTheDocument();
+    await expect
+      .poll(() => document.querySelector('[data-density]')?.getAttribute('data-density'))
+      .toBe('compact');
+    await expect
+      .poll(() => {
+        const raw = globalThis.localStorage.getItem(layoutStorageKey(PERSISTED_CUSTOMIZE_KEY));
+        if (!raw) {
+          return false;
+        }
+        const parsed = JSON.parse(raw) as { density?: string };
+        return parsed.density === 'compact';
+      })
+      .toBe(true);
+
+    await userEvent.click(page.getByRole('button', { name: 'Remount table' }));
+
+    await expect
+      .element(page.getByRole('button', { name: /Display name/ }))
+      .not.toBeInTheDocument();
+    await expect
+      .poll(() => document.querySelector('[data-density]')?.getAttribute('data-density'))
+      .toBe('compact');
+
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await expect
+      .element(page.getByRole('radio', { name: 'Compact' }))
+      .toHaveAttribute('aria-checked', 'true');
+    await expect
+      .element(page.getByRole('menuitemcheckbox', { name: /Display name/ }))
+      .toHaveAttribute('aria-checked', 'false');
+  });
+
+  it('persists Reset so remount restores default Customize layout', async () => {
+    await renderTable(<PersistedCustomizeHarness />);
+
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await userEvent.click(page.getByRole('menuitemcheckbox', { name: /Display name/ }));
+    await userEvent.click(page.getByRole('button', { name: 'Move Display name down' }));
+    await expect.element(page.getByRole('button', { name: 'Reset' })).toBeVisible();
+    await userEvent.click(page.getByRole('button', { name: 'Reset' }));
+    await expect.element(page.getByRole('button', { name: 'Reset' })).not.toBeInTheDocument();
+    await userEvent.click(page.getByRole('button', { name: 'Customize' }));
+    await expect
+      .element(page.getByRole('dialog', { name: 'Customize table' }))
+      .not.toBeInTheDocument();
+
+    await userEvent.click(page.getByRole('button', { name: 'Remount table' }));
+
+    await expect.element(page.getByRole('button', { name: /Display name/ })).toBeVisible();
+    const headers = Array.from(document.querySelectorAll('thead button')).map(
+      (button) => button.textContent ?? '',
+    );
+    expect(headers.indexOf('Display name')).toBeLessThan(headers.indexOf('Status'));
   });
 
   it('edits a cell with Enter and cancels with Escape', async () => {
