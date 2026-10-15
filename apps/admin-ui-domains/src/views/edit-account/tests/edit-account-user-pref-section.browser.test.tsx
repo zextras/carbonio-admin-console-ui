@@ -602,10 +602,10 @@ describe('EditAccountUserPreferencesSection (browser)', () => {
     const readReceiptSwitch = page.getByRole('switch', {
       name: 'Allow the user to ask for a read receipt',
     });
-    await expect.element(readReceiptSwitch).toHaveAttribute('aria-checked', 'true');
+    await expect.element(readReceiptSwitch).toBeChecked();
 
     await resetButton.click();
 
-    await expect.element(readReceiptSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(readReceiptSwitch).not.toBeChecked();
   });
 });

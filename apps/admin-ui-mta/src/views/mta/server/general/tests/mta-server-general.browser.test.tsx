@@ -135,7 +135,7 @@ async function expectLoggingSectionVisible() {
 async function toggleDisableVirusCheck() {
   const virusCheckSwitch = page.getByRole('switch', { name: 'Disable Virus Check' });
   await expect.element(virusCheckSwitch).toBeVisible();
-  await expect.poll(() => virusCheckSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await expect.element(virusCheckSwitch).toBeEnabled();
   await virusCheckSwitch.click();
 }
 
