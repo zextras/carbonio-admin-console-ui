@@ -4,30 +4,32 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import clsx from 'clsx';
-import { CSSProperties, useMemo, useRef } from 'react';
-
-import { useCheckbox } from '../../hooks/useCheckbox';
-import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { resolveThemeColor } from '../../theme/theme-utils';
-import { Container, ContainerProps } from '../layout/Container';
-import { Padding } from '../layout/Padding';
-import styles from './Switch.module.css';
+import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
+import { PlainSwitch, type PlainSwitchProps } from './plain-switch';
 
 type SwitchSize = 'medium' | 'small';
 
-type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
+type SwitchProps = Omit<
+  PlainSwitchProps,
+  'checked' | 'defaultChecked' | 'value' | 'onChange' | 'onClick' | 'size'
+> & {
   defaultChecked?: boolean;
+  /** Controlled value. When omitted the switch is uncontrolled and starts from `defaultChecked`. */
   value?: boolean;
-  label?: string;
-  padding?: ContainerProps['padding'];
+  label: string;
+  /** Outer padding of the switch row. */
+  padding?: PaddingVarObj | string | 0;
   disabled?: boolean;
+  /** Fired on every user toggle with the native change event. */
   onClick?: (event: Event) => void;
+  /** Fired on every user toggle with the new checked state. */
   onChange?: (checked: boolean) => void;
+  /** @deprecated The new switch has a single size; this prop is ignored. */
   size?: SwitchSize;
+  /** @deprecated The new switch uses the design-system colors; this prop is ignored. */
   iconColor?: string;
+  /** @deprecated `label` is now required and is the accessible name; this prop is ignored. */
   iconAriaLabel?: string;
-  ref?: React.Ref<HTMLDivElement>;
 };
 
 const Switch = ({
@@ -38,78 +40,27 @@ const Switch = ({
   disabled = false,
   onClick,
   onChange,
-  size = 'medium',
-  iconColor = 'gray0',
-  iconAriaLabel,
-  ref,
+  size: _size,
+  iconColor: _iconColor,
+  iconAriaLabel: _iconAriaLabel,
+  style,
   ...rest
 }: SwitchProps) => {
-  const innerRef = useRef<HTMLDivElement>(null);
-  const ckbRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
-  const checked = useCheckbox({
-    ref: ckbRef,
-    defaultChecked,
-    value,
-    disabled,
-    onClick,
-    onChange,
-  });
-
-  const iconWrapperStyle = useMemo<CSSProperties>(
-    () =>
-      ({
-        '--icon-color-focus': resolveThemeColor(String(iconColor), 'focus'),
-        '--icon-color-hover': resolveThemeColor(String(iconColor), 'hover'),
-        '--icon-color-active': resolveThemeColor(String(iconColor), 'active'),
-        '--icon-color-disabled': resolveThemeColor(String(iconColor), 'disabled'),
-      } as CSSProperties),
-    [iconColor],
-  );
+  const paddingStyle = padding === undefined ? undefined : { padding: getPaddingVar(padding) };
 
   return (
-    <Container
-      ref={ckbRef}
-      role="switch"
-      aria-checked={checked}
-      aria-label={label || iconAriaLabel}
-      aria-disabled={disabled || undefined}
-      tabIndex={disabled ? -1 : 0}
-      orientation="horizontal"
-      width="fit"
-      height="fit"
-      padding={padding}
-      style={{ cursor: disabled ? 'default' : 'pointer' }}
-      crossAlignment="center"
+    <PlainSwitch
+      label={label}
+      disabled={disabled}
+      checked={value}
+      defaultChecked={value === undefined ? defaultChecked : undefined}
+      onChange={(event) => {
+        onClick?.(event.nativeEvent);
+        onChange?.(event.target.checked);
+      }}
+      style={{ ...paddingStyle, ...style }}
       {...rest}
-    >
-      <div
-        className={clsx(styles.iconWrapper, disabled && styles.disabled)}
-        style={iconWrapperStyle}
-      >
-        <ds-icon
-          icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
-          size={size === 'medium' ? 'large' : 'medium'}
-          color={String(iconColor)}
-          disabled={disabled || undefined}
-          aria-hidden="true"
-        />
-      </div>
-      {label && (
-        <Padding left="small">
-          <ds-text
-            as="label"
-            className={styles.text}
-            size={size === 'medium' ? 'medium' : 'small'}
-            weight="regular"
-            overflow="break-word"
-            color="gray0"
-            disabled={disabled}
-          >
-            {label}
-          </ds-text>
-        </Padding>
-      )}
-    </Container>
+    />
   );
 };
 

@@ -263,7 +263,7 @@ type OptionsSectionProps = {
   isLocalBlockDevice: boolean;
   volumeType: number;
   isAdvanced: boolean;
-  isCurrentRef: RefObject<HTMLDivElement | null>;
+  isCurrentRef: RefObject<HTMLInputElement | null>;
   setIsCurrentToggle: (value: boolean) => void;
 };
 

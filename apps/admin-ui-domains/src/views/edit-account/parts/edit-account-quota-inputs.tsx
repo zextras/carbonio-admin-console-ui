@@ -177,10 +177,8 @@ export const QuotaLimitInput = ({
             onClick={switchOnChange}
             value={switchValue}
             disabled={typeof domainQuotaConstraint === 'number'}
+            label={t('label.unlimited_quota', 'Unlimited quota')}
           />
-          <ds-text size="medium" as="label">
-            {t('label.unlimited_quota', 'Unlimited quota')}
-          </ds-text>
         </Container>
       </Padding>
       <Row

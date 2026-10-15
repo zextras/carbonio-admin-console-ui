@@ -113,11 +113,8 @@ export const COSQuotasNew = ({
           onClick={switchOnChange}
           value={switchValue}
           disabled={readonlyCOS}
-          iconAriaLabel={t('label.unlimited_quota', 'Unlimited quota')}
+          label={t('label.unlimited_quota', 'Unlimited quota')}
         />
-        <ds-text as="span" size="medium">
-          {t('label.unlimited_quota', 'Unlimited quota')}
-        </ds-text>
       </Container>
       <Container
         orientation={'horizontal'}
