@@ -101,26 +101,23 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 				)}
 				disabled={requiresLicenseCheck && !isLicensed}
 			>
-				<SettingLayout
-					description={t(
-						'wsc.section.content.description.enableFeature',
-						'Activate to allow messaging, group chats, video calls, and file sharing.',
+				<form.Field name="carbonioFeatureWscEnabled">
+					{(field) => (
+						<Switch
+							value={field.state.value === 'TRUE'}
+							onClick={() =>
+								field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+							}
+							label={t('wsc.section.content.toggle.enableFeature', 'Enable Chat')}
+							description={t(
+								'wsc.section.content.description.enableFeature',
+								'Activate to allow messaging, group chats, video calls, and file sharing.',
+							)}
+							iconColor="primary"
+							disabled={requiresLicenseCheck && !isLicensed}
+						/>
 					)}
-				>
-					<form.Field name="carbonioFeatureWscEnabled">
-						{(field) => (
-							<Switch
-								value={field.state.value === 'TRUE'}
-								onClick={() =>
-									field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-								}
-								label={t('wsc.section.content.toggle.enableFeature', 'Enable Chat')}
-								iconColor="primary"
-								disabled={requiresLicenseCheck && !isLicensed}
-							/>
-						)}
-					</form.Field>
-				</SettingLayout>
+				</form.Field>
 			</BoxLayout>
 			<Container orientation="horizontal" height="fit" gap="4rem">
 				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
@@ -132,52 +129,46 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						)}
 						disabled={disableWscSettings}
 					>
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.readReceipt',
-								'Show senders when their messages have been read.',
+						<form.Field name="carbonioWscShowMessageReads">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.readReceipt',
+										'Show read receipts',
+									)}
+									description={t(
+										'wsc.section.content.description.readReceipt',
+										'Show senders when their messages have been read.',
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings}
+								/>
 							)}
-						>
-							<form.Field name="carbonioWscShowMessageReads">
-								{(field) => (
-									<Switch
-										value={field.state.value === 'TRUE'}
-										onClick={() =>
-											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-										}
-										label={t(
-											'wsc.section.content.toggle.readReceipt',
-											'Show read receipts',
-										)}
-										iconColor="primary"
-										disabled={disableWscSettings}
-									/>
-								)}
-							</form.Field>
-						</SettingLayout>
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.presence',
-								"Display users' online status or last seen time.",
+						</form.Field>
+						<form.Field name="carbonioWscShowUsersPresence">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.presence',
+										"Show users' online status",
+									)}
+									description={t(
+										'wsc.section.content.description.presence',
+										"Display users' online status or last seen time.",
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings}
+								/>
 							)}
-						>
-							<form.Field name="carbonioWscShowUsersPresence">
-								{(field) => (
-									<Switch
-										value={field.state.value === 'TRUE'}
-										onClick={() =>
-											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-										}
-										label={t(
-											'wsc.section.content.toggle.presence',
-											"Show users' online status",
-										)}
-										iconColor="primary"
-										disabled={disableWscSettings}
-									/>
-								)}
-							</form.Field>
-						</SettingLayout>
+						</form.Field>
 						<SettingLayout
 							description={t(
 								'wsc.section.content.description.deletionLimit',
@@ -243,52 +234,46 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						)}
 						disabled={disableWscSettings}
 					>
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.createPrivate',
-								'Allow users to initiate one-on-one conversations.',
+						<form.Field name="carbonioWscPrivateChatCreation">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.createPrivate',
+										'Users can start new private chats',
+									)}
+									description={t(
+										'wsc.section.content.description.createPrivate',
+										'Allow users to initiate one-on-one conversations.',
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings}
+								/>
 							)}
-						>
-							<form.Field name="carbonioWscPrivateChatCreation">
-								{(field) => (
-									<Switch
-										value={field.state.value === 'TRUE'}
-										onClick={() =>
-											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-										}
-										label={t(
-											'wsc.section.content.toggle.createPrivate',
-											'Users can start new private chats',
-										)}
-										iconColor="primary"
-										disabled={disableWscSettings}
-									/>
-								)}
-							</form.Field>
-						</SettingLayout>
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.createGroup',
-								'Allow users to create chats with multiple participants.',
+						</form.Field>
+						<form.Field name="carbonioWscGroupChatCreation">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.createGroup',
+										'Users can create group chats',
+									)}
+									description={t(
+										'wsc.section.content.description.createGroup',
+										'Allow users to create chats with multiple participants.',
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings}
+								/>
 							)}
-						>
-							<form.Field name="carbonioWscGroupChatCreation">
-								{(field) => (
-									<Switch
-										value={field.state.value === 'TRUE'}
-										onClick={() =>
-											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-										}
-										label={t(
-											'wsc.section.content.toggle.createGroup',
-											'Users can create group chats',
-										)}
-										iconColor="primary"
-										disabled={disableWscSettings}
-									/>
-								)}
-							</form.Field>
-						</SettingLayout>
+						</form.Field>
 						<SettingLayout
 							description={t(
 								'wsc.section.content.description.groupMembers',
@@ -348,61 +333,28 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						)}
 						disabled={disableWscSettings}
 					>
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.enableVideoCall',
-								'Activate video call functionality in the feature.',
-							)}
-						>
-							<form.Field name="carbonioWscVideoCallEnabled">
-								{(field) => (
-									<Switch
-										value={field.state.value === 'TRUE'}
-										onClick={() =>
-											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-										}
-										label={t(
-											'wsc.section.content.toggle.enableVideoCall',
-											'Enable video calls',
-										)}
-										iconColor="primary"
-										disabled={disableWscSettings}
-									/>
-								)}
-							</form.Field>
-						</SettingLayout>
-						{isAdvanced && (
-							<SettingLayout
-								description={t(
-									'wsc.section.content.description.enableRecording',
-									'Permit recording of audio and video calls.',
-								)}
-							>
-								<form.Field name="carbonioWscRecordingEnabled">
-									{(field) => (
-										<Switch
-											value={field.state.value === 'TRUE'}
-											onClick={() =>
-												field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-											}
-											label={t(
-												'wsc.section.content.toggle.enableRecording',
-												'Allow call recording',
-											)}
-											iconColor="primary"
-											disabled={disableWscSettings || videoCallEnabled === 'FALSE'}
-										/>
+						<form.Field name="carbonioWscVideoCallEnabled">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.enableVideoCall',
+										'Enable video calls',
 									)}
-								</form.Field>
-							</SettingLayout>
-						)}
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.enableVirtualBackground',
-								'Allow users to apply virtual backgrounds during video calls.',
+									description={t(
+										'wsc.section.content.description.enableVideoCall',
+										'Activate video call functionality in the feature.',
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings}
+								/>
 							)}
-						>
-							<form.Field name="carbonioWscVirtualBackgroundEnabled">
+						</form.Field>
+						{isAdvanced && (
+							<form.Field name="carbonioWscRecordingEnabled">
 								{(field) => (
 									<Switch
 										value={field.state.value === 'TRUE'}
@@ -410,15 +362,39 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
 										}
 										label={t(
-											'wsc.section.content.toggle.enableVirtualBackground',
-											'Enable virtual background',
+											'wsc.section.content.toggle.enableRecording',
+											'Allow call recording',
+										)}
+										description={t(
+											'wsc.section.content.description.enableRecording',
+											'Permit recording of audio and video calls.',
 										)}
 										iconColor="primary"
 										disabled={disableWscSettings || videoCallEnabled === 'FALSE'}
 									/>
 								)}
 							</form.Field>
-						</SettingLayout>
+						)}
+						<form.Field name="carbonioWscVirtualBackgroundEnabled">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.enableVirtualBackground',
+										'Enable virtual background',
+									)}
+									description={t(
+										'wsc.section.content.description.enableVirtualBackground',
+										'Allow users to apply virtual backgrounds during video calls.',
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings || videoCallEnabled === 'FALSE'}
+								/>
+							)}
+						</form.Field>
 					</BoxLayout>
 				</Container>
 				<Container mainAlignment="flex-start" width="calc(50% - 2rem)">
@@ -430,29 +406,26 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						)}
 						disabled={disableWscSettings}
 					>
-						<SettingLayout
-							description={t(
-								'wsc.section.content.description.enableAttachments',
-								'Enable the sending of files, images, and documents.',
+						<form.Field name="carbonioWscAttachmentUpload">
+							{(field) => (
+								<Switch
+									value={field.state.value === 'TRUE'}
+									onClick={() =>
+										field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
+									}
+									label={t(
+										'wsc.section.content.toggle.enableAttachments',
+										'Users can upload attachments',
+									)}
+									description={t(
+										'wsc.section.content.description.enableAttachments',
+										'Enable the sending of files, images, and documents.',
+									)}
+									iconColor="primary"
+									disabled={disableWscSettings}
+								/>
 							)}
-						>
-							<form.Field name="carbonioWscAttachmentUpload">
-								{(field) => (
-									<Switch
-										value={field.state.value === 'TRUE'}
-										onClick={() =>
-											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
-										}
-										label={t(
-											'wsc.section.content.toggle.enableAttachments',
-											'Users can upload attachments',
-										)}
-										iconColor="primary"
-										disabled={disableWscSettings}
-									/>
-								)}
-							</form.Field>
-						</SettingLayout>
+						</form.Field>
 						<SettingLayout
 							description={t(
 								'wsc.section.content.description.attachmentSize',

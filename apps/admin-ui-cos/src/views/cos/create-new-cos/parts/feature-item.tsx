@@ -25,17 +25,11 @@ export const FeatureItem = ({ form, name, label, description }: FeatureItemProps
             value={field.state.value === 'TRUE'}
             onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
             label={label}
+            description={description}
             iconColor="primary"
           />
         )}
       </form.Field>
     </ListRow>
-    {description && (
-      <div className={styles.featureDescription}>
-        <ds-text as="span" size="small" color="gray0">
-          {description}
-        </ds-text>
-      </div>
-    )}
   </div>
 );

@@ -11,6 +11,7 @@ type FeatureSwitchFieldProps = {
   form: CosFeaturesFormApi;
   name: keyof CosFeaturesFormValues;
   label: string;
+  description?: string;
   disabled?: boolean;
 };
 
@@ -18,6 +19,7 @@ export const FeatureSwitchField = ({
   form,
   name,
   label,
+  description,
   disabled,
 }: FeatureSwitchFieldProps) => (
   <form.Field name={name}>
@@ -26,6 +28,7 @@ export const FeatureSwitchField = ({
         value={field.state.value === 'TRUE'}
         onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
         label={label}
+        description={description}
         iconColor="primary"
         disabled={disabled}
       />
