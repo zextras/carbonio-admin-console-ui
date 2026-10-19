@@ -876,6 +876,17 @@ describe('ComboboxInput', () => {
 			expect(popup.parentElement).toBe(document.body);
 		});
 
+		it('opts the popup select into customizable-select styling where supported', async () => {
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
+
+			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
+
+			// Requires a customizable-select browser (Chrome 135+, Safari 27+);
+			// unsupported browsers keep the `appearance: none` fallback.
+			expect(CSS.supports('appearance', 'base-select')).toBe(true);
+			expect(getComputedStyle(await getListbox()).appearance).toBe('base-select');
+		});
+
 		it('styles the Loading... row per spec', async () => {
 			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} loading onSelect={() => {}} />);
 
