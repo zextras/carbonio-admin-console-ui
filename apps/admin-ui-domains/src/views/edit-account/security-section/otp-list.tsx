@@ -246,22 +246,16 @@ export const OtpList = ({ onGenerate }: OtpListProps) => {
                     'domain.accounts.allowUsersToConfigure2FA',
                     'Allow users to configure 2FA',
                   )}
+                  description={t(
+                    'domain.accounts.allowUsersToConfigure2FAInfo',
+                    'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
+                  )}
                   iconColor="primary"
                   inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
                   fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
                   inputName={'carbonioFeatureOTPMgmtEnabled'}
                   onChangeReset={(): void => setEmptyValue('carbonioFeatureOTPMgmtEnabled')}
                 />
-                <Padding left={'extralarge'}>
-                  <Row padding={{ left: 'small' }}>
-                    <ds-text as="small" color="gray1" size="small" overflow="break-word">
-                      {t(
-                        'domain.accounts.allowUsersToConfigure2FAInfo',
-                        'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
-                      )}
-                    </ds-text>
-                  </Row>
-                </Padding>
               </Container>
             </ListRow>
           </Container>

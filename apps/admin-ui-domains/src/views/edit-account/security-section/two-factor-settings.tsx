@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, InheritedSwitch, ListRow, Padding, Row } from '@zextras/ui-components';
+import { Container, InheritedSwitch, ListRow, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FALSE } from '../../../constants';
@@ -51,28 +51,16 @@ export const TwoFactorSettings = () => {
                   'Allow 2FA setup from untrusted networks',
                 )}
                 disabled={values?.carbonioFeatureOTPMgmtEnabled === FALSE}
+                description={t(
+                  'domain.accounts.allowSetupFromUntrustedNetworksInfo',
+                  'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
+                )}
                 iconColor="primary"
                 inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
                 fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
                 inputName={'carbonioOtpWizardFromUntrusted'}
                 onChangeReset={(): void => setEmptyValue('carbonioOtpWizardFromUntrusted')}
               />
-              <Padding left={'extralarge'}>
-                <Row padding={{ left: 'small' }}>
-                  <ds-text
-                    as="small"
-                    color="gray1"
-                    size="small"
-                    overflow="break-word"
-                    disabled={values?.carbonioFeatureOTPMgmtEnabled === FALSE}
-                  >
-                    {t(
-                      'domain.accounts.allowSetupFromUntrustedNetworksInfo',
-                      'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
-                    )}
-                  </ds-text>
-                </Row>
-              </Padding>
             </Container>
           </ListRow>
           <ListRow padding={{ top: 'large' }}>
@@ -88,31 +76,16 @@ export const TwoFactorSettings = () => {
                   values?.carbonioFeatureOTPMgmtEnabled === FALSE ||
                   values?.carbonioOtpWizardFromUntrusted === FALSE
                 }
+                description={t(
+                  'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
+                  'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+                )}
                 iconColor="primary"
                 inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
                 fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
                 inputName={'carbonioOtpGracePeriodEnabled'}
                 onChangeReset={(): void => setEmptyValue('carbonioOtpGracePeriodEnabled')}
               />
-              <Padding left={'extralarge'}>
-                <Row padding={{ left: 'small' }}>
-                  <ds-text
-                    as="small"
-                    color="gray1"
-                    size="small"
-                    overflow="break-word"
-                    disabled={
-                      values?.carbonioFeatureOTPMgmtEnabled === FALSE ||
-                      values?.carbonioOtpWizardFromUntrusted === FALSE
-                    }
-                  >
-                    {t(
-                      'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
-                      'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
-                    )}
-                  </ds-text>
-                </Row>
-              </Padding>
             </Container>
           </ListRow>
           <GracePeriodDatePicker />

@@ -28,6 +28,14 @@ describe('InheritedSwitch', () => {
     await expect.element(page.getByRole('switch', { name: 'Enable Chat' })).toBeInTheDocument();
   });
 
+  it('should render the description under the title and link it to the switch', async () => {
+    await renderSwitch({ description: 'Users can chat' });
+
+    await expect
+      .element(page.getByRole('switch', { name: 'Enable Chat' }))
+      .toHaveAccessibleDescription('Users can chat');
+  });
+
   it('should show the inherited value when there is no own value', async () => {
     await renderSwitch({ inheritedValue: 'TRUE' });
 

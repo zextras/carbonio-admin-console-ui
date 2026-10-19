@@ -12,6 +12,8 @@ import styles from './inherited-switch.module.css';
 
 type InheritedSwitchProps = {
   label: string;
+  /** Secondary text rendered under the label. */
+  description?: string;
   subValue?: string | boolean;
   inheritedValue?: string | boolean;
   inputName: string;
@@ -26,6 +28,7 @@ type InheritedSwitchProps = {
 
 const InheritedSwitch = ({
   label,
+  description,
   subValue,
   inheritedValue,
   inputName,
@@ -43,6 +46,7 @@ const InheritedSwitch = ({
         value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
         onClick={(): void => onChange(inputName)}
         label={label}
+        description={description}
         disabled={disabled}
         onFocus={onFocus}
       />
