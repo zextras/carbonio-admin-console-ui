@@ -8,8 +8,8 @@ import { useSelector } from '@tanstack/react-store';
 import { Container, ListRow, PasswordInput, Row, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import { LDAP_BIND_DN_LABLE } from '../../../../constants';
 import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
-import { GalBindDnInfoIcon } from './gal-info-tooltip-icon';
 
 type GalAuthSectionProps = {
   form: DomainGalSettingsFormApi;
@@ -81,7 +81,7 @@ export const GalAuthSection = ({ form }: GalAuthSectionProps) => {
                   onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
                   }}
-                  icon={<GalBindDnInfoIcon />}
+                  infoTooltip={LDAP_BIND_DN_LABLE}
                 />
               )}
             </form.Field>
