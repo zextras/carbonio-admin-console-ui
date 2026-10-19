@@ -19,8 +19,9 @@ type InputShellProps = {
 	disabled?: boolean;
 	required?: boolean;
 	hasError?: boolean;
-	infoIcon?: boolean;
-	/** Custom node rendered at the right edge of the field box, before the info icon. */
+	/** Renders the InfoOutline icon at the right end of the label row with this text as hover tooltip. */
+	infoTooltip?: string;
+	/** Custom node rendered at the right edge of the field box. */
 	icon?: ReactNode;
 	/** Lets the box grow with multi-line controls (textarea) instead of the fixed field height. */
 	multiline?: boolean;
@@ -35,7 +36,7 @@ const InputShell = ({
 	disabled = false,
 	required = false,
 	hasError = false,
-	infoIcon = false,
+	infoTooltip,
 	icon,
 	multiline = false,
 	children,
@@ -47,6 +48,17 @@ const InputShell = ({
 					<span className={styles.labelText}>{label}</span>
 				</Tooltip>
 				{required && <span className={styles.requiredMark} aria-hidden="true">*</span>}
+				{infoTooltip && (
+					<Tooltip label={infoTooltip} placement="top">
+						<ds-icon
+							icon="InfoOutline"
+							size="0.75rem"
+							color="var(--color-gray1-focus)"
+							className={styles.labelInfoIcon}
+							aria-hidden="true"
+						/>
+					</Tooltip>
+				)}
 			</label>
 			<div
 				className={styles.box}
@@ -56,14 +68,6 @@ const InputShell = ({
 			>
 				{children}
 				{icon}
-				{infoIcon && (
-					<ds-icon
-						icon="InfoOutline"
-						size="0.83331rem"
-						color="var(--color-gray1-focus)"
-						aria-hidden="true"
-					/>
-				)}
 			</div>
 			<p className={styles.description} id={descriptionId} data-error={hasError || undefined}>
 				{hasError && description !== '' && (

@@ -36,6 +36,12 @@
   flex-shrink: 0;
 }
 
+.labelInfoIcon {
+  align-self: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 .box {
   display: flex;
   box-sizing: border-box;

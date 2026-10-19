@@ -296,37 +296,46 @@ describe('TextInput', () => {
   });
 
   describe('info icon', () => {
-    it('renders the InfoOutline icon inside the field box when infoIcon is true', async () => {
-      await render(<TextInput label="Name" value="" onChange={() => {}} infoIcon />);
+    it('renders the InfoOutline icon in the label row when infoTooltip is provided', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const box = input.parentElement as HTMLElement;
-      const host = input.nextElementSibling;
-      expect(host?.tagName).toBe('DS-ICON');
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const host = label.querySelector('ds-icon');
       expect(host?.getAttribute('icon')).toBe('InfoOutline');
       expect(host?.getAttribute('aria-hidden')).toBe('true');
       expect(host?.shadowRoot?.querySelector('svg')).not.toBeNull();
-      expect(box.contains(host as Node)).toBe(true);
     });
 
-    it('sizes and colors the icon per spec', async () => {
-      await render(<TextInput label="Name" value="" onChange={() => {}} infoIcon />);
+    it('sizes and colors the label info icon per spec', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const host = input.nextElementSibling as HTMLElement;
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const host = label.querySelector('ds-icon') as HTMLElement;
       const svg = host.shadowRoot?.querySelector('svg') as SVGSVGElement | null;
       expect(svg).not.toBeNull();
       const svgStyle = getComputedStyle(svg as Element);
-      expect(Number.parseFloat(svgStyle.width)).toBeCloseTo(0.83331 * 16, 1);
-      expect(Number.parseFloat(svgStyle.height)).toBeCloseTo(0.83331 * 16, 1);
+      expect(Number.parseFloat(svgStyle.width)).toBeCloseTo(0.75 * 16, 1);
+      expect(Number.parseFloat(svgStyle.height)).toBeCloseTo(0.75 * 16, 1);
       expectColor(svgStyle.color, '#696969');
     });
 
-    it('does not render any icon inside the box without infoIcon', async () => {
+    it('shows the tooltip text when hovering the label info icon', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
+
+      await page.getByTestId('icon: InfoOutline').hover();
+
+      await expect.element(page.getByText('Format hint')).toBeVisible();
+    });
+
+    it('does not render any icon in the label row or the box without infoTooltip', async () => {
       await render(<TextInput label="Name" value="" onChange={() => {}} />);
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
       const box = input.parentElement as HTMLElement;
+      expect(label.querySelector('ds-icon')).toBeNull();
       expect(box.querySelector('ds-icon')).toBeNull();
     });
   });
@@ -352,22 +361,21 @@ describe('TextInput', () => {
       expect(input.nextElementSibling?.textContent).toBe('custom icon');
     });
 
-    it('renders the custom icon before the info icon when both are provided', async () => {
+    it('renders the custom icon in the box and the info icon in the label row when both are provided', async () => {
       await render(
         <TextInput
           label="Name"
           value=""
           onChange={() => {}}
-          infoIcon
+          infoTooltip="Format hint"
           icon={<span>custom icon</span>}
         />,
       );
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const customIcon = input.nextElementSibling as HTMLElement;
-      const infoIconHost = customIcon.nextElementSibling as HTMLElement;
-      expect(customIcon.textContent).toBe('custom icon');
-      expect(infoIconHost.tagName).toBe('DS-ICON');
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(input.nextElementSibling?.textContent).toBe('custom icon');
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const infoIconHost = label.querySelector('ds-icon') as HTMLElement;
       expect(infoIconHost.getAttribute('icon')).toBe('InfoOutline');
     });
 
