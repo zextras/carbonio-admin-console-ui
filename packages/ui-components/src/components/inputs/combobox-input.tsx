@@ -373,6 +373,7 @@ const ComboboxInput = ({
         }
         aria-invalid={hasError || undefined}
         aria-describedby={describedBy || undefined}
+        autoComplete="off"
         onChange={handleChange}
         onClick={handleClick}
         onKeyDown={handleKeyDown}

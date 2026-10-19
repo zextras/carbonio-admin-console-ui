@@ -168,6 +168,33 @@ describe('ComboboxInput', () => {
 			expectColor(style.backgroundColor, '#F5F6F8');
 			expectColor(style.borderColor, '#E6E9ED');
 		});
+
+		it('opts out of browser autofill by default', async () => {
+			await render(
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+			);
+
+			await expect
+				.element(page.getByRole('combobox', { name: 'Server' }))
+				.toHaveAttribute('autocomplete', 'off');
+		});
+
+		it('lets callers override the autocomplete default', async () => {
+			await render(
+				<ComboboxInput
+					label="Server"
+					items={SERVERS}
+					value=""
+					onChange={() => {}}
+					onSelect={() => {}}
+					autoComplete="email"
+				/>,
+			);
+
+			await expect
+				.element(page.getByRole('combobox', { name: 'Server' }))
+				.toHaveAttribute('autocomplete', 'email');
+		});
 	});
 
 	describe('field states', () => {
