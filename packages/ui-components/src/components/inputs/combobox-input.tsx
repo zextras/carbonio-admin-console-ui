@@ -247,6 +247,7 @@ const ComboboxInput = ({
     if (disabled) return;
     setOpen(true);
     setActiveIndex(selectedIndexOf(items, value.toString()));
+    inputRef.current?.focus();
   }
 
   function closeList(): void {

@@ -462,6 +462,22 @@ describe('ComboboxInput', () => {
 			const matched = await page.getByRole('option', { name: 'ldap.example.com' }).element();
 			expect(input.getAttribute('aria-activedescendant')).toBe(matched.id);
 		});
+
+		it('moves focus to the input when opened with the chevron, so arrows navigate options', async () => {
+			await render(
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+			);
+
+			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }));
+
+			const input = await getCombobox('Server');
+			expect(document.activeElement).toBe(input);
+			await userEvent.keyboard('[ArrowDown]');
+
+			const firstOption = await page.getByRole('option', { name: 'mail.example.com' }).element();
+			expect(input.getAttribute('aria-activedescendant')).toBe(firstOption.id);
+			expect(firstOption.getAttribute('data-active')).toBe('true');
+		});
 	});
 
 	describe('mouse interaction', () => {
