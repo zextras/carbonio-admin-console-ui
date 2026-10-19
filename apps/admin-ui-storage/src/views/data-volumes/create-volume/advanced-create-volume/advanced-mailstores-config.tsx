@@ -423,6 +423,10 @@ export function AdvancedMailstoresConfig({
         <Switch
           value={isCurrent}
           label={t('label.set_as_current', 'Set as Current')}
+          description={t(
+            'label.enable_current_helptext',
+            'Enabling this option will disable the current active volume.',
+          )}
           onClick={(): void => {
             const newValue = !isCurrent;
             form.setFieldValue('isCurrent', newValue);
@@ -430,14 +434,6 @@ export function AdvancedMailstoresConfig({
           }}
           iconColor="primary"
         />
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
-          )}
-        </ds-text>
       </Row>
       {!isLocalBlockDevice && (
         <>
@@ -453,7 +449,11 @@ export function AdvancedMailstoresConfig({
               iconColor="primary"
             />
           </Row>
-          <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
+          <Row
+            mainAlignment="flex-start"
+            width="100%"
+            padding={{ left: 'calc(1.8rem + var(--padding-size-small))' }}
+          >
             <ds-text
               as="p"
               color="secondary"

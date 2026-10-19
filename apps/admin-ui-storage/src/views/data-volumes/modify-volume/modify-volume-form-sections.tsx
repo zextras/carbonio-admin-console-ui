@@ -376,19 +376,15 @@ export function ModifyVolumeOptionsSection({
                     <Switch
                       value={field.state.value}
                       label={t('label.enable_compression', 'Enable Compression')}
+                      description={t(
+                        'this_will_not_affect_data_already_stored',
+                        'This will not affect data already stored',
+                      )}
                       onClick={(): void => field.handleChange(!field.state.value)}
                       iconColor="primary"
                     />
                   )}
                 </form.Field>
-                <Padding top="extrasmall" left="2rem">
-                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                    {t(
-                      'this_will_not_affect_data_already_stored',
-                      'This will not affect data already stored',
-                    )}
-                  </ds-text>
-                </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="48%">
                 <Row padding={{ top: 'small' }} width="100%">
