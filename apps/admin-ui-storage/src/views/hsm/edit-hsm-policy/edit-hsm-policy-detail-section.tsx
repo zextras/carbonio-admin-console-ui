@@ -14,9 +14,9 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  PlainInput,
-  PlainSelect,
+  Select,
   Table,
+  TextInput,
 } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { useContext, useState } from 'react';
@@ -244,7 +244,7 @@ export function EditHsmPolicyDetailSection() {
     >
       <ListRow>
         <Container padding={{ bottom: 'large' }}>
-          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')}  value={server} />
         </Container>
       </ListRow>
       <ListRow>
@@ -344,7 +344,7 @@ export function EditHsmPolicyDetailSection() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <PlainSelect
+          <Select
             items={options}
             label={t('hsm.option', 'Option')}
             selection={selectedOption ?? options[0]}
@@ -357,7 +357,7 @@ export function EditHsmPolicyDetailSection() {
             crossAlignment="flex-start"
             padding={{ right: 'large' }}
           >
-            <PlainSelect
+            <Select
               items={dateScaleOption}
               label={t('hsm.value', 'Value')}
               selection={selectedScale ?? dateScaleOption[0]}
@@ -371,7 +371,7 @@ export function EditHsmPolicyDetailSection() {
             crossAlignment="flex-start"
             padding={{ right: 'large' }}
           >
-            <PlainSelect
+            <Select
               items={scaleOptions}
               label={t('hsm.value', 'Value')}
               selection={selectedScale ?? scaleOptions[0]}
@@ -384,7 +384,7 @@ export function EditHsmPolicyDetailSection() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <PlainInput
+          <TextInput
             label={t('hsm.value', 'Value')}
             value={value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

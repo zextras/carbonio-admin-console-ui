@@ -10,7 +10,7 @@ import {
 	Container,
 	NumberInput,
 	Padding,
-	PlainSelect,
+	Select,
 	SelectItem,
 	SettingLayout,
 	Switch,
@@ -177,7 +177,7 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMessageDeleteTimeLimit">
 								{(field) => (
-									<PlainSelect
+									<Select
 										label={t(
 											'wsc.section.content.select.deletionLimit',
 											'Message deletion time limit',
@@ -205,7 +205,7 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 						>
 							<form.Field name="carbonioWscMessageEditTimeLimit">
 								{(field) => (
-									<PlainSelect
+									<Select
 										label={t(
 											'wsc.section.content.select.editLimit',
 											'Message editing time limit',

@@ -9,8 +9,8 @@ import {
   ListRow,
   NumberInput,
   Padding,
-  PlainSelect,
   Row,
+  Select,
   SelectItem,
   Switch,
 } from '@zextras/ui-components';
@@ -89,7 +89,7 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefGroupMailBy">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     label={t('cos.display_by', 'Display by')}
                     items={GROUP_BY}
                     selection={
@@ -106,7 +106,7 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefMailDefaultCharset">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     label={t('cos.default_charset', 'Default Charset')}
                     items={CHARACTOR_SET}
                     selection={

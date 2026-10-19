@@ -6,7 +6,6 @@
 import {
   Container,
   CustomHeaderFactory,
-  CustomTextArea,
   HoverableRowFactory,
   LabeledValue,
   ListRow,
@@ -107,7 +106,7 @@ export const CreateSummarySection: FC<any> = () => {
           >
             <LabeledValue
               label={t('label.display_name', 'Display Name')}
-              backgroundColor="gray6"
+              
               value={mailingListDetail?.displayName}
             />
           </Container>
@@ -119,7 +118,7 @@ export const CreateSummarySection: FC<any> = () => {
           >
             <LabeledValue
               label={t('label.address', 'Address')}
-              backgroundColor="gray6"
+              
               value={`${mailingListDetail?.prefixName}@${mailingListDetail?.suffixName}`}
             />
           </Container>
@@ -134,7 +133,7 @@ export const CreateSummarySection: FC<any> = () => {
           >
             <LabeledValue
               label={t('label.description', 'Description')}
-              backgroundColor="gray6"
+              
               value={mailingListDetail?.description}
             />
           </Container>
@@ -147,9 +146,9 @@ export const CreateSummarySection: FC<any> = () => {
             orientation="horizontal"
             padding={{ top: 'large', right: 'small' }}
           >
-            <CustomTextArea
+            <LabeledValue
               label={t('label.notes', 'Notes')}
-              backgroundColor="gray6"
+              
               value={mailingListDetail?.zimbraNotes}
             />
           </Container>
@@ -170,7 +169,7 @@ export const CreateSummarySection: FC<any> = () => {
             >
               <LabeledValue
                 label={t('label.share_message_to_new_member', 'Share message to new members')}
-                backgroundColor="gray6"
+                
                 value={
                   mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
                     ? t('label.yes', 'Yes')
@@ -187,7 +186,7 @@ export const CreateSummarySection: FC<any> = () => {
           >
             <LabeledValue
               label={t('label.hidden_from_gal', 'Hidden from GAL')}
-              backgroundColor="gray6"
+              
               value={
                 mailingListDetail?.zimbraHideInGal ? t('label.yes', 'Yes') : t('label.no', 'No')
               }
@@ -201,7 +200,7 @@ export const CreateSummarySection: FC<any> = () => {
           >
             <LabeledValue
               label={t('label.can_receive_email', 'Can receive email')}
-              backgroundColor="gray6"
+              
               value={
                 mailingListDetail?.zimbraMailStatus ? t('label.yes', 'Yes') : t('label.no', 'No')
               }
@@ -215,7 +214,7 @@ export const CreateSummarySection: FC<any> = () => {
           >
             <LabeledValue
               label={t('label.dynamic_mode', 'Dynamic Mode')}
-              backgroundColor="gray6"
+              
               value={mailingListDetail?.dynamic ? t('label.yes', 'Yes') : t('label.no', 'No')}
             />
           </Container>
@@ -259,7 +258,7 @@ export const CreateSummarySection: FC<any> = () => {
             >
               <LabeledValue
                 label={t('label.distribution_list_url', "Distribution List's URL")}
-                backgroundColor="gray6"
+                
                 value={mailingListDetail?.memberURL}
               />
             </Container>
@@ -299,7 +298,7 @@ export const CreateSummarySection: FC<any> = () => {
         <ListRow>
           <LabeledValue
             label={t('label.who_can_send_mails_to_this_list', 'Who can send mails TO this list?')}
-            backgroundColor="gray6"
+            
             value={grantEmailType}
           />
         </ListRow>

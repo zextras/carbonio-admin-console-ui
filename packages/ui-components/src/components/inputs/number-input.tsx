@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { PlainInput, type PlainInputProps } from './plain-input';
+import { TextInput, type TextInputProps } from './text-input';
 
 /**
  * Normalizes a raw number-input value to digits only. Leading zeros are collapsed
@@ -16,7 +16,7 @@ function sanitizeNumberValue(raw: string): string {
 }
 
 export type NumberInputProps = Omit<
-  PlainInputProps,
+  TextInputProps,
   'type' | 'value' | 'onChange' | 'inputMode'
 > & {
   /** Controlled numeric value. */
@@ -26,7 +26,7 @@ export type NumberInputProps = Omit<
 };
 
 export const NumberInput = ({ value, onChange, ...rest }: NumberInputProps) => (
-  <PlainInput
+  <TextInput
     type="number"
     inputMode="numeric"
     value={value}

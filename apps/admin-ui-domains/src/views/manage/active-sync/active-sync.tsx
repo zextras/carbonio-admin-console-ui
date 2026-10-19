@@ -9,7 +9,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   Padding,
   Row,
   Table,
@@ -171,7 +171,7 @@ export const ActiveSync = () => {
         >
           <Row mainAlignment="flex-start" width="100%" wrap="nowrap">
             <Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
-              <Input
+              <LegacyInput
                 disabled={tableRows.length === 0 && searchString.length === 0 && !isError}
                 label={t(
                   'label.filter_by_device_type_account',

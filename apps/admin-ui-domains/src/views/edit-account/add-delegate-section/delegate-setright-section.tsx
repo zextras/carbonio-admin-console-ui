@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Checkbox, Container, Radio, RadioGroup, Row, Select } from '@zextras/ui-components';
+import { Checkbox, Container, Radio, RadioGroup, Row,Select } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -51,17 +51,18 @@ export const DelegateSetRightsSection: FC = () => {
       <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
         <Row width="100%" mainAlignment="flex-start">
           <Select
-            background="gray5"
             label={t(
               'account_details.what_rights_will_the_delegate_have',
               'What rights will the delegate have?',
             )}
-            showCheckbox={false}
-            defaultSelection={DELEGETES_RIGHTS_TYPE.find(
-              (item: any) => item.value === deligateDetail?.delegeteRights,
-            )}
-            onChange={onWhoDelegateChange}
             items={DELEGETES_RIGHTS_TYPE}
+            selection={
+              DELEGETES_RIGHTS_TYPE.find(
+                (item: { value: string; label: string }) =>
+                  item.value === deligateDetail?.delegeteRights,
+              ) ?? { label: '', value: '' }
+            }
+            onChange={onWhoDelegateChange}
           />
         </Row>
       </Row>

@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, PlainSelect, Row, SelectItem, Switch } from '@zextras/ui-components';
+import { Container, ListRow, Row, Select, SelectItem, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { appointmentReminder, timeZoneList } from '../../../utility/utils';
@@ -68,7 +68,7 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefTimeZoneId">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={TIMEZONES}
                     label={t('label.time_zone', 'Time Zone')}
                     selection={findSelectItemWithFallback(TIMEZONES, field.state.value) ?? TIMEZONES[0]}
@@ -83,7 +83,7 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefCalendarDefaultApptDuration">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={DEFAULT_APPOINTMENT_DURATION}
                     label={t(
                       'label.appointments_default_duration',
@@ -115,7 +115,7 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefCalendarApptReminderWarningTime">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={APPOINTMENT_REMINDER}
                     label={t(
                       'label.appointment_reminder_in_minutes',
@@ -136,7 +136,7 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefCalendarInitialView">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={DEFAULT_VIEW_OPTIONS}
                     label={t('label.default_calendar_view', 'Default Calendar View')}
                     selection={
@@ -165,7 +165,7 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ right: 'small' }}>
               <form.Field name="zimbraPrefCalendarFirstDayOfWeek">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={FIRST_DAY_OF_WEEK}
                     label={t('label.the_week_starts_on', 'The Week starts on')}
                     selection={
@@ -183,7 +183,7 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
             <Container padding={{ left: 'small' }}>
               <form.Field name="zimbraPrefCalendarApptVisibility">
                 {(field) => (
-                  <PlainSelect
+                  <Select
                     items={APPOINTMENT_VISIBILITY}
                     label={t(
                       'label.default_appointment_visibility',

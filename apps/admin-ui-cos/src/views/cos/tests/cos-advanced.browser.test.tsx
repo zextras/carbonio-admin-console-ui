@@ -121,6 +121,25 @@ function mockQuotaSave(savedQuota: { type: string; value?: number; source: strin
     HttpResponse.json({ computedLimit: savedQuota }),
   );
 }
+/**
+ * CE scenario: no `carbonio-advanced` service and no quota data cached.
+ * The quota query is disabled and must not keep the page in loading state.
+ */
+async function setupCeCosAdvancedTest(): Promise<void> {
+  const queryClient = getQueryClient();
+  await grantUserCosRights(queryClient);
+  queryClient.setQueryData(['cos', 'detail', COS_ID], mockCosData);
+  mockCatalogServices();
+  createBrowserSoapAPIInterceptor('GetCos', mockCosData);
+
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<CosAdvanced />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/advanced`, queryClient },
+  );
+}
+
 async function setupCosAdvancedTest(cosData = mockCosData): Promise<void> {
   const queryClient = getQueryClient();
   await grantUserCosRights(queryClient);
@@ -152,6 +171,11 @@ describe('CosAdvanced', () => {
     it('should not show the Quotas section in CE', async () => {
       await setupCosAdvancedTest();
       await expect.element(page.getByText('Quotas')).not.toBeInTheDocument();
+    });
+
+    it('should render the form in CE when no quota data is cached', async () => {
+      await setupCeCosAdvancedTest();
+      await expect.element(page.getByText('Forwarding', { exact: true })).toBeVisible();
     });
 
     it('should render the Password section', async () => {

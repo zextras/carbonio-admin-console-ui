@@ -5,7 +5,13 @@
  */
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { ChipInput, type ChipItem, CustomChip, Select, type SelectItem } from '@zextras/ui-components';
+import {
+  ChipInput,
+  type ChipItem,
+  CustomChip,
+  Select,
+  type SelectItem,
+} from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { isValidIpRange } from '../../utility/utils';
@@ -45,19 +51,19 @@ export const ServicePolicyRow = ({
         <ds-text as="span">{serviceLabel}</ds-text>
       </div>
       <div className={styles.serviceSelect}>
-        <Select
+        <Select<number>
           items={whatToTrust}
           label={t('label.what_to_trust', 'What to trust?')}
-          onChange={(value: number | null): void => {
+          onChange={(value: number): void => {
             form.setFieldValue(serviceKey, {
-              trustedDevice: value ?? undefined,
+              trustedDevice: value,
               trustedIpRange: entry?.trustedIpRange ?? [],
             });
           }}
           selection={
-            whatToTrust.find((item) => item.value === entry?.trustedDevice) ?? EMPTY_TRUST_SELECTION
+            whatToTrust.find((item) => item.value === entry?.trustedDevice) ??
+            EMPTY_TRUST_SELECTION
           }
-          showCheckbox={false}
         />
       </div>
       <div className={styles.serviceChips}>

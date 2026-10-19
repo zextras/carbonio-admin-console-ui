@@ -3,13 +3,10 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { fireEvent, render, screen } from '@testing-library/react';
 import type { TFunction } from 'i18next';
-import { describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { MAX_DOMAIN_DISPLAY } from '../../../constants';
 import {
-  buildDomainDropdownItems,
   domainAttrsToObject,
   filterSessions,
   formatZimbraDateOr,
@@ -141,53 +138,5 @@ describe('somethingWrongSnackbarConfig', () => {
     expect(somethingWrongSnackbarConfig({}, t).label).toBe(
       'Something went wrong. Please try again.',
     );
-  });
-});
-
-describe('buildDomainDropdownItems', () => {
-  it('returns one clickable row per domain', () => {
-    const onSelectedDomain = vi.fn();
-    const items = buildDomainDropdownItems(
-      [
-        { id: 'domain-1', name: 'one.example.com' },
-        { id: 'domain-2', name: 'two.example.com' },
-      ],
-      onSelectedDomain,
-      t,
-    );
-    expect(items).toHaveLength(2);
-    const [first] = items;
-    if (!first) {
-      throw new Error('expected a dropdown item');
-    }
-    expect(first.id).toBe('domain-1');
-    expect(first.label).toBe('one.example.com');
-
-    render(first.customComponent);
-    fireEvent.click(screen.getByText('one.example.com'));
-
-    expect(onSelectedDomain).toHaveBeenCalledWith('one.example.com');
-  });
-
-  it('returns a single hint entry when the domain list exceeds the display limit', () => {
-    const onSelectedDomain = vi.fn();
-    const domainList = Array.from({ length: MAX_DOMAIN_DISPLAY + 1 }, (_, index) => ({
-      id: `domain-${index}`,
-      name: `domain-${index}.example.com`,
-    }));
-    const items = buildDomainDropdownItems(domainList, onSelectedDomain, t);
-    expect(items).toHaveLength(1);
-    const [hint] = items;
-    if (!hint) {
-      throw new Error('expected a hint item');
-    }
-    expect(hint.id).toBeUndefined();
-    expect(hint.label).toBeUndefined();
-
-    render(hint.customComponent);
-    expect(
-      screen.getByText('So many domains! Which one would you like to see? Start typing to filter.'),
-    ).toBeTruthy();
-    expect(onSelectedDomain).not.toHaveBeenCalled();
   });
 });

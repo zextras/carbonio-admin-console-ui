@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, PlainSelect } from '@zextras/ui-components';
+import { Container, Select } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -80,7 +80,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
               )?._content;
               const isOverridden = field.state.value !== undefined;
               return (
-                <PlainSelect
+                <Select
                   label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
                   items={amavisLogLevelOptions}
                   selection={
@@ -122,7 +122,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
               )?._content;
               const isOverridden = field.state.value !== undefined;
               return (
-                <PlainSelect
+                <Select
                   label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
                   items={amavisSALogLevelOptions}
                   selection={
@@ -172,7 +172,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
               )?._content;
               const isOverridden = field.state.value !== undefined;
               return (
-                <PlainSelect
+                <Select
                   label={t(
                     'mta.smtp_client_logging_of_tls_activity',
                     'SMTP client logging of TLS Activity',
@@ -219,7 +219,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
               )?._content;
               const isOverridden = field.state.value !== undefined;
               return (
-                <PlainSelect
+                <Select
                   label={t(
                     'mta.lmtp_client_logging_of_tls_activity',
                     'LMTP client logging of TLS activity',

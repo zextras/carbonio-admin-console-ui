@@ -9,20 +9,44 @@ import unusedImports from 'eslint-plugin-unused-imports';
 import jsxA11y from 'eslint-plugin-jsx-a11y';
 import testingLibrary from 'eslint-plugin-testing-library';
 import importX from 'eslint-plugin-import-x';
-import noticeConfig from './notice.config.js';
-
 import reactYouMightNotNeedAnEffect from 'eslint-plugin-react-you-might-not-need-an-effect';
+
+import noticeConfig from './notice.config.js';
 
 function toSeverity(rules, severity) {
   return Object.fromEntries(Object.keys(rules).map((rule) => [rule, severity]));
 }
 
+// new input family (created 2026-09/10): held to the full strict rule set
+const NEW_INPUT_FAMILY_STRICT = [
+  'packages/ui-components/src/components/inputs/commons/**',
+  'packages/ui-components/src/components/inputs/input-shell.tsx',
+  'packages/ui-components/src/components/inputs/text-input.tsx',
+  'packages/ui-components/src/components/inputs/number-input.tsx',
+  'packages/ui-components/src/components/inputs/password-input.tsx',
+  'packages/ui-components/src/components/inputs/plain-textarea.tsx',
+  'packages/ui-components/src/components/inputs/select.tsx',
+  'packages/ui-components/src/components/inputs/combobox-input.tsx',
+  'packages/ui-components/src/components/inputs/labeled-value.tsx',
+  'packages/ui-components/src/components/inputs/tests/text-input.browser.test.tsx',
+  'packages/ui-components/src/components/inputs/tests/number-input.browser.test.tsx',
+  'packages/ui-components/src/components/inputs/tests/number-input.test.ts',
+  'packages/ui-components/src/components/inputs/tests/password-input.browser.test.tsx',
+  'packages/ui-components/src/components/inputs/tests/plain-textarea.browser.test.tsx',
+  'packages/ui-components/src/components/inputs/tests/select.browser.test.tsx',
+  'packages/ui-components/src/components/inputs/tests/combobox-input.browser.test.tsx',
+  'packages/ui-components/src/components/inputs/tests/labeled-value.browser.test.tsx',
+];
+
 export default defineConfig(
+  // base presets: js, typescript-eslint, react, react-hooks
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
   reactHooks.configs.flat.recommended,
+
+  // global ignores
   globalIgnores([
     '**/node_modules/**',
     '**/dist/**',
@@ -36,7 +60,8 @@ export default defineConfig(
     '**/.reuse/template.js',
     '**/fileTransformer.js',
   ]),
-  // default strict config
+
+  // default strict config: applies to all files
   {
     plugins: {
       'react-compiler': reactCompiler,
@@ -46,10 +71,11 @@ export default defineConfig(
       'unused-imports': unusedImports,
       'import-x': importX,
     },
-    linterOptions: { reportUnusedDisableDirectives: 'error' },
+    linterOptions: { reportUnusedDisableDirectives: 'error', reportUnusedInlineConfigs: 'error' },
     settings: { react: { version: 'detect' } },
     rules: {
       'no-console': ['error', { allow: ['error'] }],
+      'prefer-const': 'error',
       '@typescript-eslint/no-unused-vars': 'off',
       'unused-imports/no-unused-imports': 'error',
       'unused-imports/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
@@ -68,6 +94,8 @@ export default defineConfig(
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
     },
   },
+
+  // test overrides
   // testing-library rules on unit tests, warn until existing findings are addressed
   {
     files: ['**/*.test.*', '**/tests/**'],
@@ -79,6 +107,8 @@ export default defineConfig(
     files: ['**/*.browser.test.*'],
     rules: toSeverity(testingLibrary.configs['flat/react'].rules, 'off'),
   },
+
+  // license headers (notice plugin), with icon files exempt
   noticeConfig,
   {
     files: ['**/icons/**/*.[jt]sx'],
@@ -86,9 +116,13 @@ export default defineConfig(
       'notice/notice': 'off',
     },
   },
-  // ui-components: targeted downgrades only, to be tightened incrementally
+
+  // package-specific downgrades
+  // ui-components: targeted downgrades only, to be tightened incrementally;
+  // the new input family is excluded and held to the strict rules
   {
     files: ['packages/ui-components/**'],
+    ignores: NEW_INPUT_FAMILY_STRICT,
     rules: {
       'react/prop-types': 'off',
       '@typescript-eslint/no-unused-expressions': 'warn',
@@ -108,6 +142,13 @@ export default defineConfig(
       'react-hooks/immutability': 'warn',
       'react-hooks/preserve-manual-memoization': 'warn',
       'react-compiler/react-compiler': 'warn',
+    },
+  },
+  // new input family: strict; react-compiler diagnostics enforced
+  {
+    files: NEW_INPUT_FAMILY_STRICT,
+    rules: {
+      'react-compiler/react-compiler': 'error',
     },
   },
   // ui-shared: only logging and minor type-lint downgrades

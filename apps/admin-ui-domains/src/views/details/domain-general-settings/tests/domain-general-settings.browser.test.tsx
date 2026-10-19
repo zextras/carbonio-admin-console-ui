@@ -397,7 +397,7 @@ describe('DomainGeneralSettings (browser)', () => {
       const forceDeleteButton = page.getByRole('button', { name: /force delete/i });
       await expect.element(forceDeleteButton).toBeDisabled();
 
-      const confirmInput = page.getByRole('textbox').last();
+      const confirmInput = page.getByRole('textbox', { name: 'Domain Name' });
       await userEvent.fill(confirmInput, 'wrong-name.com');
       await expect.element(forceDeleteButton).toBeDisabled();
 
@@ -414,7 +414,7 @@ describe('DomainGeneralSettings (browser)', () => {
 
       await openDeleteConfirmDialog();
 
-      await userEvent.fill(page.getByRole('textbox').last(), DOMAIN_NAME);
+      await userEvent.fill(page.getByRole('textbox', { name: 'Domain Name' }), DOMAIN_NAME);
       await page.getByRole('button', { name: /force delete/i }).click();
 
       const batchParams = (await batchInterceptor) as {
@@ -446,7 +446,7 @@ describe('DomainGeneralSettings (browser)', () => {
 
       await openDeleteConfirmDialog();
 
-      await userEvent.fill(page.getByRole('textbox').last(), DOMAIN_NAME);
+      await userEvent.fill(page.getByRole('textbox', { name: 'Domain Name' }), DOMAIN_NAME);
       await page.getByRole('button', { name: /force delete/i }).click();
 
       await expect.element(page.getByText('Cannot delete account')).toBeVisible();

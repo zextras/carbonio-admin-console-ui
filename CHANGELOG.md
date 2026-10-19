@@ -1,3 +1,21 @@
+## [0.30.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.2...v0.30.0) (2026-10-12)
+
+### Features
+
+* **adimn-ui-domains:** migrate to new input ([bf00750](https://github.com/zextras/carbonio-admin-console-ui/commit/bf007506dc5199d121f67c0c3b7976803bcf3b94))
+
+## [0.29.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.1...v0.29.2) (2026-10-09)
+
+### Bug Fixes
+
+* create a new cos in carbonio ce and use back end feature flag ([#1411](https://github.com/zextras/carbonio-admin-console-ui/issues/1411)) ([c397137](https://github.com/zextras/carbonio-admin-console-ui/commit/c39713778c59132342b3f22ac31901b0e3f9a3e7))
+
+## [0.29.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.0...v0.29.1) (2026-10-08)
+
+### Bug Fixes
+
+* cos advanced tab never loads in ce ([#1409](https://github.com/zextras/carbonio-admin-console-ui/issues/1409)) ([6ad1b1a](https://github.com/zextras/carbonio-admin-console-ui/commit/6ad1b1a6cc961fe13579bbd752f54d5ef66324ee))
+
 ## [0.29.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.28.0...v0.29.0) (2026-10-07)
 
 ### Features

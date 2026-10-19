@@ -93,6 +93,7 @@ import { useBreakpoint } from './hooks/use-breakpoint';
 import { useDebouncedValue } from './hooks/use-debounced-value';
 import { useLocalStorage } from './hooks/use-local-storage';
 import { useMediaQuery } from './hooks/use-media-query';
+import { useNewSubscriptionFeatureFlag } from './hooks/use-new-subscription-feature-flag';
 import {
   type CloseSnackbarFn,
   type CreateSnackbarFn,
@@ -357,6 +358,7 @@ export {
   useModuleCrumbMenu,
   useModuleLicenseInfo,
   useMtaServers,
+  useNewSubscriptionFeatureFlag,
   usePrimaryBarState,
   useReadUnreadNotification,
   useRelativePathname,

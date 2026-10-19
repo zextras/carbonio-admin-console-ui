@@ -13,11 +13,11 @@ import {
   LabeledValue,
   ListRow,
   Padding,
-  PlainInput,
-  PlainSelect,
   Row,
+  Select,
   Switch,
   Table,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useContext, useState } from 'react';
@@ -313,7 +313,7 @@ export function HSMpolicySettings() {
     >
       <ListRow>
         <Container padding={{ bottom: 'extralarge' }}>
-          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')}  value={server} />
         </Container>
       </ListRow>
       <ListRow>
@@ -405,7 +405,7 @@ export function HSMpolicySettings() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <PlainSelect
+          <Select
             items={options}
             label={t('hsm.option', 'Option')}
             selection={selectedOption ?? options[0]}
@@ -419,7 +419,7 @@ export function HSMpolicySettings() {
             crossAlignment="flex-start"
             padding={{ right: 'large' }}
           >
-            <PlainSelect
+            <Select
               items={dateScaleOption}
               label={t('hsm.value', 'Value')}
               selection={selectedScale ?? dateScaleOption[0]}
@@ -433,7 +433,7 @@ export function HSMpolicySettings() {
             crossAlignment="flex-start"
             padding={{ right: 'large' }}
           >
-            <PlainSelect
+            <Select
               items={scaleOptions}
               label={t('hsm.value', 'Value')}
               selection={selectedScale ?? scaleOptions[0]}
@@ -447,7 +447,7 @@ export function HSMpolicySettings() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <PlainInput
+          <TextInput
             label={t('hsm.value', 'Value')}
             value={value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {

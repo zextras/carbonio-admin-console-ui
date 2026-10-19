@@ -63,7 +63,7 @@ export function HSMcreatePolicy() {
         <Container padding={{ top: 'large' }}>
           <LabeledValue
             label={t('hsm.source_volume', 'Source Volume')}
-            backgroundColor="gray6"
+            
             value={sourceVolumeNames}
           />
         </Container>
@@ -72,7 +72,7 @@ export function HSMcreatePolicy() {
         <Container padding={{ top: 'large' }}>
           <LabeledValue
             label={t('hsm.destination_volume', 'Destination Volume')}
-            backgroundColor="gray6"
+            
             value={destinationVolumeNames}
           />
         </Container>

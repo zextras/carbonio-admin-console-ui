@@ -134,7 +134,7 @@ export function DeleteHsmPolicy({
         <Container padding={{ top: 'small', bottom: 'small' }}>
           <CopyActionContext.Provider value={{ onCopy: copyToClipboard }}>
             <LabeledValue
-              backgroundColor="gray5"
+              
               label={t('hsm.hsm_policy', 'HSM Policy')}
               value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
               CustomIcon={CopyPolicyIcon}

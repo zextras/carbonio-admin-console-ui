@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Input, ListRow, Padding, Switch, Tooltip } from '@zextras/ui-components';
+import { ListRow, Padding, Switch, TextInput, Tooltip } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { isValidLdapBaseUrl } from '../../../utility/utils';
@@ -34,7 +34,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
             <form.Field name="zimbraFeatureResetPasswordStatus">
               {(field) => (
                 <Switch
-                  data-testid="reset-password-switch"
                   value={field.state.value}
                   label={t(
                     'label.show_forget_password_link',
@@ -84,7 +83,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
           <form.Field name="zimbraAuthLdapStartTlsEnabled">
             {(field) => (
               <Switch
-                data-testid="enable-secure-connection"
                 value={field.state.value}
                 label={t(
                   'label.enable_secure_connection',
@@ -101,13 +99,13 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
         <Padding vertical="small" horizontal="small" width="100%">
           <form.Field name="zimbraPasswordChangeListener">
             {(field) => (
-              <Input
+              <TextInput
                 label={t(
                   'label.external_password_change_listener',
                   'Endpoint to be used for password change',
                 )}
-                backgroundColor="gray5"
-                value={field.state.value}
+                value={field.state.value ?? ''}
+                autoComplete="off"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}

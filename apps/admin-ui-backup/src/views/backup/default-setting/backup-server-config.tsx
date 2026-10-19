@@ -9,10 +9,10 @@ import {
   Container,
   ListRow,
   Padding,
-  PlainInput,
   RouteLeavingGuard,
   Row,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useGlobalSettings, useModuleLicenseInfo } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -137,7 +137,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'large' }}>
               <form.Field name="backupDestPath">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     label={t('backup.backup_path', 'Backup Path')}
                     required
                     value={field.state.value}
@@ -155,7 +155,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'large' }}>
               <form.Field name="spaceThreshold">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     required
                     label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
                       'label.mb',
@@ -176,7 +176,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'medium' }}>
               <form.Field name="backupLocalMetadataThreshold">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     required
                     label={`${t(
                       'backup.local_metadata_threshold',
@@ -217,7 +217,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'medium' }}>
               <form.Field name="smartScanSchedulePattern">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     required
                     label={t('backup.schedule', 'Schedule')}
                     value={field.state.value}
@@ -255,7 +255,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'large' }}>
               <form.Field name="purgeSchedulePattern">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     required
                     label={t('backup.schedule', 'Schedule')}
                     value={field.state.value}
@@ -278,7 +278,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'small' }}>
               <form.Field name="keepDeletedItemsDays">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     required
                     label={t(
                       'backup.keep_delted_items_backup',
@@ -303,7 +303,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'small' }}>
               <form.Field name="keepDeletedAccountsDays">
                 {(field) => (
-                  <PlainInput
+                  <TextInput
                     required
                     label={t(
                       'backup.keep_delete_accounts_in_backup',

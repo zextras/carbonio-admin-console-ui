@@ -6,15 +6,16 @@
 
 import {
   Button,
+  ComboboxInput,
+  type ComboboxItem,
   Container,
   CustomHeaderFactory,
-  DropDownInput,
   HoverableRowFactory,
-  Input,
   ListRow,
   Padding,
   Row,
   Table,
+  TextInput,
   type THeader,
   type TRow,
 } from '@zextras/ui-components';
@@ -33,12 +34,6 @@ type CosLinkTableRow = TRow & {
   hoverContent?: ReactNode;
 };
 
-type CosDropdownItem = {
-  id?: string;
-  label?: string;
-  customComponent: ReactNode;
-};
-
 type DomainCosLinkProps = {
   cosMaxAccountList: Array<CosMaxAccountValues>;
   defaultCosId: string;
@@ -54,7 +49,6 @@ export const DomainCosLink = ({
 }: DomainCosLinkProps) => {
   const [t] = useTranslation();
   const [isCosSelect, setIsCosSelect] = useState(false);
-  const [isCosListExpand, setIsCosListExpand] = useState(false);
   const [searchCosName, setSearchCosName] = useState('');
   const [cosId, setCosId] = useState('');
   const [maxAccountValue, setMaxAccountValue] = useState('');
@@ -66,7 +60,7 @@ export const DomainCosLink = ({
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
   const debouncedSearch = useDebouncedValue(searchCosName, 700);
-  const { data: cosData } = useCosList({
+  const { data: cosData, isFetching } = useCosList({
     searchQuery: debouncedSearch,
     limit: 0,
     offset: 0,
@@ -80,18 +74,9 @@ export const DomainCosLink = ({
     value: item.value,
   }));
 
-  const customIconDetail = {
-    icon: isCosListExpand ? ('ArrowIosUpward' as const) : ('ArrowIosDownwardOutline' as const),
-    onClick: () => {
-      setIsCosListExpand(!isCosListExpand);
-    },
-    style: { width: '1.25rem', height: '1.25rem' },
-  };
-
   function selectedCos(id: string, name: string): void {
     setIsCosSelect(true);
     setSearchCosName(name);
-    setIsCosListExpand(false);
     setCosId(id);
   }
 
@@ -238,49 +223,28 @@ export const DomainCosLink = ({
       ),
   }));
 
-  const items: Array<CosDropdownItem> =
+  const cosItems: Array<ComboboxItem> =
     cosList.length > MAX_COS_DISPLAY
       ? [
           {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <ds-icon icon="InfoOutline" style={{ width: '1.25rem', height: '1.25rem' }}></ds-icon>
-                  </Padding>
-                </Row>
-                <Row mainAlignment="flex-start" width="100%" padding={{ all: 'small' }}>
-                  <ds-text as="p" overflow="break-word">
-                    {t(
-                      'many_cos_info_msg',
-                      'So many COSes! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </ds-text>
-                </Row>
-              </>
+            id: 'overflow',
+            label: t(
+              'many_cos_info_msg',
+              'So many COSes! Which one would you like to see? Start typing to filter.',
             ),
+            disabled: true,
+            icon: 'InfoOutline',
           },
         ]
       : cosList.map((cos) => ({
           id: cos.id,
           label: cos.name,
-          customComponent: (
-            <Row
-              style={{
-                display: 'block',
-                textAlign: 'left',
-                height: 'inherit',
-                padding: '0.188rem',
-                width: 'inherit',
-              }}
-              onClick={() => {
-                selectedCos(cos.id, cos.name);
-              }}
-            >
-              {cos.name}
-            </Row>
-          ),
         }));
+
+  function handleSelectCos(item: ComboboxItem): void {
+    const cos = cosList.find((c) => c.id === item.id);
+    if (cos) selectedCos(cos.id, cos.name);
+  }
 
   return (
     <Container height="fit" crossAlignment="flex-start" background="gray6">
@@ -298,29 +262,30 @@ export const DomainCosLink = ({
       {isGlobalAdmin && (
         <ListRow>
           <Container padding={{ all: 'small' }}>
-            <DropDownInput
-              items={items}
-              inputLabel={t(
+            <ComboboxInput
+              label={t(
                 'cos.select_cos_to_include_in_domain',
                 'Select a COS to include in this domain',
               )}
+              items={cosItems}
+              value={searchCosName}
               onChange={(ev: ChangeEvent<HTMLInputElement>) => {
                 setIsCosSelect(false);
                 setSearchCosName(ev.target.value);
               }}
-              inputValue={searchCosName}
-              isCustomIcon
-              customIconDetail={customIconDetail}
+              onSelect={handleSelectCos}
+              loading={isFetching}
             />
           </Container>
 
           <Container padding={{ all: 'small' }}>
-            <Input
+            <TextInput
               label={t('label.handle_accounts', 'Handle Accounts (-1 if unlimited)')}
               value={maxAccountValue}
-              backgroundColor="gray6"
               type="number"
+              autoComplete="off"
               onKeyDown={(e: KeyboardEvent<HTMLInputElement>) => {
+                if (e.ctrlKey || e.metaKey || e.altKey || e.key === 'Tab') return;
                 if (
                   ![
                     'Backspace',
