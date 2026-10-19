@@ -60,17 +60,15 @@
 
 /* Invisible label overlay covering the whole box (padding included): clicking
    anywhere activates the field's control through native label association.
-   Positioned children below (control, buttons, icons) paint above it. */
+   Every other child paints above it, so custom icon-slot nodes (e.g. a span
+   wrapping buttons) stay clickable. */
 .clickArea {
   position: absolute;
   cursor: pointer;
   inset: 0;
 }
 
-.box > .control,
-.box > button,
-.box > a,
-.box > ds-icon {
+.box > *:not(.clickArea) {
   position: relative;
 }
 

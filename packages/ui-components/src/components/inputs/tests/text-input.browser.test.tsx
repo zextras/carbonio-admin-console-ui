@@ -410,6 +410,33 @@ describe('TextInput', () => {
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       expect(input.nextElementSibling).toBeNull();
     });
+
+    it('keeps buttons inside a wrapped icon node clickable above the click overlay', async () => {
+      let clicked = false;
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          icon={
+            <span>
+              <button
+                type="button"
+                onClick={() => {
+                  clicked = true;
+                }}
+              >
+                act
+              </button>
+            </span>
+          }
+        />,
+      );
+
+      await page.getByRole('button', { name: 'act' }).click();
+
+      expect(clicked).toBe(true);
+    });
   });
 
   describe('error and description support', () => {
