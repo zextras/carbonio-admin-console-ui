@@ -426,26 +426,24 @@ export function AdvancedMailstoresConfig({
         />
       </Row>
       {!isLocalBlockDevice && (
-        <>
-          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-            <Switch
-              value={centralized}
-              label={t('label.storage_centralized', 'I want this Storage to be centralized')}
-              description={
-                <Trans
-                  i18nKey="label.storage_centralized_helpertext"
-                  defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
-                  components={{ bold: <strong /> }}
-                />
-              }
-              onClick={(): void => {
-                const newValue = !centralized;
-                form.setFieldValue('centralized', newValue);
-                onSelection({ centralized: newValue }, true);
-              }}
-            />
-          </Row>
-        </>
+        <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+          <Switch
+            value={centralized}
+            label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+            description={
+              <Trans
+                i18nKey="label.storage_centralized_helpertext"
+                defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
+                components={{ bold: <strong /> }}
+              />
+            }
+            onClick={(): void => {
+              const newValue = !centralized;
+              form.setFieldValue('centralized', newValue);
+              onSelection({ centralized: newValue }, true);
+            }}
+          />
+        </Row>
       )}
     </Container>
   );
