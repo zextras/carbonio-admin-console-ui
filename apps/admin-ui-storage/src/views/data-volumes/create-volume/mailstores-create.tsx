@@ -188,7 +188,6 @@ export function MailstoresCreate({
                       form.setFieldValue('compressionThreshold', '');
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -233,7 +232,6 @@ export function MailstoresCreate({
                 'Enabling this option will disable the current active volume.',
               )}
               onClick={(): void => field.handleChange(!field.state.value)}
-              iconColor="primary"
             />
           )}
         </form.Field>

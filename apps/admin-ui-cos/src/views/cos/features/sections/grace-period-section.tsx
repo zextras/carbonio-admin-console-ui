@@ -33,7 +33,6 @@ export const GracePeriodSection = ({ form, readonlyCOS }: GracePeriodSectionProp
           'cos.features.allowSetupDeferralDuringGracePeriodInfo',
           'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
         )}
-        iconColor="primary"
         disabled={
           readonlyCOS ||
           otpMgmtField.state.value === 'FALSE' ||

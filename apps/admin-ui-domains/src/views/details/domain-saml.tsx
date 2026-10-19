@@ -286,7 +286,6 @@ export const DomainSaml = () => {
             <Switch
               value={isAllowUnsecure}
               label={t('label.allow_unsecure', 'Allow Unsecure')}
-              iconColor="primary"
               onClick={() => setIsAllowUnsecure(!isAllowUnsecure)}
             />
           </Container>

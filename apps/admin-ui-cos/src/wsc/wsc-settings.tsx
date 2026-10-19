@@ -113,7 +113,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 								'wsc.section.content.description.enableFeature',
 								'Activate to allow messaging, group chats, video calls, and file sharing.',
 							)}
-							iconColor="primary"
 							disabled={requiresLicenseCheck && !isLicensed}
 						/>
 					)}
@@ -144,7 +143,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.readReceipt',
 										'Show senders when their messages have been read.',
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings}
 								/>
 							)}
@@ -164,7 +162,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.presence',
 										"Display users' online status or last seen time.",
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings}
 								/>
 							)}
@@ -249,7 +246,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.createPrivate',
 										'Allow users to initiate one-on-one conversations.',
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings}
 								/>
 							)}
@@ -269,7 +265,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.createGroup',
 										'Allow users to create chats with multiple participants.',
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings}
 								/>
 							)}
@@ -348,7 +343,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.enableVideoCall',
 										'Activate video call functionality in the feature.',
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings}
 								/>
 							)}
@@ -369,7 +363,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 											'wsc.section.content.description.enableRecording',
 											'Permit recording of audio and video calls.',
 										)}
-										iconColor="primary"
 										disabled={disableWscSettings || videoCallEnabled === 'FALSE'}
 									/>
 								)}
@@ -390,7 +383,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.enableVirtualBackground',
 										'Allow users to apply virtual backgrounds during video calls.',
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings || videoCallEnabled === 'FALSE'}
 								/>
 							)}
@@ -421,7 +413,6 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 										'wsc.section.content.description.enableAttachments',
 										'Enable the sending of files, images, and documents.',
 									)}
-									iconColor="primary"
 									disabled={disableWscSettings}
 								/>
 							)}

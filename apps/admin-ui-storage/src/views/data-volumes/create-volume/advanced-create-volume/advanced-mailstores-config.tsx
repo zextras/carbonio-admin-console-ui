@@ -270,7 +270,6 @@ export function AdvancedMailstoresConfig({
                     }
                     onSelection({ isCompression: newValue }, true);
                   }}
-                  iconColor="primary"
                 />
               </Row>
               <Padding horizontal="small" />
@@ -325,7 +324,6 @@ export function AdvancedMailstoresConfig({
                         onSelection({ infrequentAccessThreshold: '' }, true);
                       }
                     }}
-                    iconColor="primary"
                   />
                   <Tooltip
                     placement="top"
@@ -385,7 +383,6 @@ export function AdvancedMailstoresConfig({
                       onSelection({ useInfrequentAccess: false }, true);
                     }
                   }}
-                  iconColor="primary"
                 />
                 <Tooltip
                   placement="top"
@@ -426,7 +423,6 @@ export function AdvancedMailstoresConfig({
             form.setFieldValue('isCurrent', newValue);
             onSelection({ isCurrent: newValue }, true);
           }}
-          iconColor="primary"
         />
       </Row>
       {!isLocalBlockDevice && (
@@ -447,7 +443,6 @@ export function AdvancedMailstoresConfig({
                 form.setFieldValue('centralized', newValue);
                 onSelection({ centralized: newValue }, true);
               }}
-              iconColor="primary"
             />
           </Row>
         </>

@@ -32,7 +32,6 @@ export const UntrustedNetworkSection = ({ form, readonlyCOS }: UntrustedNetworkS
           'cos.features.allowSetupFromUntrustedNetworksInfo',
           'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
         )}
-        iconColor="primary"
         disabled={readonlyCOS || otpMgmtField.state.value === 'FALSE'}
       />
     </Container>

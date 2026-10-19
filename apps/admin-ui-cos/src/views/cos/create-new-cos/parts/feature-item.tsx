@@ -26,7 +26,6 @@ export const FeatureItem = ({ form, name, label, description }: FeatureItemProps
             onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
             label={label}
             description={description}
-            iconColor="primary"
           />
         )}
       </form.Field>

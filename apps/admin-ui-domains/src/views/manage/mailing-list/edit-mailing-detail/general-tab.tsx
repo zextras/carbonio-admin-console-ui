@@ -153,7 +153,6 @@ export const GeneralTab: FC<GeneralTabProps> = ({
                   onClick={(): void => {
                     field.handleChange(!field.state.value);
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -170,7 +169,6 @@ export const GeneralTab: FC<GeneralTabProps> = ({
                 onClick={(): void => {
                   field.handleChange(!field.state.value);
                 }}
-                iconColor="primary"
               />
             )}
           </form.Field>

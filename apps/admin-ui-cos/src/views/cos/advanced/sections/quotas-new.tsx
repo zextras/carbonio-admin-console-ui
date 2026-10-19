@@ -107,7 +107,6 @@ export const COSQuotasNew = ({
     <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
         <Switch
-          iconColor="primary"
           onClick={switchOnChange}
           value={switchValue}
           disabled={readonlyCOS}

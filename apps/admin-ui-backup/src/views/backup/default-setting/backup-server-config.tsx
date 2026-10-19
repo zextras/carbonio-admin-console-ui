@@ -88,7 +88,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                       label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
                       value={field.state.value}
                       onClick={() => field.handleChange(!field.state.value)}
-                      iconColor="primary"
                       disabled={!allowSetBackup}
                     />
                   )}
@@ -105,7 +104,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                       'Backup is enabled at the startup',
                     )}
                     onClick={() => field.handleChange(!field.state.value)}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -121,7 +119,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                       'Run the Smartscan at the startup',
                     )}
                     onClick={() => field.handleChange(!field.state.value)}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -206,7 +203,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     value={field.state.value}
                     onClick={() => field.handleChange(!field.state.value)}
                     label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -244,7 +240,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     value={field.state.value}
                     onClick={() => field.handleChange(!field.state.value)}
                     label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}

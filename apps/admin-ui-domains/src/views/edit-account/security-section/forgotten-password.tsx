@@ -74,7 +74,6 @@ export const ForgottenPassword = () => {
                   'label.user_can_ask_for_forgotten_password_token',
                   'User can ask for a forgotten password token',
                 )}
-                iconColor="primary"
               />
             </Container>
             <Container width="40%" padding={{ right: 'small', left: 'small' }}>

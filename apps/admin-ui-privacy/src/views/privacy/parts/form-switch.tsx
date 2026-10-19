@@ -34,7 +34,6 @@ export function FormSwitch({
           label={label}
           description={description}
           onClick={onClick}
-          iconColor="primary"
           disabled={!allowSetPrivacy}
         />
       </Container>

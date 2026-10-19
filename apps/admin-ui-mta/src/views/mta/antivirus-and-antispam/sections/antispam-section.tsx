@@ -131,7 +131,6 @@ export const AntispamSection = ({
                 value={field.state.value}
                 onClick={(): void => field.handleChange(!field.state.value)}
                 disabled={!allowSetMTA}
-                iconColor="primary"
               />
             )}
           </form.Field>
@@ -144,7 +143,6 @@ export const AntispamSection = ({
                 value={field.state.value}
                 onClick={(): void => field.handleChange(!field.state.value)}
                 disabled={!allowSetMTA}
-                iconColor="primary"
               />
             )}
           </form.Field>

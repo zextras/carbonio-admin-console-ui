@@ -197,7 +197,6 @@ export const WscSettings: FC<{
             'wsc.section.content.description.enableFeature',
             'Activate to allow messaging, group chats, video calls, and file sharing.',
           )}
-          iconColor="primary"
           inheritedValue={cosDetail?.carbonioFeatureWscEnabled}
           fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
           inputName={'carbonioFeatureWscEnabled'}
@@ -223,7 +222,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.readReceipt',
                 'Show senders when their messages have been read.',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscShowMessageReads}
               fromSubValue={accSpecificDetail?.carbonioWscShowMessageReads}
               inputName={'carbonioWscShowMessageReads'}
@@ -238,7 +236,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.presence',
                 "Display users' online status or last seen time.",
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscShowUsersPresence}
               fromSubValue={accSpecificDetail?.carbonioWscShowUsersPresence}
               inputName={'carbonioWscShowUsersPresence'}
@@ -305,7 +302,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.createPrivate',
                 'Allow users to initiate one-on-one conversations.',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscPrivateChatCreation}
               fromSubValue={accSpecificDetail?.carbonioWscPrivateChatCreation}
               inputName={'carbonioWscPrivateChatCreation'}
@@ -320,7 +316,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.createGroup',
                 'Allow users to create chats with multiple participants.',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscGroupChatCreation}
               fromSubValue={accSpecificDetail?.carbonioWscGroupChatCreation}
               inputName={'carbonioWscGroupChatCreation'}
@@ -390,7 +385,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.enableVideoCall',
                 'Activate video call functionality in the feature.',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscVideoCallEnabled}
               fromSubValue={accSpecificDetail?.carbonioWscVideoCallEnabled}
               inputName={'carbonioWscVideoCallEnabled'}
@@ -406,7 +400,6 @@ export const WscSettings: FC<{
                   'wsc.section.content.description.enableRecording',
                   'Permit recording of audio and video calls.',
                 )}
-                iconColor="primary"
                 inheritedValue={cosDetail?.carbonioWscRecordingEnabled}
                 fromSubValue={accSpecificDetail?.carbonioWscRecordingEnabled}
                 inputName={'carbonioWscRecordingEnabled'}
@@ -427,7 +420,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.enableVirtualBackground',
                 'Allow users to apply virtual backgrounds during video calls.',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscVirtualBackgroundEnabled}
               fromSubValue={accSpecificDetail?.carbonioWscVirtualBackgroundEnabled}
               inputName={'carbonioWscVirtualBackgroundEnabled'}
@@ -458,7 +450,6 @@ export const WscSettings: FC<{
                 'wsc.section.content.description.enableAttachments',
                 'Enable the sending of files, images, and documents.',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail?.carbonioWscAttachmentUpload}
               fromSubValue={accSpecificDetail?.carbonioWscAttachmentUpload}
               inputName={'carbonioWscAttachmentUpload'}

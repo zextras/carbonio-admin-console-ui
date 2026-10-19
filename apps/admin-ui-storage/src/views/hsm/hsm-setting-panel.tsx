@@ -498,7 +498,6 @@ export function HSMsettingPanel() {
                   !isZxPowerstoreMoveSchedulingEnabled,
                 )
               }
-              iconColor="primary"
             />
           </Padding>
         </ListRow>
@@ -533,7 +532,6 @@ export function HSMsettingPanel() {
                 !deduplicateAfterScheduledMoveBlobs,
               )
             }
-            iconColor="primary"
           />
         </ListRow>
 

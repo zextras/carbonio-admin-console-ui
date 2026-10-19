@@ -149,7 +149,6 @@ export const EmailPreferences = () => {
             subValue={accountDetail?.zimbraPrefMessageViewHtmlPreferred}
             onChange={toggleAccountValue}
             label={t('account_details.view_mail_as_html', 'View mail as HTML')}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefMessageViewHtmlPreferred}
             fromSubValue={accSpecificDetail?.zimbraPrefMessageViewHtmlPreferred}
             inputName={'zimbraPrefMessageViewHtmlPreferred'}
@@ -194,7 +193,6 @@ export const EmailPreferences = () => {
               'account_details.auto_delete_duplicate_messages',
               'Auto-Delete duplicate messages',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefMessageIdDedupingEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefMessageIdDedupingEnabled}
             inputName={'zimbraPrefMessageIdDedupingEnabled'}
@@ -209,7 +207,6 @@ export const EmailPreferences = () => {
               'account_details.enable_new_mail_toast_notification',
               `Enable New Mail Toast Notification`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefMailToasterEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefMailToasterEnabled}
             inputName={'zimbraPrefMailToasterEnabled'}
@@ -251,7 +248,6 @@ export const EmailPreferences = () => {
               'account_details.can_send_auto_reply_messages',
               `Can send auto-reply messages`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefOutOfOfficeReplyEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefOutOfOfficeReplyEnabled}
             inputName={'zimbraPrefOutOfOfficeReplyEnabled'}

@@ -29,7 +29,6 @@ export const FeatureSwitchField = ({
         onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
         label={label}
         description={description}
-        iconColor="primary"
         disabled={disabled}
       />
     )}

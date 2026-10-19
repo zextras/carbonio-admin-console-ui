@@ -63,7 +63,6 @@ export const GalAuthSection = ({ form }: GalAuthSectionProps) => {
                     'label.external_server_needs_authentication',
                     'External Server needs authentication',
                   )}
-                  iconColor="primary"
                 />
               )}
             </form.Field>

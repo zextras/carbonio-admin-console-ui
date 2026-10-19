@@ -84,7 +84,6 @@ export const EditAccountConfigurationSection = () => {
                 'account_details.user_can_specify_forwarding_address',
                 'User can specify forwarding address',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail.zimbraFeatureMailForwardingEnabled}
               fromSubValue={accSpecificDetail?.zimbraFeatureMailForwardingEnabled}
               inputName={'zimbraFeatureMailForwardingEnabled'}
@@ -99,7 +98,6 @@ export const EditAccountConfigurationSection = () => {
                 'account_details.dont_keep_local_copy_of_messages',
                 `Don't Keep local copy of messages`,
               )}
-              iconColor="primary"
               inheritedValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
               fromSubValue={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
               inputName={'zimbraPrefMailLocalDeliveryDisabled'}
@@ -116,7 +114,6 @@ export const EditAccountConfigurationSection = () => {
                 'account_details.user_can_specify_mail_forwarding_filter',
                 'User can specify mail forwarding filter',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail.zimbraFeatureMailForwardingInFiltersEnabled}
               fromSubValue={accSpecificDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
               inputName={'zimbraFeatureMailForwardingInFiltersEnabled'}

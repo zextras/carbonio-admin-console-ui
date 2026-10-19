@@ -161,7 +161,6 @@ export const FailedLoginPolicy = () => {
                 subValue={values?.zimbraPasswordLockoutEnabled}
                 onChange={toggleAccountValue}
                 label={t('cos.enable_failed_login_lockout', 'Enable failed login lockout')}
-                iconColor="primary"
                 inheritedValue={cosDetail.zimbraPasswordLockoutEnabled}
                 fromSubValue={accSpecificDetail?.zimbraPasswordLockoutEnabled}
                 inputName={'zimbraPasswordLockoutEnabled'}

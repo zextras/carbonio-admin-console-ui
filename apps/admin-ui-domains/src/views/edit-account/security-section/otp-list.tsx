@@ -250,7 +250,6 @@ export const OtpList = ({ onGenerate }: OtpListProps) => {
                     'domain.accounts.allowUsersToConfigure2FAInfo',
                     'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
                   )}
-                  iconColor="primary"
                   inheritedValue={cosDetail.carbonioFeatureOTPMgmtEnabled}
                   fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
                   inputName={'carbonioFeatureOTPMgmtEnabled'}

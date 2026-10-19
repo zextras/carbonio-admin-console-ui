@@ -246,7 +246,6 @@ const GlobalDetailPanelContent = ({
                     'label.enable_disclaimers_for_all_domains',
                     'Mandatory disclaimer for all domains',
                   )}
-                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
@@ -268,7 +267,6 @@ const GlobalDetailPanelContent = ({
                     'label.only_allow_outbound_disclaimers',
                     'Only allow outbound disclaimers',
                   )}
-                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
@@ -293,7 +291,6 @@ const GlobalDetailPanelContent = ({
                     'domain.globalSettings.allowSearchUserFromAllDomains',
                     `Allow searching users' information in all domains`,
                   )}
-                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />

@@ -138,7 +138,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           value={field.state.value}
                           onClick={() => field.handleChange(!field.state.value)}
                           label={t('backup.ldap_dump', 'LDAP Dump')}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -161,7 +160,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                             'backup.store_server_configurations_in_the_backup',
                             'Store Server Configuration in the backup',
                           )}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -181,7 +179,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           value={field.state.value}
                           onClick={() => field.handleChange(!field.state.value)}
                           label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -201,7 +198,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           value={field.state.value}
                           onClick={() => field.handleChange(!field.state.value)}
                           label={t('backup.save_index', 'Save Index')}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -315,7 +311,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                             'backup.flash_metadata_in_the_disk_at_every_save',
                             'Flash metadata in the disk at every save',
                           )}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -338,7 +333,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                             'backup.archive_user_metadata_folder_in_the_remote_backup',
                             'Archive user metadata folder in the remote backup',
                           )}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}

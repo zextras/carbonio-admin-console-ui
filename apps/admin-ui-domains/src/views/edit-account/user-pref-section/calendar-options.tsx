@@ -232,7 +232,6 @@ export const CalendarOptionsSection = () => {
               'account_details.enable_past_due_reminders',
               'Enable reminders of appointments in the past',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarShowPastDueReminders}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarShowPastDueReminders}
             inputName={'zimbraPrefCalendarShowPastDueReminders'}
@@ -247,7 +246,6 @@ export const CalendarOptionsSection = () => {
               'account_details.allow_sending_cancellation_mail',
               'Allow sending cancellation mail',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAllowCancelEmailToSelf}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
             inputName={'zimbraPrefCalendarAllowCancelEmailToSelf'}
@@ -264,7 +262,6 @@ export const CalendarOptionsSection = () => {
               'account_details.add_forwarded_invites_to_calendar',
               'Automatically add forwarded appointments to the calendar',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAllowForwardedInvite}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowForwardedInvite}
             inputName={'zimbraPrefCalendarAllowForwardedInvite'}
@@ -279,7 +276,6 @@ export const CalendarOptionsSection = () => {
               'account_details.add_invites_with_publish_method',
               `Add invites with PUBLISH method`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAllowPublishMethodInvite}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
             inputName={'zimbraPrefCalendarAllowPublishMethodInvite'}
@@ -296,7 +292,6 @@ export const CalendarOptionsSection = () => {
               'label.add_appointments_when_invited',
               'Automatically add appointments when the user is invited',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAutoAddInvites}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAutoAddInvites}
             inputName={'zimbraPrefCalendarAutoAddInvites'}
@@ -311,7 +306,6 @@ export const CalendarOptionsSection = () => {
               'account_details.auto_decline_if_inviter_is_blacklisted',
               `Auto-decline if the sender is blacklisted`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarSendInviteDeniedAutoReply}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
             inputName={'zimbraPrefCalendarSendInviteDeniedAutoReply'}
@@ -328,7 +322,6 @@ export const CalendarOptionsSection = () => {
               'account_details.notify_changes_by_delegated_access',
               `Notify changes made by delegated accounts`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarNotifyDelegatedChanges}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
             inputName={'zimbraPrefCalendarNotifyDelegatedChanges'}
@@ -343,7 +336,6 @@ export const CalendarOptionsSection = () => {
               'account_details.use_ical_delegation_model_for_shared_calendars',
               'Use iCal delegation model for shared calendars',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefAppleIcalDelegationEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefAppleIcalDelegationEnabled}
             inputName={'zimbraPrefAppleIcalDelegationEnabled'}

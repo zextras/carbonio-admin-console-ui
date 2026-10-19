@@ -55,7 +55,6 @@ export const TwoFactorSettings = () => {
                   'domain.accounts.allowSetupFromUntrustedNetworksInfo',
                   'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
                 )}
-                iconColor="primary"
                 inheritedValue={cosDetail.carbonioOtpWizardFromUntrusted}
                 fromSubValue={accSpecificDetail?.carbonioOtpWizardFromUntrusted}
                 inputName={'carbonioOtpWizardFromUntrusted'}
@@ -80,7 +79,6 @@ export const TwoFactorSettings = () => {
                   'domain.accounts.allowSetupDeferralDuringGracePeriodInfo',
                   'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
                 )}
-                iconColor="primary"
                 inheritedValue={cosDetail.carbonioOtpGracePeriodEnabled}
                 fromSubValue={accSpecificDetail?.carbonioOtpGracePeriodEnabled}
                 inputName={'carbonioOtpGracePeriodEnabled'}

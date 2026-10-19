@@ -9,8 +9,6 @@ import { useState } from 'react';
 import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
 import { PlainSwitch, type PlainSwitchProps } from './plain-switch';
 
-type SwitchSize = 'medium' | 'small';
-
 type SwitchProps = Omit<
   PlainSwitchProps,
   'checked' | 'defaultChecked' | 'value' | 'onChange' | 'onClick' | 'size' | 'ref' | 'rootRef'
@@ -28,12 +26,6 @@ type SwitchProps = Omit<
   onClick?: (event: Event) => void;
   /** Fired on every user toggle with the new checked state. */
   onChange?: (checked: boolean) => void;
-  /** @deprecated The new switch has a single size; this prop is ignored. */
-  size?: SwitchSize;
-  /** @deprecated The new switch uses the design-system colors; this prop is ignored. */
-  iconColor?: string;
-  /** @deprecated `label` is now required and is the accessible name; this prop is ignored. */
-  iconAriaLabel?: string;
 };
 
 const Switch = ({
@@ -44,9 +36,6 @@ const Switch = ({
   disabled = false,
   onClick,
   onChange,
-  size: _size,
-  iconColor: _iconColor,
-  iconAriaLabel: _iconAriaLabel,
   style,
   ref,
   onKeyDown,

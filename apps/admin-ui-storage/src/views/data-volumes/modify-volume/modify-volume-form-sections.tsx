@@ -172,7 +172,6 @@ export function ModifyVolumeTieringSection({
                       form.setFieldValue('infrequentAccessThreshold', '');
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -228,7 +227,6 @@ export function ModifyVolumeTieringSection({
                       form.setFieldValue('useInfrequentAccess', false);
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -305,7 +303,6 @@ export function ModifyVolumeOptionsSection({
                         setIsCurrentToggle(true);
                       }
                     }}
-                    iconColor="primary"
                     disabled={field.state.value}
                   />
                 </Tooltip>
@@ -353,7 +350,6 @@ export function ModifyVolumeOptionsSection({
                           setIsCurrentToggle(true);
                         }
                       }}
-                      iconColor="primary"
                       disabled={field.state.value}
                     />
                   </Tooltip>
@@ -377,7 +373,6 @@ export function ModifyVolumeOptionsSection({
                         'This will not affect data already stored',
                       )}
                       onClick={(): void => field.handleChange(!field.state.value)}
-                      iconColor="primary"
                     />
                   )}
                 </form.Field>

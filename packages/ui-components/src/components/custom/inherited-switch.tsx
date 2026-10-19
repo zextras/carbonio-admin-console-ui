@@ -20,8 +20,6 @@ type InheritedSwitchProps = {
   onChange: (inputName: string) => void;
   onChangeReset: () => void;
   fromSubValue?: string | boolean;
-  /** @deprecated The new switch uses the design-system colors; this prop is ignored. */
-  iconColor?: string;
   disabled?: boolean;
   onFocus?: () => void;
 };
