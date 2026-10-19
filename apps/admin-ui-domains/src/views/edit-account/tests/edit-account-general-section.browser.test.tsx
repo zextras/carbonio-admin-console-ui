@@ -169,7 +169,7 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
     await expect.element(defaultCosSwitch).not.toBeChecked();
 
     await defaultCosSwitch.click();
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
+    await expect.element(defaultCosSwitch).toBeChecked();
     await expect.element(cosSelect).toBeDisabled();
 
     await page.getByRole('button', { name: 'Cancel' }).click();
@@ -177,7 +177,7 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
 
     await cosSelect.click();
     await page.getByRole('option', { name: 'Premium COS' }).click();
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(defaultCosSwitch).not.toBeChecked();
   });
 
   it('turns off Default COS and enables the select when default COS is first in the list', async () => {

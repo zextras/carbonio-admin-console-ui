@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useState } from 'react';
+
 import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
 import { PlainSwitch, type PlainSwitchProps } from './plain-switch';
 
@@ -11,8 +13,10 @@ type SwitchSize = 'medium' | 'small';
 
 type SwitchProps = Omit<
   PlainSwitchProps,
-  'checked' | 'defaultChecked' | 'value' | 'onChange' | 'onClick' | 'size'
+  'checked' | 'defaultChecked' | 'value' | 'onChange' | 'onClick' | 'size' | 'ref' | 'rootRef'
 > & {
+  /** Ref to the root element, so wrappers like Tooltip anchor to the whole switch row. */
+  ref?: React.Ref<HTMLDivElement>;
   defaultChecked?: boolean;
   /** Controlled value. When omitted the switch is uncontrolled and starts from `defaultChecked`. */
   value?: boolean;
@@ -44,19 +48,30 @@ const Switch = ({
   iconColor: _iconColor,
   iconAriaLabel: _iconAriaLabel,
   style,
+  ref,
+  onKeyDown,
   ...rest
 }: SwitchProps) => {
+  const [innerChecked, setInnerChecked] = useState(defaultChecked);
   const paddingStyle = padding === undefined ? undefined : { padding: getPaddingVar(padding) };
 
   return (
     <PlainSwitch
+      rootRef={ref}
       label={label}
       disabled={disabled}
-      checked={value}
-      defaultChecked={value === undefined ? defaultChecked : undefined}
+      checked={value ?? innerChecked}
       onChange={(event) => {
+        if (value === undefined) setInnerChecked(event.target.checked);
         onClick?.(event.nativeEvent);
         onChange?.(event.target.checked);
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (event.key === 'Enter' && !event.defaultPrevented) {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
       }}
       style={{ ...paddingStyle, ...style }}
       {...rest}

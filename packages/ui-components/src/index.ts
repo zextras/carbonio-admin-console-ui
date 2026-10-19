@@ -50,13 +50,7 @@ export {
 } from './components/inputs/LegacySelect';
 export * from './components/inputs/number-input';
 export * from './components/inputs/password-input';
-<<<<<<< HEAD
-export * from './components/inputs/PasswordInput';
-export * from './components/inputs/plain-input';
-export * from './components/inputs/plain-select';
 export * from './components/inputs/plain-switch';
-=======
->>>>>>> origin/main
 export * from './components/inputs/plain-textarea';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';

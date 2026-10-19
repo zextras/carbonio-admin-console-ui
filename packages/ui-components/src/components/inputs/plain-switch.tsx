@@ -9,17 +9,22 @@ import { useId } from 'react';
 
 import styles from './plain-switch.module.css';
 
-export type PlainSwitchProps = Omit<React.ComponentPropsWithRef<'input'>, 'type' | 'role' | 'id'> & {
+export type PlainSwitchProps = Omit<
+  React.ComponentPropsWithRef<'input'>,
+  'type' | 'role' | 'id'
+> & {
   /** Visible title, rendered as the clickable <label> of the switch. */
   label: string;
   /** Non-interactive secondary text under the title, linked via aria-describedby. `null` is treated as absent. */
-  description?: string | null;
+  description?: React.ReactNode;
+  /** Ref to the root element (e.g. a tooltip anchor covering title and track). */
+  rootRef?: React.Ref<HTMLDivElement>;
 };
 
 /**
  * Accessible on/off switch built on a native `<input type="checkbox" role="switch">`.
  * Only the track and the title toggle it; the description is not clickable.
- * `className` and `style` are applied to the root; every other prop is forwarded to the input.
+ * `className`, `style` and `rootRef` are applied to the root; every other prop is forwarded to the input.
  */
 export const PlainSwitch = ({
   label,
@@ -27,6 +32,7 @@ export const PlainSwitch = ({
   disabled,
   className,
   style,
+  rootRef,
   'aria-describedby': callerDescribedBy,
   ...rest
 }: PlainSwitchProps) => {
@@ -36,6 +42,7 @@ export const PlainSwitch = ({
 
   return (
     <div
+      ref={rootRef}
       className={clsx(styles.root, className)}
       style={style}
       data-disabled={disabled || undefined}

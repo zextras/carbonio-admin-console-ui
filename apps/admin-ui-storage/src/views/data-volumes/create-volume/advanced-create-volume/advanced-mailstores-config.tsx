@@ -435,6 +435,13 @@ export function AdvancedMailstoresConfig({
             <Switch
               value={centralized}
               label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+              description={
+                <Trans
+                  i18nKey="label.storage_centralized_helpertext"
+                  defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
+                  components={{ bold: <strong /> }}
+                />
+              }
               onClick={(): void => {
                 const newValue = !centralized;
                 form.setFieldValue('centralized', newValue);
@@ -442,24 +449,6 @@ export function AdvancedMailstoresConfig({
               }}
               iconColor="primary"
             />
-          </Row>
-          <Row
-            mainAlignment="flex-start"
-            width="100%"
-            padding={{ left: 'calc(1.8rem + var(--padding-size-small))' }}
-          >
-            <ds-text
-              as="p"
-              color="secondary"
-              style={{ whiteSpace: 'pre-line', width: '100%' }}
-              overflow="break-word"
-            >
-              <Trans
-                i18nKey="label.storage_centralized_helpertext"
-                defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
-                components={{ bold: <strong /> }}
-              />
-            </ds-text>
           </Row>
         </>
       )}

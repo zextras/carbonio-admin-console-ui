@@ -463,7 +463,6 @@ describe('CosAdvanced', () => {
       );
     }
 
-
     async function setupAdvancedBackupTest(): Promise<void> {
       const queryClient = getQueryClient();
       await grantUserCosRights(queryClient);

@@ -14,7 +14,7 @@ import {
   TextInput,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { type RefObject } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -263,7 +263,6 @@ type OptionsSectionProps = {
   isLocalBlockDevice: boolean;
   volumeType: number;
   isAdvanced: boolean;
-  isCurrentRef: RefObject<HTMLInputElement | null>;
   setIsCurrentToggle: (value: boolean) => void;
 };
 
@@ -272,7 +271,6 @@ export function ModifyVolumeOptionsSection({
   isLocalBlockDevice,
   volumeType,
   isAdvanced,
-  isCurrentRef,
   setIsCurrentToggle,
 }: Readonly<OptionsSectionProps>) {
   const { t } = useTranslation();
@@ -300,7 +298,6 @@ export function ModifyVolumeOptionsSection({
                   disabled={!field.state.value}
                 >
                   <Switch
-                    ref={isCurrentRef}
                     value={field.state.value}
                     label={t('label.set_as_current', 'Set as Current')}
                     onClick={(): void => {
@@ -349,7 +346,6 @@ export function ModifyVolumeOptionsSection({
                     disabled={!field.state.value}
                   >
                     <Switch
-                      ref={isCurrentRef}
                       value={field.state.value}
                       label={t('label.set_as_current', 'Set as Current')}
                       onClick={(): void => {

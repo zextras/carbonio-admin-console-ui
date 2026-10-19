@@ -256,9 +256,7 @@ describe('WscCosSettings', () => {
     it('should disable dependent settings when WSC is FALSE', async () => {
       await setupWscCosSettingsTest(mockCosDataWscDisabled);
 
-      await expect
-        .element(page.getByRole('switch', { name: 'Show read receipts' }))
-        .toBeDisabled();
+      await expect.element(page.getByRole('switch', { name: 'Show read receipts' })).toBeDisabled();
     });
   });
 });

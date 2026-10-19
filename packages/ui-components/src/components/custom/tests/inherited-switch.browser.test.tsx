@@ -64,7 +64,12 @@ describe('InheritedSwitch', () => {
 
   it('should call onChangeReset when the revert icon is clicked', async () => {
     const onChangeReset = vi.fn();
-    await renderSwitch({ subValue: 'FALSE', fromSubValue: 'FALSE', inheritedValue: 'TRUE', onChangeReset });
+    await renderSwitch({
+      subValue: 'FALSE',
+      fromSubValue: 'FALSE',
+      inheritedValue: 'TRUE',
+      onChangeReset,
+    });
 
     await page.getByTestId('icon: RefreshOutline').click();
     expect(onChangeReset).toHaveBeenCalledTimes(1);

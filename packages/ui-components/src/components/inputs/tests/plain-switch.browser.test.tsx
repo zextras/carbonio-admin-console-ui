@@ -11,9 +11,15 @@ import { render } from 'vitest-browser-react';
 import { PlainSwitch } from '../plain-switch';
 
 const OFF_TRACK = 'rgb(133, 140, 147)';
-const ON_TRACK = 'rgb(43, 115, 210)';
-const OFF_DISABLED_TRACK = 'rgb(230, 233, 237)';
-const ON_DISABLED_TRACK = 'rgb(170, 200, 238)';
+
+function resolveColorToken(token: string): string {
+  const probe = document.createElement('span');
+  probe.style.color = `var(${token})`;
+  document.body.append(probe);
+  const { color } = getComputedStyle(probe);
+  probe.remove();
+  return color;
+}
 
 function getTrack(name: string): HTMLElement {
   const input = page.getByRole('switch', { name }).element();
@@ -150,13 +156,14 @@ describe('PlainSwitch', () => {
 
     it.each([
       ['off', {}, OFF_TRACK],
-      ['on', { defaultChecked: true }, ON_TRACK],
-      ['off disabled', { disabled: true }, OFF_DISABLED_TRACK],
-      ['on disabled', { defaultChecked: true, disabled: true }, ON_DISABLED_TRACK],
+      ['on', { defaultChecked: true }, '--color-primary-regular'],
+      ['off disabled', { disabled: true }, '--color-gray3-disabled'],
+      ['on disabled', { defaultChecked: true, disabled: true }, '--color-primary-disabled'],
     ])('should paint the %s track per spec', async (_state, props, expected) => {
       await render(<PlainSwitch label="Enable mail" {...props} />);
 
-      expect(getComputedStyle(getTrack('Enable mail')).backgroundColor).toBe(expected);
+      const expectedColor = expected.startsWith('--') ? resolveColorToken(expected) : expected;
+      expect(getComputedStyle(getTrack('Enable mail')).backgroundColor).toBe(expectedColor);
     });
 
     it('should show a pointer cursor on the title and track, not on the description', async () => {
@@ -196,12 +203,21 @@ describe('PlainSwitch', () => {
       expect(ref.current?.dataset.testid).toBe('mail');
     });
 
-    it('should apply className and style to the root', async () => {
-      const { container } = await render(
-        <PlainSwitch label="Enable mail" className="custom" style={{ marginTop: 4 }} />,
+    it('should apply className, style and rootRef to the root', async () => {
+      const rootRef = React.createRef<HTMLDivElement>();
+      await render(
+        <PlainSwitch
+          label="Enable mail"
+          className="custom"
+          style={{ marginTop: 4 }}
+          rootRef={rootRef}
+        />,
       );
 
-      const root = container.firstElementChild as HTMLElement | null;
+      const root = rootRef.current;
+      expect(root?.contains(page.getByRole('switch', { name: 'Enable mail' }).element())).toBe(
+        true,
+      );
       expect(root?.classList.contains('custom')).toBe(true);
       expect(root?.style.marginTop).toBe('4px');
     });
