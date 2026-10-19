@@ -478,6 +478,39 @@ describe('ComboboxInput', () => {
 			expect(input.getAttribute('aria-activedescendant')).toBe(firstOption.id);
 			expect(firstOption.getAttribute('data-active')).toBe('true');
 		});
+
+		it('keeps the popup out of the tab order: Tab closes the list and continues through the page', async () => {
+			await render(
+				<div>
+					<ComboboxInput
+						label="Server"
+						items={SERVERS}
+						value=""
+						onChange={() => {}}
+						onSelect={() => {}}
+					/>
+					<button type="button">After field</button>
+				</div>,
+			);
+
+			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }));
+			// Tab 1: input → toggle button (list closes). Tab 2: toggle → following field.
+			await userEvent.keyboard('[Tab][Tab]');
+
+			await expect.element(page.getByRole('listbox')).not.toBeInTheDocument();
+			expect(document.activeElement?.textContent).toBe('After field');
+		});
+
+		it('renders the popup listbox outside the sequential tab order', async () => {
+			await render(
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+			);
+
+			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }));
+
+			const listbox = await getListbox();
+			expect(listbox.tabIndex).toBe(-1);
+		});
 	});
 
 	describe('mouse interaction', () => {

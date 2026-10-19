@@ -195,6 +195,7 @@ const ComboboxPopupBody = ({
 		<select
 			size={Math.max(items.length, 2)}
 			data-single={items.length === 1 || undefined}
+			tabIndex={-1}
 			className={popupStyles.listboxOptions}
 		>
 			{items.map((item, index) => (
