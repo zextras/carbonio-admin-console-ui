@@ -187,11 +187,36 @@ describe('TextInput', () => {
       expectColor(style.backgroundColor, '#FFFFFF');
     });
 
-    it('does not change the cursor over the field box', async () => {
+    it('shows the pointer cursor over the field box and the input', async () => {
       await render(<TextInput label="Name" value="" onChange={() => {}} />);
 
-      const style = getComputedStyle(await getBox('Name'));
-      expect(style.cursor).toBe('auto');
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(getComputedStyle(await getBox('Name')).cursor).toBe('pointer');
+      expect(getComputedStyle(input).cursor).toBe('pointer');
+    });
+
+    it('shows the default cursor over a disabled field', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} disabled />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(getComputedStyle(await getBox('Name')).cursor).toBe('default');
+      expect(getComputedStyle(input).cursor).toBe('default');
+    });
+
+    it('covers the whole box with a label overlay so padding clicks focus the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      // Native label activation (a browser default action) can't be triggered by
+      // synthetic events, so pin the mechanism: an overlay label associated with
+      // the input and covering the box, padding included.
+      const overlay = box.querySelector(`label[for="${input.id}"]`) as HTMLLabelElement;
+      expect(overlay.offsetWidth).toBe(box.clientWidth);
+      expect(overlay.offsetHeight).toBe(box.clientHeight);
+      // The label's text must stay invisible and out of the accessible name —
+      // the 'accessible name is the label' test guards against pollution.
+      expect(overlay.querySelector('span')?.hasAttribute('hidden')).toBe(true);
     });
 
     it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
