@@ -915,10 +915,17 @@ describe('ComboboxInput', () => {
 			const input = await getCombobox('Server');
 			const box = input.parentElement as HTMLElement;
 			const describedBy = input.getAttribute('aria-describedby');
-			const chip = document.getElementById(describedBy as string);
+			const chip = document.getElementById(describedBy as string) as HTMLElement;
 			expect(chip?.textContent).toBe('Inherited');
 			expect(box.contains(chip as Node)).toBe(true);
 			expect(box.lastElementChild).toBe(chip);
+
+			// The chip must keep 0.25rem of horizontal separation from the toggle button
+			const toggle = (await page
+				.getByRole('button', { name: 'Toggle suggestions' })
+				.element()) as HTMLElement;
+			const spacing = chip.getBoundingClientRect().left - toggle.getBoundingClientRect().right;
+			expect(spacing).toBeGreaterThanOrEqual(4);
 		});
 	});
 });

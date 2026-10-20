@@ -801,6 +801,8 @@ describe('TextInput', () => {
       expect(style.fontWeight).toBe('300');
       expect(style.lineHeight).toBe('18px');
       expect(style.whiteSpace).toBe('nowrap');
+      expect(style.marginLeft).toBe('4px');
+      expect(style.marginRight).toBe('4px');
     });
 
     it('renders the chip when the field is disabled', async () => {
