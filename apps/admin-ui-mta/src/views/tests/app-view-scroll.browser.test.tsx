@@ -166,5 +166,8 @@ describe('AppView scroll behavior within the shell', () => {
     const controlBottom = bottomControl.getBoundingClientRect().bottom;
     const shellBottom = shellScroller.getBoundingClientRect().bottom;
     expect(controlBottom).toBeLessThanOrEqual(shellBottom);
+
+    // The page must end with 3rem (48px) of breathing room below the last control.
+    expect(shellBottom - controlBottom).toBeGreaterThanOrEqual(48);
   });
 }, 20_000);

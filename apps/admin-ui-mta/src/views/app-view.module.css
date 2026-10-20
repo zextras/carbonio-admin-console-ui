@@ -38,5 +38,6 @@
 
 .detailContent {
   margin: 0 auto;
+  padding-bottom: 3rem;
   transition: max-width 300ms;
 }
