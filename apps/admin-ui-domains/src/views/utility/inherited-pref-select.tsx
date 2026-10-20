@@ -57,11 +57,7 @@ export const InheritedPrefSelect = ({
       }
       onChange={onChange}
       disabled={disabled}
-      description={
-        isOverridden
-          ? undefined
-          : t('label.inherited_from_cos', 'Inherited from the Class of Service')
-      }
+      chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
       icon={
         isOverridden ? (
           <RevertToInheritedIcon

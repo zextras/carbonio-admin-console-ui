@@ -78,7 +78,7 @@ export const EmailPreferences = () => {
     cacheDurationInherited,
   );
 
-  const inheritedDescription = t('label.inherited_from_cos', 'Inherited from the Class of Service');
+  const inheritedChip = t('label.inherited', 'Inherited');
   const revertLabel = t('label.click_to_revert', 'Click to revert to the inherited value');
 
   const changeOutOfOfficeDurationetail = (e: ChangeEvent<HTMLInputElement>) => {
@@ -264,7 +264,7 @@ export const EmailPreferences = () => {
             autoComplete="off"
             value={cacheDurationLive?.slice(0, -1) ?? cacheDurationInherited?.slice(0, -1) ?? ''}
             onChange={changeOutOfOfficeDurationetail}
-            description={isCacheDurationOverridden ? undefined : inheritedDescription}
+            chip={isCacheDurationOverridden ? undefined : inheritedChip}
             icon={
               isCacheDurationOverridden ? (
                 <RevertToInheritedIcon
@@ -286,7 +286,7 @@ export const EmailPreferences = () => {
                 TIME_TYPES[0]
               }
               onChange={onOutOfOfficeCacheDurationTypeChange}
-              description={isCacheDurationOverridden ? undefined : inheritedDescription}
+              chip={isCacheDurationOverridden ? undefined : inheritedChip}
               icon={
                 isCacheDurationOverridden ? (
                   <RevertToInheritedIcon

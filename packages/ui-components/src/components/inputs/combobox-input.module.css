@@ -28,38 +28,38 @@
 }
 
 .listboxOptions {
-	appearance: none;
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	align-self: stretch;
-	min-width: 0;
-	margin: 0;
-	padding: 0;
-	border: none;
-	background: transparent;
-	color: inherit;
-	font: inherit;
-	--option-row-height: 1.90625rem;
+  appearance: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  align-self: stretch;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  --option-row-height: 1.90625rem;
 }
 
 .listboxOptions[data-single] {
-	height: var(--option-row-height);
-	overflow: hidden;
+  height: var(--option-row-height);
+  overflow: hidden;
 }
 
 .option {
-	display: flex;
-	height: var(--option-row-height);
-	box-sizing: border-box;
-	align-self: stretch;
-	align-items: center;
-	gap: 0.25rem;
-	padding: 0.375rem 0.75rem;
-	flex-shrink: 0;
-	overflow: hidden;
-	white-space: nowrap;
-	text-overflow: ellipsis;
+  display: flex;
+  height: var(--option-row-height);
+  box-sizing: border-box;
+  align-self: stretch;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 /* provisional highlight pending the Figma active/selected states */
@@ -73,7 +73,7 @@
 }
 
 .option ds-icon {
-	flex-shrink: 0;
+  flex-shrink: 0;
 }
 
 .messageRow {
@@ -112,4 +112,26 @@
 
 .toggleButton:not(:disabled):hover {
   background: var(--color-gray5-hover);
+}
+
+/*
+ * Customizable select (Safari 27+): makes the options ordinarily
+ * styleable, so the .option hover/active background paints edge to edge in
+ * WebKit too. Unsupported browsers keep the `appearance: none` fallback above.
+ */
+@supports (appearance: base-select) {
+  .listboxOptions,
+  .listboxOptions::picker(select) {
+    appearance: base-select;
+  }
+
+  /* base-select sizes the select from the UA default row height (24px),
+     ignoring the taller option boxes; size to the actual rows instead. */
+  .listboxOptions {
+    height: fit-content;
+  }
+
+  .listboxOptions[data-single] {
+    height: var(--option-row-height);
+  }
 }

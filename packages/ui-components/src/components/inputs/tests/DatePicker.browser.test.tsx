@@ -331,4 +331,21 @@ describe('DatePicker', () => {
       await expect.element(page.getByRole('grid')).not.toBeInTheDocument();
     });
   });
+
+  describe('chip', () => {
+    it('renders the chip inside the field box and links it via aria-describedby', async () => {
+      await render(
+        <DatePicker label="Pick a date" selected={null} onChange={() => {}} chip="Inherited" />,
+      );
+
+      const input = (await page
+        .getByRole('textbox', { name: 'Pick a date' })
+        .element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const describedBy = input.getAttribute('aria-describedby');
+      const chip = document.getElementById(describedBy as string);
+      expect(chip?.textContent).toBe('Inherited');
+      expect(box.contains(chip as Node)).toBe(true);
+    });
+  });
 });

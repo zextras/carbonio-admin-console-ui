@@ -59,11 +59,7 @@ const WscInheritedInput = ({
       disabled={disabled}
       value={liveValue ?? inheritedValue ?? ''}
       onChange={changeValue}
-      description={
-        isOverridden
-          ? undefined
-          : t('label.inherited_from_cos', 'Inherited from the Class of Service')
-      }
+      chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
       icon={
         isOverridden ? (
           <RevertToInheritedIcon

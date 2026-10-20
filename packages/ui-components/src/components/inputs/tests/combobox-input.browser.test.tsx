@@ -168,6 +168,33 @@ describe('ComboboxInput', () => {
 			expectColor(style.backgroundColor, '#F5F6F8');
 			expectColor(style.borderColor, '#E6E9ED');
 		});
+
+		it('opts out of browser autofill by default', async () => {
+			await render(
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+			);
+
+			await expect
+				.element(page.getByRole('combobox', { name: 'Server' }))
+				.toHaveAttribute('autocomplete', 'off');
+		});
+
+		it('lets callers override the autocomplete default', async () => {
+			await render(
+				<ComboboxInput
+					label="Server"
+					items={SERVERS}
+					value=""
+					onChange={() => {}}
+					onSelect={() => {}}
+					autoComplete="email"
+				/>,
+			);
+
+			await expect
+				.element(page.getByRole('combobox', { name: 'Server' }))
+				.toHaveAttribute('autocomplete', 'email');
+		});
 	});
 
 	describe('field states', () => {
@@ -461,6 +488,55 @@ describe('ComboboxInput', () => {
 			const input = await getCombobox('Server');
 			const matched = await page.getByRole('option', { name: 'ldap.example.com' }).element();
 			expect(input.getAttribute('aria-activedescendant')).toBe(matched.id);
+		});
+
+		it('moves focus to the input when opened with the chevron, so arrows navigate options', async () => {
+			await render(
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+			);
+
+			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }));
+
+			const input = await getCombobox('Server');
+			expect(document.activeElement).toBe(input);
+			await userEvent.keyboard('[ArrowDown]');
+
+			const firstOption = await page.getByRole('option', { name: 'mail.example.com' }).element();
+			expect(input.getAttribute('aria-activedescendant')).toBe(firstOption.id);
+			expect(firstOption.getAttribute('data-active')).toBe('true');
+		});
+
+		it('keeps the popup out of the tab order: Tab closes the list and continues through the page', async () => {
+			await render(
+				<div>
+					<ComboboxInput
+						label="Server"
+						items={SERVERS}
+						value=""
+						onChange={() => {}}
+						onSelect={() => {}}
+					/>
+					<button type="button">After field</button>
+				</div>,
+			);
+
+			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }));
+			// Tab 1: input → toggle button (list closes). Tab 2: toggle → following field.
+			await userEvent.keyboard('[Tab][Tab]');
+
+			await expect.element(page.getByRole('listbox')).not.toBeInTheDocument();
+			expect(document.activeElement?.textContent).toBe('After field');
+		});
+
+		it('renders the popup listbox outside the sequential tab order', async () => {
+			await render(
+				<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />,
+			);
+
+			await userEvent.click(page.getByRole('button', { name: 'Toggle suggestions' }));
+
+			const listbox = await getListbox();
+			expect(listbox.tabIndex).toBe(-1);
 		});
 	});
 
@@ -800,6 +876,17 @@ describe('ComboboxInput', () => {
 			expect(popup.parentElement).toBe(document.body);
 		});
 
+		it('opts the popup select into customizable-select styling where supported', async () => {
+			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} onSelect={() => {}} />);
+
+			await userEvent.click(page.getByRole('combobox', { name: 'Server' }));
+
+			// Requires a customizable-select browser (Chrome 135+, Safari 27+);
+			// unsupported browsers keep the `appearance: none` fallback.
+			expect(CSS.supports('appearance', 'base-select')).toBe(true);
+			expect(getComputedStyle(await getListbox()).appearance).toBe('base-select');
+		});
+
 		it('styles the Loading... row per spec', async () => {
 			await render(<ComboboxInput label="Server" items={SERVERS} value="" onChange={() => {}} loading onSelect={() => {}} />);
 
@@ -809,6 +896,36 @@ describe('ComboboxInput', () => {
 			const style = getComputedStyle(loadingRow);
 			expectColor(style.color, '#2F3941');
 			expect(style.textAlign).toBe('center');
+		});
+	});
+
+	describe('chip', () => {
+		it('renders the chip inside the field box at the right end and links it via aria-describedby', async () => {
+			await render(
+				<ComboboxInput
+					label="Server"
+					value=""
+					onChange={() => {}}
+					onSelect={() => {}}
+					items={SERVERS}
+					chip="Inherited"
+				/>,
+			);
+
+			const input = await getCombobox('Server');
+			const box = input.parentElement as HTMLElement;
+			const describedBy = input.getAttribute('aria-describedby');
+			const chip = document.getElementById(describedBy as string) as HTMLElement;
+			expect(chip?.textContent).toBe('Inherited');
+			expect(box.contains(chip as Node)).toBe(true);
+			expect(box.lastElementChild).toBe(chip);
+
+			// The chip must keep 0.25rem of horizontal separation from the toggle button
+			const toggle = (await page
+				.getByRole('button', { name: 'Toggle suggestions' })
+				.element()) as HTMLElement;
+			const spacing = chip.getBoundingClientRect().left - toggle.getBoundingClientRect().right;
+			expect(spacing).toBeGreaterThanOrEqual(4);
 		});
 	});
 });

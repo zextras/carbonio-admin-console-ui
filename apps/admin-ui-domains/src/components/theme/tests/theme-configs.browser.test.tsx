@@ -204,5 +204,28 @@ describe('ThemeConfigs (browser)', () => {
       await expect.element(page.getByText('Appearance')).toBeVisible();
       await expect.element(page.getByText('Logo URL Destination')).toBeVisible();
     });
+
+    it('shows the Inherited chip instead of the inherited description on the Dark Mode select', async () => {
+      const globalTheme: themeConfigStore = {
+        ...EMPTY_THEME,
+        carbonioLogoUrl: 'https://global.example.com',
+        carbonioWebUiPrimaryColor: '#FF0000',
+      };
+
+      setupBrowserTest(
+        <ThemeConfigsWrapper initialTheme={EMPTY_THEME} globalTheme={globalTheme} />,
+      );
+
+      const darkMode = page.getByRole('button', { name: 'Dark Mode' });
+      await expect.element(darkMode).toBeVisible();
+
+      const trigger = (await darkMode.element()) as HTMLButtonElement;
+      const chip = document.getElementById(trigger.getAttribute('aria-describedby') ?? '');
+      expect(chip?.textContent).toBe('Inherited');
+
+      await expect
+        .element(page.getByText('Inherited from the global configuration'))
+        .not.toBeInTheDocument();
+    });
   });
 });

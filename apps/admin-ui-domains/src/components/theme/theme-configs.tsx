@@ -144,12 +144,9 @@ export const ThemeConfigs = ({
               onChange={(v: string): void => {
                 form.setFieldValue('carbonioWebUiDarkMode', v);
               }}
-              description={
+              chip={
                 isInheritedMode && !isDarkModeOverridden
-                  ? t(
-                      'label.inherited_from_global_configuration',
-                      'Inherited from the global configuration',
-                    )
+                  ? t('label.inherited', 'Inherited')
                   : undefined
               }
               icon={
