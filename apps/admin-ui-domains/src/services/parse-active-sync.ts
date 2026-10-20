@@ -95,6 +95,34 @@ export function parseDeviceStatistics(res: unknown): MobileDeviceDetail | null {
   return isMobileDevice(first.response) ? (first.response as MobileDeviceDetail) : null;
 }
 
+export type AbqDeviceStatus = 'allowed' | 'blocked' | 'quarantined';
+
+export type AbqDeviceEntry = { deviceId: string; status: AbqDeviceStatus };
+
+const ABQ_STATUSES: Array<AbqDeviceStatus> = ['allowed', 'blocked', 'quarantined'];
+
+function asAbqDeviceStatus(value: unknown): AbqDeviceStatus | undefined {
+  return typeof value === 'string'
+    ? ABQ_STATUSES.find((status) => status === value.toLowerCase())
+    : undefined;
+}
+
+export function parseAbqDevices(res: unknown): Array<AbqDeviceEntry> {
+  const parsed = readSoapContent(res);
+  if (!isRecord(parsed) || !isRecord(parsed.response) || !Array.isArray(parsed.response.devices)) {
+    return [];
+  }
+
+  const devices: Array<AbqDeviceEntry> = [];
+  parsed.response.devices.forEach((item) => {
+    if (!isRecord(item)) return;
+    const status = asAbqDeviceStatus(item.status);
+    const deviceId = typeof item.device_id === 'string' ? item.device_id.split('/')[0] : '';
+    if (status && deviceId) devices.push({ deviceId, status });
+  });
+  return devices;
+}
+
 export function parseZextrasActionResult(res: unknown): { ok: boolean; message?: string } {
   const parsed = readSoapContent(res);
   if (!isRecord(parsed)) return { ok: false };

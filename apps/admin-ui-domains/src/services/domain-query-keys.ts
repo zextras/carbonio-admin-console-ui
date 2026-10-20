@@ -65,6 +65,7 @@ export const domainQueryKeys = {
     [...domainQueryKeys.all, 'active-sync-devices', domainName] as const,
   activeSyncDeviceStats: (accountEmail: string, deviceId: string) =>
     [...domainQueryKeys.all, 'active-sync-device-stats', accountEmail, deviceId] as const,
+  activeSyncAbqDevices: () => [...domainQueryKeys.all, 'active-sync-abq-devices'] as const,
   accountListDirectory: {
     base: () => [...domainQueryKeys.all, 'account-list-directory'] as const,
     search: (params: {
