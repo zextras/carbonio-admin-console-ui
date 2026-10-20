@@ -110,10 +110,7 @@ export const FailedLoginPolicy = () => {
     },
   ];
 
-  const inheritedDescription = t(
-    'label.inherited_from_cos',
-    'Inherited from the Class of Service',
-  );
+  const inheritedChip = t('label.inherited', 'Inherited');
   const revertLabel = t('label.click_to_revert', 'Click to revert to the inherited value');
 
   const lockoutMaxFailuresValue = values.zimbraPasswordLockoutMaxFailures as string | undefined;
@@ -196,8 +193,8 @@ export const FailedLoginPolicy = () => {
                   }));
                 }}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
-                description={
-                  isLockoutMaxFailuresOverridden ? undefined : inheritedDescription
+                chip={
+                  isLockoutMaxFailuresOverridden ? undefined : inheritedChip
                 }
                 icon={
                   isLockoutMaxFailuresOverridden ? (
@@ -233,7 +230,7 @@ export const FailedLoginPolicy = () => {
                 }
                 onChange={onZimbraPasswordLockoutDurationNumChange}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
-                description={isLockoutDurationOverridden ? undefined : inheritedDescription}
+                chip={isLockoutDurationOverridden ? undefined : inheritedChip}
                 icon={
                   isLockoutDurationOverridden ? (
                     <RevertToInheritedIcon
@@ -255,7 +252,7 @@ export const FailedLoginPolicy = () => {
                 }
                 onChange={onZimbraPasswordLockoutDurationTypeChange}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
-                description={isLockoutDurationOverridden ? undefined : inheritedDescription}
+                chip={isLockoutDurationOverridden ? undefined : inheritedChip}
                 icon={
                   isLockoutDurationOverridden ? (
                     <RevertToInheritedIcon
@@ -293,8 +290,8 @@ export const FailedLoginPolicy = () => {
                 }
                 onChange={onZimbraPasswordLockoutFailureLifetimeNumChange}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
-                description={
-                  isLockoutFailureLifetimeOverridden ? undefined : inheritedDescription
+                chip={
+                  isLockoutFailureLifetimeOverridden ? undefined : inheritedChip
                 }
                 icon={
                   isLockoutFailureLifetimeOverridden ? (
@@ -321,8 +318,8 @@ export const FailedLoginPolicy = () => {
                 }
                 onChange={onZimbraPasswordLockoutFailureLifetimeTypeChange}
                 disabled={values.zimbraPasswordLockoutEnabled !== 'TRUE'}
-                description={
-                  isLockoutFailureLifetimeOverridden ? undefined : inheritedDescription
+                chip={
+                  isLockoutFailureLifetimeOverridden ? undefined : inheritedChip
                 }
                 icon={
                   isLockoutFailureLifetimeOverridden ? (

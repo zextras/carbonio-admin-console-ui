@@ -29,18 +29,8 @@ function resolveFieldDescription(
   hasError: boolean,
   errorLabel: string | undefined,
   errorLabelDefault: string | undefined,
-  showsInheritedHint: boolean,
 ): string | undefined {
-  if (hasError && errorLabel && errorLabelDefault) {
-    return t(errorLabel, errorLabelDefault);
-  }
-  if (showsInheritedHint) {
-    return t(
-      'label.inherited_from_global_configuration',
-      'Inherited from the global configuration',
-    );
-  }
-  return undefined;
+  return hasError && errorLabel && errorLabelDefault ? t(errorLabel, errorLabelDefault) : undefined;
 }
 
 export const ThemeFieldInput = ({
@@ -64,13 +54,11 @@ export const ThemeFieldInput = ({
   const isInheritedMode = globalTheme !== undefined;
   const isOverridden = isInheritedMode && value !== undefined;
 
-  const description = resolveFieldDescription(
-    t,
-    hasError,
-    errorLabel,
-    errorLabelDefault,
-    isInheritedMode && !isOverridden,
-  );
+  const description = resolveFieldDescription(t, hasError, errorLabel, errorLabelDefault);
+  const chip =
+    isInheritedMode && !isOverridden && !description
+      ? t('label.inherited', 'Inherited')
+      : undefined;
 
   return (
     <TextInput
@@ -83,6 +71,7 @@ export const ThemeFieldInput = ({
       }}
       hasError={hasError}
       description={description}
+      chip={chip}
       disabled={isGlobalTheme && !hasModifyRights}
       icon={
         isOverridden ? (
