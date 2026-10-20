@@ -89,14 +89,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
                     amavisLogLevelOptions[0]
                   }
                   onChange={(value) => field.handleChange(value)}
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   icon={
                     isOverridden ? (
                       <RevertToInheritedIcon
@@ -131,14 +124,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
                     amavisSALogLevelOptions[0]
                   }
                   onChange={(value) => field.handleChange(value)}
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   icon={
                     isOverridden ? (
                       <RevertToInheritedIcon
@@ -186,14 +172,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
                     zimbraMtaSmtpdLoglevelOptions[0]
                   }
                   onChange={(value) => field.handleChange(value)}
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   icon={
                     isOverridden ? (
                       <RevertToInheritedIcon
@@ -233,14 +212,7 @@ export const LoggingSection = ({ form, configInformation }: LoggingSectionProps)
                     zimbraMtaLmtpTlsLoglevelOptions[0]
                   }
                   onChange={(value) => field.handleChange(value)}
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   icon={
                     isOverridden ? (
                       <RevertToInheritedIcon

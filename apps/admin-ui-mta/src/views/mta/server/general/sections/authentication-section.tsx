@@ -146,14 +146,7 @@ export const AuthenticationSection = ({
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     field.handleChange(e.target.value)
                   }
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   disabled={!allowSetMTA}
                   icon={
                     isOverridden ? (
@@ -186,14 +179,7 @@ export const AuthenticationSection = ({
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     field.handleChange(e.target.value)
                   }
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   disabled={!allowSetMTA}
                   icon={
                     isOverridden ? (

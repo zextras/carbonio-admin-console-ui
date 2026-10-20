@@ -42,6 +42,8 @@ type ComboboxInputProps = Omit<
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. */
   hasError?: boolean;
+  /** Renders an informational chip inside the field box, after the text and before any icon; announced via aria-describedby. */
+  chip?: string;
   /** Fired when the user picks an option (click or Enter). The component never writes the picked label back into the input. */
   onSelect: (item: ComboboxItem) => void;
   /** When provided, renders a clear button while the value is non-empty. */
@@ -221,6 +223,7 @@ const ComboboxInput = ({
   required,
   description,
   hasError = false,
+  chip,
   loading = false,
   emptyMessage,
   onSelect,
@@ -234,6 +237,7 @@ const ComboboxInput = ({
 }: ComboboxInputProps) => {
   const inputId = useId();
   const descriptionId = useId();
+  const chipId = useId();
   const listboxId = useId();
   const inputRef = useRef<HTMLInputElement | null>(null);
   const popupRef = useRef<HTMLDivElement | null>(null);
@@ -241,7 +245,11 @@ const ComboboxInput = ({
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const resolvedDescription = description ?? '';
   const inputClassName = clsx(styles.control, className);
-  const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
+  const describedBy = clsx(
+    callerDescribedBy,
+    description ? descriptionId : undefined,
+    chip ? chipId : undefined,
+  );
   const valueLower = value.toString().toLowerCase();
 
   function openList(): void {
@@ -351,6 +359,8 @@ const ComboboxInput = ({
       hasError={hasError}
       description={resolvedDescription}
       descriptionId={descriptionId}
+      chip={chip}
+      chipId={chipId}
     >
       <input
         id={inputId}

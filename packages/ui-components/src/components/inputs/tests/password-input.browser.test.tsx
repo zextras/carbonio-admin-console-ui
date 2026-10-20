@@ -104,4 +104,21 @@ describe('PasswordInput', () => {
       .element()) as HTMLInputElement;
     expect(input.autocomplete).toBe('new-password');
   });
+
+  describe('chip', () => {
+    it('renders the chip inside the field box and links it via aria-describedby', async () => {
+      await render(
+        <PasswordInput label="Secret key" value="" onChange={() => {}} chip="Inherited" />,
+      );
+
+      const input = (await page
+        .getByRole('textbox', { name: 'Secret key' })
+        .element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const describedBy = input.getAttribute('aria-describedby');
+      const chip = document.getElementById(describedBy as string);
+      expect(chip?.textContent).toBe('Inherited');
+      expect(box.contains(chip as Node)).toBe(true);
+    });
+  });
 });
