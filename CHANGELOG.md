@@ -1,3 +1,9 @@
+## [0.31.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.0...v0.31.1) (2026-10-20)
+
+### Bug Fixes
+
+* mta fix page scrolling ([#1417](https://github.com/zextras/carbonio-admin-console-ui/issues/1417)) ([7a17f9b](https://github.com/zextras/carbonio-admin-console-ui/commit/7a17f9b7edbb40f520ae254011056d1145ab59da))
+
 ## [0.31.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.30.1...v0.31.0) (2026-10-20)
 
 ### Features
