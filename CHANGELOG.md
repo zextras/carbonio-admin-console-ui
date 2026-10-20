@@ -1,3 +1,9 @@
+## [0.31.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.30.1...v0.31.0) (2026-10-20)
+
+### Features
+
+* add informational inherited chip in input fields ([#1416](https://github.com/zextras/carbonio-admin-console-ui/issues/1416)) ([f4839e9](https://github.com/zextras/carbonio-admin-console-ui/commit/f4839e90a70c1805cb1b492330d5af2bdd27e947))
+
 ## [0.30.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.30.0...v0.30.1) (2026-10-20)
 
 ### Bug Fixes
