@@ -195,6 +195,7 @@ const ComboboxPopupBody = ({
 		<select
 			size={Math.max(items.length, 2)}
 			data-single={items.length === 1 || undefined}
+			tabIndex={-1}
 			className={popupStyles.listboxOptions}
 		>
 			{items.map((item, index) => (
@@ -247,6 +248,7 @@ const ComboboxInput = ({
     if (disabled) return;
     setOpen(true);
     setActiveIndex(selectedIndexOf(items, value.toString()));
+    inputRef.current?.focus();
   }
 
   function closeList(): void {
@@ -371,6 +373,7 @@ const ComboboxInput = ({
         }
         aria-invalid={hasError || undefined}
         aria-describedby={describedBy || undefined}
+        autoComplete="off"
         onChange={handleChange}
         onClick={handleClick}
         onKeyDown={handleKeyDown}

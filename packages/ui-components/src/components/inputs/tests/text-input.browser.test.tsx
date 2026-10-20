@@ -187,11 +187,36 @@ describe('TextInput', () => {
       expectColor(style.backgroundColor, '#FFFFFF');
     });
 
-    it('does not change the cursor over the field box', async () => {
+    it('shows the pointer cursor over the field box and the input', async () => {
       await render(<TextInput label="Name" value="" onChange={() => {}} />);
 
-      const style = getComputedStyle(await getBox('Name'));
-      expect(style.cursor).toBe('auto');
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(getComputedStyle(await getBox('Name')).cursor).toBe('pointer');
+      expect(getComputedStyle(input).cursor).toBe('pointer');
+    });
+
+    it('shows the default cursor over a disabled field', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} disabled />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(getComputedStyle(await getBox('Name')).cursor).toBe('default');
+      expect(getComputedStyle(input).cursor).toBe('default');
+    });
+
+    it('covers the whole box with a label overlay so padding clicks focus the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      // Native label activation (a browser default action) can't be triggered by
+      // synthetic events, so pin the mechanism: an overlay label associated with
+      // the input and covering the box, padding included.
+      const overlay = box.querySelector(`label[for="${input.id}"]`) as HTMLLabelElement;
+      expect(overlay.offsetWidth).toBe(box.clientWidth);
+      expect(overlay.offsetHeight).toBe(box.clientHeight);
+      // The label's text must stay invisible and out of the accessible name —
+      // the 'accessible name is the label' test guards against pollution.
+      expect(overlay.querySelector('span')?.hasAttribute('hidden')).toBe(true);
     });
 
     it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
@@ -296,37 +321,46 @@ describe('TextInput', () => {
   });
 
   describe('info icon', () => {
-    it('renders the InfoOutline icon inside the field box when infoIcon is true', async () => {
-      await render(<TextInput label="Name" value="" onChange={() => {}} infoIcon />);
+    it('renders the InfoOutline icon in the label row when infoTooltip is provided', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const box = input.parentElement as HTMLElement;
-      const host = input.nextElementSibling;
-      expect(host?.tagName).toBe('DS-ICON');
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const host = label.querySelector('ds-icon');
       expect(host?.getAttribute('icon')).toBe('InfoOutline');
       expect(host?.getAttribute('aria-hidden')).toBe('true');
       expect(host?.shadowRoot?.querySelector('svg')).not.toBeNull();
-      expect(box.contains(host as Node)).toBe(true);
     });
 
-    it('sizes and colors the icon per spec', async () => {
-      await render(<TextInput label="Name" value="" onChange={() => {}} infoIcon />);
+    it('sizes and colors the label info icon per spec', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const host = input.nextElementSibling as HTMLElement;
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const host = label.querySelector('ds-icon') as HTMLElement;
       const svg = host.shadowRoot?.querySelector('svg') as SVGSVGElement | null;
       expect(svg).not.toBeNull();
       const svgStyle = getComputedStyle(svg as Element);
-      expect(Number.parseFloat(svgStyle.width)).toBeCloseTo(0.83331 * 16, 1);
-      expect(Number.parseFloat(svgStyle.height)).toBeCloseTo(0.83331 * 16, 1);
+      expect(Number.parseFloat(svgStyle.width)).toBeCloseTo(0.75 * 16, 1);
+      expect(Number.parseFloat(svgStyle.height)).toBeCloseTo(0.75 * 16, 1);
       expectColor(svgStyle.color, '#696969');
     });
 
-    it('does not render any icon inside the box without infoIcon', async () => {
+    it('shows the tooltip text when hovering the label info icon', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
+
+      await page.getByTestId('icon: InfoOutline').hover();
+
+      await expect.element(page.getByText('Format hint')).toBeVisible();
+    });
+
+    it('does not render any icon in the label row or the box without infoTooltip', async () => {
       await render(<TextInput label="Name" value="" onChange={() => {}} />);
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
       const box = input.parentElement as HTMLElement;
+      expect(label.querySelector('ds-icon')).toBeNull();
       expect(box.querySelector('ds-icon')).toBeNull();
     });
   });
@@ -352,22 +386,21 @@ describe('TextInput', () => {
       expect(input.nextElementSibling?.textContent).toBe('custom icon');
     });
 
-    it('renders the custom icon before the info icon when both are provided', async () => {
+    it('renders the custom icon in the box and the info icon in the label row when both are provided', async () => {
       await render(
         <TextInput
           label="Name"
           value=""
           onChange={() => {}}
-          infoIcon
+          infoTooltip="Format hint"
           icon={<span>custom icon</span>}
         />,
       );
 
-      const input = await page.getByRole('textbox', { name: 'Name' }).element();
-      const customIcon = input.nextElementSibling as HTMLElement;
-      const infoIconHost = customIcon.nextElementSibling as HTMLElement;
-      expect(customIcon.textContent).toBe('custom icon');
-      expect(infoIconHost.tagName).toBe('DS-ICON');
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(input.nextElementSibling?.textContent).toBe('custom icon');
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const infoIconHost = label.querySelector('ds-icon') as HTMLElement;
       expect(infoIconHost.getAttribute('icon')).toBe('InfoOutline');
     });
 
@@ -376,6 +409,33 @@ describe('TextInput', () => {
 
       const input = await page.getByRole('textbox', { name: 'Name' }).element();
       expect(input.nextElementSibling).toBeNull();
+    });
+
+    it('keeps buttons inside a wrapped icon node clickable above the click overlay', async () => {
+      let clicked = false;
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          icon={
+            <span>
+              <button
+                type="button"
+                onClick={() => {
+                  clicked = true;
+                }}
+              >
+                act
+              </button>
+            </span>
+          }
+        />,
+      );
+
+      await page.getByRole('button', { name: 'act' }).click();
+
+      expect(clicked).toBe(true);
     });
   });
 

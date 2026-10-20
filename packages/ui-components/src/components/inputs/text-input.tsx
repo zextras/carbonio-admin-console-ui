@@ -25,8 +25,8 @@ export type TextInputProps = Omit<
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. Pair with `description` so the invalid state carries a visible and announced explanation. */
   hasError?: boolean;
-  /** Renders the InfoOutline icon at the right edge of the field box. */
-  infoIcon?: boolean;
+  /** Renders the InfoOutline icon at the right end of the label row with this text as hover tooltip. */
+  infoTooltip?: string;
   /** Renders a custom node at the right edge of the field box, before the info icon. */
   icon?: ReactNode;
 };
@@ -40,7 +40,7 @@ export const TextInput = ({
 	className,
 	hasError = false,
 	description,
-	infoIcon = false,
+	infoTooltip,
 	icon,
 	'aria-describedby': callerDescribedBy,
 	...rest
@@ -60,7 +60,7 @@ export const TextInput = ({
       hasError={hasError}
       description={resolvedDescription}
       descriptionId={descriptionId}
-      infoIcon={infoIcon}
+      infoTooltip={infoTooltip}
       icon={icon}
     >
       <input

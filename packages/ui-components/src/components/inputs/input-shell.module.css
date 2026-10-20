@@ -36,9 +36,16 @@
   flex-shrink: 0;
 }
 
+.labelInfoIcon {
+  align-self: center;
+  flex-shrink: 0;
+  margin-left: auto;
+}
+
 .box {
   display: flex;
   box-sizing: border-box;
+  position: relative;
   height: 2.5rem;
   padding: 0.625rem 0.75rem;
   justify-content: space-between;
@@ -48,6 +55,26 @@
   border-radius: 0.25rem;
   border: 1px solid #858c93;
   background: #fff;
+  cursor: pointer;
+}
+
+/* Invisible label overlay covering the whole box (padding included): clicking
+   anywhere activates the field's control through native label association.
+   Every other child paints above it, so custom icon-slot nodes (e.g. a span
+   wrapping buttons) stay clickable. */
+.clickArea {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+}
+
+.box > *:not(.clickArea) {
+  position: relative;
+}
+
+.box[data-disabled],
+.box[data-disabled] .control {
+  cursor: default;
 }
 
 .box ds-icon {
@@ -115,6 +142,7 @@
   padding: 0;
   font: inherit;
   color: var(--color-text-regular);
+  cursor: pointer;
 }
 
 .box:not([data-multiline]) > .control {
