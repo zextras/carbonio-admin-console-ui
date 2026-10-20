@@ -1,3 +1,9 @@
+## [0.30.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.30.0...v0.30.1) (2026-10-20)
+
+### Bug Fixes
+
+* various form input ux improvements ([#1414](https://github.com/zextras/carbonio-admin-console-ui/issues/1414)) ([c004b8b](https://github.com/zextras/carbonio-admin-console-ui/commit/c004b8b815f5ea49f71ef069b97d07b9e81c9ace))
+
 ## [0.30.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.2...v0.30.0) (2026-10-12)
 
 ### Features
