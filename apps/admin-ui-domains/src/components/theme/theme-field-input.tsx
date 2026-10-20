@@ -26,11 +26,10 @@ type ThemeFieldInputProps = {
 
 function resolveFieldDescription(
   t: TFunction,
-  hasError: boolean,
   errorLabel: string | undefined,
   errorLabelDefault: string | undefined,
 ): string | undefined {
-  return hasError && errorLabel && errorLabelDefault ? t(errorLabel, errorLabelDefault) : undefined;
+  return errorLabel && errorLabelDefault ? t(errorLabel, errorLabelDefault) : undefined;
 }
 
 export const ThemeFieldInput = ({
@@ -54,7 +53,7 @@ export const ThemeFieldInput = ({
   const isInheritedMode = globalTheme !== undefined;
   const isOverridden = isInheritedMode && value !== undefined;
 
-  const description = resolveFieldDescription(t, hasError, errorLabel, errorLabelDefault);
+  const description = hasError ? resolveFieldDescription(t, errorLabel, errorLabelDefault) : undefined;
   const chip =
     isInheritedMode && !isOverridden && !description
       ? t('label.inherited', 'Inherited')
