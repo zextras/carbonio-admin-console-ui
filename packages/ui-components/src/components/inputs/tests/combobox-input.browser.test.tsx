@@ -898,4 +898,27 @@ describe('ComboboxInput', () => {
 			expect(style.textAlign).toBe('center');
 		});
 	});
+
+	describe('chip', () => {
+		it('renders the chip inside the field box at the right end and links it via aria-describedby', async () => {
+			await render(
+				<ComboboxInput
+					label="Server"
+					value=""
+					onChange={() => {}}
+					onSelect={() => {}}
+					items={SERVERS}
+					chip="Inherited"
+				/>,
+			);
+
+			const input = await getCombobox('Server');
+			const box = input.parentElement as HTMLElement;
+			const describedBy = input.getAttribute('aria-describedby');
+			const chip = document.getElementById(describedBy as string);
+			expect(chip?.textContent).toBe('Inherited');
+			expect(box.contains(chip as Node)).toBe(true);
+			expect(box.lastElementChild).toBe(chip);
+		});
+	});
 });

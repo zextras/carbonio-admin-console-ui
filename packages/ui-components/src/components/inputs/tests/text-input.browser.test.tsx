@@ -726,4 +726,90 @@ describe('TextInput', () => {
       await expect.element(page.getByTestId('tooltip')).toBeVisible();
     });
   });
+
+  describe('chip', () => {
+    it('renders the chip text inside the field box after the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      const box = input.parentElement as HTMLElement;
+      expect(chip.textContent).toBe('Inherited');
+      expect(chip.tagName).toBe('SPAN');
+      expect(box.contains(chip)).toBe(true);
+    });
+
+    it('renders the chip before the trailing icon when both are provided', async () => {
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          chip="Inherited"
+          icon={<span>custom icon</span>}
+        />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      expect(chip.textContent).toBe('Inherited');
+      expect(chip.nextElementSibling?.textContent).toBe('custom icon');
+    });
+
+    it('exposes the chip text to screen readers via aria-describedby', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const chip = input.nextElementSibling as HTMLElement;
+      const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      expect(ids).toContain(chip.id);
+      expect(document.getElementById(chip.id)).toBe(chip);
+    });
+
+    it('merges the chip id with a description and a caller-provided aria-describedby', async () => {
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          chip="Inherited"
+          description="Helper text"
+          aria-describedby="external-hint"
+        />,
+      );
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const chip = input.nextElementSibling as HTMLElement;
+      const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      expect(ids).toContain('external-hint');
+      expect(ids).toContain(chip.id);
+      expect(ids).toHaveLength(3);
+    });
+
+    it('styles the chip per the design tokens', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      const style = getComputedStyle(chip);
+      expectColor(style.backgroundColor, '#E6E9ED');
+      expectColor(style.color, '#333333');
+      expect(style.borderRadius).toBe('12px');
+      expect(style.paddingTop).toBe('1px');
+      expect(style.paddingLeft).toBe('8px');
+      expect(style.fontSize).toBe('12px');
+      expect(style.fontWeight).toBe('300');
+      expect(style.lineHeight).toBe('18px');
+      expect(style.whiteSpace).toBe('nowrap');
+    });
+
+    it('renders the chip when the field is disabled', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" disabled />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      await expect.element(page.getByText('Inherited')).toBeVisible();
+      expect(input.parentElement?.contains(chip)).toBe(true);
+    });
+  });
 });

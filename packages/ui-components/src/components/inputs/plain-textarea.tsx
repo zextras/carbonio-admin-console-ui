@@ -25,6 +25,8 @@ export type PlainTextareaProps = Omit<
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. */
   hasError?: boolean;
+  /** Renders an informational chip inside the field box, after the text and before any icon; announced via aria-describedby. */
+  chip?: string;
   /** Cap on the user-resizable height; unlimited when not provided. */
   maxHeight?: string;
 };
@@ -38,6 +40,7 @@ export const PlainTextarea = ({
   className,
   hasError = false,
   description,
+  chip,
   maxHeight,
   ref: callerRef,
   'aria-describedby': callerDescribedBy,
@@ -45,8 +48,13 @@ export const PlainTextarea = ({
 }: PlainTextareaProps) => {
   const textareaId = useId();
   const descriptionId = useId();
+  const chipId = useId();
   const textareaClassName = clsx(styles.control, textareaStyles.textarea, className);
-  const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
+  const describedBy = clsx(
+    callerDescribedBy,
+    description ? descriptionId : undefined,
+    chip ? chipId : undefined,
+  );
 
   return (
     <InputShell
@@ -57,6 +65,8 @@ export const PlainTextarea = ({
       hasError={hasError}
       description={description ?? ''}
       descriptionId={descriptionId}
+      chip={chip}
+      chipId={chipId}
       multiline
     >
       <textarea

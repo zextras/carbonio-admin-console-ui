@@ -21,6 +21,10 @@ type InputShellProps = {
   hasError?: boolean;
   /** Renders the InfoOutline icon at the right end of the label row with this text as hover tooltip. */
   infoTooltip?: string;
+  /** Renders an informational chip inside the field box, after the control and before the icon. */
+  chip?: string;
+  /** Id set on the chip element; link it into the control's aria-describedby so the chip text is announced. */
+  chipId?: string;
   /** Custom node rendered at the right edge of the field box. */
   icon?: ReactNode;
   /** Lets the box grow with multi-line controls (textarea) instead of the fixed field height. */
@@ -37,6 +41,8 @@ const InputShell = ({
   required = false,
   hasError = false,
   infoTooltip,
+  chip,
+  chipId,
   icon,
   multiline = false,
   children,
@@ -77,6 +83,11 @@ const InputShell = ({
           <span hidden>edit</span>
         </label>
         {children}
+        {chip && (
+          <span id={chipId} className={styles.chip}>
+            <span className={styles.chipText}>{chip}</span>
+          </span>
+        )}
         {icon}
       </div>
       <p className={styles.description} id={descriptionId} data-error={hasError || undefined}>
