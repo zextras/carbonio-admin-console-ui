@@ -163,7 +163,28 @@ describe('PlainSwitch', () => {
       await render(<PlainSwitch label="Enable mail" {...props} />);
 
       const expectedColor = expected.startsWith('--') ? resolveColorToken(expected) : expected;
-      expect(getComputedStyle(getTrack('Enable mail')).backgroundColor).toBe(expectedColor);
+      const trackFill = getTrack('Enable mail').querySelector('rect') as SVGRectElement;
+      expect(getComputedStyle(trackFill).fill).toBe(expectedColor);
+    });
+
+    it('should center the thumb vertically with a 1.6px inset', async () => {
+      await render(<PlainSwitch label="Enable mail" />);
+
+      const track = getTrack('Enable mail').getBoundingClientRect();
+      const thumb = (getTrack('Enable mail').querySelector('circle') as SVGCircleElement).getBoundingClientRect();
+      expect(thumb.top - track.top).toBeCloseTo(1.6, 1);
+      expect(track.bottom - thumb.bottom).toBeCloseTo(1.6, 1);
+      expect(thumb.left - track.left).toBeCloseTo(1.6, 1);
+    });
+
+    it('should move the thumb to the right edge when checked', async () => {
+      await render(<PlainSwitch label="Enable mail" defaultChecked />);
+
+      const svg = getTrack('Enable mail');
+      const thumb = svg.querySelector('circle') as SVGCircleElement;
+      await expect
+        .poll(() => svg.getBoundingClientRect().right - thumb.getBoundingClientRect().right)
+        .toBeCloseTo(1.6, 1);
     });
 
     it('should show a pointer cursor on the title and track, not on the description', async () => {

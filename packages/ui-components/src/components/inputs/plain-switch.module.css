@@ -33,40 +33,42 @@
   cursor: default;
 }
 
+/* Track and thumb are drawn in a single SVG so they rasterize together and the thumb
+   stays centered at fractional positions and device pixel ratios. */
 .track {
   position: absolute;
   inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
   border-radius: 5rem;
-  background: #858c93;
-  transition: background-color 150ms ease;
+}
+
+.trackFill {
+  fill: #858c93;
+  transition: fill 150ms ease;
 }
 
 .thumb {
-  position: absolute;
-  top: 0.1rem;
-  left: 0.1rem;
-  width: 0.8rem;
-  height: 0.8rem;
-  border-radius: 5rem;
-  background: var(--color-gray6-regular);
-  box-shadow: 0 0.1rem 0.2rem rgba(39, 39, 39, 0.1);
+  fill: var(--color-gray6-regular);
+  filter: drop-shadow(0 1.6px 3.2px rgba(39, 39, 39, 0.1));
   transition: transform 150ms ease;
 }
 
-.input:checked + .track {
-  background: var(--color-primary-regular);
+.input:checked + .track .trackFill {
+  fill: var(--color-primary-regular);
 }
 
-.input:checked + .track > .thumb {
-  transform: translateX(0.8rem);
+.input:checked + .track .thumb {
+  transform: translateX(12.8px);
 }
 
-.input:disabled + .track {
-  background: var(--color-gray3-disabled);
+.input:disabled + .track .trackFill {
+  fill: var(--color-gray3-disabled);
 }
 
-.input:checked:disabled + .track {
-  background: var(--color-primary-disabled);
+.input:checked:disabled + .track .trackFill {
+  fill: var(--color-primary-disabled);
 }
 
 .input:focus-visible + .track {
@@ -107,7 +109,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .track,
+  .trackFill,
   .thumb {
     transition: none;
   }

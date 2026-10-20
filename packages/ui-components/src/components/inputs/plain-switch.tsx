@@ -57,9 +57,10 @@ export const PlainSwitch = ({
           aria-describedby={describedBy || undefined}
           {...rest}
         />
-        <span className={styles.track} aria-hidden="true">
-          <span className={styles.thumb} />
-        </span>
+        <svg className={styles.track} viewBox="0 0 28.8 16" aria-hidden="true" focusable="false">
+          <rect className={styles.trackFill} width="28.8" height="16" rx="8" />
+          <circle className={styles.thumb} cx="8" cy="8" r="6.4" />
+        </svg>
       </span>
       <span className={styles.text}>
         <label htmlFor={inputId} className={styles.label}>
