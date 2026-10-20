@@ -103,13 +103,8 @@ export const SettingsFields = () => {
                 localeItems[0]
               }
               onChange={onPrefLocaleChange}
-              description={
-                isLocaleOverridden
-                  ? undefined
-                  : t(
-                      'label.inherited_from_cos',
-                      'Inherited from the Class of Service',
-                    )
+              chip={
+                isLocaleOverridden ? undefined : t('label.inherited', 'Inherited')
               }
               icon={
                 isLocaleOverridden ? (

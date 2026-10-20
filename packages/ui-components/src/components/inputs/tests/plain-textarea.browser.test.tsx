@@ -113,4 +113,25 @@ describe('PlainTextarea', () => {
     expect(textarea.offsetHeight).toBeLessThanOrEqual(48);
     expect(textarea.scrollHeight).toBeGreaterThan(textarea.clientHeight);
   });
+
+  describe('chip', () => {
+    it('renders the chip inside the field box and links it via aria-describedby', async () => {
+      await render(<PlainTextarea label="Notes" value="" onChange={() => {}} chip="Inherited" />);
+
+      const textarea = await page.getByRole('textbox', { name: 'Notes' }).element();
+      const box = textarea.parentElement as HTMLElement;
+      const describedBy = textarea.getAttribute('aria-describedby');
+      const chip = document.getElementById(describedBy as string);
+      expect(chip?.textContent).toBe('Inherited');
+      expect(box.contains(chip as Node)).toBe(true);
+    });
+
+    it('keeps the chip vertically centered in the multiline box instead of stretching it', async () => {
+      await render(<PlainTextarea label="Notes" value="" onChange={() => {}} chip="Inherited" />);
+
+      const chip = (await page.getByText('Inherited').element()) as HTMLElement;
+      expect(chip.offsetHeight).toBeLessThanOrEqual(20);
+      expect(getComputedStyle(chip.parentElement as HTMLElement).alignSelf).toBe('center');
+    });
+  });
 });

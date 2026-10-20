@@ -36,6 +36,8 @@ export type SelectProps<T = string> = {
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. */
   hasError?: boolean;
+  /** Renders an informational chip inside the field box, after the trigger and before any icon; announced via aria-describedby. */
+  chip?: string;
   disabled?: boolean;
   required?: boolean;
   /** Renders a custom node at the right edge of the field box, after the chevron. */
@@ -150,10 +152,12 @@ export const Select = <T,>({
   required = false,
   description,
   hasError = false,
+  chip,
   icon,
 }: SelectProps<T>) => {
   const triggerId = useId();
   const descriptionId = useId();
+  const chipId = useId();
   const listboxId = useId();
   const popupRef = useRef<HTMLDivElement | null>(null);
   const triggerRef = useRef<HTMLButtonElement | null>(null);
@@ -161,6 +165,7 @@ export const Select = <T,>({
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
   const resolvedDescription = description ?? '';
   const triggerClassName = clsx(styles.control, triggerStyles.trigger);
+  const describedBy = clsx(description ? descriptionId : undefined, chip ? chipId : undefined);
 
   function openList(): void {
     setOpen(true);
@@ -251,6 +256,8 @@ export const Select = <T,>({
       hasError={hasError}
       description={resolvedDescription}
       descriptionId={descriptionId}
+      chip={chip}
+      chipId={chipId}
       icon={icon}
     >
       <button
@@ -262,7 +269,7 @@ export const Select = <T,>({
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-controls={open ? listboxId : undefined}
-        aria-describedby={description ? descriptionId : undefined}
+        aria-describedby={describedBy || undefined}
         onClick={() => {
           if (open) closeList();
           else openList();

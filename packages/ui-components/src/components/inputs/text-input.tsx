@@ -27,6 +27,8 @@ export type TextInputProps = Omit<
   hasError?: boolean;
   /** Renders the InfoOutline icon at the right end of the label row with this text as hover tooltip. */
   infoTooltip?: string;
+  /** Renders an informational chip inside the field box, after the text and before any icon; announced via aria-describedby. */
+  chip?: string;
   /** Renders a custom node at the right edge of the field box, before the info icon. */
   icon?: ReactNode;
 };
@@ -41,15 +43,21 @@ export const TextInput = ({
 	hasError = false,
 	description,
 	infoTooltip,
+	chip,
 	icon,
 	'aria-describedby': callerDescribedBy,
 	...rest
 }: TextInputProps) => {
 	const inputId = useId();
   const descriptionId = useId();
+  const chipId = useId();
   const resolvedDescription = description ?? '';
   const inputClassName = clsx(styles.control, className);
-  const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
+  const describedBy = clsx(
+    callerDescribedBy,
+    description ? descriptionId : undefined,
+    chip ? chipId : undefined,
+  );
 
   return (
     <InputShell
@@ -61,6 +69,8 @@ export const TextInput = ({
       description={resolvedDescription}
       descriptionId={descriptionId}
       infoTooltip={infoTooltip}
+      chip={chip}
+      chipId={chipId}
       icon={icon}
     >
       <input
