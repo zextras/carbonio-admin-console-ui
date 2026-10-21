@@ -408,7 +408,7 @@ describe('ActiveSync (browser)', () => {
     });
 
     describe('Device detail panel', () => {
-        it('does not carry unsaved edits when switching to another device', async () => {
+        it('opens a fresh panel for another device after closing the first', async () => {
             setupZextrasInterceptor(DEVICES, true, [
                 { device_id: 'DEV-001/uuid', status: 'Quarantined' },
                 { device_id: 'DEV-002/uuid', status: 'Allowed' },
@@ -422,6 +422,9 @@ describe('ActiveSync (browser)', () => {
             await page.getByRole('button', { name: 'ABQ Status' }).click();
             await page.getByRole('option', { name: 'Blocked' }).click();
             await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+            await userEvent.click(page.getByRole('button', { name: 'Close' }));
+            await expect.element(page.getByText('Quarantined')).not.toBeInTheDocument();
 
             await userEvent.click(page.getByText('Android', { exact: true }));
 

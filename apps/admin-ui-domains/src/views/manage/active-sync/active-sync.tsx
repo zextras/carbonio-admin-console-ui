@@ -9,6 +9,7 @@ import {
   CustomHeaderFactory,
   HoverableRowFactory,
   LegacyInput,
+  ModalOverlay,
   Table,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
@@ -228,11 +229,13 @@ export const ActiveSync = () => {
           </div>
         </div>
       {detailDevice && (
-        <ActiveDeviceDetail
-          key={deviceRowId(detailDevice)}
-          selectedDevice={detailDevice}
-          onClose={() => setDetailDevice(null)}
-        />
+        <ModalOverlay open maxWidth="42.5rem">
+          <ActiveDeviceDetail
+            key={deviceRowId(detailDevice)}
+            selectedDevice={detailDevice}
+            onClose={() => setDetailDevice(null)}
+          />
+        </ModalOverlay>
       )}
     </div>
   );

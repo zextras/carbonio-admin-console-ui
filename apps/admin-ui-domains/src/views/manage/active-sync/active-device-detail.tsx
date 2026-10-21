@@ -20,7 +20,11 @@ import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RESET_DEVICE, WIPE_DEVICE } from '../../../constants';
-import type { AbqDeviceStatus, MobileDevice, MobileDeviceDetail } from '../../../services/parse-active-sync';
+import type {
+  AbqDeviceStatus,
+  MobileDevice,
+  MobileDeviceDetail,
+} from '../../../services/parse-active-sync';
 import {
   useAbqDevices,
   useActiveSyncDeviceStats,
@@ -152,7 +156,10 @@ const ActiveDeviceDetailForm = ({
   ];
 
   const form = useForm({
-    defaultValues: { abqStatus: serverAbqStatus, statusValue: serverStatusValue } as DeviceEditFormValues,
+    defaultValues: {
+      abqStatus: serverAbqStatus,
+      statusValue: serverStatusValue,
+    } as DeviceEditFormValues,
     onSubmit: async ({ value }) => {
       const requests: Array<Promise<unknown>> = [];
       if (value.abqStatus !== serverAbqStatus) {
@@ -167,8 +174,14 @@ const ActiveDeviceDetailForm = ({
       if (value.statusValue !== serverStatusValue) {
         requests.push(
           value.statusValue === 0
-            ? suspendDevice.mutateAsync({ accountName: device.accountName, deviceId: device.deviceId })
-            : resumeDevice.mutateAsync({ accountName: device.accountName, deviceId: device.deviceId }),
+            ? suspendDevice.mutateAsync({
+                accountName: device.accountName,
+                deviceId: device.deviceId,
+              })
+            : resumeDevice.mutateAsync({
+                accountName: device.accountName,
+                deviceId: device.deviceId,
+              }),
         );
       }
 
@@ -339,7 +352,9 @@ const ActiveDeviceDetailForm = ({
           <LabeledValue label={t('label.registration', 'Registration')} value={''} />
           <LabeledValue
             label={t('label.last_access', 'Last Access')}
-            value={device.lastSeen ? format(new Date(device.lastSeen), 'yy/MM/dd | hh:mm:ss a') : ''}
+            value={
+              device.lastSeen ? format(new Date(device.lastSeen), 'yy/MM/dd | hh:mm:ss a') : ''
+            }
           />
         </div>
         {operationType !== '' && (
