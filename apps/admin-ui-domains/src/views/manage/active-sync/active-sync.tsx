@@ -146,88 +146,93 @@ export const ActiveSync = () => {
   }
 
   return (
-    <div className="flex h-full w-full flex-col justify-start bg-gray6 p-lg">
+    <div className="box-border flex h-full w-full flex-col justify-start bg-gray6 p-lg">
       <div className="flex h-[3.625rem] w-full items-center p-lg">
         <ds-text as="h1" size="medium" weight="bold" color="gray0">
           {t('label.active_sync', 'ActiveSync')}
         </ds-text>
       </div>
-      <ds-divider></ds-divider>
-      <div className="relative flex h-[calc(100%_-_70px)] w-full flex-col overflow-auto bg-gray6 p-lg">
-          <div className="flex w-full flex-nowrap justify-start">
-            <div className="flex w-[88%] flex-col items-start">
-              <LegacyInput
-                disabled={tableRows.length === 0 && searchString.length === 0 && !isError}
-                label={t(
-                  'label.filter_by_device_type_account',
-                  'Filter by device type, account, status',
-                )}
-                backgroundColor="gray5"
-                onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                  setSearchString(e.target.value);
-                  setCheckedDeviceId(null);
-                }}
-                CustomIcon={SearchFunnelIcon}
-              />
-            </div>
-            <div className="flex w-[12%] flex-col items-end justify-end pl-md">
-              <Button
-                type="outlined"
-                label={t('label.remove', 'Remove')}
-                color="error"
-                disabled={selectedRows.length === 0 || removeDevice.isPending || isFetching}
-                size="extralarge"
-                onClick={onRemoveDevice}
-                loading={removeDevice.isPending}
-              />
-            </div>
-          </div>
-          <div className="relative flex w-full flex-wrap items-start justify-between pt-lg">
-            <Table
-              rows={tableRows}
-              headers={headers}
-              showCheckbox
-              multiSelect={false}
-              selectedRows={selectedRows}
-              onSelectionChange={(selected: Array<string>): void => {
-                setCheckedDeviceId(selected[0] ?? null);
+      <div className="relative flex w-full flex-col overflow-auto bg-gray6 p-lg">
+        <ds-divider></ds-divider>
+        <div className="flex w-full flex-nowrap justify-start pt-lg">
+          <div className="flex w-[88%] flex-col items-start">
+            <LegacyInput
+              disabled={tableRows.length === 0 && searchString.length === 0 && !isError}
+              label={t(
+                'label.filter_by_device_type_account',
+                'Filter by device type, account, status',
+              )}
+              backgroundColor="gray5"
+              onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                setSearchString(e.target.value);
+                setCheckedDeviceId(null);
               }}
-              RowFactory={HoverableRowFactory}
-              HeaderFactory={CustomHeaderFactory}
+              CustomIcon={SearchFunnelIcon}
             />
-            {tableRows.length === 0 && (
-              <div className="flex h-full w-full flex-col items-center justify-center">
-                <img className="pt-xl" src={logo} alt="logo" />
-                <ds-text
-                  className="pt-xl text-center"
-                  as="p"
-                  weight="light"
-                  color="#828282"
-                  size="large"
-                  overflow="break-word"
-                >
-                  {t('label.this_list_is_empty', 'This list is empty.')}
-                </ds-text>
-                <ds-text
-                  className="w-[53%] pt-sm text-center"
-                  as="p"
-                  weight="light"
-                  color="#828282"
-                  size="large"
-                  overflow="break-word"
-                >
-                  <Trans
-                    i18nKey="label.do_you_need_more_information"
-                    defaults="Do you need more information?"
-                  />
-                </ds-text>
-                <ds-text className="w-[53%] pt-sm pb-sm text-center" as="p" weight="light" color="primary">
-                  {t('label.click_here', 'Click here')}
-                </ds-text>
-              </div>
-            )}
+          </div>
+          <div className="flex w-[12%] flex-col items-end justify-end pl-md">
+            <Button
+              type="outlined"
+              label={t('label.remove', 'Remove')}
+              color="error"
+              disabled={selectedRows.length === 0 || removeDevice.isPending || isFetching}
+              size="extralarge"
+              onClick={onRemoveDevice}
+              loading={removeDevice.isPending}
+            />
           </div>
         </div>
+        <div className="relative flex w-full flex-wrap items-start justify-between pt-lg">
+          <Table
+            rows={tableRows}
+            headers={headers}
+            showCheckbox
+            multiSelect={false}
+            selectedRows={selectedRows}
+            onSelectionChange={(selected: Array<string>): void => {
+              setCheckedDeviceId(selected[0] ?? null);
+            }}
+            RowFactory={HoverableRowFactory}
+            HeaderFactory={CustomHeaderFactory}
+          />
+          {tableRows.length === 0 && (
+            <div className="flex h-full w-full flex-col items-center justify-center">
+              <img className="pt-xl" src={logo} alt="logo" />
+              <ds-text
+                className="pt-xl text-center"
+                as="p"
+                weight="light"
+                color="#828282"
+                size="large"
+                overflow="break-word"
+              >
+                {t('label.this_list_is_empty', 'This list is empty.')}
+              </ds-text>
+              <ds-text
+                className="w-[53%] pt-sm text-center"
+                as="p"
+                weight="light"
+                color="#828282"
+                size="large"
+                overflow="break-word"
+              >
+                <Trans
+                  i18nKey="label.do_you_need_more_information"
+                  defaults="Do you need more information?"
+                />
+              </ds-text>
+              <ds-text
+                className="w-[53%] pt-sm pb-sm text-center"
+                as="p"
+                weight="light"
+                color="primary"
+              >
+                {t('label.click_here', 'Click here')}
+              </ds-text>
+            </div>
+          )}
+        </div>
+      </div>
       {detailDevice && (
         <ModalOverlay open maxWidth="42.5rem">
           <ActiveDeviceDetail
