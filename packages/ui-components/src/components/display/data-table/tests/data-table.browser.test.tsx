@@ -578,9 +578,10 @@ describe('DataTable (browser)', () => {
     await renderTable(<FilteringDataTable />);
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await expect.element(page.getByRole('dialog', { name: 'Filters' })).toBeVisible();
+    const filtersDialog = page.getByRole('dialog', { name: 'Filters' });
+    await expect.element(filtersDialog).toBeVisible();
 
-    await userEvent.click(page.getByText('Active'));
+    await userEvent.click(filtersDialog.getByRole('checkbox', { name: 'Active' }));
     await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
 
     await expect.element(page.getByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
@@ -595,7 +596,8 @@ describe('DataTable (browser)', () => {
     await renderTable(<FilteringDataTable />);
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await userEvent.click(page.getByText('Pending'));
+    const filtersDialog = page.getByRole('dialog', { name: 'Filters' });
+    await userEvent.click(filtersDialog.getByRole('checkbox', { name: 'Pending' }));
     await userEvent.click(page.getByRole('button', { name: 'CLEAR ALL' }));
     await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
 
@@ -607,7 +609,8 @@ describe('DataTable (browser)', () => {
     await renderTable(<FilteringDataTable />);
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await userEvent.click(page.getByText('Active'));
+    let filtersDialog = page.getByRole('dialog', { name: 'Filters' });
+    await userEvent.click(filtersDialog.getByRole('checkbox', { name: 'Active' }));
     await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
 
     await expect.element(page.getByText('Status: Active')).toBeVisible();
@@ -616,7 +619,8 @@ describe('DataTable (browser)', () => {
     await expect.element(page.getByText('25 results')).toBeVisible();
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await userEvent.click(page.getByText('Pending'));
+    filtersDialog = page.getByRole('dialog', { name: 'Filters' });
+    await userEvent.click(filtersDialog.getByRole('checkbox', { name: 'Pending' }));
     await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
     await expect.element(page.getByText('Status: Pending')).toBeVisible();
 
