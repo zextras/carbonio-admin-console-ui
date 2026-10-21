@@ -309,7 +309,7 @@ const ActiveDeviceDetailForm = ({
         <ds-text as="h3" size="medium" weight="bold" color="gray0" className="w-full pt-lg">
           {t('label.status_lbl', 'Status')}
         </ds-text>
-        <div className="w-full pt-lg">
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
           <Select<AbqDeviceStatus>
             items={abqStatusOptions}
             label={t('label.abq_status', 'ABQ Status')}
