@@ -1,3 +1,9 @@
+## [0.31.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.1...v0.31.2) (2026-10-21)
+
+### Bug Fixes
+
+* **edit-account:** correctly initialize quota form values ([#1418](https://github.com/zextras/carbonio-admin-console-ui/issues/1418)) ([34a7d5a](https://github.com/zextras/carbonio-admin-console-ui/commit/34a7d5a2f3075195a69606230af98f7bb2d118a1))
+
 ## [0.31.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.0...v0.31.1) (2026-10-20)
 
 ### Bug Fixes
