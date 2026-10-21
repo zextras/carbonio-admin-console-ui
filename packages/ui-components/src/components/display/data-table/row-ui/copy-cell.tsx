@@ -23,7 +23,7 @@ type DataTableCopyCellProps = {
 export const DataTableCopyCell = ({ value, onCopy, children }: DataTableCopyCellProps) => {
   const { t } = useTranslation();
   const buttonRef = useRef<HTMLButtonElement>(null);
-  const tooltipRef = useRef<HTMLSpanElement>(null);
+  const tooltipRef = useRef<HTMLOutputElement>(null);
   const hideTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const floatingCleanupRef = useRef<(() => void) | null>(null);
   const [showCopied, setShowCopied] = useState(false);
