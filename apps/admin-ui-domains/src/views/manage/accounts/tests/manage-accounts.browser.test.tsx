@@ -296,6 +296,8 @@ describe('ManageAccounts (browser)', () => {
             await expect
                 .element(page.getByText('This list is empty.'))
                 .toBeInTheDocument();
+            await expect.element(page.getByText('<bold>')).not.toBeInTheDocument();
+            await expect.element(page.getByText('Create', { exact: true })).toBeVisible();
         });
 
         it('should keep the search input available when the list is empty', async () => {

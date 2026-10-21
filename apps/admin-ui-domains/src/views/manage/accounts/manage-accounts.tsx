@@ -37,7 +37,7 @@ import {
 } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
 import { useEffect, useState } from 'react';
-import { useTranslation } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
 import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
@@ -597,10 +597,13 @@ export const ManageAccounts = () => {
 									}}
 									enablePeek
 									emptyTitle={t('label.this_list_is_empty', 'This list is empty.')}
-									emptyDescription={t(
-										'label.create_account_list_msg',
-										'You can create a new Account by clicking on Create button (upper left corner) or on the Add (+) button up here',
-									)}
+									emptyDescription={
+										<Trans
+											i18nKey="label.create_account_list_msg"
+											defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+											components={{ bold: <strong /> }}
+										/>
+									}
 									errorTitle={t('label.something_went_wrong', 'Something went wrong')}
 									errorDescription={t(
 										'label.could_not_load_accounts',
