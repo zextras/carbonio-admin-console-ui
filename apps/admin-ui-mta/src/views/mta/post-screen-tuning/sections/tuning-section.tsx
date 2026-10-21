@@ -68,7 +68,6 @@ export const TuningSection = ({
                   label={t('mta.bare_newline', 'Bare Newline')}
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -139,7 +138,6 @@ export const TuningSection = ({
                   label={t('mta.non_smtp_command', 'NonSMTP Command')}
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -210,7 +208,6 @@ export const TuningSection = ({
                   label={t('mta.pipelining', 'Pipelining')}
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
-                  iconColor="primary"
                 />
               )}
             </form.Field>

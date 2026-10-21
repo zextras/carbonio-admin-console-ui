@@ -164,4 +164,17 @@ describe('NumberInput', () => {
       expect(box.contains(customIcon)).toBe(true);
     });
   });
+
+  describe('chip', () => {
+    it('renders the chip inside the field box and links it via aria-describedby', async () => {
+      await render(<NumberInput label="Limit" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = (await page.getByRole('spinbutton', { name: 'Limit' }).element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const describedBy = input.getAttribute('aria-describedby');
+      const chip = document.getElementById(describedBy as string);
+      expect(chip?.textContent).toBe('Inherited');
+      expect(box.contains(chip as Node)).toBe(true);
+    });
+  });
 });

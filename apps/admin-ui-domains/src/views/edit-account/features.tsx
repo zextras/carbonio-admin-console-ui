@@ -59,7 +59,6 @@ export const Features: FC<{
 							subValue={featuresDetail?.zimbraFeatureOptionsEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.can_access_settings', 'Can access Settings')}
-							iconColor="primary"
 							inheritedValue={cosDetail?.zimbraFeatureOptionsEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureOptionsEnabled}
 							inputName={'zimbraFeatureOptionsEnabled'}
@@ -73,7 +72,6 @@ export const Features: FC<{
 								subValue={featuresDetail?.zimbraFeatureMobileSyncEnabled}
 								onChange={changeSwitchOption}
 								label={t('cos.features.active_sync_access', 'Active Sync Access')}
-								iconColor="primary"
 								inheritedValue={cosDetail?.zimbraFeatureMobileSyncEnabled}
 								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
 								inputName={'zimbraFeatureMobileSyncEnabled'}
@@ -99,7 +97,6 @@ export const Features: FC<{
 								subValue={featuresDetail?.carbonioFeatureOTPMgmtEnabled}
 								onChange={changeSwitchOption}
 								label={t('label.one_time_password_management', 'One Time Password management')}
-								iconColor="primary"
 								inheritedValue={cosDetail?.carbonioFeatureOTPMgmtEnabled}
 								fromSubValue={accSpecificDetail?.carbonioFeatureOTPMgmtEnabled}
 								inputName={'carbonioFeatureOTPMgmtEnabled'}
@@ -143,7 +140,6 @@ export const Features: FC<{
 								subValue={featuresDetail?.zimbraFeatureSignaturesEnabled}
 								onChange={changeSwitchOption}
 								label={t('label.mail_signatures', 'Mail Signatures')}
-								iconColor="primary"
 								inheritedValue={cosDetail?.zimbraFeatureSignaturesEnabled}
 								fromSubValue={accSpecificDetail?.zimbraFeatureSignaturesEnabled}
 								inputName={'zimbraFeatureSignaturesEnabled'}
@@ -156,7 +152,6 @@ export const Features: FC<{
 								subValue={featuresDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 								onChange={changeSwitchOption}
 								label={t('label.out_of_the_office_reply', 'Out of Office Reply')}
-								iconColor="primary"
 								inheritedValue={cosDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 								fromSubValue={accSpecificDetail?.zimbraFeatureOutOfOfficeReplyEnabled}
 								inputName={'zimbraFeatureOutOfOfficeReplyEnabled'}
@@ -180,7 +175,6 @@ export const Features: FC<{
 									'label.allow_user_to_import_external_mailbox',
 									'Allow user to import external mailbox'
 								)}
-								iconColor="primary"
 								inheritedValue={cosDetail?.zimbraFeatureImportFolderEnabled}
 								fromSubValue={accSpecificDetail?.zimbraFeatureImportFolderEnabled}
 								inputName={'zimbraFeatureImportFolderEnabled'}
@@ -196,7 +190,6 @@ export const Features: FC<{
 									'label.allow_user_to_export_their_mailbox',
 									'Allow user to export their mailbox'
 								)}
-								iconColor="primary"
 								inheritedValue={cosDetail?.zimbraFeatureExportFolderEnabled}
 								fromSubValue={accSpecificDetail?.zimbraFeatureExportFolderEnabled}
 								inputName={'zimbraFeatureExportFolderEnabled'}
@@ -229,7 +222,6 @@ export const Features: FC<{
 							subValue={featuresDetail?.zimbraFeatureContactsEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.allow_access_to_contacts', 'Allow access to Contacts')}
-							iconColor="primary"
 							inheritedValue={cosDetail?.zimbraFeatureContactsEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureContactsEnabled}
 							inputName={'zimbraFeatureContactsEnabled'}
@@ -253,7 +245,6 @@ export const Features: FC<{
 							subValue={featuresDetail?.zimbraFeatureCalendarEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.allow_access_to_calendars', 'Allow access to Calendars')}
-							iconColor="primary"
 							inheritedValue={cosDetail?.zimbraFeatureCalendarEnabled}
 							fromSubValue={accSpecificDetail?.zimbraFeatureCalendarEnabled}
 							inputName={'zimbraFeatureCalendarEnabled'}
@@ -286,7 +277,6 @@ export const Features: FC<{
 								subValue={featuresDetail?.carbonioFeatureFilesEnabled}
 								onChange={changeSwitchOption}
 								label={t('label.allow_access_to_files', 'Allow access to Files')}
-								iconColor="primary"
 								inheritedValue={cosDetail?.carbonioFeatureFilesEnabled}
 								fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
 								inputName={'carbonioFeatureFilesEnabled'}
@@ -311,7 +301,6 @@ export const Features: FC<{
 							subValue={featuresDetail?.carbonioFeatureTasksEnabled}
 							onChange={changeSwitchOption}
 							label={t('label.allow_access_to_tasks', 'Allow access to Tasks')}
-							iconColor="primary"
 							inheritedValue={cosDetail?.carbonioFeatureTasksEnabled}
 							fromSubValue={accSpecificDetail?.carbonioFeatureTasksEnabled}
 							inputName={'carbonioFeatureTasksEnabled'}

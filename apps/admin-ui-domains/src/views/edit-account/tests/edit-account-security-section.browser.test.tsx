@@ -618,6 +618,29 @@ describe('EditAccountSecuritySection (browser)', () => {
   });
 
   describe('Inherited Values and Reset', () => {
+    it('shows the Inherited chip instead of the inherited description on an inherited field', async () => {
+      setupEditAccountSecurityTest(
+        wrapSecuritySection(
+          { zimbraPasswordMinLength: '6' },
+          {
+            accSpecificDetail: { ...mockAccSpecificDetail, zimbraPasswordMinLength: undefined },
+          },
+        ),
+      );
+
+      const minLength = page.getByRole('textbox', { name: /^Minimum password length/ });
+      await expect.element(minLength).toBeVisible();
+      await expect.element(minLength).toHaveValue('6');
+
+      const input = (await minLength.element()) as HTMLInputElement;
+      const chip = document.getElementById(input.getAttribute('aria-describedby') ?? '');
+      expect(chip?.textContent).toBe('Inherited');
+
+      await expect
+        .element(page.getByText('Inherited from the Class of Service'))
+        .not.toBeInTheDocument();
+    });
+
     it('should render reset buttons for inherited fields', async () => {
       setupEditAccountSecurityTest(
         wrapSecuritySection(
@@ -645,11 +668,11 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
 
       const otpSwitch = page.getByRole('switch', { name: 'Allow users to configure 2FA' });
-      await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'true');
+      await expect.element(otpSwitch).toBeChecked();
 
       await resetButton.click();
 
-      await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'false');
+      await expect.element(otpSwitch).not.toBeChecked();
     });
 
     it('should update the form when reset button is clicked', async () => {
@@ -665,11 +688,11 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
 
       const lockSwitch = page.getByRole('switch', { name: 'Prevent user from changing password' });
-      await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'true');
+      await expect.element(lockSwitch).toBeChecked();
 
       await resetButton.click();
 
-      await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'false');
+      await expect.element(lockSwitch).not.toBeChecked();
     });
   });
 

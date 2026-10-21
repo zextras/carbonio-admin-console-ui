@@ -103,13 +103,8 @@ export const SettingsFields = () => {
                 localeItems[0]
               }
               onChange={onPrefLocaleChange}
-              description={
-                isLocaleOverridden
-                  ? undefined
-                  : t(
-                      'label.inherited_from_cos',
-                      'Inherited from the Class of Service',
-                    )
+              chip={
+                isLocaleOverridden ? undefined : t('label.inherited', 'Inherited')
               }
               icon={
                 isLocaleOverridden ? (
@@ -133,7 +128,6 @@ export const SettingsFields = () => {
           <Switch
             onClick={onCOSSwitchChanges}
             label={t('account_details.default_COS', 'Default COS')}
-            iconColor="primary"
             value={isDefaultCos}
           />
         </Row>

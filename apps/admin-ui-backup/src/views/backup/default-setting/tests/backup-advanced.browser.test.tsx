@@ -236,7 +236,7 @@ describe('BackupAdvanced', () => {
 
       await expect.element(page.getByText('LDAP Dump')).toBeVisible();
 
-      await page.getByText('LDAP Dump').click();
+      await page.getByText('LDAP Dump').click({ force: true });
 
       expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
     });

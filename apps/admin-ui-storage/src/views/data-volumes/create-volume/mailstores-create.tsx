@@ -188,7 +188,6 @@ export function MailstoresCreate({
                       form.setFieldValue('compressionThreshold', '');
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -228,19 +227,14 @@ export function MailstoresCreate({
             <Switch
               value={field.state.value}
               label={t('label.set_as_current', 'Set as Current')}
+              description={t(
+                'label.enable_current_helptext',
+                'Enabling this option will disable the current active volume.',
+              )}
               onClick={(): void => field.handleChange(!field.state.value)}
-              iconColor="primary"
             />
           )}
         </form.Field>
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
-          )}
-        </ds-text>
       </Row>
     </Container>
   );

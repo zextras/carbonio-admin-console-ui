@@ -196,14 +196,6 @@
   flex-direction: column;
 }
 
-.featureDescription {
-  color: var(--color-gray1-regular);
-  font-size: var(--font-size-extrasmall);
-  font-weight: var(--font-weight-light);
-  line-height: 1.5;
-  padding-left: calc(var(--icon-size-large) + var(--padding-size-small));
-}
-
 .radioGroup {
   box-sizing: border-box;
   padding-left: var(--padding-size-large);

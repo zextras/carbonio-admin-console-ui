@@ -327,4 +327,28 @@ describe('Select', () => {
       ).not.toBe(0);
     });
   });
+
+  describe('chip', () => {
+    it('renders the chip inside the field box after the trigger and links it via aria-describedby', async () => {
+      await render(
+        <Select
+          label="Fruit"
+          items={FRUITS}
+          selection={FRUITS[0]}
+          onChange={() => {}}
+          chip="Inherited"
+        />,
+      );
+
+      const trigger = (await page.getByRole('button', { name: 'Fruit' }).element()) as HTMLButtonElement;
+      const box = trigger.parentElement as HTMLElement;
+      const describedBy = trigger.getAttribute('aria-describedby');
+      const chip = document.getElementById(describedBy as string);
+      expect(chip?.textContent).toBe('Inherited');
+      expect(box.contains(chip as Node)).toBe(true);
+      expect(
+        trigger.compareDocumentPosition(chip as Node) & Node.DOCUMENT_POSITION_FOLLOWING,
+      ).toBeTruthy();
+    });
+  });
 });

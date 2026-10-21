@@ -224,7 +224,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.enable_past_due_reminders',
                       'Enable reminders of appointments in the past',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -242,7 +241,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.allow_sending_cancellation_mail',
                       'Allow sending cancellation mail',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -271,7 +269,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.add_forwarded_invites_to_calendar',
                       'Automatically add forwarded appointments to the calendar',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -289,7 +286,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.add_invites_with_publish_method',
                       'Add invites with PUBLISH method',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -318,7 +314,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'label.add_appointments_when_invited',
                       'Automatically add appointments when the user is invited',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -336,7 +331,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.auto_decline_if_inviter_is_blacklisted',
                       'Auto-decline if the sender is blacklisted',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -365,7 +359,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.notify_changes_by_delegated_access',
                       'Notify changes made by delegated accounts',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -383,7 +376,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.use_ical_delegation_model_for_shared_calendars',
                       'Use iCal delegation model for shared calendars',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

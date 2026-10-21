@@ -53,7 +53,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -78,7 +77,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -108,7 +106,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -130,7 +127,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -163,7 +159,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -188,7 +183,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -221,7 +215,6 @@ export const ProtocolChecksSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}

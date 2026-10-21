@@ -74,7 +74,6 @@ export const GeneralSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -96,7 +95,6 @@ export const GeneralSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -126,7 +124,6 @@ export const GeneralSection = ({
                   value={field.state.value === 'yes'}
                   onClick={() => field.handleChange(field.state.value === 'yes' ? 'no' : 'yes')}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}

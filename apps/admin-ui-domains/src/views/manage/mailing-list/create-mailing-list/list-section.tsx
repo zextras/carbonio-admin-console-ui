@@ -297,7 +297,6 @@ export const ListSection: FC<any> = () => {
                       dynamic: !mailingListDetail?.dynamic,
                     }));
                   }}
-                  iconColor="primary"
                 />
               </Container>
             </ListRow>

@@ -26,6 +26,7 @@ export const RevertToInheritedIcon = ({ label, onClick }: RevertToInheritedIconP
       onClick={onClick}
       style={{ cursor: 'pointer' }}
       onChange={(): null => null}
+      value={false}
       iconAriaLabel={label}
       onMouseDown={(e) => e.preventDefault()}
     />

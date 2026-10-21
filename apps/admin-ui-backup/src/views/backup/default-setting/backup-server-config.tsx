@@ -79,53 +79,52 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
           padding={{ all: 'large' }}
         >
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }} />
-          {isBackupRealTimeFeatureLicensed && (
+          <div className="flex w-full flex-col gap-lg">
+            {isBackupRealTimeFeatureLicensed && (
+              <ListRow>
+                <form.Field name="enableRealtimeScanner">
+                  {(field) => (
+                    <Switch
+                      label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+                      value={field.state.value}
+                      onClick={() => field.handleChange(!field.state.value)}
+                      disabled={!allowSetBackup}
+                    />
+                  )}
+                </form.Field>
+              </ListRow>
+            )}
             <ListRow>
-              <form.Field name="enableRealtimeScanner">
+              <form.Field name="moduleEnabledAtStartup">
                 {(field) => (
                   <Switch
-                    label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
                     value={field.state.value}
+                    label={t(
+                      'backup.backup_is_enable_at_the_startup',
+                      'Backup is enabled at the startup',
+                    )}
                     onClick={() => field.handleChange(!field.state.value)}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
               </form.Field>
             </ListRow>
-          )}
-          <ListRow>
-            <form.Field name="moduleEnabledAtStartup">
-              {(field) => (
-                <Switch
-                  value={field.state.value}
-                  label={t(
-                    'backup.backup_is_enable_at_the_startup',
-                    'Backup is enabled at the startup',
-                  )}
-                  onClick={() => field.handleChange(!field.state.value)}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              )}
-            </form.Field>
-          </ListRow>
-          <ListRow>
-            <form.Field name="runSmartScanOnStartup">
-              {(field) => (
-                <Switch
-                  value={field.state.value}
-                  label={t(
-                    'backup.run_the_smart_scan_at_the_startup',
-                    'Run the Smartscan at the startup',
-                  )}
-                  onClick={() => field.handleChange(!field.state.value)}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              )}
-            </form.Field>
-          </ListRow>
+            <ListRow>
+              <form.Field name="runSmartScanOnStartup">
+                {(field) => (
+                  <Switch
+                    value={field.state.value}
+                    label={t(
+                      'backup.run_the_smart_scan_at_the_startup',
+                      'Run the Smartscan at the startup',
+                    )}
+                    onClick={() => field.handleChange(!field.state.value)}
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </ListRow>
+          </div>
           <ListRow>
             <Container padding={{ top: 'large', bottom: 'large' }}>
               <ds-divider></ds-divider>
@@ -204,7 +203,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     value={field.state.value}
                     onClick={() => field.handleChange(!field.state.value)}
                     label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -242,7 +240,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     value={field.state.value}
                     onClick={() => field.handleChange(!field.state.value)}
                     label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}

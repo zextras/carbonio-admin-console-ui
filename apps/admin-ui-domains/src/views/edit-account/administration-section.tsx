@@ -70,7 +70,6 @@ export const EditAccountAdministrationSection = () => {
                   }));
                 }}
                 label={t('account_details.global_administration', 'Global administration')}
-                iconColor="primary"
               />
             </Row>
           </Row>
@@ -85,7 +84,6 @@ export const EditAccountAdministrationSection = () => {
                   value={accountDetail?.zimbraIsDelegatedAdminAccount === 'TRUE'}
                   onClick={(): void => toggleAccountValue('zimbraIsDelegatedAdminAccount')}
                   label={t('account_details.delegated_administration', 'Delegated administration')}
-                  iconColor="primary"
                 />
               )}
             </Row>

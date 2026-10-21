@@ -90,7 +90,6 @@ export const AuthenticationSection = ({
                     field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
                   }
                   label={t('mta.enable_authentication', 'Enable Authentication')}
-                  iconColor="primary"
                   inheritedValue={
                     configInformation?.find(
                       (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED,
@@ -146,14 +145,7 @@ export const AuthenticationSection = ({
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     field.handleChange(e.target.value)
                   }
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   disabled={!allowSetMTA}
                   icon={
                     isOverridden ? (
@@ -186,14 +178,7 @@ export const AuthenticationSection = ({
                   onChange={(e: ChangeEvent<HTMLInputElement>) =>
                     field.handleChange(e.target.value)
                   }
-                  description={
-                    isOverridden
-                      ? undefined
-                      : t(
-                          'mta.inherited_from_global_configuration',
-                          'Inherited from the global configuration',
-                        )
-                  }
+                  chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
                   disabled={!allowSetMTA}
                   icon={
                     isOverridden ? (

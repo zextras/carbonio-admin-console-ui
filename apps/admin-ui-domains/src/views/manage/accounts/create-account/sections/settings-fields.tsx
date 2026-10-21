@@ -59,7 +59,6 @@ export const SettingsFields = (): ReactElement => {
               defaultCOSField.handleChange(!defaultCOSField.state.value);
             }}
             label={t('accountDetails.default_COS', 'Default COS')}
-            iconColor="primary"
           />
         </div>
         <div className="flex w-[80%] flex-wrap justify-start">

@@ -56,11 +56,7 @@ const InheritedPolicyInput = ({
       autoComplete="off"
       value={liveValue ?? inheritedValue ?? ''}
       onChange={changeValue}
-      description={
-        isOverridden
-          ? undefined
-          : t('label.inherited_from_cos', 'Inherited from the Class of Service')
-      }
+      chip={isOverridden ? undefined : t('label.inherited', 'Inherited')}
       icon={
         isOverridden ? (
           <RevertToInheritedIcon
@@ -166,7 +162,6 @@ export const PasswordPolicies = () => {
                     'cos.prevent_user_from_changing_password',
                     'Prevent user from changing password',
                   )}
-                  iconColor="primary"
                   inheritedValue={cosDetail.zimbraPasswordLocked}
                   fromSubValue={accSpecificDetail?.zimbraPasswordLocked}
                   inputName={'zimbraPasswordLocked'}
@@ -321,7 +316,6 @@ export const PasswordPolicies = () => {
                   subValue={values?.zimbraPasswordBlockCommonEnabled}
                   onChange={toggleAccountValue}
                   label={t('cos.reject_common_passwords', 'Reject common passwords')}
-                  iconColor="primary"
                   inheritedValue={cosDetail.zimbraPasswordBlockCommonEnabled}
                   fromSubValue={accSpecificDetail?.zimbraPasswordBlockCommonEnabled}
                   inputName={'zimbraPasswordBlockCommonEnabled'}

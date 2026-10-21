@@ -25,8 +25,10 @@ export type TextInputProps = Omit<
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. Pair with `description` so the invalid state carries a visible and announced explanation. */
   hasError?: boolean;
-  /** Renders the InfoOutline icon at the right edge of the field box. */
-  infoIcon?: boolean;
+  /** Renders the InfoOutline icon at the right end of the label row with this text as hover tooltip. */
+  infoTooltip?: string;
+  /** Renders an informational chip inside the field box, after the text and before any icon; announced via aria-describedby. */
+  chip?: string;
   /** Renders a custom node at the right edge of the field box, before the info icon. */
   icon?: ReactNode;
 };
@@ -40,16 +42,22 @@ export const TextInput = ({
 	className,
 	hasError = false,
 	description,
-	infoIcon = false,
+	infoTooltip,
+	chip,
 	icon,
 	'aria-describedby': callerDescribedBy,
 	...rest
 }: TextInputProps) => {
 	const inputId = useId();
   const descriptionId = useId();
+  const chipId = useId();
   const resolvedDescription = description ?? '';
   const inputClassName = clsx(styles.control, className);
-  const describedBy = clsx(callerDescribedBy, description ? descriptionId : undefined);
+  const describedBy = clsx(
+    callerDescribedBy,
+    description ? descriptionId : undefined,
+    chip ? chipId : undefined,
+  );
 
   return (
     <InputShell
@@ -60,7 +68,9 @@ export const TextInput = ({
       hasError={hasError}
       description={resolvedDescription}
       descriptionId={descriptionId}
-      infoIcon={infoIcon}
+      infoTooltip={infoTooltip}
+      chip={chip}
+      chipId={chipId}
       icon={icon}
     >
       <input

@@ -248,7 +248,6 @@ export const CosServerPools = () => {
                     'Limit server pool available for creating new users in this COS',
                   )}
                   disabled
-                  iconColor="primary"
                 />
               </Padding>
             </ListRow>

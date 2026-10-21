@@ -14,7 +14,7 @@ import {
   TextInput,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { type RefObject } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -172,7 +172,6 @@ export function ModifyVolumeTieringSection({
                       form.setFieldValue('infrequentAccessThreshold', '');
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -228,7 +227,6 @@ export function ModifyVolumeTieringSection({
                       form.setFieldValue('useInfrequentAccess', false);
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -263,7 +261,6 @@ type OptionsSectionProps = {
   isLocalBlockDevice: boolean;
   volumeType: number;
   isAdvanced: boolean;
-  isCurrentRef: RefObject<HTMLDivElement | null>;
   setIsCurrentToggle: (value: boolean) => void;
 };
 
@@ -272,7 +269,6 @@ export function ModifyVolumeOptionsSection({
   isLocalBlockDevice,
   volumeType,
   isAdvanced,
-  isCurrentRef,
   setIsCurrentToggle,
 }: Readonly<OptionsSectionProps>) {
   const { t } = useTranslation();
@@ -300,7 +296,6 @@ export function ModifyVolumeOptionsSection({
                   disabled={!field.state.value}
                 >
                   <Switch
-                    ref={isCurrentRef}
                     value={field.state.value}
                     label={t('label.set_as_current', 'Set as Current')}
                     onClick={(): void => {
@@ -308,7 +303,6 @@ export function ModifyVolumeOptionsSection({
                         setIsCurrentToggle(true);
                       }
                     }}
-                    iconColor="primary"
                     disabled={field.state.value}
                   />
                 </Tooltip>
@@ -349,7 +343,6 @@ export function ModifyVolumeOptionsSection({
                     disabled={!field.state.value}
                   >
                     <Switch
-                      ref={isCurrentRef}
                       value={field.state.value}
                       label={t('label.set_as_current', 'Set as Current')}
                       onClick={(): void => {
@@ -357,7 +350,6 @@ export function ModifyVolumeOptionsSection({
                           setIsCurrentToggle(true);
                         }
                       }}
-                      iconColor="primary"
                       disabled={field.state.value}
                     />
                   </Tooltip>
@@ -376,19 +368,14 @@ export function ModifyVolumeOptionsSection({
                     <Switch
                       value={field.state.value}
                       label={t('label.enable_compression', 'Enable Compression')}
+                      description={t(
+                        'this_will_not_affect_data_already_stored',
+                        'This will not affect data already stored',
+                      )}
                       onClick={(): void => field.handleChange(!field.state.value)}
-                      iconColor="primary"
                     />
                   )}
                 </form.Field>
-                <Padding top="extrasmall" left="2rem">
-                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                    {t(
-                      'this_will_not_affect_data_already_stored',
-                      'This will not affect data already stored',
-                    )}
-                  </ds-text>
-                </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="48%">
                 <Row padding={{ top: 'small' }} width="100%">

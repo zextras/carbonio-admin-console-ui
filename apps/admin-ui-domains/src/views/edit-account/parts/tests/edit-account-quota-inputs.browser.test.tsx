@@ -180,8 +180,7 @@ describe('QuotaLimitInput', () => {
     // Verify the component is rendered first
     await expect.element(page.getByText('Unlimited quota')).toBeVisible();
 
-    const switchElement = document.querySelector('[role="switch"]');
-    expect(switchElement?.getAttribute('aria-disabled')).toBe('true');
+    await expect.element(page.getByRole('switch', { name: 'Unlimited quota' })).toBeDisabled();
   });
 
   it('should enable the unlimited switch when domainQuotaConstraint is not-set', async () => {
@@ -195,8 +194,7 @@ describe('QuotaLimitInput', () => {
     // Verify the component is rendered first
     await expect.element(page.getByText('Unlimited quota')).toBeVisible();
 
-    const switchElement = document.querySelector('[role="switch"]');
-    expect(switchElement?.getAttribute('aria-disabled')).toBeNull();
+    await expect.element(page.getByRole('switch', { name: 'Unlimited quota' })).toBeEnabled();
   });
 
   it('should render the reset icon when source is account and call onClick handler when clicked', async () => {
