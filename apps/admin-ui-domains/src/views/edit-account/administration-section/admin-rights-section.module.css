@@ -11,8 +11,7 @@
   flex-wrap: wrap;
   justify-content: flex-start;
   width: 100%;
-  padding: var(--padding-size-large) 0 var(--padding-size-large)
-    var(--padding-size-large);
+  padding: var(--padding-size-large) 0 var(--padding-size-large) var(--padding-size-large);
 }
 
 .addCol {
@@ -26,8 +25,8 @@
 
 .addBtnCol {
   display: flex;
-  align-items: flex-end;
-  padding: 0 var(--padding-size-large) 0 0;
+  align-items: center;
+  padding: var(--padding-size-large) var(--padding-size-large) 0 0;
 }
 
 .dividerRow {
@@ -66,16 +65,4 @@
   flex-wrap: wrap;
   width: 49%;
   padding-right: var(--padding-size-small);
-}
-
-.domainItem {
-  display: block;
-  width: 100%;
-  padding: 0;
-  border: none;
-  background: transparent;
-  color: inherit;
-  font: inherit;
-  text-align: left;
-  cursor: pointer;
 }
