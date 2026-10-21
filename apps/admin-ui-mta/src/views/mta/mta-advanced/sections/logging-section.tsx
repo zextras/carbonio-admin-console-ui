@@ -68,7 +68,6 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
               value={field.state.value}
               onClick={() => field.handleChange(!field.state.value)}
               disabled={!allowSetMTA}
-              iconColor="primary"
             />
           )}
         </form.Field>

@@ -20,7 +20,6 @@ import {
 } from '../../constants';
 import { useModifyPrivacyConfig } from '../../services/use-modify-privacy-config';
 import { FormSwitch } from './parts/form-switch';
-import { SwitchDescription } from './parts/switch-description';
 
 export function PrivacyView() {
   const [t] = useTranslation();
@@ -84,35 +83,35 @@ export function PrivacyView() {
         {(field) => (
           <FormSwitch
             label={t('privacy.send_full_error_data', 'Send full error data')}
+            description={privacyErrorDescription}
             fieldValue={field.state.value}
             allowSetPrivacy={allowSetPrivacy}
             onClick={() => field.handleChange(!field.state.value)}
           />
         )}
       </form.Field>
-      <SwitchDescription label={privacyErrorDescription} />
       <form.Field name="sendAnalytics">
         {(field) => (
           <FormSwitch
             label={t('privacy.allow_data_analytics', 'Allow data analytics')}
+            description={privacyAnalyticsDescription}
             fieldValue={field.state.value}
             allowSetPrivacy={allowSetPrivacy}
             onClick={() => field.handleChange(!field.state.value)}
           />
         )}
       </form.Field>
-      <SwitchDescription label={privacyAnalyticsDescription} />
       <form.Field name="allowFeedback">
         {(field) => (
           <FormSwitch
             label={t('privacy.allow_live_survey_feedbacks', 'Allow live survey feedbacks')}
+            description={privacyFeedbackDescription}
             fieldValue={field.state.value}
             allowSetPrivacy={allowSetPrivacy}
             onClick={() => field.handleChange(!field.state.value)}
           />
         )}
       </form.Field>
-      <SwitchDescription label={privacyFeedbackDescription} />
     </FormPageLayout>
   );
 }

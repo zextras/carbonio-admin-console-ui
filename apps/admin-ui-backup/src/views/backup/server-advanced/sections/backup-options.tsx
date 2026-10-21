@@ -32,7 +32,6 @@ export const BackupOptions = ({ form, allowSetBackup }: BackupOptionsProps) => {
                 label={t('backup.ldap_dump', 'LDAP Dump')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}
@@ -45,7 +44,6 @@ export const BackupOptions = ({ form, allowSetBackup }: BackupOptionsProps) => {
                 label={t('backup.include_server_configuration', 'Include server configuration')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}
@@ -58,7 +56,6 @@ export const BackupOptions = ({ form, allowSetBackup }: BackupOptionsProps) => {
                 label={t('backup.purge_old_configuration', 'Purge old configuration')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}
@@ -71,7 +68,6 @@ export const BackupOptions = ({ form, allowSetBackup }: BackupOptionsProps) => {
                 label={t('backup.include_index', 'Include index')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}

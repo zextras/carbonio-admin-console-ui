@@ -182,7 +182,6 @@ export function ModifyVolumeForm({
   const { t } = useTranslation();
   const createSnackbar = useSnackbar();
   const connectorTypeItems = S3ConnectorTypeItems(t);
-  const isCurrentRef = useRef<HTMLDivElement>(null);
 
   const [isPendingProgress, setIsPendingProgress] = useState(false);
   const pendingOnCompleteRef = useRef<(() => void) | null>(null);
@@ -651,7 +650,6 @@ export function ModifyVolumeForm({
               isLocalBlockDevice={isLocalBlockDevice}
               volumeType={volumeDetail.type}
               isAdvanced={isAdvanced}
-              isCurrentRef={isCurrentRef}
               setIsCurrentToggle={setIsCurrentToggle}
             />
           )}

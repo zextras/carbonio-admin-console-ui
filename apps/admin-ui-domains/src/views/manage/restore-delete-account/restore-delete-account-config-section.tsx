@@ -128,7 +128,6 @@ export const RestoreDeleteAccountConfigSection = () => {
                   : { ...prev, lastAvailableStatus: true, dateTime: null },
               );
             }}
-            iconColor="primary"
           />
           <DatePicker
             label={t('label.date', 'Date')}
@@ -159,7 +158,6 @@ export const RestoreDeleteAccountConfigSection = () => {
           onClick={(): void => {
             updateDetail({ hsmApply: !restoreAccountDetail?.hsmApply });
           }}
-          iconColor="primary"
         />
 
         <div className="w-full">
@@ -174,7 +172,6 @@ export const RestoreDeleteAccountConfigSection = () => {
               isEmailNotificationEnable: !restoreAccountDetail?.isEmailNotificationEnable,
             });
           }}
-          iconColor="primary"
         />
 
         <TextInput

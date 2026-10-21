@@ -1,3 +1,27 @@
+## [0.31.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.1...v0.31.2) (2026-10-21)
+
+### Bug Fixes
+
+* **edit-account:** correctly initialize quota form values ([#1418](https://github.com/zextras/carbonio-admin-console-ui/issues/1418)) ([34a7d5a](https://github.com/zextras/carbonio-admin-console-ui/commit/34a7d5a2f3075195a69606230af98f7bb2d118a1))
+
+## [0.31.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.0...v0.31.1) (2026-10-20)
+
+### Bug Fixes
+
+* mta fix page scrolling ([#1417](https://github.com/zextras/carbonio-admin-console-ui/issues/1417)) ([7a17f9b](https://github.com/zextras/carbonio-admin-console-ui/commit/7a17f9b7edbb40f520ae254011056d1145ab59da))
+
+## [0.31.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.30.1...v0.31.0) (2026-10-20)
+
+### Features
+
+* add informational inherited chip in input fields ([#1416](https://github.com/zextras/carbonio-admin-console-ui/issues/1416)) ([f4839e9](https://github.com/zextras/carbonio-admin-console-ui/commit/f4839e90a70c1805cb1b492330d5af2bdd27e947))
+
+## [0.30.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.30.0...v0.30.1) (2026-10-20)
+
+### Bug Fixes
+
+* various form input ux improvements ([#1414](https://github.com/zextras/carbonio-admin-console-ui/issues/1414)) ([c004b8b](https://github.com/zextras/carbonio-admin-console-ui/commit/c004b8b815f5ea49f71ef069b97d07b9e81c9ace))
+
 ## [0.30.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.29.2...v0.30.0) (2026-10-12)
 
 ### Features

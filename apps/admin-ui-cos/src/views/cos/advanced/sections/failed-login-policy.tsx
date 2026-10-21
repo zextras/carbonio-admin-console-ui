@@ -78,7 +78,6 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 										onClick={() =>
 											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
 										}
-										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
 								)}

@@ -11,6 +11,7 @@ type FormSwitchProps = {
   allowSetPrivacy: boolean;
   onClick: () => void;
   label: string;
+  description?: string;
 };
 
 export function FormSwitch({
@@ -18,6 +19,7 @@ export function FormSwitch({
   allowSetPrivacy,
   onClick,
   label,
+  description,
 }: Readonly<FormSwitchProps>) {
   return (
     <ListRow>
@@ -30,8 +32,8 @@ export function FormSwitch({
         <Switch
           value={fieldValue}
           label={label}
+          description={description}
           onClick={onClick}
-          iconColor="primary"
           disabled={!allowSetPrivacy}
         />
       </Container>

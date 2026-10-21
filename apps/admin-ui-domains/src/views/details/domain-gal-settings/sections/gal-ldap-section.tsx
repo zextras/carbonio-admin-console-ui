@@ -8,13 +8,14 @@ import { useSelector } from '@tanstack/react-store';
 import { Container, Row, Switch,TextInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { FALSE, TRUE } from '../../../../constants';
-import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
 import {
-  GalExternalServerInfoIcon,
-  GalLdapFilterInfoIcon,
-  GalLdapSearchBaseInfoIcon,
-} from './gal-info-tooltip-icon';
+  EXTERNAL_SERVER_EXAMPLE,
+  FALSE,
+  LDAP_FILTER_LABEL,
+  LDAP_SEARCH_BASE_LABEL,
+  TRUE,
+} from '../../../../constants';
+import type { DomainGalSettingsFormApi } from '../use-domain-gal-form';
 
 type GalLdapSectionProps = {
   form: DomainGalSettingsFormApi;
@@ -63,7 +64,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
-                icon={<GalExternalServerInfoIcon />}
+                infoTooltip={EXTERNAL_SERVER_EXAMPLE}
               />
             )}
           </form.Field>
@@ -83,7 +84,6 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
                   field.handleChange(field.state.value === TRUE ? FALSE : TRUE);
                 }}
                 label={t('label.user_ssl', 'Use SSL')}
-                iconColor="primary"
                 value={field.state.value === TRUE}
               />
             )}
@@ -101,7 +101,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 field.handleChange(e.target.value);
               }}
-              icon={<GalLdapFilterInfoIcon />}
+              infoTooltip={LDAP_FILTER_LABEL}
             />
           )}
         </form.Field>
@@ -117,7 +117,7 @@ export const GalLdapSection = ({ form }: GalLdapSectionProps) => {
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 field.handleChange(e.target.value);
               }}
-              icon={<GalLdapSearchBaseInfoIcon />}
+              infoTooltip={LDAP_SEARCH_BASE_LABEL}
             />
           )}
         </form.Field>

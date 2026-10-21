@@ -498,7 +498,6 @@ export function HSMsettingPanel() {
                   !isZxPowerstoreMoveSchedulingEnabled,
                 )
               }
-              iconColor="primary"
             />
           </Padding>
         </ListRow>
@@ -522,6 +521,10 @@ export function HSMsettingPanel() {
               'hsm.apply_duplication_after_scheduledhsm',
               'Apply Deduplication after scheduled HSM',
             )}
+            description={t(
+              'hsm.this_function_allow_save_disk_copy_msg',
+              'This function allows you to save disk space by storing a single copy of an item.',
+            )}
             value={deduplicateAfterScheduledMoveBlobs}
             onClick={(): void =>
               form.setFieldValue(
@@ -529,24 +532,7 @@ export function HSMsettingPanel() {
                 !deduplicateAfterScheduledMoveBlobs,
               )
             }
-            iconColor="primary"
           />
-        </ListRow>
-        <ListRow>
-          <Container
-            padding={{ left: 'extralarge' }}
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-          >
-            <Padding left="small">
-              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                {t(
-                  'hsm.this_function_allow_save_disk_copy_msg',
-                  'This function allows you to save disk space by storing a single copy of an item.',
-                )}
-              </ds-text>
-            </Padding>
-          </Container>
         </ListRow>
 
         <Row mainAlignment="flex-start" width="100%">

@@ -250,7 +250,6 @@ export const GlobalActiveSyncContent = ({ config }: GlobalActiveSyncContentProps
                 onClick={(): void => {
                   form.setFieldValue('enabled', !enabled);
                 }}
-                iconColor="primary"
               />
             </Container>
             <Container padding={{ all: 'medium' }}>

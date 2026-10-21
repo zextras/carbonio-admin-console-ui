@@ -8,6 +8,7 @@ import '@daypicker/react/style.css';
 
 import { DayPicker, type Styles } from '@daypicker/react';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
+import clsx from 'clsx';
 import { format } from 'date-fns';
 import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
@@ -36,6 +37,8 @@ type DatePickerProps = {
   description?: string | null;
   /** Marks the field as invalid (aria-invalid) and applies the error styling. */
   hasError?: boolean;
+  /** Renders an informational chip inside the field box, after the text and before any icon; announced via aria-describedby. */
+  chip?: string;
   required?: boolean;
 };
 
@@ -88,11 +91,14 @@ export const DatePicker = ({
   maxDate,
   description,
   hasError = false,
+  chip,
   required = false,
 }: DatePickerProps) => {
   const inputId = useId();
   const descriptionId = useId();
+  const chipId = useId();
   const popoverId = useId();
+  const describedBy = clsx(description ? descriptionId : undefined, chip ? chipId : undefined);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
@@ -210,6 +216,8 @@ export const DatePicker = ({
           hasError={hasError}
           description={description ?? ''}
           descriptionId={descriptionId}
+          chip={chip}
+          chipId={chipId}
         >
           <input
             id={inputId}
@@ -220,7 +228,7 @@ export const DatePicker = ({
             disabled={disabled}
             required={required}
             aria-invalid={hasError || undefined}
-            aria-describedby={description ? descriptionId : undefined}
+            aria-describedby={describedBy || undefined}
             {...expandedAttrs}
             onKeyDown={handleInputKeyDown}
           />

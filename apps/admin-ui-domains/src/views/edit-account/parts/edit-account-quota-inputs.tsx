@@ -3,14 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  NumberInput,
-  Padding,
-  Row,
-  Switch,
-  SwitchProps,
-} from '@zextras/ui-components';
+import { Container, NumberInput, Padding, Row, Switch, SwitchProps } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import React, { ComponentProps, Dispatch, SetStateAction, useState } from 'react';
@@ -159,14 +152,11 @@ export const QuotaLimitInput = ({
       <Padding top={'large'} left={'large'}>
         <Container orientation={'horizontal'} gap={'0.5rem'}>
           <Switch
-            iconColor="primary"
             onClick={switchOnChange}
             value={switchValue}
             disabled={typeof domainQuotaConstraint === 'number'}
+            label={t('label.unlimited_quota', 'Unlimited quota')}
           />
-          <ds-text size="medium" as="label">
-            {t('label.unlimited_quota', 'Unlimited quota')}
-          </ds-text>
         </Container>
       </Padding>
       <Row
@@ -180,7 +170,7 @@ export const QuotaLimitInput = ({
           orientation={'horizontal'}
           gap={'0.5rem'}
           mainAlignment={'flex-start'}
-          crossAlignment={'flex-start'}
+          crossAlignment={'center'}
         >
           <NumberInput
             description={inputDescription}
@@ -199,11 +189,7 @@ export const QuotaLimitInput = ({
               ) : undefined
             }
           />
-          {totalQuotaSource !== undefined && (
-            <Padding top={'medium'}>
-              <TotalQuotaSourceIcon source={totalQuotaSource} />
-            </Padding>
-          )}
+          {totalQuotaSource !== undefined && <TotalQuotaSourceIcon source={totalQuotaSource} />}
         </Container>
       </Row>
     </Container>
@@ -223,9 +209,9 @@ export const EditAccountQuotaInputs = ({
   initialAccountDetail,
   setAccountDetail,
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
-  const onTotalComputedQuotaLimitChange: ComponentProps<
-    typeof QuotaLimitInput
-  >['onChange'] = (value) => {
+  const onTotalComputedQuotaLimitChange: ComponentProps<typeof QuotaLimitInput>['onChange'] = (
+    value,
+  ) => {
     setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: value }));
   };
 

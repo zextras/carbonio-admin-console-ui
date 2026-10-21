@@ -70,7 +70,7 @@ async function waitForInputEnabled(label: string) {
 async function toggleSwitch(name: string) {
   const switchControl = page.getByRole('switch', { name });
   await expect.element(switchControl).toBeVisible();
-  await expect.poll(() => switchControl.element().getAttribute('aria-disabled')).toBeNull();
+  await expect.element(switchControl).toBeEnabled();
   await switchControl.click();
 }
 

@@ -79,4 +79,6 @@ dist
 /.worktrees
 /new-translations.txt
 /new translations.txt
+**/__screenshots__/
+**/.vitest-attachments/
 .pnpm-store/*
