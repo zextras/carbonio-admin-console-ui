@@ -12,7 +12,6 @@ import { type CSSProperties, type Ref, useEffect, useId, useRef, useState } from
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Checkbox } from '../../../inputs/Checkbox';
 import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
 import {
@@ -244,32 +243,21 @@ const CustomizePanel = ({
                   }
                 }}
               >
-                <Checkbox
-                  value={visible}
+                <input
+                  type="checkbox"
+                  className={clsx(styles.tableCheckbox, styles.tableCheckboxVisual)}
+                  checked={visible}
                   disabled={item.locked}
-                  label={item.label}
-                  size="small"
-                  padding={{ all: 'extrasmall' }}
+                  tabIndex={-1}
+                  aria-hidden="true"
+                  readOnly
                 />
+                <span className={styles.customizeColumnLabel}>{item.label}</span>
               </div>
               {item.locked ? (
                 <span className={styles.requiredBadge}>{requiredColumnLabel}</span>
               ) : (
                 <span className={styles.customizeMoveButtons}>
-                  <button
-                    type="button"
-                    className={styles.customizeMoveButton}
-                    aria-label={t('data_table.move_column_up', 'Move {{label}} up', {
-                      label: item.label,
-                    })}
-                    onClick={() => {
-                      onColumnOrderChange(
-                        moveColumnId(columnOrder, item.id, 'up', primaryColumnId),
-                      );
-                    }}
-                  >
-                    <ds-icon icon="ArrowIosUpward" size="small" aria-hidden="true" />
-                  </button>
                   <button
                     type="button"
                     className={styles.customizeMoveButton}
@@ -282,7 +270,27 @@ const CustomizePanel = ({
                       );
                     }}
                   >
-                    <ds-icon icon="ArrowIosDownwardOutline" size="small" aria-hidden="true" />
+                    <span
+                      className={clsx(styles.customizeMoveIcon, styles.customizeMoveIconDown)}
+                      aria-hidden="true"
+                    />
+                  </button>
+                  <button
+                    type="button"
+                    className={styles.customizeMoveButton}
+                    aria-label={t('data_table.move_column_up', 'Move {{label}} up', {
+                      label: item.label,
+                    })}
+                    onClick={() => {
+                      onColumnOrderChange(
+                        moveColumnId(columnOrder, item.id, 'up', primaryColumnId),
+                      );
+                    }}
+                  >
+                    <span
+                      className={clsx(styles.customizeMoveIcon, styles.customizeMoveIconUp)}
+                      aria-hidden="true"
+                    />
                   </button>
                 </span>
               )}
