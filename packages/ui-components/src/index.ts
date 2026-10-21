@@ -154,6 +154,13 @@ export {
   type DataTableUndoToastProps,
 } from './components/display/data-table/bulk/undo-toast';
 export {
+  DataTableQuotaBar,
+} from './components/display/data-table/cell-ui/quota-bar';
+export {
+  DataTableStatusBadge,
+  type DataTableStatusBadgeVariant,
+} from './components/display/data-table/cell-ui/status-badge';
+export {
   createDataTableColumnHelper,
   useDataTable,
 } from './components/display/data-table/create-data-table';

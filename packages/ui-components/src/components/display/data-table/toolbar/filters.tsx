@@ -7,10 +7,21 @@
 import '../../../../web-components/ds-icon';
 
 import clsx from 'clsx';
-import { type CSSProperties, type Ref, useEffect, useId, useRef, useState } from 'react';
+import {
+  type CSSProperties,
+  type ReactNode,
+  type Ref,
+  useEffect,
+  useId,
+  useRef,
+  useState,
+} from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '../../../basic/button/Button';
+import { Checkbox } from '../../../inputs/Checkbox';
+import { Select, type SelectItem } from '../../../inputs/select';
 import styles from '../data-table.module.css';
 import {
   cloneFiltersState,
@@ -40,7 +51,9 @@ export type DataTableFiltersProps = {
   filtersLabel?: string;
   applyLabel?: string;
   clearDraftLabel?: string;
+  /** @deprecated Hint is no longer rendered; kept for call-site compatibility. */
   filtersHint?: string;
+  /** @deprecated Close control removed from the panel; outside-click / Escape still close. */
   closeFiltersLabel?: string;
 };
 
@@ -51,15 +64,96 @@ type FiltersPanelProps = {
   filterDefs: Array<DataTableFilterDef>;
   draft: DataTableFiltersState;
   onDraftChange: (draft: DataTableFiltersState) => void;
-  onClose: () => void;
   onClearDraft: () => void;
   onApply: () => void;
   filtersLabel: string;
-  closeFiltersLabel: string;
   clearDraftLabel: string;
   applyLabel: string;
-  filtersHint: string;
 };
+
+function setEnumDraftSingleValue(
+  draft: DataTableFiltersState,
+  filterId: string,
+  value: string,
+): DataTableFiltersState {
+  if (!value) {
+    const next = { ...draft };
+    delete next[filterId];
+    return next;
+  }
+  return { ...draft, [filterId]: [value] };
+}
+
+type EnumFilterFieldProps = {
+  def: Extract<DataTableFilterDef, { type: 'enum' }>;
+  draft: DataTableFiltersState;
+  onDraftChange: (draft: DataTableFiltersState) => void;
+  allLabel: string;
+};
+
+const EnumFilterField = ({ def, draft, onDraftChange, allLabel }: EnumFilterFieldProps) => {
+  if (def.variant === 'select') {
+    const selectedValue = getEnumDraftSelection(draft, def.id)[0] ?? '';
+    const items: Array<SelectItem<string>> = [
+      { label: allLabel, value: '' },
+      ...def.options.map((option) => ({ label: option.label, value: option.value })),
+    ];
+    const selection = items.find((item) => item.value === selectedValue) ?? items[0];
+    return (
+      <Select
+        label={def.label}
+        items={items}
+        selection={selection}
+        onChange={(value) => {
+          onDraftChange(setEnumDraftSingleValue(draft, def.id, value));
+        }}
+      />
+    );
+  }
+
+  return (
+    <>
+      <div className={styles.filterFieldLabel}>{def.label}</div>
+      <div className={styles.enumOptions}>
+        {def.options.map((option) => {
+          const selected = getEnumDraftSelection(draft, def.id).includes(option.value);
+          return (
+            <Checkbox
+              key={option.value}
+              value={selected}
+              label={option.label}
+              size="small"
+              padding={{ all: 'extrasmall' }}
+              onClick={() => {
+                onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
+              }}
+            />
+          );
+        })}
+      </div>
+    </>
+  );
+};
+
+type PairedBoundFieldProps = {
+  fromLabel: string;
+  toLabel: string;
+  fromInput: ReactNode;
+  toInput: ReactNode;
+};
+
+const PairedBoundField = ({ fromLabel, toLabel, fromInput, toInput }: PairedBoundFieldProps) => (
+  <div className={styles.pairedBounds}>
+    <div className={styles.pairedBound}>
+      <div className={styles.filterFieldLabel}>{fromLabel}</div>
+      {fromInput}
+    </div>
+    <div className={styles.pairedBound}>
+      <div className={styles.filterFieldLabel}>{toLabel}</div>
+      {toInput}
+    </div>
+  </div>
+);
 
 /** Panel body carried from the legacy filters panel, draft-driven. */
 const FiltersPanel = ({
@@ -69,16 +163,15 @@ const FiltersPanel = ({
   filterDefs,
   draft,
   onDraftChange,
-  onClose,
   onClearDraft,
   onApply,
   filtersLabel,
-  closeFiltersLabel,
   clearDraftLabel,
   applyLabel,
-  filtersHint,
 }: FiltersPanelProps) => {
   const { t } = useTranslation();
+  const toShortLabel = t('data_table.filter_to_short', 'To');
+
   return (
     <dialog
       id={id}
@@ -87,106 +180,96 @@ const FiltersPanel = ({
       aria-label={filtersLabel}
       className={styles.filtersPanel}
       style={style}
-    >      <div className={styles.filtersPanelHeader}>
+    >
+      <div className={styles.filtersPanelHeader}>
         <span className={styles.filtersPanelTitle}>{filtersLabel}</span>
-        <button
-          type="button"
-          className={styles.filtersCloseButton}
-          aria-label={closeFiltersLabel}
-          onClick={onClose}
-        >
-          ✕
-        </button>
       </div>
       {filterDefs.map((def) => (
         <div key={def.id} className={styles.filterField}>
-          <div className={styles.filterFieldLabel}>{def.label}</div>
           {def.type === 'enum' && (
-            <div className={styles.enumOptions}>
-              {def.options.map((option) => {
-                const selected = getEnumDraftSelection(draft, def.id).includes(option.value);
-                return (
-                  <label
-                    key={option.value}
-                    className={clsx(styles.enumOption, selected && styles.enumOptionSelected)}
-                  >
-                    <input
-                      type="checkbox"
-                      className={styles.enumOptionInput}
-                      checked={selected}
-                      onChange={() => {
-                        onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
-                      }}
-                    />
-                    {option.label}
-                  </label>
-                );
-              })}
-            </div>
+            <EnumFilterField
+              def={def}
+              draft={draft}
+              onDraftChange={onDraftChange}
+              allLabel={t('data_table.filter_all', 'All')}
+            />
           )}
           {def.type === 'range' && (
-            <div className={styles.rangeInputs}>
-              <input
-                type="number"
-                className={styles.rangeInput}
-                placeholder={def.minPlaceholder ?? t('data_table.filter_min_placeholder', 'min')}
-                aria-label={t('data_table.filter_from', '{{label}} from', { label: def.label })}
-                value={getRangeDraftValue(draft, def.id).min ?? ''}
-                onChange={(event) => {
-                  onDraftChange(setRangeDraftValue(draft, def.id, 'min', event.target.value));
-                }}
-              />
-              <span className={styles.rangeSeparator} aria-hidden="true">
-                –
-              </span>
-              <input
-                type="number"
-                className={styles.rangeInput}
-                placeholder={def.maxPlaceholder ?? t('data_table.filter_max_placeholder', 'max')}
-                aria-label={t('data_table.filter_to', '{{label}} to', { label: def.label })}
-                value={getRangeDraftValue(draft, def.id).max ?? ''}
-                onChange={(event) => {
-                  onDraftChange(setRangeDraftValue(draft, def.id, 'max', event.target.value));
-                }}
-              />
-            </div>
+            <PairedBoundField
+              fromLabel={t('data_table.filter_from_label', '{{label}} from', { label: def.label })}
+              toLabel={toShortLabel}
+              fromInput={
+                <input
+                  type="number"
+                  className={styles.rangeInput}
+                  placeholder={def.minPlaceholder ?? t('data_table.filter_min_placeholder', 'min')}
+                  aria-label={t('data_table.filter_from', '{{label}} from', { label: def.label })}
+                  value={getRangeDraftValue(draft, def.id).min ?? ''}
+                  onChange={(event) => {
+                    onDraftChange(setRangeDraftValue(draft, def.id, 'min', event.target.value));
+                  }}
+                />
+              }
+              toInput={
+                <input
+                  type="number"
+                  className={styles.rangeInput}
+                  placeholder={def.maxPlaceholder ?? t('data_table.filter_max_placeholder', 'max')}
+                  aria-label={t('data_table.filter_to', '{{label}} to', { label: def.label })}
+                  value={getRangeDraftValue(draft, def.id).max ?? ''}
+                  onChange={(event) => {
+                    onDraftChange(setRangeDraftValue(draft, def.id, 'max', event.target.value));
+                  }}
+                />
+              }
+            />
           )}
           {def.type === 'date' && (
-            <div className={styles.rangeInputs}>
-              <input
-                type="date"
-                className={styles.rangeInput}
-                aria-label={t('data_table.filter_from', '{{label}} from', { label: def.label })}
-                value={getDateDraftValue(draft, def.id).from ?? ''}
-                onChange={(event) => {
-                  onDraftChange(setDateDraftValue(draft, def.id, 'from', event.target.value));
-                }}
-              />
-              <span className={styles.rangeSeparator} aria-hidden="true">
-                –
-              </span>
-              <input
-                type="date"
-                className={styles.rangeInput}
-                aria-label={t('data_table.filter_to', '{{label}} to', { label: def.label })}
-                value={getDateDraftValue(draft, def.id).to ?? ''}
-                onChange={(event) => {
-                  onDraftChange(setDateDraftValue(draft, def.id, 'to', event.target.value));
-                }}
-              />
-            </div>
+            <PairedBoundField
+              fromLabel={t('data_table.filter_from_label', '{{label}} from', { label: def.label })}
+              toLabel={toShortLabel}
+              fromInput={
+                <input
+                  type="date"
+                  className={styles.rangeInput}
+                  aria-label={t('data_table.filter_from', '{{label}} from', { label: def.label })}
+                  value={getDateDraftValue(draft, def.id).from ?? ''}
+                  onChange={(event) => {
+                    onDraftChange(setDateDraftValue(draft, def.id, 'from', event.target.value));
+                  }}
+                />
+              }
+              toInput={
+                <input
+                  type="date"
+                  className={styles.rangeInput}
+                  aria-label={t('data_table.filter_to', '{{label}} to', { label: def.label })}
+                  value={getDateDraftValue(draft, def.id).to ?? ''}
+                  onChange={(event) => {
+                    onDraftChange(setDateDraftValue(draft, def.id, 'to', event.target.value));
+                  }}
+                />
+              }
+            />
           )}
         </div>
       ))}
       <div className={styles.filtersPanelActions}>
-        <button type="button" className={styles.filtersSecondaryButton} onClick={onClearDraft}>
-          {clearDraftLabel}
-        </button>
-        <button type="button" className={styles.filtersPrimaryButton} onClick={onApply}>
-          {applyLabel}
-        </button>
+        <Button
+          type="outlined"
+          color="primary"
+          width="fill"
+          label={clearDraftLabel}
+          onClick={onClearDraft}
+        />
+        <Button
+          type="default"
+          color="primary"
+          width="fill"
+          label={applyLabel}
+          onClick={onApply}
+        />
       </div>
-      <p className={styles.filtersHint}>{filtersHint}</p>
     </dialog>
   );
 };
@@ -208,8 +291,6 @@ export const DataTableFilters = ({
   filtersLabel,
   applyLabel,
   clearDraftLabel,
-  filtersHint,
-  closeFiltersLabel,
 }: DataTableFiltersProps) => {
   const { t } = useTranslation();
   const open = useTableUi((s) => s.openPanel) === 'filters';
@@ -227,15 +308,8 @@ export const DataTableFilters = ({
 
   const labels = {
     filtersLabel: filtersLabel ?? t('data_table.filters', 'Filters'),
-    applyLabel: applyLabel ?? t('data_table.apply', 'Apply'),
-    clearDraftLabel: clearDraftLabel ?? t('data_table.clear', 'Clear'),
-    filtersHint:
-      filtersHint ??
-      t(
-        'data_table.filters_hint',
-        'AND across fields · OR within a field. Applying resets to page 1 and clears the selection.',
-      ),
-    closeFiltersLabel: closeFiltersLabel ?? t('data_table.close_filters', 'Close filters'),
+    applyLabel: applyLabel ?? t('data_table.apply', 'APPLY'),
+    clearDraftLabel: clearDraftLabel ?? t('data_table.clear_all', 'CLEAR ALL'),
   };
 
   useEffect(() => {
@@ -318,16 +392,13 @@ export const DataTableFilters = ({
             filterDefs={filterDefs}
             draft={draft}
             onDraftChange={setDraft}
-            onClose={closeFilters}
             onClearDraft={() => {
               setDraft({});
             }}
             onApply={applyDraft}
             filtersLabel={labels.filtersLabel}
-            closeFiltersLabel={labels.closeFiltersLabel}
             clearDraftLabel={labels.clearDraftLabel}
             applyLabel={labels.applyLabel}
-            filtersHint={labels.filtersHint}
           />,
           document.body,
         )}

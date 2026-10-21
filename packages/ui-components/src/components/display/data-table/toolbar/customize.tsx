@@ -12,6 +12,7 @@ import { type CSSProperties, type Ref, useEffect, useId, useRef, useState } from
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
+import { Checkbox } from '../../../inputs/Checkbox';
 import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
 import {
@@ -148,9 +149,16 @@ const CustomizePanel = ({
         </button>
       </div>
 
-      <div className={styles.customizeSectionLabel}>{columnsSectionLabel}</div>
+      <div className={styles.customizeColumnsHeader}>
+        <div className={styles.customizeSectionLabel}>{columnsSectionLabel}</div>
+        {showReset && (
+          <button type="button" className={styles.customizeReset} onClick={onReset}>
+            {resetLabel}
+          </button>
+        )}
+      </div>
       <p className={styles.customizeHint}>{columnsHint}</p>
-      <ul className={styles.customizeColumnList}>
+      <ul className={styles.customizeColumnList} role="menu">
         {orderedItems.map((item) => {
           const visible = isColumnVisible(columnVisibility, item.id);
           return (
@@ -207,29 +215,40 @@ const CustomizePanel = ({
               >
                 ⠿
               </span>
-              <button
-                type="button"
+              <div
                 role="menuitemcheckbox"
                 aria-checked={visible}
-                disabled={item.locked}
+                aria-disabled={item.locked || undefined}
+                tabIndex={item.locked ? -1 : 0}
                 className={styles.customizeVisibilityToggle}
                 onClick={() => {
+                  if (item.locked) {
+                    return;
+                  }
                   onColumnVisibilityChange(
                     setColumnVisible(columnVisibility, item.id, !visible, item.locked),
                   );
                 }}
+                onKeyDown={(event) => {
+                  if (item.locked) {
+                    return;
+                  }
+                  if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    onColumnVisibilityChange(
+                      setColumnVisible(columnVisibility, item.id, !visible, item.locked),
+                    );
+                  }
+                }}
               >
-                <span
-                  className={clsx(
-                    styles.customizeCheckbox,
-                    visible && styles.customizeCheckboxChecked,
-                  )}
-                  aria-hidden="true"
-                >
-                  {visible ? '✓' : ''}
-                </span>
-                <span className={styles.customizeColumnLabel}>{item.label}</span>
-              </button>
+                <Checkbox
+                  value={visible}
+                  disabled={item.locked}
+                  label={item.label}
+                  size="small"
+                  padding={{ all: 'extrasmall' }}
+                />
+              </div>
               {item.locked ? (
                 <span className={styles.requiredBadge}>{requiredColumnLabel}</span>
               ) : (
@@ -246,7 +265,7 @@ const CustomizePanel = ({
                       );
                     }}
                   >
-                    ▲
+                    <ds-icon icon="ArrowIosUpward" size="small" aria-hidden="true" />
                   </button>
                   <button
                     type="button"
@@ -260,7 +279,7 @@ const CustomizePanel = ({
                       );
                     }}
                   >
-                    ▼
+                    <ds-icon icon="ArrowIosDownwardOutline" size="small" aria-hidden="true" />
                   </button>
                 </span>
               )}
@@ -268,11 +287,6 @@ const CustomizePanel = ({
           );
         })}
       </ul>
-      {showReset && (
-        <button type="button" className={styles.customizeReset} onClick={onReset}>
-          {resetLabel}
-        </button>
-      )}
     </dialog>
   );
 };

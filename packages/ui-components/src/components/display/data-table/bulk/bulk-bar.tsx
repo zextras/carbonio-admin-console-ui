@@ -8,6 +8,7 @@ import type { RowData, RowSelectionState } from '@tanstack/react-table';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '../../../basic/button/Button';
 import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
 import type { DataTableBulkAction, DataTableBulkJobState } from '../models/types';
@@ -47,7 +48,7 @@ export type DataTableBulkBarProps = {
   bulkJob?: DataTableBulkJobState;
   /** Label after the selected count. i18n default: `selected` */
   selectionBannerLabel?: string;
-  /** i18n default: `× Clear` */
+  /** i18n default: `Clear all` */
   clearSelectionLabel?: string;
   /** Announced text for the selected page rows below the prompt. */
   pageSelectedLabel?: (pageCount: number) => string;
@@ -104,18 +105,16 @@ const BulkBanner = ({
     {actions.length > 0 && <span className={styles.bulkDivider} aria-hidden="true" />}
     <div className={styles.bulkActions}>
       {actions.map((action) => (
-        <button
+        <Button
           key={action.id}
-          type="button"
-          className={`${styles.bulkActionButton}${
-            action.danger ? ` ${styles.bulkActionDanger}` : ''
-          }`}
+          type={action.danger ? 'outlined' : 'default'}
+          color={action.danger ? 'error' : 'primary'}
+          size="small"
+          label={action.label}
           onClick={() => {
             onAction(action);
           }}
-        >
-          {action.label}
-        </button>
+        />
       ))}
     </div>
     <button type="button" className={styles.clearButton} onClick={onClear}>
@@ -160,7 +159,7 @@ export const DataTableBulkBar = <TData extends RowData>({
   const resolvedActions = actions ?? [];
   const labels = {
     selected: selectionBannerLabel ?? t('data_table.selection_banner_label', 'selected'),
-    clear: clearSelectionLabel ?? t('data_table.clear_selection', '× Clear'),
+    clear: clearSelectionLabel ?? t('data_table.clear_selection', 'Clear all'),
     confirmTitle: bulkConfirmTitle ?? t('data_table.bulk_confirm_title', 'Are you sure?'),
     confirm: bulkConfirmLabel ?? t('data_table.bulk_confirm', 'Confirm'),
     confirmCancel: bulkConfirmCancelLabel ?? t('data_table.bulk_confirm_cancel', 'Cancel'),

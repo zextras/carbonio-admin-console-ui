@@ -7,6 +7,7 @@
 import { afterEach, describe, expect, it } from 'vitest';
 
 import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './customize-model';
+import type { PersistedDataTableLayout } from './layout-persistence';
 import {
   LAYOUT_PERSISTENCE_VERSION,
   layoutStorageKey,
@@ -15,7 +16,6 @@ import {
   resolveLayoutUpdater,
   sanitizePersistedLayout,
   writePersistedLayout,
-  type PersistedDataTableLayout,
 } from './layout-persistence';
 
 const COLUMN_IDS = ['account', 'displayName', 'status'];

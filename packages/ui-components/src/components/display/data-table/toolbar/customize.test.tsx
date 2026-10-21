@@ -168,7 +168,9 @@ describe('DataTableCustomize', () => {
   it('locks the primary column visibility toggle', () => {
     renderHarness();
     openPanel();
-    expect(screen.getByRole('menuitemcheckbox', { name: 'Name' })).toHaveProperty('disabled', true);
+    expect(screen.getByRole('menuitemcheckbox', { name: 'Name' }).getAttribute('aria-disabled')).toBe(
+      'true',
+    );
   });
 
   it('writes column order through the table instance (move up)', () => {

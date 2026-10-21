@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../../../web-components/ds-icon';
+
+import clsx from 'clsx';
 import { useEffect, useRef } from 'react';
 
 import styles from '../data-table.module.css';
@@ -17,6 +20,11 @@ type SelectionCheckboxProps = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 };
 
+/**
+ * Table selection control with design-system checkbox icons. Keeps a native
+ * input for indeterminate support and existing role="checkbox" tests while
+ * rendering CheckmarkSquare / Square to match project Checkbox visuals.
+ */
 export const SelectionCheckbox = ({
   checked,
   indeterminate = false,
@@ -25,24 +33,41 @@ export const SelectionCheckbox = ({
   onChange,
 }: SelectionCheckboxProps) => {
   const ref = useRef<HTMLInputElement>(null);
+  const mixed = indeterminate && !checked;
 
   useEffect(() => {
     if (ref.current) {
-      ref.current.indeterminate = indeterminate && !checked;
+      ref.current.indeterminate = mixed;
     }
-  }, [checked, indeterminate]);
+  }, [mixed]);
+
+  let icon: 'CheckmarkSquare' | 'CheckmarkSquareOutline' | 'Square' = 'Square';
+  if (checked) {
+    icon = 'CheckmarkSquare';
+  } else if (mixed) {
+    icon = 'CheckmarkSquareOutline';
+  }
 
   return (
-    <input
-      ref={ref}
-      type="checkbox"
-      className={styles.checkbox}
-      checked={checked}
-      disabled={disabled}
-      aria-label={ariaLabel}
-      onClick={stopEventPropagation}
-      onKeyDown={stopEventPropagation}
-      onChange={onChange}
-    />
+    <span className={clsx(styles.selectionCheckbox, disabled && styles.selectionCheckboxDisabled)}>
+      <input
+        ref={ref}
+        type="checkbox"
+        className={styles.checkbox}
+        checked={checked}
+        disabled={disabled}
+        aria-label={ariaLabel}
+        onClick={stopEventPropagation}
+        onKeyDown={stopEventPropagation}
+        onChange={onChange}
+      />
+      <ds-icon
+        className={styles.selectionCheckboxIcon}
+        icon={icon}
+        size="medium"
+        color={checked || mixed ? 'primary' : 'gray0'}
+        aria-hidden="true"
+      />
+    </span>
   );
 };

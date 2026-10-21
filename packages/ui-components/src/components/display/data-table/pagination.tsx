@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../../web-components/ds-icon';
+
 import type { PaginationState } from '@tanstack/react-table';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -154,13 +156,25 @@ const PaginationControls = ({
         <button
           type="button"
           className={styles.pageButton}
+          aria-label="First page"
+          disabled={!canPreviousPage}
+          onClick={() => {
+            table.setPageIndex(0);
+          }}
+        >
+          <ds-icon icon="ChevronLeft" size="small" aria-hidden="true" />
+          <ds-icon icon="ChevronLeft" size="small" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={styles.pageButton}
           aria-label="Previous page"
           disabled={!canPreviousPage}
           onClick={() => {
             table.previousPage();
           }}
         >
-          ‹
+          <ds-icon icon="ChevronLeft" size="small" aria-hidden="true" />
         </button>
         {pageList(currentPage, pageCount).map((item) =>
           item.page === undefined ? (
@@ -187,7 +201,19 @@ const PaginationControls = ({
             table.nextPage();
           }}
         >
-          ›
+          <ds-icon icon="ChevronRight" size="small" aria-hidden="true" />
+        </button>
+        <button
+          type="button"
+          className={styles.pageButton}
+          aria-label="Last page"
+          disabled={!canNextPage}
+          onClick={() => {
+            table.setPageIndex(pageCount - 1);
+          }}
+        >
+          <ds-icon icon="ChevronRight" size="small" aria-hidden="true" />
+          <ds-icon icon="ChevronRight" size="small" aria-hidden="true" />
         </button>
       </nav>
       {pageCount > 10 && (

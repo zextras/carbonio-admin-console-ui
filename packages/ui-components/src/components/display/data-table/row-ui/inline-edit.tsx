@@ -4,6 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../../../web-components/ds-icon';
+
+import clsx from 'clsx';
 import { useEffect, useId, useRef, useState } from 'react';
 
 import styles from '../data-table.module.css';
@@ -55,54 +58,60 @@ export const DataTableInlineEdit = ({
 
   return (
     <span className={styles.inlineEdit}>
-      <input
-        ref={inputRef}
-        className={styles.inlineEditInput}
-        aria-label={columnLabel}
-        aria-invalid={error !== null}
-        aria-describedby={error === null ? undefined : errorId}
-        value={value}
-        onClick={stopEventPropagation}
-        onChange={(event) => {
-          setValue(event.target.value);
-          setError(null);
-        }}
-        onKeyDown={(event) => {
-          event.stopPropagation();
-          if (event.key === 'Enter') {
-            event.preventDefault();
-            commit();
-          }
-          if (event.key === 'Escape') {
-            event.preventDefault();
-            onCancel();
-          }
-        }}
-      />
-      <button
-        type="button"
-        className={styles.inlineEditSave}
-        aria-label={saveLabel}
-        onClick={(event) => {
-          event.stopPropagation();
-          commit();
-        }}
-        onKeyDown={stopEventPropagation}
+      <span
+        className={clsx(styles.inlineEditField, error !== null && styles.inlineEditFieldInvalid)}
       >
-        ✓
-      </button>
-      <button
-        type="button"
-        className={styles.inlineEditCancel}
-        aria-label={cancelLabel}
-        onClick={(event) => {
-          event.stopPropagation();
-          onCancel();
-        }}
-        onKeyDown={stopEventPropagation}
-      >
-        ✕
-      </button>
+        <input
+          ref={inputRef}
+          className={styles.inlineEditInput}
+          aria-label={columnLabel}
+          aria-invalid={error !== null}
+          aria-describedby={error === null ? undefined : errorId}
+          value={value}
+          onClick={stopEventPropagation}
+          onChange={(event) => {
+            setValue(event.target.value);
+            setError(null);
+          }}
+          onKeyDown={(event) => {
+            event.stopPropagation();
+            if (event.key === 'Enter') {
+              event.preventDefault();
+              commit();
+            }
+            if (event.key === 'Escape') {
+              event.preventDefault();
+              onCancel();
+            }
+          }}
+        />
+        <span className={styles.inlineEditActions}>
+          <button
+            type="button"
+            className={clsx(styles.inlineEditIconButton, styles.inlineEditSave)}
+            aria-label={saveLabel}
+            onClick={(event) => {
+              event.stopPropagation();
+              commit();
+            }}
+            onKeyDown={stopEventPropagation}
+          >
+            <ds-icon icon="CheckmarkOutline" size="small" color="success" aria-hidden="true" />
+          </button>
+          <button
+            type="button"
+            className={clsx(styles.inlineEditIconButton, styles.inlineEditCancel)}
+            aria-label={cancelLabel}
+            onClick={(event) => {
+              event.stopPropagation();
+              onCancel();
+            }}
+            onKeyDown={stopEventPropagation}
+          >
+            <ds-icon icon="CloseOutline" size="small" color="secondary" aria-hidden="true" />
+          </button>
+        </span>
+      </span>
       {error && (
         <span className={styles.inlineEditError} id={errorId}>
           {error}
@@ -128,6 +137,6 @@ export const DataTableEditTrigger = ({ ariaLabel, onClick }: DataTableEditTrigge
     }}
     onKeyDown={stopEventPropagation}
   >
-    ✎
+    <ds-icon icon="EditOutline" size="small" aria-hidden="true" />
   </button>
 );
