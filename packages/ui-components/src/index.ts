@@ -94,6 +94,12 @@ export * from './components/custom/track-number-per-page';
 export * from './components/display/Chip';
 export * from './components/display/CustomChip';
 export {
+  getStatusBadgeTone,
+  StatusBadge,
+  type StatusBadgeProps,
+  type StatusBadgeTone,
+} from './components/display/status-badge';
+export {
   type DataTableBulkAction,
   type DataTableBulkJobState,
   type DataTableBulkVariant,
