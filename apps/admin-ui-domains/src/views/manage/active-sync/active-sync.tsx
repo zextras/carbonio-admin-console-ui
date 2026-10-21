@@ -65,6 +65,10 @@ function filterDevices(devices: Array<MobileDevice>, searchText: string): Array<
   );
 }
 
+function deviceRowId(device: MobileDevice): string {
+  return `${device.deviceId}/${device.accountEmail}`;
+}
+
 export const ActiveSync = () => {
   const [t] = useTranslation();
   const { data: domain } = useSelectedDomain();
@@ -73,16 +77,16 @@ export const ActiveSync = () => {
   const removeDevice = useRemoveDevice();
 
   const [searchString, setSearchString] = useState('');
-  const [checkedFirstSeen, setCheckedFirstSeen] = useState<number | null>(null);
+  const [checkedDeviceId, setCheckedDeviceId] = useState<string | null>(null);
   const [detailDevice, setDetailDevice] = useState<MobileDevice | null>(null);
 
   const debouncedSearch = useDebouncedValue(searchString, 700);
   const filteredDevices = filterDevices(devices, debouncedSearch);
 
   const checkedDevice =
-    checkedFirstSeen === null
+    checkedDeviceId === null
       ? undefined
-      : filteredDevices.find((item) => item.firstSeen === checkedFirstSeen);
+      : filteredDevices.find((item) => deviceRowId(item) === checkedDeviceId);
 
   const headers = [
     { id: 'name', label: t('label.device', 'Device'), width: '10%', bold: true },
@@ -95,11 +99,11 @@ export const ActiveSync = () => {
 
   const tableRows = filteredDevices.map((item) => {
     const onActivate = (): void => {
-      setCheckedFirstSeen(item.firstSeen);
+      setCheckedDeviceId(deviceRowId(item));
       setDetailDevice(item);
     };
     return {
-      id: String(item.firstSeen),
+      id: deviceRowId(item),
       columns: [
         <DeviceTableCell key={`name-${item.deviceId}`} onActivate={onActivate}>
           {item.accountName}
@@ -123,8 +127,7 @@ export const ActiveSync = () => {
     };
   });
 
-  const selectedRows: [] | [string] =
-    checkedFirstSeen === null ? [] : [String(checkedFirstSeen)];
+  const selectedRows: [] | [string] = checkedDeviceId === null ? [] : [checkedDeviceId];
 
   function onRemoveDevice(): void {
     if (!checkedDevice) return;
@@ -132,8 +135,8 @@ export const ActiveSync = () => {
       { accountName: checkedDevice.accountEmail, deviceId: checkedDevice.deviceId },
       {
         onSuccess: () => {
-          setCheckedFirstSeen(null);
-          if (detailDevice?.firstSeen === checkedDevice.firstSeen) {
+          setCheckedDeviceId(null);
+          if (detailDevice && deviceRowId(detailDevice) === deviceRowId(checkedDevice)) {
             setDetailDevice(null);
           }
         },
@@ -161,7 +164,7 @@ export const ActiveSync = () => {
                 backgroundColor="gray5"
                 onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                   setSearchString(e.target.value);
-                  setCheckedFirstSeen(null);
+                  setCheckedDeviceId(null);
                 }}
                 CustomIcon={SearchFunnelIcon}
               />
@@ -186,7 +189,7 @@ export const ActiveSync = () => {
               multiSelect={false}
               selectedRows={selectedRows}
               onSelectionChange={(selected: Array<string>): void => {
-                setCheckedFirstSeen(selected[0] === undefined ? null : Number(selected[0]));
+                setCheckedDeviceId(selected[0] ?? null);
               }}
               RowFactory={HoverableRowFactory}
               HeaderFactory={CustomHeaderFactory}
@@ -226,7 +229,7 @@ export const ActiveSync = () => {
         </div>
       {detailDevice && (
         <ActiveDeviceDetail
-          key={detailDevice.firstSeen}
+          key={deviceRowId(detailDevice)}
           selectedDevice={detailDevice}
           onClose={() => setDetailDevice(null)}
         />

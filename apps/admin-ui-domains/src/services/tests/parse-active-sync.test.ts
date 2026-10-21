@@ -59,6 +59,24 @@ describe('parse-active-sync', () => {
     expect(parseAllDevices({})).toEqual([]);
   });
 
+  it('dedupes devices returned by multiple server groups', () => {
+    const res = soap({
+      response: {
+        'mailstore-1': { response: { devices: [DEVICE] } },
+        'mailstore-2': { response: { devices: [DEVICE] } },
+      },
+    });
+    expect(parseAllDevices(res)).toHaveLength(1);
+  });
+
+  it('keeps distinct devices that share the same firstSeen', () => {
+    const twin = { ...DEVICE, deviceId: 'DEV-002', accountEmail: 'bob@example.com' };
+    const res = soap({
+      response: { 'mailstore-1': { response: { devices: [DEVICE, twin] } } },
+    });
+    expect(parseAllDevices(res)).toHaveLength(2);
+  });
+
   it('reads the first device statistics payload', () => {
     const stats = parseDeviceStatistics(
       soap({
