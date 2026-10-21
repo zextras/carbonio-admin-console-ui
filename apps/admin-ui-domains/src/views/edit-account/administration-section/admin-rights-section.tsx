@@ -5,10 +5,9 @@
  */
 import {
   Button,
+  ComboboxInput,
   CustomHeaderFactory,
-  Dropdown,
   HoverableRowFactory,
-  LegacyInput,
   Select,
   Table,
   useSnackbar,
@@ -162,24 +161,9 @@ export const AdminRightsSection = ({
       });
   };
 
-  const items = domainList?.map((domain: any) => ({
+  const domainItems = domainList?.map((domain: any) => ({
     id: domain.id,
     label: domain.name,
-    customComponent: (
-      <button
-        key={domain.id}
-        type="button"
-        className={styles.domainItem}
-        onClick={(): void => {
-          setDomainId(domain?.id);
-          setSearchDomainName(domain?.name);
-          setIsDomainSelect(true);
-          fetchDistributionList(domain?.name);
-        }}
-      >
-        {domain?.name}
-      </button>
-    ),
   }));
 
   const onAdd = (): void => {
@@ -232,24 +216,27 @@ export const AdminRightsSection = ({
     <>
       <div className={styles.addRow}>
         <div className={styles.addCol}>
-          <Dropdown
-            items={items}
-            placement="bottom-start"
-            disableAutoFocus
-            width="100%"
-            style={{ width: '100%' }}
-          >
-            <LegacyInput
-              label={t('label.domain', 'Domain')}
-              onChange={(ev: any): void => {
-                setIsDomainSelect(false);
-                setDomainId('');
-                setSearchDomainName(ev.target.value);
-              }}
-              value={searchDomainName}
-              backgroundColor="gray5"
-            />
-          </Dropdown>
+          <ComboboxInput
+            label={t('label.domain', 'Domain')}
+            value={searchDomainName}
+            onChange={(ev): void => {
+              setIsDomainSelect(false);
+              setDomainId('');
+              setSearchDomainName(ev.target.value);
+            }}
+            items={domainItems}
+            onSelect={(item): void => {
+              setDomainId(item.id);
+              setSearchDomainName(item.label);
+              setIsDomainSelect(true);
+              fetchDistributionList(item.label);
+            }}
+            onClear={(): void => {
+              setIsDomainSelect(false);
+              setDomainId('');
+              setSearchDomainName('');
+            }}
+          />
         </div>
         <div className={styles.addCol}>
           <Select
