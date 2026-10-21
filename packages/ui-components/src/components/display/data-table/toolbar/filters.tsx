@@ -20,7 +20,6 @@ import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../../basic/button/Button';
-import { Checkbox } from '../../../inputs/Checkbox';
 import { Select, type SelectItem } from '../../../inputs/select';
 import styles from '../data-table.module.css';
 import {
@@ -118,16 +117,17 @@ const EnumFilterField = ({ def, draft, onDraftChange, allLabel }: EnumFilterFiel
         {def.options.map((option) => {
           const selected = getEnumDraftSelection(draft, def.id).includes(option.value);
           return (
-            <Checkbox
-              key={option.value}
-              value={selected}
-              label={option.label}
-              size="small"
-              padding={{ all: 'extrasmall' }}
-              onClick={() => {
-                onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
-              }}
-            />
+            <label key={option.value} className={styles.tableCheckboxRow}>
+              <input
+                type="checkbox"
+                className={styles.tableCheckbox}
+                checked={selected}
+                onChange={() => {
+                  onDraftChange(toggleEnumDraftValue(draft, def.id, option.value));
+                }}
+              />
+              <span>{option.label}</span>
+            </label>
           );
         })}
       </div>

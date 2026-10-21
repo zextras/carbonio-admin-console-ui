@@ -680,42 +680,65 @@
 }
 
 .selectionCheckbox {
-  position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 1.25rem;
-  height: 1.25rem;
-}
-
-.checkbox {
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  opacity: 0;
-  cursor: pointer;
-}
-
-.checkbox:disabled {
-  cursor: default;
-}
-
-.checkbox:focus-visible + .selectionCheckboxIcon {
-  outline: 2px solid var(--color-primary-regular, #2b73d2);
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.selectionCheckboxIcon {
-  display: inline-flex;
-  pointer-events: none;
 }
 
 .selectionCheckboxDisabled {
   opacity: 0.5;
+}
+
+/* Material-style checkbox matching Customize mock (not Eva CheckmarkSquare). */
+.tableCheckbox {
+  appearance: none;
+  width: 1rem;
+  height: 1rem;
+  margin: 0;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  border: 1.5px solid var(--color-gray0-regular, #333);
+  border-radius: 3px;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 0.75rem 0.75rem;
+  cursor: pointer;
+}
+
+.tableCheckbox:checked {
+  border-color: var(--color-primary-regular, #2b73d2);
+  background-color: var(--color-primary-regular, #2b73d2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' d='M2.5 6l2.5 2.5 4.5-5'/%3E%3C/svg%3E");
+}
+
+.tableCheckbox:indeterminate {
+  border-color: var(--color-primary-regular, #2b73d2);
+  background-color: var(--color-primary-regular, #2b73d2);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath fill='none' stroke='%23fff' stroke-width='2' stroke-linecap='round' d='M2.5 6h7'/%3E%3C/svg%3E");
+}
+
+.tableCheckbox:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.tableCheckbox:focus-visible {
+  outline: 2px solid var(--color-primary-regular, #2b73d2);
+  outline-offset: 2px;
+}
+
+.tableCheckboxRow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  color: inherit;
+  font: inherit;
+}
+
+.tableCheckboxVisual {
+  pointer-events: none;
 }
 
 .toolbarWrap {
@@ -1196,26 +1219,6 @@
   border-radius: 2px;
 }
 
-.customizeCheckbox {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 1rem;
-  height: 1rem;
-  flex: 0 0 1rem;
-  border: 2px solid var(--color-gray3-hover, #cfd5de);
-  border-radius: 3px;
-  background: var(--color-gray6-regular, #fff);
-  color: var(--color-gray6-regular, #fff);
-  font-size: 0.625rem;
-  line-height: 1;
-}
-
-.customizeCheckboxChecked {
-  border-color: var(--color-primary-regular, #2b73d2);
-  background: var(--color-primary-regular, #2b73d2);
-}
-
 .customizeColumnLabel {
   overflow: hidden;
   text-overflow: ellipsis;
@@ -1231,26 +1234,43 @@
 
 .customizeMoveButtons {
   display: inline-flex;
+  align-items: center;
   gap: 0.125rem;
   margin-left: auto;
 }
 
 .customizeMoveButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   width: 1.25rem;
   height: 1.25rem;
   padding: 0;
   border: none;
   border-radius: 2px;
   background: none;
-  color: var(--color-secondary-regular, #5b6672);
-  font-size: 0.625rem;
-  line-height: 1;
   cursor: pointer;
 }
 
 .customizeMoveButton:focus-visible {
   outline: 2px solid var(--color-primary-regular, #2b73d2);
   outline-offset: 1px;
+}
+
+.customizeMoveIcon {
+  display: block;
+  width: 0;
+  height: 0;
+  border-left: 0.28rem solid transparent;
+  border-right: 0.28rem solid transparent;
+}
+
+.customizeMoveIconUp {
+  border-bottom: 0.35rem solid var(--color-gray0-regular, #333);
+}
+
+.customizeMoveIconDown {
+  border-top: 0.35rem solid var(--color-gray0-regular, #333);
 }
 
 .customizeReset {
