@@ -159,8 +159,10 @@ const CustomizePanel = ({
       </div>
       <p className={styles.customizeHint}>{columnsHint}</p>
       <ul className={styles.customizeColumnList} role="menu">
-        {orderedItems.map((item) => {
+        {orderedItems.map((item, index) => {
           const visible = isColumnVisible(columnVisibility, item.id);
+          const nextItem = orderedItems[index + 1];
+          const afterRequired = Boolean(item.locked && nextItem && !nextItem.locked);
           return (
             <li
               key={item.id}
@@ -169,6 +171,7 @@ const CustomizePanel = ({
                 dragId === item.id && styles.customizeColumnDragging,
                 dropId === item.id && styles.customizeColumnDropTarget,
                 item.locked && styles.customizeColumnLocked,
+                afterRequired && styles.customizeColumnRowAfterRequired,
               )}
               draggable={!item.locked}
               onDragStart={(event) => {

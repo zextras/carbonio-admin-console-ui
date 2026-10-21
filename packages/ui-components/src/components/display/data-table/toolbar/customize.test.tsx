@@ -173,6 +173,15 @@ describe('DataTableCustomize', () => {
     );
   });
 
+  it('draws a separator under the last required column before unlockable rows', () => {
+    renderHarness();
+    openPanel();
+    const requiredRow = screen.getByRole('menuitemcheckbox', { name: 'Name' }).closest('li');
+    expect(requiredRow?.className).toMatch(/customizeColumnRowAfterRequired/);
+    const emailRow = screen.getByRole('menuitemcheckbox', { name: 'Email' }).closest('li');
+    expect(emailRow?.className).not.toMatch(/customizeColumnRowAfterRequired/);
+  });
+
   it('writes column order through the table instance (move up)', () => {
     const { getTable } = renderHarness();
     openPanel();
