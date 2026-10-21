@@ -6,17 +6,20 @@
 
 import {
   Button,
-  Container,
   CustomHeaderFactory,
   HoverableRowFactory,
   LegacyInput,
-  Padding,
-  Row,
   Table,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { type ChangeEvent, type ReactElement, type ReactNode, useState } from 'react';
+import {
+  type ChangeEvent,
+  type MouseEvent,
+  type ReactElement,
+  type ReactNode,
+  useState,
+} from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
@@ -36,9 +39,10 @@ type DeviceTableCellProps = {
 
 function DeviceTableCell({ onActivate, children }: Readonly<DeviceTableCellProps>) {
   return (
-    <Container
-      crossAlignment="flex-start"
-      onClick={(event: { stopPropagation: () => void }): void => {
+    <button
+      type="button"
+      className="flex w-full flex-col items-start border-0 bg-transparent p-0 text-left"
+      onClick={(event: MouseEvent<HTMLButtonElement>): void => {
         event.stopPropagation();
         onActivate();
       }}
@@ -46,7 +50,7 @@ function DeviceTableCell({ onActivate, children }: Readonly<DeviceTableCellProps
       <ds-text as="span" size="small" weight="light" color="gray0">
         {children}
       </ds-text>
-    </Container>
+    </button>
   );
 }
 
@@ -138,39 +142,16 @@ export const ActiveSync = () => {
   }
 
   return (
-    <Container padding={{ all: 'large' }} background="gray6" mainAlignment="flex-start">
-      <Container
-        orientation="column"
-        background="gray6"
-        crossAlignment="flex-start"
-        mainAlignment="flex-start"
-      >
-        <Row mainAlignment="flex-start" width="100%">
-          <Container orientation="vertical" mainAlignment="space-around" height="3.625rem">
-            <Row orientation="horizontal" width="100%" padding={{ all: 'large' }}>
-              <Row mainAlignment="flex-start" width="30%" crossAlignment="flex-start">
-                <ds-text as="h1" size="medium" weight="bold" color="gray0">
-                  {t('label.active_sync', 'ActiveSync')}
-                </ds-text>
-              </Row>
-              <Row width="70%" mainAlignment="flex-end" crossAlignment="flex-end"></Row>
-            </Row>
-          </Container>
-        </Row>
-        <Row orientation="horizontal" width="100%" background="gray6">
-          <ds-divider></ds-divider>
-        </Row>
-        <Container
-          orientation="column"
-          background="gray6"
-          crossAlignment="flex-start"
-          mainAlignment="flex-start"
-          height="calc(100% - 70px)"
-          style={{ position: 'relative', overflow: 'auto' }}
-          padding={{ all: 'large' }}
-        >
-          <Row mainAlignment="flex-start" width="100%" wrap="nowrap">
-            <Container width="88%" crossAlignment="flex-start" mainAlignment="flex-start">
+    <div className="flex h-full w-full flex-col justify-start bg-gray6 p-lg">
+      <div className="flex h-[3.625rem] w-full items-center p-lg">
+        <ds-text as="h1" size="medium" weight="bold" color="gray0">
+          {t('label.active_sync', 'ActiveSync')}
+        </ds-text>
+      </div>
+      <ds-divider></ds-divider>
+      <div className="relative flex h-[calc(100%_-_70px)] w-full flex-col overflow-auto bg-gray6 p-lg">
+          <div className="flex w-full flex-nowrap justify-start">
+            <div className="flex w-[88%] flex-col items-start">
               <LegacyInput
                 disabled={tableRows.length === 0 && searchString.length === 0 && !isError}
                 label={t(
@@ -184,29 +165,20 @@ export const ActiveSync = () => {
                 }}
                 CustomIcon={SearchFunnelIcon}
               />
-            </Container>
-            <Container width="12%" crossAlignment="flex-end" mainAlignment="flex-end">
-              <Padding left="medium">
-                <Button
-                  type="outlined"
-                  label={t('label.remove', 'Remove')}
-                  color="error"
-                  disabled={selectedRows.length === 0 || removeDevice.isPending || isFetching}
-                  size="extralarge"
-                  onClick={onRemoveDevice}
-                  loading={removeDevice.isPending}
-                />
-              </Padding>
-            </Container>
-          </Row>
-          <Row
-            orientation="horizontal"
-            mainAlignment="space-between"
-            crossAlignment="flex-start"
-            padding={{ top: 'large' }}
-            width="fill"
-            style={{ position: 'relative' }}
-          >
+            </div>
+            <div className="flex w-[12%] flex-col items-end justify-end pl-md">
+              <Button
+                type="outlined"
+                label={t('label.remove', 'Remove')}
+                color="error"
+                disabled={selectedRows.length === 0 || removeDevice.isPending || isFetching}
+                size="extralarge"
+                onClick={onRemoveDevice}
+                loading={removeDevice.isPending}
+              />
+            </div>
+          </div>
+          <div className="relative flex w-full flex-wrap items-start justify-between pt-lg">
             <Table
               rows={tableRows}
               headers={headers}
@@ -220,56 +192,45 @@ export const ActiveSync = () => {
               HeaderFactory={CustomHeaderFactory}
             />
             {tableRows.length === 0 && (
-              <Container orientation="column" crossAlignment="center" mainAlignment="center">
-                <Row padding={{ top: 'extralarge' }}>
-                  <img src={logo} alt="logo" />
-                </Row>
-                <Row
-                  padding={{ top: 'extralarge' }}
-                  orientation="vertical"
-                  crossAlignment="center"
-                  style={{ textAlign: 'center' }}
+              <div className="flex h-full w-full flex-col items-center justify-center">
+                <img className="pt-xl" src={logo} alt="logo" />
+                <ds-text
+                  className="pt-xl text-center"
+                  as="p"
+                  weight="light"
+                  color="#828282"
+                  size="large"
+                  overflow="break-word"
                 >
-                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                    {t('label.this_list_is_empty', 'This list is empty.')}
-                  </ds-text>
-                </Row>
-                <Row
-                  orientation="vertical"
-                  crossAlignment="center"
-                  style={{ textAlign: 'center' }}
-                  padding={{ top: 'small' }}
-                  width="53%"
+                  {t('label.this_list_is_empty', 'This list is empty.')}
+                </ds-text>
+                <ds-text
+                  className="w-[53%] pt-sm text-center"
+                  as="p"
+                  weight="light"
+                  color="#828282"
+                  size="large"
+                  overflow="break-word"
                 >
-                  <ds-text as="p" weight="light" color="#828282" size="large" overflow="break-word">
-                    <Trans
-                      i18nKey="label.do_you_need_more_information"
-                      defaults="Do you need more information?"
-                    />
-                  </ds-text>
-                </Row>
-                <Row
-                  orientation="vertical"
-                  crossAlignment="center"
-                  style={{ textAlign: 'center' }}
-                  padding={{ top: 'small', bottom: 'small' }}
-                  width="53%"
-                >
-                  <ds-text as="p" weight="light" color="primary">
-                    {t('label.click_here', 'Click here')}
-                  </ds-text>
-                </Row>
-              </Container>
+                  <Trans
+                    i18nKey="label.do_you_need_more_information"
+                    defaults="Do you need more information?"
+                  />
+                </ds-text>
+                <ds-text className="w-[53%] pt-sm pb-sm text-center" as="p" weight="light" color="primary">
+                  {t('label.click_here', 'Click here')}
+                </ds-text>
+              </div>
             )}
-          </Row>
-        </Container>
-      </Container>
+          </div>
+        </div>
       {detailDevice && (
         <ActiveDeviceDetail
+          key={detailDevice.firstSeen}
           selectedDevice={detailDevice}
           onClose={() => setDetailDevice(null)}
         />
       )}
-    </Container>
+    </div>
   );
 };
