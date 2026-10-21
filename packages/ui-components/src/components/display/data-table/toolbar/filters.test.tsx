@@ -119,7 +119,7 @@ describe('DataTableFilters', () => {
     const onFiltersChange = vi.fn();
     render(<FiltersHarness filters={{}} onFiltersChange={onFiltersChange} />);
     fireEvent.click(getTrigger());
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
+    fireEvent.click(screen.getByText('Active'));
     fireEvent.change(screen.getByLabelText('Size from'), { target: { value: '10' } });
     expect(onFiltersChange).not.toHaveBeenCalled();
   });
@@ -135,9 +135,9 @@ describe('DataTableFilters', () => {
       />,
     );
     fireEvent.click(getTrigger());
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
+    fireEvent.click(screen.getByText('Active'));
     fireEvent.change(screen.getByLabelText('Size from'), { target: { value: '10' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+    fireEvent.click(screen.getByRole('button', { name: 'APPLY' }));
     expect(onFiltersChange).toHaveBeenCalledTimes(1);
     expect(onFiltersChange).toHaveBeenCalledWith({
       status: ['active'],
@@ -152,7 +152,7 @@ describe('DataTableFilters', () => {
     render(<FiltersHarness filters={{}} onFiltersChange={onFiltersChange} />);
     fireEvent.click(getTrigger());
     fireEvent.change(screen.getByLabelText('Size from'), { target: { value: 'abc' } });
-    fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+    fireEvent.click(screen.getByRole('button', { name: 'APPLY' }));
     expect(onFiltersChange).toHaveBeenCalledWith({});
   });
 
@@ -160,37 +160,25 @@ describe('DataTableFilters', () => {
     const onFiltersChange = vi.fn();
     render(<FiltersHarness filters={{ status: ['active'] }} onFiltersChange={onFiltersChange} />);
     fireEvent.click(getTrigger());
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
-    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
-      false,
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Clear' }));
+    fireEvent.click(screen.getByText('Active'));
+    fireEvent.click(screen.getByRole('button', { name: 'CLEAR ALL' }));
     expect(onFiltersChange).not.toHaveBeenCalled();
-    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
-      false,
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Apply' }));
+    fireEvent.click(screen.getByRole('button', { name: 'APPLY' }));
     expect(onFiltersChange).toHaveBeenCalledWith({});
   });
 
-  it('discards the draft on close and re-clones the filters on reopen', () => {
-    render(<FiltersHarness filters={{ status: ['active'] }} />);
+  it('discards the draft on outside close and re-clones the filters on reopen', () => {
+    const onFiltersChange = vi.fn();
+    render(<FiltersHarness filters={{ status: ['active'] }} onFiltersChange={onFiltersChange} />);
     fireEvent.click(getTrigger());
-    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
-      true,
-    );
     // dirty the draft without applying
-    fireEvent.click(screen.getByRole('checkbox', { name: 'Active' }));
-    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
-      false,
-    );
-    fireEvent.click(screen.getByRole('button', { name: 'Close filters' }));
+    fireEvent.click(screen.getByText('Active'));
+    fireEvent.mouseDown(document.body);
     expect(screen.queryByRole('dialog')).toBeNull();
     // reopening must re-clone from the (unchanged) applied filters, not keep the draft
     fireEvent.click(getTrigger());
-    expect((screen.getByRole('checkbox', { name: 'Active' }) as HTMLInputElement).checked).toBe(
-      true,
-    );
+    fireEvent.click(screen.getByRole('button', { name: 'APPLY' }));
+    expect(onFiltersChange).toHaveBeenCalledWith({ status: ['active'] });
   });
 
   it('closes on outside click without emitting', () => {
@@ -283,5 +271,13 @@ describe('DataTableFilters', () => {
     expect(panelB).toBeTruthy();
     expect(screen.getByText('Status A')).toBeTruthy();
     expect(screen.getByText('Status B')).toBeTruthy();
+  });
+
+  it('renders paired from/to labels for range fields', () => {
+    render(<FiltersHarness filters={{}} />);
+    fireEvent.click(getTrigger());
+    expect(screen.getByText('Size from')).toBeTruthy();
+    expect(screen.getByText('To')).toBeTruthy();
+    expect(screen.getByLabelText('Size to')).toBeTruthy();
   });
 });

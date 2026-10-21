@@ -4,6 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+export { DataTableQuotaBar } from './cell-ui/quota-bar';
+export {
+  DataTableStatusBadge,
+  type DataTableStatusBadgeVariant,
+} from './cell-ui/status-badge';
 export { type DataTableFeatures, dataTableFeatures } from './data-table-features';
 export type {
   DataTableBulkAction,

@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../../../web-components/ds-icon';
+
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -54,22 +56,41 @@ export const DataTableSearch = ({
 
   const resolvedLabel = label ?? t('data_table.search', 'Search');
   const resolvedPlaceholder = placeholder ?? t('data_table.search_placeholder', 'Search…');
+  const clearLabel = t('data_table.clear_search', 'Clear search');
+
+  function emit(next: string): void {
+    setLocalValue(next);
+    setSync((current) => ({ ...current, emitted: next }));
+    onSearchChange(next);
+  }
 
   return (
     <label className={styles.searchField}>
       <span className={styles.visuallyHidden}>{resolvedLabel}</span>
+      <span className={styles.searchIcon} aria-hidden="true">
+        <ds-icon icon="Search" size="small"></ds-icon>
+      </span>
       <input
         type="search"
         className={styles.searchInput}
         value={localValue}
         placeholder={resolvedPlaceholder}
         onChange={(event) => {
-          const next = event.target.value;
-          setLocalValue(next);
-          setSync((current) => ({ ...current, emitted: next }));
-          onSearchChange(next);
+          emit(event.target.value);
         }}
       />
+      {localValue.length > 0 && (
+        <button
+          type="button"
+          className={styles.searchClear}
+          aria-label={clearLabel}
+          onClick={() => {
+            emit('');
+          }}
+        >
+          <ds-icon icon="CloseOutline" size="small" aria-hidden="true" />
+        </button>
+      )}
     </label>
   );
 };

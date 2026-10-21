@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import '../../../../web-components/ds-icon';
+
 import clsx from 'clsx';
 import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
@@ -147,7 +149,7 @@ export const DataTableRowActions = ({
           event.stopPropagation();
         }}
       >
-        ⋮
+        <ds-icon icon="MoreVertical" size="small" aria-hidden="true" />
       </button>
       {resolvedPosition &&
         createPortal(
@@ -176,7 +178,15 @@ export const DataTableRowActions = ({
                   onSelect(action);
                 }}
               >
-                {action.label}
+                {action.danger && (
+                  <ds-icon
+                    className={styles.rowActionItemIcon}
+                    icon="Trash2Outline"
+                    size="small"
+                    aria-hidden="true"
+                  />
+                )}
+                <span>{action.label}</span>
               </button>
             ))}
           </div>,

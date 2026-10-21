@@ -91,6 +91,11 @@ export type DataTableFilterDef =
       label: string;
       type: 'enum';
       options: Array<DataTableFilterOption>;
+      /**
+       * How options are presented. `checkbox` (default) is multi-select;
+       * `select` is a single-select dropdown (value stored as a one-item array).
+       */
+      variant?: 'checkbox' | 'select';
     }
   | {
       id: string;

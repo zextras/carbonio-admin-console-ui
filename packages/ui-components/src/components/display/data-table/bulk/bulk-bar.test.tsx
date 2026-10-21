@@ -159,13 +159,13 @@ describe('DataTableBulkBar', () => {
     expect(toolbar.textContent).toContain('selected');
     expect(screen.getByRole('button', { name: 'Archive' })).toBeTruthy();
     expect(screen.getByRole('button', { name: 'Delete' })).toBeTruthy();
-    expect(screen.getByRole('button', { name: '× Clear' })).toBeTruthy();
+    expect(screen.getByRole('button', { name: 'Clear all' })).toBeTruthy();
   });
 
   it('clearing resets the selection and announces it', async () => {
     const { getTable } = renderHarness();
     await selectRows(getTable, 1);
-    fireEvent.click(screen.getByRole('button', { name: '× Clear' }));
+    fireEvent.click(screen.getByRole('button', { name: 'Clear all' }));
     expect(screen.queryByRole('toolbar')).toBeNull();
     expect(getTable()?.atoms.rowSelection.get()).toEqual({});
     expect(screen.getByText('Selection cleared')).toBeTruthy();

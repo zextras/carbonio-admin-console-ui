@@ -580,8 +580,8 @@ describe('DataTable (browser)', () => {
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
     await expect.element(page.getByRole('dialog', { name: 'Filters' })).toBeVisible();
 
-    await userEvent.click(page.getByRole('checkbox', { name: 'Active' }));
-    await userEvent.click(page.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(page.getByText('Active'));
+    await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
 
     await expect.element(page.getByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
     // The active-filter count surfaces in the trigger's accessible name.
@@ -595,9 +595,9 @@ describe('DataTable (browser)', () => {
     await renderTable(<FilteringDataTable />);
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await userEvent.click(page.getByRole('checkbox', { name: 'Pending' }));
-    await userEvent.click(page.getByRole('button', { name: 'Clear' }));
-    await userEvent.click(page.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(page.getByText('Pending'));
+    await userEvent.click(page.getByRole('button', { name: 'CLEAR ALL' }));
+    await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
 
     await expect.element(page.getByText('Status: Pending')).not.toBeInTheDocument();
     await expect.element(page.getByText('25 results')).toBeVisible();
@@ -607,8 +607,8 @@ describe('DataTable (browser)', () => {
     await renderTable(<FilteringDataTable />);
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await userEvent.click(page.getByRole('checkbox', { name: 'Active' }));
-    await userEvent.click(page.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(page.getByText('Active'));
+    await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
 
     await expect.element(page.getByText('Status: Active')).toBeVisible();
     await userEvent.click(page.getByRole('button', { name: 'Remove filter: Status: Active' }));
@@ -616,8 +616,8 @@ describe('DataTable (browser)', () => {
     await expect.element(page.getByText('25 results')).toBeVisible();
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    await userEvent.click(page.getByRole('checkbox', { name: 'Pending' }));
-    await userEvent.click(page.getByRole('button', { name: 'Apply' }));
+    await userEvent.click(page.getByText('Pending'));
+    await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
     await expect.element(page.getByText('Status: Pending')).toBeVisible();
 
     await userEvent.click(page.getByRole('button', { name: 'Clear all' }));
@@ -659,7 +659,8 @@ describe('DataTable (browser)', () => {
       })
       .toBe(true);
 
-    await userEvent.click(page.getByRole('button', { name: 'Close filters' }));
+    // Close via the trigger (panel has no close control; outside-click also works).
+    await userEvent.click(page.getByRole('button', { name: 'Filters' }));
     await expect.element(page.getByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
 
     await userEvent.click(page.getByRole('button', { name: 'Customize' }));
