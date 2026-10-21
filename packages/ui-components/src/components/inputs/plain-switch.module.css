@@ -1,0 +1,116 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.root {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: var(--padding-size-small);
+  min-width: 0;
+}
+
+.control {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.8rem;
+  height: 1rem;
+}
+
+.input {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.input:disabled {
+  cursor: default;
+}
+
+/* Track and thumb are drawn in a single SVG so they rasterize together and the thumb
+   stays centered at fractional positions and device pixel ratios. */
+.track {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: 5rem;
+}
+
+.trackFill {
+  fill: #858c93;
+  transition: fill 150ms ease;
+}
+
+.thumb {
+  fill: var(--color-gray6-regular);
+  filter: drop-shadow(0 1.6px 3.2px rgba(39, 39, 39, 0.1));
+  transition: transform 150ms ease;
+}
+
+.input:checked + .track .trackFill {
+  fill: var(--color-primary-regular);
+}
+
+.input:checked + .track .thumb {
+  transform: translateX(12.8px);
+}
+
+.input:disabled + .track .trackFill {
+  fill: var(--color-gray3-disabled);
+}
+
+.input:checked:disabled + .track .trackFill {
+  fill: var(--color-primary-disabled);
+}
+
+.input:focus-visible + .track {
+  outline: 2px solid var(--color-primary-regular);
+  outline-offset: 2px;
+}
+
+.text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.125rem;
+  min-width: 0;
+  overflow-wrap: break-word;
+}
+
+.label {
+  color: var(--color-text-regular);
+  font-size: var(--font-size-medium);
+  line-height: normal;
+  cursor: pointer;
+  user-select: none;
+}
+
+.description {
+  color: var(--color-gray1-focus);
+  font-size: var(--font-size-small);
+  line-height: normal;
+}
+
+.root[data-disabled] .label {
+  cursor: default;
+}
+
+.root[data-disabled] .label,
+.root[data-disabled] .description {
+  color: var(--color-text-disabled);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .trackFill,
+  .thumb {
+    transition: none;
+  }
+}

@@ -107,15 +107,11 @@ export const COSQuotasNew = ({
     <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
         <Switch
-          iconColor="primary"
           onClick={switchOnChange}
           value={switchValue}
           disabled={readonlyCOS}
-          iconAriaLabel={t('label.unlimited_quota', 'Unlimited quota')}
+          label={t('label.unlimited_quota', 'Unlimited quota')}
         />
-        <ds-text as="span" size="medium">
-          {t('label.unlimited_quota', 'Unlimited quota')}
-        </ds-text>
       </Container>
       <Container
         orientation={'horizontal'}

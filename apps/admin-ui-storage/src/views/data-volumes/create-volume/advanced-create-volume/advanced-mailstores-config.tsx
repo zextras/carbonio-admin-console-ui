@@ -270,7 +270,6 @@ export function AdvancedMailstoresConfig({
                     }
                     onSelection({ isCompression: newValue }, true);
                   }}
-                  iconColor="primary"
                 />
               </Row>
               <Padding horizontal="small" />
@@ -325,7 +324,6 @@ export function AdvancedMailstoresConfig({
                         onSelection({ infrequentAccessThreshold: '' }, true);
                       }
                     }}
-                    iconColor="primary"
                   />
                   <Tooltip
                     placement="top"
@@ -385,7 +383,6 @@ export function AdvancedMailstoresConfig({
                       onSelection({ useInfrequentAccess: false }, true);
                     }
                   }}
-                  iconColor="primary"
                 />
                 <Tooltip
                   placement="top"
@@ -417,51 +414,36 @@ export function AdvancedMailstoresConfig({
         <Switch
           value={isCurrent}
           label={t('label.set_as_current', 'Set as Current')}
+          description={t(
+            'label.enable_current_helptext',
+            'Enabling this option will disable the current active volume.',
+          )}
           onClick={(): void => {
             const newValue = !isCurrent;
             form.setFieldValue('isCurrent', newValue);
             onSelection({ isCurrent: newValue }, true);
           }}
-          iconColor="primary"
         />
       </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
-          )}
-        </ds-text>
-      </Row>
       {!isLocalBlockDevice && (
-        <>
-          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-            <Switch
-              value={centralized}
-              label={t('label.storage_centralized', 'I want this Storage to be centralized')}
-              onClick={(): void => {
-                const newValue = !centralized;
-                form.setFieldValue('centralized', newValue);
-                onSelection({ centralized: newValue }, true);
-              }}
-              iconColor="primary"
-            />
-          </Row>
-          <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
-            <ds-text
-              as="p"
-              color="secondary"
-              style={{ whiteSpace: 'pre-line', width: '100%' }}
-              overflow="break-word"
-            >
+        <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+          <Switch
+            value={centralized}
+            label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+            description={
               <Trans
                 i18nKey="label.storage_centralized_helpertext"
                 defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
                 components={{ bold: <strong /> }}
               />
-            </ds-text>
-          </Row>
-        </>
+            }
+            onClick={(): void => {
+              const newValue = !centralized;
+              form.setFieldValue('centralized', newValue);
+              onSelection({ centralized: newValue }, true);
+            }}
+          />
+        </Row>
       )}
     </Container>
   );

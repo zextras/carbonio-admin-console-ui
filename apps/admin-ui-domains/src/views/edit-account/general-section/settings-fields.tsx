@@ -128,7 +128,6 @@ export const SettingsFields = () => {
           <Switch
             onClick={onCOSSwitchChanges}
             label={t('account_details.default_COS', 'Default COS')}
-            iconColor="primary"
             value={isDefaultCos}
           />
         </Row>

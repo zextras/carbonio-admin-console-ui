@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useField } from '@tanstack/react-form';
-import { Container, Padding, Row, Switch } from '@zextras/ui-components';
+import { Container, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { CosFeaturesFormApi } from '../../types';
@@ -28,25 +28,12 @@ export const UntrustedNetworkSection = ({ form, readonlyCOS }: UntrustedNetworkS
           'cos.features.allowSetupFromUntrustedNetworks',
           'Allow 2FA setup from untrusted networks',
         )}
-        iconColor="primary"
+        description={t(
+          'cos.features.allowSetupFromUntrustedNetworksInfo',
+          'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
+        )}
         disabled={readonlyCOS || otpMgmtField.state.value === 'FALSE'}
       />
-      <Padding left={'extralarge'}>
-        <Row padding={{ left: 'small' }}>
-          <ds-text
-            as="span"
-            color="gray1"
-            size="small"
-            overflow="break-word"
-            disabled={readonlyCOS || otpMgmtField.state.value === 'FALSE'}
-          >
-            {t(
-              'cos.features.allowSetupFromUntrustedNetworksInfo',
-              'Lets users without an OTP complete the 2FA setup wizard at sign-in from untrusted networks. Disable this option to block access from untrusted networks until 2FA is already configured.',
-            )}{' '}
-          </ds-text>
-        </Row>
-      </Padding>
     </Container>
   );
 };

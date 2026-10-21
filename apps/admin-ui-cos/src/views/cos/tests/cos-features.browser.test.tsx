@@ -309,7 +309,7 @@ describe('CosFeatures', () => {
       );
       await expect.element(page.getByText('Features')).toBeVisible();
 
-      await page.getByText('Can access Settings').click();
+      await page.getByText('Can access Settings').click({ force: true });
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     });
   });

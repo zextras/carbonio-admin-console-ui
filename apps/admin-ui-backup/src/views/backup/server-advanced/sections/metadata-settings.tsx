@@ -58,7 +58,6 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
                 )}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}
@@ -82,7 +81,6 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
                 )}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}

@@ -138,7 +138,6 @@ export const RestoreSettings = ({ form, legalHoldAccount, account }: RestoreSett
                 label={t('legal_hold.include_items_deleted', 'Include items deleted')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
               />
             )}
           </form.Field>

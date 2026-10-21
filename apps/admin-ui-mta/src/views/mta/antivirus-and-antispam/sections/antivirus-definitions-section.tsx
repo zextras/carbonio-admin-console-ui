@@ -104,7 +104,6 @@ export const AntivirusDefinitionsSection = ({
               value={field.state.value}
               onClick={(): void => field.handleChange(!field.state.value)}
               disabled={!allowSetMTA}
-              iconColor="primary"
             />
           )}
         </form.Field>
@@ -281,7 +280,6 @@ export const AntivirusDefinitionsSection = ({
                 value={field.state.value}
                 onClick={(): void => field.handleChange(!field.state.value)}
                 disabled={!allowSetMTA}
-                iconColor="primary"
               />
             )}
           </form.Field>
@@ -294,7 +292,6 @@ export const AntivirusDefinitionsSection = ({
                 value={field.state.value}
                 onClick={(): void => field.handleChange(!field.state.value)}
                 disabled={!allowSetMTA}
-                iconColor="primary"
               />
             )}
           </form.Field>
@@ -312,7 +309,6 @@ export const AntivirusDefinitionsSection = ({
               value={field.state.value}
               onClick={(): void => field.handleChange(!field.state.value)}
               disabled={!allowSetMTA}
-              iconColor="primary"
             />
           )}
         </form.Field>

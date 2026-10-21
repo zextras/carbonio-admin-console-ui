@@ -668,11 +668,11 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
 
       const otpSwitch = page.getByRole('switch', { name: 'Allow users to configure 2FA' });
-      await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'true');
+      await expect.element(otpSwitch).toBeChecked();
 
       await resetButton.click();
 
-      await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'false');
+      await expect.element(otpSwitch).not.toBeChecked();
     });
 
     it('should update the form when reset button is clicked', async () => {
@@ -688,11 +688,11 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
 
       const lockSwitch = page.getByRole('switch', { name: 'Prevent user from changing password' });
-      await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'true');
+      await expect.element(lockSwitch).toBeChecked();
 
       await resetButton.click();
 
-      await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'false');
+      await expect.element(lockSwitch).not.toBeChecked();
     });
   });
 

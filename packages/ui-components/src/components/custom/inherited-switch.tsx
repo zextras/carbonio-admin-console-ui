@@ -3,76 +3,68 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Tooltip } from '../display/Tooltip';
 import { IconCheckbox } from '../inputs/IconCheckbox';
 import { Switch } from '../inputs/Switch';
-import { Container } from '../layout/Container';
-import { Padding } from '../layout/Padding';
-import { Row } from '../layout/Row';
+import styles from './inherited-switch.module.css';
 
 type InheritedSwitchProps = {
   label: string;
+  /** Secondary text rendered under the label. */
+  description?: string;
   subValue?: string | boolean;
   inheritedValue?: string | boolean;
   inputName: string;
-  onChange: (...args: Array<any>) => void;
-  onChangeReset: (...args: Array<any>) => void;
+  onChange: (inputName: string) => void;
+  onChangeReset: () => void;
   fromSubValue?: string | boolean;
-  iconColor: string;
   disabled?: boolean;
   onFocus?: () => void;
 };
 
-const InheritedSwitch: FC<InheritedSwitchProps> = ({
+const InheritedSwitch = ({
   label,
+  description,
   subValue,
   inheritedValue,
   inputName,
   onChange,
   onChangeReset,
   fromSubValue,
-  iconColor,
   disabled = false,
   onFocus,
-}) => {
+}: InheritedSwitchProps) => {
   const [t] = useTranslation();
 
   return (
-    <Container
-      data-testid={`inherited-${inputName}`}
-      mainAlignment="flex-start"
-      orientation="horizontal"
-    >
-      <Row mainAlignment="flex-start">
-        <Switch
-          value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
-          onClick={(): void => onChange(inputName)}
-          label={label}
-          iconColor={iconColor as 'primary' | 'text' | 'gray0' | 'error' | 'warning' | 'success'}
-          disabled={disabled}
-          onFocus={onFocus}
-        />
-      </Row>
+    <div data-testid={`inherited-${inputName}`} className={styles.root}>
+      <Switch
+        value={subValue ? subValue === 'TRUE' : inheritedValue === 'TRUE'}
+        onClick={(): void => onChange(inputName)}
+        label={label}
+        description={description}
+        disabled={disabled}
+        onFocus={onFocus}
+      />
       {fromSubValue ? (
         <Tooltip
           label={
             <>
-              <Row mainAlignment="flex-start" takeAvailableSpace width="fill">
+              <div className={styles.tooltipRow}>
                 <ds-text as="label" weight="bold">
                   {t('account_details.inherited_value_was', 'The inherited value was')} :
                 </ds-text>
                 <ds-text as="span">{`  ${
                   inheritedValue === 'TRUE' ? t('label.true', 'true') : t('label.false', 'false')
                 }`}</ds-text>
-              </Row>
-              <Padding top="small">
+              </div>
+              <div className={styles.tooltipHint}>
                 <ds-text as="label" weight="bold">
                   {t('account_details.click_to_revert', 'Click to revert.')}
                 </ds-text>
-              </Padding>
+              </div>
             </>
           }
         >
@@ -87,7 +79,7 @@ const InheritedSwitch: FC<InheritedSwitchProps> = ({
           />
         </Tooltip>
       ) : null}
-    </Container>
+    </div>
   );
 };
 

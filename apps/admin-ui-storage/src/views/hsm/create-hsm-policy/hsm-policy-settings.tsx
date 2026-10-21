@@ -564,7 +564,6 @@ export function HSMpolicySettings() {
               onClick={(): void => {
                 setShowSourceVolume(!showSourceVolume);
               }}
-              iconColor="primary"
             />
           </Padding>
         </ListRow>
@@ -631,7 +630,6 @@ export function HSMpolicySettings() {
               onClick={(): void => {
                 setShowDestinationVolume(!showDestinationVolume);
               }}
-              iconColor="primary"
             />
           </Padding>
         </ListRow>

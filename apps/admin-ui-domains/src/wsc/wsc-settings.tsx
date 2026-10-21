@@ -185,24 +185,20 @@ export const WscSettings: FC<{
         )}
         disabled={requiresLicenseCheck && !isLicensed}
       >
-        <SettingLayout
+        <InheritedSwitch
+          subValue={featuresDetail?.carbonioFeatureWscEnabled}
+          onChange={changeSwitchOption}
+          label={t('wsc.section.content.toggle.enableFeature', 'Enable Chat')}
           description={t(
             'wsc.section.content.description.enableFeature',
             'Activate to allow messaging, group chats, video calls, and file sharing.',
           )}
-        >
-          <InheritedSwitch
-            subValue={featuresDetail?.carbonioFeatureWscEnabled}
-            onChange={changeSwitchOption}
-            label={t('wsc.section.content.toggle.enableFeature', 'Enable Chat')}
-            iconColor="primary"
-            inheritedValue={cosDetail?.carbonioFeatureWscEnabled}
-            fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
-            inputName={'carbonioFeatureWscEnabled'}
-            onChangeReset={(): void => setEmptyValue?.('carbonioFeatureWscEnabled')}
-            disabled={requiresLicenseCheck && !isLicensed}
-          />
-        </SettingLayout>
+          inheritedValue={cosDetail?.carbonioFeatureWscEnabled}
+          fromSubValue={accSpecificDetail?.carbonioFeatureWscEnabled}
+          inputName={'carbonioFeatureWscEnabled'}
+          onChangeReset={(): void => setEmptyValue?.('carbonioFeatureWscEnabled')}
+          disabled={requiresLicenseCheck && !isLicensed}
+        />
       </BoxLayout>
       <Container orientation="horizontal" height="fit" gap="4rem">
         <Container mainAlignment="flex-start" width="calc(50% - 2rem)">
@@ -214,42 +210,34 @@ export const WscSettings: FC<{
             )}
             disabled={disableWscSettings}
           >
-            <SettingLayout
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscShowMessageReads}
+              onChange={changeSwitchOption}
+              label={t('wsc.section.content.toggle.readReceipt', 'Show read receipts')}
               description={t(
                 'wsc.section.content.description.readReceipt',
                 'Show senders when their messages have been read.',
               )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscShowMessageReads}
-                onChange={changeSwitchOption}
-                label={t('wsc.section.content.toggle.readReceipt', 'Show read receipts')}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscShowMessageReads}
-                fromSubValue={accSpecificDetail?.carbonioWscShowMessageReads}
-                inputName={'carbonioWscShowMessageReads'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscShowMessageReads')}
-                disabled={disableWscSettings}
-              />
-            </SettingLayout>
-            <SettingLayout
+              inheritedValue={cosDetail?.carbonioWscShowMessageReads}
+              fromSubValue={accSpecificDetail?.carbonioWscShowMessageReads}
+              inputName={'carbonioWscShowMessageReads'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscShowMessageReads')}
+              disabled={disableWscSettings}
+            />
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscShowUsersPresence}
+              onChange={changeSwitchOption}
+              label={t('wsc.section.content.toggle.presence', "Show users' online status")}
               description={t(
                 'wsc.section.content.description.presence',
                 "Display users' online status or last seen time.",
               )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscShowUsersPresence}
-                onChange={changeSwitchOption}
-                label={t('wsc.section.content.toggle.presence', "Show users' online status")}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscShowUsersPresence}
-                fromSubValue={accSpecificDetail?.carbonioWscShowUsersPresence}
-                inputName={'carbonioWscShowUsersPresence'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscShowUsersPresence')}
-                disabled={disableWscSettings}
-              />
-            </SettingLayout>
+              inheritedValue={cosDetail?.carbonioWscShowUsersPresence}
+              fromSubValue={accSpecificDetail?.carbonioWscShowUsersPresence}
+              inputName={'carbonioWscShowUsersPresence'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscShowUsersPresence')}
+              disabled={disableWscSettings}
+            />
             <SettingLayout
               description={t(
                 'wsc.section.content.description.deletionLimit',
@@ -299,45 +287,37 @@ export const WscSettings: FC<{
             )}
             disabled={disableWscSettings}
           >
-            <SettingLayout
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscPrivateChatCreation}
+              onChange={changeSwitchOption}
+              label={t(
+                'wsc.section.content.toggle.createPrivate',
+                'Users can start new private chats',
+              )}
               description={t(
                 'wsc.section.content.description.createPrivate',
                 'Allow users to initiate one-on-one conversations.',
               )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscPrivateChatCreation}
-                onChange={changeSwitchOption}
-                label={t(
-                  'wsc.section.content.toggle.createPrivate',
-                  'Users can start new private chats',
-                )}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscPrivateChatCreation}
-                fromSubValue={accSpecificDetail?.carbonioWscPrivateChatCreation}
-                inputName={'carbonioWscPrivateChatCreation'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscPrivateChatCreation')}
-                disabled={disableWscSettings}
-              />
-            </SettingLayout>
-            <SettingLayout
+              inheritedValue={cosDetail?.carbonioWscPrivateChatCreation}
+              fromSubValue={accSpecificDetail?.carbonioWscPrivateChatCreation}
+              inputName={'carbonioWscPrivateChatCreation'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscPrivateChatCreation')}
+              disabled={disableWscSettings}
+            />
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscGroupChatCreation}
+              onChange={changeSwitchOption}
+              label={t('wsc.section.content.toggle.createGroup', 'Users can create group chats')}
               description={t(
                 'wsc.section.content.description.createGroup',
                 'Allow users to create chats with multiple participants.',
               )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscGroupChatCreation}
-                onChange={changeSwitchOption}
-                label={t('wsc.section.content.toggle.createGroup', 'Users can create group chats')}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscGroupChatCreation}
-                fromSubValue={accSpecificDetail?.carbonioWscGroupChatCreation}
-                inputName={'carbonioWscGroupChatCreation'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscGroupChatCreation')}
-                disabled={disableWscSettings}
-              />
-            </SettingLayout>
+              inheritedValue={cosDetail?.carbonioWscGroupChatCreation}
+              fromSubValue={accSpecificDetail?.carbonioWscGroupChatCreation}
+              inputName={'carbonioWscGroupChatCreation'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscGroupChatCreation')}
+              disabled={disableWscSettings}
+            />
             <SettingLayout
               description={t(
                 'wsc.section.content.description.groupMembers',
@@ -393,69 +373,57 @@ export const WscSettings: FC<{
             )}
             disabled={disableWscSettings}
           >
-            <SettingLayout
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscVideoCallEnabled}
+              onChange={changeSwitchOption}
+              label={t('wsc.section.content.toggle.enableVideoCall', 'Enable video calls')}
               description={t(
                 'wsc.section.content.description.enableVideoCall',
                 'Activate video call functionality in the feature.',
               )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscVideoCallEnabled}
-                onChange={changeSwitchOption}
-                label={t('wsc.section.content.toggle.enableVideoCall', 'Enable video calls')}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscVideoCallEnabled}
-                fromSubValue={accSpecificDetail?.carbonioWscVideoCallEnabled}
-                inputName={'carbonioWscVideoCallEnabled'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallEnabled')}
-                disabled={disableWscSettings}
-              />
-            </SettingLayout>
+              inheritedValue={cosDetail?.carbonioWscVideoCallEnabled}
+              fromSubValue={accSpecificDetail?.carbonioWscVideoCallEnabled}
+              inputName={'carbonioWscVideoCallEnabled'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscVideoCallEnabled')}
+              disabled={disableWscSettings}
+            />
             {isAdvanced && (
-              <SettingLayout
+              <InheritedSwitch
+                subValue={featuresDetail?.carbonioWscRecordingEnabled}
+                onChange={changeSwitchOption}
+                label={t('wsc.section.content.toggle.enableRecording', 'Allow call recording')}
                 description={t(
                   'wsc.section.content.description.enableRecording',
                   'Permit recording of audio and video calls.',
                 )}
-              >
-                <InheritedSwitch
-                  subValue={featuresDetail?.carbonioWscRecordingEnabled}
-                  onChange={changeSwitchOption}
-                  label={t('wsc.section.content.toggle.enableRecording', 'Allow call recording')}
-                  iconColor="primary"
-                  inheritedValue={cosDetail?.carbonioWscRecordingEnabled}
-                  fromSubValue={accSpecificDetail?.carbonioWscRecordingEnabled}
-                  inputName={'carbonioWscRecordingEnabled'}
-                  onChangeReset={(): void => setEmptyValue?.('carbonioWscRecordingEnabled')}
-                  disabled={
-                    disableWscSettings || featuresDetail?.carbonioWscVideoCallEnabled === 'FALSE'
-                  }
-                />
-              </SettingLayout>
-            )}
-            <SettingLayout
-              description={t(
-                'wsc.section.content.description.enableVirtualBackground',
-                'Allow users to apply virtual backgrounds during video calls.',
-              )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscVirtualBackgroundEnabled}
-                onChange={changeSwitchOption}
-                label={t(
-                  'wsc.section.content.toggle.enableVirtualBackground',
-                  'Enable virtual background',
-                )}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscVirtualBackgroundEnabled}
-                fromSubValue={accSpecificDetail?.carbonioWscVirtualBackgroundEnabled}
-                inputName={'carbonioWscVirtualBackgroundEnabled'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscVirtualBackgroundEnabled')}
+                inheritedValue={cosDetail?.carbonioWscRecordingEnabled}
+                fromSubValue={accSpecificDetail?.carbonioWscRecordingEnabled}
+                inputName={'carbonioWscRecordingEnabled'}
+                onChangeReset={(): void => setEmptyValue?.('carbonioWscRecordingEnabled')}
                 disabled={
                   disableWscSettings || featuresDetail?.carbonioWscVideoCallEnabled === 'FALSE'
                 }
               />
-            </SettingLayout>
+            )}
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscVirtualBackgroundEnabled}
+              onChange={changeSwitchOption}
+              label={t(
+                'wsc.section.content.toggle.enableVirtualBackground',
+                'Enable virtual background',
+              )}
+              description={t(
+                'wsc.section.content.description.enableVirtualBackground',
+                'Allow users to apply virtual backgrounds during video calls.',
+              )}
+              inheritedValue={cosDetail?.carbonioWscVirtualBackgroundEnabled}
+              fromSubValue={accSpecificDetail?.carbonioWscVirtualBackgroundEnabled}
+              inputName={'carbonioWscVirtualBackgroundEnabled'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscVirtualBackgroundEnabled')}
+              disabled={
+                disableWscSettings || featuresDetail?.carbonioWscVideoCallEnabled === 'FALSE'
+              }
+            />
           </BoxLayout>
         </Container>
         <Container mainAlignment="flex-start" width="calc(50% - 2rem)">
@@ -467,27 +435,23 @@ export const WscSettings: FC<{
             )}
             disabled={disableWscSettings}
           >
-            <SettingLayout
+            <InheritedSwitch
+              subValue={featuresDetail?.carbonioWscAttachmentUpload}
+              onChange={changeSwitchOption}
+              label={t(
+                'wsc.section.content.toggle.enableAttachments',
+                'Users can upload attachments',
+              )}
               description={t(
                 'wsc.section.content.description.enableAttachments',
                 'Enable the sending of files, images, and documents.',
               )}
-            >
-              <InheritedSwitch
-                subValue={featuresDetail?.carbonioWscAttachmentUpload}
-                onChange={changeSwitchOption}
-                label={t(
-                  'wsc.section.content.toggle.enableAttachments',
-                  'Users can upload attachments',
-                )}
-                iconColor="primary"
-                inheritedValue={cosDetail?.carbonioWscAttachmentUpload}
-                fromSubValue={accSpecificDetail?.carbonioWscAttachmentUpload}
-                inputName={'carbonioWscAttachmentUpload'}
-                onChangeReset={(): void => setEmptyValue?.('carbonioWscAttachmentUpload')}
-                disabled={disableWscSettings}
-              />
-            </SettingLayout>
+              inheritedValue={cosDetail?.carbonioWscAttachmentUpload}
+              fromSubValue={accSpecificDetail?.carbonioWscAttachmentUpload}
+              inputName={'carbonioWscAttachmentUpload'}
+              onChangeReset={(): void => setEmptyValue?.('carbonioWscAttachmentUpload')}
+              disabled={disableWscSettings}
+            />
             <SettingLayout
               description={t(
                 'wsc.section.content.description.attachmentSize',
