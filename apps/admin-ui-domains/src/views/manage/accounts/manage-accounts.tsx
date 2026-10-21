@@ -26,6 +26,7 @@ import {
 	DataTableToolbar,
 	ModalOverlay,
 	removeFilterChip,
+	StatusBadge,
 	Tooltip,
 	useSnackbar,
 } from '@zextras/ui-components';
@@ -51,7 +52,7 @@ import {
 } from '../../../services/use-account-list-directory';
 import { useCountAccount } from '../../../services/use-count-account';
 import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
-import { getStatusDisplay } from '../../../utils/status';
+import { getAccountStatusBadgeTone, getStatusDisplay } from '../../../utils/status';
 import { EditAccount } from '../../edit-account/edit-account';
 import { somethingWrongSnackbarConfig } from '../../edit-account/general-section/utils';
 import {
@@ -456,11 +457,9 @@ export const ManageAccounts = () => {
 			meta: { width: '10%' },
 			cell: ({ row }) => {
 				const status = row.original.zimbraAccountStatus as string | undefined;
-				const { color: statusColor, label: statusLabel } = getStatusDisplay(status ?? '', t);
+				const { label: statusLabel } = getStatusDisplay(status ?? '', t);
 				return (
-					<ds-text as="span" size="small" weight="light" color={statusColor}>
-						{statusLabel}
-					</ds-text>
+					<StatusBadge tone={getAccountStatusBadgeTone(status ?? '')} label={statusLabel} />
 				);
 			},
 		},
