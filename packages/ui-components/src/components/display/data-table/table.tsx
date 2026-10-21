@@ -10,7 +10,7 @@ import type {
   ColumnVisibilityState,
   RowData,
 } from '@tanstack/react-table';
-import { type RefObject, useEffect, useRef } from 'react';
+import { type ReactNode, type RefObject, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import styles from './data-table.module.css';
@@ -38,8 +38,8 @@ export type DataTableTableProps<TData extends RowData> = {
   enablePeek?: boolean;
   /** Number of skeleton rows when status is loading. Default: 5 */
   skeletonRowCount?: number;
-  emptyTitle?: string;
-  emptyDescription?: string;
+  emptyTitle?: ReactNode;
+  emptyDescription?: ReactNode;
   errorTitle?: string;
   errorDescription?: string;
   retryLabel?: string;

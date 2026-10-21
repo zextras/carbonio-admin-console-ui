@@ -533,22 +533,43 @@
   color: var(--color-secondary-regular, #5b6672);
 }
 
-.select,
-.goToInput {
-  height: 2rem;
+.pageSizeSelect {
+  appearance: none;
+  box-sizing: border-box;
+  height: 1.9375rem;
+  min-width: 2.9375rem;
+  padding: 0 1.5rem 0 0.5rem;
   border: 1px solid var(--color-gray3-hover, #cfd5de);
-  border-radius: 4px;
-  padding: 0 0.375rem;
-  background: var(--color-gray6-regular, #fff);
+  border-radius: 3.5px;
+  background-color: var(--color-gray6-regular, #fff);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='5' viewBox='0 0 8 5'%3E%3Cpath fill='%235B6672' d='M4 5 0 0h8z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.45rem center;
+  background-size: 0.5rem 0.3125rem;
   color: var(--color-text-regular, #333);
   font-size: 0.8125rem;
   font-family: inherit;
+  cursor: pointer;
+}
+
+.pageSizeSelect:focus,
+.pageSizeSelect:focus-visible {
+  border-color: var(--color-primary-regular, #2b73d2);
+  outline: 2px solid var(--color-primary-regular, #2b73d2);
+  outline-offset: 2px;
 }
 
 .goToInput {
   width: 3.5rem;
-  text-align: center;
+  height: 2rem;
+  border: 1px solid var(--color-gray3-hover, #cfd5de);
+  border-radius: 4px;
   padding: 0 0.5rem;
+  background: var(--color-gray6-regular, #fff);
+  color: var(--color-text-regular, #333);
+  font-size: 0.8125rem;
+  font-family: inherit;
+  text-align: center;
 }
 
 .goToInputInvalid {
@@ -1181,16 +1202,18 @@
 }
 
 .customizeDragHandle {
-  width: 0.75rem;
-  flex: 0 0 0.75rem;
-  color: #9aa3af;
-  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1rem;
+  flex: 0 0 1rem;
+  color: var(--color-secondary-regular, #8a94a1);
   cursor: grab;
   user-select: none;
 }
 
 .customizeColumnLocked .customizeDragHandle {
-  color: #cfd5de;
+  opacity: 0.45;
   cursor: default;
 }
 
@@ -1334,6 +1357,23 @@
 .copyCellValue {
   overflow: hidden;
   text-overflow: ellipsis;
+}
+
+.copyFeedbackTooltip {
+  position: fixed;
+  inset: unset;
+  z-index: 5000;
+  margin: 0;
+  padding: var(--padding-size-small);
+  border-radius: var(--border-radius);
+  background: var(--color-gray3-regular);
+  box-shadow: 0 0 0.25rem 0 rgba(65, 65, 65, 0.5);
+  color: var(--color-text-regular, #333);
+  font-size: 0.75rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
 }
 
 .inlineEdit {
