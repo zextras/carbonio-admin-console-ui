@@ -4,10 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import clsx from 'clsx';
 import type { ReactNode } from 'react';
 
-import styles from '../data-table.module.css';
+import { StatusBadge, type StatusBadgeTone } from '../../status-badge';
 
 export type DataTableStatusBadgeVariant =
   | 'active'
@@ -21,15 +20,15 @@ type DataTableStatusBadgeProps = {
   children: ReactNode;
 };
 
-const VARIANT_CLASS: Record<DataTableStatusBadgeVariant, string> = {
-  active: styles.statusBadgeActive,
-  closed: styles.statusBadgeClosed,
-  pending: styles.statusBadgePending,
-  locked: styles.statusBadgeLocked,
-  maintenance: styles.statusBadgeMaintenance,
+const VARIANT_TONE: Record<DataTableStatusBadgeVariant, StatusBadgeTone> = {
+  active: 'success',
+  closed: 'neutral',
+  pending: 'warning',
+  locked: 'danger',
+  maintenance: 'info',
 };
 
-/** Pill status chip for DataTable cells (Active / Closed / Pending / Locked / Maintenance). */
+/** DataTable cell wrapper around shared {@link StatusBadge}. */
 export const DataTableStatusBadge = ({ variant, children }: DataTableStatusBadgeProps) => (
-  <span className={clsx(styles.statusBadge, VARIANT_CLASS[variant])}>{children}</span>
+  <StatusBadge tone={VARIANT_TONE[variant]}>{children}</StatusBadge>
 );
