@@ -172,15 +172,6 @@ const CustomizePanel = ({
                 item.locked && styles.customizeColumnLocked,
                 afterRequired && styles.customizeColumnRowAfterRequired,
               )}
-              draggable={!item.locked}
-              onDragStart={(event) => {
-                if (item.locked) {
-                  event.preventDefault();
-                  return;
-                }
-                setDragId(item.id);
-                event.dataTransfer.effectAllowed = 'move';
-              }}
               onDragOver={(event) => {
                 if (item.locked || !dragId || dragId === item.id) {
                   return;
@@ -201,22 +192,32 @@ const CustomizePanel = ({
                 setDragId(null);
                 setDropId(null);
               }}
-              onDragEnd={() => {
-                setDragId(null);
-                setDropId(null);
-              }}
             >
-              <span
+              <button
+                type="button"
                 className={styles.customizeDragHandle}
-                title={
+                draggable={!item.locked}
+                disabled={item.locked}
+                aria-label={
                   item.locked
                     ? t('data_table.required_column_hint', 'Required column — fixed')
                     : t('data_table.drag_to_reorder', 'Drag to reorder')
                 }
-                aria-hidden="true"
+                onDragStart={(event) => {
+                  if (item.locked) {
+                    event.preventDefault();
+                    return;
+                  }
+                  setDragId(item.id);
+                  event.dataTransfer.effectAllowed = 'move';
+                }}
+                onDragEnd={() => {
+                  setDragId(null);
+                  setDropId(null);
+                }}
               >
                 <ds-icon icon="DragHandle" size="small" color="secondary" aria-hidden="true" />
-              </span>
+              </button>
               <div
                 role="menuitemcheckbox"
                 aria-checked={visible}

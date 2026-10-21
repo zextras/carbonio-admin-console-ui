@@ -1207,9 +1207,18 @@
   justify-content: center;
   width: 1rem;
   flex: 0 0 1rem;
+  padding: 0;
+  border: none;
+  background: transparent;
   color: var(--color-secondary-regular, #8a94a1);
+  font: inherit;
   cursor: grab;
   user-select: none;
+}
+
+.customizeDragHandle:disabled {
+  opacity: 0.45;
+  cursor: default;
 }
 
 .customizeColumnLocked .customizeDragHandle {
