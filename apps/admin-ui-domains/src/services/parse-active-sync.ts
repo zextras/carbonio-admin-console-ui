@@ -75,16 +75,22 @@ export function parseAllDevices(res: unknown): Array<MobileDevice> {
   const parsed = readSoapContent(res);
   if (!isRecord(parsed) || !isRecord(parsed.response)) return [];
 
-  const devices: Array<MobileDevice> = [];
+  // The request fans out to all mailstores and the merged response groups
+  // devices per server, so the same device can arrive more than once: keep
+  // one entry per natural identity (deviceId + accountEmail, the same key
+  // the backend's ABQ uses).
+  const devices = new Map<string, MobileDevice>();
   Object.values(parsed.response).forEach((entry) => {
     if (!isRecord(entry) || !isRecord(entry.response)) return;
     const list = entry.response.devices;
     if (!Array.isArray(list)) return;
     list.forEach((item) => {
-      if (isMobileDevice(item)) devices.push(item);
+      if (!isMobileDevice(item)) return;
+      const id = `${item.deviceId}/${item.accountEmail}`;
+      if (!devices.has(id)) devices.set(id, item);
     });
   });
-  return devices;
+  return [...devices.values()];
 }
 
 export function parseDeviceStatistics(res: unknown): MobileDeviceDetail | null {
@@ -93,6 +99,34 @@ export function parseDeviceStatistics(res: unknown): MobileDeviceDetail | null {
   const first = Object.values(parsed.response).find((entry) => isRecord(entry));
   if (!isRecord(first) || !isRecord(first.response)) return null;
   return isMobileDevice(first.response) ? (first.response as MobileDeviceDetail) : null;
+}
+
+export type AbqDeviceStatus = 'allowed' | 'blocked' | 'quarantined';
+
+export type AbqDeviceEntry = { deviceId: string; status: AbqDeviceStatus };
+
+const ABQ_STATUSES: Array<AbqDeviceStatus> = ['allowed', 'blocked', 'quarantined'];
+
+function asAbqDeviceStatus(value: unknown): AbqDeviceStatus | undefined {
+  return typeof value === 'string'
+    ? ABQ_STATUSES.find((status) => status === value.toLowerCase())
+    : undefined;
+}
+
+export function parseAbqDevices(res: unknown): Array<AbqDeviceEntry> {
+  const parsed = readSoapContent(res);
+  if (!isRecord(parsed) || !isRecord(parsed.response) || !Array.isArray(parsed.response.devices)) {
+    return [];
+  }
+
+  const devices: Array<AbqDeviceEntry> = [];
+  parsed.response.devices.forEach((item) => {
+    if (!isRecord(item)) return;
+    const status = asAbqDeviceStatus(item.status);
+    const deviceId = typeof item.device_id === 'string' ? item.device_id.split('/')[0] : '';
+    if (status && deviceId) devices.push({ deviceId, status });
+  });
+  return devices;
 }
 
 export function parseZextrasActionResult(res: unknown): { ok: boolean; message?: string } {

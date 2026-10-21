@@ -63,6 +63,8 @@ type ZextrasRequestBody = {
     };
 };
 
+type AbqDevicePayload = { device_id: string; status: string };
+
 function buildDevice(overrides: Partial<MobileDevice> = {}): MobileDevice {
     return {
         accountEmail: 'user1@example.com',
@@ -129,6 +131,7 @@ function buildGetAllDevicesContent(devices: Array<MobileDevice>): string {
 function setupZextrasInterceptor(
     devices: Array<MobileDevice> = DEVICES,
     removeOk = true,
+    abqDevices: Array<AbqDevicePayload> = [],
 ): void {
     worker.use(
         http.post('/service/admin/soap/zextras', async ({ request }) => {
@@ -152,7 +155,12 @@ function setupZextrasInterceptor(
             }
 
             if (action === 'getDeviceStatistics') {
-                const device = devices[0] ?? buildDevice();
+                const device =
+                    devices.find(
+                        (item) =>
+                            item.accountEmail === zextrasBody.accountName &&
+                            item.deviceId === zextrasBody.deviceId,
+                    ) ?? devices[0] ?? buildDevice();
                 return HttpResponse.json({
                     Body: {
                         response: {
@@ -160,6 +168,19 @@ function setupZextrasInterceptor(
                                 response: {
                                     [device.accountServer]: { response: device },
                                 },
+                            }),
+                        },
+                    },
+                });
+            }
+
+            if (action === 'abqListDevices') {
+                return HttpResponse.json({
+                    Body: {
+                        response: {
+                            content: JSON.stringify({
+                                ok: true,
+                                response: { devices: abqDevices },
                             }),
                         },
                     },
@@ -383,6 +404,37 @@ describe('ActiveSync (browser)', () => {
             await userEvent.click(page.getByRole('button', { name: 'Remove' }));
 
             await expect.element(page.getByText('Remove failed')).toBeVisible();
+        });
+    });
+
+    describe('Device detail panel', () => {
+        it('opens a fresh panel for another device after closing the first', async () => {
+            setupZextrasInterceptor(DEVICES, true, [
+                { device_id: 'DEV-001/uuid', status: 'Quarantined' },
+                { device_id: 'DEV-002/uuid', status: 'Allowed' },
+            ]);
+            await setupBrowserTest(<ActiveSync />);
+            await expect.element(page.getByText('DEV-001').first()).toBeInTheDocument();
+
+            await userEvent.click(page.getByText('DEV-001').first());
+            await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+            await page.getByRole('button', { name: 'ABQ Status' }).click();
+            await page.getByRole('option', { name: 'Blocked' }).click();
+            await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+            await userEvent.click(page.getByRole('button', { name: 'Close' }));
+            await expect.element(page.getByText('Quarantined')).not.toBeInTheDocument();
+
+            await userEvent.click(page.getByText('Android', { exact: true }));
+
+            await expect
+                .element(page.getByText('Android', { exact: true }).first())
+                .toBeInTheDocument();
+            await expect.element(page.getByText('Allowed')).toBeVisible();
+            await expect
+                .element(page.getByRole('button', { name: 'Save' }))
+                .not.toBeInTheDocument();
         });
     });
 });

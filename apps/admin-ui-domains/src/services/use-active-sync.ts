@@ -9,17 +9,22 @@ import { useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { ZX_MOBILE } from '../constants';
+import { abqSetDeviceStatus } from './abq-set-device-status';
 import { doRemoveDevice } from './do-remove-device';
 import { domainQueryKeys } from './domain-query-keys';
+import { getAbqDevices } from './get-abq-devices';
 import { getAllDevices } from './get-all-devices';
 import { getMobileDeviceDetail } from './get-mobile-device-detail';
 import {
+  type AbqDeviceStatus,
+  parseAbqDevices,
   parseAllDevices,
   parseDeviceStatistics,
   parseZextrasActionResult,
   soapErrorMessage,
 } from './parse-active-sync';
 import { resetDevice } from './reset-device';
+import { resumeDevice } from './resume-device';
 import { suspendDevice } from './suspend-device';
 import { wipeDevice } from './wipe-device';
 
@@ -32,6 +37,12 @@ type DeviceActionInput = {
 
 type WipeDeviceInput = DeviceActionInput & {
   confirm: boolean;
+};
+
+type SetAbqDeviceStatusInput = {
+  deviceId: string;
+  account: string;
+  status: AbqDeviceStatus;
 };
 
 type DeviceStatsParams = {
@@ -124,10 +135,34 @@ export function useActiveSyncDeviceStats(params: DeviceStatsParams | undefined) 
   });
 }
 
+export function useAbqDevices() {
+  const { t, error } = useActiveSyncSnackbar();
+
+  return useQuery({
+    queryKey: domainQueryKeys.activeSyncAbqDevices(),
+    queryFn: async () => {
+      try {
+        return parseAbqDevices(await getAbqDevices());
+      } catch (err) {
+        error(err);
+        throw err instanceof Error
+          ? err
+          : new Error(t('label.something_wrong_error_msg', FALLBACK_ERROR));
+      }
+    },
+    staleTime: 15_000,
+    placeholderData: keepPreviousData,
+    refetchOnWindowFocus: false,
+  });
+}
+
 function useInvalidateActiveSyncDevices() {
   const queryClient = useQueryClient();
-  return () =>
+  return () => {
     queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'active-sync-devices'] });
+    queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'active-sync-device-stats'] });
+    queryClient.invalidateQueries({ queryKey: domainQueryKeys.activeSyncAbqDevices() });
+  };
 }
 
 export function useRemoveDevice() {
@@ -188,6 +223,40 @@ export function useSuspendDevice() {
   return useMutation({
     mutationFn: async ({ accountName, deviceId }: DeviceActionInput) => {
       const res = await suspendDevice(ZX_MOBILE, accountName, deviceId);
+      await assertZextrasOk(res, t('label.something_wrong_error_msg', FALLBACK_ERROR));
+    },
+    onSuccess: () => {
+      success(t('label.change_save_success_msg', 'The change has been saved successfully'));
+      invalidate();
+    },
+    onError: (err: unknown) => error(err),
+  });
+}
+
+export function useSetAbqDeviceStatus() {
+  const { t, success, error } = useActiveSyncSnackbar();
+  const invalidate = useInvalidateActiveSyncDevices();
+
+  return useMutation({
+    mutationFn: async ({ deviceId, account, status }: SetAbqDeviceStatusInput) => {
+      const res = await abqSetDeviceStatus(deviceId, account, status);
+      await assertZextrasOk(res, t('label.something_wrong_error_msg', FALLBACK_ERROR));
+    },
+    onSuccess: () => {
+      success(t('label.change_save_success_msg', 'The change has been saved successfully'));
+      invalidate();
+    },
+    onError: (err: unknown) => error(err),
+  });
+}
+
+export function useResumeDevice() {
+  const { t, success, error } = useActiveSyncSnackbar();
+  const invalidate = useInvalidateActiveSyncDevices();
+
+  return useMutation({
+    mutationFn: async ({ accountName, deviceId }: DeviceActionInput) => {
+      const res = await resumeDevice(ZX_MOBILE, accountName, deviceId);
       await assertZextrasOk(res, t('label.something_wrong_error_msg', FALLBACK_ERROR));
     },
     onSuccess: () => {
