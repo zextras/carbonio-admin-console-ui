@@ -100,9 +100,9 @@ export const DataTableCopyCell = ({ value, onCopy, children }: DataTableCopyCell
             ⧉
           </button>
           <Portal show={showCopied}>
-            <span ref={tooltipRef} className={styles.copyFeedbackTooltip} role="status">
+            <output ref={tooltipRef} className={styles.copyFeedbackTooltip}>
               {copiedLabel}
-            </span>
+            </output>
           </Portal>
         </>
       )}

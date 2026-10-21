@@ -157,13 +157,13 @@ const CustomizePanel = ({
         )}
       </div>
       <p className={styles.customizeHint}>{columnsHint}</p>
-      <ul className={styles.customizeColumnList} role="menu">
+      <div className={styles.customizeColumnList} role="menu">
         {orderedItems.map((item, index) => {
           const visible = isColumnVisible(columnVisibility, item.id);
           const nextItem = orderedItems[index + 1];
           const afterRequired = Boolean(item.locked && nextItem && !nextItem.locked);
           return (
-            <li
+            <div
               key={item.id}
               className={clsx(
                 styles.customizeColumnRow,
@@ -294,10 +294,10 @@ const CustomizePanel = ({
                   </button>
                 </span>
               )}
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
     </dialog>
   );
 };

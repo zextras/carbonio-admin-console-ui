@@ -36,7 +36,7 @@ const TONE_CLASS: Record<StatusBadgeTone, string> = {
  * Pass `tone` explicitly, or pass a known `label` to auto-map (Active → success, etc.).
  */
 export const StatusBadge = ({ tone, label, children, className }: StatusBadgeProps) => {
-  const resolvedTone = tone ?? (label !== undefined ? getStatusBadgeTone(label) : 'neutral');
+  const resolvedTone = tone ?? (label === undefined ? 'neutral' : getStatusBadgeTone(label));
   const content = children ?? label;
 
   return (
