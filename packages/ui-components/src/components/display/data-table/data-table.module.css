@@ -1130,6 +1130,20 @@
   border-top: 1px solid transparent;
 }
 
+.customizeColumnRowAfterRequired {
+  position: relative;
+}
+
+.customizeColumnRowAfterRequired::after {
+  content: '';
+  position: absolute;
+  left: 1rem;
+  right: 1rem;
+  bottom: 0;
+  height: 2px;
+  background: var(--color-primary-regular, #2b73d2);
+}
+
 .customizeColumnDragging {
   opacity: 0.4;
 }
