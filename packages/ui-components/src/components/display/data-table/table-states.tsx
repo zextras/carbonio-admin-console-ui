@@ -4,13 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { ReactNode } from 'react';
+
 import styles from './data-table.module.css';
 import { PRIMARY_COLUMN_OFFSET } from './layout-constants';
 
 type EmptyStateProps = {
   colSpan: number;
-  title: string;
-  description: string;
+  title: ReactNode;
+  description: ReactNode;
 };
 
 export const DataTableEmptyState = ({ colSpan, title, description }: EmptyStateProps) => (

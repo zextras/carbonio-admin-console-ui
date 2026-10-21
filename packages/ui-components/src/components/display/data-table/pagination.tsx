@@ -134,7 +134,7 @@ const PaginationControls = ({
       <label className={styles.rowsPerPage}>
         {rowsPerPageLabel}
         <select
-          className={styles.select}
+          className={styles.pageSizeSelect}
           aria-label={rowsPerPageLabel}
           value={pagination.pageSize}
           onChange={(e) => {

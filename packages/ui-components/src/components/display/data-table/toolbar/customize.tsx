@@ -215,7 +215,7 @@ const CustomizePanel = ({
                 }
                 aria-hidden="true"
               >
-                ⠿
+                <ds-icon icon="DragHandle" size="small" color="secondary" aria-hidden="true" />
               </span>
               <div
                 role="menuitemcheckbox"
@@ -351,7 +351,7 @@ export const DataTableCustomize = <TData extends RowData = RowData>({
     compactLabel: compactLabel ?? t('data_table.compact', 'Compact'),
     columnsSectionLabel: columnsSectionLabel ?? t('data_table.columns', 'Columns'),
     columnsHint:
-      columnsHint ?? t('data_table.columns_hint', 'Drag ⠿ to reorder · toggle to show/hide'),
+      columnsHint ?? t('data_table.columns_hint', 'Drag to reorder · toggle to show/hide'),
     requiredColumnLabel: requiredColumnLabel ?? t('data_table.required_column', 'required'),
     resetLabel: resetLabel ?? t('data_table.reset_columns', 'Reset'),
   };

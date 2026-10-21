@@ -6,7 +6,7 @@
 
 import type { Cell, Row, RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { useEffect } from 'react';
+import { type ReactNode, useEffect } from 'react';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
@@ -38,8 +38,8 @@ export type DataTableTableBodyProps<TData extends RowData> = {
   onRowClick?: (row: TData) => void;
   enablePeek?: boolean;
   skeletonRowCount?: number;
-  emptyTitle: string;
-  emptyDescription: string;
+  emptyTitle: ReactNode;
+  emptyDescription: ReactNode;
   errorTitle: string;
   errorDescription: string;
   retryLabel: string;

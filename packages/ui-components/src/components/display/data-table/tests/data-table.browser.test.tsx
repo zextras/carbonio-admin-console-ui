@@ -896,8 +896,7 @@ describe('DataTable (browser)', () => {
     await userEvent.click(page.getByRole('button', { name: 'Copy user0@demo.zextras.io' }).first());
     expect(clipboardWriteText).toHaveBeenCalledWith('user0@demo.zextras.io');
     expect(onCopyCell).toHaveBeenCalledWith('user0@demo.zextras.io');
-    // The live region clears the announcement after ~1s: assert promptly.
-    await expect.element(page.getByText('Copied to clipboard')).toBeVisible();
+    await expect.element(page.getByText('Copied')).toBeVisible();
   });
 
   it('opens row actions and fires onRowAction', async () => {
