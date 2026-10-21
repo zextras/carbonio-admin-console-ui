@@ -10,8 +10,8 @@ const STATUS_CONFIG = {
   active: { color: 'success', labelKey: 'label.active', labelDefault: 'Active' },
   maintenance: {
     color: 'info',
-    labelKey: 'label.in_maintenance',
-    labelDefault: 'In maintenance',
+    labelKey: 'label.maintenance',
+    labelDefault: 'Maintenance',
   },
   locked: { color: 'error', labelKey: 'label.locked', labelDefault: 'Locked' },
   closed: { color: 'gray1', labelKey: 'label.closed', labelDefault: 'Closed' },
