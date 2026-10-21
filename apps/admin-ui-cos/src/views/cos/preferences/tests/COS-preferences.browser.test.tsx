@@ -327,7 +327,7 @@ describe('COSPreferences', () => {
       );
       await expect.element(page.getByText('Preferences')).toBeVisible();
 
-      await page.getByText('View mail as HTML (when possible)').click();
+      await page.getByText('View mail as HTML (when possible)').click({ force: true });
       await expect
         .element(page.getByRole('button', { name: 'Save' }))
         .not.toBeInTheDocument();

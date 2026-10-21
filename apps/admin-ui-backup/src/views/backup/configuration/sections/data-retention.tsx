@@ -63,7 +63,6 @@ export const DataRetention = ({
                 )}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}

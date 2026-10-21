@@ -254,7 +254,7 @@ describe('BackupServerConfig', () => {
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
       const backupStartupSwitch = page.getByText('Backup is enabled at the startup');
-      await userEvent.click(backupStartupSwitch);
+      await userEvent.click(backupStartupSwitch, { force: true });
 
       // Should remain clean since switch is disabled
       await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();

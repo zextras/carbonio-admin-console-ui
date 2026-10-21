@@ -4,30 +4,28 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import clsx from 'clsx';
-import { CSSProperties, useMemo, useRef } from 'react';
+import { useState } from 'react';
 
-import { useCheckbox } from '../../hooks/useCheckbox';
-import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { resolveThemeColor } from '../../theme/theme-utils';
-import { Container, ContainerProps } from '../layout/Container';
-import { Padding } from '../layout/Padding';
-import styles from './Switch.module.css';
+import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
+import { PlainSwitch, type PlainSwitchProps } from './plain-switch';
 
-type SwitchSize = 'medium' | 'small';
-
-type SwitchProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
-  defaultChecked?: boolean;
-  value?: boolean;
-  label?: string;
-  padding?: ContainerProps['padding'];
-  disabled?: boolean;
-  onClick?: (event: Event) => void;
-  onChange?: (checked: boolean) => void;
-  size?: SwitchSize;
-  iconColor?: string;
-  iconAriaLabel?: string;
+type SwitchProps = Omit<
+  PlainSwitchProps,
+  'checked' | 'defaultChecked' | 'value' | 'onChange' | 'onClick' | 'size' | 'ref' | 'rootRef'
+> & {
+  /** Ref to the root element, so wrappers like Tooltip anchor to the whole switch row. */
   ref?: React.Ref<HTMLDivElement>;
+  defaultChecked?: boolean;
+  /** Controlled value. When omitted the switch is uncontrolled and starts from `defaultChecked`. */
+  value?: boolean;
+  label: string;
+  /** Outer padding of the switch row. */
+  padding?: PaddingVarObj | string | 0;
+  disabled?: boolean;
+  /** Fired on every user toggle with the native change event. */
+  onClick?: (event: Event) => void;
+  /** Fired on every user toggle with the new checked state. */
+  onChange?: (checked: boolean) => void;
 };
 
 const Switch = ({
@@ -38,78 +36,35 @@ const Switch = ({
   disabled = false,
   onClick,
   onChange,
-  size = 'medium',
-  iconColor = 'gray0',
-  iconAriaLabel,
+  style,
   ref,
+  onKeyDown,
   ...rest
 }: SwitchProps) => {
-  const innerRef = useRef<HTMLDivElement>(null);
-  const ckbRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
-  const checked = useCheckbox({
-    ref: ckbRef,
-    defaultChecked,
-    value,
-    disabled,
-    onClick,
-    onChange,
-  });
-
-  const iconWrapperStyle = useMemo<CSSProperties>(
-    () =>
-      ({
-        '--icon-color-focus': resolveThemeColor(String(iconColor), 'focus'),
-        '--icon-color-hover': resolveThemeColor(String(iconColor), 'hover'),
-        '--icon-color-active': resolveThemeColor(String(iconColor), 'active'),
-        '--icon-color-disabled': resolveThemeColor(String(iconColor), 'disabled'),
-      } as CSSProperties),
-    [iconColor],
-  );
+  const [innerChecked, setInnerChecked] = useState(defaultChecked);
+  const paddingStyle = padding === undefined ? undefined : { padding: getPaddingVar(padding) };
 
   return (
-    <Container
-      ref={ckbRef}
-      role="switch"
-      aria-checked={checked}
-      aria-label={label || iconAriaLabel}
-      aria-disabled={disabled || undefined}
-      tabIndex={disabled ? -1 : 0}
-      orientation="horizontal"
-      width="fit"
-      height="fit"
-      padding={padding}
-      style={{ cursor: disabled ? 'default' : 'pointer' }}
-      crossAlignment="center"
+    <PlainSwitch
+      rootRef={ref}
+      label={label}
+      disabled={disabled}
+      checked={value ?? innerChecked}
+      onChange={(event) => {
+        if (value === undefined) setInnerChecked(event.target.checked);
+        onClick?.(event.nativeEvent);
+        onChange?.(event.target.checked);
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (event.key === 'Enter' && !event.defaultPrevented) {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      }}
+      style={{ ...paddingStyle, ...style }}
       {...rest}
-    >
-      <div
-        className={clsx(styles.iconWrapper, disabled && styles.disabled)}
-        style={iconWrapperStyle}
-      >
-        <ds-icon
-          icon={checked ? 'ToggleRight' : 'ToggleLeftOutline'}
-          size={size === 'medium' ? 'large' : 'medium'}
-          color={String(iconColor)}
-          disabled={disabled || undefined}
-          aria-hidden="true"
-        />
-      </div>
-      {label && (
-        <Padding left="small">
-          <ds-text
-            as="label"
-            className={styles.text}
-            size={size === 'medium' ? 'medium' : 'small'}
-            weight="regular"
-            overflow="break-word"
-            color="gray0"
-            disabled={disabled}
-          >
-            {label}
-          </ds-text>
-        </Padding>
-      )}
-    </Container>
+    />
   );
 };
 

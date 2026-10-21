@@ -359,7 +359,7 @@ describe('ServerAdvanced', () => {
 
       await expect.element(page.getByText('LDAP Dump')).toBeVisible();
 
-      await userEvent.click(page.getByText('LDAP Dump'));
+      await userEvent.click(page.getByText('LDAP Dump'), { force: true });
 
       // Should remain clean since switch is disabled
       await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();

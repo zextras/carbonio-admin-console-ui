@@ -463,14 +463,6 @@ describe('CosAdvanced', () => {
       );
     }
 
-    function restoreToggleIcon(): string | null {
-      return (
-        document
-          .querySelector('[role="switch"][aria-label="Allow user to restore messages"] ds-icon')
-          ?.getAttribute('icon') ?? null
-      );
-    }
-
     async function setupAdvancedBackupTest(): Promise<void> {
       const queryClient = getQueryClient();
       await grantUserCosRights(queryClient);
@@ -503,16 +495,16 @@ describe('CosAdvanced', () => {
         name: 'Allow user to restore messages',
       });
       await expect.element(restoreMessagesSwitch).toBeVisible();
-      expect(restoreToggleIcon()).toBe('ToggleRight');
+      await expect.element(restoreMessagesSwitch).toBeChecked();
 
       await userEvent.click(restoreMessagesSwitch);
-      expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
+      await expect.element(restoreMessagesSwitch).not.toBeChecked();
 
       mockGetCoreAttributes(false);
       await page.getByRole('button', { name: 'Save' }).click();
 
       await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
-      expect(restoreToggleIcon()).toBe('ToggleLeftOutline');
+      await expect.element(restoreMessagesSwitch).not.toBeChecked();
     });
 
     it('toggles "Enable / Disable Backup" switch and shows dirty state', async () => {

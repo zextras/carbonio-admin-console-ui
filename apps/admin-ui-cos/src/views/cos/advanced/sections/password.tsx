@@ -104,7 +104,6 @@ export const COSPassword = ({ form, readonlyCOS }: COSPasswordProps) => {
                     onClick={() =>
                       field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
                     }
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -243,7 +242,6 @@ export const COSPassword = ({ form, readonlyCOS }: COSPasswordProps) => {
                     onClick={() =>
                       field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
                     }
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

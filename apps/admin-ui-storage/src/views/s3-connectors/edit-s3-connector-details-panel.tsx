@@ -838,7 +838,6 @@ export function EditS3ConnectorDetailPanel({
                         )}
                         value={field.state.value}
                         onClick={(): void => field.handleChange(!field.state.value)}
-                        iconColor="primary"
                       />
                     )}
                   </form.Field>

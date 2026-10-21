@@ -198,7 +198,6 @@ export const AccountInfoFields = (): ReactElement => {
               'accountDetails.user_will_change_password_on_next_login',
               'User will change password on next login',
             )}
-            iconColor="primary"
           />
         </div>
       </div>

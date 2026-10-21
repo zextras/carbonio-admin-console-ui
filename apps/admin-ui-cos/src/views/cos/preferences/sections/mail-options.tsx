@@ -71,7 +71,6 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
                 value={field.state.value === 'TRUE'}
                 onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
                 label={t('cos.view_mail_as_html', 'View mail as HTML (when possible)')}
-                iconColor="primary"
                 disabled={readonlyCOS}
               />
             )}
@@ -144,7 +143,6 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
                       'cos.auto_delete_duplicate_messages',
                       'Auto-Delete duplicate messages',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -162,7 +160,6 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
                       'cos.enable_new_mail_toast_notification',
                       'Enable New Mail Toast Notification',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

@@ -152,14 +152,11 @@ export const QuotaLimitInput = ({
       <Padding top={'large'} left={'large'}>
         <Container orientation={'horizontal'} gap={'0.5rem'}>
           <Switch
-            iconColor="primary"
             onClick={switchOnChange}
             value={switchValue}
             disabled={typeof domainQuotaConstraint === 'number'}
+            label={t('label.unlimited_quota', 'Unlimited quota')}
           />
-          <ds-text size="medium" as="label">
-            {t('label.unlimited_quota', 'Unlimited quota')}
-          </ds-text>
         </Container>
       </Padding>
       <Row

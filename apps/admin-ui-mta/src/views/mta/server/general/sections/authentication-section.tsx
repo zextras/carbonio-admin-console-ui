@@ -90,7 +90,6 @@ export const AuthenticationSection = ({
                     field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
                   }
                   label={t('mta.enable_authentication', 'Enable Authentication')}
-                  iconColor="primary"
                   inheritedValue={
                     configInformation?.find(
                       (item: Record<string, string>) => item?.n === ZIMBRA_MTA_SASL_AUTH_ENABLED,

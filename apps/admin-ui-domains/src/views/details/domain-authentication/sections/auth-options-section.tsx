@@ -40,7 +40,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
                     'Show "Forget Password" link in the login page',
                   )}
                   onClick={(): void => field.handleChange(!field.state.value)}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -70,7 +69,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
                     if (!canEnforceExternalAuth) return;
                     field.handleChange(!field.state.value);
                   }}
-                  iconColor="primary"
                   disabled={!canEnforceExternalAuth}
                 />
               )}
@@ -89,7 +87,6 @@ export const AuthOptionsSection = ({ form, isAdvanced }: AuthOptionsSectionProps
                   'Enable Secure Connection (StartTLS/SSL)',
                 )}
                 onClick={(): void => field.handleChange(!field.state.value)}
-                iconColor="primary"
               />
             )}
           </form.Field>
