@@ -95,12 +95,6 @@ export * from './components/custom/track-number-per-page';
 export * from './components/display/Chip';
 export * from './components/display/CustomChip';
 export {
-  getStatusBadgeTone,
-  StatusBadge,
-  type StatusBadgeProps,
-  type StatusBadgeTone,
-} from './components/display/status-badge';
-export {
   type DataTableBulkAction,
   type DataTableBulkJobState,
   type DataTableBulkVariant,
@@ -126,6 +120,12 @@ export * from './components/display/Dropdown';
 export * from './components/display/List/List';
 export * from './components/display/ListItem';
 export * from './components/display/Popper';
+export {
+  getStatusBadgeTone,
+  StatusBadge,
+  type StatusBadgeProps,
+  type StatusBadgeTone,
+} from './components/display/status-badge';
 export {
   Table,
   type TableProps,

@@ -183,7 +183,8 @@ describe('DataTable (browser) paint isolation', () => {
     const toolbarBefore = toolbarPaints;
     const bodyBefore = bodyPaints;
 
-    await userEvent.type(searchbox, 'u');
+    await userEvent.click(searchbox);
+    await userEvent.fill(searchbox, 'u');
     await expect.element(searchbox).toHaveValue('u');
 
     // Search is view state: the toolbar subtree re-painted, the expensive
