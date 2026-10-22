@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Tooltip } from '@zextras/ui-components';
+import { StatusBadge, Tooltip } from '@zextras/ui-components';
 import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 
 import type { AccountListEntry } from '../../../services/use-account-list-directory';
-import { getStatusDisplay } from '../../../utils/status';
+import { getAccountStatusBadgeTone, getStatusDisplay } from '../../../utils/status';
 
 export type AccountRowItem = AccountListEntry & Record<string, unknown>;
 
@@ -65,7 +65,7 @@ export function buildAccountRow(
   const mailAddresses = (accountItem.mail as Array<string> | undefined) ?? [];
   const aliasCount = Math.max(mailAddresses.length - 1, 0);
   const status = accountItem.zimbraAccountStatus as string | undefined;
-  const { color: statusColor, label: statusLabel } = getStatusDisplay(status ?? '', t);
+  const { label: statusLabel } = getStatusDisplay(status ?? '', t);
 
   const openAccount = (): void => {
     onSelect(accountItem);
@@ -132,16 +132,9 @@ export function buildAccountRow(
     >
       {getAccountUserType(accountItem)}
     </ds-text>,
-    <ds-text
-      as="span"
-      size="small"
-      weight="light"
-      key={`${item.id}-status`}
-      color={statusColor}
-      onClick={openAccount}
-    >
-      {statusLabel}
-    </ds-text>,
+    <span key={`${item.id}-status`} onClick={openAccount}>
+      <StatusBadge tone={getAccountStatusBadgeTone(status ?? '')} label={statusLabel} />
+    </span>,
     <Tooltip key={`${item.id}-description`} label={(accountItem.description as string) || '\u00a0'}>
       <ds-text
         as="span"
