@@ -106,13 +106,19 @@ const InertToolbar = () => (
 
 /**
  * Search state lives WITH the toolbar subtree (view state, not table
- * state): each keystroke re-paints the toolbar subtree only, and nothing
+ * state): updating it re-paints the toolbar subtree only, and nothing
  * above it — so the body probe and the pagination part stay untouched.
+ *
+ * A button drives the state update instead of Playwright fill/type on
+ * DataTableSearch’s dual controlled input (those hang under CI).
  */
 const SearchToolbarHolder = () => {
   const [search, setSearch] = useState('');
   return (
     <ToolbarProbe>
+      <button type="button" onClick={() => setSearch('u')}>
+        Set search sample
+      </button>
       <DataTableSearch
         value={search}
         onSearchChange={setSearch}
@@ -175,16 +181,18 @@ describe('DataTable (browser) paint isolation', () => {
     expect(bodyPaints).toBe(bodyBefore);
   });
 
-  it('typing in search re-paints the toolbar subtree only', async () => {
+  it('search view state re-paints the toolbar subtree only', async () => {
     await mountTable(<IsolationTable toolbar={<SearchToolbarHolder />} />);
 
-    const searchbox = page.getByRole('searchbox', { name: 'Search items' });
-    await expect.element(searchbox).toBeVisible();
+    await expect.element(page.getByRole('searchbox', { name: 'Search items' })).toBeVisible();
     const toolbarBefore = toolbarPaints;
     const bodyBefore = bodyPaints;
 
-    await userEvent.type(searchbox, 'u');
-    await expect.element(searchbox).toHaveValue('u');
+    await userEvent.click(page.getByRole('button', { name: 'Set search sample' }));
+    // Clear-button presence appends to the accessible name; match the prefix.
+    await expect
+      .element(page.getByRole('searchbox', { name: /^Search items/ }))
+      .toHaveValue('u');
 
     // Search is view state: the toolbar subtree re-painted, the expensive
     // body part (and its Subscribe) did not.

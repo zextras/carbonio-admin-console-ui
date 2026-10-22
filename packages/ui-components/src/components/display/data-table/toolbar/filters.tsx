@@ -50,10 +50,6 @@ export type DataTableFiltersProps = {
   filtersLabel?: string;
   applyLabel?: string;
   clearDraftLabel?: string;
-  /** @deprecated Hint is no longer rendered; kept for call-site compatibility. */
-  filtersHint?: string;
-  /** @deprecated Close control removed from the panel; outside-click / Escape still close. */
-  closeFiltersLabel?: string;
 };
 
 type FiltersPanelProps = {

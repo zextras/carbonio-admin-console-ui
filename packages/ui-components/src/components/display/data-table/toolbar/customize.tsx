@@ -157,13 +157,13 @@ const CustomizePanel = ({
         )}
       </div>
       <p className={styles.customizeHint}>{columnsHint}</p>
-      <ul className={styles.customizeColumnList} role="menu">
+      <div className={styles.customizeColumnList} role="menu">
         {orderedItems.map((item, index) => {
           const visible = isColumnVisible(columnVisibility, item.id);
           const nextItem = orderedItems[index + 1];
           const afterRequired = Boolean(item.locked && nextItem && !nextItem.locked);
           return (
-            <li
+            <div
               key={item.id}
               className={clsx(
                 styles.customizeColumnRow,
@@ -172,51 +172,58 @@ const CustomizePanel = ({
                 item.locked && styles.customizeColumnLocked,
                 afterRequired && styles.customizeColumnRowAfterRequired,
               )}
-              draggable={!item.locked}
-              onDragStart={(event) => {
-                if (item.locked) {
-                  event.preventDefault();
-                  return;
-                }
-                setDragId(item.id);
-                event.dataTransfer.effectAllowed = 'move';
-              }}
-              onDragOver={(event) => {
-                if (item.locked || !dragId || dragId === item.id) {
-                  return;
-                }
-                event.preventDefault();
-                setDropId(item.id);
-              }}
-              onDrop={(event) => {
-                event.preventDefault();
-                if (!dragId || item.locked) {
-                  setDragId(null);
-                  setDropId(null);
-                  return;
-                }
-                onColumnOrderChange(
-                  reorderColumnIds(columnOrder, dragId, item.id, primaryColumnId),
-                );
-                setDragId(null);
-                setDropId(null);
-              }}
-              onDragEnd={() => {
-                setDragId(null);
-                setDropId(null);
-              }}
             >
-              <span
+              {dragId !== null && !item.locked && dragId !== item.id && (
+                <button
+                  type="button"
+                  className={styles.customizeDropTarget}
+                  tabIndex={-1}
+                  aria-label={t('data_table.drop_column_here', 'Drop to reorder {{label}}', {
+                    label: item.label,
+                  })}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setDropId(item.id);
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    if (!dragId) {
+                      setDropId(null);
+                      return;
+                    }
+                    onColumnOrderChange(
+                      reorderColumnIds(columnOrder, dragId, item.id, primaryColumnId),
+                    );
+                    setDragId(null);
+                    setDropId(null);
+                  }}
+                />
+              )}
+              <button
+                type="button"
                 className={styles.customizeDragHandle}
-                title={
+                draggable={!item.locked}
+                disabled={item.locked}
+                aria-label={
                   item.locked
                     ? t('data_table.required_column_hint', 'Required column — fixed')
                     : t('data_table.drag_to_reorder', 'Drag to reorder')
                 }
-                aria-hidden="true"
+                onDragStart={(event) => {
+                  if (item.locked) {
+                    event.preventDefault();
+                    return;
+                  }
+                  setDragId(item.id);
+                  event.dataTransfer.effectAllowed = 'move';
+                }}
+                onDragEnd={() => {
+                  setDragId(null);
+                  setDropId(null);
+                }}
               >
                 <ds-icon icon="DragHandle" size="small" color="secondary" aria-hidden="true" />
-              </span>
+              </button>
               <div
                 role="menuitemcheckbox"
                 aria-checked={visible}
@@ -294,10 +301,10 @@ const CustomizePanel = ({
                   </button>
                 </span>
               )}
-            </li>
+            </div>
           );
         })}
-      </ul>
+      </div>
     </dialog>
   );
 };

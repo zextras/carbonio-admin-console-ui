@@ -1,3 +1,9 @@
+## [0.32.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.2...v0.32.0) (2026-10-21)
+
+### Features
+
+* save active sync changes ([#1419](https://github.com/zextras/carbonio-admin-console-ui/issues/1419)) ([482ef0e](https://github.com/zextras/carbonio-admin-console-ui/commit/482ef0e8c50e7f9e88777113f5d77155fe698941))
+
 ## [0.31.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.1...v0.31.2) (2026-10-21)
 
 ### Bug Fixes
