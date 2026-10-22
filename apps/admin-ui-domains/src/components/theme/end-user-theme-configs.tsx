@@ -168,6 +168,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -180,6 +181,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -224,6 +226,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -236,6 +239,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -274,6 +278,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -342,6 +347,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -354,6 +360,7 @@ export const EndUserThemeConfigs = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
