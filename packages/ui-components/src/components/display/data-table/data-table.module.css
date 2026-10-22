@@ -49,7 +49,18 @@
   background: var(--color-gray6-regular, #fff);
   color: var(--color-text-regular, #333);
   font-size: 0.875rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.cellTruncate {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .th {
@@ -933,6 +944,10 @@
   gap: 0.25rem;
 }
 
+.enumOptions .tableCheckboxRow {
+  font-size: 0.875rem; /* 14px */
+}
+
 .pairedBounds {
   display: flex;
   gap: 0.75rem;
@@ -1376,6 +1391,7 @@
 .copyCellValue {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .copyFeedbackTooltip {
@@ -1535,20 +1551,26 @@
 }
 
 .kebabButton {
-  width: 1.75rem;
-  height: 1.75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
   padding: 0;
-  border: 1px solid var(--color-gray3-hover, #cfd5de);
+  border: none;
   border-radius: 4px;
-  background: var(--color-gray6-regular, #fff);
-  color: var(--color-text-regular, #414141);
+  background: transparent;
+  color: #5b6672;
   font-size: 1rem;
   line-height: 1;
   cursor: pointer;
 }
 
+.kebabButton:hover {
+  background: var(--color-gray4-regular, #eeeff3);
+}
+
 .kebabButtonOpen {
-  border-color: var(--color-primary-regular, #2b73d2);
   background: var(--color-highlight-regular, #eaf2fc);
 }
 

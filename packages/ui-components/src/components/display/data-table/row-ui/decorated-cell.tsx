@@ -63,7 +63,7 @@ export const DataTableDecoratedCell = ({
   }
 
   if (!editable && !copyable) {
-    return children;
+    return <span className={styles.cellTruncate}>{children}</span>;
   }
 
   const valueNode = copyable ? (
@@ -76,7 +76,7 @@ export const DataTableDecoratedCell = ({
 
   return (
     <span className={styles.editableCell}>
-      <span>{valueNode}</span>
+      <span className={styles.cellTruncate}>{valueNode}</span>
       {editable && (
         <DataTableEditTrigger
           ariaLabel={t('data_table.edit', 'Edit {{column}} for {{row}}', {

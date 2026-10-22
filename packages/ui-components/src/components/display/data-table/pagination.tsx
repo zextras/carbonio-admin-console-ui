@@ -162,8 +162,7 @@ const PaginationControls = ({
             table.setPageIndex(0);
           }}
         >
-          <ds-icon icon="ChevronLeft" size="small" aria-hidden="true" />
-          <ds-icon icon="ChevronLeft" size="small" aria-hidden="true" />
+          <ds-icon icon="PaginationFirst" size="small" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -174,7 +173,7 @@ const PaginationControls = ({
             table.previousPage();
           }}
         >
-          <ds-icon icon="ChevronLeft" size="small" aria-hidden="true" />
+          <ds-icon icon="PaginationPrev" size="small" aria-hidden="true" />
         </button>
         {pageList(currentPage, pageCount).map((item) =>
           item.page === undefined ? (
@@ -201,7 +200,7 @@ const PaginationControls = ({
             table.nextPage();
           }}
         >
-          <ds-icon icon="ChevronRight" size="small" aria-hidden="true" />
+          <ds-icon icon="PaginationNext" size="small" aria-hidden="true" />
         </button>
         <button
           type="button"
@@ -212,8 +211,7 @@ const PaginationControls = ({
             table.setPageIndex(pageCount - 1);
           }}
         >
-          <ds-icon icon="ChevronRight" size="small" aria-hidden="true" />
-          <ds-icon icon="ChevronRight" size="small" aria-hidden="true" />
+          <ds-icon icon="PaginationLast" size="small" aria-hidden="true" />
         </button>
       </nav>
       {pageCount > 10 && (

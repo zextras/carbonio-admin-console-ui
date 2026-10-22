@@ -107,9 +107,8 @@ const BulkBanner = ({
       {actions.map((action) => (
         <Button
           key={action.id}
-          type={action.danger ? 'outlined' : 'default'}
-          color={action.danger ? 'error' : 'primary'}
-          size="small"
+          type={'outlined'}
+          color="primary"
           label={action.label}
           onClick={() => {
             onAction(action);
