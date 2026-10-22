@@ -402,7 +402,7 @@ export const ManageAccounts = () => {
 			accessorFn: (row) => (row.displayName as string | undefined) ?? '',
 			header: t('label.person_name', 'Name'),
 			enableSorting: true,
-			meta: { width: '15%', editable: true },
+			meta: { width: '15%', maxWidth: '9rem', editable: true },
 			cell: ({ row }) => (
 				<ds-text as="span" size="small" color="gray0" weight="light">
 					{(row.original.displayName as string | undefined) || '\u00a0'}
@@ -417,7 +417,7 @@ export const ManageAccounts = () => {
 			},
 			header: t('label.Aliases', 'Aliases'),
 			enableSorting: false,
-			meta: { width: '10%' },
+			meta: { width: '10%', align: 'right' },
 			cell: ({ row }) => {
 				const mailAddresses = (row.original.mail as Array<string> | undefined) ?? [];
 				const aliasCount = Math.max(mailAddresses.length - 1, 0);
@@ -600,7 +600,7 @@ export const ManageAccounts = () => {
 									emptyDescription={
 										<Trans
 											i18nKey="label.create_account_list_msg"
-											defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper left corner) or on the Add (<bold>+</bold>) button up here"
+											defaults="You can create a new Account by clicking on <bold>Create</bold> button (upper right corner) or on the Add (<bold>+</bold>) button up here"
 											components={{ bold: <strong /> }}
 										/>
 									}
