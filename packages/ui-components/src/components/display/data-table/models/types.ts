@@ -16,6 +16,7 @@ export type DataTableState = TableState<DataTableFeatures>;
 
 export type DataTableColumnMeta = {
   width?: string | number;
+  maxWidth?: string | number;
   align?: 'left' | 'center' | 'right';
   /** Marks the sticky primary / identity column when `primaryColumnId` is not set */
   primary?: boolean;

@@ -109,6 +109,7 @@ function buildCellStyle(options: {
 }): React.CSSProperties {
   return {
     width: options.meta?.width,
+    maxWidth: options.meta?.maxWidth ?? options.meta?.width,
     textAlign: options.meta?.align,
     left: resolvePinnedLeftOffset({
       isPrimary: options.isPrimary,

@@ -88,6 +88,7 @@ export const DataTableTableHeader = ({
                     )}
                     style={{
                       width: meta?.width,
+                      maxWidth: meta?.maxWidth ?? meta?.width,
                       textAlign: meta?.align,
                       left: resolvePinnedLeftOffset({
                         isPrimary,
