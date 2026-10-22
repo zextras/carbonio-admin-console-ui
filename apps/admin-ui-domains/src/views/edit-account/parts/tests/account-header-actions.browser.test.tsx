@@ -50,7 +50,12 @@ async function setupAccountHeaderActions(
   await setupAccount(queryClient);
   queryClient.setQueryData(['effective-rights', USER_NAME], rights);
   await _setupBrowserTest(
-    <AccountHeaderActions accountId={ACCOUNT_ID} zimbraId={zimbraId} onDelete={onDelete} />,
+    <AccountHeaderActions
+      accountId={ACCOUNT_ID}
+      zimbraId={zimbraId}
+      domainName="example.com"
+      onDelete={onDelete}
+    />,
     { queryClient },
   );
   return onDelete;
@@ -109,6 +114,48 @@ describe('AccountHeaderActions (browser)', () => {
     expect(url).toContain(`https://${window.location.hostname}/service/preauth`);
     expect(url).toContain('adminPreAuth=1');
     expect(target).toBe('blank');
+  });
+
+  it('opens the preauth URL on zimbraPublicServiceHostname when the domain defines it', async () => {
+    createBrowserSoapAPIInterceptor('DelegateAuth', { authToken: [{ _content: 'tok-123' }] });
+    const getDomainParams = createBrowserSoapAPIInterceptor<
+      { domain: { by: string; _content: string } },
+      { domain: Array<{ a: Array<{ n: string; _content: string }> }> }
+    >('GetDomain', {
+      domain: [{ a: [{ n: 'zimbraPublicServiceHostname', _content: 'mail.public.example' }] }],
+    });
+
+    await setupAccountHeaderActions();
+    await viewMailButton().click();
+
+    const params = await getDomainParams;
+    expect(params.domain).toEqual({ by: 'name', _content: 'example.com' });
+    const openSpy = vi.mocked(globalThis.open);
+    await vi.waitFor(() => expect(openSpy).toHaveBeenCalledTimes(1));
+    expect(openSpy.mock.calls[0][0]).toContain('https://mail.public.example/service/preauth');
+  });
+
+  it('falls back to the current hostname when the domain lookup fails', async () => {
+    createBrowserSoapAPIInterceptor('DelegateAuth', { authToken: [{ _content: 'tok-123' }] });
+    await createBrowserAPIInterceptor('post', '/service/admin/soap/GetDomainRequest', () =>
+      HttpResponse.json({
+        Body: {
+          Fault: {
+            Reason: { Text: 'no such domain' },
+            Detail: { Error: { Code: 'account.NO_SUCH_DOMAIN', Detail: 'no such domain' } },
+          },
+        },
+      }),
+    );
+
+    await setupAccountHeaderActions();
+    await viewMailButton().click();
+
+    const openSpy = vi.mocked(globalThis.open);
+    await vi.waitFor(() => expect(openSpy).toHaveBeenCalledTimes(1));
+    expect(openSpy.mock.calls[0][0]).toContain(
+      `https://${window.location.hostname}/service/preauth`,
+    );
   });
 
   it('shows an error snackbar when the response has no authToken', async () => {

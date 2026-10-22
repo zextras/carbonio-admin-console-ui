@@ -70,6 +70,7 @@ export const EditAccount = ({
 
   const hasName = useSelector(form.store, (s) => !!s.values.name);
   const zimbraId = useSelector(form.store, (s) => s.values.zimbraId);
+  const accountDomainName = useSelector(form.store, (s) => s.values.domainName as string | undefined);
 
   const [change, setChange] = useState(defaultTab ?? GENERAL_SECTION);
   const [showModal, setShowModal] = useState(false);
@@ -195,6 +196,7 @@ export const EditAccount = ({
             <AccountHeaderActions
               accountId={account.id}
               zimbraId={zimbraId}
+              domainName={accountDomainName}
               onDelete={onDeleteAccount}
             />
           )}

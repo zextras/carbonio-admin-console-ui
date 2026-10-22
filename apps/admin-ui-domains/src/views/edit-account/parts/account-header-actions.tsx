@@ -9,13 +9,24 @@ import { find } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
 import { ACCOUNT, ADMIN_LOGIN_AS } from '../../../constants';
+import { getDomainPublicServiceHostname } from '../../../services/get-domain-public-service-hostname';
 import { useDelegateAuth } from '../../../services/use-delegate-auth';
 
 type AccountHeaderActionsProps = {
   accountId: string;
   zimbraId: string | undefined;
+  domainName: string | undefined;
   onDelete: () => void;
 };
+
+async function resolvePreauthHostname(domainName: string | undefined): Promise<string> {
+  if (!domainName) return globalThis.location.hostname;
+  try {
+    return (await getDomainPublicServiceHostname(domainName)) ?? globalThis.location.hostname;
+  } catch {
+    return globalThis.location.hostname;
+  }
+}
 
 function hasAdminLoginAsRight(
   rights: NonNullable<ReturnType<typeof useCurrentUserRights>['data']>,
@@ -33,7 +44,12 @@ function hasAdminLoginAsRight(
   );
 }
 
-export const AccountHeaderActions = ({ accountId, zimbraId, onDelete }: AccountHeaderActionsProps) => {
+export const AccountHeaderActions = ({
+  accountId,
+  zimbraId,
+  domainName,
+  onDelete,
+}: AccountHeaderActionsProps) => {
   const { t } = useTranslation();
   const { data: rights = [] } = useCurrentUserRights();
   const viewMailMutation = useDelegateAuth();
@@ -43,10 +59,12 @@ export const AccountHeaderActions = ({ accountId, zimbraId, onDelete }: AccountH
   const onViewMail = (): void => {
     viewMailMutation.mutate(accountId, {
       onSuccess: (authToken) => {
-        window.open(
-          `https://${globalThis.location.hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
-          'blank',
-        );
+        void resolvePreauthHostname(domainName).then((hostname) => {
+          window.open(
+            `https://${hostname}/service/preauth?authtoken=${authToken}&isredirect=1&adminPreAuth=1&redirectURL=/carbonio/`,
+            'blank',
+          );
+        });
       },
     });
   };
