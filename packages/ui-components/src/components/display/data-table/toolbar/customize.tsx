@@ -172,27 +172,33 @@ const CustomizePanel = ({
                 item.locked && styles.customizeColumnLocked,
                 afterRequired && styles.customizeColumnRowAfterRequired,
               )}
-              onDragOver={(event) => {
-                if (item.locked || !dragId || dragId === item.id) {
-                  return;
-                }
-                event.preventDefault();
-                setDropId(item.id);
-              }}
-              onDrop={(event) => {
-                event.preventDefault();
-                if (!dragId || item.locked) {
-                  setDragId(null);
-                  setDropId(null);
-                  return;
-                }
-                onColumnOrderChange(
-                  reorderColumnIds(columnOrder, dragId, item.id, primaryColumnId),
-                );
-                setDragId(null);
-                setDropId(null);
-              }}
             >
+              {dragId !== null && !item.locked && dragId !== item.id && (
+                <button
+                  type="button"
+                  className={styles.customizeDropTarget}
+                  tabIndex={-1}
+                  aria-label={t('data_table.drop_column_here', 'Drop to reorder {{label}}', {
+                    label: item.label,
+                  })}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setDropId(item.id);
+                  }}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    if (!dragId) {
+                      setDropId(null);
+                      return;
+                    }
+                    onColumnOrderChange(
+                      reorderColumnIds(columnOrder, dragId, item.id, primaryColumnId),
+                    );
+                    setDragId(null);
+                    setDropId(null);
+                  }}
+                />
+              )}
               <button
                 type="button"
                 className={styles.customizeDragHandle}
