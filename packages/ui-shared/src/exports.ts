@@ -199,6 +199,7 @@ import { useIntegrationsStore } from './store/integrations/store';
 import { useLoginConfigStore } from './store/login/store';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import { isSameOriginUrlOutsideProxyAllowlist, PROXY_EMBEDDED_RESOURCE_ALLOWLIST_PREFIXES } from './utils/proxy-asset-allowlist';
 import { isUnlimitedQuantity } from './utils/quantity';
 import { isValidDecimalInput } from './utils/validators';
 
@@ -291,6 +292,7 @@ export {
   getShell,
   getSoapFetchRequest,
   invalidateLicenseQuery,
+  isSameOriginUrlOutsideProxyAllowlist,
   isUnlimitedQuantity,
   isValidDecimalInput,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
@@ -303,6 +305,7 @@ export {
   OPEN_TICKET_URL,
   parseBackupAccountsResponse,
   postSoapFetchRequest,
+  PROXY_EMBEDDED_RESOURCE_ALLOWLIST_PREFIXES,
   queryClient,
   queryFnIsAdvancedSupported,
   ReactQueryProvider,
