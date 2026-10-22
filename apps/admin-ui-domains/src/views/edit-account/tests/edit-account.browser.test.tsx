@@ -215,6 +215,11 @@ describe('EditAccount (browser)', () => {
 
     const queryClient = getQueryClient();
     queryClient.setQueryData(['advanced-supported'], { supported: true });
+    queryClient.setQueryData(['account', 'settings'], {
+      prefs: {},
+      attrs: { zimbraIsAdminAccount: 'TRUE' },
+      props: [],
+    });
 
     await setupBrowserTest(
       <EditAccount

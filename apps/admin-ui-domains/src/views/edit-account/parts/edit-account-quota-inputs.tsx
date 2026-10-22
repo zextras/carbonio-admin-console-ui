@@ -12,12 +12,13 @@ import {
   Switch,
   SwitchProps,
 } from '@zextras/ui-components';
-import { useIsAdvanced } from '@zextras/ui-shared';
+import { useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import React, { ComponentProps, Dispatch, SetStateAction, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
+import { TRUE } from '../../../constants';
 import { ComputedLimit, QuotaSource } from '../../../services/account-quota';
 import { useDomainQuota } from '../../../services/use-domain-quota';
 import { AccountDetail, CosDetail } from '../../manage/accounts/account-detail-types';
@@ -144,6 +145,9 @@ export const QuotaLimitInput = ({
   };
 
   const isAdvanced = useIsAdvanced();
+  const userSetting = useUserSettings();
+  // the storages service only lets global admins change account quota (401 otherwise)
+  const isReadOnly = userSetting?.attrs?.zimbraIsAdminAccount !== TRUE;
   const [t] = useTranslation();
 
   const switchValue = quotaValue === 'unlimited';
@@ -176,11 +180,9 @@ export const QuotaLimitInput = ({
             iconColor="primary"
             onClick={switchOnChange}
             value={switchValue}
-            disabled={typeof domainQuotaConstraint === 'number'}
+            disabled={isReadOnly || typeof domainQuotaConstraint === 'number'}
+            label={t('label.unlimited_quota', 'Unlimited quota')}
           />
-          <ds-text size="medium" as="label">
-            {t('label.unlimited_quota', 'Unlimited quota')}
-          </ds-text>
         </Container>
       </Padding>
       <Row
@@ -203,9 +205,9 @@ export const QuotaLimitInput = ({
             inputName="totalQuota"
             onChange={inputOnChange}
             value={inputValue}
-            disabled={switchValue}
+            disabled={isReadOnly || switchValue}
             hasError={hasError}
-            CustomIcon={totalQuotaSource === 'account' ? revertIcon : undefined}
+            CustomIcon={!isReadOnly && totalQuotaSource === 'account' ? revertIcon : undefined}
           />
           {totalQuotaSource !== undefined && <TotalQuotaSourceIcon source={totalQuotaSource} />}
         </Container>

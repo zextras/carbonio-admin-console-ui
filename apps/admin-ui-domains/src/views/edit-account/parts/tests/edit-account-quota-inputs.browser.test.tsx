@@ -13,9 +13,18 @@ import { QuotaLimitInput } from '../edit-account-quota-inputs';
 
 const defaultQuotaLimit = 10737418240;
 
-function setupAdvancedTest(component: React.ReactElement, quotaLimit?: number) {
+function setupAdvancedTest(
+  component: React.ReactElement,
+  quotaLimit?: number,
+  isGlobalAdmin = true,
+) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
+  queryClient.setQueryData(['account', 'settings'], {
+    prefs: {},
+    attrs: { zimbraIsAdminAccount: isGlobalAdmin ? 'TRUE' : 'FALSE' },
+    props: [],
+  });
   if (typeof quotaLimit === 'number') {
     queryClient.setQueryData(domainQueryKeys.quota('test-domain'), {
       type: 'success',
@@ -36,6 +45,22 @@ function setupNotAdvancedTest(component: React.ReactElement) {
 }
 
 describe('QuotaLimitInput', () => {
+  it('should render the quota controls read-only for a non global admin', async () => {
+    await setupAdvancedTest(
+      <QuotaLimitInput
+        totalComputedQuotaLimit={defaultQuotaLimit}
+        totalQuotaSource="account"
+        onChange={vi.fn()}
+      />,
+      undefined,
+      false,
+    );
+
+    await expect.element(page.getByRole('spinbutton', { name: 'Total quota(GB)' })).toBeDisabled();
+    await expect.element(page.getByRole('switch', { name: 'Unlimited quota' })).toBeDisabled();
+    expect(document.querySelectorAll('[data-testid="icon: RefreshOutline"]')).toHaveLength(0);
+  });
+
   it('should render the total quota input when advanced is supported', async () => {
     await setupAdvancedTest(
       <QuotaLimitInput
