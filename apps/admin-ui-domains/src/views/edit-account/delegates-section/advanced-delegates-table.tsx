@@ -18,13 +18,6 @@ import { useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import logo from '../../../assets/gardian.svg';
-import {
-	MANAGE_NO_SEND,
-	READ_MAILS_ONLY,
-	SEND_MAILS_ONLY,
-	SEND_READ_MAILS,
-	SEND_READ_MANAGE_MAILS,
-} from '../../../constants';
 import { useBatchDelegates } from '../../../services/use-batch-delegates';
 import { useAccountForm } from '../account-form-context';
 import { AddDelegateWizard } from './add-delegate-wizard';
@@ -33,6 +26,9 @@ import {
 	buildFolderGrant,
 	buildFolderRevoke,
 	type DelegateRow,
+	getFolderPermForRights,
+	getRightsFromGrant,
+	rightsIncludeSend,
 } from './utils';
 
 type AdvancedDelegatesTableProps = {
@@ -77,24 +73,10 @@ export const AdvancedDelegatesTable = ({
 		setEditMode(true);
 		const selectedDelegate = identitiesList.find((o) => o?.grantee?.[0].id === selectedRows[0]);
 		selectedDelegate.folderSelection = selectedDelegate?.folder?.length ? 'all_folders' : '';
-		if (!selectedDelegate?.folder?.length) {
-			selectedDelegate.delegeteRights = SEND_MAILS_ONLY;
-		} else if (
-			selectedDelegate?.folder?.length &&
-			selectedDelegate?.folder?.[0]?.perm === 'r' &&
-			!selectedDelegate?.right?.length
-		) {
-			selectedDelegate.delegeteRights = READ_MAILS_ONLY;
-		} else if (selectedDelegate?.folder?.[0]?.perm === 'r') {
-			selectedDelegate.delegeteRights = SEND_READ_MAILS;
-		} else if (
-			selectedDelegate?.folder?.[0]?.perm === 'rwidxa' &&
-			!selectedDelegate?.right?.length
-		) {
-			selectedDelegate.delegeteRights = MANAGE_NO_SEND;
-		} else if (selectedDelegate?.folder?.[0]?.perm === 'rwidxa') {
-			selectedDelegate.delegeteRights = SEND_READ_MANAGE_MAILS;
-		}
+		selectedDelegate.delegeteRights = getRightsFromGrant(
+			selectedDelegate?.folder?.[0]?.perm,
+			!!selectedDelegate?.right?.length,
+		);
 		setDeligateDetail(selectedDelegate);
 		setShowCreateIdentity(true);
 	};
@@ -160,12 +142,7 @@ export const AdvancedDelegatesTable = ({
 		const grantUsrRigths: any[] = [];
 		const folderUsrRights: any[] = [];
 
-		if (
-			deligateDetail?.delegeteRights &&
-			(deligateDetail?.delegeteRights === 'send_mails_only' ||
-				deligateDetail?.delegeteRights === 'send_read_mails' ||
-				deligateDetail?.delegeteRights === 'send_read_manage_mails')
-		) {
+		if (rightsIncludeSend(deligateDetail?.delegeteRights)) {
 			grantUsrRigths.push(
 				buildAdminRightEnvelope({
 					targetName: accountDetail?.zimbraMailDeliveryAddress,
@@ -175,13 +152,8 @@ export const AdvancedDelegatesTable = ({
 				}),
 			);
 		}
-		if (
-			deligateDetail?.delegeteRights &&
-			(deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
-				deligateDetail?.delegeteRights === SEND_READ_MAILS ||
-				deligateDetail?.delegeteRights === MANAGE_NO_SEND ||
-				deligateDetail?.delegeteRights === SEND_READ_MANAGE_MAILS)
-		) {
+		const folderPerm = getFolderPermForRights(deligateDetail?.delegeteRights);
+		if (folderPerm) {
 			const selectedFolders = folderList.filter((entry: any) => entry.selected);
 			const folderIds = selectedFolders.map((obj: any) => obj.id);
 
@@ -190,11 +162,7 @@ export const AdvancedDelegatesTable = ({
 					folderIds: deligateDetail?.folderSelection === 'all_folders' ? '1' : folderIds.join(','),
 					granteeType: deligateDetail?.grantee?.[0]?.type,
 					granteeName: deligateDetail?.grantee?.[0]?.name,
-					perm:
-						deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
-						deligateDetail?.delegeteRights === SEND_MAILS_ONLY
-							? 'r'
-							: 'rwidxa',
+					perm: folderPerm,
 				}),
 			);
 		}
