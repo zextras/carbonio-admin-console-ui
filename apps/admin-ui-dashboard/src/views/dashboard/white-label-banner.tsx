@@ -29,8 +29,7 @@ const WHITELABEL_BRANDING_URL_KEYS = [
 function getBlockedWhiteLabelUrls(
   store: ReturnType<typeof useLoginConfigStore.getState>,
 ): Array<string> {
-  return WHITELABEL_BRANDING_URL_KEYS
-    .map((key) => store[key])
+  return WHITELABEL_BRANDING_URL_KEYS.map((key) => store[key])
     .filter((url): url is string => url !== undefined)
     .filter((url) => isSameOriginUrlOutsideProxyAllowlist(url));
 }
@@ -47,34 +46,38 @@ export const WhiteLabelBanner = () => {
   }
 
   return (
-    <div className="flex w-full flex-col gap-xs rounded-md bg-warning-banner p-sm">
-      <div className="flex flex-row items-start gap-sm">
-        <ds-icon icon="AlertTriangleOutline" color="gray6" size="large" />
-        <div className="flex flex-1 flex-col gap-xs">
-          <ds-text as="p" color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
-            {t(
-              'banner.whitelabel_blocked_urls_description',
-              'Some white-label branding URLs point to this server outside the allowed asset paths and will not load: the proxy blocks them with a 403.',
-            )}
-          </ds-text>
-          <ds-text as="p" color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
-            {t(
-              'banner.whitelabel_blocked_urls_detail',
-              'Host logos, favicons and login backgrounds on an external origin, or under /static/ on this server.',
-            )}
-          </ds-text>
+    <div className="w-full box-border p-6">
+      <div className="box-border flex w-full flex-col items-end gap-2 bg-warning-regular px-4 py-2">
+        <div className="flex w-full flex-row items-start gap-2">
+          <div className="pr-2">
+            <ds-icon icon="AlertTriangleOutline" color="gray6" size="large" />
+          </div>
+          <div className="flex w-full flex-1 flex-col gap-2">
+            <ds-text as="p" color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
+              {t(
+                'banner.whitelabel_blocked_urls_description',
+                'Some white-label branding URLs point to this server outside the allowed asset paths and will not load: the proxy blocks them with a 403.',
+              )}
+            </ds-text>
+            <ds-text as="p" color="gray6" overflow="break-word" style={{ whiteSpace: 'pre-line' }}>
+              {t(
+                'banner.whitelabel_blocked_urls_detail',
+                'Host logos, favicons and login backgrounds on an external origin, or under /static/ on this server.',
+              )}
+            </ds-text>
+          </div>
+          <div>
+            <Button
+              type="ghost"
+              aria-label={t('button.close', 'Close')}
+              icon="CloseOutline"
+              color="gray6"
+              onClick={(): void => {
+                setDismissed(true);
+              }}
+            />
+          </div>
         </div>
-        <Button
-          type="ghost"
-          aria-label={t('button.close', 'Close')}
-          icon="CloseOutline"
-          color="gray6"
-          onClick={(): void => {
-            setDismissed(true);
-          }}
-        />
-      </div>
-      <div className="flex flex-row justify-end">
         <Button
           type="outlined"
           backgroundColor="transparent"
