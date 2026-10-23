@@ -13,6 +13,7 @@ import {
   Row,
   TextInput,
 } from '@zextras/ui-components';
+import { useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import { map, some } from 'lodash-es';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -29,6 +30,7 @@ export const EditAccountConfigurationSection = () => {
   const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
+  const featureFlag = useNewSubscriptionFeatureFlag();
   const isWorkspaceEdition = cosDetail?.edition === 'workspace';
   const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useChipList(
     values?.zimbraPrefMailForwardingAddress,
@@ -222,7 +224,7 @@ export const EditAccountConfigurationSection = () => {
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}
         />
-        {isWorkspaceEdition && (
+        {(!featureFlag || isWorkspaceEdition) && (
           <>
             <Row width="100%" padding={{ top: 'medium' }}>
               <ds-divider></ds-divider>
