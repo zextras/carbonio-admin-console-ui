@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import { useCurrentUserRights } from '@zextras/ui-shared';
+import { useCurrentUserRights, useUserSettings } from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
-import { ACCOUNT, ADMIN_LOGIN_AS } from '../../../constants';
+import { ACCOUNT, ADMIN_LOGIN_AS, TRUE } from '../../../constants';
 import { getDomainPublicServiceHostname } from '../../../services/get-domain-public-service-hostname';
 import { useDelegateAuth } from '../../../services/use-delegate-auth';
 
@@ -52,9 +52,13 @@ export const AccountHeaderActions = ({
 }: AccountHeaderActionsProps) => {
   const { t } = useTranslation();
   const { data: rights = [] } = useCurrentUserRights();
+  const userSetting = useUserSettings();
   const viewMailMutation = useDelegateAuth();
 
   const allowSetPrivacy = hasAdminLoginAsRight(rights);
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
+  // Non-global admins with the IM feature enabled can't open the mailbox of an account
+  const blockedByIm = !isGlobalAdmin && userSetting?.attrs?.zimbraFeatureIMEnabled === TRUE;
 
   const onViewMail = (): void => {
     viewMailMutation.mutate(accountId, {
@@ -89,7 +93,7 @@ export const AccountHeaderActions = ({
           color="primary"
           onClick={onViewMail}
           icon="MailModOutline"
-          disabled={!allowSetPrivacy || viewMailMutation.isPending}
+          disabled={!allowSetPrivacy || blockedByIm || viewMailMutation.isPending}
           label={t('label.view_mail', 'VIEW MAIL')}
         />
       </div>

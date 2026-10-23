@@ -37,6 +37,8 @@ const rightsWithoutAdminLoginAs = [
 type SetupOptions = {
   rights?: Array<unknown>;
   zimbraId?: string;
+  imEnabled?: boolean;
+  isGlobalAdmin?: boolean;
 };
 
 async function setupAccountHeaderActions(
@@ -49,6 +51,14 @@ async function setupAccountHeaderActions(
   const queryClient = getQueryClient();
   await setupAccount(queryClient);
   queryClient.setQueryData(['effective-rights', USER_NAME], rights);
+  queryClient.setQueryData(['account', 'settings'], {
+    prefs: {},
+    attrs: {
+      zimbraIsAdminAccount: options.isGlobalAdmin ? 'TRUE' : 'FALSE',
+      zimbraFeatureIMEnabled: options.imEnabled ? 'TRUE' : 'FALSE',
+    },
+    props: [],
+  });
   await _setupBrowserTest(
     <AccountHeaderActions
       accountId={ACCOUNT_ID}
@@ -74,6 +84,24 @@ describe('AccountHeaderActions (browser)', () => {
     await setupAccountHeaderActions({ rights: rightsWithoutAdminLoginAs });
 
     await expect.element(viewMailButton()).toBeDisabled();
+  });
+
+  it('disables view mail for a non-global admin with zimbraFeatureIMEnabled TRUE', async () => {
+    await setupAccountHeaderActions({ imEnabled: true, isGlobalAdmin: false });
+
+    await expect.element(viewMailButton()).toBeDisabled();
+  });
+
+  it('enables view mail for a non-global admin with zimbraFeatureIMEnabled FALSE', async () => {
+    await setupAccountHeaderActions({ imEnabled: false, isGlobalAdmin: false });
+
+    await expect.element(viewMailButton()).toBeEnabled();
+  });
+
+  it('keeps view mail enabled for a global admin even with zimbraFeatureIMEnabled TRUE', async () => {
+    await setupAccountHeaderActions({ imEnabled: true, isGlobalAdmin: true });
+
+    await expect.element(viewMailButton()).toBeEnabled();
   });
 
   it('applies theme padding via the pr-md tailwind utility', async () => {
