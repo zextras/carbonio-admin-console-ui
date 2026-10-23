@@ -13,7 +13,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { GLOBAL_WHITELABEL_SETTINGS } from '../../constants';
+import { DOMAINS_ROUTE_ID, GLOBAL_WHITELABEL_SETTINGS } from '../../constants';
 
 const WHITELABEL_BRANDING_URL_KEYS = [
   'carbonioAdminUiAppLogo',
@@ -62,7 +62,7 @@ export const WhiteLabelBanner = () => {
       action={{
         label: t('button.go_to_whitelabel_settings', 'Go to Whitelabel Settings'),
         onClick: (): void => {
-          navigate(`${buildPath(GLOBAL_WHITELABEL_SETTINGS)}#logo`);
+          navigate(`${buildPath(DOMAINS_ROUTE_ID, GLOBAL_WHITELABEL_SETTINGS)}#logo`);
         },
       }}
     />

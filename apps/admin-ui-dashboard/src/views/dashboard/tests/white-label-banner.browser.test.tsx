@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLoginConfigStore } from '@zextras/ui-shared';
+import { DOMAINS_ROUTE_ID, useAppStore, useLoginConfigStore } from '@zextras/ui-shared';
 import { LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
@@ -71,6 +71,18 @@ describe('WhiteLabelBanner (browser)', () => {
 
   it('navigates to the logo section of the whitelabel settings when the action button is clicked', async () => {
     useLoginConfigStore.setState({ carbonioAdminUiAppLogo: BLOCKED_URL });
+    // Register the domains route so buildPath resolves the prefixed path
+    // (/manage/domains/...), mirroring how the shell bootstraps routes.
+    useAppStore.setState({
+      routes: {
+        [DOMAINS_ROUTE_ID]: {
+          id: DOMAINS_ROUTE_ID,
+          route: DOMAINS_ROUTE_ID,
+          path: `manage/${DOMAINS_ROUTE_ID}`,
+          app: 'carbonio-admin-ui-domains',
+        },
+      },
+    });
     await setupBrowserTest(
       <>
         <WhiteLabelBanner />
@@ -81,7 +93,7 @@ describe('WhiteLabelBanner (browser)', () => {
     await page.getByRole('button', { name: 'Go to Whitelabel Settings' }).click();
 
     await expect.element(page.getByTestId('location')).toHaveTextContent(
-      '/global/whitelabel_settings#logo',
+      '/manage/domains/global/whitelabel_settings#logo',
     );
   });
 });
