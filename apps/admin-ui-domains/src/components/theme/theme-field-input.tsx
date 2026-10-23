@@ -6,6 +6,7 @@
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { TextInput } from '@zextras/ui-components';
+import { isSameOriginUrlOutsideProxyAllowlist } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
@@ -22,6 +23,8 @@ type ThemeFieldInputProps = {
   /** i18n key shown inline when the field fails schema validation. */
   errorLabel?: string;
   errorLabelDefault?: string;
+  /** When true, shows a non-blocking warning if the value is a same-origin URL outside the proxy embedded-resource allowlist. */
+  warnWhenProxyBlocked?: boolean;
 };
 
 function resolveFieldDescription(
@@ -41,6 +44,7 @@ export const ThemeFieldInput = ({
   hasModifyRights = true,
   errorLabel,
   errorLabelDefault,
+  warnWhenProxyBlocked = false,
 }: ThemeFieldInputProps) => {
   const [t] = useTranslation();
   const value = useSelector(form.store, (s) => (s.values as themeConfigStore)[name]);
@@ -53,7 +57,20 @@ export const ThemeFieldInput = ({
   const isInheritedMode = globalTheme !== undefined;
   const isOverridden = isInheritedMode && value !== undefined;
 
-  const description = hasError ? resolveFieldDescription(t, errorLabel, errorLabelDefault) : undefined;
+  const effectiveValue = value ?? globalTheme?.[name] ?? '';
+  const proxyBlocked =
+    warnWhenProxyBlocked && isSameOriginUrlOutsideProxyAllowlist(effectiveValue);
+  const schemaDescription = hasError
+    ? resolveFieldDescription(t, errorLabel, errorLabelDefault)
+    : undefined;
+  const description =
+    schemaDescription ??
+    (proxyBlocked
+      ? t(
+          'label.proxy_blocked_url_blocked_warning',
+          'Warning: this URL points to this server outside the allowed asset paths. Move it to an external origin or under /static/, otherwise the proxy will block it and the image will not load.',
+        )
+      : undefined);
   const chip =
     isInheritedMode && !isOverridden && !description
       ? t('label.inherited', 'Inherited')
@@ -68,7 +85,7 @@ export const ThemeFieldInput = ({
       onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
         form.setFieldValue(name, e.target.value);
       }}
-      hasError={hasError}
+      hasError={hasError || proxyBlocked}
       description={description}
       chip={chip}
       disabled={isGlobalTheme && !hasModifyRights}

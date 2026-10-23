@@ -21,6 +21,8 @@ export const SERVERS_LIST = 'servers_list';
 export const SERVER = 'server';
 export const LIST = 'list';
 
+export const GLOBAL_WHITELABEL_SETTINGS = 'global/whitelabel_settings';
+
 // Values and Flags
 export const TRUE = 'TRUE';
 export const DESC = 'desc';

@@ -33,6 +33,7 @@ import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
 import styles from './dashboard-view.module.css';
 import { QuickAccess } from './quick-access-view';
+import { WhiteLabelBanner } from './white-label-banner';
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -75,6 +76,7 @@ export const Dashboard = () => {
       <ds-divider color="gray6"></ds-divider>
       <div className={styles.content}>
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
+        <WhiteLabelBanner />
         <div className={styles.section}>
           <ListRow>
             <div className={styles.versionCol}>

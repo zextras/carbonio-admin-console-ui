@@ -109,6 +109,11 @@ export * from './components/display/Tooltip';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';
+export {
+  DashboardBanner,
+  type DashboardBannerAction,
+  type DashboardBannerProps,
+} from './components/feedback/dashboard-banner/DashboardBanner';
 export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/LicenseBanner';
 export * from './components/feedback/Modal';
 export * from './components/feedback/quota/Quota';

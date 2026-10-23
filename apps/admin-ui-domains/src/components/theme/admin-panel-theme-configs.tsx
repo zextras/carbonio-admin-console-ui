@@ -111,7 +111,7 @@ export const AdminPanelThemeConfig = ({
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
+          <ds-text id="logo" as="h4" size="small" color="gray0" weight="bold">
             {t('label.logo', 'Logo')}
           </ds-text>
         </Padding>
@@ -169,6 +169,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -181,6 +182,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -225,6 +227,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -237,6 +240,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -275,6 +279,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -343,6 +348,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
@@ -355,6 +361,7 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
