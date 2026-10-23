@@ -1,0 +1,87 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.ring {
+  fill: transparent;
+  stroke: var(--color-gray0-regular);
+  stroke-width: 2;
+  transition: stroke 150ms ease;
+}
+
+.dot {
+  fill: var(--color-primary-regular);
+  opacity: 0;
+}
+
+.root:not([data-disabled]):hover .ring {
+  stroke: var(--color-gray0-hover);
+}
+
+.input:checked + .icon .ring {
+  stroke: var(--color-primary-regular);
+}
+
+.input:checked + .icon .dot {
+  opacity: 1;
+}
+
+.root:not([data-disabled]):hover .input:checked + .icon .ring {
+  stroke: var(--color-primary-hover);
+}
+
+.root:not([data-disabled]):hover .input:checked + .icon .dot {
+  fill: var(--color-primary-hover);
+}
+
+.input:disabled + .icon .ring {
+  stroke: var(--color-gray0-disabled);
+}
+
+.input:checked:disabled + .icon .ring {
+  stroke: var(--color-primary-disabled);
+}
+
+.input:checked:disabled + .icon .dot {
+  fill: var(--color-primary-disabled);
+}
+
+.input:focus-visible + .icon {
+  border-radius: 50%;
+}
+
+.group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-small);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.legend {
+  padding: 0;
+  margin-bottom: var(--padding-size-small);
+  color: var(--color-text-regular);
+  font-size: var(--font-size-medium);
+}
+
+@media (forced-colors: active) {
+  .ring,
+  .input:checked + .icon .ring {
+    stroke: CanvasText;
+  }
+
+  .dot {
+    fill: Highlight;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    transition: none;
+  }
+}

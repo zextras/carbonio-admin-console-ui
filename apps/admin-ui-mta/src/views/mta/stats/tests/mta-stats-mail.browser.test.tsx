@@ -147,10 +147,8 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
     const queueRow = page.getByRole('row').filter({ hasText: QUEUE_ITEM_ID });
     const holdButton = page.getByRole('button', { name: 'Hold' });
     // Drawer and table can exceed the default browser viewport; hover, scroll and
-    // click through the DOM to bypass bounds checks. The row checkbox attaches its
-    // click listener in a passive effect, so a click dispatched right after the
-    // checkbox first renders can land before the listener exists. Re-hover and
-    // re-click (only while the row is still unchecked) until Hold enables.
+    // click through the DOM to bypass bounds checks. Re-hover and re-click (only
+    // while the row is still unchecked) until Hold enables.
     await expect
       .poll(
         () => {
@@ -160,9 +158,9 @@ describe('MTAStatsMail', { timeout: 20_000 }, () => {
           rowEl.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
           const holdEnabled = (): boolean => (holdButton.element() as HTMLButtonElement).disabled === false;
           if (holdEnabled()) return true;
-          const checkboxIcon = rowEl.querySelector('[data-testid="checkbox"] ds-icon');
-          if (checkboxIcon?.getAttribute('icon') === 'Square') {
-            (rowEl.querySelector('[data-testid="checkbox"]') as HTMLElement | null)?.click();
+          const rowCheckbox = rowEl.querySelector<HTMLInputElement>('input[type="checkbox"]');
+          if (rowCheckbox && !rowCheckbox.checked) {
+            rowCheckbox.click();
           }
           return holdEnabled();
         },

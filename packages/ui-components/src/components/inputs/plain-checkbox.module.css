@@ -1,0 +1,71 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.box {
+  fill: transparent;
+  stroke: var(--color-gray0-regular);
+  stroke-width: 2;
+  transition:
+    fill 150ms ease,
+    stroke 150ms ease;
+}
+
+.check {
+  fill: none;
+  stroke: var(--color-gray6-regular);
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  opacity: 0;
+}
+
+.root:not([data-disabled]):hover .box {
+  stroke: var(--color-gray0-hover);
+}
+
+.input:checked + .icon .box {
+  fill: var(--color-primary-regular);
+  stroke: var(--color-primary-regular);
+}
+
+.root:not([data-disabled]):hover .input:checked + .icon .box {
+  fill: var(--color-primary-hover);
+  stroke: var(--color-primary-hover);
+}
+
+.input:checked + .icon .check {
+  opacity: 1;
+}
+
+.input:disabled + .icon .box {
+  stroke: var(--color-gray0-disabled);
+}
+
+.input:checked:disabled + .icon .box {
+  fill: var(--color-primary-disabled);
+  stroke: var(--color-primary-disabled);
+}
+
+@media (forced-colors: active) {
+  .box,
+  .input:checked + .icon .box {
+    stroke: CanvasText;
+  }
+
+  .input:checked + .icon .box {
+    fill: Highlight;
+  }
+
+  .check {
+    stroke: HighlightText;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .box {
+    transition: none;
+  }
+}
