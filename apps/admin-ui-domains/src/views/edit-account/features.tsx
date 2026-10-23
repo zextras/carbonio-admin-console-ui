@@ -15,6 +15,7 @@ export const Features: FC<{
 	accSpecificDetail?: Record<string, string>;
 	setEmptyValue?: CallableFunction;
 	readonlyFeatures?: boolean;
+	activeSyncReadonly?: boolean;
 	cosLevelFeatures?: boolean;
 }> = ({
 	featuresDetail,
@@ -23,6 +24,7 @@ export const Features: FC<{
 	accSpecificDetail,
 	setEmptyValue,
 	readonlyFeatures = false,
+	activeSyncReadonly = false,
 	cosLevelFeatures = false
 }) => {
 	const [t] = useTranslation();
@@ -78,7 +80,7 @@ export const Features: FC<{
 								fromSubValue={accSpecificDetail?.zimbraFeatureMobileSyncEnabled}
 								inputName={'zimbraFeatureMobileSyncEnabled'}
 								onChangeReset={(): void => setEmptyValue?.('zimbraFeatureMobileSyncEnabled')}
-								disabled={readonlyFeatures}
+								disabled={readonlyFeatures || activeSyncReadonly}
 							/>
 						</Row>
 					)}

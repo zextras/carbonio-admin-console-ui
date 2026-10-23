@@ -14,10 +14,12 @@ import {
   Row,
   Tooltip,
 } from '@zextras/ui-components';
+import { useUserSettings } from '@zextras/ui-shared';
 import { map, some } from 'lodash-es';
 import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { TRUE } from '../../constants';
 import { WscSettings } from '../../wsc/wsc-settings';
 import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
@@ -51,6 +53,8 @@ export const EditAccountConfigurationSection = () => {
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
   const isWorkspaceEdition = cosDetail?.edition === 'workspace';
+  const userSetting = useUserSettings();
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
   const [prefMailForwardingAddress, setPrefMailForwardingAddress] = useChipList(
     values?.zimbraPrefMailForwardingAddress,
   );
@@ -247,6 +251,7 @@ export const EditAccountConfigurationSection = () => {
           cosDetail={cosDetail}
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}
+          activeSyncReadonly={!isGlobalAdmin}
         />
         {isWorkspaceEdition && (
           <>
