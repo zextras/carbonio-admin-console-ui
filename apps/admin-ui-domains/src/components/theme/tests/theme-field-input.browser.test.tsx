@@ -107,4 +107,22 @@ describe('ThemeFieldInput (browser)', () => {
 
     await expect.element(page.getByText(PROXY_WARNING)).not.toBeInTheDocument();
   });
+
+  it('marks the field as invalid when the URL is same-origin outside the allowlist', async () => {
+    setupBrowserTest(<FieldHarness label="App Logo" initialValue={BLOCKED_URL} warnWhenProxyBlocked />);
+
+    await expect
+      .element(page.getByRole('textbox', { name: 'App Logo' }))
+      .toHaveAttribute('aria-invalid', 'true');
+    await expect.element(page.getByTestId('icon: AlertCircleOutline')).toBeVisible();
+  });
+
+  it('does not mark the field as invalid for an external https URL', async () => {
+    setupBrowserTest(<FieldHarness label="App Logo" initialValue={EXTERNAL_URL} warnWhenProxyBlocked />);
+
+    await expect
+      .element(page.getByRole('textbox', { name: 'App Logo' }))
+      .not.toHaveAttribute('aria-invalid');
+    expect(page.getByTestId('icon: AlertCircleOutline').elements()).toHaveLength(0);
+  });
 });

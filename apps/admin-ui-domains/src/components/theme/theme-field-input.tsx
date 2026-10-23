@@ -85,7 +85,7 @@ export const ThemeFieldInput = ({
       onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
         form.setFieldValue(name, e.target.value);
       }}
-      hasError={hasError}
+      hasError={hasError || proxyBlocked}
       description={description}
       chip={chip}
       disabled={isGlobalTheme && !hasModifyRights}
