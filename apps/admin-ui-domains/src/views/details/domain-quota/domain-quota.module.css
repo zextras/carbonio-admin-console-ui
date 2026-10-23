@@ -35,3 +35,12 @@
   align-items: center;
   justify-content: space-between;
 }
+
+/* `.tableRow:nth-child(...)` rules of the row factory set the zebra background: out-specify them */
+tr.overQuota:nth-child(n) {
+  background-color: color-mix(in srgb, var(--color-error-regular) 25%, var(--color-gray6-regular));
+}
+
+tr.overQuota:nth-child(n):hover {
+  background-color: color-mix(in srgb, var(--color-error-regular) 35%, var(--color-gray6-regular));
+}

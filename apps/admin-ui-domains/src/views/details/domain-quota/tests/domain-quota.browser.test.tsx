@@ -105,7 +105,27 @@ describe('DomainQuota (browser)', () => {
       .toBeVisible();
   });
 
-  it('should sort accounts by total used percentage when the column header is clicked', async () => {
+  it('should color in red only the rows that exceed their quota', async () => {
+    mockReport(
+      buildReport([
+        `over@${DOMAIN_NAME}, 0, 0, 0, ${11 * GB}, ${10 * GB}`,
+        `full@${DOMAIN_NAME}, 0, 0, 0, ${10 * GB}, ${10 * GB}`,
+        `okone@${DOMAIN_NAME}, 0, 0, 0, ${5 * GB}, ${10 * GB}`,
+        `oktwo@${DOMAIN_NAME}, 0, 0, 0, ${4 * GB}, ${10 * GB}`,
+      ]),
+    );
+
+    await renderQuota();
+
+    // rows are sorted by usage (desc), so over/okone are odd rows and full/oktwo are even rows
+    const background = (name: string): string =>
+      getComputedStyle(page.getByRole('row', { name: new RegExp(name) }).element()).backgroundColor;
+
+    await expect.poll(() => background('over@') === background('okone@')).toBe(false);
+    expect(background('full@')).toBe(background('oktwo@'));
+  });
+
+  it('should sort accounts by total used percentage descending by default and toggle on click', async () => {
     mockReport(
       buildReport([
         `low@${DOMAIN_NAME}, 0, 0, 0, ${GB}, ${10 * GB}`,
@@ -115,7 +135,9 @@ describe('DomainQuota (browser)', () => {
     );
 
     await renderQuota();
-    await expect.element(page.getByText(`low@${DOMAIN_NAME}`)).toBeVisible();
+    await expect
+      .poll(accountOrder)
+      .toEqual([`high@${DOMAIN_NAME}`, `mid@${DOMAIN_NAME}`, `low@${DOMAIN_NAME}`]);
 
     const percentageHeader = page.getByText('Total used (%)');
     await percentageHeader.click();

@@ -7,6 +7,7 @@ import {
   CustomHeaderFactory,
   FormPageLayout,
   HoverableRowFactory,
+  type HoverableRowProps,
   Paging,
   Table,
   TrackNumberPerPage,
@@ -15,7 +16,7 @@ import { useCosList } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { RECORD_DISPLAY_LIMIT } from '../../../constants';
+import { DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { useAccountListDirectory } from '../../../services/use-account-list-directory';
@@ -33,6 +34,14 @@ import {
 
 const USED_PERCENTAGE_COLUMN = 'used_percentage';
 
+type QuotaRowFactoryProps = Omit<HoverableRowProps, 'row'> & {
+  row: HoverableRowProps['row'] & { isOverQuota?: boolean };
+};
+
+const QuotaRowFactory = (props: QuotaRowFactoryProps) => (
+  <HoverableRowFactory {...props} rowClassName={props.row.isOverQuota ? styles.overQuota : ''} />
+);
+
 type DomainQuotaContentProps = {
   domainName: string;
 };
@@ -40,7 +49,7 @@ type DomainQuotaContentProps = {
 const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   const [t] = useTranslation();
   const { data: accounts = [], isPending, error } = useDomainQuotaReport(domainName);
-  const [sortOrder, setSortOrder] = useState<QuotaSortOrder | undefined>();
+  const [sortOrder, setSortOrder] = useState<QuotaSortOrder>(DESC);
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(RECORD_DISPLAY_LIMIT);
 
@@ -65,7 +74,7 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
     },
   ];
 
-  const sortedAccounts = sortOrder ? sortByUsedPercentage(accounts, sortOrder) : accounts;
+  const sortedAccounts = sortByUsedPercentage(accounts, sortOrder);
   const pageAccounts = sortedAccounts.slice(offset, offset + limit);
   const pageEmails = pageAccounts.map((account) => account.account);
 
@@ -109,7 +118,7 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
         headers={headers}
         showCheckbox={false}
         multiSelect={false}
-        RowFactory={HoverableRowFactory}
+        RowFactory={QuotaRowFactory}
         HeaderFactory={CustomHeaderFactory}
       />
       {rows.length === 0 && (

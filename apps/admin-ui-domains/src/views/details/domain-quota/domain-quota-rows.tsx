@@ -23,6 +23,7 @@ export type QuotaSortOrder = 'asc' | 'desc';
 export type QuotaRow = {
   id: string;
   columns: Array<ReactElement>;
+  isOverQuota: boolean;
 };
 
 /** Account address -> `zimbraCOSId` (empty when the account has no explicit COS). */
@@ -109,6 +110,7 @@ export function buildQuotaRow(
 ): QuotaRow {
   return {
     id: account.account,
+    isOverQuota: account.totalLimit !== 'unlimited' && account.totalUsed > account.totalLimit,
     columns: [
       <QuotaText key={`${account.account}-account`}>{account.account}</QuotaText>,
       <QuotaText key={`${account.account}-cos`}>{cosName}</QuotaText>,
