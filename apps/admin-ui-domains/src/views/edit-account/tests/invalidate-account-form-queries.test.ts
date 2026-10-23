@@ -10,14 +10,14 @@ import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { invalidateAccountFormQueries } from '../invalidate-account-form-queries';
 
 describe('invalidateAccountFormQueries', () => {
-  it('invalidates merged account, core attributes, and account-specific detail caches', () => {
+  it('invalidates merged account, core attributes, account-specific detail and quota caches', () => {
     const queryClient = {
       invalidateQueries: vi.fn(),
     } as unknown as QueryClient;
 
     invalidateAccountFormQueries(queryClient, 'acc-123');
 
-    expect(queryClient.invalidateQueries).toHaveBeenCalledTimes(3);
+    expect(queryClient.invalidateQueries).toHaveBeenCalledTimes(4);
     expect(queryClient.invalidateQueries).toHaveBeenCalledWith({
       queryKey: domainQueryKeys.accountDetail('acc-123'),
     });
@@ -26,6 +26,9 @@ describe('invalidateAccountFormQueries', () => {
     });
     expect(queryClient.invalidateQueries).toHaveBeenCalledWith({
       queryKey: domainQueryKeys.accountSpecificDetail('acc-123'),
+    });
+    expect(queryClient.invalidateQueries).toHaveBeenCalledWith({
+      queryKey: domainQueryKeys.accountQuota('acc-123'),
     });
   });
 });

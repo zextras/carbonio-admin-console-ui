@@ -20,4 +20,8 @@ export function invalidateAccountFormQueries(
   void queryClient.invalidateQueries({
     queryKey: domainQueryKeys.accountSpecificDetail(accountId),
   });
+  // changing the COS changes the inherited quota even when the quota itself was not edited
+  void queryClient.invalidateQueries({
+    queryKey: domainQueryKeys.accountQuota(accountId),
+  });
 }
