@@ -6,8 +6,12 @@
 import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 
-import { ASC } from '../../../constants';
+import { ASC, DEFAULT } from '../../../constants';
 import type { DomainAccountQuota } from '../../../services/domain-quota-report';
+import {
+  type AccountListEntry,
+  parseAccountListDirectory,
+} from '../../../services/use-account-list-directory';
 import {
   getExactPercentage,
   getPercentage,
@@ -20,6 +24,49 @@ export type QuotaRow = {
   id: string;
   columns: Array<ReactElement>;
 };
+
+/** Account address -> `zimbraCOSId` (empty when the account has no explicit COS). */
+export type AccountCosIds = Map<string, string>;
+
+type CosEntry = { id: string; name: string };
+
+const COS_NOT_AVAILABLE = '-';
+
+/** SearchDirectory filter matching the given account addresses. */
+export function buildAccountsQuery(emails: Array<string>): string {
+  const clauses = emails.map((email) => `(mail=${email.replaceAll(/[\\*()]/g, '')})`);
+  return `(|${clauses.join('')})`;
+}
+
+export function buildAccountCosIds(res: unknown): AccountCosIds {
+  const entries: Array<AccountListEntry> = parseAccountListDirectory(res);
+  return new Map(
+    entries.map((entry) => {
+      const attributes = (entry.a as Array<{ n?: string; _content?: string }> | undefined) ?? [];
+      return [entry.name, attributes.find((attr) => attr.n === 'zimbraCOSId')?._content ?? ''];
+    }),
+  );
+}
+
+/**
+ * Name of the COS assigned to an account. Accounts without an explicit COS use the COS named
+ * `default`. Returns an empty string while the data is still loading.
+ */
+export function resolveCosName(
+  email: string,
+  cosIds: AccountCosIds | undefined,
+  cosList: Array<CosEntry> | undefined,
+): string {
+  if (!cosIds || !cosList) {
+    return '';
+  }
+  const cosId = cosIds.get(email);
+  if (cosId === undefined) {
+    return COS_NOT_AVAILABLE;
+  }
+  const effectiveCosId = cosId || cosList.find((cos) => cos.name === DEFAULT)?.id;
+  return cosList.find((cos) => cos.id === effectiveCosId)?.name ?? COS_NOT_AVAILABLE;
+}
 
 /**
  * Used space over total limit, mirroring `getPercentage` for a zero limit (fully used).
@@ -55,11 +102,16 @@ function formatUsedPercentage(account: DomainAccountQuota, t: TFunction): string
   return `${getPercentage(account.totalUsed, account.totalLimit)}%`;
 }
 
-export function buildQuotaRow(account: DomainAccountQuota, t: TFunction): QuotaRow {
+export function buildQuotaRow(
+  account: DomainAccountQuota,
+  cosName: string,
+  t: TFunction,
+): QuotaRow {
   return {
     id: account.account,
     columns: [
       <QuotaText key={`${account.account}-account`}>{account.account}</QuotaText>,
+      <QuotaText key={`${account.account}-cos`}>{cosName}</QuotaText>,
       <QuotaText key={`${account.account}-mails`}>{humanFileSize(account.mails, t)}</QuotaText>,
       <QuotaText key={`${account.account}-files`}>{humanFileSize(account.files, t)}</QuotaText>,
       <QuotaText key={`${account.account}-chats`}>{humanFileSize(account.chats, t)}</QuotaText>,

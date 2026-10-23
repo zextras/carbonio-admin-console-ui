@@ -11,16 +11,25 @@ import {
   Table,
   TrackNumberPerPage,
 } from '@zextras/ui-components';
+import { useCosList } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useSelectedDomain } from '../../../hooks/use-selected-domain';
+import { useAccountListDirectory } from '../../../services/use-account-list-directory';
 import { useDomainQuotaReport } from '../../../services/use-domain-quota-report';
 import { QuotaReportDownloadButton } from '../domain-general-settings/quota-report-download-button';
 import styles from './domain-quota.module.css';
-import { buildQuotaRow, type QuotaSortOrder, sortByUsedPercentage } from './domain-quota-rows';
+import {
+  buildAccountCosIds,
+  buildAccountsQuery,
+  buildQuotaRow,
+  type QuotaSortOrder,
+  resolveCosName,
+  sortByUsedPercentage,
+} from './domain-quota-rows';
 
 const USED_PERCENTAGE_COLUMN = 'used_percentage';
 
@@ -38,7 +47,8 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   useQueryErrorSnackbar(error);
 
   const headers = [
-    { id: 'account', label: t('label.account', 'Account'), width: '45%', bold: true },
+    { id: 'account', label: t('label.account', 'Account'), width: '30%', bold: true },
+    { id: 'cos', label: t('label.cos', 'COS'), width: '15%', bold: true },
     { id: 'mails', label: t('label.mails', 'Mails'), width: '15%', bold: true },
     { id: 'files', label: t('label.files', 'Files'), width: '15%', bold: true },
     { id: 'chats', label: t('label.chats', 'Chats'), width: '15%', bold: true },
@@ -56,9 +66,31 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   ];
 
   const sortedAccounts = sortOrder ? sortByUsedPercentage(accounts, sortOrder) : accounts;
-  const rows = sortedAccounts
-    .slice(offset, offset + limit)
-    .map((account) => buildQuotaRow(account, t));
+  const pageAccounts = sortedAccounts.slice(offset, offset + limit);
+  const pageEmails = pageAccounts.map((account) => account.account);
+
+  const { data: cosList } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
+  const { data: cosIds, isPlaceholderData: isCosIdsPlaceholder } = useAccountListDirectory(
+    {
+      attr: 'zimbraCOSId',
+      type: 'accounts',
+      query: buildAccountsQuery(pageEmails),
+      offset: 0,
+      limit: pageEmails.length,
+      sortBy: '',
+      sortAscending: '',
+      select: buildAccountCosIds,
+    },
+    pageEmails.length > 0,
+  );
+
+  const rows = pageAccounts.map((account) =>
+    buildQuotaRow(
+      account,
+      resolveCosName(account.account, isCosIdsPlaceholder ? undefined : cosIds, cosList?.cos),
+      t,
+    ),
+  );
 
   if (isPending) {
     return <ds-page-shimmer></ds-page-shimmer>;

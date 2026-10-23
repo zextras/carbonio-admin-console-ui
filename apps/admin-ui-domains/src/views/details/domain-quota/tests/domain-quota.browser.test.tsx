@@ -32,6 +32,32 @@ function mockReport(csv: string): void {
   );
 }
 
+type DirectoryMock = {
+  coses: Array<{ id: string; name: string }>;
+  accounts: Array<{ name: string; zimbraCOSId?: string }>;
+};
+
+function mockDirectory({ coses, accounts }: DirectoryMock): void {
+  worker.use(
+    http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
+      const body = (await request.json()) as {
+        Body: { SearchDirectoryRequest: { types: string } };
+      };
+      const response =
+        body.Body.SearchDirectoryRequest.types === 'coses'
+          ? { cos: coses }
+          : {
+              account: accounts.map(({ name, zimbraCOSId }) => ({
+                id: name,
+                name,
+                a: zimbraCOSId ? [{ n: 'zimbraCOSId', _content: zimbraCOSId }] : [],
+              })),
+            };
+      return HttpResponse.json({ Body: { SearchDirectoryResponse: response } });
+    }),
+  );
+}
+
 function accountOrder(): Array<string | null> {
   return page
     .getByText(/@example\.com$/)
@@ -56,6 +82,7 @@ function renderQuota() {
 describe('DomainQuota (browser)', () => {
   beforeEach(() => {
     getQueryClient().clear();
+    mockDirectory({ coses: [], accounts: [] });
   });
 
   it('should show mails, files and chats usage and the total percentage of every account', async () => {
@@ -116,6 +143,34 @@ describe('DomainQuota (browser)', () => {
     await expect.element(page.getByText(`user00@${DOMAIN_NAME}`)).toBeVisible();
     await expect.element(page.getByText(`user09@${DOMAIN_NAME}`)).toBeVisible();
     await expect.element(page.getByText(`user10@${DOMAIN_NAME}`)).not.toBeInTheDocument();
+  });
+
+  it('should show the COS of every account, falling back to the default COS', async () => {
+    mockReport(
+      buildReport([
+        `gold@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`,
+        `plain@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`,
+        `unknown@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`,
+      ]),
+    );
+    mockDirectory({
+      coses: [
+        { id: 'cos-default', name: 'default' },
+        { id: 'cos-gold', name: 'Gold' },
+      ],
+      accounts: [
+        { name: `gold@${DOMAIN_NAME}`, zimbraCOSId: 'cos-gold' },
+        { name: `plain@${DOMAIN_NAME}` },
+        { name: `unknown@${DOMAIN_NAME}`, zimbraCOSId: 'cos-not-visible' },
+      ],
+    });
+
+    await renderQuota();
+
+    await expect.element(page.getByText('COS')).toBeVisible();
+    await expect.element(page.getByText('Gold', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('default', { exact: true })).toBeVisible();
+    await expect.element(page.getByText('-', { exact: true })).toBeVisible();
   });
 
   it('should show the empty state when the domain has no accounts', async () => {
