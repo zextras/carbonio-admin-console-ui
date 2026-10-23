@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -74,8 +75,11 @@ const TestWrapper = ({
   />
 );
 
-async function setupTest(wrapper: React.ReactElement = <TestWrapper />) {
-  createBrowserSoapAPIInterceptor('GetCos', MOCK_COS_DETAIL);
+async function setupTest(
+  wrapper: React.ReactElement = <TestWrapper />,
+  cosDetail: typeof MOCK_COS_DETAIL = MOCK_COS_DETAIL,
+) {
+  createBrowserSoapAPIInterceptor('GetCos', cosDetail);
   createBrowserSoapAPIInterceptor('ModifyCos', {});
   createBrowserSoapAPIInterceptor('FlushCache', {});
   createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
@@ -121,6 +125,19 @@ describe('FeaturesForm (browser)', () => {
     await expect.element(webFeatureSwitch).toBeChecked();
     await userEvent.click(webFeatureSwitch);
     await expect.element(webFeatureSwitch).not.toBeChecked();
+  });
+
+  it('should render the Files switch when the new-subscriptions flag is disabled and the COS edition is mail', async () => {
+    useLoginConfigStore.setState({ featureFlags: null });
+    const mailEditionCosDetail = {
+      ...MOCK_COS_DETAIL,
+      cos: [{ ...MOCK_COS_DETAIL.cos[0], _attrs: { edition: 'mail' } }],
+    };
+    await setupTest(<TestWrapper />, mailEditionCosDetail);
+
+    await expect
+      .element(page.getByRole('switch', { name: 'Allow access to Files' }))
+      .toBeVisible();
   });
 
   it('should render Tasks switch and be clickable', async () => {

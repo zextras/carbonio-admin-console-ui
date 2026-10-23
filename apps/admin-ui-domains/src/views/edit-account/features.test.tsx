@@ -5,8 +5,9 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
+import { useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { Features } from './features';
 
@@ -147,7 +148,11 @@ describe('Features - Mail section', () => {
   });
 });
 
-describe('Features - Files section visibility', () => {
+describe('Features - Files section visibility (new-subscriptions flag enabled)', () => {
+  beforeEach(() => {
+    vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(true);
+  });
+
   it('hides the Files heading and the Allow access to Files switch when the COS edition is mail', () => {
     renderFeatures({ cosDetail: { edition: 'mail' } });
 
@@ -178,5 +183,26 @@ describe('Features - Files section visibility', () => {
     renderFeatures({ cosDetail: { edition: '' } });
 
     expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+  });
+});
+
+describe('Features - Files section vs new-subscriptions feature flag', () => {
+  it('shows the Files heading and the Allow access to Files switch when the flag is disabled and the COS edition is mail', () => {
+    vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(false);
+    renderFeatures({ cosDetail: { edition: 'mail' } });
+
+    expect(screen.getByText('Files', { exact: true })).toBeTruthy();
+    expect(
+      screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' }),
+    ).toBeTruthy();
+  });
+
+  it('shows the Allow access to Files switch when the flag is disabled and the COS has no edition attribute', () => {
+    vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(false);
+    renderFeatures({ cosDetail: {} });
+
+    expect(
+      screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' }),
+    ).toBeTruthy();
   });
 });

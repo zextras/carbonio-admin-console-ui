@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -130,7 +131,10 @@ describe('CosFeatures', () => {
       await expect.element(page.getByText('Files', { exact: true })).toBeVisible();
     });
 
-    it('should not render the Files section when edition is mail', async () => {
+    it('should not render the Files section when the new-subscriptions flag is enabled and edition is mail', async () => {
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: true },
+      });
       const mailCosData = {
         ...mockCosData,
         cos: [
