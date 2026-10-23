@@ -22,6 +22,7 @@ import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { useAccountListDirectory } from '../../../services/use-account-list-directory';
 import { useDomainQuotaReport } from '../../../services/use-domain-quota-report';
 import { QuotaReportDownloadButton } from '../domain-general-settings/quota-report-download-button';
+import { DomainCosLimits } from './domain-cos-limits';
 import styles from './domain-quota.module.css';
 import {
   buildAccountCosIds,
@@ -106,45 +107,48 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   }
 
   return (
-    <div className={styles.section}>
-      <div className={styles.sectionHeader}>
-        <ds-text as="h3" size="small" weight="bold" color="gray0">
-          {t('label.account', 'Account')}
-        </ds-text>
-        <QuotaReportDownloadButton domainName={domainName} />
-      </div>
-      <Table
-        rows={rows}
-        headers={headers}
-        showCheckbox={false}
-        multiSelect={false}
-        RowFactory={QuotaRowFactory}
-        HeaderFactory={CustomHeaderFactory}
-      />
-      {rows.length === 0 && (
-        <div className={styles.emptyState}>
-          <ds-text as="p" weight="light" color="#828282" size="large">
-            {t('label.this_list_is_empty', 'This list is empty.')}
+    <>
+      <DomainCosLimits domainName={domainName} />
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <ds-text as="h3" size="small" weight="bold" color="gray0">
+            {t('label.account', 'Account')}
           </ds-text>
+          <QuotaReportDownloadButton domainName={domainName} />
         </div>
-      )}
-      {rows.length > 0 && (
-        <div className={styles.pagingBar}>
-          <Paging
-            key={`${limit}-${sortOrder}`}
-            totalItem={accounts.length}
-            setOffset={setOffset}
-            pageSize={limit}
-          />
-          <TrackNumberPerPage
-            setPageSize={(size) => {
-              setLimit(size);
-              setOffset(0);
-            }}
-          />
-        </div>
-      )}
-    </div>
+        <Table
+          rows={rows}
+          headers={headers}
+          showCheckbox={false}
+          multiSelect={false}
+          RowFactory={QuotaRowFactory}
+          HeaderFactory={CustomHeaderFactory}
+        />
+        {rows.length === 0 && (
+          <div className={styles.emptyState}>
+            <ds-text as="p" weight="light" color="#828282" size="large">
+              {t('label.this_list_is_empty', 'This list is empty.')}
+            </ds-text>
+          </div>
+        )}
+        {rows.length > 0 && (
+          <div className={styles.pagingBar}>
+            <Paging
+              key={`${limit}-${sortOrder}`}
+              totalItem={accounts.length}
+              setOffset={setOffset}
+              pageSize={limit}
+            />
+            <TrackNumberPerPage
+              setPageSize={(size) => {
+                setLimit(size);
+                setOffset(0);
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 };
 

@@ -14,7 +14,7 @@ vi.mock('../count-account-service', () => ({
 }));
 
 import { countAccount } from '../count-account-service';
-import { parseAccountCount, useCountAccount } from '../use-count-account';
+import { parseAccountCount, parseAccountCountByCos, useCountAccount } from '../use-count-account';
 
 function createWrapper() {
 	const queryClient = new QueryClient({
@@ -42,6 +42,27 @@ describe('parseAccountCount', () => {
 	it('returns 0 when the response has no cos entries', () => {
 		expect(parseAccountCount({})).toBe(0);
 		expect(parseAccountCount(undefined)).toBe(0);
+	});
+});
+
+describe('parseAccountCountByCos', () => {
+	it('returns the account count of every COS excluding defaultExternal', () => {
+		const res = {
+			cos: [
+				{ id: 'cos-1', name: 'default', _content: '7' },
+				{ id: 'cos-2', name: 'defaultExternal', _content: '100' },
+				{ id: 'cos-3', name: 'premium', _content: '3' },
+			],
+		};
+		expect(parseAccountCountByCos(res)).toEqual([
+			{ name: 'default', count: 7 },
+			{ name: 'premium', count: 3 },
+		]);
+	});
+
+	it('returns no entries when the response has no cos entries', () => {
+		expect(parseAccountCountByCos({})).toEqual([]);
+		expect(parseAccountCountByCos(undefined)).toEqual([]);
 	});
 });
 

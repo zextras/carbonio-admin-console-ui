@@ -65,12 +65,26 @@ function accountOrder(): Array<string | null> {
     .map((el) => el.textContent);
 }
 
-function renderQuota() {
+function mockCountAccount(coses: Array<{ id: string; name: string; count: number }>): void {
+  worker.use(
+    http.post('/service/admin/soap/CountAccountRequest', () =>
+      HttpResponse.json({
+        Body: {
+          CountAccountResponse: {
+            cos: coses.map(({ id, name, count }) => ({ id, name, _content: String(count) })),
+          },
+        },
+      }),
+    ),
+  );
+}
+
+function renderQuota(attributes: Array<{ n: string; _content: string }> = []) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(domainByIdKey(DOMAIN_ID, 1), {
     id: DOMAIN_ID,
     name: DOMAIN_NAME,
-    a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }],
+    a: [{ n: 'zimbraDomainName', _content: DOMAIN_NAME }, ...attributes],
   });
   return setupBrowserTest(<DomainQuota />, {
     queryClient,
@@ -83,6 +97,7 @@ describe('DomainQuota (browser)', () => {
   beforeEach(() => {
     getQueryClient().clear();
     mockDirectory({ coses: [], accounts: [] });
+    mockCountAccount([]);
   });
 
   it('should show mails, files and chats usage and the total percentage of every account', async () => {
@@ -201,5 +216,47 @@ describe('DomainQuota (browser)', () => {
     await renderQuota();
 
     await expect.element(page.getByText('This list is empty.')).toBeVisible();
+  });
+});
+
+describe('DomainQuota COS limits (browser)', () => {
+  beforeEach(() => {
+    getQueryClient().clear();
+  });
+
+  it('should list the linked COSes united with the COSes in use, with used accounts and max limit', async () => {
+    mockReport(buildReport([]));
+    mockDirectory({
+      coses: [
+        { id: 'cos-default', name: 'default' },
+        { id: 'cos-gold', name: 'Gold' },
+        { id: 'cos-silver', name: 'Silver' },
+      ],
+      accounts: [],
+    });
+    mockCountAccount([
+      { id: 'cos-default', name: 'default', count: 4 },
+      { id: 'cos-gold', name: 'Gold', count: 12 },
+      { id: 'cos-silver', name: 'Silver', count: 0 },
+    ]);
+
+    await renderQuota([{ n: 'zimbraDomainCOSMaxAccounts', _content: 'cos-gold:50' }]);
+
+    await expect.element(page.getByText('COS name')).toBeVisible();
+    await expect.element(page.getByText('Used COS')).toBeVisible();
+    await expect.element(page.getByText('COS max limit')).toBeVisible();
+    await expect.element(page.getByRole('row', { name: /default.*4.*-/ })).toBeVisible();
+    await expect.element(page.getByRole('row', { name: /Gold.*12.*50/ })).toBeVisible();
+    await expect.element(page.getByRole('row', { name: /Silver/ })).not.toBeInTheDocument();
+  });
+
+  it('should show unlimited for a COS linked with -1 accounts', async () => {
+    mockReport(buildReport([]));
+    mockDirectory({ coses: [{ id: 'cos-gold', name: 'Gold' }], accounts: [] });
+    mockCountAccount([{ id: 'cos-gold', name: 'Gold', count: 1 }]);
+
+    await renderQuota([{ n: 'zimbraDomainCOSMaxAccounts', _content: 'cos-gold:-1' }]);
+
+    await expect.element(page.getByRole('row', { name: /Gold.*1.*Unlimited/ })).toBeVisible();
   });
 });

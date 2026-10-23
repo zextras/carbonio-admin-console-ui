@@ -88,7 +88,7 @@ export function sortByUsedPercentage(
   return accounts.toSorted((a, b) => direction * (getSortableRatio(a) - getSortableRatio(b)));
 }
 
-function QuotaText({ children }: Readonly<{ children: string }>) {
+export function QuotaText({ children }: Readonly<{ children: string }>) {
   return (
     <ds-text as="span" size="small" color="gray0" weight="light">
       {children}
