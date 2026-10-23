@@ -16,7 +16,6 @@ import { useTranslation } from 'react-i18next';
 
 import {
   ACCOUNTS,
-  ACTIVE_SYNC,
   ADDRESS_BOOK,
   AUTHENTICATION,
   BOOLEAN_FALSE,
@@ -153,11 +152,6 @@ export const useSidebarOptions = ({
       isSelected: isDomainSelect,
     },
     {
-      id: ACTIVE_SYNC,
-      name: t('label.active_sync', 'ActiveSync'),
-      isSelected: isDomainSelect,
-    },
-    {
       id: ADDRESS_BOOK,
       name: t('label.ldap_addressbook', 'LDAP Address Book'),
       isSelected: isDomainSelect,
@@ -219,7 +213,6 @@ export const useSidebarOptions = ({
     if (isAdvanced) return true;
     return (
       item.id !== RESTORE_ACCOUNT &&
-      item.id !== ACTIVE_SYNC &&
       item.id !== ADDRESS_BOOK &&
       item.id !== DELEGATES_DOMAIN_ADMINS &&
       item.id !== SECURITY_GROUP

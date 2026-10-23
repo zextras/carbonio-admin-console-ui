@@ -81,7 +81,7 @@ describe('useSidebarOptions', () => {
       const { manageOptions } = renderOptionsHook();
 
       const ids = manageOptions.map((i) => i.id);
-      expect(ids).toContain('active_sync');
+      expect(ids).not.toContain('active_sync');
       expect(ids).toContain('address_book');
       expect(ids).toContain('restore_account');
       expect(ids).toContain('delegates_domain_admins');
@@ -100,7 +100,7 @@ describe('useSidebarOptions', () => {
       const ids = manageOptions.map((i) => i.id);
       expect(ids).not.toContain('delegates_domain_admins');
       expect(ids).not.toContain('restore_account');
-      expect(ids).toContain('active_sync');
+      expect(ids).toContain('address_book');
 
       useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'TRUE' } });
     });
