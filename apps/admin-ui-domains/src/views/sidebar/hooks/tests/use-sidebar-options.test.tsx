@@ -12,6 +12,7 @@ vi.mock('@zextras/ui-shared', () => ({
   useBackupServers: vi.fn(() => ({ data: undefined })),
   useCurrentUserRights: vi.fn(() => ({ data: [] })),
   useIsAdvanced: vi.fn(() => false),
+  useUserSettings: vi.fn(() => ({ attrs: { zimbraIsAdminAccount: 'TRUE' } })),
 }));
 
 import {
@@ -20,6 +21,7 @@ import {
   useBackupServers,
   useCurrentUserRights,
   useIsAdvanced,
+  useUserSettings,
 } from '@zextras/ui-shared';
 
 import { useSidebarOptions } from '../use-sidebar-options';
@@ -28,6 +30,7 @@ const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
 const useBackupServersMock = useBackupServers as unknown as Mock;
 const useCurrentUserRightsMock = useCurrentUserRights as unknown as Mock;
 const useAllConfigMock = useAllConfig as unknown as Mock;
+const useUserSettingsMock = useUserSettings as unknown as Mock;
 const getAllRightsMock = getAllRights as unknown as Mock;
 
 function renderOptionsHook({
@@ -82,6 +85,23 @@ describe('useSidebarOptions', () => {
       expect(ids).toContain('address_book');
       expect(ids).toContain('restore_account');
       expect(ids).toContain('delegates_domain_admins');
+    });
+
+    it('should hide delegated domain admins for non-global admins even when isAdvanced is true', () => {
+      useIsAdvancedMock.mockReturnValue(true);
+      useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'FALSE' } });
+      useBackupServersMock.mockReturnValue({ data: undefined });
+      useAllConfigMock.mockReturnValue({ data: [] });
+      useCurrentUserRightsMock.mockReturnValue({ data: [] });
+      getAllRightsMock.mockReturnValue([]);
+
+      const { manageOptions } = renderOptionsHook();
+
+      const ids = manageOptions.map((i) => i.id);
+      expect(ids).not.toContain('delegates_domain_admins');
+      expect(ids).toContain('active_sync');
+
+      useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'TRUE' } });
     });
 
     it('should exclude advanced-only detail items when isAdvanced is false', () => {

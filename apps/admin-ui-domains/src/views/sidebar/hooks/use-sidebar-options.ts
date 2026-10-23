@@ -10,6 +10,7 @@ import {
   useBackupServers,
   useCurrentUserRights,
   useIsAdvanced,
+  useUserSettings,
 } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
@@ -38,6 +39,7 @@ import {
   RESTORE_ACCOUNT,
   SAML,
   SECURITY_GROUP,
+  TRUE,
   TWO_FACTOR_AUTHENTICATION,
   VIRTUAL_HOSTS,
   WHITELABEL_SETTINGS,
@@ -63,6 +65,8 @@ export const useSidebarOptions = ({
 }: UseSidebarOptionsParams): UseSidebarOptionsReturn => {
   const [t] = useTranslation();
   const isAdvanced = useIsAdvanced();
+  const userSetting = useUserSettings();
+  const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
   const { data: backupData } = useBackupServers({ enabled: isAdvanced });
   const { data: rights } = useCurrentUserRights();
   const { data: globalConfigInformation = [] } = useAllConfig();
@@ -208,16 +212,17 @@ export const useSidebarOptions = ({
     },
   ];
 
-  const manageItems: Array<ListItemType> = isAdvanced
-    ? allListItemType
-    : allListItemType.filter(
-        (item) =>
-          item.id !== RESTORE_ACCOUNT &&
-          item.id !== ACTIVE_SYNC &&
-          item.id !== ADDRESS_BOOK &&
-          item.id !== DELEGATES_DOMAIN_ADMINS &&
-          item.id !== SECURITY_GROUP,
-      );
+  const manageItems: Array<ListItemType> = allListItemType.filter((item) => {
+    if (item.id === DELEGATES_DOMAIN_ADMINS && !isGlobalAdmin) return false;
+    if (isAdvanced) return true;
+    return (
+      item.id !== RESTORE_ACCOUNT &&
+      item.id !== ACTIVE_SYNC &&
+      item.id !== ADDRESS_BOOK &&
+      item.id !== DELEGATES_DOMAIN_ADMINS &&
+      item.id !== SECURITY_GROUP
+    );
+  });
 
   const detailItems: Array<ListItemType> = detailOptions.filter((item) => {
     if (!isAdvanced) {
