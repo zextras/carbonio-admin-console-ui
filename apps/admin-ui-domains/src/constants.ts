@@ -131,6 +131,7 @@ export const USR = 'usr';
 export const QUARANTINE = 'quarantine';
 export const DELEGATES_DOMAIN_ADMINS = 'delegates_domain_admins';
 export const DISCLAIMER = 'disclaimer';
+export const MAILBOX_QUOTA = 'mailbox_quota';
 export const ZIMBRA_DOMAIN_MANDATORY_MAIL_SIGNATURE_ENABLED =
   'zimbraDomainMandatoryMailSignatureEnabled';
 export const ZIMBRA_AMAVIS_DOMAIN_DISCLAIMER_TEXT = 'zimbraAmavisDomainDisclaimerText';

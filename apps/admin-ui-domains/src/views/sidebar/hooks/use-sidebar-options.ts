@@ -34,6 +34,7 @@ import {
   GLOBAL_QUARANTINE_ROUTE,
   GLOBAL_SETTINGS_ROUTE,
   GLOBAL_WHITELABEL_SETTINGS,
+  MAILBOX_QUOTA,
   RESOURCES,
   RESTORE_ACCOUNT,
   SAML,
@@ -91,6 +92,11 @@ export const useSidebarOptions = ({
     {
       id: GENERAL_SETTINGS,
       name: t('label.general_settings', 'General Settings'),
+      isSelected: isDomainSelect,
+    },
+    {
+      id: MAILBOX_QUOTA,
+      name: t('label.mailbox_quota', 'Mailbox Quota'),
       isSelected: isDomainSelect,
     },
     {
@@ -220,6 +226,10 @@ export const useSidebarOptions = ({
   });
 
   const detailItems: Array<ListItemType> = detailOptions.filter((item) => {
+    // the quota report endpoint of the storages service is reserved to global admins
+    if (item.id === MAILBOX_QUOTA && !(isAdvanced && isGlobalAdmin)) {
+      return false;
+    }
     if (!isAdvanced) {
       if (
         item.id === WHITELABEL_SETTINGS ||

@@ -22,6 +22,7 @@ import {
   GENERAL_INFORMATION,
   GENERAL_SETTINGS,
   GLOBAL_ROUTE,
+  MAILBOX_QUOTA,
   RESOURCES,
   RESTORE_ACCOUNT,
   SAML,
@@ -35,6 +36,7 @@ import { DomainAuthentication } from './details/domain-authentication/domain-aut
 import { DomainDisclaimer } from './details/domain-disclaimer';
 import { DomainGalSettings } from './details/domain-gal-settings/domain-gal-settings';
 import { DomainGeneralSettings } from './details/domain-general-settings/domain-general-settings';
+import { DomainQuota } from './details/domain-quota/domain-quota';
 import { DomainSaml } from './details/domain-saml';
 import { DomainTheme } from './details/domain-theme/domain-theme';
 import { DomainVirtualHosts } from './details/virtual-hosts-certificates/domain-virtual-hosts';
@@ -109,6 +111,7 @@ export const DomainContentPanel = () => (
       <Route path=":domainId" element={<DomainOperationsLayout />}>
         <Route path={GENERAL_INFORMATION} element={<GeneralInformation />} />
         <Route path={GENERAL_SETTINGS} element={<DomainGeneralSettings />} />
+        <Route path={MAILBOX_QUOTA} element={<DomainQuota />} />
         <Route path={GAL} element={<DomainGalSettings />} />
         <Route path={AUTHENTICATION} element={<DomainAuthentication />} />
         <Route path={VIRTUAL_HOSTS} element={<DomainVirtualHosts />} />

@@ -25,6 +25,7 @@ import {
   GAL,
   GENERAL_SETTINGS,
   GLOBAL_ROUTE,
+  MAILBOX_QUOTA,
   MANAGE,
   RESOURCES,
   RESTORE_ACCOUNT,
@@ -47,6 +48,7 @@ const DOMAIN_DETAIL_SECTIONS: Array<SectionRoute> = [
   { id: ACTIVE_SYNC, labelKey: 'label.active_sync', labelDefault: 'ActiveSync' },
   { id: RESTORE_ACCOUNT, labelKey: 'label.restore_account', labelDefault: 'Restore Account' },
   { id: GENERAL_SETTINGS, labelKey: 'label.general_settings', labelDefault: 'General Settings' },
+  { id: MAILBOX_QUOTA, labelKey: 'label.mailbox_quota', labelDefault: 'Mailbox Quota' },
   { id: GAL, labelKey: 'label.global_address_list', labelDefault: 'Global Address List' },
   { id: AUTHENTICATION, labelKey: 'label.authentication', labelDefault: 'Authentication' },
   {

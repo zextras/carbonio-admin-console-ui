@@ -135,6 +135,25 @@ describe('useSidebarOptions', () => {
       expect(ids).not.toContain('global/active_sync');
       expect(ids).not.toContain('global/address_book');
     });
+
+    it('should show the quota detail item only to global admins on advanced', () => {
+      useBackupServersMock.mockReturnValue({ data: undefined });
+      useAllConfigMock.mockReturnValue({ data: [] });
+      useCurrentUserRightsMock.mockReturnValue({ data: [] });
+      getAllRightsMock.mockReturnValue([]);
+
+      useIsAdvancedMock.mockReturnValue(true);
+      expect(renderOptionsHook().detailItems.map((i) => i.id)).toContain('mailbox_quota');
+
+      useIsAdvancedMock.mockReturnValue(false);
+      expect(renderOptionsHook().detailItems.map((i) => i.id)).not.toContain('mailbox_quota');
+
+      useIsAdvancedMock.mockReturnValue(true);
+      useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'FALSE' } });
+      expect(renderOptionsHook().detailItems.map((i) => i.id)).not.toContain('mailbox_quota');
+
+      useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'TRUE' } });
+    });
   });
 
   describe('backup gating', () => {

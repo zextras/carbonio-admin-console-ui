@@ -8,6 +8,8 @@ export const domainQueryKeys = {
   all: ['domain'] as const,
   list: () => [...domainQueryKeys.all, 'list'] as const,
   quota: (domainId: string) => [...domainQueryKeys.all, 'quota', domainId] as const,
+  quotaReport: (domainName: string) =>
+    [...domainQueryKeys.all, 'quota-report', domainName] as const,
   accountQuota: (accountId: string) =>
     [...domainQueryKeys.all, 'account-quota', accountId] as const,
   accountSignatures: (accountId: string) =>
