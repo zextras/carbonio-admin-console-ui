@@ -31,6 +31,8 @@ type ModalProps = CustomModalProps &
     title?: string | React.ReactElement;
     /** Hide the footer completely */
     hideFooter?: boolean;
+    /** Hide the dividers between header, body and footer */
+    hideDividers?: boolean;
     /** Show icon to close Modal */
     showCloseIcon?: boolean;
     /** Label for copy button in the Error Modal */
@@ -59,6 +61,7 @@ const Modal = ({
   customFooter,
   copyLabel = 'Copy',
   hideFooter = false,
+  hideDividers = false,
   showCloseIcon = true,
   children,
   closeIconTooltip,
@@ -79,13 +82,13 @@ const Modal = ({
         onClose={onClose}
         closeIconTooltip={closeIconTooltip}
       />
-      <ds-divider></ds-divider>
+      {!hideDividers && <ds-divider></ds-divider>}
       <ModalBody centered={centered} ref={modalBodyRef}>
         {children}
       </ModalBody>
       {!hideFooter && (
         <>
-          <ds-divider></ds-divider>
+          {!hideDividers && <ds-divider></ds-divider>}
           <ModalFooter
             centered={centered}
             customFooter={customFooter}

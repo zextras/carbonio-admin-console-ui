@@ -210,6 +210,24 @@ describe('DomainQuota (browser)', () => {
     await expect.element(page.getByText('-', { exact: true })).toBeVisible();
   });
 
+  it('should open the account modal when a row is clicked', async () => {
+    mockReport(buildReport([`alice@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`]));
+    mockDirectory({
+      coses: [{ id: 'cos-default', name: 'default' }],
+      accounts: [{ name: `alice@${DOMAIN_NAME}` }],
+    });
+    worker.use(
+      http.post('/service/admin/soap/CheckRightRequest', () =>
+        HttpResponse.json({ Body: { CheckRightResponse: { allow: true } } }),
+      ),
+    );
+
+    await renderQuota();
+    await page.getByText(`alice@${DOMAIN_NAME}`).click();
+
+    await expect.element(page.getByRole('heading', { name: `alice@${DOMAIN_NAME}` })).toBeVisible();
+  });
+
   it('should show the empty state when the domain has no accounts', async () => {
     mockReport(buildReport([]));
 

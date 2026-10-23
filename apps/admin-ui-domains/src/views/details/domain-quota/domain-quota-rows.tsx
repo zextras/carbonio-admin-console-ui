@@ -6,7 +6,8 @@
 import type { TFunction } from 'i18next';
 import type { ReactElement } from 'react';
 
-import { ASC, DEFAULT } from '../../../constants';
+import type { Attribute } from '../../../../types/attribute';
+import { ASC, DEFAULT, ZIMBRA_DOMAIN_DEFAULT_COS_ID } from '../../../constants';
 import type { DomainAccountQuota } from '../../../services/domain-quota-report';
 import {
   type AccountListEntry,
@@ -24,10 +25,14 @@ export type QuotaRow = {
   id: string;
   columns: Array<ReactElement>;
   isOverQuota: boolean;
+  clickable: boolean;
 };
 
-/** Account address -> `zimbraCOSId` (empty when the account has no explicit COS). */
-export type AccountCosIds = Map<string, string>;
+/** Directory data of an account: its id and `zimbraCOSId` (empty when no explicit COS). */
+export type AccountDirectoryInfo = { id: string; cosId: string };
+
+/** Account address -> directory data. */
+export type AccountDirectoryInfos = Map<string, AccountDirectoryInfo>;
 
 type CosEntry = { id: string; name: string };
 
@@ -39,33 +44,49 @@ export function buildAccountsQuery(emails: Array<string>): string {
   return `(|${clauses.join('')})`;
 }
 
-export function buildAccountCosIds(res: unknown): AccountCosIds {
+export function buildAccountDirectoryInfos(res: unknown): AccountDirectoryInfos {
   const entries: Array<AccountListEntry> = parseAccountListDirectory(res);
   return new Map(
     entries.map((entry) => {
       const attributes = (entry.a as Array<{ n?: string; _content?: string }> | undefined) ?? [];
-      return [entry.name, attributes.find((attr) => attr.n === 'zimbraCOSId')?._content ?? ''];
+      const cosId = attributes.find((attr) => attr.n === 'zimbraCOSId')?._content ?? '';
+      return [entry.name, { id: entry.id, cosId }];
     }),
   );
 }
 
 /**
- * Name of the COS assigned to an account. Accounts without an explicit COS use the COS named
- * `default`. Returns an empty string while the data is still loading.
+ * COS the accounts without an explicit COS belong to: the default COS of the domain, or the COS
+ * named `default` when the domain has none.
+ */
+export function getInheritedCosId(
+  domainAttributes: Array<Attribute> | undefined,
+  cosList: Array<CosEntry> | undefined,
+): string | undefined {
+  const domainDefaultCosId = domainAttributes?.find(
+    (attribute) => attribute.n === ZIMBRA_DOMAIN_DEFAULT_COS_ID,
+  )?._content;
+  return domainDefaultCosId || cosList?.find((cos) => cos.name === DEFAULT)?.id;
+}
+
+/**
+ * Name of the COS assigned to an account. Accounts without an explicit COS use the inherited COS.
+ * Returns an empty string while the data is still loading.
  */
 export function resolveCosName(
   email: string,
-  cosIds: AccountCosIds | undefined,
+  accountInfos: AccountDirectoryInfos | undefined,
   cosList: Array<CosEntry> | undefined,
+  inheritedCosId: string | undefined,
 ): string {
-  if (!cosIds || !cosList) {
+  if (!accountInfos || !cosList) {
     return '';
   }
-  const cosId = cosIds.get(email);
+  const cosId = accountInfos.get(email)?.cosId;
   if (cosId === undefined) {
     return COS_NOT_AVAILABLE;
   }
-  const effectiveCosId = cosId || cosList.find((cos) => cos.name === DEFAULT)?.id;
+  const effectiveCosId = cosId || inheritedCosId;
   return cosList.find((cos) => cos.id === effectiveCosId)?.name ?? COS_NOT_AVAILABLE;
 }
 
@@ -106,11 +127,13 @@ function formatUsedPercentage(account: DomainAccountQuota, t: TFunction): string
 export function buildQuotaRow(
   account: DomainAccountQuota,
   cosName: string,
+  clickable: boolean,
   t: TFunction,
 ): QuotaRow {
   return {
     id: account.account,
     isOverQuota: account.totalLimit !== 'unlimited' && account.totalUsed > account.totalLimit,
+    clickable,
     columns: [
       <QuotaText key={`${account.account}-account`}>{account.account}</QuotaText>,
       <QuotaText key={`${account.account}-cos`}>{cosName}</QuotaText>,

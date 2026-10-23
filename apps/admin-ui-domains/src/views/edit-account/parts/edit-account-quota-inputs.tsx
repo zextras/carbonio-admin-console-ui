@@ -33,6 +33,8 @@ type QuotaLimitInputProps = {
   cosComputedLimit?: number | 'unlimited';
   totalQuotaSource?: QuotaSource;
   onChange: (value?: ComputedLimit) => void;
+  /** Remove the left inset of the account form, to align the controls with the surrounding content. */
+  flush?: boolean;
 };
 
 type QuotaValue = number | 'unlimited' | undefined;
@@ -101,6 +103,7 @@ export const QuotaLimitInput = ({
   cosComputedLimit,
   totalQuotaSource,
   onChange,
+  flush = false,
 }: QuotaLimitInputProps): React.JSX.Element | null => {
   const [quotaValue, setQuotaValue] = useState<number | 'unlimited' | undefined>(() =>
     quotaValueFromLimit(totalComputedQuotaLimit),
@@ -174,7 +177,7 @@ export const QuotaLimitInput = ({
 
   return (
     <Container crossAlignment={'flex-start'} mainAlignment={'flex-start'} height={'fit'}>
-      <Padding top={'large'} left={'large'}>
+      <Padding top={'large'} left={flush ? undefined : 'large'}>
         <Container orientation={'horizontal'} gap={'0.5rem'}>
           <Switch
             iconColor="primary"
@@ -188,7 +191,7 @@ export const QuotaLimitInput = ({
       <Row
         wrap={'nowrap'}
         width="100%"
-        padding={{ top: 'large', left: 'large' }}
+        padding={{ top: 'large', left: flush ? undefined : 'large' }}
         mainAlignment="space-between"
         crossAlignment="center"
       >

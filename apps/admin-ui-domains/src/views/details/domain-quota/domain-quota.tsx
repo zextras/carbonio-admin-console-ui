@@ -22,18 +22,23 @@ import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { useAccountListDirectory } from '../../../services/use-account-list-directory';
 import { useDomainQuotaReport } from '../../../services/use-domain-quota-report';
 import { QuotaReportDownloadButton } from '../domain-general-settings/quota-report-download-button';
+import { AccountQuotaModal, type QuotaModalAccount } from './account-quota-modal';
 import { DomainCosLimits } from './domain-cos-limits';
 import styles from './domain-quota.module.css';
 import {
-  buildAccountCosIds,
+  buildAccountDirectoryInfos,
   buildAccountsQuery,
   buildQuotaRow,
+  getInheritedCosId,
   type QuotaSortOrder,
   resolveCosName,
   sortByUsedPercentage,
 } from './domain-quota-rows';
 
 const USED_PERCENTAGE_COLUMN = 'used_percentage';
+
+/** Rows are never kept selected: clicking one only opens its modal. */
+const NO_SELECTION: [] = [];
 
 type QuotaRowFactoryProps = Omit<HoverableRowProps, 'row'> & {
   row: HoverableRowProps['row'] & { isOverQuota?: boolean };
@@ -53,6 +58,7 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   const [sortOrder, setSortOrder] = useState<QuotaSortOrder>(DESC);
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(RECORD_DISPLAY_LIMIT);
+  const [selectedAccount, setSelectedAccount] = useState<QuotaModalAccount | null>(null);
 
   useQueryErrorSnackbar(error);
 
@@ -79,28 +85,40 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   const pageAccounts = sortedAccounts.slice(offset, offset + limit);
   const pageEmails = pageAccounts.map((account) => account.account);
 
+  const { data: domain } = useSelectedDomain();
   const { data: cosList } = useCosList({ searchQuery: '', limit: 0, offset: 0 });
-  const { data: cosIds, isPlaceholderData: isCosIdsPlaceholder } = useAccountListDirectory(
-    {
-      attr: 'zimbraCOSId',
-      type: 'accounts',
-      query: buildAccountsQuery(pageEmails),
-      offset: 0,
-      limit: pageEmails.length,
-      sortBy: '',
-      sortAscending: '',
-      select: buildAccountCosIds,
-    },
-    pageEmails.length > 0,
-  );
+  const inheritedCosId = getInheritedCosId(domain?.a, cosList?.cos);
+  const { data: accountInfos, isPlaceholderData: isAccountInfosPlaceholder } =
+    useAccountListDirectory(
+      {
+        attr: 'zimbraCOSId',
+        type: 'accounts',
+        query: buildAccountsQuery(pageEmails),
+        offset: 0,
+        limit: pageEmails.length,
+        sortBy: '',
+        sortAscending: '',
+        select: buildAccountDirectoryInfos,
+      },
+      pageEmails.length > 0,
+    );
 
+  const visibleAccountInfos = isAccountInfosPlaceholder ? undefined : accountInfos;
   const rows = pageAccounts.map((account) =>
     buildQuotaRow(
       account,
-      resolveCosName(account.account, isCosIdsPlaceholder ? undefined : cosIds, cosList?.cos),
+      resolveCosName(account.account, visibleAccountInfos, cosList?.cos, inheritedCosId),
+      visibleAccountInfos?.has(account.account) ?? false,
       t,
     ),
   );
+
+  const onRowClick = ([email]: Array<string>): void => {
+    const info = email === undefined ? undefined : visibleAccountInfos?.get(email);
+    if (email !== undefined && info) {
+      setSelectedAccount({ id: info.id, email, cosId: info.cosId });
+    }
+  };
 
   if (isPending) {
     return <ds-page-shimmer></ds-page-shimmer>;
@@ -121,6 +139,8 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
           headers={headers}
           showCheckbox={false}
           multiSelect={false}
+          selectedRows={NO_SELECTION}
+          onSelectionChange={onRowClick}
           RowFactory={QuotaRowFactory}
           HeaderFactory={CustomHeaderFactory}
         />
@@ -148,6 +168,13 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
           </div>
         )}
       </div>
+      {selectedAccount && (
+        <AccountQuotaModal
+          account={selectedAccount}
+          domainName={domainName}
+          onClose={() => setSelectedAccount(null)}
+        />
+      )}
     </>
   );
 };

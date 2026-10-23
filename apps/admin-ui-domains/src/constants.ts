@@ -125,6 +125,7 @@ export const DEFAULT_COS_BOOLEAN = 'defaultCOS';
 export const IS_DEFAULT_USER_NAME = 'isDefaultUserName';
 export const CHANGE_DISPLAY_NAME_BOOLEAN = 'changeDisplayNameBool';
 export const ZIMBRA_DOMAIN_COS_MAX_ACCOUNTS = 'zimbraDomainCOSMaxAccounts';
+export const ZIMBRA_DOMAIN_DEFAULT_COS_ID = 'zimbraDomainDefaultCOSId';
 export const SECURITY_GROUP = 'security_group';
 export const DL = 'dl';
 export const USR = 'usr';
@@ -205,8 +206,8 @@ export const PRIMARY_COLOR_CODE_EX = 'ex. #225CA8';
 export const ZIMBRA_ADMIN_URN = 'urn:zimbraAdmin';
 
 export const TRUE_FALSE = {
-	TRUE: 'TRUE',
-	FALSE: 'FALSE'
+  TRUE: 'TRUE',
+  FALSE: 'FALSE',
 } as const;
 
 // Storages API constants\
