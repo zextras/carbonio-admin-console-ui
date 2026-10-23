@@ -44,6 +44,23 @@ export function buildAccountsQuery(emails: Array<string>): string {
   return `(|${clauses.join('')})`;
 }
 
+/** SearchDirectory filter matching the system accounts (galsync, spam, ham, quarantine...). */
+export const SYSTEM_ACCOUNTS_QUERY = '(zimbraIsSystemAccount=TRUE)';
+
+export function buildAccountNames(res: unknown): Set<string> {
+  return new Set(parseAccountListDirectory(res).map((entry) => entry.name));
+}
+
+/** Accounts of the report without the excluded ones, all of them while the exclusions are unknown. */
+export function excludeAccounts(
+  accounts: Array<DomainAccountQuota>,
+  excludedNames: Set<string> | undefined,
+): Array<DomainAccountQuota> {
+  return excludedNames
+    ? accounts.filter((account) => !excludedNames.has(account.account))
+    : accounts;
+}
+
 export function buildAccountDirectoryInfos(res: unknown): AccountDirectoryInfos {
   const entries: Array<AccountListEntry> = parseAccountListDirectory(res);
   return new Map(

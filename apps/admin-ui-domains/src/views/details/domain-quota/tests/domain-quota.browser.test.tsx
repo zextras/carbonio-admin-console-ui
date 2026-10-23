@@ -35,24 +35,31 @@ function mockReport(csv: string): void {
 type DirectoryMock = {
   coses: Array<{ id: string; name: string }>;
   accounts: Array<{ name: string; zimbraCOSId?: string }>;
+  /** Addresses returned by the system accounts search. */
+  systemAccounts?: Array<string>;
 };
 
-function mockDirectory({ coses, accounts }: DirectoryMock): void {
+function mockDirectory({ coses, accounts, systemAccounts = [] }: DirectoryMock): void {
   worker.use(
     http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
       const body = (await request.json()) as {
-        Body: { SearchDirectoryRequest: { types: string } };
+        Body: { SearchDirectoryRequest: { types: string; query?: string } };
       };
-      const response =
-        body.Body.SearchDirectoryRequest.types === 'coses'
-          ? { cos: coses }
-          : {
-              account: accounts.map(({ name, zimbraCOSId }) => ({
-                id: name,
-                name,
-                a: zimbraCOSId ? [{ n: 'zimbraCOSId', _content: zimbraCOSId }] : [],
-              })),
-            };
+      const { types, query } = body.Body.SearchDirectoryRequest;
+      let response;
+      if (types === 'coses') {
+        response = { cos: coses };
+      } else if (query?.includes('zimbraIsSystemAccount')) {
+        response = { account: systemAccounts.map((name) => ({ id: name, name, a: [] })) };
+      } else {
+        response = {
+          account: accounts.map(({ name, zimbraCOSId }) => ({
+            id: name,
+            name,
+            a: zimbraCOSId ? [{ n: 'zimbraCOSId', _content: zimbraCOSId }] : [],
+          })),
+        };
+      }
       return HttpResponse.json({ Body: { SearchDirectoryResponse: response } });
     }),
   );
@@ -226,6 +233,29 @@ describe('DomainQuota (browser)', () => {
     await page.getByText(`alice@${DOMAIN_NAME}`).click();
 
     await expect.element(page.getByRole('heading', { name: `alice@${DOMAIN_NAME}` })).toBeVisible();
+  });
+
+  it('should not list the system accounts', async () => {
+    mockReport(
+      buildReport([
+        `alice@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`,
+        `galsync.abc@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`,
+        `virus-quarantine.xyz@${DOMAIN_NAME}, 0, 0, 0, 0, ${GB}`,
+      ]),
+    );
+    mockDirectory({
+      coses: [],
+      accounts: [{ name: `alice@${DOMAIN_NAME}` }],
+      systemAccounts: [`galsync.abc@${DOMAIN_NAME}`, `virus-quarantine.xyz@${DOMAIN_NAME}`],
+    });
+
+    await renderQuota();
+
+    await expect.element(page.getByText(`alice@${DOMAIN_NAME}`)).toBeVisible();
+    await expect.element(page.getByText(`galsync.abc@${DOMAIN_NAME}`)).not.toBeInTheDocument();
+    await expect
+      .element(page.getByText(`virus-quarantine.xyz@${DOMAIN_NAME}`))
+      .not.toBeInTheDocument();
   });
 
   it('should show the empty state when the domain has no accounts', async () => {

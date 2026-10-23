@@ -27,12 +27,15 @@ import { DomainCosLimits } from './domain-cos-limits';
 import styles from './domain-quota.module.css';
 import {
   buildAccountDirectoryInfos,
+  buildAccountNames,
   buildAccountsQuery,
   buildQuotaRow,
+  excludeAccounts,
   getInheritedCosId,
   type QuotaSortOrder,
   resolveCosName,
   sortByUsedPercentage,
+  SYSTEM_ACCOUNTS_QUERY,
 } from './domain-quota-rows';
 
 const USED_PERCENTAGE_COLUMN = 'used_percentage';
@@ -54,7 +57,23 @@ type DomainQuotaContentProps = {
 
 const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
   const [t] = useTranslation();
-  const { data: accounts = [], isPending, error } = useDomainQuotaReport(domainName);
+  const {
+    data: reportAccounts = [],
+    isPending: isReportPending,
+    error,
+  } = useDomainQuotaReport(domainName);
+  const { data: systemAccountNames, isPending: isSystemAccountsPending } = useAccountListDirectory({
+    attr: 'zimbraIsSystemAccount',
+    type: 'accounts',
+    domainName,
+    query: SYSTEM_ACCOUNTS_QUERY,
+    offset: 0,
+    limit: 0,
+    sortBy: '',
+    sortAscending: '',
+    select: buildAccountNames,
+  });
+  const accounts = excludeAccounts(reportAccounts, systemAccountNames);
   const [sortOrder, setSortOrder] = useState<QuotaSortOrder>(DESC);
   const [offset, setOffset] = useState(0);
   const [limit, setLimit] = useState(RECORD_DISPLAY_LIMIT);
@@ -120,7 +139,7 @@ const DomainQuotaContent = ({ domainName }: DomainQuotaContentProps) => {
     }
   };
 
-  if (isPending) {
+  if (isReportPending || isSystemAccountsPending) {
     return <ds-page-shimmer></ds-page-shimmer>;
   }
 
