@@ -213,7 +213,9 @@ export const useSidebarOptions = ({
   ];
 
   const manageItems: Array<ListItemType> = allListItemType.filter((item) => {
-    if (item.id === DELEGATES_DOMAIN_ADMINS && !isGlobalAdmin) return false;
+    if ((item.id === DELEGATES_DOMAIN_ADMINS || item.id === RESTORE_ACCOUNT) && !isGlobalAdmin) {
+      return false;
+    }
     if (isAdvanced) return true;
     return (
       item.id !== RESTORE_ACCOUNT &&

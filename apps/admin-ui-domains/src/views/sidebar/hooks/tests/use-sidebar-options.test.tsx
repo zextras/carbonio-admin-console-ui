@@ -87,7 +87,7 @@ describe('useSidebarOptions', () => {
       expect(ids).toContain('delegates_domain_admins');
     });
 
-    it('should hide delegated domain admins for non-global admins even when isAdvanced is true', () => {
+    it('should hide global-admin-only manage items for non-global admins even when isAdvanced is true', () => {
       useIsAdvancedMock.mockReturnValue(true);
       useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'FALSE' } });
       useBackupServersMock.mockReturnValue({ data: undefined });
@@ -99,6 +99,7 @@ describe('useSidebarOptions', () => {
 
       const ids = manageOptions.map((i) => i.id);
       expect(ids).not.toContain('delegates_domain_admins');
+      expect(ids).not.toContain('restore_account');
       expect(ids).toContain('active_sync');
 
       useUserSettingsMock.mockReturnValue({ attrs: { zimbraIsAdminAccount: 'TRUE' } });
