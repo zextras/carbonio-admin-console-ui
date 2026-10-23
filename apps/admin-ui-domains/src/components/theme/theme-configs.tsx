@@ -18,8 +18,9 @@ import {
 } from '@zextras/ui-components';
 import { getAllRights, useCurrentUserRights } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 
 import { themeConfigStore } from '../../../types/domain';
 import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../constants';
@@ -78,7 +79,16 @@ export const ThemeConfigs = ({
   onResetTheme: () => void;
 }) => {
   const [t] = useTranslation();
-  const [change, setChange] = useState('end_user');
+  const location = useLocation();
+  // The blocked admin branding fields live on the ADMIN PANEL tab: when deep-linking
+  // with #logo, start there so the target section is mounted before scrolling.
+  const [change, setChange] = useState(location.hash === '#logo' ? 'admin_panel' : 'end_user');
+
+  useEffect(() => {
+    if (location.hash === '#logo') {
+      document.getElementById('logo')?.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [location.hash]);
 
   const { data: rights } = useCurrentUserRights();
   const hasModifyRights = !isGlobalTheme || computeHasGlobalModifyRights(rights);

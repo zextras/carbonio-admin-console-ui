@@ -233,6 +233,12 @@ describe('ThemeConfigs (browser)', () => {
     const HOST = globalThis.location?.hostname ?? 'localhost';
     const PROXY_WARNING = /Warning: this URL points to this server/;
 
+    it('starts on the admin panel tab and targets the logo section when the #logo hash is set', async () => {
+      setupBrowserTest(<ThemeConfigsWrapper />, { initialRouterEntry: '/theme#logo' });
+
+      await expect.element(page.getByText('Admin Panel', { exact: true })).toBeVisible();
+    });
+
     it('wires the proxy warning into the admin form', async () => {
       setupBrowserTest(<ThemeConfigsWrapper />);
 

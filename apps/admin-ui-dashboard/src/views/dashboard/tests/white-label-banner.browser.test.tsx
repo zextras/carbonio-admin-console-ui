@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useLoginConfigStore } from '@zextras/ui-shared';
-import { setupBrowserTest } from 'admin-ui-test-utils';
+import { LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -67,5 +67,21 @@ describe('WhiteLabelBanner (browser)', () => {
     await page.getByRole('button', { name: 'Close' }).click();
 
     await expect.element(page.getByText(BANNER_DESCRIPTION)).not.toBeInTheDocument();
+  });
+
+  it('navigates to the logo section of the whitelabel settings when the action button is clicked', async () => {
+    useLoginConfigStore.setState({ carbonioAdminUiAppLogo: BLOCKED_URL });
+    await setupBrowserTest(
+      <>
+        <WhiteLabelBanner />
+        <LocationDisplay />
+      </>,
+    );
+
+    await page.getByRole('button', { name: 'Go to Whitelabel Settings' }).click();
+
+    await expect.element(page.getByTestId('location')).toHaveTextContent(
+      '/global/whitelabel_settings#logo',
+    );
   });
 });

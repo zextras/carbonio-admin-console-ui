@@ -111,7 +111,7 @@ export const AdminPanelThemeConfig = ({
       </Container>
       <ListRow>
         <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
+          <ds-text id="logo" as="h4" size="small" color="gray0" weight="bold">
             {t('label.logo', 'Logo')}
           </ds-text>
         </Padding>
