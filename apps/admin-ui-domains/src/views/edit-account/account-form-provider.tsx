@@ -269,7 +269,7 @@ export function useAccountFormProvider({
   };
 
   const form = useForm({
-    defaultValues: {
+    defaultValues: baseline?.values ?? {
       ...buildAccountFormValues(accountDetailData),
       ...(accountCoreAttributes ? buildCoreAttrValues(accountCoreAttributes) : {}),
     },
