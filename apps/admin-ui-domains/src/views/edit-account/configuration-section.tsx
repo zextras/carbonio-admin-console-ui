@@ -14,7 +14,7 @@ import {
   Row,
   Tooltip,
 } from '@zextras/ui-components';
-import { useUserSettings } from '@zextras/ui-shared';
+import { useNewSubscriptionFeatureFlag, useUserSettings } from '@zextras/ui-shared';
 import { map, some } from 'lodash-es';
 import React, { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -52,6 +52,7 @@ export const EditAccountConfigurationSection = () => {
   const toggleAccountValue = useToggleAccountValue();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const [t] = useTranslation();
+  const featureFlag = useNewSubscriptionFeatureFlag();
   const isWorkspaceEdition = cosDetail?.edition === 'workspace';
   const userSetting = useUserSettings();
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
@@ -253,7 +254,7 @@ export const EditAccountConfigurationSection = () => {
           setEmptyValue={setEmptyValue}
           activeSyncReadonly={!isGlobalAdmin}
         />
-        {isWorkspaceEdition && (
+        {(!featureFlag || isWorkspaceEdition) && (
           <>
             <Row width="100%" padding={{ top: 'medium' }}>
               <ds-divider></ds-divider>
