@@ -118,185 +118,165 @@ export const ThemeConfigs = ({
 
   return (
     <div className={styles.root}>
-      <div className={styles.sectionRow}>
-        <div className={styles.panel}>
-          <div className={styles.listRow}>
-            <div className={styles.panelHeader}>
-              <ds-text as="h3" size="small" color="gray0" weight="bold">
-                {t('label.appearance', 'Appearance')}
-              </ds-text>
-            </div>
+      <div className={styles.panel}>
+        <div className={styles.panelHeader}>
+          <ds-text as="h3" size="small" color="gray0" weight="bold">
+            {t('label.appearance', 'Appearance')}
+          </ds-text>
+        </div>
+        <Select
+          label={t('cos.dark_mode', 'Dark Mode')}
+          items={THEME_MODE}
+          selection={
+            THEME_MODE.find((item) => item.value === darkMode) ??
+            THEME_MODE.find((item) => item.value === globalTheme?.carbonioWebUiDarkMode) ??
+            THEME_MODE[0]
+          }
+          onChange={(v: string): void => {
+            form.setFieldValue('carbonioWebUiDarkMode', v);
+          }}
+          chip={
+            isInheritedMode && !isDarkModeOverridden ? t('label.inherited', 'Inherited') : undefined
+          }
+          icon={
+            isDarkModeOverridden ? (
+              <RevertToInheritedIcon
+                label={t(
+                  'label.click_to_revert_to_the_inherited_value',
+                  'Click to revert to the inherited value',
+                )}
+                onClick={(): void => {
+                  form.setFieldValue('carbonioWebUiDarkMode', undefined);
+                }}
+              />
+            ) : undefined
+          }
+        />
+        <div className={styles.groupHeader}>
+          <ds-text as="h4" size="small" color="gray0" weight="bold">
+            {t('label.logo_url_destination', 'Logo URL Destination')}
+          </ds-text>
+        </div>
+        <ThemeFieldInput
+          form={form}
+          name="carbonioLogoUrl"
+          label={t(
+            'label.logo_redirection_title',
+            'Clicking on the Logo will redirect the users to...',
+          )}
+          globalTheme={globalTheme}
+          isGlobalTheme={isGlobalTheme}
+          hasModifyRights={hasModifyRights}
+        />
+        <div className={styles.groupHeader}>
+          <ds-text as="h4" size="small" color="gray0" weight="bold">
+            {t('label.color_scheme', 'Color Scheme')}
+          </ds-text>
+        </div>
+        <div className={styles.hint}>
+          <ds-text as="p" size="small" color="gray0">
+            {t(
+              'label.primary_color_hint',
+              'To change the Primary color, please use a HEX color code.',
+            )}
+          </ds-text>
+        </div>
+        <div className={styles.listRow}>
+          <div className={styles.fieldLabel}>
+            <ds-text as="label" size="small" color="gray0">
+              <Trans
+                i18nKey="label.primary_color_for_light_mode"
+                defaults="<bold>Primary</bold> Color for Light Mode"
+                components={{ bold: <strong /> }}
+              />
+            </ds-text>
           </div>
-          <div className={styles.listRow}>
-            <Select
-              label={t('cos.dark_mode', 'Dark Mode')}
-              items={THEME_MODE}
-              selection={
-                THEME_MODE.find((item) => item.value === darkMode) ??
-                THEME_MODE.find((item) => item.value === globalTheme?.carbonioWebUiDarkMode) ??
-                THEME_MODE[0]
-              }
-              onChange={(v: string): void => {
-                form.setFieldValue('carbonioWebUiDarkMode', v);
-              }}
-              chip={
-                isInheritedMode && !isDarkModeOverridden
-                  ? t('label.inherited', 'Inherited')
-                  : undefined
-              }
-              icon={
-                isDarkModeOverridden ? (
-                  <RevertToInheritedIcon
-                    label={t(
-                      'label.click_to_revert_to_the_inherited_value',
-                      'Click to revert to the inherited value',
-                    )}
-                    onClick={(): void => {
-                      form.setFieldValue('carbonioWebUiDarkMode', undefined);
-                    }}
-                  />
-                ) : undefined
-              }
-            />
+          <div className={styles.fieldLabel}>
+            <ds-text as="label" size="small" color="gray0">
+              <Trans
+                i18nKey="label.primary_color_for_dark_mode"
+                defaults="<bold>Primary</bold> Color for Dark Mode"
+                components={{ bold: <strong /> }}
+              />
+            </ds-text>
           </div>
-          <div className={styles.listRow}>
-            <div className={styles.groupHeader}>
-              <ds-text as="h4" size="small" color="gray0" weight="bold">
-                {t('label.logo_url_destination', 'Logo URL Destination')}
-              </ds-text>
-            </div>
-          </div>
-          <div className={styles.listRow}>
+        </div>
+        <div className={styles.listRow}>
+          <div className={styles.fieldWrapper}>
             <ThemeFieldInput
               form={form}
-              name="carbonioLogoUrl"
-              label={t(
-                'label.logo_redirection_title',
-                'Clicking on the Logo will redirect the users to...',
-              )}
+              name="carbonioWebUiPrimaryColor"
+              label={PRIMARY_COLOR_CODE_EX}
+              globalTheme={globalTheme}
+              isGlobalTheme={isGlobalTheme}
+              hasModifyRights={hasModifyRights}
+              errorLabel={LIGHT_PRIMARY_COLOR_ERROR_LABEL}
+              errorLabelDefault="Primary Color for Light Mode is not valid"
+            />
+          </div>
+          <div className={styles.fieldWrapper}>
+            <ThemeFieldInput
+              form={form}
+              name="carbonioWebUiDarkPrimaryColor"
+              label={PRIMARY_COLOR_CODE_EX}
+              globalTheme={globalTheme}
+              isGlobalTheme={isGlobalTheme}
+              hasModifyRights={hasModifyRights}
+              errorLabel={DARK_PRIMARY_COLOR_ERROR_LABEL}
+              errorLabelDefault="Primary Color for Dark Mode is not valid"
+            />
+          </div>
+        </div>
+        <div className={styles.tabBarRow}>
+          <TabBar
+            items={items}
+            selected={change}
+            onChange={(ev: unknown, selectedId: string): void => {
+              setChange(selectedId);
+            }}
+            onClick={noop}
+            width={300}
+            background="gray6"
+          />
+        </div>
+        <div className={styles.dividerRow}>
+          <ds-divider></ds-divider>
+        </div>
+        <div className={styles.tabContent}>
+          {change === 'end_user' && (
+            <EndUserThemeConfigs
+              form={form}
               globalTheme={globalTheme}
               isGlobalTheme={isGlobalTheme}
               hasModifyRights={hasModifyRights}
             />
-          </div>
-          <div className={styles.listRow}>
-            <div className={styles.groupHeader}>
-              <ds-text as="h4" size="small" color="gray0" weight="bold">
-                {t('label.color_scheme', 'Color Scheme')}
-              </ds-text>
-            </div>
-          </div>
-          <div className={styles.listRow}>
-            <div className={styles.hint}>
-              <ds-text as="p" size="small" color="gray0">
-                {t(
-                  'label.primary_color_hint',
-                  'To change the Primary color, please use a HEX color code.',
-                )}
-              </ds-text>
-            </div>
-          </div>
-          <div className={styles.listRow}>
-            <div className={styles.fieldLabel}>
-              <ds-text as="label" size="small" color="gray0">
-                <Trans
-                  i18nKey="label.primary_color_for_light_mode"
-                  defaults="<bold>Primary</bold> Color for Light Mode"
-                  components={{ bold: <strong /> }}
-                />
-              </ds-text>
-            </div>
-            <div className={styles.fieldLabel}>
-              <ds-text as="label" size="small" color="gray0">
-                <Trans
-                  i18nKey="label.primary_color_for_dark_mode"
-                  defaults="<bold>Primary</bold> Color for Dark Mode"
-                  components={{ bold: <strong /> }}
-                />
-              </ds-text>
-            </div>
-          </div>
-          <div className={styles.listRow}>
-            <div className={styles.fieldWrapper}>
-              <ThemeFieldInput
-                form={form}
-                name="carbonioWebUiPrimaryColor"
-                label={PRIMARY_COLOR_CODE_EX}
-                globalTheme={globalTheme}
-                isGlobalTheme={isGlobalTheme}
-                hasModifyRights={hasModifyRights}
-                errorLabel={LIGHT_PRIMARY_COLOR_ERROR_LABEL}
-                errorLabelDefault="Primary Color for Light Mode is not valid"
-              />
-            </div>
-            <div className={styles.fieldWrapper}>
-              <ThemeFieldInput
-                form={form}
-                name="carbonioWebUiDarkPrimaryColor"
-                label={PRIMARY_COLOR_CODE_EX}
-                globalTheme={globalTheme}
-                isGlobalTheme={isGlobalTheme}
-                hasModifyRights={hasModifyRights}
-                errorLabel={DARK_PRIMARY_COLOR_ERROR_LABEL}
-                errorLabelDefault="Primary Color for Dark Mode is not valid"
-              />
-            </div>
-          </div>
-          <div className={styles.tabBarRow}>
-            <TabBar
-              items={items}
-              selected={change}
-              onChange={(ev: unknown, selectedId: string): void => {
-                setChange(selectedId);
-              }}
-              onClick={noop}
-              width={300}
-              background="gray6"
+          )}
+          {change === 'admin_panel' && (
+            <AdminPanelThemeConfig
+              form={form}
+              globalTheme={globalTheme}
+              isGlobalTheme={isGlobalTheme}
+              hasModifyRights={hasModifyRights}
             />
-          </div>
-          <div className={styles.dividerRow}>
-            <ds-divider></ds-divider>
-          </div>
-          <div className={styles.tabContent}>
-            {change === 'end_user' && (
-              <EndUserThemeConfigs
-                form={form}
-                globalTheme={globalTheme}
-                isGlobalTheme={isGlobalTheme}
-                hasModifyRights={hasModifyRights}
-              />
-            )}
-            {change === 'admin_panel' && (
-              <AdminPanelThemeConfig
-                form={form}
-                globalTheme={globalTheme}
-                isGlobalTheme={isGlobalTheme}
-                hasModifyRights={hasModifyRights}
-              />
-            )}
-          </div>
-          <div className={styles.dividerContainer}>
-            <ds-divider></ds-divider>
-          </div>
-          <div className={styles.listRow}>
-            <div className={styles.buttonBlock}>
-              <div className={styles.buttonPadding}>
-                <Button
-                  type="outlined"
-                  label={t('label.empty_all_fields', 'Empty all fields')}
-                  color="error"
-                  size="large"
-                  width="fill"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    onResetTheme();
-                  }}
-                  style={{ width: '100%' }}
-                  disabled={isGlobalTheme && !hasModifyRights}
-                />
-              </div>
-            </div>
-          </div>
+          )}
+        </div>
+        <div className={styles.dividerContainer}>
+          <ds-divider></ds-divider>
+        </div>
+        <div className={styles.buttonBlock}>
+          <Button
+            type="outlined"
+            label={t('label.empty_all_fields', 'Empty all fields')}
+            color="error"
+            size="large"
+            width="fill"
+            onClick={(e) => {
+              e.preventDefault();
+              onResetTheme();
+            }}
+            style={{ width: '100%' }}
+            disabled={isGlobalTheme && !hasModifyRights}
+          />
         </div>
       </div>
     </div>

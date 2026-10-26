@@ -30,16 +30,6 @@
   border-radius: 0.25rem;
 }
 
-.section-row {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-  box-sizing: border-box;
-  width: 100%;
-  padding-top: var(--padding-size-small);
-}
-
 .panel {
   display: flex;
   flex-direction: column;
@@ -47,6 +37,7 @@
   justify-content: center;
   box-sizing: border-box;
   border-radius: var(--border-radius);
+  margin-top: var(--padding-size-small);
   padding: var(--padding-size-small);
   width: 100%;
   height: fit-content;
@@ -156,11 +147,6 @@
   display: block;
   box-sizing: border-box;
   width: 100%;
-  padding: var(--padding-size-small);
-}
-
-.button-padding {
-  width: 100%;
-  height: fit-content;
-  padding: var(--padding-size-large) 0;
+  padding: calc(var(--padding-size-large) + var(--padding-size-small))
+    var(--padding-size-small);
 }
