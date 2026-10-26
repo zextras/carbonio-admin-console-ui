@@ -80,47 +80,45 @@ export const DelegateSetRightsSection: FC = () => {
               </ds-text>
             </Row>
           </Row>
-          <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-            <Row width="100%" mainAlignment="flex-start">
-              <RadioGroup
-                aria-label={t('account_details.sending_options', `Sending Options`)}
-                value={sendingOption || deligateDetail?.right?.[0]?._content}
-              >
-                <Radio
-                  label={t(
-                    'account_details.send_as_recipients',
-                    `Send as (recipients will display this sender email {{targetEmail}})`,
-                    {
-                      targetEmail: accountDetail?.zimbraMailDeliveryAddress,
-                    },
-                  )}
-                  value="sendAs"
-                  onClick={(): void => {
-                    setDeligateDetail((prev: any) => ({
-                      ...prev,
-                      right: [{ _content: 'sendAs' }],
-                    }));
-                  }}
-                />
-                <Radio
-                  label={t(
-                    'account_details.send_as_behalf',
-                    `Send on Behalf of (recipients will see the sender {{targetEmail}})`,
-                    {
-                      targetEmail: accountDetail?.zimbraMailDeliveryAddress,
-                    },
-                  )}
-                  value="sendOnBehalfOf"
-                  onClick={(): void => {
-                    setDeligateDetail((prev: any) => ({
-                      ...prev,
-                      right: [{ _content: 'sendOnBehalfOf' }],
-                    }));
-                  }}
-                />
-              </RadioGroup>
-            </Row>
-          </Row>
+          <div className="w-full pt-lg pl-lg">
+            <RadioGroup
+              aria-label={t('account_details.sending_options', `Sending Options`)}
+              value={sendingOption || deligateDetail?.right?.[0]?._content}
+            >
+              <Radio
+                label={t(
+                  'account_details.send_as_recipients',
+                  `Send as (recipients will display this sender email {{targetEmail}})`,
+                  {
+                    targetEmail: accountDetail?.zimbraMailDeliveryAddress,
+                  },
+                )}
+                value="sendAs"
+                onClick={(): void => {
+                  setDeligateDetail((prev: any) => ({
+                    ...prev,
+                    right: [{ _content: 'sendAs' }],
+                  }));
+                }}
+              />
+              <Radio
+                label={t(
+                  'account_details.send_as_behalf',
+                  `Send on Behalf of (recipients will see the sender {{targetEmail}})`,
+                  {
+                    targetEmail: accountDetail?.zimbraMailDeliveryAddress,
+                  },
+                )}
+                value="sendOnBehalfOf"
+                onClick={(): void => {
+                  setDeligateDetail((prev: any) => ({
+                    ...prev,
+                    right: [{ _content: 'sendOnBehalfOf' }],
+                  }));
+                }}
+              />
+            </RadioGroup>
+          </div>
         </>
       )}
       {(deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
@@ -138,57 +136,50 @@ export const DelegateSetRightsSection: FC = () => {
               </ds-text>
             </Row>
           </Row>
-          <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-            <Row width="100%" mainAlignment="flex-start">
-              <Row width="100%" mainAlignment="space-between">
-                <Row width="100%" mainAlignment="space-between">
-                  <RadioGroup
-                    aria-label={t(
-                      'account_details.select_delegate_folder',
-                      `Select which folders the delegate can view`,
-                    )}
-                    value={deligateDetail?.folderSelection}
-                  >
-                    <Radio
-                      label={t(
-                        'account_details.all_folders',
-                        `All Folders ( it includes also folders that will be created later on)`,
-                      )}
-                      value="all_folders"
-                      onChange={(): void => {
-                        setDeligateDetail((prev: any) => ({
-                          ...prev,
-                          folderSelection: 'all_folders',
-                        }));
-                      }}
-                    />
-                    <Radio
-                      label={t('account_details.i_want_to_select', `I want to select the Folders`)}
-                      value="i_want_to_select"
-                      style={{ display: 'none' }}
-                    />
-                  </RadioGroup>
-                </Row>
-
-                {deligateDetail?.folderSelection === 'i_want_to_select' && (
-                  <Row width="100%">
-                    {folderList.map(
-                      (ele: any, index) =>
-                        ele.id !== '1' && (
-                          <Row key={ele.id} width="200px">
-                            <Checkbox
-                              defaultChecked={ele.selected || false}
-                              label={ele.name}
-                              onClick={(): void => onFolderSelect(ele, index)}
-                            />
-                          </Row>
-                        ),
-                    )}
-                  </Row>
+          <div className="w-full pt-lg pl-lg">
+            <RadioGroup
+              aria-label={t(
+                'account_details.select_delegate_folder',
+                `Select which folders the delegate can view`,
+              )}
+              value={deligateDetail?.folderSelection}
+            >
+              <Radio
+                label={t(
+                  'account_details.all_folders',
+                  `All Folders ( it includes also folders that will be created later on)`,
                 )}
-              </Row>
-            </Row>
-          </Row>
+                value="all_folders"
+                onChange={(): void => {
+                  setDeligateDetail((prev: any) => ({
+                    ...prev,
+                    folderSelection: 'all_folders',
+                  }));
+                }}
+              />
+              <Radio
+                label={t('account_details.i_want_to_select', `I want to select the Folders`)}
+                value="i_want_to_select"
+                style={{ display: 'none' }}
+              />
+            </RadioGroup>
+            {deligateDetail?.folderSelection === 'i_want_to_select' && (
+              <div className="flex flex-wrap w-full pt-sm gap-y-sm">
+                {folderList.map(
+                  (ele: any, index) =>
+                    ele.id !== '1' && (
+                      <div key={ele.id} className="w-[200px]">
+                        <Checkbox
+                          defaultChecked={ele.selected || false}
+                          label={ele.name}
+                          onClick={(): void => onFolderSelect(ele, index)}
+                        />
+                      </div>
+                    ),
+                )}
+              </div>
+            )}
+          </div>
         </>
       )}
     </Container>

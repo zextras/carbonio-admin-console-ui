@@ -115,32 +115,26 @@ export function MailstoresCreate({
         </form.Field>
       </Row>
       {isAdvanced && (
-        <RadioGroup
-          aria-label={t('label.volume_type', 'Volume Type')}
-          value={volumeMain}
-          onChange={(value) => form.setFieldValue('volumeMain', value)}
-        >
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-            <Row width="48%" mainAlignment="flex-start">
-              <Radio
-                label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
-                value={PRIMARY_TYPE_VALUE}
-              />
-            </Row>
-            <Row width="48%" mainAlignment="flex-start">
-              <Radio
-                label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
-                value={SECONDARY_TYPE_VALUE}
-              />
-            </Row>
-          </Row>
-          <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+        <div className="w-full pt-lg">
+          <RadioGroup
+            aria-label={t('label.volume_type', 'Volume Type')}
+            value={volumeMain}
+            onChange={(value) => form.setFieldValue('volumeMain', value)}
+          >
+            <Radio
+              label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
+              value={PRIMARY_TYPE_VALUE}
+            />
+            <Radio
+              label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
+              value={SECONDARY_TYPE_VALUE}
+            />
             <Radio
               label={t('storage.dataVolume.indexVolume', 'Index Volume')}
               value={INDEX_TYPE_VALUE}
             />
-          </Row>
-        </RadioGroup>
+          </RadioGroup>
+        </div>
       )}
       <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
         <form.Field name="path">
