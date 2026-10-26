@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
@@ -97,8 +98,11 @@ describe('EditAccountConfigurationSection (browser)', () => {
       .not.toBeInTheDocument();
   });
 
-  describe('Chat section visibility', () => {
+  describe('Chat section visibility (new-subscriptions flag enabled)', () => {
     it('hides the whole Chat section when the COS edition is mail', async () => {
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: true },
+      });
       setupTest({}, { cosDetail: { edition: 'mail' } });
 
       // Anchor: wait for always-rendered content before asserting absence.
@@ -113,6 +117,9 @@ describe('EditAccountConfigurationSection (browser)', () => {
     });
 
     it('hides the whole Chat section when the COS has no edition attribute', async () => {
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: true },
+      });
       setupTest({}, { cosDetail: {} });
 
       // Anchor: wait for always-rendered content before asserting absence.
@@ -126,7 +133,28 @@ describe('EditAccountConfigurationSection (browser)', () => {
     });
 
     it('shows the Chat section when the COS edition is workspace', async () => {
+      useLoginConfigStore.setState({
+        featureFlags: { enforceSubscriptionRequirements: true },
+      });
       setupTest({}, { cosDetail: { edition: 'workspace' } });
+
+      await expect.element(page.getByText('Chat', { exact: true })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable Chat' })).toBeVisible();
+    });
+  });
+
+  describe('Chat section visibility vs new-subscriptions feature flag', () => {
+    it('shows the Chat section when the flag is disabled and the COS edition is mail', async () => {
+      useLoginConfigStore.setState({ featureFlags: null });
+      setupTest({}, { cosDetail: { edition: 'mail' } });
+
+      await expect.element(page.getByText('Chat', { exact: true })).toBeVisible();
+      await expect.element(page.getByRole('switch', { name: 'Enable Chat' })).toBeVisible();
+    });
+
+    it('shows the Chat section when the flag is disabled and the COS has no edition attribute', async () => {
+      useLoginConfigStore.setState({ featureFlags: null });
+      setupTest({}, { cosDetail: {} });
 
       await expect.element(page.getByText('Chat', { exact: true })).toBeVisible();
       await expect.element(page.getByRole('switch', { name: 'Enable Chat' })).toBeVisible();
