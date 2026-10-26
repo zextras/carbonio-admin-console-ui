@@ -60,8 +60,8 @@ export const PlainCheckbox = ({
           aria-hidden="true"
           focusable="false"
         >
-          <rect className={styles.box} x="3" y="3" width="14" height="14" rx="2" />
-          <path className={styles.check} d="M6.5 10.2 8.8 12.5 13.5 7.6" />
+          <rect className={styles.box} x="3.33" y="3.33" width="13.33" height="13.33" rx="1.67" />
+          <path className={styles.check} d="M7.08 9.91 9.11 12.23 12.92 7.49" />
         </svg>
       </span>
       {(label || description) && (

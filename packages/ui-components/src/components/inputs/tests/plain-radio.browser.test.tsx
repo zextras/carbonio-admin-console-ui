@@ -34,6 +34,24 @@ describe('PlainRadio', () => {
       expect(rect.height).toBeCloseTo(20, 1);
     });
 
+    it('should draw a 16.67px ring with a 1.67px stroke and an 8.33px dot', async () => {
+      await render(<PlainRadio label="Email" defaultChecked />);
+
+      const [ringEl, dotEl] = getIcon('Email').querySelectorAll('circle');
+      const strokeWidth = Number.parseFloat(getComputedStyle(ringEl).strokeWidth);
+      expect(strokeWidth).toBeCloseTo(1.67, 2);
+      expect(2 * Number(ringEl.getAttribute('r')) + strokeWidth).toBeCloseTo(16.67, 1);
+      expect(2 * Number(dotEl.getAttribute('r'))).toBeCloseTo(8.33, 1);
+    });
+
+    it('should center the control on a single-line title', async () => {
+      await render(<PlainRadio label="Email" />);
+
+      const icon = getIcon('Email').getBoundingClientRect();
+      const title = page.getByText('Email', { exact: true }).element().getBoundingClientRect();
+      expect(icon.top + icon.height / 2).toBeCloseTo(title.top + title.height / 2, 0);
+    });
+
     it.each([
       ['unchecked', {}, '--color-gray0-regular', '0', '--color-primary-regular'],
       [

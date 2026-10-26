@@ -87,7 +87,7 @@ export const PlainRadio = ({
           focusable="false"
         >
           <circle className={styles.ring} cx="10" cy="10" r="7.5" />
-          <circle className={styles.dot} cx="10" cy="10" r="4" />
+          <circle className={styles.dot} cx="10" cy="10" r="4.17" />
         </svg>
       </span>
       {(label || description) && (

@@ -7,7 +7,7 @@
 .ring {
   fill: transparent;
   stroke: var(--color-gray0-regular);
-  stroke-width: 2;
+  stroke-width: 1.67;
   transition: stroke 150ms ease;
 }
 

@@ -137,6 +137,33 @@ describe('PlainCheckbox', () => {
       expect(rect.height).toBeCloseTo(20, 1);
     });
 
+    it('should draw a 15px box with a 1.67px stroke and 2.5px outer radius', async () => {
+      await render(<PlainCheckbox label="Keep a copy" />);
+
+      const box = getIcon('Keep a copy').querySelector('rect') as SVGRectElement;
+      const strokeWidth = Number.parseFloat(getComputedStyle(box).strokeWidth);
+      expect(box.getBBox().width + strokeWidth).toBeCloseTo(15, 1);
+      expect(box.getBBox().x - strokeWidth / 2).toBeCloseTo(2.5, 1);
+      expect(strokeWidth).toBeCloseTo(1.67, 2);
+      expect(Number(box.getAttribute('rx')) + strokeWidth / 2).toBeCloseTo(2.5, 1);
+    });
+
+    it('should center the control on a single-line title', async () => {
+      await render(<PlainCheckbox label="Keep a copy" />);
+
+      const icon = getIcon('Keep a copy').getBoundingClientRect();
+      const title = page.getByText('Keep a copy').element().getBoundingClientRect();
+      expect(icon.top + icon.height / 2).toBeCloseTo(title.top + title.height / 2, 0);
+    });
+
+    it('should top-align the control and the title when a description is present', async () => {
+      await render(<PlainCheckbox label="Keep a copy" description="Stored in the sent folder" />);
+
+      const icon = getIcon('Keep a copy').getBoundingClientRect();
+      const title = page.getByText('Keep a copy').element().getBoundingClientRect();
+      expect(title.top).toBeCloseTo(icon.top, 0);
+    });
+
     it.each([
       ['unchecked', {}, 'transparent', '--color-gray0-regular', '0'],
       [

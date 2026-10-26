@@ -8,9 +8,13 @@
 
 .root {
   display: inline-flex;
-  align-items: flex-start;
+  align-items: center;
   gap: var(--padding-size-small);
   min-width: 0;
+}
+
+.root:has(.description) {
+  align-items: flex-start;
 }
 
 .control {
@@ -55,7 +59,6 @@
   align-items: flex-start;
   gap: 0.125rem;
   min-width: 0;
-  padding-top: 0.0625rem;
   overflow-wrap: break-word;
 }
 

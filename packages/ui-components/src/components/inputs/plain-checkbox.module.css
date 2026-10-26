@@ -7,7 +7,7 @@
 .box {
   fill: transparent;
   stroke: var(--color-gray0-regular);
-  stroke-width: 2;
+  stroke-width: 1.67;
   transition:
     fill 150ms ease,
     stroke 150ms ease;
@@ -16,7 +16,7 @@
 .check {
   fill: none;
   stroke: var(--color-gray6-regular);
-  stroke-width: 2;
+  stroke-width: 1.67;
   stroke-linecap: round;
   stroke-linejoin: round;
   opacity: 0;
