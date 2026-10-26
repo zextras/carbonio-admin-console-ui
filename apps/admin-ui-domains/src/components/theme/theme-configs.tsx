@@ -7,12 +7,8 @@ import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
   Button,
-  Container,
   DefaultTabBarItem,
   type Item as TabBarItem,
-  ListRow,
-  Padding,
-  Row,
   Select,
   TabBar,
 } from '@zextras/ui-components';
@@ -27,6 +23,7 @@ import { CONFIG, PRIMARY_COLOR_CODE_EX } from '../../constants';
 import { RevertToInheritedIcon } from '../../views/utility/revert-to-inherited-icon';
 import { AdminPanelThemeConfig } from './admin-panel-theme-configs';
 import { EndUserThemeConfigs } from './end-user-theme-configs';
+import styles from './theme-configs.module.css';
 import { ThemeFieldInput } from './theme-field-input';
 import {
   DARK_PRIMARY_COLOR_ERROR_LABEL,
@@ -49,11 +46,11 @@ const ReusedDefaultTabBar = ({ item, selected, onClick }: ReusedDefaultTabBarPro
     underlineColor="primary"
     forceWidthEquallyDistributed={false}
   >
-    <Row padding="small">
+    <div className={styles.tabBarLabel}>
       <ds-text as="span" size="small" color={selected ? 'primary' : 'gray'}>
         {item.label}
       </ds-text>
-    </Row>
+    </div>
   </DefaultTabBarItem>
 );
 
@@ -120,30 +117,17 @@ export const ThemeConfigs = ({
   ];
 
   return (
-    <Container
-      orientation="column"
-      crossAlignment="flex-start"
-      mainAlignment="flex-start"
-      padding={{ bottom: 'extralarge' }}
-      style={{ overflow: 'auto' }}
-      width="100%"
-      height="calc(100vh - 150px)"
-    >
-      <Row mainAlignment="flex-start" width="100%" padding={{ top: 'small' }}>
-        <Container
-          padding={{ all: 'small' }}
-          height="fit"
-          crossAlignment="flex-start"
-          background="gray6"
-        >
-          <ListRow>
-            <Padding vertical="extralarge" horizontal="small" width="100%">
+    <div className={styles.root}>
+      <div className={styles.sectionRow}>
+        <div className={styles.panel}>
+          <div className={styles.listRow}>
+            <div className={styles.panelHeader}>
               <ds-text as="h3" size="small" color="gray0" weight="bold">
                 {t('label.appearance', 'Appearance')}
               </ds-text>
-            </Padding>
-          </ListRow>
-          <ListRow>
+            </div>
+          </div>
+          <div className={styles.listRow}>
             <Select
               label={t('cos.dark_mode', 'Dark Mode')}
               items={THEME_MODE}
@@ -174,15 +158,15 @@ export const ThemeConfigs = ({
                 ) : undefined
               }
             />
-          </ListRow>
-          <ListRow>
-            <Padding vertical="large" horizontal="small" width="100%">
+          </div>
+          <div className={styles.listRow}>
+            <div className={styles.groupHeader}>
               <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('label.logo_url_destination', 'Logo URL Destination')}
               </ds-text>
-            </Padding>
-          </ListRow>
-          <ListRow>
+            </div>
+          </div>
+          <div className={styles.listRow}>
             <ThemeFieldInput
               form={form}
               name="carbonioLogoUrl"
@@ -194,30 +178,26 @@ export const ThemeConfigs = ({
               isGlobalTheme={isGlobalTheme}
               hasModifyRights={hasModifyRights}
             />
-          </ListRow>
-          <ListRow>
-            <Padding vertical="large" horizontal="small" width="100%">
+          </div>
+          <div className={styles.listRow}>
+            <div className={styles.groupHeader}>
               <ds-text as="h4" size="small" color="gray0" weight="bold">
                 {t('label.color_scheme', 'Color Scheme')}
               </ds-text>
-            </Padding>
-          </ListRow>
-          <ListRow>
-            <Padding vertical="small" horizontal="small" width="100%">
+            </div>
+          </div>
+          <div className={styles.listRow}>
+            <div className={styles.hint}>
               <ds-text as="p" size="small" color="gray0">
                 {t(
                   'label.primary_color_hint',
                   'To change the Primary color, please use a HEX color code.',
                 )}
               </ds-text>
-            </Padding>
-          </ListRow>
-          <ListRow>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ all: 'small' }}
-            >
+            </div>
+          </div>
+          <div className={styles.listRow}>
+            <div className={styles.fieldLabel}>
               <ds-text as="label" size="small" color="gray0">
                 <Trans
                   i18nKey="label.primary_color_for_light_mode"
@@ -225,12 +205,8 @@ export const ThemeConfigs = ({
                   components={{ bold: <strong /> }}
                 />
               </ds-text>
-            </Container>
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              padding={{ all: 'small' }}
-            >
+            </div>
+            <div className={styles.fieldLabel}>
               <ds-text as="label" size="small" color="gray0">
                 <Trans
                   i18nKey="label.primary_color_for_dark_mode"
@@ -238,10 +214,10 @@ export const ThemeConfigs = ({
                   components={{ bold: <strong /> }}
                 />
               </ds-text>
-            </Container>
-          </ListRow>
-          <ListRow>
-            <Container padding={{ all: 'small' }}>
+            </div>
+          </div>
+          <div className={styles.listRow}>
+            <div className={styles.fieldWrapper}>
               <ThemeFieldInput
                 form={form}
                 name="carbonioWebUiPrimaryColor"
@@ -252,8 +228,8 @@ export const ThemeConfigs = ({
                 errorLabel={LIGHT_PRIMARY_COLOR_ERROR_LABEL}
                 errorLabelDefault="Primary Color for Light Mode is not valid"
               />
-            </Container>
-            <Container padding={{ all: 'small' }}>
+            </div>
+            <div className={styles.fieldWrapper}>
               <ThemeFieldInput
                 form={form}
                 name="carbonioWebUiDarkPrimaryColor"
@@ -264,14 +240,9 @@ export const ThemeConfigs = ({
                 errorLabel={DARK_PRIMARY_COLOR_ERROR_LABEL}
                 errorLabelDefault="Primary Color for Dark Mode is not valid"
               />
-            </Container>
-          </ListRow>
-          <Row
-            width="100%"
-            mainAlignment="center"
-            crossAlignment="center"
-            padding={{ top: 'large' }}
-          >
+            </div>
+          </div>
+          <div className={styles.tabBarRow}>
             <TabBar
               items={items}
               selected={change}
@@ -282,11 +253,11 @@ export const ThemeConfigs = ({
               width={300}
               background="gray6"
             />
-          </Row>
-          <Row width="100%">
+          </div>
+          <div className={styles.dividerRow}>
             <ds-divider></ds-divider>
-          </Row>
-          <Container crossAlignment="flex-start" padding={{ all: '0px' }}>
+          </div>
+          <div className={styles.tabContent}>
             {change === 'end_user' && (
               <EndUserThemeConfigs
                 form={form}
@@ -303,13 +274,13 @@ export const ThemeConfigs = ({
                 hasModifyRights={hasModifyRights}
               />
             )}
-          </Container>
-          <Container padding={{ top: 'small' }}>
+          </div>
+          <div className={styles.dividerContainer}>
             <ds-divider></ds-divider>
-          </Container>
-          <ListRow>
-            <Container padding={{ all: 'small' }} width="100%" style={{ display: 'block' }}>
-              <Padding vertical="large" width="100%">
+          </div>
+          <div className={styles.listRow}>
+            <div className={styles.buttonBlock}>
+              <div className={styles.buttonPadding}>
                 <Button
                   type="outlined"
                   label={t('label.empty_all_fields', 'Empty all fields')}
@@ -323,11 +294,11 @@ export const ThemeConfigs = ({
                   style={{ width: '100%' }}
                   disabled={isGlobalTheme && !hasModifyRights}
                 />
-              </Padding>
-            </Container>
-          </ListRow>
-        </Container>
-      </Row>
-    </Container>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
