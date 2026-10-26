@@ -12,6 +12,7 @@ import {
   NumberInput,
   Padding,
   Radio,
+  RadioGroup,
   Row,
   Select,
   Switch,
@@ -114,24 +115,22 @@ export function MailstoresCreate({
         </form.Field>
       </Row>
       {isAdvanced && (
-        <>
+        <RadioGroup
+          aria-label={t('label.volume_type', 'Volume Type')}
+          value={volumeMain}
+          onChange={(value) => form.setFieldValue('volumeMain', value)}
+        >
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
             <Row width="48%" mainAlignment="flex-start">
               <Radio
                 label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
                 value={PRIMARY_TYPE_VALUE}
-                checked={volumeMain === PRIMARY_TYPE_VALUE}
-                onClick={(): void => form.setFieldValue('volumeMain', PRIMARY_TYPE_VALUE)}
-                iconColor="primary"
               />
             </Row>
             <Row width="48%" mainAlignment="flex-start">
               <Radio
                 label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
                 value={SECONDARY_TYPE_VALUE}
-                checked={volumeMain === SECONDARY_TYPE_VALUE}
-                onClick={(): void => form.setFieldValue('volumeMain', SECONDARY_TYPE_VALUE)}
-                iconColor="primary"
               />
             </Row>
           </Row>
@@ -139,12 +138,9 @@ export function MailstoresCreate({
             <Radio
               label={t('storage.dataVolume.indexVolume', 'Index Volume')}
               value={INDEX_TYPE_VALUE}
-              checked={volumeMain === INDEX_TYPE_VALUE}
-              onClick={(): void => form.setFieldValue('volumeMain', INDEX_TYPE_VALUE)}
-              iconColor="primary"
             />
           </Row>
-        </>
+        </RadioGroup>
       )}
       <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
         <form.Field name="path">

@@ -257,8 +257,6 @@ export function EditHsmPolicyDetailSection() {
       <ListRow>
         <Container mainAlignment="flex-start" crossAlignment="flex-start">
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t('hsm.all', 'All')}
             value={all}
             onClick={(): void => {
@@ -268,8 +266,6 @@ export function EditHsmPolicyDetailSection() {
         </Container>
         <Container mainAlignment="flex-start" crossAlignment="flex-start">
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t('hsm.message', 'Message')}
             value={isMessageEnable}
             onClick={(): void => {
@@ -284,8 +280,6 @@ export function EditHsmPolicyDetailSection() {
         </Container>
         <Container mainAlignment="flex-start" crossAlignment="flex-start">
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t('hsm.document', 'Document')}
             value={isDocument}
             onClick={(): void => {
@@ -300,8 +294,6 @@ export function EditHsmPolicyDetailSection() {
         </Container>
         <Container mainAlignment="flex-start" crossAlignment="flex-start">
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t('hsm.event', 'Event')}
             value={isEventEnable}
             onClick={(): void => {
@@ -316,8 +308,6 @@ export function EditHsmPolicyDetailSection() {
         </Container>
         <Container mainAlignment="flex-start" crossAlignment="flex-start">
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t('hsm.contact', 'Contact')}
             value={isContactEnable}
             onClick={(): void => {

@@ -8,7 +8,7 @@ import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import {
   AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK,
@@ -119,10 +119,9 @@ describe('AdvancedMailstoresConfig (browser)', () => {
 
   it('should render Primary and Secondary radio buttons', async () => {
     await renderHarness().render();
-    await expect.element(page.getByText('Primary Volume', { exact: true })).toBeVisible();
-    await expect
-      .element(page.getByText('Secondary Volume', { exact: true }))
-      .toBeVisible();
+    const group = page.getByRole('radiogroup', { name: 'Volume Type' });
+    await expect.element(group.getByRole('radio', { name: 'Primary Volume' })).toBeVisible();
+    await expect.element(group.getByRole('radio', { name: 'Secondary Volume' })).toBeVisible();
   });
 
   it('should render the Prefix input', async () => {
@@ -139,7 +138,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: { volumeMain: 1 },
     }).render();
 
-    await page.getByText('Primary Volume', { exact: true }).click();
+    await page.getByRole('radio', { name: 'Primary Volume' }).click();
     await vi.waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 0 }, true);
     });
@@ -148,10 +147,23 @@ describe('AdvancedMailstoresConfig (browser)', () => {
   it('should toggle Secondary radio on and call onSelection with SECONDARY_TYPE_VALUE', async () => {
     const onSelection = vi.fn();
     await renderHarness({ onSelection }).render();
-    await page.getByText('Secondary Volume', { exact: true }).click();
+    await page.getByRole('radio', { name: 'Secondary Volume' }).click();
     await vi.waitFor(() => {
       expect(onSelection).toHaveBeenCalledWith({ volumeMain: 2 }, true);
     });
+  });
+
+  it('should move the volume type selection with Arrow keys', async () => {
+    const onSelection = vi.fn();
+    await renderHarness({ onSelection, initialAdvanced: { volumeMain: 1 } }).render();
+
+    const primary = page.getByRole('radio', { name: 'Primary Volume' });
+    await expect.element(primary).toBeChecked();
+    primary.element().focus();
+    await userEvent.keyboard('{ArrowDown}');
+
+    await expect.element(page.getByRole('radio', { name: 'Secondary Volume' })).toBeChecked();
+    expect(onSelection).toHaveBeenLastCalledWith({ volumeMain: 2 }, true);
   });
 
   it('should hide tiering switches when unusedBucketType is not S3', async () => {
@@ -380,7 +392,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       initialAdvanced: { volumeAllocation: LOCAL_TYPE_VALUE },
     }).render();
 
-    await expect.element(page.getByText('Index Volume', { exact: true })).toBeVisible();
+    await expect.element(page.getByRole('radio', { name: 'Index Volume' })).toBeVisible();
   });
 
   it('should hide Index Volume when allocation is EXTERNAL_TYPE_VALUE', async () => {

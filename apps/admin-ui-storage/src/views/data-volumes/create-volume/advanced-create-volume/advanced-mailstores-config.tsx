@@ -10,6 +10,7 @@ import {
   NumberInput,
   Padding,
   Radio,
+  RadioGroup,
   Row,
   Switch,
   TextInput,
@@ -179,62 +180,54 @@ export function AdvancedMailstoresConfig({
           {t('label.volume_type', 'Volume Type')}
         </ds-text>
       </div>
-      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-        <Radio
-          label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
-          value={PRIMARY_TYPE_VALUE.toString()}
-          checked={volumeMain === PRIMARY_TYPE_VALUE}
-          onClick={(): void => {
-            form.setFieldValue(
-              'volumeMain',
-              volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
-            );
-            onSelection(
-              { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
-              true,
-            );
-          }}
-          iconColor="primary"
-        />
-      </Row>
-      <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-        <Radio
-          label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
-          value={SECONDARY_TYPE_VALUE}
-          checked={volumeMain === SECONDARY_TYPE_VALUE}
-          onClick={(): void => {
-            form.setFieldValue(
-              'volumeMain',
-              volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
-            );
-            onSelection(
-              { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
-              true,
-            );
-          }}
-          iconColor="primary"
-        />
-      </Row>
-      {isLocalBlockDevice && (
-        <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
+      <div className="w-full py-lg">
+        <RadioGroup aria-label={t('label.volume_type', 'Volume Type')} value={volumeMain}>
           <Radio
-            label={t('storage.dataVolume.indexVolume', 'Index Volume')}
-            value={INDEX_TYPE_VALUE}
-            checked={volumeMain === INDEX_TYPE_VALUE}
+            label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
+            value={PRIMARY_TYPE_VALUE}
             onClick={(): void => {
               form.setFieldValue(
                 'volumeMain',
-                volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE,
+                volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
               );
               onSelection(
-                { volumeMain: volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE },
+                { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
                 true,
               );
             }}
-            iconColor="primary"
           />
-        </Row>
-      )}
+          <Radio
+            label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
+            value={SECONDARY_TYPE_VALUE}
+            onClick={(): void => {
+              form.setFieldValue(
+                'volumeMain',
+                volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
+              );
+              onSelection(
+                { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
+                true,
+              );
+            }}
+          />
+          {isLocalBlockDevice && (
+            <Radio
+              label={t('storage.dataVolume.indexVolume', 'Index Volume')}
+              value={INDEX_TYPE_VALUE}
+              onClick={(): void => {
+                form.setFieldValue(
+                  'volumeMain',
+                  volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE,
+                );
+                onSelection(
+                  { volumeMain: volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE },
+                  true,
+                );
+              }}
+            />
+          )}
+        </RadioGroup>
+      </div>
 
       <div className={styles.sectionHeader}>
         <ds-text className={styles.sectionHeaderLabel} weight="bold" size="small">
