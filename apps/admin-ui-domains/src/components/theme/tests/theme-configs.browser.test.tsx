@@ -231,7 +231,7 @@ describe('ThemeConfigs (browser)', () => {
 
   describe('Proxy-guard warning wiring', () => {
     const HOST = globalThis.location?.hostname ?? 'localhost';
-    const PROXY_WARNING = /Warning: this URL points to this server/;
+    const PROXY_WARNING = /This image URL isn’t allowed/;
 
     it('starts on the admin panel tab and targets the logo section when the #logo hash is set', async () => {
       setupBrowserTest(<ThemeConfigsWrapper />, { initialRouterEntry: '/theme#logo' });

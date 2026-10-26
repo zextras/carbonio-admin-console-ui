@@ -12,7 +12,7 @@ import { WhiteLabelBanner } from '../white-label-banner';
 
 const HOST = globalThis.location?.hostname ?? 'localhost';
 const BLOCKED_URL = `https://${HOST}/logo.png`;
-const BANNER_DESCRIPTION = /Some white-label branding URLs point to this server/;
+const BANNER_DESCRIPTION = /Branding assets blocked \(403\)/;
 
 function resetBrandingUrls(): void {
   useLoginConfigStore.setState({

@@ -15,7 +15,7 @@ import { HTTPS_URL_ERROR_LABEL, whiteLabelSchema } from '../white-label-schema';
 const HOST = globalThis.location?.hostname ?? 'localhost';
 const BLOCKED_URL = `https://${HOST}/logo.png`;
 const EXTERNAL_URL = 'https://cdn.example.com/logo.png';
-const PROXY_WARNING = /Warning: this URL points to this server/;
+const PROXY_WARNING = /This image URL isn’t allowed/;
 
 function FieldHarness({
   name = 'carbonioAdminUiAppLogo',
