@@ -82,7 +82,10 @@ export const DelegateSetRightsSection: FC = () => {
           </Row>
           <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
             <Row width="100%" mainAlignment="flex-start">
-              <RadioGroup value={sendingOption || deligateDetail?.right?.[0]?._content}>
+              <RadioGroup
+                aria-label={t('account_details.sending_options', `Sending Options`)}
+                value={sendingOption || deligateDetail?.right?.[0]?._content}
+              >
                 <Radio
                   label={t(
                     'account_details.send_as_recipients',
@@ -98,7 +101,6 @@ export const DelegateSetRightsSection: FC = () => {
                       right: [{ _content: 'sendAs' }],
                     }));
                   }}
-                  iconColor="primary"
                 />
                 <Radio
                   label={t(
@@ -115,7 +117,6 @@ export const DelegateSetRightsSection: FC = () => {
                       right: [{ _content: 'sendOnBehalfOf' }],
                     }));
                   }}
-                  iconColor="primary"
                 />
               </RadioGroup>
             </Row>
@@ -141,28 +142,30 @@ export const DelegateSetRightsSection: FC = () => {
             <Row width="100%" mainAlignment="flex-start">
               <Row width="100%" mainAlignment="space-between">
                 <Row width="100%" mainAlignment="space-between">
-                  <RadioGroup value={deligateDetail?.folderSelection}>
+                  <RadioGroup
+                    aria-label={t(
+                      'account_details.select_delegate_folder',
+                      `Select which folders the delegate can view`,
+                    )}
+                    value={deligateDetail?.folderSelection}
+                  >
                     <Radio
                       label={t(
                         'account_details.all_folders',
                         `All Folders ( it includes also folders that will be created later on)`,
                       )}
                       value="all_folders"
-                      width="19rem"
                       onChange={(): void => {
                         setDeligateDetail((prev: any) => ({
                           ...prev,
                           folderSelection: 'all_folders',
                         }));
                       }}
-                      iconColor="primary"
                     />
                     <Radio
                       label={t('account_details.i_want_to_select', `I want to select the Folders`)}
                       value="i_want_to_select"
-                      width="300px"
                       style={{ display: 'none' }}
-                      iconColor="primary"
                     />
                   </RadioGroup>
                 </Row>
@@ -177,7 +180,6 @@ export const DelegateSetRightsSection: FC = () => {
                               defaultChecked={ele.selected || false}
                               label={ele.name}
                               onClick={(): void => onFolderSelect(ele, index)}
-                              iconColor="primary"
                             />
                           </Row>
                         ),

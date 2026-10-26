@@ -262,6 +262,7 @@ export const AddAddressBookPanel = ({
           {t('label.address_books_to_expose', 'Address books to expose')}
         </ds-text>
         <RadioGroup
+          aria-label={t('label.address_books_to_expose', 'Address books to expose')}
           value={folderMode}
           onChange={(value: string | undefined): void => {
             if (value === 'all' || value === 'specific') {
@@ -272,12 +273,10 @@ export const AddAddressBookPanel = ({
           <Radio
             value="all"
             label={t('label.all_address_books', 'All address books')}
-            iconColor="primary"
           />
           <Radio
             value="specific"
             label={t('label.a_specific_address_book', 'A specific address book')}
-            iconColor="primary"
           />
         </RadioGroup>
 

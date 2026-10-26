@@ -161,7 +161,6 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 					</Row>
 					<Row width="25%" mainAlignment="flex-start">
 						<Checkbox
-							iconColor="primary"
 							value={readWriteRightCheck}
 							onClick={(): void => {
 								if (!readWriteRightCheck) {
@@ -174,7 +173,6 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 					</Row>
 					<Row width="25%" mainAlignment="flex-start">
 						<Checkbox
-							iconColor="primary"
 							value={readRightCheck}
 							onClick={(): void => {
 								if (!readRightCheck) {
@@ -187,7 +185,6 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 					</Row>
 					<Row width="25%" mainAlignment="flex-start">
 						<Checkbox
-							iconColor="primary"
 							value={sendRightCheck}
 							onClick={(): void => {
 								if (!sendRightCheck) {
@@ -200,7 +197,6 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 					</Row>
 					<Row width="25%" mainAlignment="flex-start">
 						<Checkbox
-							iconColor="primary"
 							value={sendBehalfRightCheck}
 							onClick={(): void => {
 								if (!sendBehalfRightCheck) {
