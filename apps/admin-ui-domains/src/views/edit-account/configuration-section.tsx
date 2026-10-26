@@ -253,6 +253,7 @@ export const EditAccountConfigurationSection = () => {
           accSpecificDetail={accSpecificDetail}
           setEmptyValue={setEmptyValue}
           activeSyncReadonly={!isGlobalAdmin}
+          filesReadonly={!isGlobalAdmin}
         />
         {(!featureFlag || isWorkspaceEdition) && (
           <>

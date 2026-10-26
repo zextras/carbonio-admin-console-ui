@@ -16,6 +16,7 @@ export const Features: FC<{
 	setEmptyValue?: CallableFunction;
 	readonlyFeatures?: boolean;
 	activeSyncReadonly?: boolean;
+	filesReadonly?: boolean;
 	cosLevelFeatures?: boolean;
 }> = ({
 	featuresDetail,
@@ -25,6 +26,7 @@ export const Features: FC<{
 	setEmptyValue,
 	readonlyFeatures = false,
 	activeSyncReadonly = false,
+	filesReadonly = false,
 	cosLevelFeatures = false
 }) => {
 	const [t] = useTranslation();
@@ -294,7 +296,7 @@ export const Features: FC<{
 								fromSubValue={accSpecificDetail?.carbonioFeatureFilesEnabled}
 								inputName={'carbonioFeatureFilesEnabled'}
 								onChangeReset={(): void => setEmptyValue?.('carbonioFeatureFilesEnabled')}
-								disabled={readonlyFeatures}
+								disabled={readonlyFeatures || filesReadonly}
 							/>
 						</Row>
 					</Container>

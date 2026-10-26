@@ -26,12 +26,14 @@ function Harness({
   accSpecificDetail,
   setEmptyValue,
   readonlyFeatures,
+  filesReadonly,
 }: {
   initialFeaturesDetail?: FeaturesDetail;
   cosDetail?: FeaturesDetail;
   accSpecificDetail?: FeaturesDetail;
   setEmptyValue?: CallableFunction;
   readonlyFeatures?: boolean;
+  filesReadonly?: boolean;
 }): React.JSX.Element {
   const [featuresDetail, setFeaturesDetail] = useState(initialFeaturesDetail);
   return (
@@ -42,6 +44,7 @@ function Harness({
       accSpecificDetail={accSpecificDetail}
       setEmptyValue={setEmptyValue}
       readonlyFeatures={readonlyFeatures}
+      filesReadonly={filesReadonly}
     />
   );
 }
@@ -204,5 +207,30 @@ describe('Features - Files section vs new-subscriptions feature flag', () => {
     expect(
       screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' }),
     ).toBeTruthy();
+  });
+});
+
+describe('Features - Files switch read-only', () => {
+  beforeEach(() => {
+    vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(false);
+  });
+
+  it('disables only the Allow access to Files switch when filesReadonly is true', () => {
+    renderFeatures({ filesReadonly: true });
+
+    expect(
+      screen.getByRole('switch', { name: 'Allow access to Files' }).getAttribute('aria-disabled'),
+    ).toBe('true');
+    expect(
+      screen.getByRole('switch', { name: 'Mail Signatures' }).getAttribute('aria-disabled'),
+    ).not.toBe('true');
+  });
+
+  it('keeps the Allow access to Files switch enabled when filesReadonly is false', () => {
+    renderFeatures({ filesReadonly: false });
+
+    expect(
+      screen.getByRole('switch', { name: 'Allow access to Files' }).getAttribute('aria-disabled'),
+    ).not.toBe('true');
   });
 });
