@@ -124,6 +124,7 @@ export const ThemeConfigs = ({
       orientation="column"
       crossAlignment="flex-start"
       mainAlignment="flex-start"
+      padding={{ bottom: 'extralarge' }}
       style={{ overflow: 'auto' }}
       width="100%"
       height="calc(100vh - 150px)"
