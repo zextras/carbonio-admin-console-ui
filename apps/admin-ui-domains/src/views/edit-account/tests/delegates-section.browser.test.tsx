@@ -39,9 +39,18 @@ const IDENTITIES = [
 	},
 ];
 
-function setupTest(contextOverrides: Record<string, unknown> = {}): void {
+// The advanced view is the default; its toggle (label is inverted in the UI) reads
+// "Switch to Advanced View" and opens the simplified view.
+async function openSimplifiedView(): Promise<void> {
+	await page.getByText('Switch to Advanced View').click();
+}
+
+function setupTest(
+	contextOverrides: Record<string, unknown> = {},
+	advancedSupported = true,
+): void {
 	const queryClient = getQueryClient();
-	queryClient.setQueryData(['advanced-supported'], { supported: true });
+	queryClient.setQueryData(['advanced-supported'], { supported: advancedSupported });
 
 	setupBrowserTest(
 		<AccountFormTestProvider
@@ -69,8 +78,9 @@ describe('EditAccountDelegatesSection (browser)', () => {
 		mockBatchService.mockResolvedValue({});
 	});
 
-	it('renders the simplified view by default with rights tables and send settings', async () => {
+	it('renders the simplified view with rights tables and send settings', async () => {
 		setupTest();
+		await openSimplifiedView();
 
 		await expect.element(page.getByText("Delegate's Rights")).toBeVisible();
 		await expect
@@ -83,6 +93,7 @@ describe('EditAccountDelegatesSection (browser)', () => {
 
 	it('sorts delegates into the correct rights tables', async () => {
 		setupTest();
+		await openSimplifiedView();
 
 		await expect.element(page.getByText('writer@example.com')).toBeVisible();
 		await expect.element(page.getByText('reader@example.com')).toBeVisible();
@@ -91,6 +102,7 @@ describe('EditAccountDelegatesSection (browser)', () => {
 
 	it('revokes a send right from the simplified view via a batch request', async () => {
 		setupTest();
+		await openSimplifiedView();
 
 		await page.getByText('sender@example.com').click();
 
@@ -106,18 +118,23 @@ describe('EditAccountDelegatesSection (browser)', () => {
 		expect(batch.RevokeRightRequest[0].grantee._content).toBe('sender@example.com');
 	});
 
-	it('advanced view shows the delegates table and opens the add-delegate wizard', async () => {
+	it('shows the advanced view by default with the delegates table and opens the add-delegate wizard', async () => {
 		setupTest();
-
-		// label is inverted in the original UI: the simplified view shows
-		// "Switch to Simplified View" and clicking it opens the advanced view
-		await page.getByText('Switch to Simplified View').click();
 
 		await expect.element(page.getByText('DELEGATES')).toBeVisible();
 		await expect.element(page.getByText('Sharing Options')).toBeVisible();
 
 		await page.getByRole('button', { name: 'ADD NEW' }).click();
 		await expect.element(page.getByText('SELECT MODE')).toBeVisible();
+	});
+});
+
+describe('EditAccountDelegatesSection default view (browser)', () => {
+	it('falls back to the simplified view when Carbonio Advanced is not installed', async () => {
+		setupTest({}, false);
+
+		await expect.element(page.getByText("Delegate's Rights")).toBeVisible();
+		await expect.element(page.getByText('Sharing Options')).not.toBeInTheDocument();
 	});
 });
 
@@ -130,15 +147,11 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 	it('shows the empty state when there are no delegates', async () => {
 		setupTest({ identitiesList: [] });
 
-		await page.getByText('Switch to Simplified View').click();
-
 		await expect.element(page.getByText('This list is empty.')).toBeVisible();
 	});
 
 	it('keeps REMOVE disabled until a delegate row is selected', async () => {
 		setupTest();
-
-		await page.getByText('Switch to Simplified View').click();
 
 		const removeButton = page.getByRole('button', { name: 'REMOVE' });
 		await expect.element(removeButton).toBeDisabled();
@@ -151,7 +164,6 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 		const refetchGrants = vi.fn();
 		setupTest({ refetchGrants });
 
-		await page.getByText('Switch to Simplified View').click();
 		await page.getByText('writer@example.com').click();
 		await page.getByRole('button', { name: 'REMOVE' }).click();
 
@@ -167,7 +179,6 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 	it('EDIT opens the wizard prefilled and re-grants the right after revoking it', async () => {
 		setupTest();
 
-		await page.getByText('Switch to Simplified View').click();
 		await page.getByText('sender@example.com').click();
 		await page.getByRole('button', { name: 'EDIT' }).click();
 
@@ -206,7 +217,6 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 		});
 		setupTest({ refetchGrants });
 
-		await page.getByText('Switch to Simplified View').click();
 		await page.getByRole('button', { name: 'ADD NEW' }).click();
 		await expect.element(page.getByText('SELECT MODE')).toBeVisible();
 
@@ -251,7 +261,6 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 	it('CANCEL closes the wizard and BACK returns to the previous step', async () => {
 		setupTest();
 
-		await page.getByText('Switch to Simplified View').click();
 		await page.getByRole('button', { name: 'ADD NEW' }).click();
 		await expect.element(page.getByText('SELECT MODE')).toBeVisible();
 
@@ -277,6 +286,7 @@ describe('EditAccountDelegatesSection simplified rights actions (browser)', () =
 
 	it('keeps the add-rights button disabled without an account and without a checked right', async () => {
 		setupTest();
+		await openSimplifiedView();
 
 		const addButton = page.getByRole('button', {
 			name: /add the account \/ group with selected rights/i,
@@ -292,6 +302,7 @@ describe('EditAccountDelegatesSection simplified rights actions (browser)', () =
 			account: [{ id: 'a-9', name: 'newbie@example.com' }],
 		});
 		setupTest();
+		await openSimplifiedView();
 
 		const addButton = page.getByRole('button', {
 			name: /add the account \/ group with selected rights/i,
@@ -325,6 +336,7 @@ describe('EditAccountDelegatesSection simplified rights actions (browser)', () =
 			account: [{ id: 'a-9', name: 'newbie@example.com' }],
 		});
 		setupTest();
+		await openSimplifiedView();
 
 		const chipInput = page.getByPlaceholder(/start typing an account/i);
 		await userEvent.type(chipInput, 'newbie');

@@ -33,7 +33,10 @@ export const EditAccountDelegatesSection = () => {
 	const accountDetail = useSelector(form.store, (s) => s.values as Record<string, any>);
 
 	const isAdvanced = useIsAdvanced();
-	const [isSimplified, setIsSimplified] = useState<boolean>(true);
+	// Advanced view is the default whenever Carbonio Advanced is installed; until the user
+	// toggles the view, the choice follows availability (simplified is the only option otherwise).
+	const [simplifiedChoice, setSimplifiedChoice] = useState<boolean | null>(null);
+	const isSimplified = simplifiedChoice ?? !isAdvanced;
 
 	const identityRows = buildDelegateRows(identitiesList);
 
@@ -70,7 +73,7 @@ export const EditAccountDelegatesSection = () => {
 							color="primary"
 							size="small"
 							weight="bold"
-							onClick={(): void => setIsSimplified(true)}
+							onClick={(): void => setSimplifiedChoice(true)}
 							style={{ cursor: 'pointer' }}
 						>
 							{t('account_details.switch_advanced', 'Switch to Advanced View')}
@@ -82,7 +85,7 @@ export const EditAccountDelegatesSection = () => {
 							color="primary"
 							size="small"
 							weight="bold"
-							onClick={(): void => setIsSimplified(false)}
+							onClick={(): void => setSimplifiedChoice(false)}
 							style={{ cursor: 'pointer' }}
 						>
 							{t('account_details.switch_simplified', 'Switch to Simplified View')}
