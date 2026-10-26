@@ -47,13 +47,10 @@ export const WhiteLabelBanner = () => {
 
   return (
     <DashboardBanner
-      description={t(
-        'banner.whitelabel_blocked_urls_description',
-        'Some white-label branding URLs point to this server outside the allowed asset paths and will not load: the proxy blocks them with a 403.',
-      )}
+      description={t('banner.whitelabel_blocked_urls_description', 'Branding assets blocked (403)')}
       detail={t(
         'banner.whitelabel_blocked_urls_detail',
-        'Host logos, favicons and login backgrounds on an external origin, or under /static/ on this server.',
+        'One or more white-label URLs reference this server outside the permitted asset paths. To fix this, serve these files from /static/ or from an external domain.',
       )}
       onClose={(): void => {
         setDismissed(true);

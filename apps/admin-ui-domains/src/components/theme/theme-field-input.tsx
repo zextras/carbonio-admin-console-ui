@@ -58,8 +58,7 @@ export const ThemeFieldInput = ({
   const isOverridden = isInheritedMode && value !== undefined;
 
   const effectiveValue = value ?? globalTheme?.[name] ?? '';
-  const proxyBlocked =
-    warnWhenProxyBlocked && isSameOriginUrlOutsideProxyAllowlist(effectiveValue);
+  const proxyBlocked = warnWhenProxyBlocked && isSameOriginUrlOutsideProxyAllowlist(effectiveValue);
   const schemaDescription = hasError
     ? resolveFieldDescription(t, errorLabel, errorLabelDefault)
     : undefined;
@@ -67,8 +66,8 @@ export const ThemeFieldInput = ({
     schemaDescription ??
     (proxyBlocked
       ? t(
-          'label.proxy_blocked_url_blocked_warning',
-          'Warning: this URL points to this server outside the allowed asset paths. Move it to an external origin or under /static/, otherwise the proxy will block it and the image will not load.',
+          'label.proxy_blocked_url_blocked_error',
+          'This image URL isn’t allowed. Move it under /static/ or host it elsewhere',
         )
       : undefined);
   const chip =
