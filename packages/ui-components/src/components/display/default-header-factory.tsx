@@ -1,5 +1,6 @@
 import clsx from 'clsx';
 import { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Checkbox } from '../inputs/Checkbox';
 import { LegacySelect } from '../inputs/LegacySelect';
@@ -28,6 +29,7 @@ export const DefaultHeaderFactory = ({
   multiSelect,
   showCheckbox,
 }: THeaderProps): React.JSX.Element => {
+  const [t] = useTranslation();
   const trRef = useRef<HTMLTableRowElement>(null);
 
   const LabelFactory = useCallback(
@@ -96,10 +98,9 @@ export const DefaultHeaderFactory = ({
         {showCheckbox && multiSelect && (
           <Checkbox
             className={clsx(styles.checkbox, selectionMode && styles.show)}
-            size="small"
             value={allSelected}
             onClick={onChange}
-            iconColor={selectionMode ? 'primary' : 'text'}
+            aria-label={t('label.select_all_rows', 'Select all rows')}
           />
         )}
       </th>

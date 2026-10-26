@@ -7,10 +7,7 @@
 import { useState } from 'react';
 
 import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
-import { AnyColor } from '../../types/utils';
 import { PlainCheckbox, type PlainCheckboxProps } from './plain-checkbox';
-
-type CheckboxSize = 'medium' | 'small';
 
 export type CheckboxProps = Omit<
   PlainCheckboxProps,
@@ -22,10 +19,6 @@ export type CheckboxProps = Omit<
   defaultChecked?: boolean;
   /** Controlled value. When omitted the checkbox is uncontrolled and starts from `defaultChecked`. */
   value?: boolean;
-  /** @deprecated the control size is fixed by the design system */
-  iconSize?: 'small' | 'medium' | 'large' | 'extralarge';
-  /** @deprecated the control color is fixed by the design system */
-  iconColor?: AnyColor;
   /** Outer padding of the checkbox row. */
   padding?: PaddingVarObj | string | 0;
   /** whether to disable the checkbox or not */
@@ -34,8 +27,6 @@ export type CheckboxProps = Omit<
   onClick?: (event: Event) => void;
   /** Fired on every user toggle with the new checked state. */
   onChange?: (checked: boolean) => void;
-  /** @deprecated the control size is fixed by the design system */
-  size?: CheckboxSize;
 };
 
 export const Checkbox = ({
@@ -48,9 +39,6 @@ export const Checkbox = ({
   style,
   ref,
   onKeyDown,
-  iconSize: _iconSize,
-  iconColor: _iconColor,
-  size: _size,
   ...rest
 }: CheckboxProps) => {
   const [innerChecked, setInnerChecked] = useState(defaultChecked);

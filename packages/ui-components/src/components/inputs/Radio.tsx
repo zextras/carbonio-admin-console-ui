@@ -5,7 +5,6 @@
  */
 
 import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
-import { AnyColor } from '../../types/utils';
 import { PlainRadio, type PlainRadioProps, type RadioValue } from './plain-radio';
 
 type RadioComponentProps<T extends RadioValue> = {
@@ -23,10 +22,6 @@ type RadioComponentProps<T extends RadioValue> = {
   onChange?: (checked: boolean) => void;
   /** Outer padding of the radio row. */
   padding?: PaddingVarObj | string | 0;
-  /** @deprecated the control size is fixed by the design system */
-  size?: 'small' | 'medium';
-  /** @deprecated the control color is fixed by the design system */
-  iconColor?: AnyColor;
   /** Ref for the input element */
   inputRef?: React.Ref<HTMLInputElement>;
   /** Value of the radio input */
@@ -47,8 +42,6 @@ const Radio = <T extends RadioValue = string>({
   inputRef,
   style,
   ref,
-  size: _size,
-  iconColor: _iconColor,
   ...rest
 }: RadioProps<T>) => {
   const paddingStyle = padding === undefined ? undefined : { padding: getPaddingVar(padding) };

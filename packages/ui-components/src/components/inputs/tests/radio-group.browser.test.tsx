@@ -22,9 +22,9 @@ const ControlledGroup = ({ onChange }: { onChange?: (value: string) => void }) =
         onChange?.(newValue);
       }}
     >
-      <Radio value="mail" label="Email" iconColor="primary" />
+      <Radio value="mail" label="Email" />
       <div />
-      <Radio value="workspace" label={<span>Workspace</span>} size="small" />
+      <Radio value="workspace" label={<span>Workspace</span>} />
     </RadioGroup>
   );
 };

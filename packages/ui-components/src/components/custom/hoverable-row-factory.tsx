@@ -195,10 +195,8 @@ const HoverableRowFactory = ({
         {showCheckbox && (showCkb || displayBlockCheckbox) ? (
           <CheckboxComponentToRender
             ref={ckbRef}
-            size={'small'}
             value={selected}
             onClick={_onChange}
-            iconColor={(multiSelect && selectionMode) || selected ? 'primary' : 'text'}
             aria-label={`Select row ${index}`}
           />
         ) : (

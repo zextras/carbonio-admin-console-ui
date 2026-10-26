@@ -12,15 +12,7 @@ import { Checkbox } from '../Checkbox';
 
 const ValueCheckbox = () => {
   const [value, setValue] = useState(false);
-  return (
-    <Checkbox
-      label="Keep a copy"
-      value={value}
-      onClick={() => setValue((prev) => !prev)}
-      size="small"
-      iconColor="primary"
-    />
-  );
+  return <Checkbox label="Keep a copy" value={value} onClick={() => setValue((prev) => !prev)} />;
 };
 
 describe('Checkbox', () => {
