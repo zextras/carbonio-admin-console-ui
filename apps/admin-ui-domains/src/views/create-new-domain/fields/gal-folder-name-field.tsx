@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Input } from '@zextras/ui-components';
+import { TextInput } from '@zextras/ui-components';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -22,10 +22,10 @@ export const GalFolderNameField = ({ form }: GalFolderNameFieldProps) => {
 
 	return (
 		<div className={styles.fieldStart}>
-			<Input
+			<TextInput
 				label={t('label.gal_folder_name', 'GAL folder name')}
-				backgroundColor="gray5"
-				value={field.state.value}
+				autoComplete="off"
+				value={field.state.value ?? ''}
 				onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
 					field.handleChange(e.target.value);
 				}}

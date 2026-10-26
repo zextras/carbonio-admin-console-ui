@@ -106,7 +106,7 @@ describe('MTAListPanel navigation', () => {
       queryClient,
     });
 
-    const input = page.getByPlaceholder('Select a Server');
+    const input = page.getByRole('combobox', { name: 'Select a Server' });
     await input.click();
     await input.fill('mail');
 
@@ -121,13 +121,13 @@ describe('MTAListPanel navigation', () => {
       queryClient,
     });
 
-    const input = page.getByPlaceholder('Select a Server');
+    const input = page.getByRole('combobox', { name: 'Select a Server' });
     await input.click();
     await input.fill('mail');
     await page.getByText('mail.test.com').click();
     mockedReplaceHistory.mockClear();
 
-    await page.getByTestId('icon: CloseOutline').click();
+    await page.getByRole('button', { name: 'Clear' }).click();
 
     expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${INBOUND_FLOW_SECURITY}`);
   });
@@ -149,7 +149,7 @@ describe('MTAListPanel navigation', () => {
       queryClient,
     });
 
-    const input = page.getByPlaceholder('Select a Server');
+    const input = page.getByRole('combobox', { name: 'Select a Server' });
     await input.click();
     await input.fill('xyznomatch');
 

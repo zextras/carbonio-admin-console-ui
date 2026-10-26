@@ -70,16 +70,10 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                 {(field) => (
                   <Select
                     items={TIMEZONES}
-                    background="gray5"
                     label={t('label.time_zone', 'Time Zone')}
-                    showCheckbox={false}
                     selection={findSelectItemWithFallback(TIMEZONES, field.state.value) ?? TIMEZONES[0]}
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -91,22 +85,16 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                 {(field) => (
                   <Select
                     items={DEFAULT_APPOINTMENT_DURATION}
-                    background="gray5"
                     label={t(
                       'label.appointments_default_duration',
                       'Appointment\u2019s Default Duration',
                     )}
-                    showCheckbox={false}
                     selection={findSelectItemWithFallback(
                       DEFAULT_APPOINTMENT_DURATION,
                       field.state.value,
                     ) ?? DEFAULT_APPOINTMENT_DURATION[0]}
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -129,22 +117,16 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                 {(field) => (
                   <Select
                     items={APPOINTMENT_REMINDER}
-                    background="gray5"
                     label={t(
                       'label.appointment_reminder_in_minutes',
                       'Appointment Reminder (minutes before)',
                     )}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(APPOINTMENT_REMINDER, field.state.value) ??
                       APPOINTMENT_REMINDER[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -156,19 +138,13 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                 {(field) => (
                   <Select
                     items={DEFAULT_VIEW_OPTIONS}
-                    background="gray5"
                     label={t('label.default_calendar_view', 'Default Calendar View')}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(DEFAULT_VIEW_OPTIONS, field.state.value) ??
                       DEFAULT_VIEW_OPTIONS[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -191,19 +167,13 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                 {(field) => (
                   <Select
                     items={FIRST_DAY_OF_WEEK}
-                    background="gray5"
                     label={t('label.the_week_starts_on', 'The Week starts on')}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(FIRST_DAY_OF_WEEK, field.state.value) ??
                       FIRST_DAY_OF_WEEK[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -215,22 +185,16 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                 {(field) => (
                   <Select
                     items={APPOINTMENT_VISIBILITY}
-                    background="gray5"
                     label={t(
                       'label.default_appointment_visibility',
                       'Default appointment visibility',
                     )}
-                    showCheckbox={false}
                     selection={
                       findSelectItemWithFallback(APPOINTMENT_VISIBILITY, field.state.value) ??
                       APPOINTMENT_VISIBILITY[0]
                     }
                     onChange={(value): void => {
-                      const v =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(v);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -260,7 +224,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.enable_past_due_reminders',
                       'Enable reminders of appointments in the past',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -278,7 +241,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.allow_sending_cancellation_mail',
                       'Allow sending cancellation mail',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -307,7 +269,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.add_forwarded_invites_to_calendar',
                       'Automatically add forwarded appointments to the calendar',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -325,7 +286,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.add_invites_with_publish_method',
                       'Add invites with PUBLISH method',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -354,7 +314,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'label.add_appointments_when_invited',
                       'Automatically add appointments when the user is invited',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -372,7 +331,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.auto_decline_if_inviter_is_blacklisted',
                       'Auto-decline if the sender is blacklisted',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -401,7 +359,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.notify_changes_by_delegated_access',
                       'Notify changes made by delegated accounts',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -419,7 +376,6 @@ export const CalendarOptions = ({ form, readonlyCOS }: CalendarOptionsProps) => 
                       'cos.use_ical_delegation_model_for_shared_calendars',
                       'Use iCal delegation model for shared calendars',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

@@ -1,0 +1,43 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.root {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+}
+
+/*
+ * The layout must fit exactly within the shell viewport (flex 1 + min-height 0)
+ * so only the detail wrapper scrolls, keeping the breadcrumb header in place.
+ */
+.layout {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: hidden;
+}
+
+.sidebar {
+  width: 16.563rem;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.detailWrapper {
+  flex: 1;
+  max-width: 100%;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.detailContent {
+  margin: 0 auto;
+  padding-bottom: 3rem;
+  transition: max-width 300ms;
+}

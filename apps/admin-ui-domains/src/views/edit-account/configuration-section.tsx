@@ -10,13 +10,12 @@ import {
   Container,
   CustomChip,
   InheritedSwitch,
-  Input,
   Row,
-  Tooltip,
+  TextInput,
 } from '@zextras/ui-components';
 import { useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import { map, some } from 'lodash-es';
-import React, { ChangeEvent } from 'react';
+import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { WscSettings } from '../../wsc/wsc-settings';
@@ -24,26 +23,6 @@ import { isValidEmail } from '../utility/utils';
 import { useAccountForm, useSetAccountValues, useToggleAccountValue } from './account-form-context';
 import { Features } from './features';
 import { chipsToValue, useChipList } from './use-chip-list';
-
-type MailTransportTooltipIconProps = {
-  hasError: boolean;
-  hasFocus: boolean;
-  disabled: boolean;
-};
-
-function createMailTransportTooltipIcon(
-  label: string,
-): React.ComponentType<MailTransportTooltipIconProps> {
-  return function MailTransportTooltipIcon() {
-    return (
-      <Tooltip placement="top" label={label}>
-        <ds-text as="span">
-          <ds-icon icon="InfoOutline" size="large" color="secondary"></ds-icon>
-        </ds-text>
-      </Tooltip>
-    );
-  };
-}
 
 export const EditAccountConfigurationSection = () => {
   const { form, cosDetail, accSpecificDetail } = useAccountForm();
@@ -92,7 +71,6 @@ export const EditAccountConfigurationSection = () => {
                 'account_details.user_can_specify_forwarding_address',
                 'User can specify forwarding address',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail.zimbraFeatureMailForwardingEnabled}
               fromSubValue={accSpecificDetail?.zimbraFeatureMailForwardingEnabled}
               inputName={'zimbraFeatureMailForwardingEnabled'}
@@ -107,7 +85,6 @@ export const EditAccountConfigurationSection = () => {
                 'account_details.dont_keep_local_copy_of_messages',
                 `Don't Keep local copy of messages`,
               )}
-              iconColor="primary"
               inheritedValue={cosDetail.zimbraPrefMailLocalDeliveryDisabled}
               fromSubValue={accSpecificDetail?.zimbraPrefMailLocalDeliveryDisabled}
               inputName={'zimbraPrefMailLocalDeliveryDisabled'}
@@ -124,7 +101,6 @@ export const EditAccountConfigurationSection = () => {
                 'account_details.user_can_specify_mail_forwarding_filter',
                 'User can specify mail forwarding filter',
               )}
-              iconColor="primary"
               inheritedValue={cosDetail.zimbraFeatureMailForwardingInFiltersEnabled}
               fromSubValue={accSpecificDetail?.zimbraFeatureMailForwardingInFiltersEnabled}
               inputName={'zimbraFeatureMailForwardingInFiltersEnabled'}
@@ -221,18 +197,16 @@ export const EditAccountConfigurationSection = () => {
           </ds-text>
         </Row>
         <Row padding={{ top: 'large', left: 'large' }} width="100%">
-          <Input
+          <TextInput
             onChange={changeAccDetail}
-            inputName="zimbraMailTransport"
+            name="zimbraMailTransport"
             label={t('label.mail_transport_map', 'Mail Transport Map')}
-            backgroundColor="gray5"
-            value={values?.zimbraMailTransport || ''}
-            CustomIcon={createMailTransportTooltipIcon(
-              `${t('label.format', 'Format')} :  ${t(
-                'label.protocol_server_port',
-                'protocol:server:port',
-              )} | : lmtp:server.demo.zextras.io:7025`,
-            )}
+            autoComplete="off"
+            value={values?.zimbraMailTransport ?? ''}
+            infoTooltip={`${t('label.format', 'Format')} :  ${t(
+              'label.protocol_server_port',
+              'protocol:server:port',
+            )} | : lmtp:server.demo.zextras.io:7025`}
           />
         </Row>
         <Row width="100%" padding={{ top: 'medium' }}>

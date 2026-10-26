@@ -703,7 +703,7 @@ describe('BackupConfiguration', () => {
         .toBeVisible();
 
       const input = page.getByRole('textbox', {
-        name: 'Local Volume (reload if you changed this value)*',
+        name: 'Local Volume (reload if you changed this value)',
       });
       await userEvent.fill(input, '/new/backup/path');
 
@@ -733,7 +733,7 @@ describe('BackupConfiguration', () => {
       restoreAccountAndRights(queryClient);
 
       const input = page.getByRole('textbox', {
-        name: 'Local Volume (reload if you changed this value)*',
+        name: 'Local Volume (reload if you changed this value)',
       });
       await expect.element(input).toBeEnabled();
       await userEvent.fill(input, '/new/backup/path');

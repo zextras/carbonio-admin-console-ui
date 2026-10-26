@@ -168,7 +168,7 @@ describe('CosListPanel', () => {
       seedCosDetail: true,
     });
 
-    await page.getByPlaceholder('I want to see this COS').click();
+    await page.getByRole('combobox', { name: 'I want to see this COS' }).click();
 
     await expect.element(page.getByText('firstCOS')).toBeVisible();
     await expect.element(page.getByText('secondCOS')).toBeVisible();
@@ -185,13 +185,24 @@ describe('CosListPanel', () => {
       seedCosDetail: true,
     });
 
-    await page.getByPlaceholder('Select a Class of Service').click();
+    await page.getByRole('combobox', { name: 'Select a Class of Service' }).click();
     await expect.element(page.getByText('firstCOS')).toBeVisible();
     await page.getByText('firstCOS').click();
 
-    await expect.element(page.getByPlaceholder('I want to see this COS')).toBeVisible();
-    await page.getByPlaceholder('I want to see this COS').click();
+    await expect.element(page.getByRole('combobox', { name: 'I want to see this COS' })).toBeVisible();
+    await page.getByRole('combobox', { name: 'I want to see this COS' }).click();
     await expect.element(page.getByText('secondCOS')).toBeVisible();
+  });
+
+  it('should show the not-found description when the search returns no results', async () => {
+    await setupListPanelTest({ cos: [], searchTotal: 0 });
+
+    await expect
+      .element(page.getByRole('combobox', { name: 'Select a Class of Service' }))
+      .toHaveAttribute('aria-invalid', 'true');
+    await expect
+      .element(page.getByText('Not found - check the text and try again'))
+      .toBeVisible();
   });
 
   it('should change General icon when its section is toggled', async () => {

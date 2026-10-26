@@ -7,12 +7,12 @@ import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  Input,
   ListRow,
   Padding,
   RouteLeavingGuard,
   Row,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useGlobalSettings, useModuleLicenseInfo } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -79,53 +79,52 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
           padding={{ all: 'large' }}
         >
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }} />
-          {isBackupRealTimeFeatureLicensed && (
+          <div className="flex w-full flex-col gap-lg">
+            {isBackupRealTimeFeatureLicensed && (
+              <ListRow>
+                <form.Field name="enableRealtimeScanner">
+                  {(field) => (
+                    <Switch
+                      label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+                      value={field.state.value}
+                      onClick={() => field.handleChange(!field.state.value)}
+                      disabled={!allowSetBackup}
+                    />
+                  )}
+                </form.Field>
+              </ListRow>
+            )}
             <ListRow>
-              <form.Field name="enableRealtimeScanner">
+              <form.Field name="moduleEnabledAtStartup">
                 {(field) => (
                   <Switch
-                    label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
                     value={field.state.value}
+                    label={t(
+                      'backup.backup_is_enable_at_the_startup',
+                      'Backup is enabled at the startup',
+                    )}
                     onClick={() => field.handleChange(!field.state.value)}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
               </form.Field>
             </ListRow>
-          )}
-          <ListRow>
-            <form.Field name="moduleEnabledAtStartup">
-              {(field) => (
-                <Switch
-                  value={field.state.value}
-                  label={t(
-                    'backup.backup_is_enable_at_the_startup',
-                    'Backup is enabled at the startup',
-                  )}
-                  onClick={() => field.handleChange(!field.state.value)}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              )}
-            </form.Field>
-          </ListRow>
-          <ListRow>
-            <form.Field name="runSmartScanOnStartup">
-              {(field) => (
-                <Switch
-                  value={field.state.value}
-                  label={t(
-                    'backup.run_the_smart_scan_at_the_startup',
-                    'Run the Smartscan at the startup',
-                  )}
-                  onClick={() => field.handleChange(!field.state.value)}
-                  iconColor="primary"
-                  disabled={!allowSetBackup}
-                />
-              )}
-            </form.Field>
-          </ListRow>
+            <ListRow>
+              <form.Field name="runSmartScanOnStartup">
+                {(field) => (
+                  <Switch
+                    value={field.state.value}
+                    label={t(
+                      'backup.run_the_smart_scan_at_the_startup',
+                      'Run the Smartscan at the startup',
+                    )}
+                    onClick={() => field.handleChange(!field.state.value)}
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </ListRow>
+          </div>
           <ListRow>
             <Container padding={{ top: 'large', bottom: 'large' }}>
               <ds-divider></ds-divider>
@@ -135,14 +134,14 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'large' }}>
               <form.Field name="backupDestPath">
                 {(field) => (
-                  <Input
+                  <TextInput
                     label={t('backup.backup_path', 'Backup Path')}
-                    isRequired
+                    required
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
                     }
-                    backgroundColor="gray5"
+                    autoComplete="off"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -153,8 +152,8 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'large' }}>
               <form.Field name="spaceThreshold">
                 {(field) => (
-                  <Input
-                    isRequired
+                  <TextInput
+                    required
                     label={`${t('backup.minimum_space_threshold', 'Minimum Space Threshold')} (${t(
                       'label.mb',
                       'MB',
@@ -163,7 +162,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
                     }
-                    backgroundColor="gray5"
+                    autoComplete="off"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -174,8 +173,8 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'medium' }}>
               <form.Field name="backupLocalMetadataThreshold">
                 {(field) => (
-                  <Input
-                    isRequired
+                  <TextInput
+                    required
                     label={`${t(
                       'backup.local_metadata_threshold',
                       'Local Metadata Threshold',
@@ -184,7 +183,7 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
                     }
-                    backgroundColor="gray5"
+                    autoComplete="off"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -204,7 +203,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     value={field.state.value}
                     onClick={() => field.handleChange(!field.state.value)}
                     label={t('backup.schedule_smart_scan', 'Schedule Smartscan')}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -215,14 +213,14 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'medium' }}>
               <form.Field name="smartScanSchedulePattern">
                 {(field) => (
-                  <Input
-                    isRequired
+                  <TextInput
+                    required
                     label={t('backup.schedule', 'Schedule')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
                     }
-                    backgroundColor="gray5"
+                    autoComplete="off"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -242,7 +240,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
                     value={field.state.value}
                     onClick={() => field.handleChange(!field.state.value)}
                     label={t('backup.config.scheduleBackupPurge', 'Schedule Backup Purge')}
-                    iconColor="primary"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -253,14 +250,14 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
             <Container padding={{ bottom: 'large' }}>
               <form.Field name="purgeSchedulePattern">
                 {(field) => (
-                  <Input
-                    isRequired
+                  <TextInput
+                    required
                     label={t('backup.schedule', 'Schedule')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
                     }
-                    backgroundColor="gray5"
+                    autoComplete="off"
                     disabled={!allowSetBackup}
                   />
                 )}
@@ -272,64 +269,55 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
               <ds-divider></ds-divider>
             </Container>
           </ListRow>
-          <ListRow>
+          <ListRow padding={{ bottom: 'small' }}>
             <Container padding={{ bottom: 'small' }}>
               <form.Field name="keepDeletedItemsDays">
                 {(field) => (
-                  <Input
-                    isRequired
-                    label={t('backup.keep_delted_items_backup', 'Keep deleted items in the backup')}
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                      field.handleChange(e.target.value)
-                    }
-                    backgroundColor="gray5"
-                    disabled={!allowSetBackup}
-                  />
-                )}
-              </form.Field>
-            </Container>
-          </ListRow>
-          <ListRow>
-            <Padding bottom="large">
-              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                {t(
-                  'backup.set_backup_forever_msg',
-                  'If you set 0, your data will be kept in backup forever',
-                )}
-              </ds-text>
-            </Padding>
-          </ListRow>
-          <ListRow>
-            <Container padding={{ bottom: 'small' }}>
-              <form.Field name="keepDeletedAccountsDays">
-                {(field) => (
-                  <Input
-                    isRequired
+                  <TextInput
+                    required
                     label={t(
-                      'backup.keep_delete_accounts_in_backup',
-                      'Keep deleted accounts in the backup',
+                      'backup.keep_delted_items_backup',
+                      'Keep deleted items in the backup (Days)',
                     )}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>) =>
                       field.handleChange(e.target.value)
                     }
-                    backgroundColor="gray5"
+                    autoComplete="off"
                     disabled={!allowSetBackup}
+                    description={t(
+                      'backup.set_backup_forever_msg',
+                      'If you set 0, your data will be kept in backup forever',
+                    )}
                   />
                 )}
               </form.Field>
             </Container>
           </ListRow>
-          <ListRow>
-            <Padding bottom="large">
-              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                {t(
-                  'backup.set_backup_forever_msg',
-                  'If you set 0, your data will be kept in backup forever',
+          <ListRow padding={{ bottom: 'small' }}>
+            <Container padding={{ bottom: 'small' }}>
+              <form.Field name="keepDeletedAccountsDays">
+                {(field) => (
+                  <TextInput
+                    required
+                    label={t(
+                      'backup.keep_delete_accounts_in_backup',
+                      'Keep deleted accounts in the backup (Days)',
+                    )}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                      field.handleChange(e.target.value)
+                    }
+                    autoComplete="off"
+                    disabled={!allowSetBackup}
+                    description={t(
+                      'backup.set_backup_forever_msg',
+                      'If you set 0, your data will be kept in backup forever',
+                    )}
+                  />
                 )}
-              </ds-text>
-            </Padding>
+              </form.Field>
+            </Container>
           </ListRow>
         </Container>
       </Container>

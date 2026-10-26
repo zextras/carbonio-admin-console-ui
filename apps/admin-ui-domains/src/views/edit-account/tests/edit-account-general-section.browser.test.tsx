@@ -29,34 +29,34 @@ function CancelHarness() {
 
 function buildMockAccountDetail(overrides: Record<string, unknown> = {}): Record<string, unknown> {
   return {
-      uid: 'test-user',
-      name: 'test-user@test-domain.com',
-      sn: 'User',
-      initials: 'T',
-      givenName: 'Test',
-      displayName: 'Test User',
-      zimbraId: 'mock-zimbra-id',
-      zimbraAccountStatus: 'active',
-      zimbraCOSId: 'default-cos-id',
-      zimbraPrefLocale: 'en',
-      zimbraMailHost: 'mail.test-domain.com',
-      zimbraCreateTimestamp: '20250115100000.000Z',
-      zimbraLastLogonTimestamp: '20260320143000.000Z',
-      zimbraMailQuota: 10737418240,
-      zimbraHideInGal: 'FALSE',
-      zimbraPasswordMustChange: 'FALSE',
-      zimbraIsAdminAccount: 'FALSE',
-      zimbraIsDelegatedAdminAccount: 'FALSE',
-      zimbraIsExternalVirtualAccount: 'FALSE',
-      zimbraIsSystemAccount: 'FALSE',
-      domainName: 'test-domain.com',
-      mail: 'test-user@test-domain.com',
-      password: '',
-      repeatPassword: '',
-      description: 'A test account',
-      zimbraNotes: 'Some notes',
-      ...overrides,
-    };
+    uid: 'test-user',
+    name: 'test-user@test-domain.com',
+    sn: 'User',
+    initials: 'T',
+    givenName: 'Test',
+    displayName: 'Test User',
+    zimbraId: 'mock-zimbra-id',
+    zimbraAccountStatus: 'active',
+    zimbraCOSId: 'default-cos-id',
+    zimbraPrefLocale: 'en',
+    zimbraMailHost: 'mail.test-domain.com',
+    zimbraCreateTimestamp: '20250115100000.000Z',
+    zimbraLastLogonTimestamp: '20260320143000.000Z',
+    zimbraMailQuota: 10737418240,
+    zimbraHideInGal: 'FALSE',
+    zimbraPasswordMustChange: 'FALSE',
+    zimbraIsAdminAccount: 'FALSE',
+    zimbraIsDelegatedAdminAccount: 'FALSE',
+    zimbraIsExternalVirtualAccount: 'FALSE',
+    zimbraIsSystemAccount: 'FALSE',
+    domainName: 'test-domain.com',
+    mail: 'test-user@test-domain.com',
+    password: '',
+    repeatPassword: '',
+    description: 'A test account',
+    zimbraNotes: 'Some notes',
+    ...overrides,
+  };
 }
 
 function setupTest(contextOverrides: Record<string, unknown> = {}) {
@@ -164,22 +164,20 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
     );
 
     const defaultCosSwitch = page.getByRole('switch', { name: 'Default COS' });
-    const cosSelect = page.getByText('Default Class of Service', { exact: true });
+    const cosSelect = page.getByRole('button', { name: 'Default Class of Service' });
 
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(defaultCosSwitch).not.toBeChecked();
 
     await defaultCosSwitch.click();
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
-
-    await cosSelect.click();
-    await expect.element(page.getByTestId('dropdown-popper-list')).not.toBeInTheDocument();
+    await expect.element(defaultCosSwitch).toBeChecked();
+    await expect.element(cosSelect).toBeDisabled();
 
     await page.getByRole('button', { name: 'Cancel' }).click();
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(defaultCosSwitch).not.toBeChecked();
 
     await cosSelect.click();
-    await page.getByTestId('dropdown-popper-list').getByText('Premium COS').click();
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+    await page.getByRole('option', { name: 'Premium COS' }).click();
+    await expect.element(defaultCosSwitch).not.toBeChecked();
   });
 
   it('turns off Default COS and enables the select when default COS is first in the list', async () => {
@@ -195,15 +193,15 @@ describe('EditAccountGeneralSection Default COS (browser)', () => {
     );
 
     const defaultCosSwitch = page.getByRole('switch', { name: 'Default COS' });
-    const cosSelect = page.getByText('Default Class of Service', { exact: true });
+    const cosSelect = page.getByRole('button', { name: 'Default Class of Service' });
 
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'true');
+    await expect.element(defaultCosSwitch).toBeChecked();
 
     await defaultCosSwitch.click();
-    await expect.element(defaultCosSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(defaultCosSwitch).not.toBeChecked();
     await expect.element(page.getByText('default', { exact: true })).toBeVisible();
 
     await cosSelect.click();
-    await expect.element(page.getByTestId('dropdown-popper-list')).toBeVisible();
+    await expect.element(page.getByRole('option', { name: 'default' })).toBeVisible();
   });
 });

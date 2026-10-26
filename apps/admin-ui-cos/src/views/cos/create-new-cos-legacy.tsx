@@ -7,11 +7,11 @@
 import {
   Button,
   Container,
-  CustomTextArea,
-  Input,
   ListRow,
   Padding,
+  PlainTextarea,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { replaceHistory } from '@zextras/ui-shared';
 import { ChangeEvent, useState } from 'react';
@@ -114,9 +114,8 @@ export const CreateCosLegacy = () => {
             </Row>
             <ListRow>
               <Container padding={{ all: 'small' }} crossAlignment="flex-start">
-                <Input
+                <TextInput
                   label={t('label.cos_name', 'Cos Name')}
-                  backgroundColor="gray5"
                   value={cosName}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setCosName(e.target.value.toLowerCase());
@@ -134,9 +133,8 @@ export const CreateCosLegacy = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <Input
+                <TextInput
                   label={t('label.description', 'Description')}
-                  backgroundColor="gray5"
                   value={description}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     setDescription(e.target.value);
@@ -146,9 +144,8 @@ export const CreateCosLegacy = () => {
             </ListRow>
             <ListRow>
               <Container padding={{ all: 'small' }}>
-                <CustomTextArea
+                <PlainTextarea
                   label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
                   value={zimbraNotes}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     setZimbraNotes(e.target.value);

@@ -71,7 +71,6 @@ export const GeneralSettings = ({
                 label={t('backup.backup_is_enabled_at_startup', 'Backup is enabled at startup')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}
@@ -85,7 +84,6 @@ export const GeneralSettings = ({
                   label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
-                  iconColor="primary"
                   disabled={!allowSetBackup}
                 />
               )}
@@ -99,7 +97,6 @@ export const GeneralSettings = ({
                 label={t('backup.run_smartscan_at_startup', 'Run the Smartscan at startup')}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}

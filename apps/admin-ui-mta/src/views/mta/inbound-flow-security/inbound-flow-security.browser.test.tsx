@@ -74,9 +74,7 @@ function getAllConfigResponse() {
 async function toggleRejectUnlistedSenderSwitch() {
   const rejectUnlistedSenderSwitch = page.getByRole('switch', { name: 'Reject unlisted Sender' });
   await expect.element(rejectUnlistedSenderSwitch).toBeVisible();
-  await expect
-    .poll(() => rejectUnlistedSenderSwitch.element().getAttribute('aria-disabled'))
-    .toBeNull();
+  await expect.element(rejectUnlistedSenderSwitch).toBeEnabled();
   await rejectUnlistedSenderSwitch.click();
 }
 

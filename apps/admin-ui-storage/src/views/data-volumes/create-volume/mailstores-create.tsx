@@ -8,13 +8,14 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Container,
   getFieldErrorProps,
-  Input,
   LabeledValue,
+  NumberInput,
   Padding,
   Radio,
   Row,
   Select,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { type ChangeEvent, useContext } from 'react';
@@ -60,7 +61,6 @@ export function MailstoresCreate({
       <Row padding={{ top: 'large' }} width="100%">
         <LabeledValue
           label={t('label.volume_server', 'Server')}
-          backgroundColor="gray6"
           value={externalData}
         />
       </Row>
@@ -68,13 +68,12 @@ export function MailstoresCreate({
         <Row padding={{ top: 'large' }} width="100%">
           <Select
             items={volTypeList}
-            background="gray5"
             label={t('label.volume_type', 'Volume Type')}
-            defaultSelection={volTypeList?.find(
-              (items) => items?.value === form.state.values.volumeMain,
-            )}
-            showCheckbox={false}
-            onChange={(v: any): void => form.setFieldValue('volumeMain', v)}
+            selection={
+              volTypeList.find((item) => item.value === form.state.values.volumeMain) ??
+              volTypeList[0]
+            }
+            onChange={(value) => form.setFieldValue('volumeMain', value)}
           />
         </Row>
       )}
@@ -82,15 +81,13 @@ export function MailstoresCreate({
         <Row padding={{ top: 'large' }} width="100%">
           <Select
             items={volAllocationList}
-            background="gray5"
             label={t('label.volume_allocation', 'Allocation')}
-            showCheckbox={false}
             selection={
-              volAllocationList?.find(
-                (item: any) => item?.value === form.state.values.volumeAllocation,
-              ) as any
+              volAllocationList.find(
+                (item) => item.value === form.state.values.volumeAllocation,
+              ) ?? volAllocationList[0]
             }
-            onChange={(v: any): void => form.setFieldValue('volumeAllocation', v)}
+            onChange={(value) => form.setFieldValue('volumeAllocation', value)}
           />
         </Row>
       )}
@@ -104,10 +101,9 @@ export function MailstoresCreate({
               VOLUME_CREATE_VALIDATION_MESSAGES,
             );
             return (
-              <Input
-                inputName="volumeName"
+              <TextInput
+                name="volumeName"
                 label={t('label.volume_name', 'Volume Name')}
-                backgroundColor="gray5"
                 value={field.state.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 hasError={error.hasError}
@@ -160,10 +156,9 @@ export function MailstoresCreate({
               VOLUME_CREATE_VALIDATION_MESSAGES,
             );
             return (
-              <Input
-                inputName="path"
+              <TextInput
+                name="path"
                 label={t('label.volume_path', 'Volume path')}
-                backgroundColor="gray5"
                 value={field.state.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 hasError={error.hasError}
@@ -193,7 +188,6 @@ export function MailstoresCreate({
                       form.setFieldValue('compressionThreshold', '');
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -209,20 +203,17 @@ export function MailstoresCreate({
                   VOLUME_CREATE_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    inputName="compressionThreshold"
+                  <NumberInput
+                    name="compressionThreshold"
                     label={t('label.volume_compression_thresold', 'Compression Threshold')}
-                    backgroundColor="gray5"
-                    value={field.state.value}
-                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                      if (/^\d*$/.test(e.target.value)) {
-                        field.handleChange(e.target.value);
-                      }
+                    value={field.state.value ?? ''}
+                    onChange={(value): void => {
+                      field.handleChange(value);
                     }}
                     hasError={error.hasError}
                     description={error.description}
                     disabled={!isCompression}
-                    CustomIcon={CompressionThresholdIcon}
+                    icon={<CompressionThresholdIcon />}
                   />
                 );
               }}
@@ -236,19 +227,14 @@ export function MailstoresCreate({
             <Switch
               value={field.state.value}
               label={t('label.set_as_current', 'Set as Current')}
+              description={t(
+                'label.enable_current_helptext',
+                'Enabling this option will disable the current active volume.',
+              )}
               onClick={(): void => field.handleChange(!field.state.value)}
-              iconColor="primary"
             />
           )}
         </form.Field>
-      </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: 'extralarge' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
-          )}
-        </ds-text>
       </Row>
     </Container>
   );

@@ -11,12 +11,12 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
   LabeledValue,
   ListRow,
   Padding,
   Select,
   Table,
+  TextInput,
 } from '@zextras/ui-components';
 import { cloneDeep } from 'lodash-es';
 import { useContext, useState } from 'react';
@@ -244,7 +244,7 @@ export function EditHsmPolicyDetailSection() {
     >
       <ListRow>
         <Container padding={{ bottom: 'large' }}>
-          <LabeledValue label={t('hsm.server', 'Server')} backgroundColor="gray6" value={server} />
+          <LabeledValue label={t('hsm.server', 'Server')}  value={server} />
         </Container>
       </ListRow>
       <ListRow>
@@ -346,10 +346,8 @@ export function EditHsmPolicyDetailSection() {
         >
           <Select
             items={options}
-            background="gray5"
             label={t('hsm.option', 'Option')}
-            showCheckbox={false}
-            defaultSelection={selectedOption}
+            selection={selectedOption ?? options[0]}
             onChange={onOptionChange}
           />
         </Container>
@@ -361,10 +359,8 @@ export function EditHsmPolicyDetailSection() {
           >
             <Select
               items={dateScaleOption}
-              background="gray5"
               label={t('hsm.value', 'Value')}
-              showCheckbox={false}
-              defaultSelection={selectedScale}
+              selection={selectedScale ?? dateScaleOption[0]}
               onChange={onDateScaleChange}
             />
           </Container>
@@ -377,10 +373,8 @@ export function EditHsmPolicyDetailSection() {
           >
             <Select
               items={scaleOptions}
-              background="gray5"
               label={t('hsm.value', 'Value')}
-              showCheckbox={false}
-              defaultSelection={selectedScale}
+              selection={selectedScale ?? scaleOptions[0]}
               onChange={onScaleChange}
             />
           </Container>
@@ -390,10 +384,9 @@ export function EditHsmPolicyDetailSection() {
           crossAlignment="flex-start"
           padding={{ right: 'large' }}
         >
-          <Input
+          <TextInput
             label={t('hsm.value', 'Value')}
-            backgroundColor="gray5"
-            value={value}
+            value={value ?? ''}
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setValue(e.target.value);
             }}

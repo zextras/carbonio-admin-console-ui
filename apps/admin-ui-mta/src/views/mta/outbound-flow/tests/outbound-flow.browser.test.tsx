@@ -78,7 +78,7 @@ async function expectInstancesSectionVisible() {
 async function toggleAddClientIpSwitch() {
   const addClientIpSwitch = page.getByRole('switch', { name: 'Add client IP to the header' });
   await expect.element(addClientIpSwitch).toBeVisible();
-  await expect.poll(() => addClientIpSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await expect.element(addClientIpSwitch).toBeEnabled();
   await addClientIpSwitch.click();
 }
 

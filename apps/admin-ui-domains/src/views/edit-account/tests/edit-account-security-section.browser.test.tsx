@@ -618,6 +618,29 @@ describe('EditAccountSecuritySection (browser)', () => {
   });
 
   describe('Inherited Values and Reset', () => {
+    it('shows the Inherited chip instead of the inherited description on an inherited field', async () => {
+      setupEditAccountSecurityTest(
+        wrapSecuritySection(
+          { zimbraPasswordMinLength: '6' },
+          {
+            accSpecificDetail: { ...mockAccSpecificDetail, zimbraPasswordMinLength: undefined },
+          },
+        ),
+      );
+
+      const minLength = page.getByRole('textbox', { name: /^Minimum password length/ });
+      await expect.element(minLength).toBeVisible();
+      await expect.element(minLength).toHaveValue('6');
+
+      const input = (await minLength.element()) as HTMLInputElement;
+      const chip = document.getElementById(input.getAttribute('aria-describedby') ?? '');
+      expect(chip?.textContent).toBe('Inherited');
+
+      await expect
+        .element(page.getByText('Inherited from the Class of Service'))
+        .not.toBeInTheDocument();
+    });
+
     it('should render reset buttons for inherited fields', async () => {
       setupEditAccountSecurityTest(
         wrapSecuritySection(
@@ -645,11 +668,11 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
 
       const otpSwitch = page.getByRole('switch', { name: 'Allow users to configure 2FA' });
-      await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'true');
+      await expect.element(otpSwitch).toBeChecked();
 
       await resetButton.click();
 
-      await expect.element(otpSwitch).toHaveAttribute('aria-checked', 'false');
+      await expect.element(otpSwitch).not.toBeChecked();
     });
 
     it('should update the form when reset button is clicked', async () => {
@@ -665,11 +688,11 @@ describe('EditAccountSecuritySection (browser)', () => {
       await expect.element(resetButton).toBeVisible();
 
       const lockSwitch = page.getByRole('switch', { name: 'Prevent user from changing password' });
-      await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'true');
+      await expect.element(lockSwitch).toBeChecked();
 
       await resetButton.click();
 
-      await expect.element(lockSwitch).toHaveAttribute('aria-checked', 'false');
+      await expect.element(lockSwitch).not.toBeChecked();
     });
   });
 
@@ -961,21 +984,21 @@ describe('EditAccountSecuritySection (browser)', () => {
     it('should render grace period expiration date picker when grace period is enabled', async () => {
       setupAdvancedSecurityTest(wrapSecuritySection(enabledOtpOverrides));
 
-      await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeVisible();
+      await expect.element(page.getByRole('textbox', { name: /set grace period expiration date/i })).toBeVisible();
     });
 
     it('should disable the date picker when grace period is disabled', async () => {
       setupAdvancedSecurityTest(wrapSecuritySection(overrides_disabledOtpContext));
 
       await expect
-        .element(page.getByPlaceholder('Set grace period expiration date'))
+        .element(page.getByRole('textbox', { name: /set grace period expiration date/i }))
         .toBeDisabled();
     });
 
     it('should enable the date picker when all OTP features are enabled', async () => {
       setupAdvancedSecurityTest(wrapSecuritySection(enabledOtpOverrides));
 
-      await expect.element(page.getByPlaceholder('Set grace period expiration date')).toBeEnabled();
+      await expect.element(page.getByRole('textbox', { name: /set grace period expiration date/i })).toBeEnabled();
     });
 
     it('should open the calendar popover when the calendar icon is clicked', async () => {

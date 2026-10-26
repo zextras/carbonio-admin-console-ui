@@ -1,0 +1,89 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import clsx from 'clsx';
+import type { ReactNode } from 'react';
+import { useId } from 'react';
+
+import { InputShell } from './input-shell';
+import styles from './input-shell.module.css';
+
+export type TextInputProps = Omit<
+  React.ComponentPropsWithRef<'input'>,
+  'value' | 'onChange' | 'defaultValue' | 'id'
+> & {
+  /** Always rendered as a visible <label> above the field. */
+  label: string;
+  /** Controlled value. The field is fully controlled by design: `value` and `onChange` are required and `defaultValue` is not accepted. */
+  value: string | number | readonly string[];
+  /** Fired on every keystroke; the caller owns the text. */
+  onChange: React.ChangeEventHandler<HTMLInputElement>;
+  /** Renders the description below the field and links it via aria-describedby. `null` is treated as absent. */
+  description?: string | null;
+  /** Marks the field as invalid (aria-invalid) and applies the error styling. Pair with `description` so the invalid state carries a visible and announced explanation. */
+  hasError?: boolean;
+  /** Renders the InfoOutline icon at the right end of the label row with this text as hover tooltip. */
+  infoTooltip?: string;
+  /** Renders an informational chip inside the field box, after the text and before any icon; announced via aria-describedby. */
+  chip?: string;
+  /** Renders a custom node at the right edge of the field box, before the info icon. */
+  icon?: ReactNode;
+};
+
+export const TextInput = ({
+	label,
+	value,
+	onChange,
+	disabled,
+	required,
+	className,
+	hasError = false,
+	description,
+	infoTooltip,
+	chip,
+	icon,
+	'aria-describedby': callerDescribedBy,
+	...rest
+}: TextInputProps) => {
+	const inputId = useId();
+  const descriptionId = useId();
+  const chipId = useId();
+  const resolvedDescription = description ?? '';
+  const inputClassName = clsx(styles.control, className);
+  const describedBy = clsx(
+    callerDescribedBy,
+    description ? descriptionId : undefined,
+    chip ? chipId : undefined,
+  );
+
+  return (
+    <InputShell
+      id={inputId}
+      label={label}
+      disabled={disabled}
+      required={required}
+      hasError={hasError}
+      description={resolvedDescription}
+      descriptionId={descriptionId}
+      infoTooltip={infoTooltip}
+      chip={chip}
+      chipId={chipId}
+      icon={icon}
+    >
+      <input
+        id={inputId}
+        value={value}
+        onChange={onChange}
+        disabled={disabled}
+        required={required}
+        className={inputClassName}
+        aria-invalid={hasError || undefined}
+        aria-describedby={describedBy || undefined}
+        {...rest}
+      />
+    </InputShell>
+  );
+};

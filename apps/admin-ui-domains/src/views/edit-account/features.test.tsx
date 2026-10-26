@@ -58,13 +58,13 @@ describe('Features - Mail section', () => {
   it('renders the Mail title and all four mail switches, including the import/export ones', () => {
     renderFeatures();
     expect(screen.getByText('Mail', { exact: true })).toBeTruthy();
-    expect(screen.getByRole('switch', { name: 'Mail Signatures' })).toBeTruthy();
-    expect(screen.getByRole('switch', { name: 'Out of Office Reply' })).toBeTruthy();
+    expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Mail Signatures' })).toBeTruthy();
+    expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Out of Office Reply' })).toBeTruthy();
     expect(
-      screen.getByRole('switch', { name: 'Allow user to import external mailbox' }),
+      screen.getByRole<HTMLInputElement>('switch', { name: 'Allow user to import external mailbox' }),
     ).toBeTruthy();
     expect(
-      screen.getByRole('switch', { name: 'Allow user to export their mailbox' }),
+      screen.getByRole<HTMLInputElement>('switch', { name: 'Allow user to export their mailbox' }),
     ).toBeTruthy();
   });
 
@@ -72,32 +72,32 @@ describe('Features - Mail section', () => {
     renderFeatures();
     expect(
       screen
-        .getByRole('switch', { name: 'Allow user to import external mailbox' })
-        .getAttribute('aria-checked'),
-    ).toBe('false');
+        .getByRole<HTMLInputElement>('switch', { name: 'Allow user to import external mailbox' })
+        .checked,
+    ).toBe(false);
     expect(
       screen
-        .getByRole('switch', { name: 'Allow user to export their mailbox' })
-        .getAttribute('aria-checked'),
-    ).toBe('true');
+        .getByRole<HTMLInputElement>('switch', { name: 'Allow user to export their mailbox' })
+        .checked,
+    ).toBe(true);
   });
 
   it('toggles the import switch independently from the export switch', () => {
     renderFeatures();
 
-    const importSwitch = screen.getByRole('switch', {
+    const importSwitch = screen.getByRole<HTMLInputElement>('switch', {
       name: 'Allow user to import external mailbox',
     });
-    const exportSwitch = screen.getByRole('switch', {
+    const exportSwitch = screen.getByRole<HTMLInputElement>('switch', {
       name: 'Allow user to export their mailbox',
     });
 
-    expect(importSwitch.getAttribute('aria-checked')).toBe('false');
+    expect(importSwitch.checked).toBe(false);
     fireEvent.click(importSwitch);
-    expect(importSwitch.getAttribute('aria-checked')).toBe('true');
+    expect(importSwitch.checked).toBe(true);
 
     // Unrelated switch must not be affected.
-    expect(exportSwitch.getAttribute('aria-checked')).toBe('true');
+    expect(exportSwitch.checked).toBe(true);
   });
 
   it('falls back to the inherited CoS value when no account-specific value is set', () => {
@@ -108,9 +108,9 @@ describe('Features - Mail section', () => {
 
     expect(
       screen
-        .getByRole('switch', { name: 'Allow user to import external mailbox' })
-        .getAttribute('aria-checked'),
-    ).toBe('true');
+        .getByRole<HTMLInputElement>('switch', { name: 'Allow user to import external mailbox' })
+        .checked,
+    ).toBe(true);
   });
 
   it('disables the import/export switches when readonlyFeatures is true', () => {
@@ -118,14 +118,14 @@ describe('Features - Mail section', () => {
 
     expect(
       screen
-        .getByRole('switch', { name: 'Allow user to import external mailbox' })
-        .getAttribute('aria-disabled'),
-    ).toBe('true');
+        .getByRole<HTMLInputElement>('switch', { name: 'Allow user to import external mailbox' })
+        .disabled,
+    ).toBe(true);
     expect(
       screen
-        .getByRole('switch', { name: 'Allow user to export their mailbox' })
-        .getAttribute('aria-disabled'),
-    ).toBe('true');
+        .getByRole<HTMLInputElement>('switch', { name: 'Allow user to export their mailbox' })
+        .disabled,
+    ).toBe(true);
   });
 
   it('shows a reset control for the export switch when it comes from an account-specific override, and resetting it calls setEmptyValue', () => {
@@ -163,14 +163,14 @@ describe('Features - Files section visibility (new-subscriptions flag enabled)',
   it('keeps the Allow access to Tasks switch visible when the COS edition is mail', () => {
     renderFeatures({ cosDetail: { edition: 'mail' } });
 
-    expect(screen.getByRole('switch', { name: 'Allow access to Tasks' })).toBeTruthy();
+    expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Tasks' })).toBeTruthy();
   });
 
   it('shows the Files heading and switch when the COS edition is workspace', () => {
     renderFeatures({ cosDetail: { edition: 'workspace' } });
 
     expect(screen.getByText('Files', { exact: true })).toBeTruthy();
-    expect(screen.getByRole('switch', { name: 'Allow access to Files' })).toBeTruthy();
+    expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' })).toBeTruthy();
   });
 
   it('hides the Allow access to Files switch when the COS has no edition attribute', () => {

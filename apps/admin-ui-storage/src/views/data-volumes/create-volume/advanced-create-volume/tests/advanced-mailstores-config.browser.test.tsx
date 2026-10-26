@@ -128,7 +128,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
   it('should render the Prefix input', async () => {
     await renderHarness().render();
     await expect
-      .element(page.getByPlaceholder('Prefix - all objects will have this prefix in their name'))
+      .element(page.getByRole('textbox', { name: 'Prefix - all objects will have this prefix in their name' }))
       .toBeVisible();
   });
 
@@ -282,7 +282,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
   it('should update form prefix when typing in the Prefix input', async () => {
     await renderHarness().render();
     await page
-      .getByPlaceholder('Prefix - all objects will have this prefix in their name')
+      .getByRole('textbox', { name: 'Prefix - all objects will have this prefix in their name' })
       .fill('myprefix');
     await vi.waitFor(() => {
       const state = document.querySelector('[data-testid="advanced-state"]')?.textContent ?? '';
@@ -403,7 +403,7 @@ describe('AdvancedMailstoresConfig (browser)', () => {
     await expect
       .element(page.getByText('Volume Options', { exact: true }).first())
       .toBeVisible();
-    await expect.element(page.getByPlaceholder('Volume path')).toBeVisible();
+    await expect.element(page.getByRole('textbox', { name: 'Volume path' })).toBeVisible();
   });
 
   it('should toggle compression and accept only numeric thresholds for local block device', async () => {
@@ -424,11 +424,12 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       expect(onSelection).toHaveBeenCalledWith({ isCompression: true }, true);
     });
 
-    const thresholdInput = page.getByPlaceholder('Compression Threshold');
+    const thresholdInput = page.getByRole('spinbutton', { name: 'Compression Threshold' });
     await expect.element(thresholdInput).not.toBeDisabled();
 
     await thresholdInput.fill('4096');
-    await expect.element(thresholdInput).toHaveValue('4096');
+    const thresholdElement = (await thresholdInput.element()) as HTMLInputElement;
+    expect(thresholdElement.value).toBe('4096');
   });
 
   it('should hide compression controls when index volume is selected for local block device', async () => {

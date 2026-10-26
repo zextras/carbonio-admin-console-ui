@@ -6,12 +6,13 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  Input,
   ListRow,
+  NumberInput,
   Padding,
   Radio,
   Row,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { type ChangeEvent, useEffect } from 'react';
@@ -244,18 +245,16 @@ export function AdvancedMailstoresConfig({
       {isLocalBlockDevice ? (
         <>
           <Row padding={{ top: 'large' }} width="100%" mainAlignment="flex-start">
-            <Input
-              inputName="path"
+            <TextInput
+              name="path"
               label={t('label.volume_path', 'Volume path')}
               value={path}
-              backgroundColor="gray5"
               onChange={changeVolDetail}
+              description={t(
+                'storage.dataVolumes.volumePathMustExistHint',
+                'The volume path must already exist',
+              )}
             />
-            <Padding top="extrasmall">
-              <ds-text as="span" color="secondary" overflow="break-word" size="extrasmall">
-                {t('storage.dataVolumes.volumePathMustExistHint', 'The volume path must already exist')}
-              </ds-text>
-            </Padding>
           </Row>
           {volumeMain !== INDEX_TYPE_VALUE && (
             <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="100%">
@@ -271,23 +270,19 @@ export function AdvancedMailstoresConfig({
                     }
                     onSelection({ isCompression: newValue }, true);
                   }}
-                  iconColor="primary"
                 />
               </Row>
               <Padding horizontal="small" />
               <Row mainAlignment="flex-start" padding={{ top: 'large' }} width="65%">
-                <Input
-                  inputName="compressionThreshold"
+                <NumberInput
+                  name="compressionThreshold"
                   label={t('label.volume_compression_thresold', 'Compression Threshold')}
                   value={compressionThreshold}
-                  backgroundColor="gray5"
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    if (/^\d*$/.test(e.target.value)) {
-                      form.setFieldValue('compressionThreshold', e.target.value);
-                    }
+                  onChange={(value): void => {
+                    form.setFieldValue('compressionThreshold', value);
                   }}
                   disabled={!isCompression}
-                  CustomIcon={CompressionThresholdIcon}
+                  icon={<CompressionThresholdIcon />}
                 />
               </Row>
             </Row>
@@ -296,14 +291,13 @@ export function AdvancedMailstoresConfig({
       ) : (
         <>
           <Row padding={{ top: 'large' }} width="100%">
-            <Input
-              inputName="prefix"
+            <TextInput
+              name="prefix"
               label={t(
                 'label.prefix_name',
                 'Prefix - all objects will have this prefix in their name',
               )}
               value={prefix}
-              backgroundColor="gray5"
               onChange={changeVolDetail}
             />
           </Row>
@@ -330,9 +324,14 @@ export function AdvancedMailstoresConfig({
                         onSelection({ infrequentAccessThreshold: '' }, true);
                       }
                     }}
-                    iconColor="primary"
                   />
-                  <Tooltip placement="top" label={t('storage.dataVolumes.amazonStorageDocumentation', 'Amazon Storage Class Documentation')}>
+                  <Tooltip
+                    placement="top"
+                    label={t(
+                      'storage.dataVolumes.amazonStorageDocumentation',
+                      'Amazon Storage Class Documentation',
+                    )}
+                  >
                     <button
                       type="button"
                       className={styles.tieringDocIconButton}
@@ -347,20 +346,29 @@ export function AdvancedMailstoresConfig({
                   </Tooltip>
                 </Row>
               </Row>
-              <Row padding={{ top: 'small', left: 'small' }} width="100%" mainAlignment="flex-start">
+              <Row
+                padding={{ top: 'small', left: 'small' }}
+                width="100%"
+                mainAlignment="flex-start"
+              >
                 <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
-                  <Input
-                    inputName="infrequentAccessThreshold"
+                  <NumberInput
+                    name="infrequentAccessThreshold"
                     label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                    type="number"
                     value={infrequentAccessThreshold || ''}
-                    backgroundColor="gray5"
-                    onChange={changeVolDetail}
+                    onChange={(value): void => {
+                      form.setFieldValue('infrequentAccessThreshold', value);
+                    }}
                     disabled={!useInfrequentAccess}
                   />
                 </Row>
               </Row>
-              <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%" crossAlignment="center">
+              <Row
+                padding={{ top: 'large' }}
+                mainAlignment="flex-start"
+                width="100%"
+                crossAlignment="center"
+              >
                 <Switch
                   value={useIntelligentTiering}
                   label={t('label.use_intelligent_tiering', 'Use intelligent tiering')}
@@ -375,9 +383,14 @@ export function AdvancedMailstoresConfig({
                       onSelection({ useInfrequentAccess: false }, true);
                     }
                   }}
-                  iconColor="primary"
                 />
-                <Tooltip placement="top" label={t('storage.dataVolumes.amazonTieringDocumentation', 'Amazon Tiering Documentation')}>
+                <Tooltip
+                  placement="top"
+                  label={t(
+                    'storage.dataVolumes.amazonTieringDocumentation',
+                    'Amazon Tiering Documentation',
+                  )}
+                >
                   <button
                     type="button"
                     className={styles.tieringDocIconButton}
@@ -385,7 +398,9 @@ export function AdvancedMailstoresConfig({
                       'label.use_intelligent_tiering_helptext',
                       'Open Amazon Tiering Documentation',
                     )}
-                    onClick={(): void => openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)}
+                    onClick={(): void =>
+                      openDocumentation(AMAZON_USERGUIDE_INTELLIGENT_TIERING_LINK)
+                    }
                   >
                     <ds-icon icon="ExternalLinkOutline" size="medium" color="primary" />
                   </button>
@@ -399,51 +414,36 @@ export function AdvancedMailstoresConfig({
         <Switch
           value={isCurrent}
           label={t('label.set_as_current', 'Set as Current')}
+          description={t(
+            'label.enable_current_helptext',
+            'Enabling this option will disable the current active volume.',
+          )}
           onClick={(): void => {
             const newValue = !isCurrent;
             form.setFieldValue('isCurrent', newValue);
             onSelection({ isCurrent: newValue }, true);
           }}
-          iconColor="primary"
         />
       </Row>
-      <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
-        <ds-text as="p" color="secondary">
-          {t(
-            'label.enable_current_helptext',
-            'Enabling this option will disable the current active volume.',
-          )}
-        </ds-text>
-      </Row>
       {!isLocalBlockDevice && (
-        <>
-          <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
-            <Switch
-              value={centralized}
-              label={t('label.storage_centralized', 'I want this Storage to be centralized')}
-              onClick={(): void => {
-                const newValue = !centralized;
-                form.setFieldValue('centralized', newValue);
-                onSelection({ centralized: newValue }, true);
-              }}
-              iconColor="primary"
-            />
-          </Row>
-          <Row mainAlignment="flex-start" width="100%" padding={{ left: '2rem' }}>
-            <ds-text
-              as="p"
-              color="secondary"
-              style={{ whiteSpace: 'pre-line', width: '100%' }}
-              overflow="break-word"
-            >
+        <Row padding={{ top: 'large' }} mainAlignment="flex-start" width="100%">
+          <Switch
+            value={centralized}
+            label={t('label.storage_centralized', 'I want this Storage to be centralized')}
+            description={
               <Trans
                 i18nKey="label.storage_centralized_helpertext"
                 defaults="<bold>Use the CLI to manage the centralization.</bold> Centralized data becomes useful when two or more servers need access to the same data. By keeping data in one place, it's easier to manage both the hardware and the data itself. "
                 components={{ bold: <strong /> }}
               />
-            </ds-text>
-          </Row>
-        </>
+            }
+            onClick={(): void => {
+              const newValue = !centralized;
+              form.setFieldValue('centralized', newValue);
+              onSelection({ centralized: newValue }, true);
+            }}
+          />
+        </Row>
       )}
     </Container>
   );

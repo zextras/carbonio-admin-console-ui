@@ -46,7 +46,6 @@ export const ForwardingOptions = ({ form, readonlyCOS }: ForwardingOptionsProps)
                       'cos.user_can_specify_forwarding_address',
                       'User can specify forwarding address',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -64,7 +63,6 @@ export const ForwardingOptions = ({ form, readonlyCOS }: ForwardingOptionsProps)
                       'cos.user_can_specify_mail_forwarding_filter',
                       'User can specify mail forwarding filter',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

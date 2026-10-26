@@ -8,7 +8,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   Padding,
   Row,
   Table,
@@ -60,7 +60,7 @@ export const ServerPoolTable = ({
               width="65%"
               crossAlignment="flex-start"
             >
-              <Input
+              <LegacyInput
                 value={searchValue}
                 disabled={isSearchDisabled}
                 label={t('cos.search_a_specific_server', 'Search for a specific server')}

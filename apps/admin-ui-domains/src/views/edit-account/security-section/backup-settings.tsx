@@ -33,7 +33,6 @@ export const BackupSettings = () => {
                 value={values?.backupSelfUndeleteAllowed}
                 onClick={(): void => toggleAccountValue('backupSelfUndeleteAllowed', true, false)}
                 label={t('label.allow_restore_message', 'Allow user to restore messages')}
-                iconColor="primary"
               />
             </Container>
           </ListRow>

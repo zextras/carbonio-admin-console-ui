@@ -4,12 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import {
+  ComboboxInput,
+  type ComboboxItem,
   Container,
-  DropDownInput,
   ListItems,
   ListPanelItem,
-  Padding,
-  Row,
 } from '@zextras/ui-components';
 import {
   replaceHistory,
@@ -60,28 +59,15 @@ export const StorageSidebar = () => {
 
   const filteredServers = volumeList.filter((item) => item.name?.includes(searchVolumeName));
 
-  const itemsVolume = filteredServers.map((volume) => ({
-    id: volume.id,
-    label: volume.name,
-    customComponent: (
-      <Row
-        style={{
-          display: 'block',
-          textAlign: 'left',
-          height: 'inherit',
-          padding: '3px',
-          width: 'inherit',
-        }}
-        onClick={(): void => {
-          const serverName = volume.name || '';
-          setSearchVolumeName(serverName);
-          replaceHistory(`/${serverName}/${DATA_VOLUMES}`);
-        }}
-      >
-        {volume.name}
-      </Row>
-    ),
+  const serverComboboxItems: Array<ComboboxItem> = filteredServers.map((volume) => ({
+    id: volume.id ?? '',
+    label: volume.name ?? '',
   }));
+
+  const handleSelectServer = (item: ComboboxItem): void => {
+    setSearchVolumeName(item.label);
+    replaceHistory(`/${item.label}/${DATA_VOLUMES}`);
+  };
 
   const isShowError =
     !isError &&
@@ -147,11 +133,6 @@ export const StorageSidebar = () => {
     }
   };
 
-  const customIconDetail = {
-    icon: searchVolumeName === '' ? ('HardDriveOutline' as const) : ('CloseOutline' as const),
-    onClick: handleCustomIconClick,
-  };
-
   const handleSelectOperation = (id: string): void => {
     if (id === DATA_VOLUMES || id === HSM_SETTINGS) {
       replaceHistory(`/${selectedServer}/${id}`);
@@ -182,42 +163,37 @@ export const StorageSidebar = () => {
             setSelectedOperationItem={handleSelectOperation}
           />
         )}
+        <div className="box-border w-full px-lg pt-lg">
+          <ComboboxInput
+            label={t('label.select_a_server', 'Select a Server')}
+            items={serverComboboxItems}
+            loading={isLoading}
+            value={searchVolumeName}
+            onChange={handleInputChange}
+            onSelect={handleSelectServer}
+            onClear={handleCustomIconClick}
+            hasError={isShowError}
+            description={
+              isShowError
+                ? t(
+                    'label.not_found_check_the_text_and_try_again',
+                    'Not found - check the text and try again',
+                  )
+                : undefined
+            }
+          />
+        </div>
         <ListPanelItem
           title={t('label.server_details', 'Server Details')}
           isListExpanded={isServerSpecificListExpand}
           setToggleView={toggleServerSpecific}
         />
         {isServerSpecificListExpand && (
-          <>
-            <Row mainAlignment="flex-start" width="100%">
-              <DropDownInput
-                items={itemsVolume}
-                inputLabel={t('label.select_a_server', 'Select a Server')}
-                onChange={handleInputChange}
-                hasError={isShowError}
-                inputValue={searchVolumeName}
-                isCustomIcon
-                customIconDetail={customIconDetail}
-              />
-            </Row>
-            {isShowError && (
-              <Container mainAlignment="flex-start" crossAlignment="flex-start" width="fill">
-                <Padding top="large" left="small">
-                  <ds-text as="span" size="extrasmall" weight="regular" color="error">
-                    {t(
-                      'label.not_found_check_the_text_and_try_again',
-                      'Not found - check the text and try again',
-                    )}
-                  </ds-text>
-                </Padding>
-              </Container>
-            )}
-            <ListItems
-              items={serverOptions}
-              selectedOperationItem={selectedOperationItem}
-              setSelectedOperationItem={handleSelectOperation}
-            />
-          </>
+          <ListItems
+            items={serverOptions}
+            selectedOperationItem={selectedOperationItem}
+            setSelectedOperationItem={handleSelectOperation}
+          />
         )}
       </Container>
     </Container>

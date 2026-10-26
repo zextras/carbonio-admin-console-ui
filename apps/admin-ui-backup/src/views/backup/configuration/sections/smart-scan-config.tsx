@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Button, Container, Input, ListRow, Switch } from '@zextras/ui-components';
+import { Button, Container, ListRow, Switch,TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -60,7 +60,6 @@ export const SmartScanConfig = ({
               label={t('backup.schedule_smartscan', 'Schedule Smartscan')}
               value={field.state.value}
               onClick={() => field.handleChange(!field.state.value)}
-              iconColor="primary"
               disabled={!allowSetBackup}
             />
           )}
@@ -70,8 +69,9 @@ export const SmartScanConfig = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="scheduleSmartScan">
             {(field) => (
-              <Input
-                isRequired
+              <TextInput
+                required
+                autoComplete="off"
                 label={t('backup.schedule', 'Schedule')}
                 value={field.state.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}

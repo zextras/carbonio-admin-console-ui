@@ -53,7 +53,13 @@ export const DomainTheme = () => {
   return (
     <>
       {isPending && <ds-spinner></ds-spinner>}
-      <Container background="gray6" crossAlignment="flex-start" mainAlignment="flex-start">
+      <Container
+        height="calc(100vh - 105px)"
+        background="gray6"
+        crossAlignment="flex-start"
+        mainAlignment="flex-start"
+        style={{ overflowY: 'auto' }}
+      >
         <FormPageLayout
           title={t('label.whitelabel_settings', 'Whitelabel Settings')}
           unsavedChanges={isDirty}

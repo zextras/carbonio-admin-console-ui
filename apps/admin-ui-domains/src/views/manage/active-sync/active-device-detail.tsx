@@ -4,76 +4,219 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { useForm } from '@tanstack/react-form';
+import { useSelector } from '@tanstack/react-store';
 import {
   Button,
-  Container,
   Displayer,
+  FormPageLayout,
   LabeledValue,
-  ListRow,
-  Row,
   Select,
+  useSnackbar,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
-import { useState } from 'react';
+import { type ReactNode, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { RESET_DEVICE, WIPE_DEVICE } from '../../../constants';
-import type { MobileDevice } from '../../../services/parse-active-sync';
+import type {
+  AbqDeviceStatus,
+  MobileDevice,
+  MobileDeviceDetail,
+} from '../../../services/parse-active-sync';
 import {
+  useAbqDevices,
   useActiveSyncDeviceStats,
   useResetDevice,
+  useResumeDevice,
+  useSetAbqDeviceStatus,
   useSuspendDevice,
   useWipeDevice,
 } from '../../../services/use-active-sync';
 import { ActiveDeviceConfirmation } from './active-device-confirmation';
+import styles from './active-device-detail.module.css';
 
-type SelectOption = { label: string; value: number };
+type AbqStatusOption = { label: string; value: AbqDeviceStatus };
+
+type DeviceStatusOption = { label: string; value: 0 | 1 };
+
+type DeviceEditFormValues = {
+  abqStatus: AbqDeviceStatus;
+  statusValue: 0 | 1;
+};
 
 type ActiveDeviceDetailProps = {
   selectedDevice: MobileDevice;
   onClose: () => void;
 };
 
+type ActiveDeviceDetailFormProps = {
+  device: MobileDeviceDetail;
+  serverAbqStatus: AbqDeviceStatus;
+  serverStatusValue: 0 | 1;
+  isStatsFetching: boolean;
+  onClose: () => void;
+};
+
+type PanelShellProps = {
+  onClose: () => void;
+  children: ReactNode;
+};
+
+function PanelShell({ onClose, children }: Readonly<PanelShellProps>) {
+  const { t } = useTranslation();
+  return (
+    <div className={styles.panel}>
+      <div className={styles.closeBar}>
+        <Button
+          type="ghost"
+          color="text"
+          size="medium"
+          icon="CloseOutline"
+          aria-label={t('label.close', 'Close')}
+          onClick={onClose}
+        />
+      </div>
+      {children}
+    </div>
+  );
+}
+
+function LoadingPanelBody() {
+  return (
+    <div className={styles.loadingBody}>
+      <ds-spinner></ds-spinner>
+    </div>
+  );
+}
+
 export const ActiveDeviceDetail = ({
   selectedDevice,
   onClose,
 }: Readonly<ActiveDeviceDetailProps>) => {
-  const [t] = useTranslation();
-  const { isSticky, setIsSticky } = useStickyBarStore();
-  const [operationType, setOperationType] = useState<string>('');
-  const [wipeConfirmed, setWipeConfirmed] = useState(false);
-
-  const { data: mobileDeviceDetail, isFetching } = useActiveSyncDeviceStats({
+  const statsQuery = useActiveSyncDeviceStats({
     accountEmail: selectedDevice.accountEmail,
     deviceId: selectedDevice.deviceId,
     accountServer: selectedDevice.accountServer,
   });
+  const abqQuery = useAbqDevices();
+
+  const serverAbqStatus: AbqDeviceStatus =
+    (abqQuery.data ?? []).find((device) => device.deviceId === selectedDevice.deviceId)?.status ??
+    'allowed';
+  const serverStatusValue: 0 | 1 = statsQuery.data?.status === 1 ? 1 : 0;
+  const isDataLoading = statsQuery.isPending || abqQuery.isPending;
+
+  return (
+    <PanelShell onClose={onClose}>
+      {isDataLoading && <LoadingPanelBody />}
+      {!isDataLoading && statsQuery.data && (
+        <ActiveDeviceDetailForm
+          device={statsQuery.data}
+          serverAbqStatus={serverAbqStatus}
+          serverStatusValue={serverStatusValue}
+          isStatsFetching={statsQuery.isFetching}
+          onClose={onClose}
+        />
+      )}
+    </PanelShell>
+  );
+};
+
+const ActiveDeviceDetailForm = ({
+  device,
+  serverAbqStatus,
+  serverStatusValue,
+  isStatsFetching,
+  onClose,
+}: Readonly<ActiveDeviceDetailFormProps>) => {
+  const [t] = useTranslation();
+  const createSnackbar = useSnackbar();
+  const { isSticky, setIsSticky } = useStickyBarStore();
+  const [operationType, setOperationType] = useState<string>('');
+  const [wipeConfirmed, setWipeConfirmed] = useState(false);
 
   const wipeDevice = useWipeDevice();
   const resetDevice = useResetDevice();
   const suspendDevice = useSuspendDevice();
+  const setAbqDeviceStatus = useSetAbqDeviceStatus();
+  const resumeDevice = useResumeDevice();
   const isOperationPending =
     wipeDevice.isPending || resetDevice.isPending || suspendDevice.isPending;
 
-  const abqStatusOptions: Array<SelectOption> = [
-    { label: t('label.allowed', 'Allowed'), value: 1 },
-    { label: t('label.blocked', 'Blocked'), value: 2 },
-    { label: t('label.quarantined', 'Quarantined'), value: 3 },
+  const abqStatusOptions: Array<AbqStatusOption> = [
+    { label: t('label.allowed', 'Allowed'), value: 'allowed' },
+    { label: t('label.blocked', 'Blocked'), value: 'blocked' },
+    { label: t('label.quarantined', 'Quarantined'), value: 'quarantined' },
   ];
-  const statusOptions: Array<SelectOption> = [
+  const statusOptions: Array<DeviceStatusOption> = [
     { label: t('label.can_receive', 'Can receive'), value: 1 },
     { label: t('label.can_not_receiver', 'Can`t receiver'), value: 0 },
   ];
 
-  const [abqStatus, setAbqStatus] = useState<SelectOption>(abqStatusOptions[0]);
-  const [status, setStatus] = useState<SelectOption>(statusOptions[0]);
-  const [prevDeviceStatus, setPrevDeviceStatus] = useState<number | undefined>(undefined);
+  const form = useForm({
+    defaultValues: {
+      abqStatus: serverAbqStatus,
+      statusValue: serverStatusValue,
+    } as DeviceEditFormValues,
+    onSubmit: async ({ value }) => {
+      const requests: Array<Promise<unknown>> = [];
+      if (value.abqStatus !== serverAbqStatus) {
+        requests.push(
+          setAbqDeviceStatus.mutateAsync({
+            deviceId: device.deviceId,
+            account: device.accountEmail,
+            status: value.abqStatus,
+          }),
+        );
+      }
+      if (value.statusValue !== serverStatusValue) {
+        requests.push(
+          value.statusValue === 0
+            ? suspendDevice.mutateAsync({
+                accountName: device.accountName,
+                deviceId: device.deviceId,
+              })
+            : resumeDevice.mutateAsync({
+                accountName: device.accountName,
+                deviceId: device.deviceId,
+              }),
+        );
+      }
 
-  if (mobileDeviceDetail?.status !== prevDeviceStatus) {
-    setPrevDeviceStatus(mobileDeviceDetail?.status);
-    setStatus(mobileDeviceDetail?.status === 1 ? statusOptions[0] : statusOptions[1]);
-  }
+      const results = await Promise.allSettled(requests);
+      const failure = results.find(
+        (result): result is PromiseRejectedResult => result.status === 'rejected',
+      );
+      if (failure) {
+        // A successful save in the same batch shows its snackbar after the
+        // failed one and replaces it — re-raise the failure here so the final
+        // visible feedback is accurate for a partially-failed save.
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label:
+            failure.reason instanceof Error
+              ? failure.reason.message
+              : t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        return;
+      }
+      form.reset(value, { keepDefaultValues: true });
+    },
+  });
+
+  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const abqStatus = useSelector(form.store, (s) => s.values.abqStatus);
+  const statusValue = useSelector(form.store, (s) => s.values.statusValue);
+  const selectedAbqOption =
+    abqStatusOptions.find((option) => option.value === abqStatus) ?? abqStatusOptions[0];
+  const selectedStatusOption =
+    statusOptions.find((option) => option.value === statusValue) ?? statusOptions[0];
 
   function closeConfirm(): void {
     setOperationType('');
@@ -81,11 +224,9 @@ export const ActiveDeviceDetail = ({
   }
 
   function runConfirmedAction(): void {
-    const accountName = mobileDeviceDetail?.accountName ?? selectedDevice.accountName;
-    const deviceId = mobileDeviceDetail?.deviceId ?? selectedDevice.deviceId;
     if (operationType === RESET_DEVICE) {
       resetDevice.mutate(
-        { accountName, deviceId },
+        { accountName: device.accountName, deviceId: device.deviceId },
         {
           onSuccess: () => {
             closeConfirm();
@@ -97,7 +238,7 @@ export const ActiveDeviceDetail = ({
     }
     if (operationType === WIPE_DEVICE) {
       wipeDevice.mutate(
-        { accountName, deviceId, confirm: wipeConfirmed },
+        { accountName: device.accountName, deviceId: device.deviceId, confirm: wipeConfirmed },
         {
           onSuccess: () => {
             closeConfirm();
@@ -109,9 +250,10 @@ export const ActiveDeviceDetail = ({
   }
 
   function suspendNow(): void {
-    const accountName = mobileDeviceDetail?.accountName ?? selectedDevice.accountName;
-    const deviceId = mobileDeviceDetail?.deviceId ?? selectedDevice.deviceId;
-    suspendDevice.mutate({ accountName, deviceId }, { onSuccess: onClose });
+    suspendDevice.mutate(
+      { accountName: device.accountName, deviceId: device.deviceId },
+      { onSuccess: onClose },
+    );
   }
 
   const buttons = [
@@ -122,8 +264,8 @@ export const ActiveDeviceDetail = ({
         'label.wipe_device_factory_settings',
         'Wipe the device to the factory settings',
       ),
-      loading: isFetching,
-      disable: isFetching,
+      loading: isStatsFetching,
+      disable: isStatsFetching,
       onClick: (): void => setOperationType(WIPE_DEVICE),
     },
     {
@@ -132,8 +274,8 @@ export const ActiveDeviceDetail = ({
       tooltiplabel: t('label.logoff_from_every_device', 'Log off from every device'),
       color: 'primary',
       onClick: (): void => setOperationType(RESET_DEVICE),
-      loading: isFetching,
-      disable: isFetching,
+      loading: isStatsFetching,
+      disable: isStatsFetching,
     },
     {
       align: 'right' as const,
@@ -141,8 +283,8 @@ export const ActiveDeviceDetail = ({
       label: t('label.suspend', 'Suspend'),
       tooltiplabel: t('label.active_sync_active_paused', 'The activesync is active / paused'),
       onClick: suspendNow,
-      loading: isFetching || isOperationPending,
-      disable: isFetching || isOperationPending,
+      loading: isStatsFetching || isOperationPending,
+      disable: isStatsFetching || isOperationPending,
     },
     {
       align: 'left' as const,
@@ -152,182 +294,80 @@ export const ActiveDeviceDetail = ({
   ];
 
   return (
-    <Container
-      background="gray6"
-      mainAlignment="flex-start"
-      style={{
-        zIndex: '10',
-        position: 'absolute',
-        top: '2.688rem',
-        right: '0',
-        bottom: '0',
-        left: 'max(calc(100% - 42.5rem), 0.75rem)',
-        transition: 'left 0.2s ease-in-out',
-        height: 'auto',
-        width: 'auto',
-        maxHeight: '100%',
-        overflow: 'hidden',
-        boxShadow: '-0.375rem 0.25rem 0.313rem 0 rgba(0, 0, 0, 0.1)',
+    <FormPageLayout
+      title={device.accountName}
+      unsavedChanges={isDirty}
+      onCancel={() => form.reset()}
+      onSave={(): void => {
+        void form.handleSubmit();
       }}
     >
-      <Row
-        mainAlignment="flex-start"
-        crossAlignment="center"
-        orientation="horizontal"
-        background="white"
-        width="fill"
-        height="3.5rem"
-      >
-        <Row padding={{ horizontal: 'small' }}></Row>
-        <Row takeAvailableSpace mainAlignment="flex-start">
-          {selectedDevice.accountName}
-        </Row>
-        <Row padding={{ right: 'extrasmall' }}>
-          <Button
-            type="ghost"
-            color="text"
-            size="medium"
-            icon="CloseOutline"
-            aria-label={t('label.close', 'Close')}
-            onClick={onClose}
-          />
-        </Row>
-      </Row>
-      <ds-divider></ds-divider>
-      <ListRow>
+      <div className="w-full">
         <Displayer buttons={buttons} pinIcon={isSticky} />
-      </ListRow>
-      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ all: 'large' }}>
-        <ListRow>
-          <Row padding={{ top: 'large' }}>
-            <ds-text as="h3" size="medium" weight="bold" color="gray0">
-              {t('label.status_lbl', 'Status')}
-            </ds-text>
-          </Row>
-        </ListRow>
-        <ListRow>
-          <Container padding={{ top: 'large' }}>
-            <Select
-              items={abqStatusOptions}
-              background="gray5"
-              label={t('label.abq_status', 'ABQ Status')}
-              showCheckbox={false}
-              selection={abqStatus}
-              onChange={(ev: string | number | null): void => {
-                const dataItem = abqStatusOptions.find((item) => item.value === ev);
-                if (dataItem) setAbqStatus(dataItem);
-              }}
-            />
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Row padding={{ top: 'large' }}>
-            <ds-text as="h3" size="medium" weight="bold" color="gray0">
-              {t('label.account', 'Account')}
-            </ds-text>
-          </Row>
-        </ListRow>
-        <ListRow>
-          <Container padding={{ top: 'large' }}>
-            <LabeledValue
-              label={t('label.server', 'Server')}
-              backgroundColor="gray5"
-              value={mobileDeviceDetail?.accountServer}
-            />
-          </Container>
-          <Container padding={{ top: 'large', left: 'extralarge' }}>
-            <LabeledValue
-              label={t('label.e_mail', 'E-mail')}
-              backgroundColor="gray5"
-              value={mobileDeviceDetail?.accountEmail}
-            />
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container padding={{ top: 'large' }}>
-            <Select
-              items={statusOptions}
-              background="gray5"
-              label={t('label.status_lbl', 'Status')}
-              showCheckbox={false}
-              selection={status}
-              onChange={(ev: string | number | null): void => {
-                const dataItem = statusOptions.find((item) => item.value === ev);
-                if (dataItem) setStatus(dataItem);
-              }}
-            />
-          </Container>
-          <Container padding={{ top: 'large', left: 'extralarge' }}>
-            <LabeledValue
-              label={t('label.mobile_password', 'Mobile Password')}
-              backgroundColor="gray5"
-              value={
-                mobileDeviceDetail?.hasMobilePassword
-                  ? t('label.true', 'True')
-                  : t('label.false', 'False')
-              }
-            />
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container padding={{ top: 'large' }}>
-            <LabeledValue
-              label={t('label.device_id', 'Device ID')}
-              backgroundColor="gray5"
-              value={mobileDeviceDetail?.deviceId}
-            />
-          </Container>
-          <Container padding={{ top: 'large', left: 'extralarge' }}>
-            <LabeledValue
-              label={t('label.device', 'Device')}
-              backgroundColor="gray5"
-              value={mobileDeviceDetail?.deviceType}
-            />
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container padding={{ top: 'large' }}>
-            <LabeledValue
-              label={t('label.user_agent', 'User Agent')}
-              backgroundColor="gray5"
-              value={mobileDeviceDetail?.userAgent}
-            />
-          </Container>
-          <Container padding={{ top: 'large', left: 'extralarge' }}>
-            <LabeledValue label={t('label.eas', 'EAS')} backgroundColor="gray5" value={''} />
-          </Container>
-        </ListRow>
-        <ListRow>
-          <Container padding={{ top: 'large' }}>
-            <LabeledValue
-              label={t('label.registration', 'Registration')}
-              backgroundColor="gray5"
-              value={''}
-            />
-          </Container>
-          <Container padding={{ top: 'large', left: 'extralarge' }}>
-            <LabeledValue
-              label={t('label.last_access', 'Last Access')}
-              backgroundColor="gray5"
-              value={
-                mobileDeviceDetail?.lastSeen
-                  ? format(new Date(mobileDeviceDetail.lastSeen), 'yy/MM/dd | hh:mm:ss a')
-                  : ''
-              }
-            />
-          </Container>
-        </ListRow>
-        {operationType !== '' && mobileDeviceDetail && (
+      </div>
+      <div className="flex w-full flex-col items-start p-lg">
+        <ds-text as="h3" size="medium" weight="bold" color="gray0" className="w-full pt-lg">
+          {t('label.status_lbl', 'Status')}
+        </ds-text>
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
+          <Select<AbqDeviceStatus>
+            items={abqStatusOptions}
+            label={t('label.abq_status', 'ABQ Status')}
+            selection={selectedAbqOption}
+            onChange={(value: AbqDeviceStatus): void => {
+              form.setFieldValue('abqStatus', value);
+            }}
+          />
+        </div>
+        <ds-text as="h3" size="medium" weight="bold" color="gray0" className="w-full pt-lg">
+          {t('label.account', 'Account')}
+        </ds-text>
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
+          <LabeledValue label={t('label.server', 'Server')} value={device.accountServer} />
+          <LabeledValue label={t('label.e_mail', 'E-mail')} value={device.accountEmail} />
+        </div>
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
+          <Select<0 | 1>
+            items={statusOptions}
+            label={t('label.status_lbl', 'Status')}
+            selection={selectedStatusOption}
+            onChange={(value: 0 | 1): void => {
+              form.setFieldValue('statusValue', value);
+            }}
+          />
+          <LabeledValue
+            label={t('label.mobile_password', 'Mobile Password')}
+            value={device.hasMobilePassword ? t('label.true', 'True') : t('label.false', 'False')}
+          />
+        </div>
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
+          <LabeledValue label={t('label.device_id', 'Device ID')} value={device.deviceId} />
+          <LabeledValue label={t('label.device', 'Device')} value={device.deviceType} />
+        </div>
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
+          <LabeledValue label={t('label.user_agent', 'User Agent')} value={device.userAgent} />
+          <LabeledValue label={t('label.eas', 'EAS')} value={''} />
+        </div>
+        <div className="grid w-full grid-cols-2 gap-x-xl pt-lg">
+          <LabeledValue label={t('label.registration', 'Registration')} value={''} />
+          <LabeledValue
+            label={t('label.last_access', 'Last Access')}
+            value={
+              device.lastSeen ? format(new Date(device.lastSeen), 'yy/MM/dd | hh:mm:ss a') : ''
+            }
+          />
+        </div>
+        {operationType !== '' && (
           <ActiveDeviceConfirmation
             operationType={operationType}
-            device={mobileDeviceDetail}
+            device={device}
             isPending={isOperationPending}
             onClose={closeConfirm}
             onConfirm={runConfirmedAction}
             onWipeAcknowledged={setWipeConfirmed}
           />
         )}
-      </Container>
-    </Container>
+      </div>
+    </FormPageLayout>
   );
 };

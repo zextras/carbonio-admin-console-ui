@@ -68,7 +68,6 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
               value={field.state.value}
               onClick={() => field.handleChange(!field.state.value)}
               disabled={!allowSetMTA}
-              iconColor="primary"
             />
           )}
         </form.Field>
@@ -86,9 +85,7 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
             {(field) => (
               <Select
                 items={amavisLogLevelOptions}
-                background="gray5"
                 label={t('mta.log_level_for_amavis', 'Log level for Amavis')}
-                showCheckbox={false}
                 selection={
                   amavisLogLevelOptions.find(
                     (item: Record<string, string>) => item.value === field.state.value,
@@ -108,13 +105,8 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
             {(field) => (
               <Select
                 items={amavisSALogLevelOptions}
-                background="gray5"
                 label={t('mta.sas_log_level_for_amavis', 'SAS Log level for Amavis')}
-                showCheckbox={false}
-                selection={amavisSALogLevelOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={amavisSALogLevelOptions.find((item) => item.value === field.state.value) ?? amavisSALogLevelOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -135,16 +127,11 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
             {(field) => (
               <Select
                 items={zimbraMtaSmtpdLoglevelOptions}
-                background="gray5"
                 label={t(
                   'mta.smtp_client_logging_of_tls_activity',
                   'SMTP client logging of TLS Activity',
                 )}
-                showCheckbox={false}
-                selection={zimbraMtaSmtpdLoglevelOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={zimbraMtaSmtpdLoglevelOptions.find((item) => item.value === field.state.value) ?? zimbraMtaSmtpdLoglevelOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -157,16 +144,11 @@ export const LoggingSection = ({ form, allowSetMTA }: Readonly<LoggingSectionPro
             {(field) => (
               <Select
                 items={zimbraMtaLmtpTlsLoglevelOptions}
-                background="gray5"
                 label={t(
                   'mta.lmtp_client_logging_of_tls_activity',
                   'LMTP client logging of TLS activity',
                 )}
-                showCheckbox={false}
-                selection={zimbraMtaLmtpTlsLoglevelOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={zimbraMtaLmtpTlsLoglevelOptions.find((item) => item.value === field.state.value) ?? zimbraMtaLmtpTlsLoglevelOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />

@@ -4,28 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container, DropDownInput, Input, Padding, Row } from '@zextras/ui-components';
+import { ComboboxInput, type ComboboxItem, LegacyInput, Row } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { DomainItem } from '../../../types';
 import { MAX_DOMAIN_DISPLAY } from '../../constants';
 import { FunnelSearchIcon } from './funnel-search-icon';
-
-const customIconStyle = {
-  width: '1.25rem',
-  height: '1.25rem',
-};
-
-const loadingItems = [
-  {
-    customComponent: (
-      <Container>
-        <ds-spinner></ds-spinner>
-      </Container>
-    ),
-  },
-];
 
 type LegalHoldFiltersProps = {
   isLoading: boolean;
@@ -54,54 +39,22 @@ export const LegalHoldFilters = ({
 }: LegalHoldFiltersProps) => {
   const [t] = useTranslation();
 
-  const items =
+  const items: Array<ComboboxItem> =
     domainList.length > MAX_DOMAIN_DISPLAY
       ? [
           {
-            customComponent: (
-              <>
-                <Row mainAlignment="flex-start">
-                  <Padding horizontal="small">
-                    <ds-icon icon="InfoOutline" style={customIconStyle}></ds-icon>
-                  </Padding>
-                </Row>
-                <Row
-                  mainAlignment="flex-start"
-                  width="100%"
-                  padding={{
-                    all: 'small',
-                  }}
-                >
-                  <ds-text as="p" overflow="break-word">
-                    {t(
-                      'many_domain_info_msg',
-                      'So many domains! Which one would you like to see? Start typing to filter.',
-                    )}
-                  </ds-text>
-                </Row>
-              </>
+            id: 'too-many-domains',
+            label: t(
+              'many_domain_info_msg',
+              'So many domains! Which one would you like to see? Start typing to filter.',
             ),
+            disabled: true,
+            icon: 'InfoOutline',
           },
         ]
       : domainList.map((domain: DomainItem) => ({
           id: domain.id,
           label: domain.name,
-          customComponent: (
-            <Row
-              style={{
-                display: 'block',
-                textAlign: 'left',
-                height: 'inherit',
-                padding: '0.188rem',
-                width: 'inherit',
-              }}
-              onClick={(): void => {
-                onSelectDomain(domain);
-              }}
-            >
-              {domain.name}
-            </Row>
-          ),
         }));
 
   return (
@@ -112,27 +65,28 @@ export const LegalHoldFilters = ({
         crossAlignment="flex-start"
         padding={{ right: 'large' }}
       >
-        <DropDownInput
-          items={isLoading ? loadingItems : items}
-          inputLabel={
+        <ComboboxInput
+          label={
             isDomainSelect
               ? t('domain.i_want_to_see_this_domain', 'I want to see this domain')
               : t('domain.type_the_exact_domain_name', 'Type the exact domain name')
           }
+          items={items}
+          loading={isLoading}
+          value={searchDomainName}
           hasError={isShowError}
           onChange={(ev: ChangeEvent<HTMLInputElement>) => {
             onSearchDomainChange(ev.target.value);
           }}
-          inputValue={searchDomainName}
-          isCustomIcon
-          customIconDetail={{
-            onClick: onClearDomain,
-            icon: searchDomainName === '' ? ('ChevronDown' as const) : ('CloseOutline' as const),
+          onSelect={(item) => {
+            const domain = domainList.find((candidate) => candidate.id === item.id);
+            if (domain) onSelectDomain(domain);
           }}
+          onClear={onClearDomain}
         />
       </Row>
       <Row width="65%" mainAlignment="flex-start" crossAlignment="flex-start">
-        <Input
+        <LegacyInput
           label={t('label.search_an_account', 'Search an Account')}
           backgroundColor="gray5"
           CustomIcon={FunnelSearchIcon}

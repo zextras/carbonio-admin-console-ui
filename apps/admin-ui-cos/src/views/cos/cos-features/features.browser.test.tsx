@@ -229,7 +229,7 @@ describe('FeaturesForm (browser)', () => {
 
     it('should disable date picker when grace period is FALSE', async () => {
       await setupTest(<TestWrapper cosInformation={ADVANCED_COS_INFO} isAdvanced />);
-      const picker = page.getByPlaceholder('Set grace period expiration date');
+      const picker = page.getByRole('textbox', { name: 'Set grace period expiration date' });
       await expect.element(picker).toBeDisabled();
     });
 
@@ -238,7 +238,7 @@ describe('FeaturesForm (browser)', () => {
         a.n === 'carbonioOtpGracePeriodEnabled' ? { ...a, _content: 'TRUE' } : a,
       );
       await setupTest(<TestWrapper cosInformation={graceEnabled} isAdvanced />);
-      const picker = page.getByPlaceholder('Set grace period expiration date');
+      const picker = page.getByRole('textbox', { name: 'Set grace period expiration date' });
       await expect.element(picker).not.toBeDisabled();
     });
 
@@ -274,7 +274,7 @@ describe('FeaturesForm (browser)', () => {
           : a,
       );
       await setupTest(<TestWrapper cosInformation={withGentime} isAdvanced />);
-      const picker = page.getByPlaceholder('Set grace period expiration date');
+      const picker = page.getByRole('textbox', { name: 'Set grace period expiration date' });
       await expect.element(picker).not.toBeDisabled();
       await expect.element(picker).toHaveValue('15/01/2026');
     });
@@ -288,7 +288,7 @@ describe('FeaturesForm (browser)', () => {
           : a,
       );
       await setupTest(<TestWrapper cosInformation={withInvalid} isAdvanced />);
-      const picker = page.getByPlaceholder('Set grace period expiration date');
+      const picker = page.getByRole('textbox', { name: 'Set grace period expiration date' });
       await expect.element(picker).not.toBeDisabled();
       await expect.element(picker).toHaveValue('');
     });

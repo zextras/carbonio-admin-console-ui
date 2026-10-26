@@ -8,7 +8,7 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
+  LegacyInput,
   Paging,
   Row,
   Table,
@@ -87,7 +87,7 @@ export function EditS3ConnectorUsageTable({
       {rows.length > 0 && (
         <>
           <Row width="100%" mainAlignment="flex-start" padding={{ bottom: 'large' }}>
-            <Input
+            <LegacyInput
               label={searchLabel}
               value={searchValue}
               backgroundColor="gray5"

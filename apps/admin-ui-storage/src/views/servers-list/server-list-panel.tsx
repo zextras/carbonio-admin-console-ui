@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Input, type THeader } from '@zextras/ui-components';
+import { LegacyInput, type THeader } from '@zextras/ui-components';
 import { useIsAdvanced, useMailstoreServers } from '@zextras/ui-shared';
 import { type ChangeEvent, type ReactElement, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,7 +62,7 @@ export const ServerListPanel = () => {
       <ds-divider></ds-divider>
       <div className={styles.content}>
         <div className={styles.searchBox}>
-          <Input
+          <LegacyInput
             disabled={serversList.length === 0 && searchServer.length === 0}
             label={t('label.search_for_a_Server', `Search for a Server`)}
             backgroundColor="gray5"

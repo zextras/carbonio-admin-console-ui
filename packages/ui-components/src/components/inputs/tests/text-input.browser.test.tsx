@@ -1,0 +1,817 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import React, { useState } from 'react';
+import { describe, expect, it } from 'vitest';
+import { page, userEvent } from 'vitest/browser';
+import { render } from 'vitest-browser-react';
+
+import { Container } from '../../layout/Container';
+import { Row } from '../../layout/Row';
+import { TextInput } from '../text-input';
+
+async function getBox(label: string): Promise<HTMLElement> {
+  const input = page.getByRole('textbox', { name: label }).element();
+  return input.parentElement as HTMLElement;
+}
+
+function formatRgba(r: number, g: number, b: number, a: number): string {
+  if (a >= 1) return `rgb(${r}, ${g}, ${b})`;
+  return `rgba(${r}, ${g}, ${b}, ${Math.round(a * 100) / 100})`;
+}
+
+function toRgba(color: string): string {
+  const normalized = color.trim().toLowerCase();
+  if (normalized === 'transparent') return 'rgba(0, 0, 0, 0)';
+  if (normalized.startsWith('#')) {
+    let hex = normalized.slice(1);
+    if (hex.length === 3 || hex.length === 4) {
+      hex = hex
+        .split('')
+        .map((char) => char + char)
+        .join('');
+    }
+    if (hex.length !== 6 && hex.length !== 8) {
+      throw new Error(`Unsupported hex color: ${color}`);
+    }
+    const r = Number.parseInt(hex.slice(0, 2), 16);
+    const g = Number.parseInt(hex.slice(2, 4), 16);
+    const b = Number.parseInt(hex.slice(4, 6), 16);
+    const a = hex.length === 8 ? Number.parseInt(hex.slice(6, 8), 16) / 255 : 1;
+    return formatRgba(r, g, b, a);
+  }
+  const match = /^rgba?\(([^)]+)\)$/.exec(normalized);
+  if (!match) {
+    throw new Error(`Unsupported color: ${color}`);
+  }
+  const parts = match[1].split(',').map((part) => part.trim());
+  return formatRgba(
+    Number.parseInt(parts[0], 10),
+    Number.parseInt(parts[1], 10),
+    Number.parseInt(parts[2], 10),
+    parts[3] !== undefined ? Number.parseFloat(parts[3]) : 1,
+  );
+}
+
+function expectColor(actual: string, expected: string): void {
+  expect(toRgba(actual)).toBe(toRgba(expected));
+}
+
+describe('TextInput', () => {
+  describe('label association', () => {
+    it('renders a textbox whose accessible name is the label', async () => {
+      await render(<TextInput label="Display Name" value="" onChange={() => {}} />);
+
+      const input = page.getByRole('textbox', { name: 'Display Name' });
+      await expect.element(input).toBeVisible();
+    });
+
+    it('renders the label as a visible element', async () => {
+      await render(<TextInput label="Display Name" value="" onChange={() => {}} />);
+
+      await expect.element(page.getByText('Display Name')).toBeVisible();
+    });
+
+    it('generates an internal id and wires the label to it', async () => {
+      await render(<TextInput label="Display Name" value="" onChange={() => {}} />);
+
+      const input = (await page
+        .getByRole('textbox', { name: 'Display Name' })
+        .element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      expect(input.id).toBeTruthy();
+      expect(label.getAttribute('for')).toBe(input.id);
+    });
+
+    it('renders a red hidden asterisk after the label when required', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} required />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const mark = label.lastElementChild as HTMLElement;
+      expect(mark.textContent).toBe('*');
+      expect(mark.getAttribute('aria-hidden')).toBe('true');
+      expectColor(getComputedStyle(mark).color, '#BE3028');
+    });
+
+    it('keeps the accessible name free of the required asterisk', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} required />);
+
+      await expect.element(page.getByRole('textbox', { name: 'Name' })).toBeVisible();
+    });
+
+    it('does not render an asterisk when not required', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      expect(label.children).toHaveLength(1);
+    });
+  });
+
+  describe('value handling', () => {
+    it('renders the controlled value', async () => {
+      await render(<TextInput label="Name" value="Alice" onChange={() => {}} />);
+
+      await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveValue('Alice');
+    });
+
+    it('fires onChange with e.target.value and stays controlled while typing', async () => {
+      const changes: Array<string> = [];
+      const ControlledNameInput = (): React.JSX.Element => {
+        const [value, setValue] = useState('');
+        return (
+          <TextInput
+            label="Name"
+            value={value}
+            onChange={(e) => {
+              setValue(e.target.value);
+              changes.push(e.target.value);
+            }}
+          />
+        );
+      };
+      await render(<ControlledNameInput />);
+
+      await userEvent.type(page.getByRole('textbox', { name: 'Name' }), 'Hi');
+
+      await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveValue('Hi');
+      expect(changes).toEqual(['H', 'Hi']);
+    });
+
+    it('keeps the controlled value when the caller does not update state', async () => {
+      await render(<TextInput label="Name" value="Bob" onChange={() => {}} />);
+
+      const input = page.getByRole('textbox', { name: 'Name' });
+      await expect.element(input).toHaveValue('Bob');
+      await userEvent.type(input, 'x');
+      await expect.element(input).toHaveValue('Bob');
+    });
+  });
+
+  describe('disabled state', () => {
+    it('cannot be interacted with when disabled', async () => {
+      await render(<TextInput label="Name" value="Bob" onChange={() => {}} disabled />);
+
+      const input = page.getByRole('textbox', { name: 'Name' });
+      await expect.element(input).toBeDisabled();
+      await expect.element(input).toHaveValue('Bob');
+    });
+
+    it('applies disabled styling to the field box', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} disabled />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const box = input.parentElement as HTMLElement;
+      const style = getComputedStyle(box);
+      expectColor(style.backgroundColor, '#F5F6F8');
+      expect(style.cursor).not.toBe('not-allowed');
+    });
+  });
+
+  describe('visual states', () => {
+    it('renders the field box at the 2.5rem total height (border-box)', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const style = getComputedStyle(await getBox('Name'));
+      expect(style.height).toBe('40px');
+      expect(style.boxSizing).toBe('border-box');
+    });
+
+    it('shows a white background at rest', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const style = getComputedStyle(await getBox('Name'));
+      expectColor(style.backgroundColor, '#FFFFFF');
+    });
+
+    it('shows the pointer cursor over the field box and the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(getComputedStyle(await getBox('Name')).cursor).toBe('pointer');
+      expect(getComputedStyle(input).cursor).toBe('pointer');
+    });
+
+    it('shows the default cursor over a disabled field', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} disabled />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(getComputedStyle(await getBox('Name')).cursor).toBe('default');
+      expect(getComputedStyle(input).cursor).toBe('default');
+    });
+
+    it('covers the whole box with a label overlay so padding clicks focus the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      // Native label activation (a browser default action) can't be triggered by
+      // synthetic events, so pin the mechanism: an overlay label associated with
+      // the input and covering the box, padding included.
+      const overlay = box.querySelector(`label[for="${input.id}"]`) as HTMLLabelElement;
+      expect(overlay.offsetWidth).toBe(box.clientWidth);
+      expect(overlay.offsetHeight).toBe(box.clientHeight);
+      // The label's text must stay invisible and out of the accessible name —
+      // the 'accessible name is the label' test guards against pollution.
+      expect(overlay.querySelector('span')?.hasAttribute('hidden')).toBe(true);
+    });
+
+    it('renders a 1px solid #858C93 border on all four sides at rest', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      await page.getByRole('textbox', { name: 'Name' }).unhover();
+
+      const style = getComputedStyle(await getBox('Name'));
+      expect(style.borderTopWidth).toBe('1px');
+      expect(style.borderTopStyle).toBe('solid');
+      expectColor(style.borderTopColor, '#858C93');
+      expect(style.borderRightWidth).toBe('1px');
+      expect(style.borderRightStyle).toBe('solid');
+      expectColor(style.borderRightColor, '#858C93');
+      expect(style.borderBottomWidth).toBe('1px');
+      expect(style.borderBottomStyle).toBe('solid');
+      expectColor(style.borderBottomColor, '#858C93');
+      expect(style.borderLeftWidth).toBe('1px');
+      expect(style.borderLeftStyle).toBe('solid');
+      expectColor(style.borderLeftColor, '#858C93');
+    });
+
+    it('changes the border color on hover', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      await page.getByRole('textbox', { name: 'Name' }).hover();
+
+      const style = getComputedStyle(await getBox('Name'));
+      expectColor(style.borderColor, '#225CA8');
+    });
+
+    it('shows the solid focus border and halo when the input is focused', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      await page.getByRole('textbox', { name: 'Name' }).click();
+
+      const style = getComputedStyle(await getBox('Name'));
+      expectColor(style.borderColor, '#225CA8');
+      expect(style.boxShadow).toBe('rgba(43, 115, 210, 0.25) 0px 0px 0px 2px');
+    });
+
+    it('does not show the focus ring when the input is disabled', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} disabled />);
+
+      await page.getByRole('textbox', { name: 'Name' }).click({ force: true });
+
+      const style = getComputedStyle(await getBox('Name'));
+      expect(style.boxShadow).toBe('none');
+    });
+
+    it('renders the native input without its own chrome', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = page.getByRole('textbox', { name: 'Name' }).element() as HTMLInputElement;
+      const style = getComputedStyle(input);
+      expect(style.borderStyle).toBe('none');
+      expectColor(style.backgroundColor, 'transparent');
+      expect(style.flexGrow).toBe('1');
+    });
+
+    it('keeps a caller-provided className on the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} className="custom-class" />);
+
+      await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveClass(/custom-class/);
+    });
+  });
+
+  describe('native passthrough', () => {
+    it('passes placeholder, type, autoComplete and name to the input', async () => {
+      await render(
+        <TextInput
+          label="Search Bind User"
+          value=""
+          onChange={() => {}}
+          placeholder="Type here"
+          type="email"
+          autoComplete="off"
+          name="bind-user"
+        />,
+      );
+
+      const input = page.getByRole('textbox', { name: 'Search Bind User' });
+      await expect.element(input).toHaveAttribute('placeholder', 'Type here');
+      await expect.element(input).toHaveAttribute('type', 'email');
+      await expect.element(input).toHaveAttribute('autocomplete', 'off');
+      await expect.element(input).toHaveAttribute('name', 'bind-user');
+    });
+
+    it('marks the input as required when required is passed', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} required />);
+
+      await expect.element(page.getByRole('textbox', { name: 'Name' })).toHaveAttribute('required');
+    });
+
+    it('forwards the ref to the native input element', async () => {
+      const inputRef = React.createRef<HTMLInputElement>();
+      await render(<TextInput label="Name" value="" onChange={() => {}} ref={inputRef} />);
+
+      expect(inputRef.current).toBeInstanceOf(HTMLInputElement);
+      expect(inputRef.current?.tagName).toBe('INPUT');
+    });
+  });
+
+  describe('info icon', () => {
+    it('renders the InfoOutline icon in the label row when infoTooltip is provided', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const host = label.querySelector('ds-icon');
+      expect(host?.getAttribute('icon')).toBe('InfoOutline');
+      expect(host?.getAttribute('aria-hidden')).toBe('true');
+      expect(host?.shadowRoot?.querySelector('svg')).not.toBeNull();
+    });
+
+    it('sizes and colors the label info icon per spec', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const host = label.querySelector('ds-icon') as HTMLElement;
+      const svg = host.shadowRoot?.querySelector('svg') as SVGSVGElement | null;
+      expect(svg).not.toBeNull();
+      const svgStyle = getComputedStyle(svg as Element);
+      expect(Number.parseFloat(svgStyle.width)).toBeCloseTo(0.75 * 16, 1);
+      expect(Number.parseFloat(svgStyle.height)).toBeCloseTo(0.75 * 16, 1);
+      expectColor(svgStyle.color, '#696969');
+    });
+
+    it('shows the tooltip text when hovering the label info icon', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} infoTooltip="Format hint" />);
+
+      await page.getByTestId('icon: InfoOutline').hover();
+
+      await expect.element(page.getByText('Format hint')).toBeVisible();
+    });
+
+    it('does not render any icon in the label row or the box without infoTooltip', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const box = input.parentElement as HTMLElement;
+      expect(label.querySelector('ds-icon')).toBeNull();
+      expect(box.querySelector('ds-icon')).toBeNull();
+    });
+  });
+
+  describe('icon slot', () => {
+    it('renders a custom icon node inside the field box', async () => {
+      await render(
+        <TextInput label="Name" value="" onChange={() => {}} icon={<span>custom icon</span>} />,
+      );
+
+      const customIcon = await page.getByText('custom icon').element();
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const box = input.parentElement as HTMLElement;
+      expect(box.contains(customIcon)).toBe(true);
+    });
+
+    it('renders the custom icon after the input', async () => {
+      await render(
+        <TextInput label="Name" value="" onChange={() => {}} icon={<span>custom icon</span>} />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      expect(input.nextElementSibling?.textContent).toBe('custom icon');
+    });
+
+    it('renders the custom icon in the box and the info icon in the label row when both are provided', async () => {
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          infoTooltip="Format hint"
+          icon={<span>custom icon</span>}
+        />,
+      );
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      expect(input.nextElementSibling?.textContent).toBe('custom icon');
+      const label = input.labels?.[0] as HTMLLabelElement;
+      const infoIconHost = label.querySelector('ds-icon') as HTMLElement;
+      expect(infoIconHost.getAttribute('icon')).toBe('InfoOutline');
+    });
+
+    it('does not render any extra node inside the box without icon', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      expect(input.nextElementSibling).toBeNull();
+    });
+
+    it('keeps buttons inside a wrapped icon node clickable above the click overlay', async () => {
+      let clicked = false;
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          icon={
+            <span>
+              <button
+                type="button"
+                onClick={() => {
+                  clicked = true;
+                }}
+              >
+                act
+              </button>
+            </span>
+          }
+        />,
+      );
+
+      await page.getByRole('button', { name: 'act' }).click();
+
+      expect(clicked).toBe(true);
+    });
+  });
+
+  describe('error and description support', () => {
+    it('renders the description below the input and links it via aria-describedby', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} description="Invalid token" />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      expect(describedBy).toBeTruthy();
+      const description = document.getElementById(describedBy as string);
+      expect(description?.textContent).toBe('Invalid token');
+      expect(description?.tagName).toBe('P');
+    });
+
+    it('merges a caller-provided aria-describedby with the description id', async () => {
+      await render(
+        <TextInput
+          label="Token"
+          value=""
+          onChange={() => {}}
+          description="Invalid token"
+          aria-describedby="external-hint"
+        />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      expect(ids).toContain('external-hint');
+      expect(document.getElementById(ids.find((id) => id !== 'external-hint') as string)?.textContent).toBe(
+        'Invalid token',
+      );
+    });
+
+    it('does not set aria-describedby when no description is provided', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .not.toHaveAttribute('aria-describedby');
+    });
+
+    it('always reserves the description slot even without a description', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} />);
+
+      const box = await getBox('Token');
+      const slot = box.nextElementSibling;
+      expect(slot?.tagName).toBe('P');
+      expect(slot?.textContent).toBe('');
+      expect(getComputedStyle(slot as HTMLElement).minHeight).toBe('16px');
+    });
+
+    it('treats a null description as absent', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} description={null} />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .not.toHaveAttribute('aria-describedby');
+
+      const box = await getBox('Token');
+      expect(box.nextElementSibling?.textContent).toBe('');
+    });
+
+    it('does not render the alert icon when hasError has no description text', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} hasError />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const box = input.parentElement as HTMLElement;
+      const slot = box.nextElementSibling;
+      expect(slot?.tagName).toBe('P');
+      expect(slot?.textContent).toBe('');
+      expect(slot?.querySelector('ds-icon')).toBeNull();
+    });
+
+    it('marks the input as invalid when hasError is true', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} hasError />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .toHaveAttribute('aria-invalid', 'true');
+    });
+
+    it('does not mark the input as invalid without hasError', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} />);
+
+      await expect
+        .element(page.getByRole('textbox', { name: 'Token' }))
+        .not.toHaveAttribute('aria-invalid');
+    });
+
+    it('shows the error border at rest', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} hasError />);
+
+      await page.getByRole('textbox', { name: 'Token' }).unhover();
+
+      const style = getComputedStyle(await getBox('Token'));
+      expectColor(style.borderColor, '#D74942');
+    });
+
+    it('shows the error hover border on hover', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} hasError />);
+
+      await page.getByRole('textbox', { name: 'Token' }).hover();
+
+      const style = getComputedStyle(await getBox('Token'));
+      expectColor(style.borderColor, '#BE3028');
+    });
+
+    it('shows the error focus ring when focused', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} hasError />);
+
+      await page.getByRole('textbox', { name: 'Token' }).click();
+
+      const style = getComputedStyle(await getBox('Token'));
+      expectColor(style.borderColor, 'rgba(215, 73, 66, 0.25)');
+      expect(style.boxShadow).toBe('rgba(215, 73, 66, 0.25) 0px 0px 0px 2px');
+    });
+
+    it('keeps the disabled styling when both disabled and hasError are set', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} hasError disabled />);
+
+      const style = getComputedStyle(await getBox('Token'));
+      expectColor(style.borderColor, '#E6E9ED');
+      expectColor(style.backgroundColor, '#F5F6F8');
+    });
+
+    it('renders the description in error color when hasError, gray otherwise', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
+      const errorDescription = await page.getByText('Invalid token').element();
+      expectColor(getComputedStyle(errorDescription).color, '#D74942');
+
+      await render(<TextInput label="Token" value="" onChange={() => {}} description="Helper text" />);
+      const helperDescription = await page.getByText('Helper text').element();
+      expectColor(getComputedStyle(helperDescription).color, '#696969');
+    });
+
+    it('renders the alert icon inside the error description', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      const description = document.getElementById(describedBy as string);
+      const icon = description?.querySelector('ds-icon');
+      expect(icon?.getAttribute('icon')).toBe('AlertCircleOutline');
+      expect(icon?.getAttribute('aria-hidden')).toBe('true');
+      expect(icon?.shadowRoot?.querySelector('svg')).not.toBeNull();
+    });
+
+    it('does not render the alert icon without hasError', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} description="Helper text" />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      const description = document.getElementById(describedBy as string);
+      expect(description?.querySelector('ds-icon')).toBeNull();
+    });
+
+    it('styles the error description as an icon row', async () => {
+      await render(<TextInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
+
+      const input = await page.getByRole('textbox', { name: 'Token' }).element();
+      const describedBy = input.getAttribute('aria-describedby');
+      const description = document.getElementById(describedBy as string) as HTMLElement;
+      const style = getComputedStyle(description);
+      expect(style.display).toBe('flex');
+      expect(style.height).toBe('19px');
+      expect(style.alignItems).toBe('center');
+    });
+  });
+
+  describe('long labels', () => {
+    const LONG_LABEL = 'Set grace period expiration date for this class of service account';
+    const LONG_TOKEN = `a`.repeat(80);
+
+    async function getShellElements(): Promise<{
+      root: HTMLElement;
+      label: HTMLElement;
+      labelText: HTMLElement;
+    }> {
+      const input = (await page.getByRole('textbox').element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const root = box.parentElement as HTMLElement;
+      const label = root.firstElementChild as HTMLElement;
+      const labelText = label.firstElementChild as HTMLElement;
+      return { root, label, labelText };
+    }
+
+    async function renderInNarrowContainer(label: string, required = false): Promise<void> {
+      await render(
+        <div style={{ width: '200px' }}>
+          <TextInput label={label} value="" onChange={() => {}} required={required} />
+        </div>,
+      );
+    }
+
+    it('truncates a long label to a single line without horizontal overflow', async () => {
+      await renderInNarrowContainer(LONG_LABEL);
+
+      const { root, label, labelText } = await getShellElements();
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+      expect(labelText.scrollWidth).toBeGreaterThan(labelText.clientWidth);
+      expect(label.offsetHeight).toBeLessThanOrEqual(22);
+    });
+
+    it('truncates an unbreakable label token without horizontal overflow', async () => {
+      await renderInNarrowContainer(LONG_TOKEN);
+
+      const { root, label, labelText } = await getShellElements();
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+      expect(labelText.scrollWidth).toBeGreaterThan(labelText.clientWidth);
+      expect(label.offsetHeight).toBeLessThanOrEqual(22);
+    });
+
+    it('keeps the required mark visible while the label truncates', async () => {
+      await renderInNarrowContainer(LONG_TOKEN, true);
+
+      const { label } = await getShellElements();
+      const mark = label.lastElementChild as HTMLElement;
+      expect(mark.textContent).toBe('*');
+      expect(mark.offsetWidth).toBeGreaterThan(0);
+    });
+
+    it('shows the full label in a tooltip on hover when truncated', async () => {
+      await renderInNarrowContainer(LONG_TOKEN);
+
+      await userEvent.hover(page.getByText(LONG_TOKEN));
+
+      await expect.element(page.getByTestId('tooltip')).toBeVisible();
+      const tooltip = (await page.getByTestId('tooltip').element()) as HTMLElement;
+      expect(tooltip.textContent).toBe(LONG_TOKEN);
+    });
+
+    it('does not show a tooltip when the label is not truncated', async () => {
+      await render(
+        <div style={{ width: '400px' }}>
+          <TextInput label="Name" value="" onChange={() => {}} />
+        </div>,
+      );
+
+      await userEvent.hover(page.getByText('Name'));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 800);
+      });
+
+      await expect.element(page.getByTestId('tooltip')).not.toBeInTheDocument();
+    });
+
+    it('truncates with ellipsis and tooltip inside nested flex containers', async () => {
+      await render(
+        <div style={{ width: '400px' }}>
+          <Row mainAlignment="flex-start" crossAlignment="flex-start" width="100%">
+            <Row mainAlignment="flex-start" width="100%">
+              <Container height="fit" crossAlignment="flex-start" width="100%">
+                <Row mainAlignment="flex-start" width="100%">
+                  <Container width="72%" padding={{ right: 'small' }}>
+                    <TextInput
+                      label="Time window in which the failed logins must occur to lock the account:"
+                      value=""
+                      onChange={() => {}}
+                    />
+                  </Container>
+                  <Container width="28%">
+                    <TextInput label="Time Range" value="" onChange={() => {}} />
+                  </Container>
+                </Row>
+              </Container>
+            </Row>
+          </Row>
+        </div>,
+      );
+
+      const input = (await page
+        .getByRole('textbox', { name: /Time window/ })
+        .element()) as HTMLInputElement;
+      const box = input.parentElement as HTMLElement;
+      const root = box.parentElement as HTMLElement;
+      const labelText = (root.firstElementChild as HTMLElement).firstElementChild as HTMLElement;
+      const computed = getComputedStyle(labelText);
+      expect(computed.whiteSpace).toBe('nowrap');
+      expect(computed.overflow).toBe('hidden');
+      expect(computed.textOverflow).toBe('ellipsis');
+      expect(labelText.scrollWidth).toBeGreaterThan(labelText.clientWidth);
+      expect(root.scrollWidth).toBeLessThanOrEqual(root.clientWidth + 1);
+
+      await userEvent.hover(
+        page.getByText('Time window in which the failed logins must occur to lock the account:'),
+      );
+      await expect.element(page.getByTestId('tooltip')).toBeVisible();
+    });
+  });
+
+  describe('chip', () => {
+    it('renders the chip text inside the field box after the input', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      const box = input.parentElement as HTMLElement;
+      expect(chip.textContent).toBe('Inherited');
+      expect(chip.tagName).toBe('SPAN');
+      expect(box.contains(chip)).toBe(true);
+    });
+
+    it('renders the chip before the trailing icon when both are provided', async () => {
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          chip="Inherited"
+          icon={<span>custom icon</span>}
+        />,
+      );
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      expect(chip.textContent).toBe('Inherited');
+      expect(chip.nextElementSibling?.textContent).toBe('custom icon');
+    });
+
+    it('exposes the chip text to screen readers via aria-describedby', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const chip = input.nextElementSibling as HTMLElement;
+      const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      expect(ids).toContain(chip.id);
+      expect(document.getElementById(chip.id)).toBe(chip);
+    });
+
+    it('merges the chip id with a description and a caller-provided aria-describedby', async () => {
+      await render(
+        <TextInput
+          label="Name"
+          value=""
+          onChange={() => {}}
+          chip="Inherited"
+          description="Helper text"
+          aria-describedby="external-hint"
+        />,
+      );
+
+      const input = (await page.getByRole('textbox', { name: 'Name' }).element()) as HTMLInputElement;
+      const chip = input.nextElementSibling as HTMLElement;
+      const ids = (input.getAttribute('aria-describedby') ?? '').split(/\s+/);
+      expect(ids).toContain('external-hint');
+      expect(ids).toContain(chip.id);
+      expect(ids).toHaveLength(3);
+    });
+
+    it('styles the chip per the design tokens', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      const style = getComputedStyle(chip);
+      expectColor(style.backgroundColor, '#E6E9ED');
+      expectColor(style.color, '#333333');
+      expect(style.borderRadius).toBe('12px');
+      expect(style.paddingTop).toBe('1px');
+      expect(style.paddingLeft).toBe('8px');
+      expect(style.fontSize).toBe('12px');
+      expect(style.fontWeight).toBe('300');
+      expect(style.lineHeight).toBe('18px');
+      expect(style.whiteSpace).toBe('nowrap');
+      expect(style.marginLeft).toBe('4px');
+      expect(style.marginRight).toBe('4px');
+    });
+
+    it('renders the chip when the field is disabled', async () => {
+      await render(<TextInput label="Name" value="" onChange={() => {}} chip="Inherited" disabled />);
+
+      const input = await page.getByRole('textbox', { name: 'Name' }).element();
+      const chip = input.nextElementSibling as HTMLElement;
+      await expect.element(page.getByText('Inherited')).toBeVisible();
+      expect(input.parentElement?.contains(chip)).toBe(true);
+    });
+  });
+});

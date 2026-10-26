@@ -40,7 +40,6 @@ export const ContactOptions = () => {
             subValue={accountDetail?.zimbraPrefAutoAddAddressEnabled}
             onChange={toggleAccountValue}
             label={t('account_details.enable_auto_add_contacts', `Enable auto-add contacts`)}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefAutoAddAddressEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefAutoAddAddressEnabled}
             inputName={'zimbraPrefAutoAddAddressEnabled'}
@@ -52,7 +51,6 @@ export const ContactOptions = () => {
             subValue={accountDetail?.zimbraPrefGalAutoCompleteEnabled}
             onChange={toggleAccountValue}
             label={t('account_details.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefGalAutoCompleteEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefGalAutoCompleteEnabled}
             inputName={'zimbraPrefGalAutoCompleteEnabled'}

@@ -188,7 +188,7 @@ describe('RestoreDeleteAccountConfigSection (browser)', () => {
 
 		await expect.element(page.getByText('CTX dateTime: null')).toBeVisible();
 		await expect.element(page.getByText('CTX lastAvailableStatus: true')).toBeVisible();
-		await expect.element(page.getByPlaceholder('Date', { exact: true })).toBeDisabled();
+		await expect.element(page.getByRole('textbox', { name: 'Date' })).toBeDisabled();
 	});
 
 	it('should toggle HSM policies in the wizard context', async () => {

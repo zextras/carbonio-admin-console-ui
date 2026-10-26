@@ -292,8 +292,9 @@ describe('EditAccountUserPreferencesSection (browser)', () => {
     };
     setupBrowserTest(wrapUserPref(overrides_contextWithReadReceipt));
     await expect.element(page.getByText('Read Receipt settings')).toBeVisible();
-    const resetButton = page.getByTestId('reset-zimbraPrefMailSendReadReceipts');
-    await expect.element(resetButton).toBeVisible();
+    const readReceiptTrigger = page.getByRole('button', { name: 'Read Receipt settings' });
+    await expect.element(readReceiptTrigger).toBeVisible();
+    await expect.element(readReceiptTrigger).toHaveTextContent('Always send a read receipt');
   });
 
   it('should render with different out of office cache duration', async () => {
@@ -602,10 +603,10 @@ describe('EditAccountUserPreferencesSection (browser)', () => {
     const readReceiptSwitch = page.getByRole('switch', {
       name: 'Allow the user to ask for a read receipt',
     });
-    await expect.element(readReceiptSwitch).toHaveAttribute('aria-checked', 'true');
+    await expect.element(readReceiptSwitch).toBeChecked();
 
     await resetButton.click();
 
-    await expect.element(readReceiptSwitch).toHaveAttribute('aria-checked', 'false');
+    await expect.element(readReceiptSwitch).not.toBeChecked();
   });
 });

@@ -6,8 +6,8 @@
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  Input,
   ListRow,
+  NumberInput,
   Padding,
   Row,
   Select,
@@ -71,7 +71,6 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
                 value={field.state.value === 'TRUE'}
                 onClick={() => field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')}
                 label={t('cos.view_mail_as_html', 'View mail as HTML (when possible)')}
-                iconColor="primary"
                 disabled={readonlyCOS}
               />
             )}
@@ -90,19 +89,13 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
               <form.Field name="zimbraPrefGroupMailBy">
                 {(field) => (
                   <Select
-                    background={'gray5'}
                     label={t('cos.display_by', 'Display by')}
-                    showCheckbox={false}
                     items={GROUP_BY}
                     selection={
                       GROUP_BY.find((item) => item.value === field.state.value) || GROUP_BY[0]
                     }
                     onChange={(value): void => {
-                      const newValue =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(newValue);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -113,20 +106,14 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
               <form.Field name="zimbraPrefMailDefaultCharset">
                 {(field) => (
                   <Select
-                    background={'gray5'}
                     label={t('cos.default_charset', 'Default Charset')}
-                    showCheckbox={false}
                     items={CHARACTOR_SET}
                     selection={
                       CHARACTOR_SET.find((item) => item.value === field.state.value) ||
                       CHARACTOR_SET[0]
                     }
                     onChange={(value): void => {
-                      const newValue =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(newValue);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />
@@ -156,7 +143,6 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
                       'cos.auto_delete_duplicate_messages',
                       'Auto-Delete duplicate messages',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -174,7 +160,6 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
                       'cos.enable_new_mail_toast_notification',
                       'Enable New Mail Toast Notification',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -189,41 +174,15 @@ export const MailOptions = ({ form, readonlyCOS }: MailOptionsProps) => {
             <Container width="75%" crossAlignment="flex-start">
               <form.Field name="zimbraFileUploadMaxSizePerFile">
                 {(field) => (
-                  <Input
-                    type="number"
+                  <NumberInput
                     label={t(
                       'cos.upload_max_size_per_file',
                       'Maximum size (bytes) allowed for each attachment',
                     )}
                     value={field.state.value}
-                    backgroundColor={'gray5'}
                     disabled={readonlyCOS}
-                    onKeyDown={(e: React.KeyboardEvent<HTMLInputElement>): void => {
-                      if (
-                        ![
-                          'Backspace',
-                          'Delete',
-                          'ArrowLeft',
-                          'ArrowRight',
-                          'ArrowUp',
-                          'ArrowDown',
-                          '0',
-                          '1',
-                          '2',
-                          '3',
-                          '4',
-                          '5',
-                          '6',
-                          '7',
-                          '8',
-                          '9',
-                        ].includes(e.key)
-                      ) {
-                        e.preventDefault();
-                      }
-                    }}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-                      field.handleChange(e.target.value);
+                    onChange={(value): void => {
+                      field.handleChange(value);
                     }}
                   />
                 )}

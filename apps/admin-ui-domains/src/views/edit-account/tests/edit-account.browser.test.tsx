@@ -56,22 +56,17 @@ function setupAdvancedEditAccountMocks(): void {
   createBrowserSoapAPIInterceptor('SearchDirectory', {
     cos: [{ name: 'default', id: 'cos-1' }],
   });
-  createBrowserAPIInterceptor(
-    'post',
-    '/service/extension/zextras_admin/core/attributes/get',
-    () =>
-      HttpResponse.json({
-        attributes: {
-          abqMode: [{ value: 'enabled' }],
-          backupEnabled: [{ value: 'TRUE' }],
-          backupSelfUndeleteAllowed: [{ value: '' }],
-        },
-      }),
+  createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
+    HttpResponse.json({
+      attributes: {
+        abqMode: [{ value: 'enabled' }],
+        backupEnabled: [{ value: 'TRUE' }],
+        backupSelfUndeleteAllowed: [{ value: '' }],
+      },
+    }),
   );
-  createBrowserAPIInterceptor(
-    'get',
-    `/services/storages/admin/quota/accounts/${ACCOUNT_ID}`,
-    () => HttpResponse.json(mockAccountQuotaResponse, { status: 200 }),
+  createBrowserAPIInterceptor('get', `/services/storages/admin/quota/accounts/${ACCOUNT_ID}`, () =>
+    HttpResponse.json(mockAccountQuotaResponse, { status: 200 }),
   );
   createBrowserAPIInterceptor(
     'get',
@@ -185,6 +180,71 @@ describe('EditAccount (browser)', () => {
       objectName: ACCOUNT_ID,
       configType: 'account',
     });
+  });
+
+  it('shows the saved total quota value on load', async () => {
+    setupAdvancedEditAccountMocks();
+
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['advanced-supported'], { supported: true });
+
+    await setupBrowserTest(
+      <EditAccount
+        account={{ id: ACCOUNT_ID, name: ACCOUNT_NAME }}
+        onClose={(): void => {}}
+        onSaved={(): void => {}}
+        onDeleted={(): void => {}}
+        defaultTab={GENERAL_SECTION}
+      />,
+      { queryClient, withDomainIdRoute: true, initialRouterEntry: '/domain-id' },
+    );
+
+    const quotaInput = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
+    await expect.element(quotaInput).toBeVisible();
+    await expect.element(quotaInput).toHaveValue(10);
+  });
+
+  it('hides the save button after saving the total quota', { timeout: 20_000 }, async () => {
+    setupAdvancedEditAccountMocks();
+
+    const putQuotaInterceptor = await createBrowserAPIInterceptor(
+      'put',
+      `/services/storages/admin/quota/config/accounts/${ACCOUNT_ID}`,
+      () => HttpResponse.json({}),
+    );
+
+    const queryClient = getQueryClient();
+    queryClient.setQueryData(['advanced-supported'], { supported: true });
+
+    await setupBrowserTest(
+      <EditAccount
+        account={{ id: ACCOUNT_ID, name: ACCOUNT_NAME }}
+        onClose={(): void => {}}
+        onSaved={(): void => {}}
+        onDeleted={(): void => {}}
+        defaultTab={GENERAL_SECTION}
+      />,
+      { queryClient, withDomainIdRoute: true, initialRouterEntry: '/domain-id' },
+    );
+
+    const quotaInput = page.getByRole('spinbutton', { name: 'Total quota(GB)' });
+    await expect.element(quotaInput).toHaveValue(10);
+    await expect.element(page.getByRole('textbox', { name: /^Surname/ })).toHaveValue('User');
+
+    await userEvent.clear(quotaInput);
+    await userEvent.type(quotaInput, '5');
+    await expect.element(quotaInput).toHaveValue(5);
+
+    const saveButton = page.getByRole('button', { name: 'Save' });
+    await expect.element(saveButton).toBeVisible();
+
+    await userEvent.click(saveButton);
+
+    await expect.poll(() => putQuotaInterceptor.getCalledTimes(), { timeout: 10_000 }).toBe(1);
+
+    await expect.element(page.getByText('Changes have been saved successfully')).toBeVisible();
+
+    await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
   });
 
   it('shows an error toast and keeps the form dirty when ModifyAccount returns a seats Fault', async () => {

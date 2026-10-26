@@ -121,6 +121,9 @@ describe('GlobalWhiteLabel', () => {
       );
       expect(colorAttr).toBeDefined();
       expect(colorAttr._content).toBe('#FF0000');
+      await expect
+        .element(page.getByText('The change has been saved successfully'))
+        .toBeVisible();
     });
 
     it('should show success snackbar after successful save', async () => {

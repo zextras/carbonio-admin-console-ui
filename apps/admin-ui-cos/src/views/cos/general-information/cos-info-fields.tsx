@@ -6,13 +6,13 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import {
   Container,
-  CustomTextArea,
-  Input,
   LabeledValue,
   ListRow,
+  PlainTextarea,
   Row,
   Select,
   type SelectItem,
+  TextInput,
 } from '@zextras/ui-components';
 import { useIsAdvanced, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -76,38 +76,40 @@ export const CosInfoFields = ({
         <ListRow>
           <Container padding={{ all: 'small' }}>
             <form.Field name="cn">
-              {(field) => (
-                <Input
-                  isRequired
-                  label={t('label.name', 'Name')}
-                  backgroundColor={canDeleteCOS ? 'gray6' : 'gray5'}
-                  value={field.state.value}
-                  onChange={(e: ChangeEvent<HTMLInputElement>): void => {
-                    field.handleChange(e.target.value);
-                  }}
-                  disabled={canDeleteCOS || readonlyCOS}
-                />
-              )}
+              {(field) =>
+                canDeleteCOS || readonlyCOS ? (
+                  <LabeledValue
+                    label={t('label.name', 'Name')}
+                    
+                    value={field.state.value ?? ''}
+                  />
+                ) : (
+                  <TextInput
+                    required
+                    label={t('label.name', 'Name')}
+                    value={field.state.value}
+                    onChange={(e: ChangeEvent<HTMLInputElement>): void => {
+                      field.handleChange(e.target.value);
+                    }}
+                  />
+                )
+              }
             </form.Field>
           </Container>
         </ListRow>
         <ListRow>
           <Container padding={{ all: 'small' }}>
-            <Input
+            <LabeledValue
               label={t('label.id_lbl', 'ID')}
-              backgroundColor="gray6"
-              value={cosId}
-              disabled
-              onChange={(): void => {}}
+              
+              value={cosId ?? ''}
             />
           </Container>
           <Container padding={{ all: 'small' }}>
-            <Input
+            <LabeledValue
               label={t('label.creation_date', 'Creation Date')}
+              
               value={cosCreationDate}
-              backgroundColor="gray6"
-              disabled
-              onChange={(): void => {}}
             />
           </Container>
         </ListRow>
@@ -115,7 +117,7 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <LabeledValue
               label={t('label.accounts_that_use_this_cos', 'Accounts that use this CoS')}
-              backgroundColor="gray6"
+              
               value={totalAccount}
             />
           </Container>
@@ -126,7 +128,7 @@ export const CosInfoFields = ({
                 'Domains that use this CoS as default',
               )}
               value={totalDomain}
-              backgroundColor="gray6"
+              
             />
           </Container>
         </ListRow>
@@ -139,8 +141,6 @@ export const CosInfoFields = ({
                     <Select
                       items={EDITION_ITEMS}
                       label={t('label.associated_edition', 'Associated edition')}
-                      background="gray5"
-                      showCheckbox={false}
                       selection={
                         EDITION_ITEMS.find((item) => item.value === field.state.value) ??
                         EDITION_ITEMS[0]
@@ -160,9 +160,8 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="description">
               {(field) => (
-                <Input
+                <TextInput
                   label={t('label.description', 'Description')}
-                  backgroundColor="gray5"
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
@@ -177,10 +176,9 @@ export const CosInfoFields = ({
           <Container padding={{ all: 'small' }}>
             <form.Field name="zimbraNotes">
               {(field) => (
-                <CustomTextArea
+                <PlainTextarea
                   label={t('label.notes', 'Notes')}
-                  backgroundColor="gray5"
-                  value={field.state.value}
+                  value={field.state.value ?? ''}
                   onChange={(e: ChangeEvent<HTMLTextAreaElement>): void => {
                     field.handleChange(e.target.value);
                   }}
