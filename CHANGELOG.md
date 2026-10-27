@@ -1,3 +1,9 @@
+## [0.33.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.0...v0.33.1) (2026-10-27)
+
+### Bug Fixes
+
+* **delegates:** stop granting folder admin permission to "Send and Read" and "Read / Write" ([6c3b192](https://github.com/zextras/carbonio-admin-console-ui/commit/6c3b1926b937da87e826b54af6ecc588df88627b))
+
 ## [0.33.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.32.1...v0.33.0) (2026-10-27)
 
 ### Features
