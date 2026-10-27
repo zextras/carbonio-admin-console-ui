@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LicenseBanner, ListRow } from '@zextras/ui-components';
+import { LicenseBanner } from '@zextras/ui-components';
 import {
   buildPath,
   getRights,
@@ -78,7 +78,7 @@ export const Dashboard = () => {
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
         <WhiteLabelBanner />
         <div className={styles.section}>
-          <ListRow>
+          <div className={styles.row}>
             <div className={styles.versionCol}>
               <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
             </div>
@@ -88,28 +88,24 @@ export const Dashboard = () => {
                 domainName={domainInformation?.name}
               />
             </div>
-          </ListRow>
+          </div>
         </div>
 
         {isAdvanced && (
           <div className={styles.section}>
-            <ListRow>
-              <div className={styles.notificationCol}>
-                <DashboardNotification goToMailNotification={goToMailNotification} />
-              </div>
-            </ListRow>
+            <div className={styles.notificationCol}>
+              <DashboardNotification goToMailNotification={goToMailNotification} />
+            </div>
           </div>
         )}
         {hasListServerRights && (
           <div className={styles.section}>
-            <ListRow>
-              <div className={styles.serverListCol}>
-                <DashboardServerList
-                  goToMailStoreServerList={goToMailStoreServerList}
-                  serverVersion={serverVersion}
-                />
-              </div>
-            </ListRow>
+            <div className={styles.serverListCol}>
+              <DashboardServerList
+                goToMailStoreServerList={goToMailStoreServerList}
+                serverVersion={serverVersion}
+              />
+            </div>
           </div>
         )}
       </div>
