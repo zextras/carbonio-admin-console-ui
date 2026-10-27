@@ -1,3 +1,9 @@
+## [0.32.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.32.0...v0.32.1) (2026-10-22)
+
+### Bug Fixes
+
+* [CO-4550] call /logout with POST ([#1420](https://github.com/zextras/carbonio-admin-console-ui/issues/1420)) ([f551238](https://github.com/zextras/carbonio-admin-console-ui/commit/f5512386b79da7046f37c723a311cd785e314705))
+
 ## [0.32.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.31.2...v0.32.0) (2026-10-21)
 
 ### Features

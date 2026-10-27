@@ -30,7 +30,18 @@ describe('AppView', () => {
     queryClient = getQueryClient();
   });
 
-  async function setupAppViewTest(initialRoute?: string, extra?: ReactElement) {
+  type SetupOptions = {
+    // Domains returned by SearchDirectory, i.e. the ones the admin has rights on.
+    visibleDomains?: Array<{ id: string; name: string }>;
+    // GetDomain on the admin's own domain is rejected (no rights on it).
+    getDomainDenied?: boolean;
+  };
+
+  async function setupAppViewTest(
+    initialRoute?: string,
+    extra?: ReactElement,
+    { visibleDomains = [{ id: 'domain-1', name: 'example.com' }], getDomainDenied }: SetupOptions = {},
+  ) {
     // Register peer-app routes so buildPath() resolves prefixed paths.
     registerAppRoute(DOMAINS_ROUTE_ID, 'manage');
     registerAppRoute('storage', 'manage');
@@ -55,17 +66,34 @@ describe('AppView', () => {
       ],
     });
     // useDomainInformation reads `response.domain[0]`, so the mock must return an array.
-    createBrowserSoapAPIInterceptor('GetDomain', {
-      domain: [
-        {
-          id: 'domain-1',
-          name: 'example.com',
-          a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
-        },
-      ],
-    });
+    if (getDomainDenied) {
+      await createBrowserAPIInterceptor('post', '/service/admin/soap/GetDomainRequest', () =>
+        HttpResponse.json({
+          Body: {
+            Fault: {
+              Reason: { Text: 'permission denied' },
+              Detail: { Error: { Code: 'service.PERM_DENIED' } },
+            },
+          },
+        }),
+      );
+    } else {
+      createBrowserSoapAPIInterceptor('GetDomain', {
+        domain: [
+          {
+            id: 'domain-1',
+            name: 'example.com',
+            a: [{ n: 'zimbraDomainName', _content: 'example.com' }],
+          },
+        ],
+      });
+    }
     await createBrowserAPIInterceptor('get', '/.version', () => HttpResponse.text('24.5.0'));
-    createBrowserSoapAPIInterceptor('SearchDirectory', {});
+    createBrowserSoapAPIInterceptor('SearchDirectory', {
+      domain: visibleDomains,
+      more: false,
+      searchTotal: visibleDomains.length,
+    });
     createBrowserZextrasActionInterceptor('getAllNotifications', () =>
       HttpResponse.json({
         Body: {
@@ -205,6 +233,35 @@ describe('AppView', () => {
       await expect
         .element(page.getByRole('status', { name: 'location' }))
         .toHaveTextContent(`/manage/${DOMAINS_ROUTE_ID}/domain-1/${DISTRIBUTION_LIST}`);
+    });
+
+    it('redirects to the domain list when the own domain is not among the accessible domains', async () => {
+      await setupAppViewTest(undefined, <LocationDisplay />, {
+        visibleDomains: [{ id: 'domain-2', name: 'other.com' }],
+      });
+      await expect.element(page.getByText(/Quick Access to example\.com/i)).toBeVisible();
+
+      await page.getByText('Open').first().click();
+
+      await expect
+        .element(page.getByRole('status', { name: 'location' }))
+        .toHaveTextContent(`/manage/${DOMAINS_ROUTE_ID}/global/domains`);
+    });
+
+    it('redirects to the domain list when the own domain cannot be read', async () => {
+      await setupAppViewTest(undefined, <LocationDisplay />, { getDomainDenied: true });
+
+      // GetDomain is retried with backoff before settling as an error; clicks are ignored
+      // until then, so keep clicking until the navigation happens.
+      await expect
+        .poll(
+          async () => {
+            await page.getByText('Open').first().click();
+            return page.getByRole('status', { name: 'location' }).element().textContent;
+          },
+          { timeout: 9000, interval: 500 },
+        )
+        .toContain(`/manage/${DOMAINS_ROUTE_ID}/global/domains`);
     });
   });
 });
