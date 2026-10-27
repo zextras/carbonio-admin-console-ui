@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
-import { DashboardBanner } from '../dashboard-banner/DashboardBanner';
+import { DashboardBanner } from '../dashboard-banner/dashboard-banner';
 
 export type LicenseBannerProps = {
   redirectButtonHasToAppear?: boolean;

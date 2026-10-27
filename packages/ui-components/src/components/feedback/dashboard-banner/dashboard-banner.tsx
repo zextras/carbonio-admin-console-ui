@@ -6,7 +6,7 @@
 
 import { type IconName } from '../../../web-components/icon-registry';
 import { Button } from '../../basic/button/Button';
-import styles from './DashboardBanner.module.css';
+import styles from './dashboard-banner.module.css';
 
 export type DashboardBannerAction = {
   label: string;

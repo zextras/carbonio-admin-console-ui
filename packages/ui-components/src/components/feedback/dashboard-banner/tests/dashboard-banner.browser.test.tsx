@@ -9,7 +9,7 @@ import { useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DashboardBanner } from '../DashboardBanner';
+import { DashboardBanner } from '../dashboard-banner';
 
 const DESCRIPTION = 'Maintenance expires on 18 Jun 2025.';
 const DETAIL = 'Renew to continue receiving updates.';
