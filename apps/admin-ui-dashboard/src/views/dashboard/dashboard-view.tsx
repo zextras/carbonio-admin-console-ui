@@ -89,7 +89,6 @@ export const Dashboard = () => {
   function goToMailStoreServerList() {
     navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
   }
-
   function goToMailNotification() {
     navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
   }
