@@ -8,7 +8,7 @@ import { useForm } from '@tanstack/react-form';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { noop } from 'lodash-es';
 import { describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import { type themeConfigStore } from '../../../../types/domain';
 import { ThemeConfigs } from '../theme-configs';
@@ -226,6 +226,45 @@ describe('ThemeConfigs (browser)', () => {
       await expect
         .element(page.getByText('Inherited from the global configuration'))
         .not.toBeInTheDocument();
+    });
+  });
+
+  describe('Proxy-guard warning wiring', () => {
+    const HOST = globalThis.location?.hostname ?? 'localhost';
+    const PROXY_WARNING = /This image URL isn’t allowed/;
+
+    it('starts on the admin panel tab and targets the logo section when the #logo hash is set', async () => {
+      setupBrowserTest(<ThemeConfigsWrapper />, { initialRouterEntry: '/theme#logo' });
+
+      await expect.element(page.getByText('Admin Panel', { exact: true })).toBeVisible();
+    });
+
+    it('wires the proxy warning into the admin form', async () => {
+      setupBrowserTest(<ThemeConfigsWrapper />);
+
+      await page.getByText('ADMIN PANEL').click();
+      await expect.element(page.getByText('Admin Panel', { exact: true })).toBeVisible();
+
+      const firstLogoInput = page
+        .getByRole('textbox', { name: 'Ex. https://upload.yourlogo.com/' })
+        .nth(0);
+      await userEvent.fill(firstLogoInput, `https://${HOST}/logo.png`);
+
+      await expect.element(page.getByText(PROXY_WARNING)).toBeVisible();
+    });
+
+    it('does not warn on non-image URL fields', async () => {
+      setupBrowserTest(<ThemeConfigsWrapper />);
+
+      await page.getByText('ADMIN PANEL').click();
+      await expect.element(page.getByText('Admin Panel', { exact: true })).toBeVisible();
+
+      const loginRedirect = page.getByRole('textbox', {
+        name: 'LogIn redirect destination (URL)',
+      });
+      await userEvent.fill(loginRedirect, `https://${HOST}/login`);
+
+      await expect.element(page.getByText(PROXY_WARNING)).not.toBeInTheDocument();
     });
   });
 });

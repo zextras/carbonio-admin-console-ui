@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LicenseBanner, ListRow } from '@zextras/ui-components';
+import { LicenseBanner } from '@zextras/ui-components';
 import {
   buildPath,
   getDomainList,
@@ -36,6 +36,7 @@ import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
 import styles from './dashboard-view.module.css';
 import { QuickAccess } from './quick-access-view';
+import { WhiteLabelBanner } from './white-label-banner';
 
 const OWN_DOMAIN_SEARCH_LIMIT = 50;
 
@@ -98,8 +99,9 @@ export const Dashboard = () => {
       <ds-divider color="gray6"></ds-divider>
       <div className={styles.content}>
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
+        <WhiteLabelBanner />
         <div className={styles.section}>
-          <ListRow>
+          <div className={styles.row}>
             <div className={styles.versionCol}>
               <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
             </div>
@@ -109,28 +111,24 @@ export const Dashboard = () => {
                 domainName={domainInformation?.name}
               />
             </div>
-          </ListRow>
+          </div>
         </div>
 
         {isAdvanced && (
           <div className={styles.section}>
-            <ListRow>
-              <div className={styles.notificationCol}>
-                <DashboardNotification goToMailNotification={goToMailNotification} />
-              </div>
-            </ListRow>
+            <div className={styles.notificationCol}>
+              <DashboardNotification goToMailNotification={goToMailNotification} />
+            </div>
           </div>
         )}
         {hasListServerRights && (
           <div className={styles.section}>
-            <ListRow>
-              <div className={styles.serverListCol}>
-                <DashboardServerList
-                  goToMailStoreServerList={goToMailStoreServerList}
-                  serverVersion={serverVersion}
-                />
-              </div>
-            </ListRow>
+            <div className={styles.serverListCol}>
+              <DashboardServerList
+                goToMailStoreServerList={goToMailStoreServerList}
+                serverVersion={serverVersion}
+              />
+            </div>
           </div>
         )}
       </div>

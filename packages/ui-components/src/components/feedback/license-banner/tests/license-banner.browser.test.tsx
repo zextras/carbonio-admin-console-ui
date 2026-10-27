@@ -10,7 +10,7 @@ import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { LicenseBanner } from '../LicenseBanner';
+import { LicenseBanner } from '../license-banner';
 
 describe('LicenseBanner', () => {
 	const maintenanceEndDate = 1750272000000;
