@@ -10,7 +10,7 @@
 	padding: 1.5rem;
 }
 
-/* Mirrors LicenseBanner's ListRow padding { top: '1.5rem' } when no action button is shown. */
+/* Top-only padding when no action button is shown; keeps the 1.5rem rhythm of .outer. */
 .outerNoAction {
 	width: 100%;
 	box-sizing: border-box;
