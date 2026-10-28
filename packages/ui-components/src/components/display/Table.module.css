@@ -95,17 +95,24 @@
   cursor: pointer;
 }
 
-.bodyRow:hover .checkbox,
-.bodyRow:focus .checkbox {
-  display: block;
-}
-
+/* Hidden checkboxes stay in the tab order and show up on hover or keyboard focus. */
 .checkbox {
-  display: none;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
+.bodyRow:hover .checkbox,
+.checkbox:focus-within,
 .checkbox.show {
-  display: block;
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
 }
 
 .text {
@@ -113,7 +120,7 @@
 }
 
 .bodyRow:hover .text.hidden,
-.bodyRow:focus .text.hidden {
+.bodyRow:focus-within .text.hidden {
   display: none;
 }
 

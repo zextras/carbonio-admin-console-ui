@@ -96,7 +96,7 @@ export const DefaultRowFactory = ({
             />
           )}
           {(!showCheckbox || !displayBlockCheckbox) && (
-            <ds-text as="span">
+            <ds-text as="span" className={clsx(styles.text, showCheckbox && styles.hidden)}>
               {index}
             </ds-text>
           )}

@@ -160,8 +160,16 @@ export const ClickableRowFactory = ({
       onClick={onClick}
       onMouseEnter={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
       onMouseLeave={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
-      onFocus={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
-      onBlur={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
+      onFocus={showCheckboxOnHover && showCheckbox ? () => setShowCkb(true) : undefined}
+      onBlur={
+        showCheckboxOnHover && showCheckbox
+          ? (event) => {
+              if (!event.currentTarget.contains(event.relatedTarget)) {
+                hideCheckbox();
+              }
+            }
+          : undefined
+      }
       className={getTableRowClassNames(
         selected,
         row.highlight,
@@ -171,14 +179,17 @@ export const ClickableRowFactory = ({
       )}
     >
       <td width="1.875rem" height="1.875rem" align="center">
-        {showCheckbox && (showCkb || displayBlockCheckbox) ? (
-          <CheckboxComponentToRender
-            ref={ckbRef}
-            value={selected}
-            onClick={_onChange}
-            aria-label={`Select row ${index}`}
-          />
-        ) : (
+        {showCheckbox && (
+          <span className={showCkb || displayBlockCheckbox ? undefined : styles.revealOnFocus}>
+            <CheckboxComponentToRender
+              ref={ckbRef}
+              value={selected}
+              onClick={_onChange}
+              aria-label={`Select row ${index}`}
+            />
+          </span>
+        )}
+        {!(showCheckbox && (showCkb || displayBlockCheckbox)) && (
           <span>
             {typeof renderIndex === 'function' ? (
               renderIndex(index)

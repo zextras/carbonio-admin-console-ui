@@ -144,11 +144,17 @@ const HoverableRowFactory = ({
     }
 
     const refSave = trRef.current;
+    const showOnFocus = (): void => setShowCkb(true);
+    const hideOnBlur = (event: FocusEvent): void => {
+      if (!refSave?.contains(event.relatedTarget as Node | null)) {
+        hideCheckbox();
+      }
+    };
     if (refSave && showCheckbox) {
       refSave.addEventListener('mouseenter', displayCheckbox);
       refSave.addEventListener('mouseleave', hideCheckbox);
-      refSave.addEventListener('focus', displayCheckbox);
-      refSave.addEventListener('blur', hideCheckbox);
+      refSave.addEventListener('focusin', showOnFocus);
+      refSave.addEventListener('focusout', hideOnBlur);
     }
     return (): void => {
       if (hoverTimer !== null) {
@@ -157,8 +163,8 @@ const HoverableRowFactory = ({
       if (refSave) {
         refSave.removeEventListener('mouseenter', displayCheckbox);
         refSave.removeEventListener('mouseleave', hideCheckbox);
-        refSave.removeEventListener('focus', displayCheckbox);
-        refSave.removeEventListener('blur', hideCheckbox);
+        refSave.removeEventListener('focusin', showOnFocus);
+        refSave.removeEventListener('focusout', hideOnBlur);
       }
     };
   }, [displayCheckbox, hideCheckbox, showCheckbox, showCheckboxOnHover, hoverDelay, hoverTimer]);
@@ -192,14 +198,17 @@ const HoverableRowFactory = ({
       )}
     >
       <td width="1.875rem" height="1.875rem" align="center">
-        {showCheckbox && (showCkb || displayBlockCheckbox) ? (
-          <CheckboxComponentToRender
-            ref={ckbRef}
-            value={selected}
-            onClick={_onChange}
-            aria-label={`Select row ${index}`}
-          />
-        ) : (
+        {showCheckbox && (
+          <span className={showCkb || displayBlockCheckbox ? undefined : styles.revealOnFocus}>
+            <CheckboxComponentToRender
+              ref={ckbRef}
+              value={selected}
+              onClick={_onChange}
+              aria-label={`Select row ${index}`}
+            />
+          </span>
+        )}
+        {!(showCheckbox && (showCkb || displayBlockCheckbox)) && (
           <span>
             {typeof renderIndex === 'function' ? (
               renderIndex(index)
