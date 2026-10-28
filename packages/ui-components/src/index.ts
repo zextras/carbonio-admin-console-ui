@@ -109,7 +109,12 @@ export * from './components/display/Tooltip';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';
-export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/LicenseBanner';
+export {
+  DashboardBanner,
+  type DashboardBannerAction,
+  type DashboardBannerProps,
+} from './components/feedback/dashboard-banner/dashboard-banner';
+export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/license-banner';
 export * from './components/feedback/Modal';
 export * from './components/feedback/quota/Quota';
 export * from './components/feedback/snackbar/Snackbar';

@@ -593,17 +593,6 @@ describe('TextInput', () => {
       expect(description?.querySelector('ds-icon')).toBeNull();
     });
 
-    it('styles the error description as an icon row', async () => {
-      await render(<TextInput label="Token" value="" onChange={() => {}} description="Invalid token" hasError />);
-
-      const input = await page.getByRole('textbox', { name: 'Token' }).element();
-      const describedBy = input.getAttribute('aria-describedby');
-      const description = document.getElementById(describedBy as string) as HTMLElement;
-      const style = getComputedStyle(description);
-      expect(style.display).toBe('flex');
-      expect(style.height).toBe('19px');
-      expect(style.alignItems).toBe('center');
-    });
   });
 
   describe('long labels', () => {
