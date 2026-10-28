@@ -44,6 +44,24 @@ describe('PlainRadio', () => {
       expect(2 * Number(dotEl.getAttribute('r'))).toBeCloseTo(8.33, 1);
     });
 
+    it('should paint the unchecked ring with the selected color on hover', async () => {
+      await render(<PlainRadio label="Email" />);
+
+      await userEvent.hover(page.getByText('Email', { exact: true }));
+      const [ringEl] = getIcon('Email').querySelectorAll('circle');
+      await expect
+        .poll(() => getComputedStyle(ringEl).stroke)
+        .toBe(resolveColorToken('--color-primary-regular'));
+    });
+
+    it('should offer a 24 x 24 target around the 20px control', async () => {
+      await render(<PlainRadio label="Email" />);
+
+      const rect = page.getByRole('radio', { name: 'Email' }).element().getBoundingClientRect();
+      expect(rect.width).toBeCloseTo(24, 1);
+      expect(rect.height).toBeCloseTo(24, 1);
+    });
+
     it('should center the control on a single-line title', async () => {
       await render(<PlainRadio label="Email" />);
 

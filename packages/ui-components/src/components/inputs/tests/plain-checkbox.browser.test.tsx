@@ -148,6 +148,35 @@ describe('PlainCheckbox', () => {
       expect(Number(box.getAttribute('rx')) + strokeWidth / 2).toBeCloseTo(2.5, 1);
     });
 
+    it('should paint the unchecked box with the selected color on hover', async () => {
+      await render(<PlainCheckbox label="Keep a copy" />);
+
+      await userEvent.hover(page.getByText('Keep a copy'));
+      const box = getIcon('Keep a copy').querySelector('rect') as SVGRectElement;
+      await expect
+        .poll(() => getComputedStyle(box).stroke)
+        .toBe(resolveColorToken('--color-primary-regular'));
+    });
+
+    it('should keep the disabled box color on hover', async () => {
+      await render(<PlainCheckbox label="Keep a copy" disabled />);
+
+      await userEvent.hover(page.getByText('Keep a copy'));
+      const box = getIcon('Keep a copy').querySelector('rect') as SVGRectElement;
+      expect(getComputedStyle(box).stroke).toBe(resolveColorToken('--color-gray0-disabled'));
+    });
+
+    it('should offer a 24 x 24 target around the 20px control', async () => {
+      await render(<PlainCheckbox aria-label="Select row" />);
+
+      const target = page.getByRole('checkbox', { name: 'Select row' }).element();
+      const rect = target.getBoundingClientRect();
+      const icon = getIcon('Select row').getBoundingClientRect();
+      expect(rect.width).toBeCloseTo(24, 1);
+      expect(rect.height).toBeCloseTo(24, 1);
+      expect(rect.left + rect.width / 2).toBeCloseTo(icon.left + icon.width / 2, 1);
+    });
+
     it('should center the control on a single-line title', async () => {
       await render(<PlainCheckbox label="Keep a copy" />);
 

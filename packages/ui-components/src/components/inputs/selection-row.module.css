@@ -24,12 +24,14 @@
   height: 1.25rem;
 }
 
+/* 24px hit area around the 20px control (WCAG 2.5.8 target size). */
 .input {
   position: absolute;
-  inset: 0;
+  top: -0.125rem;
+  left: -0.125rem;
   z-index: 1;
-  width: 100%;
-  height: 100%;
+  width: calc(100% + 0.25rem);
+  height: calc(100% + 0.25rem);
   margin: 0;
   opacity: 0;
   cursor: pointer;
@@ -83,4 +85,11 @@
 .root[data-disabled] .label,
 .root[data-disabled] .description {
   color: var(--color-text-disabled);
+}
+
+@media (forced-colors: active) {
+  .root[data-disabled] .label,
+  .root[data-disabled] .description {
+    color: GrayText;
+  }
 }
