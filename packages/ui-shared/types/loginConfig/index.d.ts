@@ -8,6 +8,10 @@ export type LoginConfigStore = {
 	carbonioWebUiDarkMode?: boolean;
 	carbonioAdminUiAppLogo?: string;
 	carbonioAdminUiDarkAppLogo?: string;
+	carbonioAdminUiLoginLogo?: string;
+	carbonioAdminUiDarkLoginLogo?: string;
+	carbonioAdminUiBackground?: string;
+	carbonioAdminUiDarkBackground?: string;
 	carbonioAdminUiTitle?: string;
 	carbonioAdminUiFavicon?: string;
 	carbonioLogoURL?: string;

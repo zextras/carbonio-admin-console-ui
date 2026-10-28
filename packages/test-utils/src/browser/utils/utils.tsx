@@ -21,6 +21,8 @@ export const LocationDisplay = () => {
   return (
     <div data-testid="location" role="status" aria-label="location">
       {location.pathname}
+      {location.search}
+      {location.hash}
     </div>
   );
 };
