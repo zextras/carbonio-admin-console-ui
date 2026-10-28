@@ -1,3 +1,21 @@
+## [0.33.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.0...v0.33.1) (2026-10-27)
+
+### Bug Fixes
+
+* **delegates:** stop granting folder admin permission to "Send and Read" and "Read / Write" ([6c3b192](https://github.com/zextras/carbonio-admin-console-ui/commit/6c3b1926b937da87e826b54af6ecc588df88627b))
+
+## [0.33.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.32.1...v0.33.0) (2026-10-27)
+
+### Features
+
+* **admin-ui/subscriptions:** show files and chat sections when new-subscriptions flag is disabled ([d7a1b96](https://github.com/zextras/carbonio-admin-console-ui/commit/d7a1b9607430a7c3aa73e8b4a9b6e3762943e210))
+
+### Bug Fixes
+
+* **admin-ui-domains/account-form-provider:** fall back to empty defaults when baseline is missing ([47aac1d](https://github.com/zextras/carbonio-admin-console-ui/commit/47aac1d3e2d97e888ac94940f6ef01df142f8b06))
+* image guard for white label logos favicons ([#1423](https://github.com/zextras/carbonio-admin-console-ui/issues/1423)) ([0280e74](https://github.com/zextras/carbonio-admin-console-ui/commit/0280e74083929b2fcfa6dce2c45cd6c7667a9254))
+* redirect delegated admin to domain list when quick access own domain is not accessible ([2aee60b](https://github.com/zextras/carbonio-admin-console-ui/commit/2aee60b64cf1ca5c63bf2877cc641b397c91a64a))
+
 ## [0.32.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.32.0...v0.32.1) (2026-10-22)
 
 ### Bug Fixes
