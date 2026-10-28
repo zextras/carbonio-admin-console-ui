@@ -131,17 +131,18 @@ describe('AdvancedMailstoresConfig (browser)', () => {
       .toBeVisible();
   });
 
-  it('should toggle Primary radio off when clicked twice (volumeMain back to 0)', async () => {
+  it('should keep Primary selected when the checked radio is clicked again, as with the keyboard', async () => {
     const onSelection = vi.fn();
     await renderHarness({
       onSelection,
       initialAdvanced: { volumeMain: 1 },
     }).render();
 
-    await page.getByRole('radio', { name: 'Primary Volume' }).click();
-    await vi.waitFor(() => {
-      expect(onSelection).toHaveBeenCalledWith({ volumeMain: 0 }, true);
-    });
+    const primary = page.getByRole('radio', { name: 'Primary Volume' });
+    await primary.click();
+    await userEvent.keyboard(' ');
+    await expect.element(primary).toBeChecked();
+    expect(onSelection).not.toHaveBeenCalledWith({ volumeMain: 0 }, true);
   });
 
   it('should toggle Secondary radio on and call onSelection with SECONDARY_TYPE_VALUE', async () => {

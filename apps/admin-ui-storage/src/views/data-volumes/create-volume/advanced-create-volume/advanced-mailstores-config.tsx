@@ -181,49 +181,26 @@ export function AdvancedMailstoresConfig({
         </ds-text>
       </div>
       <div className="w-full py-lg">
-        <RadioGroup aria-label={t('label.volume_type', 'Volume Type')} value={volumeMain}>
+        <RadioGroup
+          aria-label={t('label.volume_type', 'Volume Type')}
+          value={volumeMain}
+          onChange={(value): void => {
+            form.setFieldValue('volumeMain', value);
+            onSelection({ volumeMain: value }, true);
+          }}
+        >
           <Radio
             label={t('storage.dataVolume.primaryVolume', 'Primary Volume')}
             value={PRIMARY_TYPE_VALUE}
-            onClick={(): void => {
-              form.setFieldValue(
-                'volumeMain',
-                volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE,
-              );
-              onSelection(
-                { volumeMain: volumeMain === PRIMARY_TYPE_VALUE ? 0 : PRIMARY_TYPE_VALUE },
-                true,
-              );
-            }}
           />
           <Radio
             label={t('storage.dataVolume.secondaryVolume', 'Secondary Volume')}
             value={SECONDARY_TYPE_VALUE}
-            onClick={(): void => {
-              form.setFieldValue(
-                'volumeMain',
-                volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE,
-              );
-              onSelection(
-                { volumeMain: volumeMain === SECONDARY_TYPE_VALUE ? 0 : SECONDARY_TYPE_VALUE },
-                true,
-              );
-            }}
           />
           {isLocalBlockDevice && (
             <Radio
               label={t('storage.dataVolume.indexVolume', 'Index Volume')}
               value={INDEX_TYPE_VALUE}
-              onClick={(): void => {
-                form.setFieldValue(
-                  'volumeMain',
-                  volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE,
-                );
-                onSelection(
-                  { volumeMain: volumeMain === INDEX_TYPE_VALUE ? 0 : INDEX_TYPE_VALUE },
-                  true,
-                );
-              }}
             />
           )}
         </RadioGroup>
