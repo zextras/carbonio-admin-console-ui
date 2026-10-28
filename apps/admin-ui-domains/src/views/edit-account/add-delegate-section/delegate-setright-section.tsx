@@ -164,7 +164,11 @@ export const DelegateSetRightsSection: FC = () => {
               />
             </RadioGroup>
             {deligateDetail?.folderSelection === 'i_want_to_select' && (
-              <div className="flex flex-wrap w-full pt-sm gap-y-sm">
+              <div
+                role="group"
+                aria-label={t('account_details.i_want_to_select', `I want to select the Folders`)}
+                className="flex flex-wrap w-full pt-sm gap-y-sm"
+              >
                 {folderList.map(
                   (ele: any, index) =>
                     ele.id !== '1' && (

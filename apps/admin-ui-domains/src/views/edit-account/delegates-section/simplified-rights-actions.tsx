@@ -159,54 +159,58 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 							{t('label.sending_options', 'Send options')}
 						</ds-text>
 					</Row>
-					<Row width="25%" mainAlignment="flex-start">
-						<Checkbox
-							value={readWriteRightCheck}
-							onClick={(): void => {
-								if (!readWriteRightCheck) {
-									setReadRightCheck(false);
-								}
-								setReadWriteRightCheck(!readWriteRightCheck);
-							}}
-							label={t('account_details.read_write', 'Read / Write')}
-						/>
-					</Row>
-					<Row width="25%" mainAlignment="flex-start">
-						<Checkbox
-							value={readRightCheck}
-							onClick={(): void => {
-								if (!readRightCheck) {
-									setReadWriteRightCheck(false);
-								}
-								setReadRightCheck(!readRightCheck);
-							}}
-							label={t('account_details.read_only', 'Read Only')}
-						/>
-					</Row>
-					<Row width="25%" mainAlignment="flex-start">
-						<Checkbox
-							value={sendRightCheck}
-							onClick={(): void => {
-								if (!sendRightCheck) {
-									setSendBehalfRightCheck(false);
-								}
-								setSendRightCheck(!sendRightCheck);
-							}}
-							label={t('account_details.send_check', 'Send')}
-						/>
-					</Row>
-					<Row width="25%" mainAlignment="flex-start">
-						<Checkbox
-							value={sendBehalfRightCheck}
-							onClick={(): void => {
-								if (!sendBehalfRightCheck) {
-									setSendRightCheck(false);
-								}
-								setSendBehalfRightCheck(!sendBehalfRightCheck);
-							}}
-							label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
-						/>
-					</Row>
+					<div role="group" aria-label={t('label.read_options', 'Read options')} className="contents">
+						<Row width="25%" mainAlignment="flex-start">
+							<Checkbox
+								value={readWriteRightCheck}
+								onClick={(): void => {
+									if (!readWriteRightCheck) {
+										setReadRightCheck(false);
+									}
+									setReadWriteRightCheck(!readWriteRightCheck);
+								}}
+								label={t('account_details.read_write', 'Read / Write')}
+							/>
+						</Row>
+						<Row width="25%" mainAlignment="flex-start">
+							<Checkbox
+								value={readRightCheck}
+								onClick={(): void => {
+									if (!readRightCheck) {
+										setReadWriteRightCheck(false);
+									}
+									setReadRightCheck(!readRightCheck);
+								}}
+								label={t('account_details.read_only', 'Read Only')}
+							/>
+						</Row>
+					</div>
+					<div role="group" aria-label={t('label.sending_options', 'Send options')} className="contents">
+						<Row width="25%" mainAlignment="flex-start">
+							<Checkbox
+								value={sendRightCheck}
+								onClick={(): void => {
+									if (!sendRightCheck) {
+										setSendBehalfRightCheck(false);
+									}
+									setSendRightCheck(!sendRightCheck);
+								}}
+								label={t('account_details.send_check', 'Send')}
+							/>
+						</Row>
+						<Row width="25%" mainAlignment="flex-start">
+							<Checkbox
+								value={sendBehalfRightCheck}
+								onClick={(): void => {
+									if (!sendBehalfRightCheck) {
+										setSendRightCheck(false);
+									}
+									setSendBehalfRightCheck(!sendBehalfRightCheck);
+								}}
+								label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
+							/>
+						</Row>
+					</div>
 				</Row>
 			</Container>
 			<Container mainAlignment="flex-start">
