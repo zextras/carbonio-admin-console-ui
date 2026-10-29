@@ -252,7 +252,7 @@ const FiltersPanel = ({
       ))}
       <div className={styles.filtersPanelActions}>
         <Button
-          type="outlined"
+          type="ghost"
           color="primary"
           width="fill"
           label={clearDraftLabel}
@@ -274,10 +274,11 @@ const FiltersPanel = ({
  * The toolbar filters trigger + panel. Opening clones the applied filters
  * into a LOCAL draft (typing re-renders only this part and emits nothing);
  * Apply sanitizes the draft, hands it to the view, closes the panel and asks
- * the view to reset pagination/selection. The open state lives in the UI
- * store `openPanel` slice, so mutual exclusion with the customize panel is
- * implicit. Panel and trigger ids come from `useId` (instance-scoped, fix
- * #11) and outside clicks close via element refs.
+ * the view to reset pagination/selection. Clear all does the same with an
+ * empty filter set. The open state lives in the UI store `openPanel` slice,
+ * so mutual exclusion with the customize panel is implicit. Panel and
+ * trigger ids come from `useId` (instance-scoped, fix #11) and outside
+ * clicks close via element refs.
  */
 export const DataTableFilters = ({
   filterDefs,
@@ -344,6 +345,13 @@ export const DataTableFilters = ({
     onApplyResetSelection();
   }
 
+  function clearAndApply(): void {
+    setDraft({});
+    onFiltersChange({});
+    setOpenPanel(null);
+    onApplyResetSelection();
+  }
+
   return (
     <>
       <button
@@ -388,9 +396,7 @@ export const DataTableFilters = ({
             filterDefs={filterDefs}
             draft={draft}
             onDraftChange={setDraft}
-            onClearDraft={() => {
-              setDraft({});
-            }}
+            onClearDraft={clearAndApply}
             onApply={applyDraft}
             filtersLabel={labels.filtersLabel}
             clearDraftLabel={labels.clearDraftLabel}

@@ -107,8 +107,8 @@ const BulkBanner = ({
       {actions.map((action) => (
         <Button
           key={action.id}
-          type={'outlined'}
-          color="primary"
+          type="outlined"
+          color={action.danger ? 'error' : 'primary'}
           label={action.label}
           onClick={() => {
             onAction(action);
@@ -116,9 +116,9 @@ const BulkBanner = ({
         />
       ))}
     </div>
-    <button type="button" className={styles.clearButton} onClick={onClear}>
-      {clearLabel}
-    </button>
+    <span className={styles.clearButton}>
+      <Button type="ghost" color="primary" label={clearLabel} onClick={onClear} />
+    </span>
   </div>
 );
 

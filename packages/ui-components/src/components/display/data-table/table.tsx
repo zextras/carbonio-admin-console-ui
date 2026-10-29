@@ -15,19 +15,64 @@ import { useTranslation } from 'react-i18next';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
+import { CHROME_COLUMN_WIDTH } from './layout-constants';
+import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './models/customize-model';
 import { DataTableTableBody } from './table-body';
 import { useTableConfig } from './table-config-context';
 import { DataTableTableHeader } from './table-header';
-import { SCROLL_LAYOUT_SLICES } from './table-selectors';
+import { COLUMN_LAYOUT_SLICES, SCROLL_LAYOUT_SLICES } from './table-selectors';
 import {
   type DataTableScrollEdge,
   type DataTableUiStore,
   useTableUi,
   useTableUiStore,
 } from './table-ui-store';
-import type { DataTableCellEditCommit, DataTableColumnDef, DataTableStatus } from './types';
+import type {
+  DataTableCellEditCommit,
+  DataTableColumnDef,
+  DataTableColumnMeta,
+  DataTableStatus,
+} from './types';
 
 const DEFAULT_SKELETON_ROWS = 5;
+
+const DEFAULT_FLEX_COL_WIDTH = '8rem';
+
+function formatColWidth(width: string | number): string {
+  return typeof width === 'number' ? `${width}px` : width;
+}
+
+function isPercentageWidth(width: string | number): boolean {
+  return typeof width === 'string' && width.trim().endsWith('%');
+}
+
+function resolveColWidth(columnId: string, meta: DataTableColumnMeta | undefined): string {
+  if (columnId === SELECT_COLUMN_ID || columnId === ACTIONS_COLUMN_ID) {
+    return CHROME_COLUMN_WIDTH;
+  }
+  if (meta?.width !== undefined && !isPercentageWidth(meta.width)) {
+    return formatColWidth(meta.width);
+  }
+  return DEFAULT_FLEX_COL_WIDTH;
+}
+
+/** Locks select/actions (and meta.fixed) widths so Customize cannot stretch them. */
+const DataTableColGroup = () => {
+  const table = useDataTableContext();
+  return (
+    <table.Subscribe selector={COLUMN_LAYOUT_SLICES}>
+      {() => (
+        <colgroup>
+          {table.getVisibleLeafColumns().map((column) => {
+            const meta = column.columnDef.meta as DataTableColumnMeta | undefined;
+            const width = resolveColWidth(column.id, meta);
+            return <col key={column.id} style={{ width }} />;
+          })}
+        </colgroup>
+      )}
+    </table.Subscribe>
+  );
+};
 
 export type DataTableTableProps<TData extends RowData> = {
   /** Accessible name for the table element */
@@ -192,6 +237,7 @@ export const DataTableTable = <TData extends RowData>({
         )}
       </table.Subscribe>
       <table className={styles.table} aria-label={ariaLabel}>
+        <DataTableColGroup />
         <DataTableTableHeader
           primaryColumnId={resolvedPrimaryColumnId}
           enableRowSelection={resolvedEnableRowSelection}

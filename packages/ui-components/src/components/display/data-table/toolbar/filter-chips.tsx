@@ -6,6 +6,7 @@
 
 import { useTranslation } from 'react-i18next';
 
+import { Button } from '../../../basic/button/Button';
 import styles from '../data-table.module.css';
 import type { DataTableFilterChip } from '../models/types';
 
@@ -108,7 +109,7 @@ export const DataTableFilterChips = ({
           return (
             <li key={chip.key} className={styles.filterChip}>
               <span>{displayLabel}</span>
-              <button
+                              <button
                 type="button"
                 className={styles.filterChipRemove}
                 aria-label={t('data_table.remove_filter', 'Remove filter: {{label}}', {
@@ -118,15 +119,20 @@ export const DataTableFilterChips = ({
                   onRemoveChip(chip);
                 }}
               >
-                ✕
+                <ds-icon icon="CloseOutline" size="small" />
               </button>
             </li>
           );
         })}
       </ul>
-      <button type="button" className={styles.clearAllFilters} onClick={onClearAll}>
-        {clearAllLabel ?? t('data_table.clear_all_filters', 'Clear all')}
-      </button>
+      <span className={styles.clearAllFilters}>
+        <Button
+          type="ghost"
+          color="primary"
+          label={clearAllLabel ?? t('data_table.clear_all_filters', 'Clear all')}
+          onClick={onClearAll}
+        />
+      </span>
     </div>
   );
 };

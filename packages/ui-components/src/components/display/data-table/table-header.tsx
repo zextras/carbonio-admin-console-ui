@@ -8,7 +8,7 @@ import clsx from 'clsx';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
-import { resolvePinnedLeftOffset } from './layout-constants';
+import { resolveColumnWidthStyle, resolvePinnedLeftOffset } from './layout-constants';
 import { ACTIONS_COLUMN_ID, SELECT_COLUMN_ID } from './models/customize-model';
 import { SortableHeaderCell } from './sortable-header-cell';
 import { COLUMN_LAYOUT_SLICES } from './table-selectors';
@@ -87,8 +87,7 @@ export const DataTableTableHeader = ({
                       pinnedStart && isPrimary && !scrollEdge.start && styles.pinnedShadow,
                     )}
                     style={{
-                      width: meta?.width,
-                      maxWidth: meta?.maxWidth ?? meta?.width,
+                      ...resolveColumnWidthStyle(meta),
                       textAlign: meta?.align,
                       left: resolvePinnedLeftOffset({
                         isPrimary,
