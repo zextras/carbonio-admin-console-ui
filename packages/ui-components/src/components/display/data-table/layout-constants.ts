@@ -13,7 +13,7 @@ import type { DataTableColumnMeta } from './models/types';
  * column. Shared by CSS, colgroup, and the pinned primary offset so
  * chrome columns stay stable when Customize toggles data columns.
  */
-export const CHROME_COLUMN_WIDTH = '2.5rem';
+export const CHROME_COLUMN_WIDTH = '2rem';
 
 /**
  * Left offset of the pinned primary column when the leading selection
