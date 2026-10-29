@@ -156,15 +156,22 @@ describe('DataTableFilters', () => {
     expect(onFiltersChange).toHaveBeenCalledWith({});
   });
 
-  it('clears the draft without emitting until Apply', () => {
+  it('applies empty filters on Clear all', () => {
     const onFiltersChange = vi.fn();
-    render(<FiltersHarness filters={{ status: ['active'] }} onFiltersChange={onFiltersChange} />);
+    const onApplyResetSelection = vi.fn();
+    render(
+      <FiltersHarness
+        filters={{ status: ['active'] }}
+        onFiltersChange={onFiltersChange}
+        onApplyResetSelection={onApplyResetSelection}
+      />,
+    );
     fireEvent.click(getTrigger());
-    fireEvent.click(screen.getByText('Active'));
     fireEvent.click(screen.getByRole('button', { name: 'CLEAR ALL' }));
-    expect(onFiltersChange).not.toHaveBeenCalled();
-    fireEvent.click(screen.getByRole('button', { name: 'APPLY' }));
+    expect(onFiltersChange).toHaveBeenCalledTimes(1);
     expect(onFiltersChange).toHaveBeenCalledWith({});
+    expect(onApplyResetSelection).toHaveBeenCalledTimes(1);
+    expect(screen.queryByRole('dialog')).toBeNull();
   });
 
   it('discards the draft on outside close and re-clones the filters on reopen', () => {

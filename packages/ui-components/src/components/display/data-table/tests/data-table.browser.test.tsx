@@ -592,15 +592,20 @@ describe('DataTable (browser)', () => {
     await expect.element(page.getByText('user1@demo.zextras.io')).not.toBeInTheDocument();
   });
 
-  it('clears draft filters without applying them', async () => {
+  it('applies empty filters on Clear all', async () => {
     await renderTable(<FilteringDataTable />);
 
     await userEvent.click(page.getByRole('button', { name: 'Filters' }));
-    const filtersDialog = page.getByRole('dialog', { name: 'Filters' });
+    let filtersDialog = page.getByRole('dialog', { name: 'Filters' });
     await userEvent.click(filtersDialog.getByRole('checkbox', { name: 'Pending' }));
-    await userEvent.click(page.getByRole('button', { name: 'CLEAR ALL' }));
     await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
+    await expect.element(page.getByText('Status: Pending')).toBeVisible();
 
+    await userEvent.click(page.getByRole('button', { name: 'Filters' }));
+    filtersDialog = page.getByRole('dialog', { name: 'Filters' });
+    await userEvent.click(page.getByRole('button', { name: 'CLEAR ALL' }));
+
+    await expect.element(page.getByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
     await expect.element(page.getByText('Status: Pending')).not.toBeInTheDocument();
     await expect.element(page.getByText('25 results')).toBeVisible();
   });

@@ -23,20 +23,20 @@ function SortIcon({ sorted }: SortIconProps) {
   if (sorted === 'asc') {
     return (
       <span className={styles.sortIcon} aria-hidden="true">
-        <ds-icon icon="ChevronSortUpOutline" size="small"></ds-icon>
+        <ds-icon icon="ChevronSortUpOutline" size="medium"></ds-icon>
       </span>
     );
   }
   if (sorted === 'desc') {
     return (
       <span className={styles.sortIcon} aria-hidden="true">
-        <ds-icon icon="ChevronSortDownOutline" size="small"></ds-icon>
+        <ds-icon icon="ChevronSortDownOutline" size="medium"></ds-icon>
       </span>
     );
   }
   return (
     <span className={styles.sortIcon} aria-hidden="true">
-      <ds-icon icon="ChevronSortEmptyOutline" size="small"></ds-icon>
+      <ds-icon icon="ChevronSortEmptyOutline" size="medium"></ds-icon>
     </span>
   );
 }

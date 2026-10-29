@@ -11,7 +11,7 @@ import { type ReactNode, useEffect } from 'react';
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
 import type { DataTableFeatures } from './data-table-features';
-import { resolvePinnedLeftOffset } from './layout-constants';
+import { resolveColumnWidthStyle, resolvePinnedLeftOffset } from './layout-constants';
 import { ACTIONS_COLUMN_ID, resolveColumnLabel, SELECT_COLUMN_ID } from './models/customize-model';
 import { isEditableTarget } from './models/event-target';
 import { copyTextToClipboard, getCellDisplayValue, navigatePeekRowId } from './models/row-ui';
@@ -108,8 +108,7 @@ function buildCellStyle(options: {
   pinnedStart: boolean;
 }): React.CSSProperties {
   return {
-    width: options.meta?.width,
-    maxWidth: options.meta?.maxWidth ?? options.meta?.width,
+    ...resolveColumnWidthStyle(options.meta),
     textAlign: options.meta?.align,
     left: resolvePinnedLeftOffset({
       isPrimary: options.isPrimary,
