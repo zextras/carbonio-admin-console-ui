@@ -86,10 +86,10 @@
 .thSelect,
 .tdSelect {
   box-sizing: border-box;
-  width: var(--data-table-chrome-col-width);
-  min-width: var(--data-table-chrome-col-width);
-  max-width: var(--data-table-chrome-col-width);
-  padding-left: 0;
+  width: 0%;
+  min-width: 2rem;
+  max-width: 2rem;
+  padding-left: var(--padding-size-medium, 1rem);
   padding-right: 0;
   text-align: center;
 }
@@ -1520,11 +1520,10 @@
 .thActions,
 .tdActions {
   box-sizing: border-box;
-  width: var(--data-table-chrome-col-width);
-  min-width: var(--data-table-chrome-col-width);
-  max-width: var(--data-table-chrome-col-width);
-  padding-left: 0;
-  padding-right: 0;
+  width: 0%;
+  min-width: 3.5rem;
+  max-width: 3.5rem;
+  padding-right: 0.5rem;
   text-align: center;
 }
 
