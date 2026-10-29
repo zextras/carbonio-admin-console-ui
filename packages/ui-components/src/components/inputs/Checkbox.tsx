@@ -4,128 +4,65 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import clsx from 'clsx';
-import React, { useMemo, useRef } from 'react';
+import { useState } from 'react';
 
-import { useCheckbox } from '../../hooks/useCheckbox';
-import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import { resolveThemeColor } from '../../theme/theme-utils';
-import { AnyColor } from '../../types/utils';
-import { Container, ContainerProps } from '../layout/Container';
-import { Padding } from '../layout/Padding';
-import styles from './Checkbox.module.css';
+import { getPaddingVar, type PaddingVarObj } from '../../theme/theme-utils';
+import { PlainCheckbox, type PlainCheckboxProps } from './plain-checkbox';
 
-type CheckboxSize = 'medium' | 'small';
-
-export type CheckboxProps = Omit<ContainerProps, 'onChange' | 'onClick'> & {
+export type CheckboxProps = Omit<
+  PlainCheckboxProps,
+  'checked' | 'defaultChecked' | 'value' | 'onChange' | 'onClick' | 'size' | 'ref' | 'rootRef'
+> & {
+  /** Ref to the root element, so wrappers like Tooltip anchor to the whole checkbox row. */
+  ref?: React.Ref<HTMLDivElement>;
   /** status of the Checkbox */
   defaultChecked?: boolean;
-  /** Checkbox value */
+  /** Controlled value. When omitted the checkbox is uncontrolled and starts from `defaultChecked`. */
   value?: boolean;
-  /** Checkbox size
-   * @deprecated use size instead
-   */
-  iconSize?: 'small' | 'medium' | 'large' | 'extralarge';
-  /** Checkbox color */
-  iconColor?: AnyColor;
-  /** Checkbox text */
-  label?: string;
-  /** Checkbox padding */
-  padding?: ContainerProps['padding'];
+  /** Outer padding of the checkbox row. */
+  padding?: PaddingVarObj | string | 0;
   /** whether to disable the checkbox or not */
   disabled?: boolean;
-  /** click callback */
+  /** Fired on every user toggle with the native change event. */
   onClick?: (event: Event) => void;
-  /** change callback */
+  /** Fired on every user toggle with the new checked state. */
   onChange?: (checked: boolean) => void;
-  /** available sizes */
-  size?: CheckboxSize;
-  ref?: React.Ref<HTMLDivElement>;
 };
 
 export const Checkbox = ({
   defaultChecked = false,
   value,
-  label,
-  iconSize,
-  iconColor = 'gray0',
   padding,
   disabled = false,
   onClick,
   onChange,
-  size = 'medium',
+  style,
   ref,
+  onKeyDown,
   ...rest
 }: CheckboxProps) => {
-  const innerRef = useRef<HTMLDivElement>(null);
-  const ckbRef = useCombinedRefs(ref, innerRef);
-  const checked = useCheckbox({
-    ref: ckbRef,
-    defaultChecked,
-    value,
-    disabled,
-    onClick,
-    onChange,
-  });
-
-  const computedIconSize = useMemo(
-    () =>
-      // TODO simplify when iconSize will be removed
-      iconSize ?? (size === 'medium' ? 'large' : 'medium'),
-    [size, iconSize],
-  );
-
-  const iconWrapperClassName = clsx(styles.iconWrapper, disabled && styles.disabled);
-
-  const iconWrapperStyle: React.CSSProperties = useMemo(
-    () =>
-      ({
-        '--icon-wrapper-height':
-          size === 'medium'
-            ? 'calc(var(--font-size-medium) * 1.5)'
-            : 'calc(var(--font-size-small) * 1.5)',
-        '--icon-color-focus': resolveThemeColor(iconColor, 'focus'),
-        '--icon-color-hover': resolveThemeColor(iconColor, 'hover'),
-        '--icon-color-active': resolveThemeColor(iconColor, 'active'),
-      } as React.CSSProperties),
-    [size, iconColor],
-  );
+  const [innerChecked, setInnerChecked] = useState(defaultChecked);
+  const paddingStyle = padding === undefined ? undefined : { padding: getPaddingVar(padding) };
 
   return (
-    <Container
-      ref={ckbRef}
-      orientation="horizontal"
-      width="fit"
-      height="fit"
-      padding={padding}
-      style={{ cursor: disabled ? 'default' : 'pointer' }}
-      crossAlignment="flex-start"
-      data-testid={'checkbox'}
+    <PlainCheckbox
+      rootRef={ref}
+      disabled={disabled}
+      checked={value ?? innerChecked}
+      onChange={(event) => {
+        if (value === undefined) setInnerChecked(event.target.checked);
+        onClick?.(event.nativeEvent);
+        onChange?.(event.target.checked);
+      }}
+      onKeyDown={(event) => {
+        onKeyDown?.(event);
+        if (event.key === 'Enter' && !event.defaultPrevented) {
+          event.preventDefault();
+          event.currentTarget.click();
+        }
+      }}
+      style={{ ...paddingStyle, ...style }}
       {...rest}
-    >
-      <div className={iconWrapperClassName} style={iconWrapperStyle} tabIndex={disabled ? -1 : 0}>
-        <ds-icon
-          icon={checked ? 'CheckmarkSquare' : 'Square'}
-          size={computedIconSize}
-          color={iconColor}
-          disabled={disabled || undefined}
-        />
-      </div>
-      {label && (
-        <Padding left="small">
-          <ds-text
-            as="label"
-            className={styles.customText}
-            size={size}
-            weight="regular"
-            overflow="break-word"
-            disabled={disabled}
-            color="gray0"
-          >
-            {label}
-          </ds-text>
-        </Padding>
-      )}
-    </Container>
+    />
   );
 };

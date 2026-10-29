@@ -18,7 +18,7 @@ import {
   type SelectItem,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
-import { type ChangeEvent, type ReactNode, useState } from 'react';
+import { type ChangeEvent, type ReactNode, useId, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { AddressBookEntry } from '../../../../types';
@@ -88,6 +88,8 @@ export const AddAddressBookPanel = ({
     folderMode === 'specific' && folderId === ''
       ? t('label.select_an_address_book', 'Select an address book')
       : null;
+  const folderModeHelperId = useId();
+  const folderModeErrorId = useId();
   const allAlreadySharedError =
     hasValidSelectedAccount && folderMode === 'all' && hasAllShared
       ? t(
@@ -262,6 +264,12 @@ export const AddAddressBookPanel = ({
           {t('label.address_books_to_expose', 'Address books to expose')}
         </ds-text>
         <RadioGroup
+          aria-label={t('label.address_books_to_expose', 'Address books to expose')}
+          aria-describedby={
+            allAlreadySharedError
+              ? `${folderModeErrorId} ${folderModeHelperId}`
+              : folderModeHelperId
+          }
           value={folderMode}
           onChange={(value: string | undefined): void => {
             if (value === 'all' || value === 'specific') {
@@ -272,17 +280,15 @@ export const AddAddressBookPanel = ({
           <Radio
             value="all"
             label={t('label.all_address_books', 'All address books')}
-            iconColor="primary"
           />
           <Radio
             value="specific"
             label={t('label.a_specific_address_book', 'A specific address book')}
-            iconColor="primary"
           />
         </RadioGroup>
 
         {allAlreadySharedError && (
-          <ds-text as="span" size="small" color="error">
+          <ds-text id={folderModeErrorId} as="span" size="small" color="error">
             {allAlreadySharedError}
           </ds-text>
         )}
@@ -293,7 +299,7 @@ export const AddAddressBookPanel = ({
           </Container>
         )}
 
-        <ds-text as="p" size="small" color="gray1" overflow="break-word">
+        <ds-text id={folderModeHelperId} as="p" size="small" color="gray1" overflow="break-word">
           {t(
             'label.selected_address_books_ldap_helper',
             'The selected address books become searchable through the LDAP Address Book service.',

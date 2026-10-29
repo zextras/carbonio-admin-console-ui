@@ -6,6 +6,7 @@
 
 import clsx from 'clsx';
 import { useCallback, useMemo, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Checkbox } from '../inputs/Checkbox';
 import { Row } from '../layout/Row';
@@ -31,6 +32,7 @@ export const DefaultRowFactory = ({
   multiSelect,
   showCheckbox,
 }: TRowProps): React.JSX.Element => {
+  const [t] = useTranslation();
   const ckbRef = useRef<HTMLDivElement>(null);
   const trRef = useRef<HTMLTableRowElement>(null);
   const clickableRow = useMemo(
@@ -88,14 +90,13 @@ export const DefaultRowFactory = ({
             <Checkbox
               ref={ckbRef}
               className={clsx(styles.checkbox, displayBlockCheckbox && styles.show)}
-              size="small"
               value={selected}
               onClick={_onChange}
-              iconColor={displayBlockCheckbox ? 'primary' : 'text'}
+              aria-label={t('label.select_row', 'Select row {{index}}', { index })}
             />
           )}
           {(!showCheckbox || !displayBlockCheckbox) && (
-            <ds-text as="span">
+            <ds-text as="span" className={clsx(styles.text, showCheckbox && styles.hidden)}>
               {index}
             </ds-text>
           )}
