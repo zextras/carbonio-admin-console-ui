@@ -691,17 +691,13 @@ describe('ManageAccounts (browser)', () => {
             createBrowserSoapAPIInterceptor('GetFolder', {});
         }
 
-        it('should open the account edit view from peek Edit account', async () => {
+        it('should open the account edit view on row click', async () => {
             setupEditAccountInterceptors();
             setupSearchDirectoryInterceptor();
             await setupBrowserTest(<ManageAccounts />);
 
             await expect.element(page.getByText('user1@example.com')).toBeInTheDocument();
             await page.getByText('user1@example.com').click();
-            await expect
-                .element(page.getByRole('complementary', { name: 'Details: user1@example.com' }))
-                .toBeVisible();
-            await page.getByRole('button', { name: 'Edit account' }).click();
 
             await expect
                 .element(page.getByRole('heading', { name: 'user1@example.com' }))

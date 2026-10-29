@@ -17,7 +17,6 @@ import {
 	DataTableFilters,
 	DataTableLiveRegion,
 	DataTablePagination,
-	DataTablePeekPanel,
 	DataTableRoot,
 	type DataTableRowAction,
 	DataTableSearch,
@@ -390,7 +389,7 @@ export const ManageAccounts = () => {
 			accessorKey: 'name',
 			header: t('label.email', 'Email'),
 			enableSorting: true,
-			meta: { width: '25%', primary: true, copyable: true },
+			meta: { width: '350px', fixed: true, primary: true, copyable: true },
 			cell: ({ row }) => (
 				<ds-text as="span" size="small" color="gray0" weight="regular">
 					{row.original.name || ' '}
@@ -402,7 +401,7 @@ export const ManageAccounts = () => {
 			accessorFn: (row) => (row.displayName as string | undefined) ?? '',
 			header: t('label.person_name', 'Name'),
 			enableSorting: true,
-			meta: { width: '15%', maxWidth: '9rem', editable: true },
+			meta: { width: '12rem', fixed: true, editable: true },
 			cell: ({ row }) => (
 				<ds-text as="span" size="small" color="gray0" weight="light">
 					{(row.original.displayName as string | undefined) || '\u00a0'}
@@ -595,7 +594,7 @@ export const ManageAccounts = () => {
 									onRetry={() => {
 										void refetch();
 									}}
-									enablePeek
+									onRowClick={openDetailView}
 									emptyTitle={t('label.this_list_is_empty', 'This list is empty.')}
 									emptyDescription={
 										<Trans
@@ -619,51 +618,6 @@ export const ManageAccounts = () => {
 									) : (
 										<DataTableTableFooter paginationThreshold={RECORD_DISPLAY_LIMIT} />
 									))}
-								<DataTablePeekPanel<AccountRowItem>
-									title={(account) => account.name}
-									status={(account) => {
-										const status = (account.zimbraAccountStatus as string | undefined) ?? '';
-										return getStatusDisplay(status, t).label;
-									}}
-									fields={(account) => {
-										const mailAddresses = (account.mail as Array<string> | undefined) ?? [];
-										const aliasCount = Math.max(mailAddresses.length - 1, 0);
-										const description = (account.description as string | undefined) ?? '';
-										const displayName = (account.displayName as string | undefined) ?? '';
-										return [
-											{
-												id: 'displayName',
-												label: t('label.person_name', 'Name'),
-												value: displayName || '—',
-											},
-											{
-												id: 'type',
-												label: t('label.type', 'Type'),
-												value: getAccountUserType(account),
-											},
-											{
-												id: 'status',
-												label: t('label.status', 'Status'),
-												value: getStatusDisplay(
-													(account.zimbraAccountStatus as string | undefined) ?? '',
-													t,
-												).label,
-											},
-											{
-												id: 'aliases',
-												label: t('label.Aliases', 'Aliases'),
-												value: String(aliasCount),
-											},
-											{
-												id: 'description',
-												label: t('label.description', 'Description'),
-												value: description || '—',
-											},
-										];
-									}}
-									onOpenFullDetails={openDetailView}
-									openFullDetailsLabel={t('label.edit_account', 'Edit account')}
-								/>
 							</DataTableRoot>
 							{showEditAccountView && (
 								<ModalOverlay open={showEditAccountView} maxWidth="58.75rem">
