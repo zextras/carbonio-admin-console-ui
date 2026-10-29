@@ -79,6 +79,10 @@ function getTableCellClassName(
   return defaultClassName;
 }
 
+function isFocusLeaving(event: React.FocusEvent<HTMLElement>): boolean {
+  return !event.currentTarget.contains(event.relatedTarget);
+}
+
 export const ClickableRowFactory = ({
   index,
   row,
@@ -155,21 +159,22 @@ export const ClickableRowFactory = ({
     [showCheckboxOnHover, selected, multiSelect, selectionMode],
   );
 
+  const revealOnHover = showCheckboxOnHover && showCheckbox;
+  const isCheckboxVisible = showCkb || displayBlockCheckbox;
+
+  const hideOnBlur = (event: React.FocusEvent<HTMLTableRowElement>): void => {
+    if (isFocusLeaving(event)) {
+      hideCheckbox();
+    }
+  };
+
   return (
     <tr
       onClick={onClick}
-      onMouseEnter={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
-      onMouseLeave={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
-      onFocus={showCheckboxOnHover && showCheckbox ? () => setShowCkb(true) : undefined}
-      onBlur={
-        showCheckboxOnHover && showCheckbox
-          ? (event) => {
-              if (!event.currentTarget.contains(event.relatedTarget)) {
-                hideCheckbox();
-              }
-            }
-          : undefined
-      }
+      onMouseEnter={revealOnHover ? displayCheckbox : undefined}
+      onMouseLeave={revealOnHover ? hideCheckbox : undefined}
+      onFocus={revealOnHover ? () => setShowCkb(true) : undefined}
+      onBlur={revealOnHover ? hideOnBlur : undefined}
       className={getTableRowClassNames(
         selected,
         row.highlight,
@@ -180,7 +185,7 @@ export const ClickableRowFactory = ({
     >
       <td width="1.875rem" height="1.875rem" align="center">
         {showCheckbox && (
-          <span className={showCkb || displayBlockCheckbox ? undefined : styles.revealOnFocus}>
+          <span className={isCheckboxVisible ? undefined : styles.revealOnFocus}>
             <CheckboxComponentToRender
               ref={ckbRef}
               value={selected}
@@ -189,7 +194,7 @@ export const ClickableRowFactory = ({
             />
           </span>
         )}
-        {!(showCheckbox && (showCkb || displayBlockCheckbox)) && (
+        {!(showCheckbox && isCheckboxVisible) && (
           <span>
             {typeof renderIndex === 'function' ? (
               renderIndex(index)

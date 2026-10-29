@@ -159,7 +159,7 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 							{t('label.sending_options', 'Send options')}
 						</ds-text>
 					</Row>
-					<div role="group" aria-label={t('label.read_options', 'Read options')} className="contents">
+					<fieldset aria-label={t('label.read_options', 'Read options')} className="contents">
 						<Row width="25%" mainAlignment="flex-start">
 							<Checkbox
 								value={readWriteRightCheck}
@@ -184,8 +184,8 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 								label={t('account_details.read_only', 'Read Only')}
 							/>
 						</Row>
-					</div>
-					<div role="group" aria-label={t('label.sending_options', 'Send options')} className="contents">
+					</fieldset>
+					<fieldset aria-label={t('label.sending_options', 'Send options')} className="contents">
 						<Row width="25%" mainAlignment="flex-start">
 							<Checkbox
 								value={sendRightCheck}
@@ -210,7 +210,7 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 								label={t('account_details.send_on_behalf_of_check', 'Send on Behalf of')}
 							/>
 						</Row>
-					</div>
+					</fieldset>
 				</Row>
 			</Container>
 			<Container mainAlignment="flex-start">

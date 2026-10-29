@@ -324,7 +324,7 @@ export function HSMpolicySettings() {
         </Padding>
       </ListRow>
       <ListRow>
-        <div role="group" aria-label={t('hsm.items', 'Items')} className="contents">
+        <fieldset aria-label={t('hsm.items', 'Items')} className="contents">
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
             <Checkbox
               label={t('hsm.all', 'All')}
@@ -382,7 +382,7 @@ export function HSMpolicySettings() {
               }}
             />
           </Container>
-        </div>
+        </fieldset>
       </ListRow>
       <ListRow>
         <Padding bottom="large" top="large">

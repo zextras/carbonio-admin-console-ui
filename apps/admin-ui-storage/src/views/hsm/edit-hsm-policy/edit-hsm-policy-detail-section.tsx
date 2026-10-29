@@ -255,7 +255,7 @@ export function EditHsmPolicyDetailSection() {
         </Padding>
       </ListRow>
       <ListRow>
-        <div role="group" aria-label={t('hsm.items', 'Items')} className="contents">
+        <fieldset aria-label={t('hsm.items', 'Items')} className="contents">
           <Container mainAlignment="flex-start" crossAlignment="flex-start">
             <Checkbox
               label={t('hsm.all', 'All')}
@@ -321,7 +321,7 @@ export function EditHsmPolicyDetailSection() {
               }}
             />
           </Container>
-        </div>
+        </fieldset>
       </ListRow>
       <ListRow>
         <Padding bottom="large" top="large">
