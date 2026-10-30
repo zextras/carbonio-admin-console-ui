@@ -4,12 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { StatusBadgeTone } from '@zextras/ui-components';
+
 const STATUS_CONFIG = {
   active: { color: 'success', labelKey: 'label.active', labelDefault: 'Active' },
   maintenance: {
     color: 'info',
-    labelKey: 'label.in_maintenance',
-    labelDefault: 'In maintenance',
+    labelKey: 'label.maintenance',
+    labelDefault: 'Maintenance',
   },
   locked: { color: 'error', labelKey: 'label.locked', labelDefault: 'Locked' },
   closed: { color: 'gray1', labelKey: 'label.closed', labelDefault: 'Closed' },
@@ -27,6 +29,16 @@ type StatusDisplay = {
   label: string;
 };
 
+const STATUS_BADGE_TONE: Record<keyof typeof STATUS_CONFIG, StatusBadgeTone> = {
+  active: 'success',
+  maintenance: 'info',
+  pending: 'warning',
+  locked: 'danger',
+  lockout: 'danger',
+  suspended: 'danger',
+  closed: 'neutral',
+};
+
 export function getStatusDisplay(status: string, t: TFunc): StatusDisplay {
   const config = STATUS_CONFIG[status as keyof typeof STATUS_CONFIG];
   if (!config) {
@@ -36,4 +48,9 @@ export function getStatusDisplay(status: string, t: TFunc): StatusDisplay {
     color: config.color,
     label: t(config.labelKey, config.labelDefault),
   };
+}
+
+/** Map `zimbraAccountStatus` API values to shared StatusBadge tones. */
+export function getAccountStatusBadgeTone(status: string): StatusBadgeTone {
+  return STATUS_BADGE_TONE[status as keyof typeof STATUS_BADGE_TONE] ?? 'neutral';
 }
