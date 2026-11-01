@@ -392,8 +392,12 @@ export function EditS3ConnectorDetailPanel({
       value: values.accessKey.trim() || '-',
     });
   }
-  if (values.shouldChangeSecret && values.secretKey.trim() !== '') {
-    changedFields.push({ label: t('label.secret_key', 'Secret Access Key'), value: '********' });
+  if (values.shouldChangeSecret) {
+    const hasNonEmptySecret = (values.secretKey ?? '').trim().length > 0;
+    changedFields.push({
+      label: t('label.secret_key', 'Secret Access Key'),
+      value: hasNonEmptySecret ? '********' : '-',
+    });
   }
   if (values.acceptUntrustedSSL !== initialInsecureHttps) {
     changedFields.push({
@@ -418,8 +422,12 @@ export function EditS3ConnectorDetailPanel({
 
     if (v.bucketLabel !== (connectorDetail?.label ?? '')) payload.label = v.bucketLabel;
     if (v.bucketName !== (connectorDetail?.bucketName ?? '')) payload.bucketName = v.bucketName;
-    if (v.accessKey !== (connectorDetail?.accessKey ?? '')) payload.accessKey = v.accessKey;
-    if (v.shouldChangeSecret && v.secretKey.trim() !== '') payload.secret = v.secretKey;
+    if (v.shouldChangeSecret) {
+      payload.accessKey = v.accessKey;
+      payload.secret = v.secretKey;
+    } else if (v.accessKey !== (connectorDetail?.accessKey ?? '')) {
+      payload.accessKey = v.accessKey;
+    }
     if (v.url !== (connectorDetail?.url ?? '')) payload.url = v.url;
     if (currentRegionValue !== initialRegionValue) payload.region = currentRegionValue;
 
@@ -480,6 +488,9 @@ export function EditS3ConnectorDetailPanel({
 
     try {
       const v = form.state.values;
+      const credentialPayload = v.shouldChangeSecret
+        ? { accessKey: v.accessKey, secret: v.secretKey }
+        : { accessKey: v.accessKey };
       const payload: TestS3ConnectorRequest = {
         _jsns: ZIMBRA_ADMIN_URN,
         module: 'ZxPowerstore',
@@ -487,15 +498,11 @@ export function EditS3ConnectorDetailPanel({
         uuid: connectorDetail?.uuid ?? '',
         label: v.bucketLabel,
         bucketName: v.bucketName,
-        accessKey: v.accessKey,
         url: v.url,
         region: currentRegionValue,
         insecureHttps: v.acceptUntrustedSSL,
+        ...credentialPayload,
       };
-
-      if (v.shouldChangeSecret && v.secretKey.trim() !== '') {
-        payload.secret = v.secretKey;
-      }
 
       const response = await testS3Connector(payload);
 
@@ -666,7 +673,7 @@ export function EditS3ConnectorDetailPanel({
                   {(field) => (
                     <Input
                       backgroundColor="gray5"
-                      label={t('label.access_key', 'Access Key ID*')}
+                      label={t('label.access_key', 'Access Key ID')}
                       value={field.state.value}
                       onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                         field.handleChange(e.target.value)
@@ -697,7 +704,7 @@ export function EditS3ConnectorDetailPanel({
                             mainAlignment="space-between"
                             crossAlignment="center"
                             padding={{ bottom: 'small' }}
-                          > 
+                          >
                             <Row mainAlignment="flex-start" crossAlignment="center" width="48%">
                               <Row
                                 width="100%"
@@ -705,7 +712,7 @@ export function EditS3ConnectorDetailPanel({
                                 padding={{ bottom: 'small' }}
                               >
                                 <ds-text as="span" size="extrasmall" color="secondary">
-                                  {t('label.secret_key', 'Secret Access Key*')}
+                                  {t('label.secret_key', 'Secret Access Key')}
                                 </ds-text>
                               </Row>
                               <ds-icon icon="LockOutline" color="gray0" size="medium" style={{ marginRight: '0.25rem' }}></ds-icon>
@@ -748,7 +755,7 @@ export function EditS3ConnectorDetailPanel({
                         >
                           <Input
                             backgroundColor="gray5"
-                            label={t('label.secret_key', 'Secret Access Key*')}
+                            label={t('label.secret_key', 'Secret Access Key')}
                             value={field.state.value}
                             type={showSecretKeyValue ? 'text' : 'password'}
                             onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -886,7 +893,6 @@ export function EditS3ConnectorDetailPanel({
                         )}
                         value={field.state.value}
                         onClick={(): void => field.handleChange(!field.state.value)}
-                        iconColor="primary"
                       />
                     )}
                   </form.Field>

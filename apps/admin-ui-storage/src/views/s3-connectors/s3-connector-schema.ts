@@ -38,7 +38,8 @@ export const s3ConnectorSchema = s3ConnectorBase.superRefine((val, ctx) => {
   if (!val.bucketName || !NO_WHITESPACE.test(val.bucketName)) {
     ctx.addIssue({ code: 'custom', path: ['bucketName'], message: 's3.no_whitespace' });
   }
-  if (!val.accessKey || !NO_WHITESPACE.test(val.accessKey)) {
+  const accessKey = val.accessKey?.trim() ?? '';
+  if (accessKey !== '' && !NO_WHITESPACE.test(accessKey)) {
     ctx.addIssue({ code: 'custom', path: ['accessKey'], message: 's3.no_whitespace' });
   }
   if (

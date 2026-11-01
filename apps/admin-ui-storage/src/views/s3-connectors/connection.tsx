@@ -104,13 +104,19 @@ export function Connection({
         iAmSure: true,
         bucketName: value.bucketName,
         label: value.bucketLabel,
-        accessKey: value.accessKey,
-        secret: value.secretKey,
         region: selectedRegion,
         insecureHttps: value.acceptUntrustedSSL,
         notes: '',
       };
 
+      const trimmedAccessKey = value.accessKey.trim();
+      if (trimmedAccessKey !== '') {
+        payload.accessKey = trimmedAccessKey;
+      }
+      const trimmedSecretKey = value.secretKey.trim();
+      if (trimmedSecretKey !== '') {
+        payload.secret = trimmedSecretKey;
+      }
       if (value.url.trim() !== '') {
         payload.url = value.url.trim();
       }
@@ -247,7 +253,7 @@ export function Connection({
                 return (
                   <Input
                     backgroundColor="gray5"
-                    label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
+                    label={t('storages.s3Connectors.accessKey', 'Access Key ID')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -272,7 +278,7 @@ export function Connection({
                 return (
                   <PasswordInput
                     backgroundColor="gray5"
-                    label={t('label.secret_key', 'Secret Access Key*')}
+                    label={t('label.secret_key', 'Secret Access Key')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -496,5 +502,4 @@ export function Connection({
     </Container>
   );
 }
-
 
