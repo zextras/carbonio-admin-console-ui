@@ -13,12 +13,14 @@ type VerifyProgressProps = {
   isPending: boolean;
   onComplete?: () => void;
   minDisplayMs?: number;
+  isTestConnection?: boolean;
 };
 
 export const VerifyProgress = ({
   isPending,
   onComplete,
   minDisplayMs = VERIFY_PROGRESS_MIN_DISPLAY_MS,
+  isTestConnection = false,
 }: VerifyProgressProps): React.JSX.Element => {
   const { t } = useTranslation();
   const [progress, setProgress] = useState(0);
@@ -91,14 +93,19 @@ export const VerifyProgress = ({
         </div>
       </div>
       <ds-text as="h2" weight="bold" size="large">
-        {t('storages.s3Connectors.verifyProgress.verifyingConnectors', 'Verifying connectors')}
+        {t('storages.s3Connectors.verifyProgress.verifyingConnector', 'Verifying connector')}
       </ds-text>
       <div className={styles.description}>
         <ds-text as="p" color="gray0" weight="light">
-          {t(
-            'storages.s3Connectors.verifyProgress.description',
-            'Please wait while we verify and set up the connectors',
-          )}
+          {isTestConnection
+            ? t(
+                'storages.s3Connectors.verifyProgress.testConnectorDescription',
+                'Please wait while testing your connector',
+              )
+            : t(
+                'storages.s3Connectors.verifyProgress.description',
+                'Please wait while verifying and setting up connector',
+              )}
         </ds-text>
       </div>
       <div className={styles.progressBarTrack}>
