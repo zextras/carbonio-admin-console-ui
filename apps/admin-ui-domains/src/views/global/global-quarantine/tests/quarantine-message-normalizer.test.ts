@@ -141,6 +141,39 @@ describe('findBodyPart / generateBody', () => {
       ),
     ).toEqual({ contentType: 'text/html', content: '<p>first</p>second' });
   });
+
+  it('escapes markup from a text/plain part appended onto an HTML body (CO-4561)', () => {
+    expect(
+      generateBody(
+        [
+          { part: '1', ct: 'text/html', body: true, content: '<html><body>Benign</body></html>' },
+          {
+            part: '2',
+            ct: 'text/plain',
+            body: true,
+            content: '<img src="data:image/gif;base64,x" onerror="alert(1)">',
+          },
+        ],
+        'msg-42',
+      ),
+    ).toEqual({
+      contentType: 'text/html',
+      content:
+        '<html><body>Benign</body></html>&lt;img src=&quot;data:image/gif;base64,x&quot; onerror=&quot;alert(1)&quot;&gt;',
+    });
+  });
+
+  it('does not escape an HTML part appended onto an HTML body', () => {
+    expect(
+      generateBody(
+        [
+          { part: '1', ct: 'text/html', body: true, content: '<p>first</p>' },
+          { part: '2', ct: 'text/html', body: true, content: '<p>second</p>' },
+        ],
+        'msg-42',
+      ),
+    ).toEqual({ contentType: 'text/html', content: '<p>first</p><p>second</p>' });
+  });
 });
 
 describe('getAttachmentsFromParts', () => {
