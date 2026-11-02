@@ -116,7 +116,7 @@ type SoapMailParticipant = {
   t: SoapEmailParticipantRole;
   isGroup?: 0 | 1;
 };
-type SoapMailMessagePart = {
+export type SoapMailMessagePart = {
   part: string;
   /**	Content Type  */ ct: 'multipart/alternative' | string;
   /**	Size  */ s?: number;
@@ -161,6 +161,56 @@ const getDateTime = (d: number): string => {
   const date = new Date(d);
   return format(date, 'dd/MM/yy HH:mm');
 };
+
+// Escapes markup from a part whose content type doesn't match the body's own content type,
+// so a text/plain part concatenated onto an HTML body can't inject executable HTML (CO-4561).
+const escapeHtml = (value: string): string =>
+  value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+
+export const findBodyPart = (
+  mp: Array<SoapMailMessagePart>,
+  acc: { contentType: string; content: string },
+  id: string,
+): { contentType: string; content: string } =>
+  reduce(
+    mp,
+    (found, part) => {
+      if (part.mp) return findBodyPart(part.mp, found, id);
+      if (part && part.body) {
+        if (!found.contentType.length) {
+          return { contentType: part.ct, content: part.content ?? '' };
+        }
+        if (
+          part.part &&
+          part.part.indexOf('.') === -1 &&
+          part.cd &&
+          part.cd === 'inline' &&
+          !part.ci &&
+          !(part.ct && part.ct === 'text/plain')
+        ) {
+          return {
+            ...found,
+            content: found.content.concat(
+              `<img src='/service/home/~/?auth=co&loc=en&id=${id}&part=${part?.part}'>`,
+            ),
+          };
+        }
+        const partContent = part.content ?? '';
+        const safeContent =
+          found.contentType === 'text/html' && part.ct !== 'text/html'
+            ? escapeHtml(partContent)
+            : partContent;
+        return { ...found, content: found.content.concat(safeContent) };
+      }
+      return found;
+    },
+    acc,
+  );
 
 const MessageListTable: FC<{
   messages: { [key: string]: string }[];
@@ -424,43 +474,6 @@ const QuarantineList: FC = () => {
     if (v.cd) ret.disposition = v.cd;
     return ret;
   }, []);
-  const findBodyPart = useCallback(
-    (
-      mp: Array<SoapMailMessagePart>,
-      acc: { contentType: string; content: string },
-      id: string,
-    ): { contentType: string; content: string } =>
-      reduce(
-        mp,
-        (found, part) => {
-          if (part.mp) return findBodyPart(part.mp, found, id);
-          if (part && part.body) {
-            if (!found.contentType.length) {
-              return { contentType: part.ct, content: part.content ?? '' };
-            }
-            if (
-              part.part &&
-              part.part.indexOf('.') === -1 &&
-              part.cd &&
-              part.cd === 'inline' &&
-              !part.ci &&
-              !(part.ct && part.ct === 'text/plain')
-            ) {
-              return {
-                ...found,
-                content: found.content.concat(
-                  `<img src='/service/home/~/?auth=co&loc=en&id=${id}&part=${part?.part}'>`,
-                ),
-              };
-            }
-            return { ...found, content: found.content.concat(part.content ?? '') };
-          }
-          return found;
-        },
-        acc,
-      ),
-    [],
-  );
   const generateBody = useCallback(
     (
       mp: Array<SoapMailMessagePart>,
@@ -469,7 +482,7 @@ const QuarantineList: FC = () => {
       contentType: string;
       content: string;
     } => findBodyPart(mp, { contentType: '', content: '' }, id),
-    [findBodyPart],
+    [],
   );
   const extractAttachmentIdsFromHtmlContent = (content: string): Array<string> => {
     const matches = content.match(/cid:(.*?)(?="|&)/g);
