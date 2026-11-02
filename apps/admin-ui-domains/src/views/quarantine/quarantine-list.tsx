@@ -22,7 +22,7 @@ import {
   useSnackbar,
 } from '@zextras/ui-components';
 import { format } from 'date-fns';
-import { cloneDeep, filter, find, forEach, isArray, isNil, map, reduce, replace } from 'lodash-es';
+import { cloneDeep, filter, find, forEach, isArray, isNil, map, replace } from 'lodash-es';
 import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import styled from 'styled-components';
@@ -43,6 +43,7 @@ import ListRow from '../list/list-row';
 import { MessageTableHeaders, RandomString } from '../utility/utils';
 import AttachmentsBlock from './attachments-block';
 import MailMessageRenderer from './mail-message-renderer';
+import { findBodyPart } from './quarantine-body';
 
 const ovelayStyle = styled(Container)`
   position: fixed;
@@ -135,7 +136,7 @@ type SoapMailParticipant = {
   t: SoapEmailParticipantRole;
   isGroup?: 0 | 1;
 };
-type SoapMailMessagePart = {
+export type SoapMailMessagePart = {
   part: string;
   /**	Content Type  */ ct: 'multipart/alternative' | string;
   /**	Size  */ s?: number;
@@ -442,43 +443,6 @@ const QuarantineList: FC = () => {
     if (v.cd) ret.disposition = v.cd;
     return ret;
   }, []);
-  const findBodyPart = useCallback(
-    (
-      mp: Array<SoapMailMessagePart>,
-      acc: { contentType: string; content: string },
-      id: string,
-    ): { contentType: string; content: string } =>
-      reduce(
-        mp,
-        (found, part) => {
-          if (part.mp) return findBodyPart(part.mp, found, id);
-          if (part && part.body) {
-            if (!found.contentType.length) {
-              return { contentType: part.ct, content: part.content ?? '' };
-            }
-            if (
-              part.part &&
-              part.part.indexOf('.') === -1 &&
-              part.cd &&
-              part.cd === 'inline' &&
-              !part.ci &&
-              !(part.ct && part.ct === 'text/plain')
-            ) {
-              return {
-                ...found,
-                content: found.content.concat(
-                  `<img src='/service/home/~/?auth=co&loc=en&id=${id}&part=${part?.part}'>`,
-                ),
-              };
-            }
-            return { ...found, content: found.content.concat(part.content ?? '') };
-          }
-          return found;
-        },
-        acc,
-      ),
-    [],
-  );
   const generateBody = useCallback(
     (
       mp: Array<SoapMailMessagePart>,
@@ -487,7 +451,7 @@ const QuarantineList: FC = () => {
       contentType: string;
       content: string;
     } => findBodyPart(mp, { contentType: '', content: '' }, id),
-    [findBodyPart],
+    [],
   );
   const extractAttachmentIdsFromHtmlContent = (content: string): Array<string> => {
     const matches = content.match(/cid:(.*?)(?="|&)/g);
