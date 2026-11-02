@@ -162,6 +162,13 @@ const getDateTime = (d: number): string => {
   return format(date, 'dd/MM/yy HH:mm');
 };
 
+const isInlineImagePart = (part: SoapMailMessagePart): boolean =>
+  !!part.part &&
+  !part.part.includes('.') &&
+  part.cd === 'inline' &&
+  !part.ci &&
+  part.ct !== 'text/plain';
+
 // Escapes markup from a part whose content type doesn't match the body's own content type,
 // so a text/plain part concatenated onto an HTML body can't inject executable HTML (CO-4561).
 const escapeHtml = (value: string): string =>
@@ -181,18 +188,11 @@ export const findBodyPart = (
     mp,
     (found, part) => {
       if (part.mp) return findBodyPart(part.mp, found, id);
-      if (part && part.body) {
+      if (part?.body) {
         if (!found.contentType.length) {
           return { contentType: part.ct, content: part.content ?? '' };
         }
-        if (
-          part.part &&
-          part.part.indexOf('.') === -1 &&
-          part.cd &&
-          part.cd === 'inline' &&
-          !part.ci &&
-          !(part.ct && part.ct === 'text/plain')
-        ) {
+        if (isInlineImagePart(part)) {
           return {
             ...found,
             content: found.content.concat(
