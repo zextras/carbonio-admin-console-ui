@@ -47,7 +47,7 @@ export function buildSharedDepsPlugin({ isDev }: { isDev: boolean }): Plugin {
 
       const rootDir = getWorkspaceRoot();
       const nodeModulesDir = join(rootDir, 'node_modules');
-      const outputDir = join(rootDir, 'dist/opt/zextras/admin/iris/shared-dependencies');
+      const outputDir = join(rootDir, 'dist/package/opt/zextras/admin/iris/shared-dependencies');
 
       if (existsSync(outputDir)) {
         rmSync(outputDir, { recursive: true, force: true });

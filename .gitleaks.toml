@@ -1,0 +1,28 @@
+# SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+#
+# SPDX-License-Identifier: AGPL-3.0-only
+
+# Gitleaks configuration for carbonio-admin-console-ui
+# This file contains allowlist entries for known false positives.
+#
+# How to add new entries:
+#   - For patterns: add a regex to the `regexes` list (e.g. phc_* PostHog keys).
+#   - For paths: add a path regex to the `paths` list in the appropriate allowlist.
+
+title = "carbonio-admin-console-ui gitleaks config"
+
+[extend]
+# Extend the default gitleaks rules
+useDefault = true
+
+[[allowlists]]
+description = "PostHog public project API keys (phc_*) are public frontend keys, not secrets"
+regexes = [
+  '''phc_[A-Za-z0-9]{40,}''',
+]
+
+[[allowlists]]
+description = "Test files may contain fixture passwords/secrets that are not real credentials"
+paths = [
+  '''\.test\.(ts|tsx|js|jsx)$''',
+]
