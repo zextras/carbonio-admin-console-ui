@@ -601,9 +601,9 @@ describe('DataTable (browser)', () => {
     await userEvent.click(page.getByRole('button', { name: 'APPLY' }));
     await expect.element(page.getByText('Status: Pending')).toBeVisible();
 
-    await userEvent.click(page.getByRole('button', { name: 'Filters' }));
+    await userEvent.click(page.getByRole('button', { name: 'Filters, 1 active' }));
     filtersDialog = page.getByRole('dialog', { name: 'Filters' });
-    await userEvent.click(page.getByRole('button', { name: 'CLEAR ALL' }));
+    await userEvent.click(filtersDialog.getByRole('button', { name: 'CLEAR ALL' }));
 
     await expect.element(page.getByRole('dialog', { name: 'Filters' })).not.toBeInTheDocument();
     await expect.element(page.getByText('Status: Pending')).not.toBeInTheDocument();
