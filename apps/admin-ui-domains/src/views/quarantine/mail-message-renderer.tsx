@@ -6,6 +6,7 @@
 
 import { useUserSettings } from '@zextras/admin-ui-bootstrap';
 import { Button, Container, Icon, Padding, Row, Text } from '@zextras/ui-components';
+import DOMPurify from 'dompurify';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -262,9 +263,17 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
 
 	useLayoutEffect(() => {
 		if (!isNull(iframeRef.current) && !isNull(iframeRef.current.contentDocument)) {
-			iframeRef.current.contentDocument.open();
-			iframeRef.current.contentDocument.write(contentToDisplay);
-			iframeRef.current.contentDocument.close();
+			// Sanitize as defense in depth: this strips event handlers (e.g. onerror) and scripts
+			// even if an untrusted part slipped through unescaped upstream (CO-4561).
+			iframeRef.current.contentDocument.documentElement.innerHTML = DOMPurify.sanitize(
+				contentToDisplay,
+				{
+					WHOLE_DOCUMENT: true,
+					// `dfsrc` holds the original external-image URL neutered by the server; it isn't a
+					// standard attribute, so it needs an explicit allowlist entry to survive sanitization.
+					ADD_ATTR: ['dfsrc']
+				}
+			);
 		}
 		const styleTag = document.createElement('style');
 		const styles = `
