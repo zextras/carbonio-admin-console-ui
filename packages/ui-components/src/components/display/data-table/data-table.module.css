@@ -7,8 +7,11 @@
 .shell {
   display: flex;
   flex-direction: column;
+  flex: 1 1 auto;
   width: 100%;
+  height: 100%;
   min-width: 0;
+  min-height: 0;
   border: 1px solid var(--color-gray4-regular, #e2e6ec);
   border-radius: var(--border-radius, 8px);
   background: var(--color-gray6-regular, #fff);
@@ -21,12 +24,17 @@
   flex-direction: column;
   flex: 1 1 auto;
   min-width: 0;
+  min-height: 0;
+  overflow: hidden;
 }
 
+/* One scrollport for both axes: a sticky header cannot pin to an outer
+   vertical scroller while this box also scrolls sideways. */
 .scroll {
-  flex: 1;
+  flex: 1 1 auto;
   min-width: 0;
-  overflow-x: auto;
+  min-height: 0;
+  overflow: auto;
 }
 
 .table {
@@ -72,11 +80,19 @@
 }
 
 .th {
+  position: sticky;
+  top: 0;
+  z-index: 6;
   height: 2.875rem;
   border-top: none;
+  border-bottom: 1px solid var(--color-gray4-regular, #e2e6ec);
   background: var(--color-gray3-regular, #eef1f5);
   font-weight: 700;
   color: var(--color-text-regular, #333);
+}
+
+.table tbody tr:first-child .td {
+  border-top: none;
 }
 
 .densityCompact .td {
@@ -128,7 +144,7 @@
 }
 
 .th.pinnedLeft {
-  z-index: 3;
+  z-index: 7;
 }
 
 .pinnedShadow {
@@ -1539,7 +1555,7 @@
 }
 
 .th.pinnedRight {
-  z-index: 3;
+  z-index: 7;
 }
 
 .rowActions {

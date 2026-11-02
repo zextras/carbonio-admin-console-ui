@@ -1002,4 +1002,42 @@ describe('DataTable (browser)', () => {
     await userEvent.click(page.getByRole('button', { name: 'Retry failed' }));
     expect(onBulkJobRetryFailed).toHaveBeenCalledOnce();
   });
+
+  it('keeps column headers fixed while rows scroll', async () => {
+    await renderTable(
+      <div style={{ height: '16rem' }}>
+        <DataTableRoot
+          data={ALL_ROWS}
+          columns={columns}
+          getRowId={(row) => row.id}
+          manualSorting={false}
+          manualPagination={false}
+          manualFiltering={false}
+          primaryColumnId="account"
+          initialState={{ pagination: { pageIndex: 0, pageSize: 25 } }}
+        >
+          <DataTableTable aria-label="Manage Accounts" />
+        </DataTableRoot>
+      </div>,
+    );
+
+    const scroll = document.querySelector('table')?.parentElement;
+    const header = document.querySelector('thead th');
+    const firstCell = document.querySelector('tbody td');
+    expect(scroll).toBeTruthy();
+    expect(header).toBeTruthy();
+    expect(firstCell).toBeTruthy();
+    if (!scroll || !header || !firstCell) {
+      return;
+    }
+
+    expect(getComputedStyle(header).position).toBe('sticky');
+    const headerTop = header.getBoundingClientRect().top;
+    const rowTop = firstCell.getBoundingClientRect().top;
+
+    scroll.scrollTop = 160;
+
+    expect(Math.abs(header.getBoundingClientRect().top - headerTop)).toBeLessThan(1);
+    expect(rowTop - firstCell.getBoundingClientRect().top).toBeGreaterThan(100);
+  });
 });
