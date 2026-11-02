@@ -1,3 +1,9 @@
+## [0.15.7](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.6...v0.15.7) (2026-11-02)
+
+### Bug Fixes
+
+* **quarantine:** [CO-4633] escape mismatched content type when merging multipart body parts ([#1431](https://github.com/zextras/carbonio-admin-console-ui/issues/1431)) ([394d166](https://github.com/zextras/carbonio-admin-console-ui/commit/394d166805e68d477ad2ec1cbdc54d2061c7d377)), closes [#1429](https://github.com/zextras/carbonio-admin-console-ui/issues/1429) [#1429](https://github.com/zextras/carbonio-admin-console-ui/issues/1429)
+
 ## [0.15.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.15.5...v0.15.6) (2026-07-24)
 
 ### Other changes
