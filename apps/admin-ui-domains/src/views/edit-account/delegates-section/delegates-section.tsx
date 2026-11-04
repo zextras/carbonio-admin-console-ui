@@ -76,7 +76,7 @@ export const EditAccountDelegatesSection = () => {
 							onClick={(): void => setSimplifiedChoice(true)}
 							style={{ cursor: 'pointer' }}
 						>
-							{t('account_details.switch_advanced', 'Switch to Advanced View')}
+							{t('account_details.switch_simplified', 'Switch to Simplified View')}
 						</ds-text>
 					)}
 					{isSimplified && (
@@ -88,7 +88,7 @@ export const EditAccountDelegatesSection = () => {
 							onClick={(): void => setSimplifiedChoice(false)}
 							style={{ cursor: 'pointer' }}
 						>
-							{t('account_details.switch_simplified', 'Switch to Simplified View')}
+							{t('account_details.switch_advanced', 'Switch to Advanced View')}
 						</ds-text>
 					)}
 				</Row>
@@ -113,9 +113,9 @@ export const EditAccountDelegatesSection = () => {
 						inheritedValue={cosDetail.zimbraPrefDelegatedSendSaveTarget}
 						fromSubValue={accSpecificDetail?.zimbraPrefDelegatedSendSaveTarget}
 						background="gray5"
-						selectName="zimbraPrefTimeZoneId"
+						selectName="zimbraPrefDelegatedSendSaveTarget"
 						onChange={onDeligateSendSettingsChange}
-						onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
+						onChangeReset={(): void => setEmptyValue('zimbraPrefDelegatedSendSaveTarget')}
 					/>
 				</Row>
 			</Row>

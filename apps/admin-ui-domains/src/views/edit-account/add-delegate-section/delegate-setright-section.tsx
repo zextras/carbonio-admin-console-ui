@@ -140,7 +140,7 @@ export const DelegateSetRightsSection: FC = () => {
             <Row width="100%" mainAlignment="flex-start">
               <Row width="100%" mainAlignment="space-between">
                 <Row width="100%" mainAlignment="space-between">
-                  <RadioGroup value={deligateDetail?.folderSelection}>
+                  <RadioGroup value={deligateDetail?.folderSelection || 'all_folders'}>
                     <Radio
                       label={t(
                         'account_details.all_folders',

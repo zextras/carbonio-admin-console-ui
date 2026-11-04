@@ -39,10 +39,9 @@ const IDENTITIES = [
 	},
 ];
 
-// The advanced view is the default; its toggle (label is inverted in the UI) reads
-// "Switch to Advanced View" and opens the simplified view.
+// The advanced view is the default; its toggle reads "Switch to Simplified View".
 async function openSimplifiedView(): Promise<void> {
-	await page.getByText('Switch to Advanced View').click();
+	await page.getByText('Switch to Simplified View').click();
 }
 
 function setupTest(
@@ -182,7 +181,7 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 		await page.getByText('sender@example.com').click();
 		await page.getByRole('button', { name: 'EDIT' }).click();
 
-		await expect.element(page.getByText('Add user on Delegates List')).toBeVisible();
+		await expect.element(page.getByText('Edit user on Delegates List')).toBeVisible();
 
 		await page.getByRole('button', { name: 'NEXT' }).click();
 		await expect
@@ -197,7 +196,7 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 			.element(page.getByText(/will be able to send mails as jane@example.com/i))
 			.toBeVisible();
 
-		await page.getByRole('button', { name: 'ADD', exact: true }).click();
+		await page.getByRole('button', { name: 'EDIT', exact: true }).click();
 
 		await vi.waitFor(() => expect(mockBatchService.mock.calls).toHaveLength(2));
 		const revokeBatch = mockBatchService.mock.calls[0][0];
@@ -208,6 +207,29 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 		expect(grantBatch.GrantRightRequest[0].grantee._content).toBe('sender@example.com');
 		expect(grantBatch.GrantRightRequest[0].right._content).toBe('sendAs');
 		await expect.element(page.getByText(/updated successfully/i)).toBeVisible();
+	});
+
+	it('EDIT waits for the revoke batch to finish before sending the grant batch', async () => {
+		let finishRevoke: (value: Record<string, unknown>) => void = () => {};
+		const revoke = new Promise<Record<string, unknown>>((resolve) => {
+			finishRevoke = resolve;
+		});
+		mockBatchService.mockImplementationOnce(() => revoke);
+		setupTest();
+
+		await page.getByText('sender@example.com').click();
+		await page.getByRole('button', { name: 'EDIT' }).click();
+		await page.getByRole('button', { name: 'NEXT' }).click();
+		await page.getByRole('button', { name: 'NEXT' }).click();
+		await page.getByRole('button', { name: 'EDIT', exact: true }).click();
+
+		await vi.waitFor(() => expect(mockBatchService.mock.calls).toHaveLength(1));
+		await new Promise<void>((done) => setTimeout(done, 300));
+		expect(mockBatchService.mock.calls).toHaveLength(1);
+
+		finishRevoke({});
+		await vi.waitFor(() => expect(mockBatchService.mock.calls).toHaveLength(2));
+		expect(mockBatchService.mock.calls[1][0].GrantRightRequest).toHaveLength(1);
 	});
 
 	it('completes the add-delegate wizard granting the chosen sending option', async () => {
@@ -325,10 +347,32 @@ describe('EditAccountDelegatesSection simplified rights actions (browser)', () =
 		expect(batch.GrantRightRequest).toHaveLength(1);
 		expect(batch.GrantRightRequest[0].right._content).toBe('sendAs');
 		expect(batch.GrantRightRequest[0].grantee._content).toBe('newbie@example.com');
-		expect(batch.RevokeRightRequest).toHaveLength(1);
-		expect(batch.RevokeRightRequest[0].right._content).toBe('sendOnBehalfOf');
+		expect(batch.RevokeRightRequest).toHaveLength(0);
 		expect(batch.FolderActionRequest).toHaveLength(0);
 		await expect.element(addButton).toBeDisabled();
+	});
+
+	it('shows the batch fault and keeps the selection when a sub-request fails', async () => {
+		mockAccountListDirectory.mockResolvedValue({
+			account: [{ id: 'a-9', name: 'newbie@example.com' }],
+		});
+		mockBatchService.mockResolvedValue({ Fault: [{ Reason: { Text: 'no such grantee' } }] });
+		setupTest();
+		await openSimplifiedView();
+
+		const addButton = page.getByRole('button', {
+			name: /add the account \/ group with selected rights/i,
+		});
+		await userEvent.type(page.getByPlaceholder(/start typing an account/i), 'newbie');
+		const suggestion = page.getByText('newbie@example.com');
+		await vi.waitFor(() => expect.element(suggestion).toBeVisible(), { timeout: 8_000 });
+		await suggestion.click();
+
+		await page.getByText('Send', { exact: true }).click();
+		await addButton.click();
+
+		await expect.element(page.getByText('no such grantee')).toBeVisible();
+		await expect.element(addButton).toBeEnabled();
 	});
 
 	it('read-only prevails over read/write when both options are toggled', async () => {

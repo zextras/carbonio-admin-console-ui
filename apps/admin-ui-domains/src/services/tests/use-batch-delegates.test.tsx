@@ -67,3 +67,28 @@ describe('useBatchDelegates', () => {
 		});
 	});
 });
+
+describe('useBatchDelegates batch faults', () => {
+	beforeEach(() => {
+		vi.clearAllMocks();
+	});
+
+	it('rejects with the fault message when a sub-request failed and still refreshes the grants', async () => {
+		vi.mocked(batchService).mockResolvedValue({
+			GrantRightResponse: [{}],
+			Fault: [{ Reason: { Text: 'no such grantee' } }],
+		});
+
+		const { wrapper, queryClient } = createWrapper();
+		const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+		const { result } = renderHook(() => useBatchDelegates('acc-1'), { wrapper });
+
+		result.current.mutate({ reqObject: {} });
+
+		await waitFor(() => expect(result.current.isError).toBe(true));
+		expect(result.current.error?.message).toBe('no such grantee');
+		expect(invalidateSpy).toHaveBeenCalledWith({
+			queryKey: domainQueryKeys.accountGrants('acc-1'),
+		});
+	});
+});

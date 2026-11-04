@@ -35,9 +35,9 @@ export const SimplifiedRightsList = ({
   const { form } = useAccountForm();
   const accountDetail = useSelector(form.store, (s) => s.values as Record<string, any>);
 
-  const [readWriteSelectedRows, setReadWriteSelectedRows] = useState<Array<string>>([]);
-  const [readSelectedRows, setReadSelectedRows] = useState<Array<string>>([]);
-  const [sendSelectedRows, setSendSelectedRows] = useState<Array<string>>([]);
+  const [readWriteSelectedId, setReadWriteSelectedId] = useState<string | undefined>();
+  const [readSelectedId, setReadSelectedId] = useState<string | undefined>();
+  const [sendSelectedId, setSendSelectedId] = useState<string | undefined>();
 
   const batchDelegates = useBatchDelegates(accountDetail?.zimbraId);
 
@@ -46,26 +46,18 @@ export const SimplifiedRightsList = ({
   const sendRows = filter(identityRows, { sendRights: true });
 
   const handleSimpleDeleteDelegate = (single: boolean, rightsType: DelegateRightsType): void => {
-    const selectedRowsByType: Record<DelegateRightsType, Array<string>> = {
-      readWrite: readWriteSelectedRows,
-      read: readSelectedRows,
-      send: sendSelectedRows,
+    const selectedIdsByType: Record<DelegateRightsType, string | undefined> = {
+      readWrite: readWriteSelectedId,
+      read: readSelectedId,
+      send: sendSelectedId,
     };
-    const selectedRowId = selectedRowsByType[rightsType][0];
     const selectedDelegateArr = selectDelegatesForRemoval(
       rightsType,
       single,
-      selectedRowId,
+      selectedIdsByType[rightsType],
       identitiesList,
       identityRows,
     );
-    if (rightsType === 'readWrite') {
-      setReadWriteSelectedRows([]);
-    } else if (rightsType === 'read') {
-      setReadSelectedRows([]);
-    } else if (rightsType === 'send') {
-      setSendSelectedRows([]);
-    }
 
     const { revokeUsrRigths, folderUsrRights } = buildSimplifiedRevokeBatch(
       selectedDelegateArr,
@@ -84,20 +76,43 @@ export const SimplifiedRightsList = ({
           otherAccount: accountDetail?.zimbraMailDeliveryAddress,
         },
         {
+          onSuccess: (): void => {
+            if (rightsType === 'readWrite') {
+              setReadWriteSelectedId(undefined);
+            } else if (rightsType === 'read') {
+              setReadSelectedId(undefined);
+            } else {
+              setSendSelectedId(undefined);
+            }
+            createSnackbar({
+              key: 'success',
+              severity: 'success',
+              label: t(
+                'account_details.delegate_deleted_successfully',
+                'Delegate deleted successfully',
+              ),
+              autoHideTimeout: 3000,
+              hideButton: true,
+              replace: true,
+            });
+          },
+          onError: (error: Error): void => {
+            createSnackbar({
+              key: 'error',
+              severity: 'error',
+              label:
+                error.message ||
+                t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+              autoHideTimeout: 5000,
+              hideButton: true,
+              replace: true,
+            });
+          },
           onSettled: (): void => {
             refetchGrants();
           },
         },
       );
-
-      createSnackbar({
-        key: 'success',
-        severity: 'success',
-        label: t('account_details.delegate_deleted_successfully', 'Delegate deleted successfully'),
-        autoHideTimeout: 3000,
-        hideButton: true,
-        replace: true,
-      });
     }
   };
 
@@ -121,8 +136,8 @@ export const SimplifiedRightsList = ({
           }
           rows={readWriteRows}
           hasAny={findIndex(identityRows, { writeFolder: true, readFolder: true }) >= 0}
-          selected={readWriteSelectedRows}
-          onSelectionChange={setReadWriteSelectedRows}
+          selectedId={readWriteSelectedId}
+          onSelect={setReadWriteSelectedId}
           onRemove={(): void => handleSimpleDeleteDelegate(true, 'readWrite')}
           onRemoveAll={(): void => handleSimpleDeleteDelegate(false, 'readWrite')}
         />
@@ -136,8 +151,8 @@ export const SimplifiedRightsList = ({
           }
           rows={readRows}
           hasAny={findIndex(identityRows, { writeFolder: false, readFolder: true }) >= 0}
-          selected={readSelectedRows}
-          onSelectionChange={setReadSelectedRows}
+          selectedId={readSelectedId}
+          onSelect={setReadSelectedId}
           onRemove={(): void => handleSimpleDeleteDelegate(true, 'read')}
           onRemoveAll={(): void => handleSimpleDeleteDelegate(false, 'read')}
         />
@@ -151,8 +166,8 @@ export const SimplifiedRightsList = ({
           }
           rows={sendRows}
           hasAny={findIndex(identityRows, { sendRights: true }) >= 0}
-          selected={sendSelectedRows}
-          onSelectionChange={setSendSelectedRows}
+          selectedId={sendSelectedId}
+          onSelect={setSendSelectedId}
           onRemove={(): void => handleSimpleDeleteDelegate(true, 'send')}
           onRemoveAll={(): void => handleSimpleDeleteDelegate(false, 'send')}
         />

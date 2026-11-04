@@ -29,6 +29,7 @@ function createWizardStepButtons(
 	t: TFunction,
 	onCancel: () => void,
 	onAdd: () => void,
+	addLabel: string,
 ): WizardStepButtons {
 	const CancelButton = (props: any): React.JSX.Element => (
 		<Button
@@ -68,7 +69,7 @@ function createWizardStepButtons(
 	const AddButton = (props: any): React.JSX.Element => (
 		<Button
 			{...props}
-			label={t('account_details.ADD', 'ADD')}
+			label={addLabel}
 			icon="PersonOutline"
 			iconPlacement="right"
 			onClick={onAdd}

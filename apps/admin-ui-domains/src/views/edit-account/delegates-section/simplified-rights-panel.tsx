@@ -34,7 +34,7 @@ export const SimplifiedRightsPanel = ({
 					{t(`label.delegate's_rights`, `Delegate's Rights`)}
 				</ds-text>
 			</Row>
-			<SimplifiedRightsActions refetchGrants={refetchGrants} />
+			<SimplifiedRightsActions identitiesList={identitiesList} refetchGrants={refetchGrants} />
 			<Row width="100%" padding={{ top: 'medium' }}>
 				<ds-divider></ds-divider>
 			</Row>

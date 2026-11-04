@@ -21,7 +21,6 @@ import logo from '../../../assets/gardian.svg';
 import {
 	MANAGE_NO_SEND,
 	READ_MAILS_ONLY,
-	SEND_MAILS_ONLY,
 	SEND_READ_MAILS,
 	SEND_READ_MANAGE_MAILS,
 } from '../../../constants';
@@ -30,9 +29,12 @@ import { useAccountForm } from '../account-form-context';
 import { AddDelegateWizard } from './add-delegate-wizard';
 import {
 	buildAdminRightEnvelope,
+	buildDelegateRevoke,
 	buildFolderGrant,
-	buildFolderRevoke,
+	type DelegateIdentity,
 	type DelegateRow,
+	getDelegateRightsType,
+	getSendRights,
 } from './utils';
 
 type AdvancedDelegatesTableProps = {
@@ -58,7 +60,7 @@ export const AdvancedDelegatesTable = ({
 
 	const [showCreateIdentity, setShowCreateIdentity] = useState<boolean>(false);
 	const [editMode, setEditMode] = useState<boolean>(false);
-	const [selectedRows, setSelectedRows] = useState<string[]>([]);
+	const [selectedId, setSelectedId] = useState<string | undefined>();
 
 	const headers = [
 		{ id: 'accounts', label: t('label.Accounts', 'Accounts'), width: '30%', bold: true },
@@ -73,160 +75,176 @@ export const AdvancedDelegatesTable = ({
 		setShowCreateIdentity(true);
 	};
 
+	const selectedIdentity: DelegateIdentity | undefined = identitiesList.find(
+		(o) => o?.grantee?.[0]?.id === selectedId,
+	);
+	const targetName: string = accountDetail?.zimbraMailDeliveryAddress;
+
+	const showSnackbar = (severity: 'success' | 'error', label: string): void => {
+		createSnackbar({
+			key: severity,
+			severity,
+			label,
+			autoHideTimeout: severity === 'error' ? 5000 : 3000,
+			hideButton: true,
+			replace: true,
+		});
+	};
+
+	const showError = (error: Error): void => {
+		showSnackbar(
+			'error',
+			error.message ||
+				t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+		);
+	};
+
 	const handleEditDelegate = (): void => {
-		setEditMode(true);
-		const selectedDelegate = identitiesList.find((o) => o?.grantee?.[0].id === selectedRows[0]);
-		selectedDelegate.folderSelection = selectedDelegate?.folder?.length ? 'all_folders' : '';
-		if (!selectedDelegate?.folder?.length) {
-			selectedDelegate.delegeteRights = SEND_MAILS_ONLY;
-		} else if (
-			selectedDelegate?.folder?.length &&
-			selectedDelegate?.folder?.[0]?.perm === 'r' &&
-			!selectedDelegate?.right?.length
-		) {
-			selectedDelegate.delegeteRights = READ_MAILS_ONLY;
-		} else if (selectedDelegate?.folder?.[0]?.perm === 'r') {
-			selectedDelegate.delegeteRights = SEND_READ_MAILS;
-		} else if (
-			selectedDelegate?.folder?.[0]?.perm === 'rwidxa' &&
-			!selectedDelegate?.right?.length
-		) {
-			selectedDelegate.delegeteRights = MANAGE_NO_SEND;
-		} else if (selectedDelegate?.folder?.[0]?.perm === 'rwidxa') {
-			selectedDelegate.delegeteRights = SEND_READ_MANAGE_MAILS;
+		if (!selectedIdentity) {
+			return;
 		}
-		setDeligateDetail(selectedDelegate);
+		setEditMode(true);
+		setDeligateDetail({
+			...selectedIdentity,
+			folderSelection: selectedIdentity.folder?.length ? 'all_folders' : '',
+			delegeteRights: getDelegateRightsType(selectedIdentity),
+		});
 		setShowCreateIdentity(true);
 	};
 
 	const handleDeleteeDelegate = (): void => {
-		const selectedDelegate = identitiesList.find((o) => o?.grantee?.[0].id === selectedRows[0]);
-		const revokeUsrRigths: any[] = [];
-		const folderUsrRights: any[] = [];
-
-		if (selectedDelegate) {
-			if (selectedDelegate?.folder?.length) {
-				selectedDelegate.folder.forEach((ele: any) => {
-					folderUsrRights.push(buildFolderRevoke(ele));
-				});
-			}
-			if (selectedDelegate?.right?.[0]?._content) {
-				revokeUsrRigths.push(
-					buildAdminRightEnvelope({
-						targetName: accountDetail?.zimbraMailDeliveryAddress,
-						granteeType: selectedDelegate?.grantee?.[0]?.type,
-						granteeName: selectedDelegate?.grantee?.[0]?.name,
-						right: selectedDelegate?.right?.[0]?._content,
-					}),
-				);
-			}
-
-			if (revokeUsrRigths.length > 0 || folderUsrRights.length > 0) {
-				batchDelegates.mutate({
-					reqObject: {
-						RevokeRightRequest: revokeUsrRigths,
-						FolderActionRequest: folderUsrRights,
-						_jsns: 'urn:zimbra',
-					},
-					otherAccount: accountDetail?.zimbraMailDeliveryAddress,
-				});
-
-				if (revokeUsrRigths.length > 0) setShowCreateIdentity(false);
-
-				refetchGrants();
-			}
-
-			if (!editMode) {
-				createSnackbar({
-					key: 'success',
-					severity: 'success',
-					label: t(
-						'account_details.delegate_deleted_successfully',
-						'Delegate`s rights deleted successfully',
-					),
-					autoHideTimeout: 3000,
-					hideButton: true,
-					replace: true,
-				});
-			}
+		if (!selectedIdentity) {
+			return;
 		}
+		const { revokeUsrRigths, folderUsrRights } = buildDelegateRevoke(
+			selectedIdentity,
+			targetName,
+			'all',
+		);
+		if (revokeUsrRigths.length === 0 && folderUsrRights.length === 0) {
+			return;
+		}
+		batchDelegates.mutate(
+			{
+				reqObject: {
+					RevokeRightRequest: revokeUsrRigths,
+					FolderActionRequest: folderUsrRights,
+					_jsns: 'urn:zimbra',
+				},
+				otherAccount: targetName,
+			},
+			{
+				onSuccess: (): void => {
+					setSelectedId(undefined);
+					showSnackbar(
+						'success',
+						t(
+							'account_details.delegate_deleted_successfully',
+							'Delegate`s rights deleted successfully',
+						),
+					);
+				},
+				onError: showError,
+				onSettled: (): void => {
+					refetchGrants();
+				},
+			},
+		);
 	};
 
-	const handleCreateDelegateAPI = (): void => {
-		if (editMode) {
-			handleDeleteeDelegate();
-		}
-
+	const handleCreateDelegateAPI = async (): Promise<void> => {
 		const grantUsrRigths: any[] = [];
 		const folderUsrRights: any[] = [];
+		const rightsType = deligateDetail?.delegeteRights;
+		const grantee = deligateDetail?.grantee?.[0];
 
 		if (
-			deligateDetail?.delegeteRights &&
-			(deligateDetail?.delegeteRights === 'send_mails_only' ||
-				deligateDetail?.delegeteRights === 'send_read_mails' ||
-				deligateDetail?.delegeteRights === 'send_read_manage_mails')
+			rightsType === 'send_mails_only' ||
+			rightsType === 'send_read_mails' ||
+			rightsType === 'send_read_manage_mails'
 		) {
+			const sendRight = getSendRights(deligateDetail)[0];
+			if (!sendRight) {
+				showSnackbar('error', t('account_details.select_sending_option', 'Select a sending option'));
+				return;
+			}
 			grantUsrRigths.push(
 				buildAdminRightEnvelope({
-					targetName: accountDetail?.zimbraMailDeliveryAddress,
-					granteeType: deligateDetail?.grantee?.[0]?.type,
-					granteeName: deligateDetail?.grantee?.[0]?.name,
-					right: deligateDetail?.right?.[0]?._content,
+					targetName,
+					granteeType: grantee?.type,
+					granteeName: grantee?.name,
+					right: sendRight,
 				}),
 			);
 		}
 		if (
-			deligateDetail?.delegeteRights &&
-			(deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
-				deligateDetail?.delegeteRights === SEND_READ_MAILS ||
-				deligateDetail?.delegeteRights === MANAGE_NO_SEND ||
-				deligateDetail?.delegeteRights === SEND_READ_MANAGE_MAILS)
+			rightsType === READ_MAILS_ONLY ||
+			rightsType === SEND_READ_MAILS ||
+			rightsType === MANAGE_NO_SEND ||
+			rightsType === SEND_READ_MANAGE_MAILS
 		) {
-			const selectedFolders = folderList.filter((entry: any) => entry.selected);
-			const folderIds = selectedFolders.map((obj: any) => obj.id);
+			const selectedFolderIds = folderList
+				.filter((entry: any) => entry.selected)
+				.map((obj: any) => obj.id);
 
 			folderUsrRights.push(
 				buildFolderGrant({
-					folderIds: deligateDetail?.folderSelection === 'all_folders' ? '1' : folderIds.join(','),
-					granteeType: deligateDetail?.grantee?.[0]?.type,
-					granteeName: deligateDetail?.grantee?.[0]?.name,
-					perm:
-						deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
-						deligateDetail?.delegeteRights === SEND_MAILS_ONLY
-							? 'r'
-							: 'rwidxa',
+					folderIds:
+						deligateDetail?.folderSelection === 'i_want_to_select' && selectedFolderIds.length > 0
+							? selectedFolderIds.join(',')
+							: '1',
+					granteeType: grantee?.type,
+					granteeName: grantee?.name,
+					perm: rightsType === READ_MAILS_ONLY || rightsType === SEND_READ_MAILS ? 'r' : 'rwidxa',
 				}),
 			);
 		}
 
-		if (folderUsrRights.length > 0 || grantUsrRigths.length > 0) {
-			batchDelegates.mutate(
-				{
-					reqObject: {
-						GrantRightRequest: grantUsrRigths,
-						FolderActionRequest: folderUsrRights,
-						_jsns: 'urn:zimbra',
-					},
-				otherAccount: accountDetail?.zimbraMailDeliveryAddress,
-				},
-				{
-					onSuccess: (): void => {
-						refetchGrants();
-						setShowCreateIdentity(false);
+		if (folderUsrRights.length === 0 && grantUsrRigths.length === 0) {
+			return;
+		}
 
-						createSnackbar({
-							key: 'success',
-							severity: 'success',
-							label: editMode
-								? t('account_details.delegate_updated_successfully', 'Delegate`s rights updated successfully')
-								: t('account_details.delegate_created_successfully', 'Delegate`s rights created successfully'),
-							autoHideTimeout: 3000,
-							hideButton: true,
-							replace: true,
-						});
-					},
+		try {
+			// Edit = revoke the old send rights/folder grants, then grant the new ones. The two batches
+			// must run one after the other: sent together, the grant can be applied before the revoke
+			// and the revoke then removes what was just granted.
+			if (editMode && selectedIdentity) {
+				const { revokeUsrRigths, folderUsrRights: folderRevokes } = buildDelegateRevoke(
+					selectedIdentity,
+					targetName,
+					'send',
+				);
+				if (revokeUsrRigths.length > 0 || folderRevokes.length > 0) {
+					await batchDelegates.mutateAsync({
+						reqObject: {
+							RevokeRightRequest: revokeUsrRigths,
+							FolderActionRequest: folderRevokes,
+							_jsns: 'urn:zimbra',
+						},
+						otherAccount: targetName,
+					});
+				}
+			}
+			await batchDelegates.mutateAsync({
+				reqObject: {
+					GrantRightRequest: grantUsrRigths,
+					FolderActionRequest: folderUsrRights,
+					_jsns: 'urn:zimbra',
 				},
+				otherAccount: targetName,
+			});
+			setShowCreateIdentity(false);
+			setSelectedId(undefined);
+			showSnackbar(
+				'success',
+				editMode
+					? t('account_details.delegate_updated_successfully', 'Delegate`s rights updated successfully')
+					: t('account_details.delegate_created_successfully', 'Delegate`s rights created successfully'),
 			);
+		} catch (error) {
+			showError(error as Error);
+		} finally {
+			refetchGrants();
 		}
 	};
 
@@ -259,6 +277,7 @@ export const AdvancedDelegatesTable = ({
 								icon="Edit2Outline"
 								iconPlacement="right"
 								color="secondary"
+								disabled={!selectedIdentity}
 								onClick={(): void => handleEditDelegate()}
 							/>
 						</Padding>
@@ -268,7 +287,7 @@ export const AdvancedDelegatesTable = ({
 							icon="CloseOutline"
 							iconPlacement="right"
 							color="error"
-							disabled={!selectedRows?.length}
+							disabled={!selectedIdentity}
 							onClick={(): void => handleDeleteeDelegate()}
 						/>
 					</Row>
@@ -282,7 +301,8 @@ export const AdvancedDelegatesTable = ({
 								rows={identityRows}
 								headers={headers}
 								multiSelect={false}
-								onSelectionChange={setSelectedRows}
+								selectedRows={selectedId === undefined ? [] : [selectedId]}
+								onSelectionChange={(ids) => setSelectedId(ids[0])}
 								style={{ overflow: 'auto', height: '100%' }}
 								RowFactory={HoverableRowFactory}
 								HeaderFactory={CustomHeaderFactory}
@@ -326,8 +346,9 @@ export const AdvancedDelegatesTable = ({
 			{showCreateIdentity && (
 				<Row mainAlignment="flex-start" padding={{ left: 'small' }} width="100%">
 					<AddDelegateWizard
+						editMode={editMode}
 						onCancel={(): void => setShowCreateIdentity(false)}
-						onAdd={(): void => handleCreateDelegateAPI()}
+						onAdd={(): void => void handleCreateDelegateAPI()}
 					/>
 				</Row>
 			)}

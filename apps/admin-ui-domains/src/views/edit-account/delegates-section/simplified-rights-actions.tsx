@@ -12,36 +12,43 @@ import {
 	Container,
 	CustomChip,
 	Row,
+	useSnackbar,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
-import { cloneDeep, find, findIndex, map, pullAt } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useAccountListDirectory } from '../../../services/use-account-list-directory';
 import { useBatchDelegates } from '../../../services/use-batch-delegates';
-import { isValidEmail } from '../../utility/utils';
 import { useAccountForm } from '../account-form-context';
 import {
 	buildDelegateSearchQuery,
 	buildSimplifiedGrantBatch,
+	type DelegateIdentity,
+	type DelegateOption,
 	parseDelegateDirectoryOptions,
+	resolveDelegateChips,
 } from './utils';
 
 const DELEGATE_SEARCH_ATTRS =
 	'displayName,zimbraId,zimbraAliasTargetId,cn,sn,zimbraMailHost,uid,zimbraCOSId,zimbraAccountStatus,zimbraLastLogonTimestamp,description,zimbraIsSystemAccount,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraAuthTokenValidityValue,zimbraIsExternalVirtualAccount,zimbraMailStatus,zimbraIsAdminGroup,zimbraCalResType,zimbraDomainType,zimbraDomainName,zimbraDomainStatus,zimbraIsDelegatedAdminAccount,zimbraIsAdminAccount,zimbraIsSystemResource,zimbraIsSystemAccount,zimbraIsExternalVirtualAccount,zimbraCreateTimestamp,zimbraLastLogonTimestamp,zimbraMailQuota,zimbraNotes,mail';
 
 type SimplifiedRightsActionsProps = {
+	identitiesList: Array<DelegateIdentity>;
 	refetchGrants: () => void;
 };
 
-export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActionsProps) => {
+export const SimplifiedRightsActions = ({
+	identitiesList,
+	refetchGrants,
+}: SimplifiedRightsActionsProps) => {
+	const createSnackbar = useSnackbar();
 	const [t] = useTranslation();
 	const { form } = useAccountForm();
 	const accountDetail = useSelector(form.store, (s) => s.values as Record<string, any>);
 
-	const [selectedAccounts, setSelectedAccounts] = useState<any>([]);
-	const [simpleSelectedList, setSimpleSelectedList] = useState<any>([]);
+	const [selectedAccounts, setSelectedAccounts] = useState<Array<any>>([]);
+	const [simpleSelectedList, setSimpleSelectedList] = useState<Array<DelegateOption>>([]);
 	const [readRightCheck, setReadRightCheck] = useState<boolean>(false);
 	const [readWriteRightCheck, setReadWriteRightCheck] = useState<boolean>(false);
 	const [sendRightCheck, setSendRightCheck] = useState<boolean>(false);
@@ -70,11 +77,21 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 		setSearchText(textContent ?? '');
 	};
 
+	const resetSelection = (): void => {
+		setSelectedAccounts([]);
+		setSimpleSelectedList([]);
+		setReadRightCheck(false);
+		setReadWriteRightCheck(false);
+		setSendRightCheck(false);
+		setSendBehalfRightCheck(false);
+	};
+
 	const addAccountGroupRights = (): void => {
 		const { revokeUsrRigths, grantUsrRigths, folderUsrRights } = buildSimplifiedGrantBatch(
 			simpleSelectedList,
 			{ sendRightCheck, sendBehalfRightCheck, readWriteRightCheck, readRightCheck },
 			accountDetail?.zimbraMailDeliveryAddress,
+			identitiesList,
 		);
 
 		batchDelegates.mutate(
@@ -88,16 +105,37 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 				otherAccount: accountDetail?.zimbraMailDeliveryAddress,
 			},
 			{
+				onSuccess: (): void => {
+					resetSelection();
+					createSnackbar({
+						key: 'success',
+						severity: 'success',
+						label: t(
+							'account_details.delegate_created_successfully',
+							'Delegate`s rights created successfully',
+						),
+						autoHideTimeout: 3000,
+						hideButton: true,
+						replace: true,
+					});
+				},
+				onError: (error: Error): void => {
+					createSnackbar({
+						key: 'error',
+						severity: 'error',
+						label:
+							error.message ||
+							t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+						autoHideTimeout: 5000,
+						hideButton: true,
+						replace: true,
+					});
+				},
 				onSettled: (): void => {
 					refetchGrants();
 				},
 			},
 		);
-		setSelectedAccounts([]);
-		setSimpleSelectedList([]);
-		setReadRightCheck(false);
-		setReadWriteRightCheck(false);
-		setSendRightCheck(false);
 	};
 
 	return (
@@ -114,32 +152,10 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 					bottomBorderColor="gray3"
 					onInputType={filterOptions as NonNullable<ChipInputProps['onInputType']>}
 					value={selectedAccounts}
-					onChange={(contacts: any): void => {
-						const data: any = [];
-						let listArr = cloneDeep(simpleSelectedList);
-						map(contacts, (contact: any) => {
-							data.push(contact);
-							if (!find(listArr, { label: contact.label }) && find(options, { label: contact.label })) {
-								listArr.push(find(options, { label: contact.label }));
-							}
-						});
-						const pullIndex: any = [];
-						map(listArr, (ele: any, index) => {
-							const indexEle = findIndex(contacts, { label: ele.label });
-							if (indexEle < 0) {
-								pullIndex.push(index);
-							}
-						});
-						if (pullIndex.length) {
-							listArr = pullAt(listArr, pullIndex);
-						}
-						setSimpleSelectedList(listArr);
-						const filterData: any = [];
-						map(data, (ele) => {
-							if (isValidEmail(ele.label ?? '')) filterData.push(ele);
-						});
-						setSelectedAccounts(filterData);
-
+					onChange={(contacts: Array<any>): void => {
+						const { chips, entries } = resolveDelegateChips(contacts, simpleSelectedList, options);
+						setSimpleSelectedList(entries);
+						setSelectedAccounts(chips);
 						setSearchText('');
 					}}
 					requireUniqueChips
@@ -229,7 +245,9 @@ export const SimplifiedRightsActions = ({ refetchGrants }: SimplifiedRightsActio
 								readRightCheck ||
 								readWriteRightCheck ||
 								sendBehalfRightCheck
-							) || !selectedAccounts?.length
+							) ||
+							!selectedAccounts?.length ||
+							batchDelegates.isPending
 						}
 					/>
 				</Row>

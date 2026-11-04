@@ -19,8 +19,9 @@ type RightsTableProps = {
   title: React.ReactNode;
   rows: Array<DelegateRow>;
   hasAny: boolean;
-  selected: Array<string>;
-  onSelectionChange: (selected: Array<string>) => void;
+  /** Id of the selected row, if any (the table is controlled and single-select). */
+  selectedId: string | undefined;
+  onSelect: (id: string | undefined) => void;
   onRemove: () => void;
   onRemoveAll: () => void;
 };
@@ -30,8 +31,8 @@ export const RightsTable = ({
   title,
   rows,
   hasAny,
-  selected,
-  onSelectionChange,
+  selectedId,
+  onSelect,
   onRemove,
   onRemoveAll,
 }: RightsTableProps) => {
@@ -57,7 +58,8 @@ export const RightsTable = ({
         rows={rows}
         headers={simplifiedViewTableHeader}
         multiSelect={false}
-        onSelectionChange={onSelectionChange}
+        selectedRows={selectedId !== undefined ? [selectedId] : []}
+        onSelectionChange={(ids) => onSelect(ids[0])}
         style={{ overflow: 'auto', height: '15rem' }}
         RowFactory={HoverableRowFactory}
         HeaderFactory={CustomHeaderFactory}
@@ -68,7 +70,7 @@ export const RightsTable = ({
             type="ghost"
             label={t('account_details.remove', 'REMOVE')}
             color="error"
-            disabled={!selected?.length}
+            disabled={!rows.some((row) => row.id === selectedId)}
             onClick={onRemove}
           />
         </Row>

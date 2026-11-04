@@ -5,7 +5,15 @@
  */
 import { filter } from 'lodash-es';
 
-import { ZIMBRA_ADMIN_URN } from '../../../constants';
+import {
+	MANAGE_NO_SEND,
+	READ_MAILS_ONLY,
+	SEND_MAILS_ONLY,
+	SEND_READ_MAILS,
+	SEND_READ_MANAGE_MAILS,
+	ZIMBRA_ADMIN_URN,
+} from '../../../constants';
+import { isValidEmail } from '../../utility/utils';
 
 export type DelegateIdentity = {
 	grantee?: Array<{ id: string; name: string; type: string }>;
@@ -23,10 +31,23 @@ export type DelegateRow = {
 	clickable: boolean;
 };
 
+const SEND_RIGHT_LABELS: Record<string, string> = {
+	sendAs: 'Send As',
+	sendOnBehalfOf: 'Send on Behalf Of',
+};
+
+/** Rights of the identity that are send rights (sendAs / sendOnBehalfOf), in stored order. */
+export function getSendRights(identity: DelegateIdentity | undefined): Array<string> {
+	return (identity?.right ?? [])
+		.map((right) => right._content)
+		.filter((content) => Object.hasOwn(SEND_RIGHT_LABELS, content));
+}
+
 /** Table rows for a delegate identity, with derived right flags used by the simplified view filters. */
 export function buildDelegateRows(identities: Array<DelegateIdentity>): Array<DelegateRow> {
 	return (identities ?? []).map((item) => {
 		const grantee = item?.grantee?.[0];
+		const sendRights = getSendRights(item);
 		return {
 			id: grantee?.id ?? '',
 			columns: [
@@ -37,8 +58,7 @@ export function buildDelegateRows(identities: Array<DelegateIdentity>): Array<De
 					{grantee?.type === 'usr' ? 'Single User' : 'Group'}
 				</ds-text>,
 				<ds-text as="span" size="medium" weight="light" key={`${grantee?.id}-rights`} color="#414141">
-					{item?.right?.[0]?._content === 'sendAs' ? 'Send As' : ''}
-					{item?.right?.[0]?._content === 'sendOnBehalfOf' ? 'Send on Behalf Of' : ''}
+					{sendRights.map((right) => SEND_RIGHT_LABELS[right]).join(', ')}
 				</ds-text>,
 				<ds-text as="span" size="medium" weight="light" key={`${grantee?.id}-sharing`} color="#414141">
 					{item?.folder?.some((ele) => ele.perm.includes('r') && !ele.perm.includes('w'))
@@ -47,10 +67,7 @@ export function buildDelegateRows(identities: Array<DelegateIdentity>): Array<De
 					{item?.folder?.some((ele) => ele.perm.includes('w')) ? 'Read, Write' : ' '}
 				</ds-text>,
 			],
-			sendRights: !!(
-				item?.right?.[0]?._content === 'sendAs' ||
-				item?.right?.[0]?._content === 'sendOnBehalfOf'
-			),
+			sendRights: sendRights.length > 0,
 			readFolder: !!item?.folder?.some((ele) => ele.perm.includes('r')),
 			writeFolder: !!item?.folder?.some((ele) => ele.perm.includes('w')),
 			identity: item,
@@ -67,12 +84,14 @@ export function buildDelegateSearchQuery(search: string): string {
 	return `(|(&(objectClass=zimbraAccount)(zimbraMailDeliveryAddress=*${search}*))(&(objectClass=zimbraDistributionList)(mail=*${search}*)))`;
 }
 
+export type DelegateOption = { id: string; label: string; type: string; ele: any };
+
 /** ChipInput options from a raw SearchDirectory response; the edited account is excluded. */
 export function parseDelegateDirectoryOptions(
 	res: any,
 	selfId: string | undefined,
-): Array<{ id: string; label: string; type: string; ele: any }> {
-	const options: Array<{ id: string; label: string; type: string; ele: any }> = [];
+): Array<DelegateOption> {
+	const options: Array<DelegateOption> = [];
 	(res?.account ?? []).forEach((entry: any) => {
 		if (entry.id !== selfId) {
 			options.push({ id: entry.id, label: entry.name, type: 'usr', ele: entry });
@@ -82,6 +101,33 @@ export function parseDelegateDirectoryOptions(
 		options.push({ id: entry.id, label: entry.name, type: 'grp', ele: entry });
 	});
 	return options;
+}
+
+/**
+ * Chips and grant targets for the chip input's current contacts. Both lists come from the same
+ * filtered set, so a visible chip is always a grant target and vice versa: a contact is kept only
+ * when it is a valid address that resolves to a previously selected entry or a search option.
+ */
+export function resolveDelegateChips<T extends { label?: string }>(
+	contacts: Array<T>,
+	previousEntries: Array<DelegateOption>,
+	options: Array<DelegateOption>,
+): { chips: Array<T>; entries: Array<DelegateOption> } {
+	const chips: Array<T> = [];
+	const entries: Array<DelegateOption> = [];
+	(contacts ?? []).forEach((contact) => {
+		if (!isValidEmail(contact.label ?? '')) {
+			return;
+		}
+		const entry =
+			previousEntries.find((e) => e.label === contact.label) ??
+			options.find((o) => o.label === contact.label);
+		if (entry) {
+			chips.push(contact);
+			entries.push(entry);
+		}
+	});
+	return { chips, entries };
 }
 
 export type DelegateTarget = {
@@ -131,6 +177,47 @@ export function buildFolderRevoke(folder: { id: string; zid: string }): any {
 	};
 }
 
+/**
+ * Revoke batch removing a delegate: every folder grant plus either all of its rights ('all',
+ * removing the row) or only its send rights ('send', used before re-granting on edit so
+ * unrelated rights such as viewFreeBusy survive).
+ */
+export function buildDelegateRevoke(
+	identity: DelegateIdentity,
+	targetName: string,
+	rights: 'all' | 'send',
+): { revokeUsrRigths: any[]; folderUsrRights: any[] } {
+	const rightNames =
+		rights === 'send' ? getSendRights(identity) : (identity.right ?? []).map((r) => r._content);
+	return {
+		revokeUsrRigths: rightNames.map((right) =>
+			buildAdminRightEnvelope({
+				targetName,
+				granteeType: identity.grantee?.[0]?.type ?? '',
+				granteeName: identity.grantee?.[0]?.name ?? '',
+				right,
+			}),
+		),
+		folderUsrRights: (identity.folder ?? []).map((folder) => buildFolderRevoke(folder)),
+	};
+}
+
+/** Advanced-wizard "what rights" option matching an identity's current grants, if any. */
+export function getDelegateRightsType(identity: DelegateIdentity): string | undefined {
+	const perm = identity.folder?.[0]?.perm;
+	const canSend = getSendRights(identity).length > 0;
+	if (!identity.folder?.length) {
+		return SEND_MAILS_ONLY;
+	}
+	if (perm === 'r') {
+		return canSend ? SEND_READ_MAILS : READ_MAILS_ONLY;
+	}
+	if (perm === 'rwidxa') {
+		return canSend ? SEND_READ_MANAGE_MAILS : MANAGE_NO_SEND;
+	}
+	return undefined;
+}
+
 export type SimplifiedRightsChecks = {
 	sendRightCheck: boolean;
 	sendBehalfRightCheck: boolean;
@@ -138,11 +225,16 @@ export type SimplifiedRightsChecks = {
 	readRightCheck: boolean;
 };
 
-/** Grant batch for the simplified view: revoke-then-grant send rights, folder grants. */
+/**
+ * Grant batch for the simplified view. Choosing a send right replaces the other one, so the
+ * opposite right is revoked only when the grantee currently holds it (a revoke of a missing grant
+ * would otherwise surface as a batch fault).
+ */
 export function buildSimplifiedGrantBatch(
 	selected: Array<any>,
 	checks: SimplifiedRightsChecks,
 	targetName: string,
+	identities: Array<DelegateIdentity> = [],
 ): { revokeUsrRigths: any[]; grantUsrRigths: any[]; folderUsrRights: any[] } {
 	const revokeUsrRigths: any[] = [];
 	const grantUsrRigths: any[] = [];
@@ -156,9 +248,14 @@ export function buildSimplifiedGrantBatch(
 				granteeName: item?.ele?.name,
 				right: checks.sendRightCheck ? 'sendAs' : 'sendOnBehalfOf',
 			};
-			revokeUsrRigths.push(
-				buildAdminRightEnvelope({ ...target, right: checks.sendRightCheck ? 'sendOnBehalfOf' : 'sendAs' }),
+			const oppositeRight = checks.sendRightCheck ? 'sendOnBehalfOf' : 'sendAs';
+			const current = identities.find(
+				(identity) =>
+					identity.grantee?.[0]?.name?.toLowerCase() === target.granteeName?.toLowerCase(),
 			);
+			if (getSendRights(current).includes(oppositeRight)) {
+				revokeUsrRigths.push(buildAdminRightEnvelope({ ...target, right: oppositeRight }));
+			}
 			grantUsrRigths.push(buildAdminRightEnvelope(target));
 		}
 		if (checks.readWriteRightCheck || checks.readRightCheck) {
@@ -178,33 +275,33 @@ export function buildSimplifiedGrantBatch(
 
 /** Revoke batch for the simplified view tables, scoped by rights type. */
 export function buildSimplifiedRevokeBatch(
-	selectedDelegates: Array<any>,
+	selectedDelegates: Array<DelegateIdentity>,
 	rightsType: string,
 	targetName: string,
 ): { revokeUsrRigths: any[]; folderUsrRights: any[] } {
 	const revokeUsrRigths: any[] = [];
 	const folderUsrRights: any[] = [];
 
-	selectedDelegates.forEach((selectedDelegate: any) => {
-		if (selectedDelegate) {
-			if (
-				(rightsType === 'readWrite' || rightsType === 'read') &&
-				selectedDelegate?.folder?.length
-			) {
-				selectedDelegate.folder.forEach((ele: any) => {
-					folderUsrRights.push(buildFolderRevoke(ele));
-				});
-			}
-			if (rightsType === 'send' && selectedDelegate?.right?.[0]?._content) {
+	selectedDelegates.forEach((selectedDelegate) => {
+		if (!selectedDelegate) {
+			return;
+		}
+		if (rightsType === 'readWrite' || rightsType === 'read') {
+			selectedDelegate.folder?.forEach((ele) => {
+				folderUsrRights.push(buildFolderRevoke(ele));
+			});
+		}
+		if (rightsType === 'send') {
+			getSendRights(selectedDelegate).forEach((right) => {
 				revokeUsrRigths.push(
 					buildAdminRightEnvelope({
 						targetName,
-						granteeType: selectedDelegate?.grantee?.[0]?.type,
-						granteeName: selectedDelegate?.grantee?.[0]?.name,
-						right: selectedDelegate?.right?.[0]?._content,
+						granteeType: selectedDelegate.grantee?.[0]?.type ?? '',
+						granteeName: selectedDelegate.grantee?.[0]?.name ?? '',
+						right,
 					}),
 				);
-			}
+			});
 		}
 	});
 
@@ -236,8 +333,10 @@ export function selectDelegatesForRemoval(
 	identitiesList: Array<DelegateIdentity>,
 	identityRows: Array<DelegateRow>,
 ): Array<DelegateIdentity> {
-	if (single && selectedRowId) {
-		const found = identitiesList.find((o) => o?.grantee?.[0].id === selectedRowId);
+	if (single) {
+		const found = selectedRowId
+			? identitiesList.find((o) => o?.grantee?.[0]?.id === selectedRowId)
+			: undefined;
 		return found ? [found] : [];
 	}
 	return (

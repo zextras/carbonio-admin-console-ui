@@ -14,11 +14,26 @@ type BatchDelegatesVars = {
   otherAccount?: string;
 };
 
+type BatchFault = { Reason?: { Text?: string }; Detail?: { Error?: { Detail?: string } } };
+
+/**
+ * A Batch continues past failing sub-requests and reports them as `Fault` entries of a successful
+ * BatchResponse, so they are turned into a rejection here instead of being reported as success.
+ */
+async function runBatch(vars: BatchDelegatesVars) {
+  const response = await batchService(vars.reqObject, vars.otherAccount);
+  const faults = (response?.Fault ?? []) as Array<BatchFault>;
+  if (faults.length > 0) {
+    throw new Error(faults[0].Reason?.Text ?? faults[0].Detail?.Error?.Detail ?? 'Batch failed');
+  }
+  return response;
+}
+
 export const useBatchDelegates = (accountId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (vars: BatchDelegatesVars) => batchService(vars.reqObject, vars.otherAccount),
-    onSuccess: () => {
+    mutationFn: runBatch,
+    onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountGrants(accountId),
       });

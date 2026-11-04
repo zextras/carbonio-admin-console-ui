@@ -12,16 +12,19 @@ import { DelegateSetRightsSection } from '../add-delegate-section/delegate-setri
 import { createWizardStepButtons } from './wizard-step-buttons';
 
 type AddDelegateWizardProps = {
+	/** Editing an existing delegate: the title and confirm step/button say EDIT instead of ADD. */
+	editMode: boolean;
 	onCancel: () => void;
 	onAdd: () => void;
 };
 
 /** The three-step add-delegate wizard (mode, rights, confirm). */
-export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) => {
+export const AddDelegateWizard = ({ editMode, onCancel, onAdd }: AddDelegateWizardProps) => {
 	const [t] = useTranslation();
+	const confirmLabel = editMode ? t('label.EDIT', 'EDIT') : t('account_details.ADD', 'ADD');
 
 	const { CancelButton, EmptyPrevButton, NextButton, PrevButton, AddButton } =
-		createWizardStepButtons(t, onCancel, onAdd);
+		createWizardStepButtons(t, onCancel, onAdd, confirmLabel);
 
 	const wizardSteps = [
 		{
@@ -46,7 +49,7 @@ export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) =
 		},
 		{
 			name: 'add-delegate',
-			label: t('account_details.ADD', 'ADD'),
+			label: confirmLabel,
 			icon: 'KeyOutline',
 			view: DelegateAddSection,
 			clickDisabled: true,
@@ -59,7 +62,11 @@ export const AddDelegateWizard = ({ onCancel, onAdd }: AddDelegateWizardProps) =
 	return (
 		<HorizontalWizard
 			steps={wizardSteps}
-			title={t('account_details.add_user_on_delegates_list', 'Add user on Delegates List')}
+			title={
+				editMode
+					? t('account_details.edit_user_on_delegates_list', 'Edit user on Delegates List')
+					: t('account_details.add_user_on_delegates_list', 'Add user on Delegates List')
+			}
 			Wrapper={WizardInSection}
 			setToggleWizardSection={onCancel}
 		/>
