@@ -7,19 +7,28 @@ import {
   ComboboxInput,
   type ComboboxItem,
   DatePicker,
+  Select,
+  type SelectItem,
   Switch,
   TextInput,
 } from '@zextras/ui-components';
 import { useDebouncedValue } from '@zextras/ui-shared';
+import { format } from 'date-fns';
 import { useContext, useState } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
+import {
+  getRestoreTimeSlots,
+  RESTORE_TIME_VALUE_FORMAT,
+  withRestoreTime,
+} from './restore-time-slots';
 
 const DOMAIN_SEARCH_DEBOUNCE_MS = 700;
 const DOMAIN_SEARCH_LIMIT = 50;
+const EMPTY_TIME_SELECTION: SelectItem = { label: '', value: '' };
 
 export const RestoreDeleteAccountConfigSection = () => {
   const { t } = useTranslation();
@@ -70,6 +79,25 @@ export const RestoreDeleteAccountConfigSection = () => {
   function handleDomainPick(item: ComboboxItem): void {
     const domain = domainList.find((d) => d.id === item.id);
     if (domain) handleDomainSelect(domain.name);
+  }
+
+  const selectedDate = restoreAccountDetail?.dateTime
+    ? new Date(restoreAccountDetail.dateTime)
+    : null;
+  const selectedTime = selectedDate ? format(selectedDate, RESTORE_TIME_VALUE_FORMAT) : null;
+  const timeItems = selectedDate ? getRestoreTimeSlots(selectedDate, new Date()) : [];
+
+  function handleDateChange(date: Date | null): void {
+    if (!date) {
+      updateDetail({ dateTime: null });
+      return;
+    }
+    const dateWithTime = selectedTime ? withRestoreTime(date, selectedTime) : date;
+    updateDetail({ dateTime: (dateWithTime > new Date() ? date : dateWithTime).toISOString() });
+  }
+
+  function handleTimeChange(time: string): void {
+    if (selectedDate) updateDetail({ dateTime: withRestoreTime(selectedDate, time).toISOString() });
   }
 
   return (
@@ -134,19 +162,26 @@ export const RestoreDeleteAccountConfigSection = () => {
             dateFormat="dd/MM/yyyy"
             isClearable
             disabled={restoreAccountDetail?.lastAvailableStatus}
-            selected={
-              restoreAccountDetail?.dateTime ? new Date(restoreAccountDetail.dateTime) : null
-            }
+            selected={selectedDate}
             minDate={
               restoreAccountDetail?.createDate
                 ? new Date(restoreAccountDetail.createDate)
                 : undefined
             }
             maxDate={new Date()}
-            onChange={(date: Date | null): void => {
-              updateDetail({ dateTime: date ? date.toISOString() : null });
-            }}
+            onChange={handleDateChange}
           />
+          <div className="w-[15.625rem]">
+            <Select
+              label={t('label.time', 'Time')}
+              items={timeItems}
+              selection={
+                timeItems.find((item) => item.value === selectedTime) ?? EMPTY_TIME_SELECTION
+              }
+              disabled={!selectedDate}
+              onChange={handleTimeChange}
+            />
+          </div>
         </div>
 
         <Switch

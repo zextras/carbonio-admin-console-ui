@@ -191,6 +191,50 @@ describe('RestoreDeleteAccountConfigSection (browser)', () => {
 		await expect.element(page.getByRole('textbox', { name: 'Date' })).toBeDisabled();
 	});
 
+	it('should disable the time select until a date is picked', async () => {
+		setupSearchDirectoryInterceptor();
+		await setupBrowserTest(<ConfigSectionHarness />);
+
+		await expect.element(page.getByRole('button', { name: 'Time' })).toBeDisabled();
+	});
+
+	it('should set the AM/PM time picked in the time select on dateTime', async () => {
+		setupSearchDirectoryInterceptor();
+		await setupBrowserTest(<ConfigSectionHarness />);
+		const today = new Date();
+		const expected = new Date(today.getFullYear(), today.getMonth() - 1, 15, 21, 0);
+
+		await page.getByRole('button', { name: 'Calendar' }).click();
+		await page.getByRole('button', { name: /previous month/i }).click();
+		await page.getByRole('grid').getByText('15', { exact: true }).click();
+		await page.getByRole('button', { name: 'Time' }).click();
+		await page.getByRole('option', { name: '09:00 PM' }).click();
+
+		await expect
+			.element(page.getByText(`CTX dateTime: ${expected.toISOString()}`))
+			.toBeVisible();
+		await expect.element(page.getByRole('button', { name: 'Time' })).toHaveTextContent('09:00 PM');
+	});
+
+	it('should keep the picked time when the date changes', async () => {
+		setupSearchDirectoryInterceptor();
+		await setupBrowserTest(<ConfigSectionHarness />);
+		const today = new Date();
+		const expected = new Date(today.getFullYear(), today.getMonth() - 1, 16, 21, 0);
+
+		await page.getByRole('button', { name: 'Calendar' }).click();
+		await page.getByRole('button', { name: /previous month/i }).click();
+		await page.getByRole('grid').getByText('15', { exact: true }).click();
+		await page.getByRole('button', { name: 'Time' }).click();
+		await page.getByRole('option', { name: '09:00 PM' }).click();
+		await page.getByRole('button', { name: 'Calendar' }).click();
+		await page.getByRole('grid').getByText('16', { exact: true }).click();
+
+		await expect
+			.element(page.getByText(`CTX dateTime: ${expected.toISOString()}`))
+			.toBeVisible();
+	});
+
 	it('should toggle HSM policies in the wizard context', async () => {
 		setupSearchDirectoryInterceptor();
 		await setupBrowserTest(<ConfigSectionHarness />);

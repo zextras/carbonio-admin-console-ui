@@ -10,12 +10,24 @@ import { useTranslation } from 'react-i18next';
 
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
-function formatRestoreDateTime(dateTime: string | null | undefined, createDate: string): string {
+function toTimestamp(date: string | number): number {
+  const timestamp = Number(date);
+  return Number.isNaN(timestamp) ? new Date(date).getTime() : timestamp;
+}
+
+function formatRestoreDateTime(
+  dateTime: string | null | undefined,
+  createDate: string | number,
+): string {
   if (!dateTime) return '';
 
-  const selectedDate = dateTime > createDate ? dateTime : createDate;
+  const selectedTimestamp = new Date(dateTime).getTime();
+  const createTimestamp = toTimestamp(createDate);
 
-  return format(new Date(selectedDate), 'd MMMM yyyy | hh:mm:ss a');
+  return format(
+    createTimestamp > selectedTimestamp ? createTimestamp : selectedTimestamp,
+    'd MMMM yyyy | hh:mm:ss a',
+  );
 }
 
 export const RestoreDeleteAccountStartSection: FC<any> = () => {
