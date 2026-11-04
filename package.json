@@ -22,6 +22,8 @@
     "bump-version:dry": "semantic-release --dry-run",
     "deploy": "pnpm exec tsx scripts/deploy.ts",
     "deploy:dev": "pnpm exec tsx scripts/deploy.ts development",
+    "deploy:rsync": "pnpm exec tsx scripts/deploy-rsync.ts",
+    "deploy:rsync:dev": "pnpm exec tsx scripts/deploy-rsync.ts development",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci --concurrency=2 && pnpm exec tsx scripts/strip-lcov-branches.ts",
     "test:headed": "HEADED=true turbo run test --no-cache",
