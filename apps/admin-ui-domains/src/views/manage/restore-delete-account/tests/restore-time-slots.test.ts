@@ -5,7 +5,23 @@
  */
 import { describe, expect, it } from 'vitest';
 
-import { getRestoreTimeSlots, withRestoreTime } from '../restore-time-slots';
+import { clampRestoreDate, getRestoreTimeSlots, withRestoreTime } from '../restore-time-slots';
+
+describe('clampRestoreDate', () => {
+	const NOW = new Date(2026, 10, 4, 15, 20);
+
+	it('should keep a date that is not in the future', () => {
+		const date = new Date(2026, 10, 3, 21, 15);
+
+		expect(clampRestoreDate(date, NOW)).toEqual(date);
+	});
+
+	it('should move a future time to the latest enabled slot', () => {
+		expect(clampRestoreDate(new Date(2026, 10, 4, 21, 0), NOW)).toEqual(
+			new Date(2026, 10, 4, 15, 15),
+		);
+	});
+});
 
 describe('getRestoreTimeSlots', () => {
 	const NOW = new Date(2026, 10, 4, 15, 20);

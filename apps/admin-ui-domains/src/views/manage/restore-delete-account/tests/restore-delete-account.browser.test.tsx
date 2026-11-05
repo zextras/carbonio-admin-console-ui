@@ -170,6 +170,15 @@ describe('RestoreDeleteAccountStartSection (browser)', () => {
 		await expect.element(page.getByText('15 June 2025 | 10:00:00 AM', { exact: true })).toBeVisible();
 	});
 
+	it('shows the selected date when the creation date is missing', async () => {
+		await renderStartSection({
+			...fullRestoreAccountDetail,
+			createDate: undefined,
+		});
+
+		await expect.element(page.getByText('20 January 2026 | 03:30:10 PM', { exact: true })).toBeVisible();
+	});
+
 	it('renders the summary when no date and hour is selected', async () => {
 		await renderStartSection({ ...fullRestoreAccountDetail, dateTime: null });
 

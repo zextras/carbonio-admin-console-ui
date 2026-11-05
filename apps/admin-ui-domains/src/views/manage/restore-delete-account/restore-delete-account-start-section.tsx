@@ -12,7 +12,7 @@ import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 
 function toTimestamp(date: string | number): number {
   const timestamp = Number(date);
-  return Number.isNaN(timestamp) ? new Date(date).getTime() : timestamp;
+  return Number.isNaN(timestamp) ? new Date(date).getTime() || 0 : timestamp;
 }
 
 function formatRestoreDateTime(
@@ -21,11 +21,8 @@ function formatRestoreDateTime(
 ): string {
   if (!dateTime) return '';
 
-  const selectedTimestamp = new Date(dateTime).getTime();
-  const createTimestamp = toTimestamp(createDate);
-
   return format(
-    createTimestamp > selectedTimestamp ? createTimestamp : selectedTimestamp,
+    Math.max(new Date(dateTime).getTime(), toTimestamp(createDate)),
     'd MMMM yyyy | hh:mm:ss a',
   );
 }

@@ -16,6 +16,12 @@ export function withRestoreTime(date: Date, time: string): Date {
   return new Date(date.getFullYear(), date.getMonth(), date.getDate(), hours, minutes);
 }
 
+export function clampRestoreDate(date: Date, now: Date): Date {
+  if (date <= now) return date;
+  const minutes = now.getMinutes() - (now.getMinutes() % SLOT_MINUTES);
+  return new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), minutes);
+}
+
 export function getRestoreTimeSlots(date: Date, now: Date): Array<SelectItem> {
   return Array.from({ length: SLOTS_PER_DAY }, (_, index) => {
     const slot = new Date(

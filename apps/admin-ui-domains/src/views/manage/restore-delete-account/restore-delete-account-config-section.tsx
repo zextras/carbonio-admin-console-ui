@@ -21,6 +21,7 @@ import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useDomainSearch } from '../../../services/use-domain-search';
 import { RestoreDeleteAccountContext } from './restore-delete-account-context';
 import {
+  clampRestoreDate,
   getRestoreTimeSlots,
   RESTORE_TIME_VALUE_FORMAT,
   withRestoreTime,
@@ -93,7 +94,7 @@ export const RestoreDeleteAccountConfigSection = () => {
       return;
     }
     const dateWithTime = selectedTime ? withRestoreTime(date, selectedTime) : date;
-    updateDetail({ dateTime: (dateWithTime > new Date() ? date : dateWithTime).toISOString() });
+    updateDetail({ dateTime: clampRestoreDate(dateWithTime, new Date()).toISOString() });
   }
 
   function handleTimeChange(time: string): void {
@@ -178,7 +179,7 @@ export const RestoreDeleteAccountConfigSection = () => {
               selection={
                 timeItems.find((item) => item.value === selectedTime) ?? EMPTY_TIME_SELECTION
               }
-              disabled={!selectedDate}
+              disabled={restoreAccountDetail?.lastAvailableStatus || !selectedDate}
               onChange={handleTimeChange}
             />
           </div>
