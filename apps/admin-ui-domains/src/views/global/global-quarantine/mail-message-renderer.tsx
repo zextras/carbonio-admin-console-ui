@@ -6,6 +6,7 @@
 
 import { Button, Container, Padding, Row } from '@zextras/ui-components';
 import { useUserSettings } from '@zextras/ui-shared';
+import DOMPurify from 'dompurify';
 import { filter, forEach, isArray, isNull, reduce, some } from 'lodash-es';
 import { FC, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -161,7 +162,14 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
   useLayoutEffect(() => {
     const iframeDoc = iframeRef.current?.contentDocument;
     if (iframeDoc) {
-      iframeDoc.documentElement.innerHTML = orignalText;
+      // Sanitize as defense in depth: this strips event handlers (e.g. onerror) and scripts
+      // even if an untrusted part slipped through unescaped upstream (CO-4561).
+      iframeDoc.documentElement.innerHTML = DOMPurify.sanitize(orignalText, {
+        WHOLE_DOCUMENT: true,
+        // `dfsrc` holds the original external-image URL neutered by the server; it isn't a
+        // standard attribute, so it needs an explicit allowlist entry to survive sanitization.
+        ADD_ATTR: ['dfsrc'],
+      });
     }
     const styleTag = document.createElement('style');
     const styles = `
