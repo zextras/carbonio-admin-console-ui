@@ -132,9 +132,14 @@ export function buildAccountRow(
     >
       {getAccountUserType(accountItem)}
     </ds-text>,
-    <span key={`${item.id}-status`} onClick={openAccount}>
+    <button
+      type="button"
+      key={`${item.id}-status`}
+      className="cursor-pointer border-0 bg-transparent p-0"
+      onClick={openAccount}
+    >
       <StatusBadge tone={getAccountStatusBadgeTone(status ?? '')} label={statusLabel} />
-    </span>,
+    </button>,
     <Tooltip key={`${item.id}-description`} label={(accountItem.description as string) || '\u00a0'}>
       <ds-text
         as="span"
