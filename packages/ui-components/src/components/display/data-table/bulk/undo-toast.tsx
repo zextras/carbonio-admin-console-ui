@@ -137,7 +137,7 @@ export const DataTableUndoToast = ({
       {/* aria-hidden: the ticking seconds would re-announce the whole
           status region on every countdown step. */}
       <span className={styles.undoToastShortcut} aria-hidden="true">
-        {t('data_table.undo_hint', '{{seconds}}s to undo (⌘Z)', { seconds: left })}
+        {t('data_table.undo_hint', '{{seconds}}s to undo', { seconds: left })}
       </span>
     </output>
   );
