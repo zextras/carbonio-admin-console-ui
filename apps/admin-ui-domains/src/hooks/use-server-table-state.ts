@@ -47,6 +47,24 @@ export function clampPaginationToRowCount(
 type Updater<T> = T | ((prev: T) => T);
 
 /**
+ * Resolve an updater-or-value against the current slice and apply it.
+ * Returns whether the resolved value differs from the current one, so
+ * query-shape setters can reset page+selection only on real changes
+ * (re-applying an identical filter draft must not drop a selection).
+ * `isEqual` early-exits on reference identity and is key-order agnostic,
+ * unlike a JSON.stringify comparison.
+ */
+function applyQueryShapeValue<T>(
+  current: T,
+  next: Updater<T>,
+  apply: (value: T) => void,
+): boolean {
+  const value = typeof next === 'function' ? (next as (prev: T) => T)(current) : next;
+  apply(value);
+  return !isEqual(value, current);
+}
+
+/**
  * Table state for server-mode (manual sorting/pagination/filtering) tables,
  * following TanStack's controlled-state pattern: the view owns the state
  * slices, derives its query inputs (offset/limit/search/filters/sorting)
@@ -73,48 +91,30 @@ export function useServerTableState({
   totalRowCount,
   initialSorting = [],
 }: UseServerTableStateOptions = {}) {
-  const [sorting, setSortingState] = useState<SortingState>(initialSorting);
+  const [sortingState, setSortingState] = useState<SortingState>(initialSorting);
   const [pagination, setPagination] = useState<PaginationState>({ pageIndex: 0, pageSize });
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({});
-  const [searchString, setSearchStringState] = useState('');
-  const [filters, setFiltersState] = useState<DataTableFiltersState>({});
+  const [searchStringState, setSearchStringState] = useState('');
+  const [filtersState, setFiltersState] = useState<DataTableFiltersState>({});
 
   function resetPageAndSelection(): void {
     setPagination((prev) => ({ ...prev, pageIndex: 0 }));
     setRowSelection({});
   }
 
-  /**
-   * Resolve an updater-or-value against the current slice and apply it.
-   * Returns whether the resolved value differs from the current one, so
-   * query-shape setters can reset page+selection only on real changes
-   * (re-applying an identical filter draft must not drop a selection).
-   * `isEqual` early-exits on reference identity and is key-order agnostic,
-   * unlike a JSON.stringify comparison.
-   */
-  function applyQueryShapeValue<T>(
-    current: T,
-    next: Updater<T>,
-    apply: (value: T) => void,
-  ): boolean {
-    const value = typeof next === 'function' ? (next as (prev: T) => T)(current) : next;
-    apply(value);
-    return !isEqual(value, current);
-  }
-
   // #4: query-shape setters — apply, then reset page + selection atomically.
   const setSorting = (next: Updater<SortingState>): void => {
-    if (applyQueryShapeValue(sorting, next, setSortingState)) {
+    if (applyQueryShapeValue(sortingState, next, setSortingState)) {
       resetPageAndSelection();
     }
   };
   const setSearchString = (next: Updater<string>): void => {
-    if (applyQueryShapeValue(searchString, next, setSearchStringState)) {
+    if (applyQueryShapeValue(searchStringState, next, setSearchStringState)) {
       resetPageAndSelection();
     }
   };
   const setFilters = (next: Updater<DataTableFiltersState>): void => {
-    if (applyQueryShapeValue(filters, next, setFiltersState)) {
+    if (applyQueryShapeValue(filtersState, next, setFiltersState)) {
       resetPageAndSelection();
     }
   };
@@ -145,15 +145,15 @@ export function useServerTableState({
   }
 
   return {
-    sorting,
+    sorting: sortingState,
     setSorting,
     pagination,
     setPagination,
     rowSelection,
     setRowSelection,
-    searchString,
+    searchString: searchStringState,
     setSearchString,
-    filters,
+    filters: filtersState,
     setFilters,
   };
 }

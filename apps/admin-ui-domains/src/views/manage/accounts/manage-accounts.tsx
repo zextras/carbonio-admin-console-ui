@@ -165,6 +165,66 @@ function sortingToAccountParams(sorting: AccountSortState): {
 	};
 }
 
+type AccountCellProps = {
+	row: { original: AccountRowItem };
+};
+
+/** Module-level cells so ManageAccounts does not define components inline (S6478). */
+const AccountEmailCell = ({ row }: AccountCellProps) => (
+	<ds-text as="span" size="small" color="gray0" weight="regular">
+		{row.original.name || ' '}
+	</ds-text>
+);
+
+const AccountDisplayNameCell = ({ row }: AccountCellProps) => (
+	<ds-text as="span" size="small" color="gray0" weight="light">
+		{(row.original.displayName as string | undefined) || '\u00a0'}
+	</ds-text>
+);
+
+const AccountAliasesCell = ({ row }: AccountCellProps) => {
+	const mailAddresses = (row.original.mail as Array<string> | undefined) ?? [];
+	const aliasCount = Math.max(mailAddresses.length - 1, 0);
+	if (aliasCount > 0) {
+		return (
+			<Tooltip placement="bottom" label={mailAddresses.slice(1).join(', ')} maxWidth="auto">
+				<ds-text as="span" size="small" weight="light" color="#828282">
+					{aliasCount}
+				</ds-text>
+			</Tooltip>
+		);
+	}
+	return (
+		<ds-text as="span" size="small" color="#828282" weight="light">
+			0
+		</ds-text>
+	);
+};
+
+const AccountTypeCell = ({ row }: AccountCellProps) => (
+	<ds-text as="span" size="small" color="gray0" weight="light">
+		{getAccountUserType(row.original)}
+	</ds-text>
+);
+
+const AccountStatusCell = ({ row }: AccountCellProps) => {
+	const { t } = useTranslation();
+	const status = row.original.zimbraAccountStatus as string | undefined;
+	const { label: statusLabel } = getStatusDisplay(status ?? '', t);
+	return <StatusBadge tone={getAccountStatusBadgeTone(status ?? '')} label={statusLabel} />;
+};
+
+const AccountDescriptionCell = ({ row }: AccountCellProps) => {
+	const description = (row.original.description as string | undefined) ?? '\u00a0';
+	return (
+		<Tooltip label={description}>
+			<ds-text as="span" size="small" weight="light" color="gray0">
+				{description}
+			</ds-text>
+		</Tooltip>
+	);
+};
+
 export const ManageAccounts = () => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
@@ -390,11 +450,7 @@ export const ManageAccounts = () => {
 			header: t('label.email', 'Email'),
 			enableSorting: true,
 			meta: { width: '350px', fixed: true, primary: true, copyable: true },
-			cell: ({ row }) => (
-				<ds-text as="span" size="small" color="gray0" weight="regular">
-					{row.original.name || ' '}
-				</ds-text>
-			),
+			cell: AccountEmailCell,
 		},
 		{
 			id: 'displayName',
@@ -402,11 +458,7 @@ export const ManageAccounts = () => {
 			header: t('label.person_name', 'Name'),
 			enableSorting: true,
 			meta: { width: '12rem', fixed: true, editable: true },
-			cell: ({ row }) => (
-				<ds-text as="span" size="small" color="gray0" weight="light">
-					{(row.original.displayName as string | undefined) || '\u00a0'}
-				</ds-text>
-			),
+			cell: AccountDisplayNameCell,
 		},
 		{
 			id: 'aliases',
@@ -417,24 +469,7 @@ export const ManageAccounts = () => {
 			header: t('label.Aliases', 'Aliases'),
 			enableSorting: false,
 			meta: { width: '10%', align: 'right' },
-			cell: ({ row }) => {
-				const mailAddresses = (row.original.mail as Array<string> | undefined) ?? [];
-				const aliasCount = Math.max(mailAddresses.length - 1, 0);
-				if (aliasCount > 0) {
-					return (
-						<Tooltip placement="bottom" label={mailAddresses.slice(1).join(', ')} maxWidth="auto">
-							<ds-text as="span" size="small" weight="light" color="#828282">
-								{aliasCount}
-							</ds-text>
-						</Tooltip>
-					);
-				}
-				return (
-					<ds-text as="span" size="small" color="#828282" weight="light">
-						0
-					</ds-text>
-				);
-			},
+			cell: AccountAliasesCell,
 		},
 		{
 			id: 'type',
@@ -442,11 +477,7 @@ export const ManageAccounts = () => {
 			header: t('label.type', 'Type'),
 			enableSorting: false,
 			meta: { width: '10%' },
-			cell: ({ row }) => (
-				<ds-text as="span" size="small" color="gray0" weight="light">
-					{getAccountUserType(row.original)}
-				</ds-text>
-			),
+			cell: AccountTypeCell,
 		},
 		{
 			id: 'status',
@@ -454,13 +485,7 @@ export const ManageAccounts = () => {
 			header: t('label.status', 'Status'),
 			enableSorting: false,
 			meta: { width: '10%' },
-			cell: ({ row }) => {
-				const status = row.original.zimbraAccountStatus as string | undefined;
-				const { label: statusLabel } = getStatusDisplay(status ?? '', t);
-				return (
-					<StatusBadge tone={getAccountStatusBadgeTone(status ?? '')} label={statusLabel} />
-				);
-			},
+			cell: AccountStatusCell,
 		},
 		{
 			id: 'description',
@@ -468,16 +493,7 @@ export const ManageAccounts = () => {
 			header: t('label.description', 'Description'),
 			enableSorting: false,
 			meta: { width: '30%' },
-			cell: ({ row }) => {
-				const description = (row.original.description as string | undefined) ?? '\u00a0';
-				return (
-					<Tooltip label={description}>
-						<ds-text as="span" size="small" weight="light" color="gray0">
-							{description}
-						</ds-text>
-					</Tooltip>
-				);
-			},
+			cell: AccountDescriptionCell,
 		},
 	];
 
