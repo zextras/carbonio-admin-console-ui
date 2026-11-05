@@ -46,14 +46,29 @@ vi.stubGlobal('tinymce', {
   },
 });
 
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] ?? null,
+    setItem: (key: string, value: string) => {
+      store[key] = String(value);
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+    get length() {
+      return Object.keys(store).length;
+    },
+    key: (index: number) => Object.keys(store)[index] ?? null,
+  };
+})();
 Object.defineProperty(globalThis, 'localStorage', {
   value: localStorageMock,
+  writable: true,
+  configurable: true,
 });
 
 beforeAll(async () => {
@@ -62,6 +77,7 @@ beforeAll(async () => {
 
 beforeEach(() => {
   resetMockWorker();
+  localStorageMock.clear();
 });
 
 afterAll(() => {
