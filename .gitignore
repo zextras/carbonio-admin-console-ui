@@ -81,3 +81,4 @@ dist
 /new translations.txt
 **/__screenshots__/
 **/.vitest-attachments/
+.pnpm-store/*

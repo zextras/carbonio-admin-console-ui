@@ -201,6 +201,7 @@ import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
 import { isSameOriginUrlOutsideProxyAllowlist, PROXY_EMBEDDED_RESOURCE_ALLOWLIST_PREFIXES } from './utils/proxy-asset-allowlist';
 import { isUnlimitedQuantity } from './utils/quantity';
+import { enumFilterValues, resolveTableStatus } from './utils/table-status';
 import { isValidDecimalInput } from './utils/validators';
 
 // Default fallback pkg for when app context cannot be determined
@@ -269,6 +270,7 @@ export {
   DEFAULT_ADVANCED_DOCUMENTATION_URL,
   domainByIdKey,
   doRestoreOnNewAccount,
+  enumFilterValues,
   fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
@@ -314,6 +316,7 @@ export {
   registerApp,
   removeRoute,
   replaceHistory,
+  resolveTableStatus,
   SCALING_LIMIT,
   SCALING_OPTIONS,
   searchDirectory,
