@@ -4,9 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import clsx from 'clsx';
 import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
+import tableStyles from '../display/Table.module.css';
 import { Checkbox } from '../inputs/Checkbox';
 import { LegacySelect } from '../inputs/LegacySelect';
 import { Container } from '../layout/Container';
@@ -36,6 +39,7 @@ export const CustomHeaderFactory: FC<any> = ({
   multiSelect,
   showCheckbox,
 }): React.JSX.Element => {
+  const [t] = useTranslation();
   const trRef = useRef<HTMLTableRowElement>(null);
   const [showCkb, setShowCkb] = useState(false);
   const [sortedColumn, setSortedColumn] = useState<string>('');
@@ -181,12 +185,15 @@ export const CustomHeaderFactory: FC<any> = ({
   return (
     <tr ref={trRef} style={{ height: '3rem' }}>
       <th align="center" style={{ width: '30px' }}>
-        {showCheckbox && multiSelect && (showCkb || selectionMode || allSelected) && (
+        {showCheckbox && multiSelect && (
           <Checkbox
-            size="small"
+            className={clsx(
+              tableStyles.checkbox,
+              (showCkb || selectionMode || allSelected) && tableStyles.show,
+            )}
             value={allSelected}
             onClick={onChange}
-            iconColor={selectionMode ? 'primary' : 'text'}
+            aria-label={t('label.select_all_rows', 'Select all rows')}
           />
         )}
       </th>

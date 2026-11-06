@@ -4,85 +4,42 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FieldsetHTMLAttributes, useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
-import { type RadioProps } from './Radio';
-import styles from './RadioGroup.module.css';
+import { type RadioValue } from './plain-radio';
+import { PlainRadioGroup, type PlainRadioGroupProps } from './plain-radio-group';
 
-type RadioValue<T extends RadioProps['value']> = RadioProps<T>['value'];
-
-type RadioGroupProps<T extends RadioProps['value']> = Omit<
-  FieldsetHTMLAttributes<HTMLFieldSetElement>,
-  'onChange'
+type RadioGroupProps<T extends RadioValue = string> = Omit<
+  PlainRadioGroupProps,
+  'value' | 'onChange'
 > & {
-  defaultValue?: RadioValue<T>;
-  value?: RadioValue<T>;
-  onChange?: (value: RadioValue<T>) => void;
-  children: React.ReactElement<RadioProps<T>>[];
+  defaultValue?: T;
+  /** Controlled value. When omitted the group is uncontrolled and starts from `defaultValue`. */
+  value?: T;
+  /** Fired when the user selects a different radio. */
+  onChange?: (value: T) => void;
+  children: React.ReactNode;
 };
 
-type RadioGroupType = <T extends RadioProps['value'] = string>(
-  p: RadioGroupProps<T> & React.RefAttributes<HTMLFieldSetElement>,
-) => React.ReactElement | null;
-
-const RadioGroupComponent = <T extends RadioProps['value'] = string>(
-  { children, value, defaultValue, onChange, ...fieldsetProps }: RadioGroupProps<T>,
-  ref: React.Ref<HTMLFieldSetElement>,
-) => {
-  const [currentValue, setCurrentValue] = useState<RadioValue<T> | undefined>(
-    value ?? defaultValue,
-  );
-  const uncontrolledMode = useMemo(() => typeof value === 'undefined', [value]);
-
-  const handleOnClick = useCallback(
-    (newValue: RadioValue<T>) => {
-      setCurrentValue((prevValue) => {
-        if (uncontrolledMode) {
-          return newValue;
-        }
-        if (newValue !== prevValue) {
-          onChange?.(newValue);
-        }
-        return prevValue;
-      });
-    },
-    [onChange, uncontrolledMode],
-  );
-
-  useEffect(() => {
-    value && setCurrentValue(value);
-  }, [value]);
-
-  const radioClickHandler = useCallback(
-    (radio: RadioGroupProps<T>['children'][number]): RadioProps['onClick'] =>
-      (e) => {
-        radio.props.onClick?.(e);
-        handleOnClick(radio.props.value);
-      },
-    [handleOnClick],
-  );
-
-  const items = useMemo(
-    () =>
-      children.map((radio) =>
-        React.cloneElement(radio, {
-          key: radio.key ?? `${radio.props.value}`,
-          checked: radio.props.value === currentValue,
-          onClick: radioClickHandler(radio),
-          disabled: radio.props.disabled === true || fieldsetProps.disabled === true,
-        }),
-      ),
-    [children, currentValue, fieldsetProps.disabled, radioClickHandler],
-  );
+const RadioGroup = <T extends RadioValue = string>({
+  value,
+  defaultValue,
+  onChange,
+  ...rest
+}: RadioGroupProps<T>) => {
+  const [innerValue, setInnerValue] = useState<RadioValue>(defaultValue);
 
   return (
-    <fieldset ref={ref} className={styles.fieldset} {...fieldsetProps}>
-      {items}
-    </fieldset>
+    <PlainRadioGroup
+      value={value ?? innerValue}
+      onChange={(newValue) => {
+        if (value === undefined) setInnerValue(newValue);
+        onChange?.(newValue as T);
+      }}
+      {...rest}
+    />
   );
 };
 
-const RadioGroup = RadioGroupComponent as RadioGroupType;
-
-export { RadioGroup, RadioGroupComponent };
+export { RadioGroup };
 export type { RadioGroupProps };

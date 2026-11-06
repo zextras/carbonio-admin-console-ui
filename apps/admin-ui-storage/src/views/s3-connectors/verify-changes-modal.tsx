@@ -108,8 +108,6 @@ export function VerifyChangesModal({
 
       <div className={styles.checkboxRow}>
         <Checkbox
-          iconColor="primary"
-          size="small"
           label={t(
             'storages.s3Connectors.changeImportantInformation.confirm',
             'I am sure I want to apply these changes',

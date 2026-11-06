@@ -81,6 +81,19 @@ describe('EditAccountDelegatesSection (browser)', () => {
 		await expect.element(page.getByText('Send on Behalf of')).toBeVisible();
 	});
 
+	it('groups the read and send rights checkboxes under named groups', async () => {
+		setupTest();
+
+		const readGroup = page.getByRole('group', { name: 'Read options' });
+		await expect.element(readGroup.getByRole('checkbox', { name: 'Read / Write' })).toBeInTheDocument();
+		await expect.element(readGroup.getByRole('checkbox', { name: 'Read Only' })).toBeInTheDocument();
+		const sendGroup = page.getByRole('group', { name: 'Send options' });
+		await expect.element(sendGroup.getByRole('checkbox', { name: 'Send' })).toBeInTheDocument();
+		await expect
+			.element(sendGroup.getByRole('checkbox', { name: 'Send on Behalf of' }))
+			.toBeInTheDocument();
+	});
+
 	it('sorts delegates into the correct rights tables', async () => {
 		setupTest();
 

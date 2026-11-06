@@ -46,6 +46,16 @@ function renderRow(
   return render(<ClickableRowFactory {...defaultProps} />);
 }
 
+function getCheckbox(container: HTMLElement): HTMLInputElement | null {
+  return container.querySelector('input[type="checkbox"]');
+}
+
+function isCheckboxShown(container: HTMLElement): boolean {
+  const checkbox = getCheckbox(container);
+  const wrapper = checkbox?.closest('td')?.firstElementChild;
+  return checkbox !== null && !wrapper?.className;
+}
+
 describe('ClickableRowFactory', () => {
   describe('Rendering', () => {
     it('should render a table row', () => {
@@ -77,14 +87,12 @@ describe('ClickableRowFactory', () => {
   describe('Selection', () => {
     it('should render checkbox when showCheckbox and selected', () => {
       const { container } = renderRow({ showCheckbox: true, selected: true });
-      const checkbox = container.querySelector('[data-testid="checkbox"]');
-      expect(checkbox).not.toBeNull();
+      expect(isCheckboxShown(container)).toBe(true);
     });
 
     it('should render checkbox when showCheckbox and selectionMode', () => {
       const { container } = renderRow({ showCheckbox: true, selectionMode: true });
-      const checkbox = container.querySelector('[data-testid="checkbox"]');
-      expect(checkbox).not.toBeNull();
+      expect(isCheckboxShown(container)).toBe(true);
     });
 
     it('should call onChange with row id when checkbox is clicked on non-clickable row', async () => {
@@ -95,7 +103,7 @@ describe('ClickableRowFactory', () => {
         onChange,
         row: { id: 'test-id', columns: ['A'], clickable: false },
       });
-      const checkbox = container.querySelector('[data-testid="checkbox"]')!;
+      const checkbox = getCheckbox(container)!;
       await userEvent.click(checkbox);
       expect(onChange).toHaveBeenCalledWith('test-id');
     });
@@ -171,9 +179,9 @@ describe('ClickableRowFactory', () => {
         multiSelect: false,
       });
       const tr = container.querySelector('tr')!;
+      expect(isCheckboxShown(container)).toBe(false);
       fireEvent.mouseEnter(tr);
-      const checkbox = container.querySelector('[data-testid="checkbox"]');
-      expect(checkbox).not.toBeNull();
+      expect(isCheckboxShown(container)).toBe(true);
     });
 
     it('should use setTimeout when hoverDelay > 0', () => {
@@ -189,14 +197,12 @@ describe('ClickableRowFactory', () => {
       const tr = container.querySelector('tr')!;
       fireEvent.mouseEnter(tr);
 
-      let checkbox = container.querySelector('[data-testid="checkbox"]');
-      expect(checkbox).toBeNull();
+      expect(isCheckboxShown(container)).toBe(false);
 
       act(() => {
         vi.advanceTimersByTime(200);
       });
-      checkbox = container.querySelector('[data-testid="checkbox"]');
-      expect(checkbox).not.toBeNull();
+      expect(isCheckboxShown(container)).toBe(true);
       vi.useRealTimers();
     });
 
@@ -215,8 +221,7 @@ describe('ClickableRowFactory', () => {
       fireEvent.mouseLeave(tr);
 
       vi.advanceTimersByTime(200);
-      const checkbox = container.querySelector('[data-testid="checkbox"]');
-      expect(checkbox).toBeNull();
+      expect(isCheckboxShown(container)).toBe(false);
       vi.useRealTimers();
     });
   });

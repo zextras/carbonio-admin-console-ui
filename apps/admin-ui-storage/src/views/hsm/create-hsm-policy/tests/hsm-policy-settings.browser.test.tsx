@@ -115,6 +115,14 @@ describe('HSMpolicySettings (browser)', () => {
 			await expect.element(page.getByText('Contact', { exact: true })).toBeVisible();
 		});
 
+		it('groups the item type checkboxes under an accessible Items group', async () => {
+			await setupBrowserTest(<TestHarness />);
+			const group = page.getByRole('group', { name: 'Items' });
+			for (const name of ['All', 'Message', 'Document', 'Event', 'Contact']) {
+				await expect.element(group.getByRole('checkbox', { name })).toBeInTheDocument();
+			}
+		});
+
 		it('renders the Criteria section heading', async () => {
 			await setupBrowserTest(<TestHarness />);
 			await expect.element(page.getByText('Criteria', { exact: true })).toBeVisible();

@@ -29,7 +29,10 @@ export const MailMessageSizeSection = ({
           {(limitField) => (
             <>
               <Row width="100%" mainAlignment="flex-start">
-                <RadioGroup value={limitField.state.value.toString()}>
+                <RadioGroup
+                  aria-label={t('mta.advanced.mail_messages_size', 'Mail messages size')}
+                  value={limitField.state.value.toString()}
+                >
                   <Radio
                     label={t(
                       'mta.advanced.no_size_limit_for_mail_messages',
@@ -40,7 +43,6 @@ export const MailMessageSizeSection = ({
                       limitField.handleChange(false);
                       form.setFieldValue('zimbraMtaMaxMessageSize', '');
                     }}
-                    iconColor="primary"
                   />
                   <Radio
                     label={t(
@@ -51,7 +53,6 @@ export const MailMessageSizeSection = ({
                     onClick={() => {
                       limitField.handleChange(true);
                     }}
-                    iconColor="primary"
                   />
                 </RadioGroup>
               </Row>
