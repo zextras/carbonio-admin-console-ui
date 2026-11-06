@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { act, render } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -87,6 +87,24 @@ describe('VerifyProgress', () => {
     expect(HTMLElement.prototype.hidePopover).toHaveBeenCalledTimes(1);
     expect(firstOnComplete).not.toHaveBeenCalled();
     expect(latestOnComplete).toHaveBeenCalledTimes(1);
+  });
+
+  it('should show the test connection description when testing a connector', () => {
+    render(<VerifyProgress isPending isTestConnection />);
+
+    expect(screen.getByText('Please wait while testing your connector')).toBeDefined();
+    expect(
+      screen.queryByText('Please wait while verifying and setting up connector'),
+    ).toBeNull();
+  });
+
+  it('should show the setup description when verifying and saving a connector', () => {
+    render(<VerifyProgress isPending />);
+
+    expect(
+      screen.getByText('Please wait while verifying and setting up connector'),
+    ).toBeDefined();
+    expect(screen.queryByText('Please wait while testing your connector')).toBeNull();
   });
 
   it('should keep minimum display time and cancel completion timeout on unmount', () => {

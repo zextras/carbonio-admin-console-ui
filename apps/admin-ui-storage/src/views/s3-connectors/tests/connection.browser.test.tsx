@@ -38,6 +38,8 @@ const REGIONS = [
 	{ id: 'eu-central-1', description: 'EU Central 1' },
 ];
 
+let lastCreatePayload: Record<string, unknown> | undefined;
+
 function buildZextrasContent(payload: unknown): string {
 	return JSON.stringify(payload);
 }
@@ -72,6 +74,7 @@ function setupZextrasInterceptor(options: {
 			}
 
 			if (action === 'createS3Connector') {
+				lastCreatePayload = body.Body?.zextras as Record<string, unknown>;
 				return HttpResponse.json({
 					Body: {
 						response: {
@@ -93,13 +96,14 @@ function renderConnection(onCancel: () => void = vi.fn()): React.ReactElement {
 async function fillRequiredFields(): Promise<void> {
 	await page.getByLabelText('Descriptive name*').fill('Main bucket');
 	await page.getByLabelText('Bucket name*').fill('main-bucket');
-	await page.getByLabelText('Access Key ID*').fill('AKIA_TEST');
-	await page.getByLabelText('Secret Access Key*').fill('SECRET_TEST');
+	await page.getByLabelText('Access Key ID').fill('AKIA_TEST');
+	await page.getByLabelText('Secret Access Key').fill('SECRET_TEST');
 	await page.getByLabelText('Endpoint URL*').fill('https://s3.example.test');
 }
 
 describe('Connection (browser)', () => {
 	beforeEach(() => {
+		lastCreatePayload = undefined;
 		setupZextrasInterceptor({});
 	});
 
@@ -108,8 +112,8 @@ describe('Connection (browser)', () => {
 
 		await expect.element(page.getByLabelText('Descriptive name*')).toBeVisible();
 		await expect.element(page.getByLabelText('Bucket name*')).toBeVisible();
-		await expect.element(page.getByLabelText('Access Key ID*')).toBeVisible();
-		await expect.element(page.getByLabelText('Secret Access Key*')).toBeVisible();
+		await expect.element(page.getByLabelText('Access Key ID')).toBeVisible();
+		await expect.element(page.getByLabelText('Secret Access Key')).toBeVisible();
 		await expect.element(page.getByLabelText('Endpoint URL*')).toBeVisible();
 		await expect.element(page.getByLabelText('Prefix')).toBeVisible();
 		await expect
@@ -142,8 +146,21 @@ describe('Connection (browser)', () => {
 		await page.getByRole('button', { name: /verify & create connector/i }).click();
 
 		await expect
-			.element(page.getByText('Connectors verified and created'))
+			.element(page.getByText('Connector verified and created'))
 			.toBeVisible();
+	});
+
+	it('should omit optional credentials when creating a connector', async () => {
+		await setupBrowserTest(renderConnection());
+
+		await page.getByLabelText('Descriptive name*').fill('Main bucket');
+		await page.getByLabelText('Bucket name*').fill('main-bucket');
+		await page.getByLabelText('Endpoint URL*').fill('https://s3.example.test');
+		await page.getByRole('button', { name: /verify & create connector/i }).click();
+
+		await expect.element(page.getByText('Connector verified and created')).toBeVisible();
+		expect(lastCreatePayload).not.toHaveProperty('accessKey');
+		expect(lastCreatePayload).not.toHaveProperty('secret');
 	});
 
 	it('should show error popover when connector creation fails', async () => {

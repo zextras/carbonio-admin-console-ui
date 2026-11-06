@@ -50,6 +50,31 @@ const GENERAL_TAB = 'general';
 const VOLUMES_TAB = 'volumes';
 const BACKUP_TAB = 'backup';
 
+type S3CredentialPayload = {
+  accessKey?: string;
+  secret?: string;
+};
+
+function getCredentialPayload(
+  values: S3ConnectorFormValues,
+  savedAccessKey: string,
+): S3CredentialPayload {
+  const accessKey = values.accessKey.trim();
+
+  if (values.shouldChangeSecret) {
+    return {
+      accessKey: accessKey || '-',
+      secret: values.secretKey.trim() || '-',
+    };
+  }
+
+  return accessKey === savedAccessKey ? {} : { accessKey };
+}
+
+function normalizeOptionalValue(value: string): string {
+  return value.trim() || '-';
+}
+
 function isConnectorUnused(connectorDetail: S3ConnectorRow | undefined): boolean {
   const usageCandidates = [
     connectorDetail?.['usage in external backup'],
@@ -204,6 +229,7 @@ export function EditS3ConnectorDetailPanel({
   const [isVerifyPending, setIsVerifyPending] = useState(false);
   const [isProgressActive, setIsProgressActive] = useState(false);
   const [isVerifySuccess, setIsVerifySuccess] = useState(false);
+  const [isTestConnectionOnly, setIsTestConnectionOnly] = useState(false);
   const [isVerifyError, setIsVerifyError] = useState(false);
   const [selectedTab, setSelectedTab] = useState(GENERAL_TAB);
   const [isSecretKeyChangeMode, setIsSecretKeyChangeMode] = useState(false);
@@ -298,6 +324,8 @@ export function EditS3ConnectorDetailPanel({
 
   const currentRegionValue = isCustomRegion ? values.customRegion : regionValue;
 
+  const maskedSecretKey = (values.secretKey ?? '').trim().length > 0 ? '********' : '-';
+
   const changedFieldSummaries = [
     {
       label: t('label.descriptive_name', 'Descriptive name'),
@@ -334,8 +362,10 @@ export function EditS3ConnectorDetailPanel({
     },
     {
       label: t('label.secret_key', 'Secret Access Key'),
-      value: '********',
-      changed: values.shouldChangeSecret && values.secretKey.trim() !== '',
+      value: values.shouldChangeSecret
+        ? maskedSecretKey
+        : t('label.saved_on_this_server', 'Saved on this server'),
+      changed: values.shouldChangeSecret,
     },
     {
       label: t('buckets.accept_untrusted_ssl', 'Accept untrusted SSL certificates'),
@@ -364,9 +394,8 @@ export function EditS3ConnectorDetailPanel({
 
     if (v.bucketLabel !== (connectorDetail?.label ?? '')) payload.label = v.bucketLabel;
     if (v.bucketName !== (connectorDetail?.bucketName ?? '')) payload.bucketName = v.bucketName;
-    if (v.accessKey !== (connectorDetail?.accessKey ?? '')) payload.accessKey = v.accessKey;
-    if (v.shouldChangeSecret && v.secretKey.trim() !== '') payload.secret = v.secretKey;
-    if (v.url !== (connectorDetail?.url ?? '')) payload.url = v.url;
+    Object.assign(payload, getCredentialPayload(v, connectorDetail?.accessKey ?? ''));
+    if (v.url !== (connectorDetail?.url ?? '')) payload.url = normalizeOptionalValue(v.url);
     if (currentRegionValue !== initialRegionValue) payload.region = currentRegionValue;
 
     const updateResData = await updateS3Connector(payload);
@@ -401,6 +430,7 @@ export function EditS3ConnectorDetailPanel({
     setIsVerifyModalOpen(false);
     setShowVerifyResult(false);
     setIsVerifySuccess(false);
+    setIsTestConnectionOnly(false);
     setIsVerifyError(false);
     setIsVerifyPending(true);
     setIsProgressActive(true);
@@ -420,6 +450,7 @@ export function EditS3ConnectorDetailPanel({
   async function onTestConnection(): Promise<void> {
     setShowVerifyResult(false);
     setIsVerifySuccess(false);
+    setIsTestConnectionOnly(true);
     setIsVerifyError(false);
     setIsVerifyPending(true);
     setIsProgressActive(true);
@@ -433,15 +464,11 @@ export function EditS3ConnectorDetailPanel({
         uuid: connectorDetail?.uuid ?? '',
         label: v.bucketLabel,
         bucketName: v.bucketName,
-        accessKey: v.accessKey,
-        url: v.url,
+        url: normalizeOptionalValue(v.url),
         region: currentRegionValue,
         insecureHttps: v.acceptUntrustedSSL,
+        ...getCredentialPayload(v, connectorDetail?.accessKey ?? ''),
       };
-
-      if (v.shouldChangeSecret && v.secretKey.trim() !== '') {
-        payload.secret = v.secretKey;
-      }
 
       const response = await testS3Connector(payload);
 
@@ -612,7 +639,6 @@ export function EditS3ConnectorDetailPanel({
                   {(field) => (
                     <TextInput
                       label={t('label.access_key', 'Access Key ID')}
-                      required
                       value={field.state.value}
                       onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                         field.handleChange(e.target.value)
@@ -647,7 +673,7 @@ export function EditS3ConnectorDetailPanel({
                                 padding={{ bottom: 'small' }}
                               >
                                 <ds-text as="span" size="extrasmall" color="secondary">
-                                  {t('label.secret_key', 'Secret Access Key*')}
+                                  {t('label.secret_key', 'Secret Access Key')}
                                 </ds-text>
                               </Row>
                               <ds-icon
@@ -696,7 +722,6 @@ export function EditS3ConnectorDetailPanel({
                       <Container width="fill" crossAlignment="flex-start">
                         <TextInput
                           label={t('label.secret_key', 'Secret Access Key')}
-                          required
                           value={field.state.value}
                           type={showSecretKeyValue ? 'text' : 'password'}
                           onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -946,9 +971,18 @@ export function EditS3ConnectorDetailPanel({
         applyHandler={onApplyChanges}
       />
       {isProgressActive && (
-        <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
+        <VerifyProgress
+          isPending={isVerifyPending}
+          onComplete={handleProgressComplete}
+          isTestConnection={isTestConnectionOnly}
+        />
       )}
-      {showVerifyResult && isVerifySuccess && <VerifySuccess onComplete={handleSuccessComplete} />}
+      {showVerifyResult && isVerifySuccess && (
+        <VerifySuccess
+          variant={isTestConnectionOnly ? 'verified' : 'verifiedAndUpdated'}
+          onComplete={handleSuccessComplete}
+        />
+      )}
       {showVerifyResult && isVerifyError && (
         <VerifyError
           checkDetails={checkDetails}
