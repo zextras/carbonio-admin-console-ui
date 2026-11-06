@@ -1,3 +1,9 @@
+## [0.34.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.2...v0.34.0) (2026-11-06)
+
+### Features
+
+* [CO-4626] s3connector make accesskey and secret optional ([#1428](https://github.com/zextras/carbonio-admin-console-ui/issues/1428)) ([d46ab1d](https://github.com/zextras/carbonio-admin-console-ui/commit/d46ab1d0beed1256c6752a3765a54acd92a4830f))
+
 ## [0.33.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.1...v0.33.2) (2026-11-02)
 
 ### Bug Fixes
