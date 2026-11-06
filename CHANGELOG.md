@@ -1,3 +1,9 @@
+## [0.34.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.0...v0.34.1) (2026-11-06)
+
+### Bug Fixes
+
+* restore am/pm visibility ([#1435](https://github.com/zextras/carbonio-admin-console-ui/issues/1435)) ([f74f781](https://github.com/zextras/carbonio-admin-console-ui/commit/f74f781b0b7ab9d7411374d4c8fbd3cee98219b0))
+
 ## [0.34.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.2...v0.34.0) (2026-11-06)
 
 ### Features
