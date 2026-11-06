@@ -98,7 +98,9 @@ export const RestoreDeleteAccountConfigSection = () => {
   }
 
   function handleTimeChange(time: string): void {
-    if (selectedDate) updateDetail({ dateTime: withRestoreTime(selectedDate, time).toISOString() });
+    if (!selectedDate) return;
+    const dateWithTime = withRestoreTime(selectedDate, time);
+    updateDetail({ dateTime: clampRestoreDate(dateWithTime, new Date()).toISOString() });
   }
 
   return (
