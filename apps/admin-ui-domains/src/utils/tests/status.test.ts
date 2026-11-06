@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { getStatusDisplay } from '../status';
+import { getAccountStatusBadgeTone, getStatusDisplay } from '../status';
 
 const t = (_key: string, defaultValue: string): string => defaultValue;
 
@@ -41,5 +41,23 @@ describe('getStatusDisplay', () => {
     };
     getStatusDisplay('locked', trackingT);
     expect(keys).toContain('label.locked');
+  });
+});
+
+describe('getAccountStatusBadgeTone', () => {
+  it.each([
+    ['active', 'success'],
+    ['maintenance', 'info'],
+    ['pending', 'warning'],
+    ['locked', 'danger'],
+    ['lockout', 'danger'],
+    ['suspended', 'danger'],
+    ['closed', 'neutral'],
+  ] as const)('maps %s → %s', (status, tone) => {
+    expect(getAccountStatusBadgeTone(status)).toBe(tone);
+  });
+
+  it('falls back to neutral for unknown statuses', () => {
+    expect(getAccountStatusBadgeTone('totally-unknown-status')).toBe('neutral');
   });
 });
