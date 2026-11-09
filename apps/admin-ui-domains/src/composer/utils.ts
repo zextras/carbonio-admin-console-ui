@@ -16,7 +16,6 @@ import { ja } from 'date-fns/locale/ja';
 import { nl } from 'date-fns/locale/nl';
 import { pl } from 'date-fns/locale/pl';
 import { pt } from 'date-fns/locale/pt';
-import { ro } from 'date-fns/locale/ro';
 import { ru } from 'date-fns/locale/ru';
 import { sl } from 'date-fns/locale/sl';
 import { th } from 'date-fns/locale/th';
@@ -77,11 +76,6 @@ export const SUPPORTED_LOCALES: Record<string, LocaleDescriptor> = {
     name: 'polski',
     value: 'pl',
     dateFnsLocale: pl,
-  },
-  ro: {
-    name: 'română',
-    value: 'ro',
-    dateFnsLocale: ro,
   },
   ru: {
     name: 'русский',
