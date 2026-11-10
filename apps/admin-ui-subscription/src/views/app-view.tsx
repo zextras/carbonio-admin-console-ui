@@ -17,7 +17,7 @@ import { ActivateSubscription } from './subscription/activate-subscription';
 import { MeteredSubscription } from './subscription/metered-subscription';
 import { PerpetualSubscription } from './subscription/perpetual-subscription';
 import { RegularSubscription } from './subscription/regular-subscription';
-import { Subscription } from './subscription/subscription';
+import { LegacySubscription } from './subscription/legacy-subscription';
 import { TrialSubscription } from './subscription/trial-subscription';
 
 function getMaxWidth(breakpoint: string, isSidebarOpen = false): string {
@@ -41,9 +41,7 @@ function getSubscriptionView(
     return <ActivateSubscription />;
   }
 
-  if (!featureFlag) {
-    return <Subscription />;
-  }
+  return <LegacySubscription />;
 
   if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
     return <RegularSubscription />;
