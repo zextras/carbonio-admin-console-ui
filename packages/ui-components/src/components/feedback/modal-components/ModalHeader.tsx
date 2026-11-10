@@ -5,6 +5,7 @@
  */
 import clsx from 'clsx';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../basic/button/Button';
 import { Tooltip } from '../../display/Tooltip';
@@ -28,6 +29,7 @@ function ModalHeader({
 	type,
 	closeIconTooltip,
 }: ModalHeaderProps): React.JSX.Element {
+	const { t } = useTranslation();
 	return (
 		<Row width="100%" padding={{ bottom: 'small' }}>
 			<ds-text
@@ -41,7 +43,14 @@ function ModalHeader({
 			</ds-text>
 			{showCloseIcon && onClose && (
 				<Tooltip label={closeIconTooltip} disabled={!closeIconTooltip}>
-					<Button icon="Close" size="large" onClick={onClose} type="ghost" color="text" />
+					<Button
+					icon="Close"
+					size="large"
+					aria-label={closeIconTooltip ?? t('label.close', 'Close')}
+					onClick={onClose}
+					type="ghost"
+					color="text"
+				/>
 				</Tooltip>
 			)}
 		</Row>
