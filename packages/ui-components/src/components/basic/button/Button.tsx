@@ -32,6 +32,8 @@ type ButtonType = NonNullable<ButtonColorsByType['type']>;
 
 type ButtonSecondaryAction = {
   icon: IconName;
+  /** Accessible name for the icon-only secondary trigger (forwarded as aria-label). */
+  ariaLabel?: string;
   onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
   disabled?: boolean;
   forceActive?: boolean;
@@ -306,7 +308,12 @@ const Button = ({
               } as React.CSSProperties
             }
           >
-            <ds-icon icon={icon as IconName} color="currentColor" size={iconSize}></ds-icon>
+            <ds-icon
+              aria-hidden="true"
+              icon={icon as IconName}
+              color="currentColor"
+              size={iconSize}
+            ></ds-icon>
           </span>
         )}
         {label && (
@@ -336,6 +343,7 @@ const Button = ({
             style={{ '--placeholder-padding': secondarySizeConfig.padding } as React.CSSProperties}
           >
             <ds-icon
+              aria-hidden="true"
               icon={secondaryAction.icon as IconName}
               color="currentColor"
               size={secondarySizeConfig.icon}
@@ -346,6 +354,7 @@ const Button = ({
       {hasSecondaryAction && secondaryButtonStyle && secondarySizeConfig && (
         <button
           type="button"
+          aria-label={secondaryAction.ariaLabel}
           className={clsx(styles.button, styles.secondaryAction)}
           style={secondaryButtonStyle}
           disabled={!!secondaryAction.disabled}
@@ -358,6 +367,7 @@ const Button = ({
           tabIndex={secondaryAction.disabled ? -1 : 0}
         >
           <ds-icon
+            aria-hidden="true"
             icon={secondaryAction.icon as IconName}
             color="currentColor"
             size={secondarySizeConfig.icon}
