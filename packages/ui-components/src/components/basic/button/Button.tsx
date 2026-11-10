@@ -216,21 +216,21 @@ const Button = ({
 }: ButtonProps) => {
   const clickHandler = useCallback(
     (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
-      if (!disabled && onClick && !e.defaultPrevented) {
+      if (!disabled && !loading && onClick && !e.defaultPrevented) {
         onClick(e);
       }
     },
-    [disabled, onClick],
+    [disabled, loading, onClick],
   );
 
   const secondaryActionClickHandler = useCallback(
     (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
-      if (secondaryAction && !secondaryAction.disabled) {
+      if (secondaryAction && !secondaryAction.disabled && !loading) {
         secondaryAction.onClick(e);
       }
       e.preventDefault();
     },
-    [secondaryAction],
+    [loading, secondaryAction],
   );
 
   const colors = useMemo(() => getColors(type, { type, ...rest }), [type, rest]);
@@ -287,13 +287,15 @@ const Button = ({
         className={buttonClassName}
         style={{ ...buttonStyle, ...rest.style }}
         disabled={disabled}
+        aria-busy={loading || undefined}
+        aria-disabled={loading || undefined}
         onClick={clickHandler}
         ref={ref}
         tabIndex={disabled ? -1 : 0}
         data-force-active={!disabled && forceActive ? 'true' : undefined}
       >
         {loading && (
-          <div className={styles.loadingContainer}>
+          <div className={styles.loadingContainer} aria-hidden="true">
             <ds-spinner color="currentColor"></ds-spinner>
           </div>
         )}
