@@ -33,7 +33,7 @@ type ButtonType = NonNullable<ButtonColorsByType['type']>;
 type ButtonSecondaryAction = {
   icon: IconName;
   /** Accessible name for the icon-only secondary trigger (forwarded as aria-label). */
-  ariaLabel?: string;
+  ariaLabel: string;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   forceActive?: boolean;
@@ -50,13 +50,22 @@ type ButtonPropsInternal = {
   htmlType?: 'button' | 'submit' | 'reset';
   icon?: IconName;
   iconPlacement?: ButtonIconPlacement;
-  label?: string;
   loading?: boolean;
   onClick: React.MouseEventHandler<HTMLButtonElement>;
   width?: ButtonWidth;
   minWidth?: string;
   ref?: React.Ref<HTMLButtonElement>;
 } & (
+  /**
+   * Every button must expose an accessible name: a visible label or an
+   * aria-label (at least one, enforced at type level). `'aria-label'?: string`
+   * on the first arm (instead of `never`) keeps `{...buttonAttrs}` spreads
+   * assignable — aria-label overriding the visible label stays legal per
+   * WCAG 2.5.3 Label-in-Name.
+   */
+  | { label: string; 'aria-label'?: string }
+  | { label?: never; 'aria-label': string }
+) & (
   | {
       size?: 'medium' | 'large' | 'extralarge';
       secondaryAction?: ButtonSecondaryAction;
@@ -230,6 +239,11 @@ const Button = ({
   const colors = getColors(type, { type, ...rest });
 
   const hasSecondaryAction = secondaryAction && SUPPORTS_SECONDARY_ACTION.includes(size);
+
+  const isDev = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ?? false;
+  if (isDev && !label?.trim() && !rest['aria-label']?.trim()) {
+    console.error('Button: empty accessible name — pass label or aria-label');
+  }
 
   const sizeConfig = SIZES[size];
   const padding = sizeConfig.padding;

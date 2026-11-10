@@ -3,11 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import '../../../web-components/ds-icon';
+
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import '../../../web-components/ds-icon';
 import { Displayer } from '../displayer';
 
 describe('Displayer a11y', () => {

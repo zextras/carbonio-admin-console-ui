@@ -5,6 +5,7 @@
  */
 import clsx from 'clsx';
 import React, { useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { AnyColor } from '../../../types/utils';
 import { Button } from '../../basic/button/Button';
@@ -70,6 +71,7 @@ function ModalFooterContent({
 	onErrorAction,
 	secondaryActionTooltip,
 }: ModalFooterContentProps): React.JSX.Element {
+	const { t } = useTranslation();
 	const secondaryButton = useMemo(() => {
 		let button;
 		if (type === 'error' && onErrorAction) {
@@ -78,7 +80,9 @@ function ModalFooterContent({
 					className={styles.dismissButton}
 					onClick={onErrorAction}
 					color="secondary"
-					label={errorActionLabel}
+					{...(errorActionLabel
+						? { label: errorActionLabel }
+						: { 'aria-label': t('label.dismiss', 'Dismiss') })}
 				/>
 			);
 		} else {
@@ -144,7 +148,9 @@ function ModalFooterContent({
 							className={styles.confirmButton}
 							color={confirmColor}
 							onClick={(onConfirm || onClose) as NonNullable<typeof onClose | typeof onConfirm>}
-							label={confirmLabel}
+							{...(confirmLabel
+								? { label: confirmLabel }
+								: { 'aria-label': t('label.confirm', 'Confirm') })}
 							disabled={confirmDisabled}
 						/>
 					</Tooltip>

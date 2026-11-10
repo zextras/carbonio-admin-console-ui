@@ -3,12 +3,13 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import '../../../../web-components/ds-icon';
+import '../../../../web-components/ds-spinner';
+
 import { describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import '../../../../web-components/ds-icon';
-import '../../../../web-components/ds-spinner';
 import { Button } from '../Button';
 
 describe('Button a11y', () => {
@@ -95,5 +96,18 @@ describe('Button a11y', () => {
 
 		await userEvent.keyboard('{Tab}');
 		await expect.element(ghost).toHaveStyle({ outlineStyle: 'solid' });
+	});
+
+	it('warns in dev when a button has an empty accessible name', async () => {
+		const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+		await render(<Button icon="CloseOutline" label="" onClick={() => {}} />);
+
+		expect(consoleError).toHaveBeenCalledTimes(1);
+		expect(consoleError).toHaveBeenCalledWith(
+			expect.stringContaining('empty accessible name'),
+		);
+
+		consoleError.mockRestore();
 	});
 });

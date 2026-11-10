@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import React, { type FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { Button } from '../../basic/button/Button';
 import { Row } from '../Row';
@@ -20,7 +21,9 @@ export const SectionHeader: FC<SectionHeaderProps> = ({
 	divider,
 	onClose,
 	showClose,
-}) => (
+}) => {
+	const { t } = useTranslation();
+	return (
 	<>
 		<Row mainAlignment="flex-start" crossAlignment="center" width="100%" height="auto">
 			<Row mainAlignment="flex-start" padding={{ all: 'large' }} takeAvailableSpace>
@@ -35,6 +38,7 @@ export const SectionHeader: FC<SectionHeaderProps> = ({
 						color="text"
 						data-testid="close-button"
 						icon="CloseOutline"
+						aria-label={t('label.close', 'Close')}
 						onClick={onClose}
 						size="large"
 					/>
@@ -43,4 +47,5 @@ export const SectionHeader: FC<SectionHeaderProps> = ({
 		</Row>
 		{divider && <ds-divider></ds-divider>}
 	</>
-);
+	);
+};

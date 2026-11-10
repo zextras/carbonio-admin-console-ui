@@ -108,6 +108,7 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
             type="ghost"
             color="text"
             icon="CloseOutline"
+            aria-label={t('label.close', 'Close')}
             onClick={(): void => {
               setShowNotificationDetail(false);
             }}

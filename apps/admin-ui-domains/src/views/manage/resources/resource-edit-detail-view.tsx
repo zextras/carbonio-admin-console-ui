@@ -10,6 +10,7 @@ import {
   Button,
   Container,
   Displayer,
+  type IconName,
   LabeledValue,
   ListRow,
   NumberInput,
@@ -21,7 +22,6 @@ import {
   Select,
   TextInput,
   useSnackbar,
-  type IconName,
 } from '@zextras/ui-components';
 import { useCosList, useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';

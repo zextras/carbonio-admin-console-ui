@@ -289,6 +289,7 @@ const Banner = ({
           <Button
             onClick={onClose}
             icon={'Close'}
+            aria-label={closeLabel}
             color={textColor}
             type={'ghost'}
             size={'large'}

@@ -10,10 +10,10 @@ import {
   Button,
   Displayer,
   FormPageLayout,
+  type IconName,
   LabeledValue,
   Select,
   useSnackbar,
-  type IconName,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
