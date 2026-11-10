@@ -1,3 +1,9 @@
+## [0.34.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.1...v0.34.2) (2026-11-10)
+
+### Bug Fixes
+
+* removed romanian language ([#1437](https://github.com/zextras/carbonio-admin-console-ui/issues/1437)) ([ea4931d](https://github.com/zextras/carbonio-admin-console-ui/commit/ea4931dbb9602844fb4b51ea9dba621c38dfe531))
+
 ## [0.34.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.0...v0.34.1) (2026-11-06)
 
 ### Bug Fixes
