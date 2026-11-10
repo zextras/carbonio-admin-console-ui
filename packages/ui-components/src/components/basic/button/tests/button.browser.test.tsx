@@ -91,9 +91,9 @@ describe('Button a11y', () => {
 		const ghost = page.getByRole('button', { name: 'Ghost' });
 
 		await first.click();
-		await expect.element(first).toHaveStyle({ 'outline-style': 'none' });
+		await expect.element(first).toHaveStyle({ outlineStyle: 'none' });
 
 		await userEvent.keyboard('{Tab}');
-		await expect.element(ghost).toHaveStyle({ 'outline-style': 'solid' });
+		await expect.element(ghost).toHaveStyle({ outlineStyle: 'solid' });
 	});
 });

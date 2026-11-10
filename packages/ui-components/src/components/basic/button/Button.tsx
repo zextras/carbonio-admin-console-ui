@@ -5,7 +5,7 @@
  */
 
 import clsx from 'clsx';
-import React, { ButtonHTMLAttributes, useCallback, useMemo } from 'react';
+import React, { ButtonHTMLAttributes } from 'react';
 
 import type { AnyColor, With$Prefix, Without$Prefix } from '../../../types/utils';
 import { type IconName } from '../../../web-components/icon-registry';
@@ -34,7 +34,7 @@ type ButtonSecondaryAction = {
   icon: IconName;
   /** Accessible name for the icon-only secondary trigger (forwarded as aria-label). */
   ariaLabel?: string;
-  onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
   disabled?: boolean;
   forceActive?: boolean;
   ref?: React.RefObject<HTMLButtonElement | null>;
@@ -52,7 +52,7 @@ type ButtonPropsInternal = {
   iconPlacement?: ButtonIconPlacement;
   label?: string;
   loading?: boolean;
-  onClick: (e: React.MouseEvent<HTMLButtonElement> | KeyboardEvent) => void;
+  onClick: React.MouseEventHandler<HTMLButtonElement>;
   width?: ButtonWidth;
   minWidth?: string;
   ref?: React.Ref<HTMLButtonElement>;
@@ -214,26 +214,20 @@ const Button = ({
   ref,
   ...rest
 }: ButtonProps) => {
-  const clickHandler = useCallback(
-    (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
-      if (!disabled && !loading && onClick && !e.defaultPrevented) {
-        onClick(e);
-      }
-    },
-    [disabled, loading, onClick],
-  );
+  const clickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!disabled && !loading && onClick && !e.defaultPrevented) {
+      onClick(e);
+    }
+  };
 
-  const secondaryActionClickHandler = useCallback(
-    (e: KeyboardEvent | React.MouseEvent<HTMLButtonElement>) => {
-      if (secondaryAction && !secondaryAction.disabled && !loading) {
-        secondaryAction.onClick(e);
-      }
-      e.preventDefault();
-    },
-    [loading, secondaryAction],
-  );
+  const secondaryActionClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (secondaryAction && !secondaryAction.disabled && !loading) {
+      secondaryAction.onClick(e);
+    }
+    e.preventDefault();
+  };
 
-  const colors = useMemo(() => getColors(type, { type, ...rest }), [type, rest]);
+  const colors = getColors(type, { type, ...rest });
 
   const hasSecondaryAction = secondaryAction && SUPPORTS_SECONDARY_ACTION.includes(size);
 
@@ -291,7 +285,6 @@ const Button = ({
         aria-disabled={loading || undefined}
         onClick={clickHandler}
         ref={ref}
-        tabIndex={disabled ? -1 : 0}
         data-force-active={!disabled && forceActive ? 'true' : undefined}
       >
         {loading && (
@@ -312,7 +305,7 @@ const Button = ({
           >
             <ds-icon
               aria-hidden="true"
-              icon={icon as IconName}
+              icon={icon}
               color="currentColor"
               size={iconSize}
             ></ds-icon>
@@ -346,7 +339,7 @@ const Button = ({
           >
             <ds-icon
               aria-hidden="true"
-              icon={secondaryAction.icon as IconName}
+              icon={secondaryAction.icon}
               color="currentColor"
               size={secondarySizeConfig.icon}
             ></ds-icon>
@@ -366,11 +359,10 @@ const Button = ({
             !secondaryAction.disabled && !!secondaryAction.forceActive ? 'true' : undefined
           }
           data-loading={loading ? 'true' : undefined}
-          tabIndex={secondaryAction.disabled ? -1 : 0}
         >
           <ds-icon
             aria-hidden="true"
-            icon={secondaryAction.icon as IconName}
+            icon={secondaryAction.icon}
             color="currentColor"
             size={secondarySizeConfig.icon}
           ></ds-icon>
