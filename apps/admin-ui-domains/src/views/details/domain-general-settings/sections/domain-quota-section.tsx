@@ -61,7 +61,7 @@ export const DomainQuotaSection = ({
             }}
           </form.Field>
         </div>
-        <div className={`${styles.span3} ${styles.bottomAligned}`}>
+        <div className={`${styles.span3} ${styles.quotaButton}`}>
           <QuotaReportDownloadButton domainName={domainName} />
         </div>
       </div>

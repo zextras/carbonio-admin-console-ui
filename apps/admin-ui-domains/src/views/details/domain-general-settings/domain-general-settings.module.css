@@ -15,9 +15,16 @@
   flex-direction: column;
   align-items: flex-start;
   gap: var(--padding-size-small);
-  padding: var(--padding-size-small) var(--padding-size-large);
+  padding: var(--padding-size-large);
 }
 
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--padding-size-small);
+  padding: var(--padding-size-large);
+}
 /*
  * 6-column base grid: fields spanning 3 sit in half-width columns (2 per row),
  * fields spanning 2 sit in third-width columns (3 per row). Column boundaries
@@ -27,6 +34,7 @@
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
   align-items: start;
+  padding-top: var(--padding-size-large);
   gap: var(--padding-size-medium) var(--padding-size-large);
   width: 100%;
 }
@@ -55,18 +63,16 @@
   width: 100%;
 }
 
-/* Wraps action buttons placed beside labeled fields: stretches to the row
- * height so buttons align with the bottom of the input boxes. */
+/* Wraps action buttons placed beside labeled fields: stretches to the
+ * height of the grid row. */
 .actionsRow {
   display: flex;
-  align-items: flex-end;
   gap: var(--padding-size-large);
   align-self: stretch;
 }
 
-.bottomAligned {
+.quotaButton {
   display: flex;
-  align-items: flex-end;
   align-self: stretch;
 }
 
