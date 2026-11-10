@@ -13,6 +13,7 @@ import {
   LabeledValue,
   Select,
   useSnackbar,
+  type IconName,
 } from '@zextras/ui-components';
 import { useStickyBarStore } from '@zextras/ui-shared';
 import { format } from 'date-fns';
@@ -256,6 +257,7 @@ const ActiveDeviceDetailForm = ({
     );
   }
 
+  const pinIconName: IconName = isSticky ? 'Pin3Outline' : 'Unpin3Outline';
   const buttons = [
     {
       align: 'right' as const,
@@ -265,7 +267,7 @@ const ActiveDeviceDetailForm = ({
         'Wipe the device to the factory settings',
       ),
       loading: isStatsFetching,
-      disable: isStatsFetching,
+      disabled: isStatsFetching,
       onClick: (): void => setOperationType(WIPE_DEVICE),
     },
     {
@@ -288,7 +290,7 @@ const ActiveDeviceDetailForm = ({
     },
     {
       align: 'left' as const,
-      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+      icon: pinIconName,
       onClick: (): void => setIsSticky(!isSticky),
     },
   ];

@@ -21,6 +21,7 @@ import {
   Select,
   TextInput,
   useSnackbar,
+  type IconName,
 } from '@zextras/ui-components';
 import { useCosList, useStickyBarStore } from '@zextras/ui-shared';
 import { format, parse } from 'date-fns';
@@ -365,6 +366,7 @@ const ResourceEditForm = ({
   const currentStatus =
     currentValues.zimbraAccountStatus ?? attrs.zimbraAccountStatus ?? STATUS.ACTIVE;
 
+  const pinIconName: IconName = isSticky ? 'Pin3Outline' : 'Unpin3Outline';
   const buttons = [
     {
       align: 'right' as const,
@@ -381,7 +383,7 @@ const ResourceEditForm = ({
     },
     {
       align: 'left' as const,
-      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+      icon: pinIconName,
       onClick: () => setIsSticky(!isSticky),
     },
   ];

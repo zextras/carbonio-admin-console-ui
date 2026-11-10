@@ -7,7 +7,7 @@
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { IconName } from '../../web-components/icon-registry';
+import type { IconName } from '../../web-components/icon-registry';
 import { Button } from '../basic/button/Button';
 import { Tooltip } from '../display/Tooltip';
 import { Padding } from '../layout/Padding';
@@ -16,7 +16,7 @@ import { Row } from '../layout/Row';
 type DisplayerButton = {
   align?: 'left' | 'right';
   label?: string;
-  icon?: string;
+  icon?: IconName;
   onClick?: () => void;
   disabled?: boolean;
   loading?: boolean;
@@ -35,6 +35,12 @@ const Displayer: FC<DisplayerProps> = ({ buttons, pinIcon }) => {
   const { t } = useTranslation();
   const rightAlignButtons = buttons.filter((button) => button.align === 'right');
   const leftIcons = buttons.filter((button) => button.align === 'left');
+  const pinLabel = pinIcon
+    ? t(
+        'label.click_to_make_the_button_bar_scroll_with_the_page',
+        'Click to make the button bar scroll with the page',
+      )
+    : t('label.click_to_make_the_button_bar_sticky', 'Click to make the button bar sticky');
 
   return (
     <Row
@@ -47,26 +53,13 @@ const Displayer: FC<DisplayerProps> = ({ buttons, pinIcon }) => {
     >
       <Row orientation="horizontal" mainAlignment="flex-end">
         {leftIcons?.map((button, i) => (
-          <Tooltip
-            placement="bottom"
-            label={
-              pinIcon
-                ? t(
-                    'label.click_to_make_the_button_bar_scroll_with_the_page',
-                    'Click to make the button bar scroll with the page',
-                  )
-                : t(
-                    'label.click_to_make_the_button_bar_sticky',
-                    'Click to make the button bar sticky',
-                  )
-            }
-            key={i}
-          >
+          <Tooltip placement="bottom" label={pinLabel} key={button.icon ?? i}>
             <Button
               type="ghost"
               color="text"
               size="extralarge"
-              icon={button?.icon as IconName}
+              icon={button?.icon}
+              aria-label={pinLabel}
               onClick={(): void => {
                 button?.onClick?.();
               }}
@@ -77,15 +70,16 @@ const Displayer: FC<DisplayerProps> = ({ buttons, pinIcon }) => {
 
       <Row orientation="horizontal" mainAlignment="flex-end">
         {rightAlignButtons?.map((button, i) => (
-          <Padding key={i} left="large">
+          <Padding key={button.label ?? button.icon ?? i} left="large">
             <Tooltip placement="bottom" label={button.tooltiplabel} disabled={!button.tooltiplabel}>
               <Button
                 loading={button?.loading ?? false}
-                icon={button?.icon as IconName}
+                icon={button?.icon}
                 size={button?.size ?? 'extralarge'}
                 disabled={button?.disabled ?? false}
                 type={button?.type ?? 'outlined'}
-                label={button?.label ?? ''}
+                label={button?.label}
+                aria-label={button?.label ? undefined : button?.tooltiplabel}
                 color={button?.color ?? 'primary'}
                 onClick={(): void => {
                   button?.onClick?.();
