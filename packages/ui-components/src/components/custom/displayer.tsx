@@ -28,7 +28,7 @@ type DisplayerButtonBase = {
  */
 type DisplayerLeftButton = DisplayerButtonBase & { align: 'left'; icon: IconName };
 type DisplayerRightButton = DisplayerButtonBase & {
-  align?: 'right';
+  align: 'right';
   type?: 'outlined' | 'ghost' | 'default';
 } & (
   | { label: string; icon?: IconName; tooltiplabel?: string }
