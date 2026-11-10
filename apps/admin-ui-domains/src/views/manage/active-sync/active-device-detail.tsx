@@ -277,7 +277,7 @@ const ActiveDeviceDetailForm = ({
       color: 'primary',
       onClick: (): void => setOperationType(RESET_DEVICE),
       loading: isStatsFetching,
-      disable: isStatsFetching,
+      disabled: isStatsFetching,
     },
     {
       align: 'right' as const,
@@ -286,7 +286,7 @@ const ActiveDeviceDetailForm = ({
       tooltiplabel: t('label.active_sync_active_paused', 'The activesync is active / paused'),
       onClick: suspendNow,
       loading: isStatsFetching || isOperationPending,
-      disable: isStatsFetching || isOperationPending,
+      disabled: isStatsFetching || isOperationPending,
     },
     {
       align: 'left' as const,

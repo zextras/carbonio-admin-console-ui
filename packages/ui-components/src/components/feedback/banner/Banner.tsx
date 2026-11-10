@@ -16,6 +16,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useModal } from '../../../hooks/useModal';
@@ -67,11 +68,14 @@ const Banner = ({
   secondaryAction,
   showClose = false,
   onClose,
-  moreInfoLabel = 'More info',
-  closeLabel = 'Close',
+  moreInfoLabel,
+  closeLabel,
   ref,
   ...rest
 }: BannerProps) => {
+  const { t } = useTranslation();
+  const resolvedMoreInfoLabel = moreInfoLabel ?? t('label.more_info', 'More info');
+  const resolvedCloseLabel = closeLabel ?? t('label.close', 'Close');
   const bannerRef = useCombinedRefs(ref);
   const infoContainerRef = useRef<HTMLDivElement>(null);
   const actionsContainerRef = useRef<HTMLDivElement>(null);
@@ -153,14 +157,14 @@ const Banner = ({
             closeModal(id);
           }
         : undefined,
-      closeIconTooltip: closeLabel,
+      closeIconTooltip: resolvedCloseLabel,
       children: (
         <ds-text as="span" size={'medium'} overflow={'break-word'}>
           {description}
         </ds-text>
       ),
     });
-  }, [closeLabel, closeModal, createModal, description, primaryAction, secondaryAction, title]);
+  }, [resolvedCloseLabel, closeModal, createModal, description, primaryAction, secondaryAction, title]);
   const wrapContainerStyle = useMemo<CSSProperties>(
     () =>
       ({
@@ -271,7 +275,7 @@ const Banner = ({
             type={'outlined'}
             backgroundColor={'transparent'}
             color={mainColor}
-            label={moreInfoLabel}
+            label={resolvedMoreInfoLabel}
             onClick={showMoreInfoModal}
           />
         )}
@@ -289,7 +293,7 @@ const Banner = ({
           <Button
             onClick={onClose}
             icon={'Close'}
-            aria-label={closeLabel}
+            aria-label={resolvedCloseLabel}
             color={textColor}
             type={'ghost'}
             size={'large'}

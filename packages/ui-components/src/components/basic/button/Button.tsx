@@ -364,6 +364,7 @@ const Button = ({
         <button
           type="button"
           aria-label={secondaryAction.ariaLabel}
+          aria-disabled={loading || undefined}
           className={clsx(styles.button, styles.secondaryAction)}
           style={secondaryButtonStyle}
           disabled={!!secondaryAction.disabled}

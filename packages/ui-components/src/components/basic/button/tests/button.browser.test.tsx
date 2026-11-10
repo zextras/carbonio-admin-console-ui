@@ -67,9 +67,25 @@ describe('Button a11y', () => {
 			/>,
 		);
 
-		await page.getByRole('button', { name: 'More options' }).click();
+		await page.getByRole('button', { name: 'More options' }).click({ force: true });
 
 		expect(onSecondary).not.toHaveBeenCalled();
+	});
+
+	it('exposes loading state on the secondary action to AT', async () => {
+		await render(
+			<Button
+				label="Save"
+				size="large"
+				loading
+				onClick={() => {}}
+				secondaryAction={{ icon: 'ChevronDown', ariaLabel: 'More options', onClick: () => {} }}
+			/>,
+		);
+
+		await expect
+			.element(page.getByRole('button', { name: 'More options' }))
+			.toHaveAttribute('aria-disabled', 'true');
 	});
 
 	it('exposes loading state to AT', async () => {
