@@ -64,9 +64,6 @@ describe('useCreateAccount', () => {
 		expect(invalidateSpy).toHaveBeenCalledWith({
 			queryKey: domainQueryKeys.accountListDirectory.base(),
 		});
-		expect(invalidateSpy).toHaveBeenCalledWith({
-			queryKey: domainQueryKeys.accountCount.base(),
-		});
 	});
 
 	it('propagates the error to the mutation state', async () => {

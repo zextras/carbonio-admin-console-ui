@@ -17,6 +17,7 @@ describe('getStatusBadgeTone', () => {
     expect(getStatusBadgeTone('Locked')).toBe('danger');
     expect(getStatusBadgeTone('Closed')).toBe('neutral');
     expect(getStatusBadgeTone('Maintenance')).toBe('info');
+    expect(getStatusBadgeTone('In maintenance')).toBe('info');
   });
 
   it('falls back to neutral for unknown labels', () => {
