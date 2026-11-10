@@ -18,13 +18,6 @@
   padding: var(--padding-size-large);
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: var(--padding-size-small);
-  padding: var(--padding-size-large);
-}
 /*
  * 6-column base grid: fields spanning 3 sit in half-width columns (2 per row),
  * fields spanning 2 sit in third-width columns (3 per row). Column boundaries
