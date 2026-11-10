@@ -1,3 +1,9 @@
+## [0.34.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.2...v0.34.3) (2026-11-10)
+
+### Bug Fixes
+
+* **domain-settings:** fix general settings alignment ([#1438](https://github.com/zextras/carbonio-admin-console-ui/issues/1438)) ([6fdb85d](https://github.com/zextras/carbonio-admin-console-ui/commit/6fdb85dfb612de5b7d4519d38e811183f0d2c0f8))
+
 ## [0.34.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.1...v0.34.2) (2026-11-10)
 
 ### Bug Fixes
