@@ -42,10 +42,12 @@ describe('DeleteAccountHintModal (browser)', () => {
       .toBeVisible();
   });
 
-  it('calls onClose when Close is clicked', async () => {
+  it('calls onClose when the footer Close is clicked', async () => {
     const onClose = await setupDeleteAccountHintModal();
 
-    await page.getByRole('button', { name: 'Close' }).click();
+    // getByText: the header X close button is also named "Close" (aria-label);
+    // the footer button is the one with visible text.
+    await page.getByText('Close').click();
 
     expect(onClose).toHaveBeenCalledTimes(1);
   });
