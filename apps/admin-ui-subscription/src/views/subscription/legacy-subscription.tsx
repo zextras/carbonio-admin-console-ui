@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, LicenseBanner, Modal, Row,TextInput } from '@zextras/ui-components';
+import { Button, Container, LicenseBanner, Modal, Row, TextInput } from '@zextras/ui-components';
 import {
   type LicenseInfo,
   useActivateLicense,
@@ -174,7 +174,7 @@ const SubscriptionActions = ({
         />
       </Container>
       <Container
-        crossAlignment="flex-start"
+        crossAlignment="center"
         orientation="horizontal"
         width="26%"
         style={{ gap: '0.875rem' }}
@@ -208,7 +208,7 @@ const SubscriptionActions = ({
   );
 };
 
-export const Subscription = (): React.JSX.Element => {
+export const LegacySubscription = (): React.JSX.Element => {
   const [open, setOpen] = useState(false);
 
   const { data: version } = useVersion();

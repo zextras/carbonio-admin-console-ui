@@ -9,7 +9,7 @@ import React from 'react';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { Subscription } from '../subscription';
+import { LegacySubscription } from '../legacy-subscription';
 
 // Mock data that matches what the React Query hooks expect (after parsing)
 const mockLicenseData = {
@@ -63,10 +63,9 @@ const setupSubscriptionTest = (component: React.ReactElement, options?: SetupOpt
   return setupBrowserTest(component, { queryClient, grantRights: 'config' });
 };
 
-describe('Subscription - License Banner', () => {
-
+describe('Legacy Subscription - License Banner', () => {
   it('should display license banner when maintenance status is expired and subType is PERPETUAL', async () => {
-    setupSubscriptionTest(<Subscription />, {
+    setupSubscriptionTest(<LegacySubscription />, {
       licenseData: mockLicenseData,
       versionData: mockVersionData,
     });
@@ -84,7 +83,7 @@ describe('Subscription - License Banner', () => {
       },
     };
 
-    setupSubscriptionTest(<Subscription />, {
+    setupSubscriptionTest(<LegacySubscription />, {
       licenseData: expiringLicenseData,
       versionData: mockVersionData,
     });
@@ -102,7 +101,7 @@ describe('Subscription - License Banner', () => {
       },
     };
 
-    setupSubscriptionTest(<Subscription />, {
+    setupSubscriptionTest(<LegacySubscription />, {
       licenseData: activeLicenseData,
       versionData: mockVersionData,
     });
@@ -120,7 +119,7 @@ describe('Subscription - License Banner', () => {
       },
     };
 
-    setupSubscriptionTest(<Subscription />, {
+    setupSubscriptionTest(<LegacySubscription />, {
       licenseData: regularLicenseData,
       versionData: mockVersionData,
     });
@@ -130,7 +129,7 @@ describe('Subscription - License Banner', () => {
   });
 
   it('should hide license banner when close button is clicked', async () => {
-    setupSubscriptionTest(<Subscription />, {
+    setupSubscriptionTest(<LegacySubscription />, {
       licenseData: mockLicenseData,
       versionData: mockVersionData,
     });
@@ -154,7 +153,7 @@ describe('Subscription - License Banner', () => {
       },
     };
 
-    setupSubscriptionTest(<Subscription />, {
+    setupSubscriptionTest(<LegacySubscription />, {
       licenseData: activeLicenseData,
       versionData: mockVersionData,
     });
