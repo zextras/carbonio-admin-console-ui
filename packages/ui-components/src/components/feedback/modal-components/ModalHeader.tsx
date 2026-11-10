@@ -44,13 +44,13 @@ function ModalHeader({
 			{showCloseIcon && onClose && (
 				<Tooltip label={closeIconTooltip} disabled={!closeIconTooltip}>
 					<Button
-					icon="Close"
-					size="large"
-					aria-label={closeIconTooltip ?? t('label.close', 'Close')}
-					onClick={onClose}
-					type="ghost"
-					color="text"
-				/>
+						icon="Close"
+						size="large"
+						aria-label={closeIconTooltip ?? t('label.close', 'Close')}
+						onClick={onClose}
+						type="ghost"
+						color="text"
+					/>
 				</Tooltip>
 			)}
 		</Row>

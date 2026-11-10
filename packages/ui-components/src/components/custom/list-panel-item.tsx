@@ -58,9 +58,7 @@ export const ListPanelItem = ({ title, isListExpanded, setToggleView }: ListPane
               icon={isListExpanded ? 'ChevronUpOutline' : 'ChevronDownOutline'}
               size="small"
               aria-label={
-                isListExpanded
-                  ? t('label.collapse', 'Collapse')
-                  : t('label.expand', 'Expand')
+                isListExpanded ? t('label.collapse', 'Collapse') : t('label.expand', 'Expand')
               }
               onClick={noop}
               tabIndex={-1}
