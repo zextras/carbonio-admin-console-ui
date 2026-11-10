@@ -78,4 +78,22 @@ describe('Button a11y', () => {
 		await expect.element(btn).toHaveAttribute('aria-busy', 'true');
 		await expect.element(btn).toHaveAttribute('aria-disabled', 'true');
 	});
+
+	it('shows a focus outline on keyboard focus but not mouse focus', async () => {
+		await render(
+			<div>
+				<Button label="First" onClick={() => {}} />
+				<Button type="ghost" label="Ghost" onClick={() => {}} />
+			</div>,
+		);
+
+		const first = page.getByRole('button', { name: 'First' });
+		const ghost = page.getByRole('button', { name: 'Ghost' });
+
+		await first.click();
+		await expect.element(first).toHaveStyle({ 'outline-style': 'none' });
+
+		await userEvent.keyboard('{Tab}');
+		await expect.element(ghost).toHaveStyle({ 'outline-style': 'solid' });
+	});
 });
