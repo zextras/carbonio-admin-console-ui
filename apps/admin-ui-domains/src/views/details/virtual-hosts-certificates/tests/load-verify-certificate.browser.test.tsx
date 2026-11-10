@@ -122,8 +122,6 @@ describe('LoadAndVerifyCert (browser)', () => {
       const verifyBtn = page.getByRole('button', { name: /verify/i });
       await verifyBtn.click();
 
-      // Button announces its own busy state (aria-busy); the spinner inside is
-      // aria-hidden decoration (CO-3930).
       await expect.element(verifyBtn).toHaveAttribute('aria-busy', 'true');
     });
 

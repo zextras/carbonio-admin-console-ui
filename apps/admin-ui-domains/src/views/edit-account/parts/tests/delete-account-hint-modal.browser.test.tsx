@@ -3,11 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  getQueryClient,
-  setupAccount,
-  setupBrowserTest,
-} from 'admin-ui-test-utils';
+import { getQueryClient, setupAccount, setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it, vi } from 'vitest';
 import { page } from 'vitest/browser';
 
@@ -45,8 +41,6 @@ describe('DeleteAccountHintModal (browser)', () => {
   it('calls onClose when the footer Close is clicked', async () => {
     const onClose = await setupDeleteAccountHintModal();
 
-    // getByText: the header X close button is also named "Close" (aria-label);
-    // the footer button is the one with visible text.
     await page.getByText('Close').click();
 
     expect(onClose).toHaveBeenCalledTimes(1);

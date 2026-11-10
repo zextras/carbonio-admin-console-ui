@@ -135,9 +135,6 @@ const Banner = ({
       confirmLabel: primaryAction?.label,
       onConfirm: primaryAction
         ? (event): void => {
-            // ModalFooter's onConfirm still carries the legacy
-            // `MouseEvent | KeyboardEvent` union; the event always originates
-            // from a button click there. Re-typed by the Modal a11y work (CO-3948).
             primaryAction.onClick(event as React.MouseEvent<HTMLButtonElement>);
             closeModal(id);
           }
