@@ -41,7 +41,9 @@ function getSubscriptionView(
     return <ActivateSubscription />;
   }
 
-  return <LegacySubscription />;
+  if (!featureFlag) {
+    return <LegacySubscription />;
+  }
 
   if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
     return <RegularSubscription />;
