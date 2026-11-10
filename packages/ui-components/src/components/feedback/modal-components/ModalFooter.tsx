@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import clsx from 'clsx';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { AnyColor } from '../../../types/utils';
@@ -53,6 +53,59 @@ type ModalFooterProps = {
 
 type ModalFooterContentProps = Omit<ModalFooterProps, 'customFooter'>;
 
+type SecondaryButtonProps = ModalFooterContentProps & { dismissAriaLabel: string };
+
+function getSecondaryButton({
+	type,
+	onErrorAction,
+	errorActionLabel,
+	onSecondaryAction,
+	secondaryActionLabel,
+	secondaryActionDisabled,
+	secondaryActionTooltip,
+	dismissLabel,
+	onClose,
+	dismissAriaLabel,
+}: SecondaryButtonProps): React.ReactNode {
+	if (type === 'error' && onErrorAction) {
+		return (
+			<Button
+				className={styles.dismissButton}
+				onClick={onErrorAction}
+				color="secondary"
+				{...(errorActionLabel
+					? { label: errorActionLabel }
+					: { 'aria-label': dismissAriaLabel })}
+			/>
+		);
+	}
+	if (onSecondaryAction && secondaryActionLabel) {
+		return (
+			<Tooltip disabled={!secondaryActionTooltip} label={secondaryActionTooltip}>
+				<Button
+					className={styles.dismissButton}
+					color="primary"
+					type="outlined"
+					onClick={onSecondaryAction}
+					label={secondaryActionLabel}
+					disabled={secondaryActionDisabled}
+				/>
+			</Tooltip>
+		);
+	}
+	if (dismissLabel && onClose) {
+		return (
+			<Button
+				className={styles.dismissButton}
+				color="secondary"
+				onClick={onClose}
+				label={dismissLabel}
+			/>
+		);
+	}
+	return undefined;
+}
+
 function ModalFooterContent({
 	type,
 	centered,
@@ -72,45 +125,7 @@ function ModalFooterContent({
 	secondaryActionTooltip,
 }: ModalFooterContentProps): React.JSX.Element {
 	const { t } = useTranslation();
-	const secondaryButton = useMemo(() => {
-		let button;
-		if (type === 'error' && onErrorAction) {
-			button = (
-				<Button
-					className={styles.dismissButton}
-					onClick={onErrorAction}
-					color="secondary"
-					{...(errorActionLabel
-						? { label: errorActionLabel }
-						: { 'aria-label': t('label.dismiss', 'Dismiss') })}
-				/>
-			);
-		} else {
-			button =
-				(onSecondaryAction && secondaryActionLabel && (
-					<Tooltip disabled={!secondaryActionTooltip} label={secondaryActionTooltip}>
-						<Button
-							className={styles.dismissButton}
-							color="primary"
-							type="outlined"
-							onClick={onSecondaryAction}
-							label={secondaryActionLabel}
-							disabled={secondaryActionDisabled}
-						/>
-					</Tooltip>
-				)) ||
-				(dismissLabel && onClose && (
-					<Button
-						className={styles.dismissButton}
-						color="secondary"
-						onClick={onClose}
-						label={dismissLabel}
-					/>
-				)) ||
-				undefined;
-		}
-		return button;
-	}, [
+	const secondaryButton = getSecondaryButton({
 		type,
 		onErrorAction,
 		errorActionLabel,
@@ -120,7 +135,8 @@ function ModalFooterContent({
 		secondaryActionTooltip,
 		dismissLabel,
 		onClose,
-	]);
+		dismissAriaLabel: t('label.dismiss', 'Dismiss'),
+	});
 
 	return (
 		<>
