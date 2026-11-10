@@ -6,10 +6,8 @@
 
 import { useSelector } from '@tanstack/react-store';
 import {
-  Container,
   getFieldErrorProps,
   LabeledValue,
-  ListRow,
   NumberInput,
   PlainTextarea,
   Select,
@@ -28,6 +26,7 @@ import {
   SUSPENDED,
 } from '../../../../constants';
 import { timeZoneList } from '../../../utility/utils';
+import styles from '../domain-general-settings.module.css';
 import { DOMAIN_GENERAL_VALIDATION_MESSAGES } from '../schema';
 import type { DomainGeneralSettingsFormApi } from '../use-domain-general-form';
 
@@ -102,23 +101,16 @@ export const DomainBasicsSection = ({
   ];
 
   return (
-    <Container
-      height="fit"
-      crossAlignment="flex-start"
-      background="gray6"
-      padding={{ all: 'small' }}
-    >
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+    <div className={styles.section}>
+      <div className={styles.fieldsGrid}>
+        <div className={styles.span3}>
           <LabeledValue label={t('label.name', 'Name')} value={domainName} />
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.span3}>
           <LabeledValue label={t('label.id', 'Id')} value={domainId} />
-        </Container>
-      </ListRow>
+        </div>
 
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        <div className={styles.span3}>
           <form.Field name="zimbraDomainMaxAccounts">
             {(field) => {
               const error = getFieldErrorProps(
@@ -145,19 +137,15 @@ export const DomainBasicsSection = ({
               );
             }}
           </form.Field>
-        </Container>
-        <Container padding={{ all: 'small' }} mainAlignment="flex-start">
+        </div>
+        <div className={styles.span3}>
           <LabeledValue
             label={t('label.creation_date', 'Creation Date')}
             value={domainCreationDate}
           />
-        </Container>
-      </ListRow>
+        </div>
 
-      <ListRow></ListRow>
-
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        <div className={styles.span2}>
           <form.Field name="zimbraPublicServiceProtocol">
             {(field) => (
               <Select
@@ -170,8 +158,8 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.span2}>
           <form.Field name="zimbraPublicServiceHostname">
             {(field) => (
               <TextInput
@@ -185,8 +173,8 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.span2}>
           <form.Field name="zimbraPublicServicePort">
             {(field) => (
               <TextInput
@@ -199,11 +187,9 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-      </ListRow>
+        </div>
 
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        <div className={styles.span6}>
           <form.Field name="zimbraPrefTimeZoneId">
             {(field) => (
               <Select
@@ -216,21 +202,13 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-      </ListRow>
+        </div>
+      </div>
 
-      <Container
-        orientation="horizontal"
-        width="98%"
-        crossAlignment="center"
-        mainAlignment="space-between"
-        style={{ margin: '8px' }}
-      >
-        <ds-divider></ds-divider>
-      </Container>
+      <ds-divider className={styles.divider}></ds-divider>
 
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+      <div className={styles.fieldsGrid}>
+        <div className={styles.span3}>
           <form.Field name="zimbraDomainDefaultCOSId">
             {(field) => (
               <Select
@@ -243,8 +221,8 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.span3}>
           <form.Field name="zimbraDomainStatus">
             {(field) => (
               <Select
@@ -257,11 +235,9 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-      </ListRow>
+        </div>
 
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        <div className={styles.span6}>
           <form.Field name="description">
             {(field) => (
               <TextInput
@@ -274,11 +250,9 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-      </ListRow>
+        </div>
 
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        <div className={styles.span6}>
           <form.Field name="zimbraNotes">
             {(field) => (
               <PlainTextarea
@@ -290,8 +264,8 @@ export const DomainBasicsSection = ({
               />
             )}
           </form.Field>
-        </Container>
-      </ListRow>
-    </Container>
+        </div>
+      </div>
+    </div>
   );
 };
