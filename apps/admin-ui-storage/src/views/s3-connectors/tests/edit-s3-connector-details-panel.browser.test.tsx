@@ -380,7 +380,7 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
 		await page.getByLabelText('Secret Access Key').fill('NEW_SECRET_VALUE');
 
-		await page.getByTestId('icon: CloseOutline').nth(1).click();
+		await page.getByRole('button', { name: 'Cancel secret key change' }).click();
 
 		await expect.element(page.getByText('Saved on this server')).toBeInTheDocument();
 		expect(page.getByLabelText('Secret Access Key').elements()).toHaveLength(0);

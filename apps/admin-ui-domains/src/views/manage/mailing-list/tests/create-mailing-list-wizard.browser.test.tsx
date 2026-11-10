@@ -68,7 +68,7 @@ async function setupWizardView(): Promise<void> {
 
 async function openWizard(awaitText = 'team@example.com'): Promise<void> {
   await expect.element(page.getByText(awaitText)).toBeInTheDocument();
-  await page.getByTestId('icon: Plus').click();
+  await page.getByRole('button', { name: 'Create mailing list' }).click();
   await expect
     .element(page.getByText('New Distribution List', { exact: true }))
     .toBeInTheDocument();

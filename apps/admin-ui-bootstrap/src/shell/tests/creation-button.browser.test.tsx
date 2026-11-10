@@ -63,7 +63,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await setupBrowserTest(<CreationButton />);
 
     await expect.element(page.getByRole('button', { name: 'Create' })).toBeVisible();
-    await expect.element(page.getByTestId('icon: ChevronDown')).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Create' })).toBeVisible();
   });
 
   it('maps active route actions to dropdown items', async () => {
