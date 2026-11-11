@@ -17,6 +17,10 @@ const mockListS3Regions = vi.hoisted(() => vi.fn());
 const mockUpdateS3Connector = vi.hoisted(() => vi.fn());
 const mockTestS3Connector = vi.hoisted(() => vi.fn());
 
+function getLastCallPayload(mock: ReturnType<typeof vi.fn>): Record<string, unknown> | undefined {
+	return mock.mock.calls.at(-1)?.[0] as Record<string, unknown> | undefined;
+}
+
 vi.mock('@zextras/ui-components', async (importOriginal) => {
 	const actual = (await importOriginal()) as Record<string, unknown>;
 	return {
@@ -224,6 +228,83 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 		await expect.element(page.getByText('verify-success')).toBeInTheDocument();
 	});
 
+	it('should send dashes for blank credentials and URL', async () => {
+		const { view } = renderEditS3ConnectorPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
+		await page.getByLabelText('Secret Access Key').fill('SECRET_TEST');
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await expect.poll(() => mockTestS3Connector.mock.calls.length).toBe(1);
+		expect(getLastCallPayload(mockTestS3Connector)).toEqual(
+			expect.objectContaining({
+				accessKey: 'AKIA_TEST',
+				secret: 'SECRET_TEST',
+			}),
+		);
+
+		await page.getByLabelText('Access Key ID').fill('   ');
+		await page.getByLabelText('Secret Access Key').fill('   ');
+		await page.getByLabelText('Endpoint URL').fill('   ');
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await expect.poll(() => mockTestS3Connector.mock.calls.length).toBe(2);
+		const whitespaceCredentialsCall = getLastCallPayload(mockTestS3Connector);
+		expect(whitespaceCredentialsCall).toEqual(
+			expect.objectContaining({
+				accessKey: '-',
+				secret: '-',
+				url: '-',
+			}),
+		);
+
+		await page.getByLabelText('Access Key ID').fill('');
+		await page.getByLabelText('Secret Access Key').fill('');
+		await page.getByRole('button', { name: /test connection/i }).click();
+
+		await expect.poll(() => mockTestS3Connector.mock.calls.length).toBe(3);
+		const emptyCredentialsCall = getLastCallPayload(mockTestS3Connector);
+		expect(emptyCredentialsCall).toEqual(
+			expect.objectContaining({
+				accessKey: '-',
+				secret: '-',
+				url: '-',
+			}),
+		);
+
+		await page.getByRole('button', { name: /verify & save changes/i }).click();
+		await page.getByRole('button', { name: /apply changes/i }).click();
+
+		await expect.poll(() => mockUpdateS3Connector.mock.calls.length).toBe(1);
+		expect(mockUpdateS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				accessKey: '-',
+				secret: '-',
+				url: '-',
+			}),
+		);
+	});
+
+	it('should trim whitespace-only credentials to dashes on save', async () => {
+		const { view } = renderEditS3ConnectorPanel();
+
+		await setupBrowserTest(view);
+		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
+		await page.getByLabelText('Access Key ID').fill('   ');
+		await page.getByLabelText('Secret Access Key').fill('   ');
+		await page.getByRole('button', { name: /verify & save changes/i }).click();
+		await page.getByRole('button', { name: /apply changes/i }).click();
+
+		await expect.poll(() => mockUpdateS3Connector.mock.calls.length).toBe(1);
+		expect(mockUpdateS3Connector).toHaveBeenCalledWith(
+			expect.objectContaining({
+				accessKey: '-',
+				secret: '-',
+			}),
+		);
+	});
+
 	it('should show update error when save request fails', async () => {
 		mockUpdateS3Connector.mockResolvedValue({ ok: false, error: 'Connector update failed' });
 		const { view } = renderEditS3ConnectorPanel();
@@ -238,7 +319,7 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 			.toBeInTheDocument();
 	});
 
-	it('should call testS3Connector with all current form values on test connection', async () => {
+	it('should use saved credentials when testing without changing them', async () => {
 		const { view, connectorDetail } = renderEditS3ConnectorPanel();
 
 		await setupBrowserTest(view);
@@ -253,12 +334,12 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 				uuid: connectorDetail.uuid,
 				label: connectorDetail.label,
 				bucketName: connectorDetail.bucketName,
-				accessKey: connectorDetail.accessKey,
 				url: connectorDetail.url,
 				region: connectorDetail.region,
 				insecureHttps: true,
 			}),
 		);
+		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('accessKey');
 		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('secret');
 		expect(mockTestS3Connector.mock.calls[0]?.[0]).not.toHaveProperty('iAmSure');
 		await expect.element(page.getByText('verify-success')).toBeInTheDocument();
@@ -280,11 +361,11 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 		await expect
 			.element(page.getByRole('button', { name: 'CHANGE', exact: true }))
 			.toBeInTheDocument();
-		expect(page.getByLabelText('Secret Access Key*').elements()).toHaveLength(0);
+		expect(page.getByLabelText('Secret Access Key').elements()).toHaveLength(0);
 
 		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
 
-		await expect.element(page.getByLabelText('Secret Access Key*')).toBeInTheDocument();
+		await expect.element(page.getByLabelText('Secret Access Key')).toBeInTheDocument();
 		await expect
 			.element(
 				page.getByText('The new key will replace the saved one when you verify and save changes.'),
@@ -297,12 +378,12 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 
 		await setupBrowserTest(view);
 		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
-		await page.getByLabelText('Secret Access Key*').fill('NEW_SECRET_VALUE');
+		await page.getByLabelText('Secret Access Key').fill('NEW_SECRET_VALUE');
 
-		await page.getByTestId('icon: CloseOutline').nth(1).click();
+		await page.getByRole('button', { name: 'Cancel secret key change' }).click();
 
 		await expect.element(page.getByText('Saved on this server')).toBeInTheDocument();
-		expect(page.getByLabelText('Secret Access Key*').elements()).toHaveLength(0);
+		expect(page.getByLabelText('Secret Access Key').elements()).toHaveLength(0);
 
 		await page.getByRole('button', { name: /test connection/i }).click();
 
@@ -317,7 +398,7 @@ describe('EditS3ConnectorDetailPanel (browser)', () => {
 
 		await setupBrowserTest(view);
 		await page.getByRole('button', { name: 'CHANGE', exact: true }).click();
-		await page.getByLabelText('Secret Access Key*').fill('REPLACED_SECRET');
+		await page.getByLabelText('Secret Access Key').fill('REPLACED_SECRET');
 
 		await page.getByRole('button', { name: /test connection/i }).click();
 

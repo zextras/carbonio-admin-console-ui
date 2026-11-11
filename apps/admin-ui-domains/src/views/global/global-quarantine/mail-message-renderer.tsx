@@ -298,6 +298,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
               type="ghost"
               color={'text'}
               icon="CloseOutline"
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => setDisplayBanner(false)}
               size="small"
             />

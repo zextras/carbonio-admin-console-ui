@@ -29,30 +29,33 @@
   padding: var(--btn-padding-adjusted, var(--btn-padding));
 }
 
-.button.outlined {
-  border: 0.0625rem solid var(--btn-color);
-  padding: var(--btn-padding-adjusted, var(--btn-padding));
-}
-
 .button:focus:not(:disabled) {
-  outline: none;
   color: var(--btn-color-focus, var(--btn-color));
   background-color: var(--btn-bg-focus, var(--btn-bg));
   border-color: var(--btn-color-focus, var(--btn-color));
 }
 
+.button:focus-visible:not(:disabled) {
+  outline: 2px solid var(--color-primary-regular);
+  outline-offset: 2px;
+}
+
 .button:hover:not(:disabled) {
-  outline: none;
   color: var(--btn-color-hover, var(--btn-color));
   background-color: var(--btn-bg-hover, var(--btn-bg));
   border-color: var(--btn-color-hover, var(--btn-color));
 }
 
 .button:active:not(:disabled) {
-  outline: none;
   color: var(--btn-color-active, var(--btn-color));
   background-color: var(--btn-bg-active, var(--btn-bg));
   border-color: var(--btn-color-active, var(--btn-color));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
+  }
 }
 
 .button:disabled {

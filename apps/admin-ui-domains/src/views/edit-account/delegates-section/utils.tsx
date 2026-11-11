@@ -5,7 +5,57 @@
  */
 import { filter } from 'lodash-es';
 
-import { ZIMBRA_ADMIN_URN } from '../../../constants';
+import {
+	MANAGE_NO_SEND,
+	READ_MAILS_ONLY,
+	SEND_MAILS_ONLY,
+	SEND_READ_MAILS,
+	SEND_READ_MANAGE_MAILS,
+	ZIMBRA_ADMIN_URN,
+} from '../../../constants';
+
+export const FOLDER_PERM_READ = 'r';
+export const FOLDER_PERM_READ_WRITE = 'rwidx';
+export const FOLDER_PERM_MANAGE = 'rwidxa';
+
+/** Folder permission granted by a wizard option; undefined when no folder grant is made. */
+export function getFolderPermForRights(rights: string | undefined): string | undefined {
+	switch (rights) {
+		case READ_MAILS_ONLY:
+		case SEND_READ_MAILS:
+			return FOLDER_PERM_READ;
+		case MANAGE_NO_SEND:
+		case SEND_READ_MANAGE_MAILS:
+			return FOLDER_PERM_MANAGE;
+		default:
+			return undefined;
+	}
+}
+
+/** Whether the wizard option also grants a send right (sendAs / sendOnBehalfOf). */
+export function rightsIncludeSend(rights: string | undefined): boolean {
+	return (
+		rights === SEND_MAILS_ONLY || rights === SEND_READ_MAILS || rights === SEND_READ_MANAGE_MAILS
+	);
+}
+
+/**
+ * Wizard option matching a stored delegation. Grants with the administer
+ * permission `a` map to the manage options; any other folder grant (`r`, or
+ * `rwidx` from the simplified view) maps to the non-manage options.
+ */
+export function getRightsFromGrant(
+	perm: string | undefined,
+	hasSendRight: boolean,
+): string {
+	if (perm === undefined) {
+		return SEND_MAILS_ONLY;
+	}
+	if (perm.includes('a')) {
+		return hasSendRight ? SEND_READ_MANAGE_MAILS : MANAGE_NO_SEND;
+	}
+	return hasSendRight ? SEND_READ_MAILS : READ_MAILS_ONLY;
+}
 
 export type DelegateIdentity = {
 	grantee?: Array<{ id: string; name: string; type: string }>;
@@ -44,7 +94,10 @@ export function buildDelegateRows(identities: Array<DelegateIdentity>): Array<De
 					{item?.folder?.some((ele) => ele.perm.includes('r') && !ele.perm.includes('w'))
 						? 'Read'
 						: ' '}
-					{item?.folder?.some((ele) => ele.perm.includes('w')) ? 'Read, Write' : ' '}
+					{item?.folder?.some((ele) => ele.perm.includes('w') && !ele.perm.includes('a'))
+							? 'Read, Write'
+							: ' '}
+						{item?.folder?.some((ele) => ele.perm.includes('a')) ? 'Read, Write, Manage' : ' '}
 				</ds-text>,
 			],
 			sendRights: !!(
@@ -167,7 +220,7 @@ export function buildSimplifiedGrantBatch(
 					folderIds: '1',
 					granteeType: item?.type,
 					granteeName: item?.ele?.name,
-					perm: checks.readWriteRightCheck ? 'rwidxa' : 'r',
+					perm: checks.readWriteRightCheck ? FOLDER_PERM_READ_WRITE : FOLDER_PERM_READ,
 				}),
 			);
 		}

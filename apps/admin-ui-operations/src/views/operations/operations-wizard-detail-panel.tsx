@@ -145,21 +145,21 @@ export const OperationsWizardDetailPanel = ({
             <ListRow>
               <Container padding={{ right: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.operation_type', 'Operation Type')}
                   value={selectedData?.module || ''}
                 />
               </Container>
               <Container padding={{ right: 'small', left: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.who_started_it', 'Who started it?')}
                   value={selectedData?.parameters?.requesterAddress || ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.status', 'Status')}
                   value={(selectedData?.type ? selectedData?.type : status) || ''}
                 />
@@ -170,14 +170,14 @@ export const OperationsWizardDetailPanel = ({
             <ListRow>
               <Container padding={{ right: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.submitted_at', 'Submitted at')}
                   value={selectedData?.startTime ? MilliSecondToDate(selectedData?.startTime) : ''}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.started_at', 'Started at')}
                   value={selectedData?.humanStartTime ? selectedData?.humanStartTime : ''}
                 />
@@ -194,7 +194,7 @@ export const OperationsWizardDetailPanel = ({
           </ds-text>
           <Row width="100%" padding={{ top: 'large' }}>
             <LabeledValue
-              backgroundColor="gray6"
+              
               label={t('operations.label.notifications', 'Notifications')}
               value={
                 (selectedData?.parameters?.additionalNotificationAddresses &&
@@ -207,14 +207,14 @@ export const OperationsWizardDetailPanel = ({
             <ListRow>
               <Container padding={{ right: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.create_fake_blob', 'Create Fake Blob')}
                   value={selectedData?.parameters?.createFakeBlob ? TRUE_OPERATION : FALSE_OPERATION}
                 />
               </Container>
               <Container padding={{ left: 'small' }}>
                 <LabeledValue
-                  backgroundColor="gray6"
+                  
                   label={t('operations.label.Deep', 'Deep')}
                   value={selectedData?.parameters?.isDeep ? TRUE_OPERATION : FALSE_OPERATION}
                 />

@@ -116,9 +116,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#FF0000');
 
@@ -171,9 +169,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#FF0000');
 
@@ -205,9 +201,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#FF0000');
 
@@ -231,8 +225,8 @@ describe('DomainTheme', () => {
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
       const loginLogoInput = page
-        .getByTestId('inherited-carbonioWebUiLoginLogo')
-        .getByRole('textbox');
+        .getByRole('textbox', { name: 'Ex. https://upload.yourlogo.com/' })
+        .first();
       await userEvent.clear(loginLogoInput);
       await userEvent.type(loginLogoInput, 'http://insecure.example.com/logo.png');
 
@@ -266,9 +260,7 @@ describe('DomainTheme', () => {
 
       await expect.element(page.getByText('Whitelabel Settings')).toBeVisible();
 
-      const primaryColorInput = page
-        .getByTestId('inherited-carbonioWebUiPrimaryColor')
-        .getByRole('textbox');
+      const primaryColorInput = page.getByRole('textbox', { name: 'ex. #225CA8' }).first();
       await userEvent.clear(primaryColorInput);
       await userEvent.type(primaryColorInput, '#00FF00');
 

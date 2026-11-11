@@ -30,7 +30,7 @@ describe('RestoreAccountView (browser)', () => {
         <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
-      await expect.element(page.getByPlaceholder('Account status on')).toBeVisible();
+      await expect.element(page.getByRole('textbox', { name: 'Account status on' })).toBeVisible();
     });
 
     it('should render the Account status on picker as enabled', async () => {
@@ -38,7 +38,7 @@ describe('RestoreAccountView (browser)', () => {
         <RestoreAccountView legalHoldAccount={mockLegalHoldAccount} onBack={mockOnBack} />,
       );
 
-      await expect.element(page.getByPlaceholder('Account status on')).toBeEnabled();
+      await expect.element(page.getByRole('textbox', { name: 'Account status on' })).toBeEnabled();
     });
 
     it('should not render the Include items deleted after picker initially', async () => {
@@ -47,7 +47,7 @@ describe('RestoreAccountView (browser)', () => {
       );
 
       await expect
-        .element(page.getByPlaceholder('Include items deleted after'))
+        .element(page.getByRole('textbox', { name: 'Include items deleted after' }))
         .not.toBeInTheDocument();
     });
 
@@ -59,7 +59,7 @@ describe('RestoreAccountView (browser)', () => {
       const switchLabel = page.getByText('Include items deleted');
       await switchLabel.click();
 
-      await expect.element(page.getByPlaceholder('Include items deleted after')).toBeVisible();
+      await expect.element(page.getByRole('textbox', { name: 'Include items deleted after' })).toBeVisible();
     });
 
     it('should open the Account status on calendar popover when the calendar icon is clicked', async () => {

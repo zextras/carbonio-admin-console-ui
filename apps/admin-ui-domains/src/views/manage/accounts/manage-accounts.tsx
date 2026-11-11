@@ -8,7 +8,7 @@ import {
   Button,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   ModalOverlay,
   Paging,
   Table,
@@ -302,6 +302,7 @@ export const ManageAccounts = () => {
               <Button
                 color="primary"
                 icon="Plus"
+                aria-label={t('label.create_account', 'Create account')}
                 onClick={(): void => setShowCreateAccountView(true)}
               />
             </div>
@@ -316,7 +317,7 @@ export const ManageAccounts = () => {
           <div className={styles.tablePanel}>
             <div className={styles.searchRow}>
               <div className={styles.searchBox}>
-                <Input
+                <LegacyInput
                   label={t('label.i_am_looking_for_this_account', `I'm looking for this account…`)}
                   disabled={accounts.length === 0 && searchString.length === 0 && !isError}
                   value={searchString}

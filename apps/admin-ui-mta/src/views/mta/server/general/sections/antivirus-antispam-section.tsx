@@ -63,7 +63,6 @@ export const AntivirusAntispamSection = ({
                   field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
                 }
                 label={t('mta.also_check_outbound_messages', 'Also check outbound messages')}
-                iconColor="primary"
                 inheritedValue={
                   configInformation?.find(
                     (item: Record<string, string>) => item?.n === ZIMBRA_AMAVIS_ORIGINATING_BYPASS_SA,
@@ -86,7 +85,6 @@ export const AntivirusAntispamSection = ({
                   field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
                 }
                 label={t('mta.verify_dkim_validity', 'Verify DKIM validity')}
-                iconColor="primary"
                 inheritedValue={
                   configInformation?.find(
                     (item: Record<string, string>) =>
@@ -110,7 +108,6 @@ export const AntivirusAntispamSection = ({
                   field.handleChange(field.state.value === TRUE ? FALSE : TRUE)
                 }
                 label={t('mta.disable_virus_check', 'Disable Virus Check')}
-                iconColor="primary"
                 inheritedValue={
                   configInformation?.find(
                     (item: Record<string, string>) => item?.n === CARBONIO_AMAVIS_DISABLE_VIRUS_CHECK,

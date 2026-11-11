@@ -7,20 +7,13 @@
 import '../../../web-components/ds-icon';
 
 import clsx from 'clsx';
-import {
-  CSSProperties,
-  HTMLAttributes,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react';
+import { CSSProperties, HTMLAttributes, useEffect, useRef, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useModal } from '../../../hooks/useModal';
 import { type IconName } from '../../../web-components/icon-registry';
-import { Button, ButtonProps } from '../../basic/button/Button';
+import { Button, ButtonProps } from '../../basic/button/button';
 import { Container } from '../../layout/Container';
 import styles from './Banner.module.css';
 
@@ -58,6 +51,16 @@ const BANNER_ICON: Record<NonNullable<BannerProps['severity']>, IconName> = {
 const BANNER_GAP = '1rem';
 const BANNER_WIDTH = '100%';
 
+function computeContentFlexBasis(title: string | undefined, description: string): string {
+  const titleLength = title?.length ?? 0;
+  const descriptionLength = description.length * 0.875;
+  const numberOfCharsPerLine = Math.ceil(
+    Math.max(titleLength, descriptionLength) / (titleLength > 0 && descriptionLength > 0 ? 2 : 3),
+  );
+  const extraChars = 4;
+  return `${numberOfCharsPerLine + extraChars}ch`;
+}
+
 const Banner = ({
   severity = 'success',
   type = 'fill',
@@ -67,41 +70,42 @@ const Banner = ({
   secondaryAction,
   showClose = false,
   onClose,
-  moreInfoLabel = 'More info',
-  closeLabel = 'Close',
+  moreInfoLabel,
+  closeLabel,
   ref,
   ...rest
 }: BannerProps) => {
+  const { t } = useTranslation();
+  const resolvedMoreInfoLabel = moreInfoLabel ?? t('label.more_info', 'More info');
+  const resolvedCloseLabel = closeLabel ?? t('label.close', 'Close');
   const bannerRef = useCombinedRefs(ref);
   const infoContainerRef = useRef<HTMLDivElement>(null);
   const actionsContainerRef = useRef<HTMLDivElement>(null);
   const closeContainerRef = useRef<HTMLDivElement>(null);
 
-  const mainColor = useMemo(() => (type === 'fill' ? 'gray6' : severity), [type, severity]);
-  const textColor = useMemo(() => (type === 'fill' ? 'gray6' : 'text'), [type]);
-  const backgroundColor = useMemo(
-    () => (type === 'outline' && 'gray6') || (type === 'fill' && severity) || `${severity}Banner`,
-    [type, severity],
-  );
+  const mainColor = type === 'fill' ? 'gray6' : severity;
+  const textColor = type === 'fill' ? 'gray6' : 'text';
+  const backgroundColor =
+    (type === 'outline' && 'gray6') || (type === 'fill' && severity) || `${severity}Banner`;
 
   const [isMultiline, setIsMultiline] = useState<boolean>(false);
   const [isTextCropped, setIsTextCropped] = useState<boolean>(false);
   const { createModal, closeModal } = useModal();
 
-  const onBannerResize = useCallback((bannerContentHeight: number) => {
-    if (actionsContainerRef.current) {
-      setIsMultiline(actionsContainerRef.current.clientHeight < bannerContentHeight);
-    }
-    if (infoContainerRef.current) {
-      setIsTextCropped(
-        infoContainerRef.current.scrollHeight > infoContainerRef.current.clientHeight,
-      );
-    }
-  }, []);
-
   const resizeObserverRef = useRef<ResizeObserver | null>(null);
 
   useEffect(() => {
+    function onBannerResize(bannerContentHeight: number): void {
+      if (actionsContainerRef.current) {
+        setIsMultiline(actionsContainerRef.current.clientHeight < bannerContentHeight);
+      }
+      if (infoContainerRef.current) {
+        setIsTextCropped(
+          infoContainerRef.current.scrollHeight > infoContainerRef.current.clientHeight,
+        );
+      }
+    }
+
     if (bannerRef.current) {
       resizeObserverRef.current = new ResizeObserver((entries) => {
         entries.forEach((entry) => {
@@ -115,19 +119,11 @@ const Banner = ({
     return (): void => {
       resizeObserverRef.current?.disconnect();
     };
-  }, [bannerRef, onBannerResize]);
+  }, [bannerRef]);
 
-  const contentFlexBasis = useMemo(() => {
-    const titleLength = title?.length ?? 0;
-    const descriptionLength = description.length * 0.875;
-    const numberOfCharsPerLine = Math.ceil(
-      Math.max(titleLength, descriptionLength) / (titleLength > 0 && descriptionLength > 0 ? 2 : 3),
-    );
-    const extraChars = 4;
-    return `${numberOfCharsPerLine + extraChars}ch`;
-  }, [title, description?.length]);
+  const contentFlexBasis = computeContentFlexBasis(title, description);
 
-  const showMoreInfoModal = useCallback(() => {
+  const showMoreInfoModal = (): void => {
     const id = Date.now().toString();
     createModal({
       id,
@@ -139,40 +135,32 @@ const Banner = ({
       confirmLabel: primaryAction?.label,
       onConfirm: primaryAction
         ? (event): void => {
-            primaryAction.onClick(event);
+            primaryAction.onClick(event as React.MouseEvent<HTMLButtonElement>);
             closeModal(id);
           }
         : undefined,
       secondaryActionLabel: secondaryAction?.label,
       onSecondaryAction: secondaryAction
         ? (event): void => {
-            secondaryAction.onClick(event);
+            secondaryAction.onClick(event as React.MouseEvent<HTMLButtonElement>);
             closeModal(id);
           }
         : undefined,
-      closeIconTooltip: closeLabel,
+      closeIconTooltip: resolvedCloseLabel,
       children: (
         <ds-text as="span" size={'medium'} overflow={'break-word'}>
           {description}
         </ds-text>
       ),
     });
-  }, [closeLabel, closeModal, createModal, description, primaryAction, secondaryAction, title]);
-  const wrapContainerStyle = useMemo<CSSProperties>(
-    () =>
-      ({
-        '--wrap-flex-basis': `calc(${contentFlexBasis} + var(--icon-size-large) + ${BANNER_GAP})`,
-      } as CSSProperties),
-    [contentFlexBasis],
-  );
+  };
+  const wrapContainerStyle = {
+    '--wrap-flex-basis': `calc(${contentFlexBasis} + var(--icon-size-large) + ${BANNER_GAP})`,
+  } as CSSProperties;
 
-  const closeContainerStyle = useMemo<CSSProperties>(
-    () =>
-      ({
-        '--close-align-self': isMultiline ? 'flex-start' : 'stretch',
-      } as CSSProperties),
-    [isMultiline],
-  );
+  const closeContainerStyle = {
+    '--close-align-self': isMultiline ? 'flex-start' : 'stretch',
+  } as CSSProperties;
 
   return (
     <Container
@@ -268,7 +256,7 @@ const Banner = ({
             type={'outlined'}
             backgroundColor={'transparent'}
             color={mainColor}
-            label={moreInfoLabel}
+            label={resolvedMoreInfoLabel}
             onClick={showMoreInfoModal}
           />
         )}
@@ -286,6 +274,7 @@ const Banner = ({
           <Button
             onClick={onClose}
             icon={'Close'}
+            aria-label={resolvedCloseLabel}
             color={textColor}
             type={'ghost'}
             size={'large'}

@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, FormPageLayout } from '@zextras/ui-components';
+import { FormPageLayout } from '@zextras/ui-components';
 import { useCosList, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -22,6 +22,7 @@ import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { useDomainQuota } from '../../../services/use-domain-quota';
 import { BytesToGB, getDateFromStr, getFormatedDate } from '../../utility/utils';
 import { DomainCosLink } from './domain-cos-link';
+import styles from './domain-general-settings.module.css';
 import type { DomainGeneralSettingsFormValues } from './schema';
 import { DomainBasicsSection } from './sections/domain-basics-section';
 import { DomainDeleteSection } from './sections/domain-delete-section';
@@ -89,51 +90,45 @@ export const DomainGeneralSettings = () => {
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
-    <Container
-      height="calc(100vh - 105px)"
-      background="gray6"
-      crossAlignment="flex-start"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'auto' }}
-    >
-    <FormPageLayout
-      title={t('label.general_settings', 'General Settings')}
-      unsavedChanges={isDirty}
-      onSave={handleSave}
-      onCancel={handleCancel}
-    >
-      <DomainBasicsSection
-        form={form}
-        domainName={domainName}
-        domainId={zimbraId}
-        domainCreationDate={domainCreationDate}
-        cosItems={cosItems}
-        isGlobalAdmin={isGlobalAdmin}
-      />
+    <div className={styles.page}>
+      <FormPageLayout
+        title={t('label.general_settings', 'General Settings')}
+        unsavedChanges={isDirty}
+        onSave={handleSave}
+        onCancel={handleCancel}
+      >
+        <DomainBasicsSection
+          form={form}
+          domainName={domainName}
+          domainId={zimbraId}
+          domainCreationDate={domainCreationDate}
+          cosItems={cosItems}
+          isGlobalAdmin={isGlobalAdmin}
+        />
 
-      {isAdvanced && (
-        <DomainQuotaSection form={form} domainName={domainName} isGlobalAdmin={isGlobalAdmin} />
-      )}
+        {isAdvanced && (
+          <DomainQuotaSection form={form} domainName={domainName} isGlobalAdmin={isGlobalAdmin} />
+        )}
 
-      {isAdvanced && <DomainSearchSpecificDomainsSection form={form} domainName={domainName} />}
+        {isAdvanced && <DomainSearchSpecificDomainsSection form={form} domainName={domainName} />}
 
-      <DomainNotificationsSection form={form} />
+        <DomainNotificationsSection form={form} />
 
-      <DomainCosLink
-        cosMaxAccountList={cosMaxAccountList}
-        domainId={zimbraId}
-        defaultCosId={defaultValues.zimbraDomainDefaultCOSId}
-        domainName={domainName}
-      />
+        <DomainCosLink
+          cosMaxAccountList={cosMaxAccountList}
+          domainId={zimbraId}
+          defaultCosId={defaultValues.zimbraDomainDefaultCOSId}
+          domainName={domainName}
+        />
 
-      <DomainDeleteSection
-        domainId={zimbraId}
-        domainName={domainName}
-        domainStatusValue={form.state.values.zimbraDomainStatus}
-        closedStatusValue={CLOSED}
-      />
-    </FormPageLayout>
-    </Container>
+        <DomainDeleteSection
+          domainId={zimbraId}
+          domainName={domainName}
+          domainStatusValue={form.state.values.zimbraDomainStatus}
+          closedStatusValue={CLOSED}
+        />
+      </FormPageLayout>
+    </div>
   );
 };
 
@@ -179,4 +174,3 @@ function buildCosMaxAccountList(
       value: item._content?.split(':')[1] ?? '-1',
     }));
 }
-

@@ -175,11 +175,7 @@ const MTAServerGeneralForm = ({
         allowSetMTA={allowSetMTA}
       />
 
-      <LoggingSection
-        form={form}
-        mtaServerSpecificGeneralDetail={mtaServerSpecificGeneralDetail}
-        configInformation={configInformation}
-      />
+      <LoggingSection form={form} configInformation={configInformation} />
     </FormPageLayout>
   );
 }

@@ -41,18 +41,12 @@ export const GeneralOptions = ({ form, readonlyCOS, locales }: GeneralOptionsPro
                 {(field) => (
                   <Select
                     items={locales}
-                    background={'gray5'}
                     label={t('label.language', 'Language')}
-                    showCheckbox={false}
                     selection={
                       locales.find((item) => item.value === field.state.value) || locales[0]
                     }
                     onChange={(value): void => {
-                      const newValue =
-                        typeof value === 'object' && value !== null && 'value' in value
-                          ? (value as SelectItem).value
-                          : (value as string);
-                      field.handleChange(newValue);
+                      field.handleChange(value);
                     }}
                     disabled={readonlyCOS}
                   />

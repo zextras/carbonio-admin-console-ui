@@ -51,7 +51,7 @@ import { useAddAccountAlias } from '../../services/use-add-account-alias';
 import { useCosDetail } from '../../services/use-cos-detail';
 import { useDeleteAccountAlias } from '../../services/use-delete-account-alias';
 import { useModifyAccountAttributes } from '../../services/use-modify-account-attributes';
-import { useCredentialList,useOtpList } from '../../services/use-otp-credential-list';
+import { useCredentialList, useOtpList } from '../../services/use-otp-credential-list';
 import { useRemoveDistributionListMember } from '../../services/use-remove-distribution-list-member';
 import { useRenameAccount } from '../../services/use-rename-account';
 import { useSetAccountQuota } from '../../services/use-set-account-quota';
@@ -162,11 +162,7 @@ function computeNextBaseline({
       detail: accountDetailData,
       quota: accountQuota,
       coreAttrs: accountCoreAttributes,
-      values: buildSyncedAccountFormValues(
-        accountDetailData,
-        accountQuota,
-        accountCoreAttributes,
-      ),
+      values: buildSyncedAccountFormValues(accountDetailData, accountQuota, accountCoreAttributes),
     };
   }
   if (accountQuota !== undefined && accountQuota !== baseline?.quota) {

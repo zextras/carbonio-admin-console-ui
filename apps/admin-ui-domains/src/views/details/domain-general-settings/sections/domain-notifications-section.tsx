@@ -5,11 +5,12 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { ChipInput, type ChipItem, Container, getFieldErrorProps, Input, ListRow, Row } from '@zextras/ui-components';
+import { ChipInput, type ChipItem, getFieldErrorProps, TextInput } from '@zextras/ui-components';
 import { some } from 'lodash-es';
 import { useTranslation } from 'react-i18next';
 
 import { isValidEmail } from '../../../utility/utils';
+import styles from '../domain-general-settings.module.css';
 import { DOMAIN_GENERAL_VALIDATION_MESSAGES } from '../schema';
 import type { DomainGeneralSettingsFormApi } from '../use-domain-general-form';
 
@@ -22,18 +23,12 @@ export const DomainNotificationsSection = ({ form }: DomainNotificationsSectionP
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
   return (
-    <>
-      <Row mainAlignment="flex-start" width="100%" background="gray6" padding={{ top: 'large' }}>
-        <ds-text as="h2" size="medium" weight="bold" color="gray0">
-          {t('label.domain_system_notifications', 'Domain System Notifications')}
-        </ds-text>
-      </Row>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ horizontal: 'small', top: 'large', bottom: 'small' }}
-        >
+    <div className={styles.section}>
+      <ds-text as="h2" size="medium" weight="bold" color="gray0">
+        {t('label.domain_system_notifications', 'Domain System Notifications')}
+      </ds-text>
+      <div className={styles.fieldsGrid}>
+        <div className={styles.span6}>
           <form.Field name="carbonioNotificationFrom">
             {(field) => {
               const error = getFieldErrorProps(
@@ -43,12 +38,12 @@ export const DomainNotificationsSection = ({ form }: DomainNotificationsSectionP
                 DOMAIN_GENERAL_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  isRequired
+                <TextInput
+                  required
                   label={t('label.notification_sender', 'Notification Sender')}
-                  backgroundColor="gray5"
-                  value={field.state.value}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                  value={field.state.value ?? ''}
+                  autoComplete="off"
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                     field.handleChange(e.target.value);
                   }}
                   onBlur={() => field.handleBlur()}
@@ -58,14 +53,8 @@ export const DomainNotificationsSection = ({ form }: DomainNotificationsSectionP
               );
             }}
           </form.Field>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ horizontal: 'small', top: 'large', bottom: 'extralarge' }}
-        >
+        </div>
+        <div className={styles.span6}>
           <form.Field name="carbonioNotificationRecipients">
             {(field) => (
               <ChipInput<string>
@@ -86,8 +75,8 @@ export const DomainNotificationsSection = ({ form }: DomainNotificationsSectionP
               />
             )}
           </form.Field>
-        </Container>
-      </ListRow>
-    </>
+        </div>
+      </div>
+    </div>
   );
 };

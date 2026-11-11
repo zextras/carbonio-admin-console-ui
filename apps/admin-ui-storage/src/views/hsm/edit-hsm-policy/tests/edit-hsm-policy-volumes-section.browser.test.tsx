@@ -144,14 +144,14 @@ describe('EditHsmPolicyVolumesSection (browser)', () => {
 						name: 'Select manually source volumes',
 					}),
 				)
-				.toHaveAttribute('aria-checked', 'true');
+				.toBeChecked();
 			await expect
 				.element(
 					page.getByRole('switch', {
 						name: 'Select manually destination volumes',
 					}),
 				)
-				.toHaveAttribute('aria-checked', 'true');
+				.toBeChecked();
 		});
 
 		it('makes volume names visible in both tables when hsmQuery has source and destination', async () => {

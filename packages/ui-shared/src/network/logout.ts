@@ -8,7 +8,7 @@ import { useLoginConfigStore } from '../store/login/store';
 import { goTo, goToLogin } from './go-to-login';
 
 export const logout = (): Promise<void> =>
-	fetch('/logout', { redirect: 'manual' })
+	fetch('/logout', { method: 'POST', redirect: 'manual' })
 		.then(() => {
 			const customLogoutUrl = useLoginConfigStore.getState().carbonioAdminUiLogoutURL;
 			customLogoutUrl ? goTo(customLogoutUrl) : goToLogin();

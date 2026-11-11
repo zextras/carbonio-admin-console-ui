@@ -135,7 +135,7 @@ async function expectLoggingSectionVisible() {
 async function toggleDisableVirusCheck() {
   const virusCheckSwitch = page.getByRole('switch', { name: 'Disable Virus Check' });
   await expect.element(virusCheckSwitch).toBeVisible();
-  await expect.poll(() => virusCheckSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await expect.element(virusCheckSwitch).toBeEnabled();
   await virusCheckSwitch.click();
 }
 
@@ -175,6 +175,38 @@ describe('MTAServerGeneral', { timeout: 20_000 }, () => {
     });
 
     await expectAuthenticationInputsVisible();
+  });
+
+  it('shows the Inherited chip instead of the inherited description on an inherited field', async () => {
+    createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
+    createBrowserSoapAPIInterceptor('GetAllEffectiveRights', getAllConfigRightsResponseMock());
+    createBrowserSoapAPIInterceptor('GetAllConfig', {
+      a: getAllConfigResponse().a.map((entry) =>
+        entry.n === 'zimbraMtaRelayHost'
+          ? { n: 'zimbraMtaRelayHost', _content: 'global-relay.test.com' }
+          : entry,
+      ),
+    });
+    createBrowserSoapAPIInterceptor('GetAllServers', getAllServersWithMtaResponse());
+    createBrowserSoapAPIInterceptor('GetServer', getServerResponse());
+    createBrowserSoapAPIInterceptor('GetServer', getServerSpecificResponse());
+
+    await setupBrowserTest(renderComponent(), {
+      initialRouterEntry: `/${SERVER_NAME}/general`,
+      grantRights: 'config',
+    });
+
+    const relayHost = page.getByRole('textbox', { name: 'Relay Host' });
+    await expect.element(relayHost).toBeVisible();
+    await expect.element(relayHost).toHaveValue('global-relay.test.com');
+
+    const input = (await relayHost.element()) as HTMLInputElement;
+    const chip = document.getElementById(input.getAttribute('aria-describedby') ?? '');
+    expect(chip?.textContent).toBe('Inherited');
+
+    await expect
+      .element(page.getByText('Inherited from the global configuration'))
+      .not.toBeInTheDocument();
   });
 
   it('renders the My Network chip input', async () => {

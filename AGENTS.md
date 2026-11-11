@@ -83,7 +83,7 @@ Year is auto-updated by eslint. The header is required in all files except:
   ```
 
 ### React Compiler
-- This project uses the **React Compiler** (babel plugin)
+- This project uses the **React Compiler** via the **oxc option** (`react({ compiler: true })` from `@vitejs/plugin-react`, backed by `oxc-transform-react`); the `babel-plugin-react-compiler` was evaluated and dismissed in favor of it
 - **Do not use `useMemo` or `useCallback`** — the compiler handles memoization automatically
 - Writing manual memoization hooks is redundant and linters will flag them
 
@@ -275,6 +275,43 @@ function MockComposer() {
 vi.mock('../../composer/composer', () => ({ Composer: MockComposer }));
 ```
 
+**6. Every Save test must end on an ordered post-save signal.**
+Awaiting only the interceptor promise (`await modifyCosPromise`) resolves when MSW *receives*
+the request — the save chain (`FlushCache` → `invalidateQueries` → refetch → `form.reset()`)
+is still in flight when the test ends, and teardown races those late requests. End Save tests
+on the success snackbar or the Save button disappearing:
+
+```tsx
+await page.getByRole('button', { name: 'Save' }).click();
+await expect.element(page.getByText('The change has been saved successfully')).toBeVisible();
+await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
+```
+
+When the save invalidates a query the form is built from, register the entity GET interceptor
+with the SAVED values (mirroring sibling tests) — otherwise the refetch reinstates stale
+defaults, the form stays dirty, and the Save-hidden wait never converges. Register such
+saved-state refetch handlers AFTER `setupBrowserTest`/render so the initial mount doesn't
+see them (mount-time fetches answering with the saved state silently weaken the dirty-state
+scenario).
+
+**7. SOAP catch-alls are durable — never rely on a request being unhandled.**
+Shared fallbacks live in `defaultHandlers` (`packages/test-utils/src/browser/worker/index.ts`):
+`GetAccount`/`GetInfo`/`GetCos`/`SearchDirectory`, `GetAllServers`/`GetAllConfig`, canned
+zextras actions at `/service/admin/soap/zextras`, a lenient bare `/service/admin/soap` handler,
+and a generic `/service/admin/soap/:api` catch-all returning flat `Body: {}` (resolving to
+`undefined`, which component `data?.x` callbacks assume; only the named fallbacks above are
+key-shaped `Body: {XResponse: {}}`). They
+survive `resetMockWorker()` on purpose: requests leaked past test teardown get a valid empty
+envelope instead of passthrough-empty-body errors (`Empty response from XRequest`). Per-test
+interceptors registered via `createBrowserSoapAPIInterceptor` always take precedence — extend
+`defaultHandlers` rather than registering catch-alls per-test. A SOAP request with no in-test
+handler resolves `undefined` via the catch-all — it will NOT fail loudly, so a forgotten handler
+fails silently. When adding a named key-shaped fallback (`Body: {XResponse: {}}`), `data`
+resolves `{}` (not undefined) — consumers must fully optional-chain (`data?.x?.[0]`, never
+`data?.x[0]`). Never call `worker.stop()` /
+service-worker teardown per file: files run as parallel iframes sharing one origin-scoped
+service worker.
+
 ### State Management
 - Global state: Zustand stores in `store/` directories
 - Server state: TanStack React Query with proper query keys
@@ -370,3 +407,14 @@ Key enforced rules:
 When multiple skills apply, use this order:
 1. Process skills first (brainstorming, debugging)
 2. Implementation skills second (frontend-design, etc.)
+
+<!-- BEGIN:turborepo-agent-rules -->
+
+# This is NOT the Turborepo you know
+
+Turborepo configuration, task behavior, and CLI commands can vary between installed versions and may differ from your training data. Resolve the `turbo` package from this file's directory or relevant workspace; in monorepos, it may not be visible from the repository root. For example, run `node -p "require.resolve('turbo/package.json')"` from a workspace that depends on `turbo`.
+
+Read `docs/README.md` inside that installed package first, then read the relevant pages from its `docs/` directory before changing Turborepo configuration or commands. Heed deprecation notices. These bundled docs match the installed package version and are available without network access.
+
+This block is written and re-added by `turbo` before repository-scoped commands when an AI agent is detected. In the Turborepo source repository, its template is defined in `crates/turborepo-cli/src/cli/agent_guidance.rs`. Removing the managed block while updates are enabled means a later qualifying invocation will add it again. Set `"agentGuidance": false` in the root `turbo.json` or `turbo.jsonc` to opt out; this does not remove an existing block. Keep the block committed with your work to avoid an uncommitted change on the next agent invocation.
+<!-- END:turborepo-agent-rules -->

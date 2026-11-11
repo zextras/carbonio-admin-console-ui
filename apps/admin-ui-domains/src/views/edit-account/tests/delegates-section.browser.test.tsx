@@ -210,7 +210,7 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 		await page.getByRole('button', { name: 'ADD NEW' }).click();
 		await expect.element(page.getByText('SELECT MODE')).toBeVisible();
 
-		const searchInput = page.getByRole('textbox', { name: /search here for an account/i });
+		const searchInput = page.getByRole('combobox', { name: /search here for an account/i });
 		await searchInput.fill('new');
 		await vi.waitFor(() => expect(mockAccountListDirectory).toHaveBeenCalled(), {
 			timeout: 8_000,
@@ -260,7 +260,7 @@ describe('EditAccountDelegatesSection advanced table (browser)', () => {
 
 		await page.getByRole('button', { name: 'BACK' }).click();
 		await expect
-			.element(page.getByRole('textbox', { name: /search here for an account/i }))
+			.element(page.getByRole('combobox', { name: /search here for an account/i }))
 			.toBeVisible();
 
 		await page.getByRole('button', { name: 'CANCEL' }).click();

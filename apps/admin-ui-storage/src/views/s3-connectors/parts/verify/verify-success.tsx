@@ -3,18 +3,46 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { TFunction } from 'i18next';
 import React, { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { VERIFY_SUCCESS_AUTO_CLOSE_MS } from '../../../../constants';
 import styles from './verify-success.module.css';
 
+type VerifySuccessVariant = 'verified' | 'verifiedAndCreated' | 'verifiedAndUpdated';
+
+function getSuccessTitle(t: TFunction, variant: VerifySuccessVariant): string {
+  if (variant === 'verified') {
+    return t('storages.s3Connectors.verifySuccess.connectorVerifiedOnly', 'Connector verified');
+  }
+  if (variant === 'verifiedAndUpdated') {
+    return t(
+      'storages.s3Connectors.verifySuccess.connectorVerifiedAndUpdated',
+      'Connector verified and updated',
+    );
+  }
+  return t('storages.s3Connectors.verifySuccess.connectorVerified', 'Connector verified and created');
+}
+
+function getSuccessDescription(t: TFunction, variant: VerifySuccessVariant): string {
+  if (variant === 'verified') {
+    return t('storages.s3Connectors.verifySuccess.descriptionVerifiedOnly', 'Everything is validated');
+  }
+  return t(
+    'storages.s3Connectors.verifySuccess.description',
+    'Everything is validated, your connector are now on',
+  );
+}
+
 type VerifySuccessProps = {
   onComplete?: () => void;
+  variant?: VerifySuccessVariant;
 };
 
 export const VerifySuccess = ({
   onComplete,
+  variant = 'verifiedAndCreated',
 }: VerifySuccessProps): React.JSX.Element => {
   const { t } = useTranslation();
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -26,7 +54,8 @@ export const VerifySuccess = ({
   }, [onComplete]);
 
   useEffect(() => {
-    popoverRef.current?.showPopover();
+    const popover = popoverRef.current;
+    popover?.showPopover();
     timeoutRef.current = setTimeout(() => {
       popoverRef.current?.hidePopover();
       onCompleteRef.current?.();
@@ -36,6 +65,7 @@ export const VerifySuccess = ({
         clearTimeout(timeoutRef.current);
         timeoutRef.current = null;
       }
+      popover?.hidePopover();
     };
   }, []);
 
@@ -74,14 +104,11 @@ export const VerifySuccess = ({
         </button>
       </div>
       <ds-text as="h2" weight="bold" size="large" className={styles.title}>
-        {t('storages.s3Connectors.verifySuccess.connectorsVerified', 'Connectors verified and created')}
+        {getSuccessTitle(t, variant)}
       </ds-text>
       <div className={styles.description}>
         <ds-text as="p" color="gray1" weight="light" size="small">
-          {t(
-            'storages.s3Connectors.verifySuccess.description',
-            'Everything is validated, your connectors are now on',
-          )}
+          {getSuccessDescription(t, variant)}
         </ds-text>
       </div>
     </div>

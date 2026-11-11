@@ -6,7 +6,7 @@
 import { setupBrowserTest, worker } from 'admin-ui-test-utils';
 import { http, HttpResponse } from 'msw';
 import { useState } from 'react';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { RestoreDeleteAccountConfigSection } from '../restore-delete-account-config-section';
@@ -188,7 +188,80 @@ describe('RestoreDeleteAccountConfigSection (browser)', () => {
 
 		await expect.element(page.getByText('CTX dateTime: null')).toBeVisible();
 		await expect.element(page.getByText('CTX lastAvailableStatus: true')).toBeVisible();
-		await expect.element(page.getByPlaceholder('Date', { exact: true })).toBeDisabled();
+		await expect.element(page.getByRole('textbox', { name: 'Date' })).toBeDisabled();
+		await expect.element(page.getByRole('button', { name: 'Time' })).toBeDisabled();
+	});
+
+	describe('time select', () => {
+		beforeEach(() => {
+			vi.setSystemTime(new Date(2026, 5, 20, 12, 7));
+		});
+
+		afterEach(() => {
+			vi.useRealTimers();
+		});
+
+		async function pickPreviousMonthDateAt9Pm(): Promise<void> {
+			await page.getByRole('button', { name: 'Calendar' }).click();
+			await page.getByRole('button', { name: /previous month/i }).click();
+			await page.getByRole('grid').getByText('15', { exact: true }).click();
+			await page.getByRole('button', { name: 'Time' }).click();
+			await page.getByRole('option', { name: '09:00 PM' }).click();
+		}
+
+		it('should disable the time select until a date is picked', async () => {
+			setupSearchDirectoryInterceptor();
+			await setupBrowserTest(<ConfigSectionHarness />);
+
+			await expect.element(page.getByRole('button', { name: 'Time' })).toBeDisabled();
+		});
+
+		it('should set the AM/PM time picked in the time select on dateTime', async () => {
+			setupSearchDirectoryInterceptor();
+			await setupBrowserTest(<ConfigSectionHarness />);
+			const expected = new Date(2026, 4, 15, 21, 0);
+
+			await pickPreviousMonthDateAt9Pm();
+
+			await expect
+				.element(page.getByText(`CTX dateTime: ${expected.toISOString()}`))
+				.toBeVisible();
+			await expect
+				.element(page.getByRole('button', { name: 'Time' }))
+				.toHaveTextContent('09:00 PM');
+		});
+
+		it('should keep the picked time when the date changes', async () => {
+			setupSearchDirectoryInterceptor();
+			await setupBrowserTest(<ConfigSectionHarness />);
+			const expected = new Date(2026, 4, 16, 21, 0);
+
+			await pickPreviousMonthDateAt9Pm();
+			await page.getByRole('button', { name: 'Calendar' }).click();
+			await page.getByRole('grid').getByText('16', { exact: true }).click();
+
+			await expect
+				.element(page.getByText(`CTX dateTime: ${expected.toISOString()}`))
+				.toBeVisible();
+		});
+
+		it('should move the picked time to the latest enabled slot when it is in the future for the new date', async () => {
+			setupSearchDirectoryInterceptor();
+			await setupBrowserTest(<ConfigSectionHarness />);
+			const expected = new Date(2026, 5, 20, 12, 0);
+
+			await pickPreviousMonthDateAt9Pm();
+			await page.getByRole('button', { name: 'Calendar' }).click();
+			await page.getByRole('button', { name: /next month/i }).click();
+			await page.getByRole('grid').getByText('20', { exact: true }).click();
+
+			await expect
+				.element(page.getByText(`CTX dateTime: ${expected.toISOString()}`))
+				.toBeVisible();
+			await expect
+				.element(page.getByRole('button', { name: 'Time' }))
+				.toHaveTextContent('12:00 PM');
+		});
 	});
 
 	it('should toggle HSM policies in the wizard context', async () => {

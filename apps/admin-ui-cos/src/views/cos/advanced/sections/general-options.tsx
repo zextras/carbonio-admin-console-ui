@@ -54,10 +54,8 @@ export const COSGeneralOptions = ({
                   {(field) => (
                     <Switch
                       label={labels.backup.enableDisable}
-                      iconAriaLabel={labels.backup.enableDisable}
                       value={field.state.value}
                       onClick={() => field.handleChange(!field.state.value)}
-                      iconColor="primary"
                       disabled={readonlyCOS}
                     />
                   )}
@@ -73,10 +71,8 @@ export const COSGeneralOptions = ({
                   {(field) => (
                     <Switch
                       label={labels.backup.selfUndelete}
-                      iconAriaLabel={labels.backup.selfUndelete}
                       value={field.state.value}
                       onClick={() => field.handleChange(!field.state.value)}
-                      iconColor="primary"
                       disabled={readonlyCOS}
                     />
                   )}

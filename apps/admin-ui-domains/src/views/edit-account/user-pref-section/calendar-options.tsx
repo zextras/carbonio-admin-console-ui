@@ -4,11 +4,16 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSelect, InheritedSwitch } from '@zextras/ui-components';
+import { InheritedSwitch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import { InheritedPrefSelect } from '../../utility/inherited-pref-select';
 import { appointmentReminder, timeZoneList } from '../../utility/utils';
-import { useAccountForm, useSetAccountValues, useToggleAccountValue } from '../account-form-context';
+import {
+  useAccountForm,
+  useSetAccountValues,
+  useToggleAccountValue,
+} from '../account-form-context';
 import styles from './calendar-options.module.css';
 
 /**
@@ -117,6 +122,13 @@ export const CalendarOptionsSection = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, [keyName]: undefined }));
   };
 
+  const prefSelectProps = {
+    values: accountDetail,
+    cosDetail,
+    accSpecificDetail,
+    setEmptyValue,
+  };
+
   return (
     <div className="w-full">
       <div className={styles.headerRow}>
@@ -126,89 +138,85 @@ export const CalendarOptionsSection = () => {
       </div>
       <div className={styles.optionsRow}>
         <div className={styles.optionCol}>
-          <InheritedSelect
-            label={t('label.time_zone', 'Time Zone')}
-            items={timezones}
-            subValue={accountDetail?.zimbraPrefTimeZoneId}
-            inheritedValue={cosDetail.zimbraPrefTimeZoneId}
-            fromSubValue={accSpecificDetail?.zimbraPrefTimeZoneId}
-            background="gray5"
-            selectName="zimbraPrefTimeZoneId"
-            onChange={onPrefTimeZoneChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefTimeZoneId')}
-          />
-        </div>
-        <div className={styles.optionCol}>
-          <InheritedSelect
-            label={t(
-              'account_details.appointments_default_duration',
-              'Appointment’s Default Duration',
-            )}
-            items={APPOINTMENT_DURATION}
-            subValue={accountDetail?.zimbraPrefCalendarDefaultApptDuration}
-            inheritedValue={cosDetail.zimbraPrefCalendarDefaultApptDuration}
-            fromSubValue={accSpecificDetail?.zimbraPrefCalendarDefaultApptDuration}
-            background="gray5"
-            selectName="zimbraPrefCalendarDefaultApptDuration"
-            onChange={onCalendarDefaultApptDurationChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarDefaultApptDuration')}
-          />
-        </div>
-      </div>
-      <div className={styles.optionsRow}>
-        <div className={styles.optionCol}>
-          <InheritedSelect
-            label={t('label.appointment_reminder_in_minutes', 'Appointment Reminder in minutes')}
-            items={APPOINTMENT_REMINDER}
-            subValue={accountDetail?.zimbraPrefCalendarApptReminderWarningTime}
-            inheritedValue={cosDetail.zimbraPrefCalendarApptReminderWarningTime}
-            fromSubValue={accSpecificDetail?.zimbraPrefCalendarApptReminderWarningTime}
-            background="gray5"
-            selectName="zimbraPrefCalendarApptReminderWarningTime"
-            onChange={onReminderWarningTimeChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarApptReminderWarningTime')}
-          />
-        </div>
-        <div className={styles.optionCol}>
-          <InheritedSelect
-            label={t('label.default_calendar_view', 'Default Calendar View')}
-            items={DefaultViewOptions}
-            subValue={accountDetail?.zimbraPrefCalendarInitialView}
-            inheritedValue={cosDetail.zimbraPrefCalendarInitialView}
-            fromSubValue={accSpecificDetail?.zimbraPrefCalendarInitialView}
-            background="gray5"
-            selectName="zimbraPrefCalendarInitialView"
-            onChange={onCalendarInitialViewChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarInitialView')}
-          />
-        </div>
-      </div>
-      <div className={styles.optionsRow}>
-        <div className={styles.optionCol}>
-          <InheritedSelect
-            label={t('label.the_week_starts_on', 'The Week starts on')}
-            items={FIRST_DAY_OF_WEEK}
-            subValue={accountDetail?.zimbraPrefCalendarFirstDayOfWeek}
-            inheritedValue={cosDetail.zimbraPrefCalendarFirstDayOfWeek}
-            fromSubValue={accSpecificDetail?.zimbraPrefCalendarFirstDayOfWeek}
-            background="gray5"
-            selectName="zimbraPrefCalendarFirstDayOfWeek"
-            onChange={onFirstDayOfWeekChange}
-            onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarFirstDayOfWeek')}
-          />
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.time_zone', 'Time Zone')}
+              selectName="zimbraPrefTimeZoneId"
+              items={timezones}
+              onChange={onPrefTimeZoneChange}
+            />
+          ) : (
+            <></>
+          )}
         </div>
         <div className={styles.optionCol}>
           {accountDetail?.zimbraId ? (
-            <InheritedSelect
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t(
+                'account_details.appointments_default_duration',
+                'Appointment’s Default Duration',
+              )}
+              selectName="zimbraPrefCalendarDefaultApptDuration"
+              items={APPOINTMENT_DURATION}
+              onChange={onCalendarDefaultApptDurationChange}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+      <div className={styles.optionsRow}>
+        <div className={styles.optionCol}>
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.appointment_reminder_in_minutes', 'Appointment Reminder in minutes')}
+              selectName="zimbraPrefCalendarApptReminderWarningTime"
+              items={APPOINTMENT_REMINDER}
+              onChange={onReminderWarningTimeChange}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className={styles.optionCol}>
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.default_calendar_view', 'Default Calendar View')}
+              selectName="zimbraPrefCalendarInitialView"
+              items={DefaultViewOptions}
+              onChange={onCalendarInitialViewChange}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+      </div>
+      <div className={styles.optionsRow}>
+        <div className={styles.optionCol}>
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
+              label={t('label.the_week_starts_on', 'The Week starts on')}
+              selectName="zimbraPrefCalendarFirstDayOfWeek"
+              items={FIRST_DAY_OF_WEEK}
+              onChange={onFirstDayOfWeekChange}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+        <div className={styles.optionCol}>
+          {accountDetail?.zimbraId ? (
+            <InheritedPrefSelect
+              {...prefSelectProps}
               label={t('label.default_appointment_visibility', 'Default Appointment visibility')}
-              items={APPOINTMENT_VISIBILITY}
-              subValue={accountDetail?.zimbraPrefCalendarApptVisibility}
-              inheritedValue={cosDetail.zimbraPrefCalendarApptVisibility}
-              fromSubValue={accSpecificDetail?.zimbraPrefCalendarApptVisibility}
-              background="gray5"
               selectName="zimbraPrefCalendarApptVisibility"
+              items={APPOINTMENT_VISIBILITY}
               onChange={onAppointmentVisibilityChange}
-              onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarApptVisibility')}
             />
           ) : (
             <></>
@@ -224,7 +232,6 @@ export const CalendarOptionsSection = () => {
               'account_details.enable_past_due_reminders',
               'Enable reminders of appointments in the past',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarShowPastDueReminders}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarShowPastDueReminders}
             inputName={'zimbraPrefCalendarShowPastDueReminders'}
@@ -239,7 +246,6 @@ export const CalendarOptionsSection = () => {
               'account_details.allow_sending_cancellation_mail',
               'Allow sending cancellation mail',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAllowCancelEmailToSelf}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowCancelEmailToSelf}
             inputName={'zimbraPrefCalendarAllowCancelEmailToSelf'}
@@ -256,7 +262,6 @@ export const CalendarOptionsSection = () => {
               'account_details.add_forwarded_invites_to_calendar',
               'Automatically add forwarded appointments to the calendar',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAllowForwardedInvite}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowForwardedInvite}
             inputName={'zimbraPrefCalendarAllowForwardedInvite'}
@@ -271,7 +276,6 @@ export const CalendarOptionsSection = () => {
               'account_details.add_invites_with_publish_method',
               `Add invites with PUBLISH method`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAllowPublishMethodInvite}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAllowPublishMethodInvite}
             inputName={'zimbraPrefCalendarAllowPublishMethodInvite'}
@@ -288,7 +292,6 @@ export const CalendarOptionsSection = () => {
               'label.add_appointments_when_invited',
               'Automatically add appointments when the user is invited',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarAutoAddInvites}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarAutoAddInvites}
             inputName={'zimbraPrefCalendarAutoAddInvites'}
@@ -303,13 +306,10 @@ export const CalendarOptionsSection = () => {
               'account_details.auto_decline_if_inviter_is_blacklisted',
               `Auto-decline if the sender is blacklisted`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarSendInviteDeniedAutoReply}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarSendInviteDeniedAutoReply}
             inputName={'zimbraPrefCalendarSendInviteDeniedAutoReply'}
-            onChangeReset={(): void =>
-              setEmptyValue('zimbraPrefCalendarSendInviteDeniedAutoReply')
-            }
+            onChangeReset={(): void => setEmptyValue('zimbraPrefCalendarSendInviteDeniedAutoReply')}
           />
         </div>
       </div>
@@ -322,7 +322,6 @@ export const CalendarOptionsSection = () => {
               'account_details.notify_changes_by_delegated_access',
               `Notify changes made by delegated accounts`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefCalendarNotifyDelegatedChanges}
             fromSubValue={accSpecificDetail?.zimbraPrefCalendarNotifyDelegatedChanges}
             inputName={'zimbraPrefCalendarNotifyDelegatedChanges'}
@@ -337,7 +336,6 @@ export const CalendarOptionsSection = () => {
               'account_details.use_ical_delegation_model_for_shared_calendars',
               'Use iCal delegation model for shared calendars',
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefAppleIcalDelegationEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefAppleIcalDelegationEnabled}
             inputName={'zimbraPrefAppleIcalDelegationEnabled'}

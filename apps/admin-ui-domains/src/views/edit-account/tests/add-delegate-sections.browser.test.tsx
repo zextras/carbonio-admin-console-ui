@@ -85,7 +85,9 @@ describe('DelegateSetRightsSection (browser)', () => {
 	it('manage rights reveal both the sending options and the folder section', async () => {
 		setupSection(<DelegateSetRightsSection />);
 
-		await selectRights('Send, Read and Manage Mails (all of the above)');
+		await selectRights(
+			'Send, Read and Manage Mails (all of the above, includes permission to administer folders)',
+		);
 
 		await expect.element(page.getByText('Sending Options')).toBeVisible();
 		await expect
@@ -162,7 +164,11 @@ describe('DelegateAddSection (browser)', () => {
 			.element(page.getByText(/will be able to send mails as jane@example.com/i))
 			.toBeVisible();
 		await expect
-			.element(page.getByText('Send, Read and Manage Mails (all of the above)'))
+			.element(
+				page.getByText(
+					'Send, Read and Manage Mails (all of the above, includes permission to administer folders)',
+				),
+			)
 			.toBeVisible();
 		await expect.element(page.getByText('Sending Options')).toBeVisible();
 		await expect

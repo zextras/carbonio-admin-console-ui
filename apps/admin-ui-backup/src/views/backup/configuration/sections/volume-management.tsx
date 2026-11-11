@@ -6,12 +6,12 @@
 import {
   Button,
   Container,
-  Input,
   LabeledValue,
   ListRow,
   Padding,
   Row,
   Select,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { isEmpty } from 'lodash-es';
@@ -47,10 +47,15 @@ export function getManageExternalVolumeBucketList(
   matchedBucket: BucketItem | undefined,
 ): SelectOption {
   if (selectedManageBucketId) {
-    return bucketListOption.find((opt) => opt.value === selectedManageBucketId) ?? ({} as SelectOption);
+    return (
+      bucketListOption.find((opt) => opt.value === selectedManageBucketId) ?? ({} as SelectOption)
+    );
   }
   if (matchedBucket) {
-    return { label: `${matchedBucket?.storeType} | ${matchedBucket?.bucketName}`, value: matchedBucket?.uuid };
+    return {
+      label: `${matchedBucket?.storeType} | ${matchedBucket?.bucketName}`,
+      value: matchedBucket?.uuid,
+    };
   }
   return {} as SelectOption;
 }
@@ -81,7 +86,10 @@ export const VolumeManagement = ({
     value: MOUNTPOINT,
   });
   const [destinationSelected, setDestinationSelected] = useState<SelectOption>({
-    label: t('label.manage_external_volume_and_move_all', 'MANAGE EXTERNAL VOLUME and Move All Items to Local Path'),
+    label: t(
+      'label.manage_external_volume_and_move_all',
+      'MANAGE EXTERNAL VOLUME and Move All Items to Local Path',
+    ),
     value: MANAGE_EXTERNAL_VOLUME,
   });
   const [selectedBucketId, setSelectedBucketId] = useState<string>('');
@@ -97,11 +105,20 @@ export const VolumeManagement = ({
 
   const destinationOptions: Array<SelectOption> = [
     {
-      label: t('label.manage_external_volume_and_move_all', 'MANAGE EXTERNAL VOLUME and Move All Items to Local Path'),
+      label: t(
+        'label.manage_external_volume_and_move_all',
+        'MANAGE EXTERNAL VOLUME and Move All Items to Local Path',
+      ),
       value: MANAGE_EXTERNAL_VOLUME,
     },
-    { label: t('label.move_item_to_an_external_bucket', 'Move Items to an External Bucket'), value: MOVE_TO_EXTERNAL_BUCKET },
-    { label: t('label.move_item_to_a_local_mountpoint', 'Move Items to a Local Mountpoint'), value: MOVE_TO_LOCAL_MOUNT_POINT },
+    {
+      label: t('label.move_item_to_an_external_bucket', 'Move Items to an External Bucket'),
+      value: MOVE_TO_EXTERNAL_BUCKET,
+    },
+    {
+      label: t('label.move_item_to_a_local_mountpoint', 'Move Items to a Local Mountpoint'),
+      value: MOVE_TO_LOCAL_MOUNT_POINT,
+    },
   ];
 
   const manageExternalVolumeType = backupArchivingStore?.storeType ?? '';
@@ -113,7 +130,9 @@ export const VolumeManagement = ({
       : undefined;
 
   const bucketConfiguration: SelectOption = selectedBucketId
-    ? bucketListOption.find((opt) => opt.value === selectedBucketId) ?? bucketListOption[0] ?? ({} as SelectOption)
+    ? bucketListOption.find((opt) => opt.value === selectedBucketId) ??
+      bucketListOption[0] ??
+      ({} as SelectOption)
     : bucketListOption[0] ?? ({} as SelectOption);
 
   const manageExternalVolumeBucketList: SelectOption = getManageExternalVolumeBucketList(
@@ -129,7 +148,9 @@ export const VolumeManagement = ({
           createSnackbar({
             key: 'error',
             severity: 'error',
-            label: res?.error?.message ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+            label:
+              res?.error?.message ??
+              t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
             autoHideTimeout: 3000,
             hideButton: true,
             replace: true,
@@ -195,14 +216,14 @@ export const VolumeManagement = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="backupDestPath">
             {(field) => (
-              <Input
-                isRequired
+              <TextInput
+                required
                 label={t(
                   'backup.local_volume_reload_if_you_changed_this_value',
                   'Local Volume (reload if you changed this value)',
                 )}
                 value={field.state.value}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
               />
             )}
@@ -213,10 +234,10 @@ export const VolumeManagement = ({
         <Container padding={{ top: 'large' }}>
           <form.Field name="spaceThreshold">
             {(field) => (
-              <Input
+              <TextInput
                 label={t('backup.space_threshold_mb', 'Space Threshold (MB)')}
                 value={field.state.value}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 disabled={!allowSetBackup}
               />
@@ -231,7 +252,6 @@ export const VolumeManagement = ({
               <LabeledValue
                 label={t('backup.external_volume', 'External Volume')}
                 value={manageExternalVolumeType}
-                backgroundColor="gray5"
               />
             </Container>
           </ListRow>
@@ -244,7 +264,6 @@ export const VolumeManagement = ({
                     ? manageExternalVolumeLocalMountpoint
                     : manageExternalVolumeBucketList?.label
                 }
-                backgroundColor="gray5"
               />
             </Container>
           </ListRow>
@@ -255,11 +274,9 @@ export const VolumeManagement = ({
           <Container padding={{ top: 'large', bottom: 'large' }}>
             <Select
               items={externalVolumeOptions}
-              background="gray5"
               label={t('label.select_an_external_volume', 'Select an External Volume')}
-              showCheckbox={false}
-              onChange={(v) => {
-                const it = externalVolumeOptions.find((item) => item.value === v);
+              onChange={(value) => {
+                const it = externalVolumeOptions.find((item) => item.value === value);
                 if (it) setExternalVolume(it);
               }}
               selection={externalVolume}
@@ -270,10 +287,10 @@ export const VolumeManagement = ({
       )}
       {isShowSetExternalVolume && externalVolume?.value === MOUNTPOINT && (
         <Container>
-          <Input
+          <TextInput
             label={t('label.path', 'Path')}
             value={rootVolumePath || ''}
-            backgroundColor="gray5"
+            autoComplete="off"
             onChange={(e: ChangeEvent<HTMLInputElement>) => setRootVolumePath(e.target.value)}
           />
         </Container>
@@ -281,16 +298,19 @@ export const VolumeManagement = ({
       {isShowSetExternalVolume && externalVolume?.value === S3_BUCKET && (
         <Select
           items={bucketListOption}
-          background="gray5"
           label={t('label.select_a_bucket_configuration', 'Select a Bucket Configuration')}
-          showCheckbox={false}
           selection={bucketConfiguration}
-          onChange={(v) => setSelectedBucketId(v ?? '')}
+          onChange={(value) => setSelectedBucketId(value)}
           disabled={!allowSetBackup}
         />
       )}
       {isShowSetExternalVolume && (
-        <Row padding={{ all: 'large' }} width="50%" mainAlignment="flex-end" crossAlignment="flex-end">
+        <Row
+          padding={{ all: 'large' }}
+          width="50%"
+          mainAlignment="flex-end"
+          crossAlignment="flex-end"
+        >
           <Padding right="small">
             <Button
               label={t('label.cancel', 'Cancel')}
@@ -313,11 +333,9 @@ export const VolumeManagement = ({
           <Container padding={{ bottom: 'large' }}>
             <Select
               items={destinationOptions}
-              background="gray5"
               label={t('label.destination', 'Destination')}
-              showCheckbox={false}
-              onChange={(v) => {
-                const it = destinationOptions.find((item) => item.value === v);
+              onChange={(value) => {
+                const it = destinationOptions.find((item) => item.value === value);
                 if (it) setDestinationSelected(it);
               }}
               selection={destinationSelected}
@@ -332,11 +350,9 @@ export const VolumeManagement = ({
             <Container padding={{ bottom: 'large' }}>
               <Select
                 items={bucketListOption}
-                background="gray5"
                 label={t('backup.bucket_list', 'Buckets List')}
-                showCheckbox={false}
                 selection={manageExternalVolumeBucketList}
-                onChange={(v) => setSelectedManageBucketId(v ?? '')}
+                onChange={(value) => setSelectedManageBucketId(value)}
                 disabled={!allowSetBackup}
               />
             </Container>
@@ -347,11 +363,11 @@ export const VolumeManagement = ({
         <Container>
           <ListRow>
             <Container padding={{ bottom: 'large' }}>
-              <Input
-                isRequired
+              <TextInput
+                required
                 label={t('backup.local_mountpoint', 'Local Mountpoint')}
                 value={manageExternalVolumeNewLocalMountpoint || ''}
-                backgroundColor="gray5"
+                autoComplete="off"
                 onChange={(e: ChangeEvent<HTMLInputElement>) =>
                   setManageExternalVolumeNewLocalMountpoint(e.target.value)
                 }
@@ -362,7 +378,12 @@ export const VolumeManagement = ({
       )}
       {isManageExternalVolumeEnable && (
         <Row width="100%">
-          <Container padding={{ right: 'extrasmall' }} mainAlignment="flex-start" crossAlignment="flex-start" width="50%">
+          <Container
+            padding={{ right: 'extrasmall' }}
+            mainAlignment="flex-start"
+            crossAlignment="flex-start"
+            width="50%"
+          >
             <Button
               label={t('label.cancel', 'Cancel')}
               color="secondary"

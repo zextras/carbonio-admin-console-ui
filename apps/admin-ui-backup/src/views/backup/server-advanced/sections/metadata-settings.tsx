@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, ListRow, Switch } from '@zextras/ui-components';
+import { Container, ListRow, Switch,TextInput } from '@zextras/ui-components';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -19,11 +19,6 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
 
   return (
     <>
-      <Container mainAlignment="flex-start" crossAlignment="flex-start" padding={{ top: 'extralarge' }} height="fit">
-        <ds-text as="h3" size="medium" weight="bold">
-          {t('backup.metadata', 'Metadata')}
-        </ds-text>
-      </Container>
       <ListRow>
         <Container
           mainAlignment="flex-start"
@@ -34,10 +29,10 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
         >
           <form.Field name="backupMaxMetaDataSize">
             {(field) => (
-              <Input
-                isRequired
+              <TextInput
+                required
                 label={t('backup.maximum_metadata_size_mb', 'Maximum Metadata Size (MB)')}
-                backgroundColor="gray5"
+                autoComplete="off"
                 value={field.state.value}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => field.handleChange(e.target.value)}
                 disabled={!allowSetBackup}
@@ -63,7 +58,6 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
                 )}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}
@@ -87,7 +81,6 @@ export const MetadataSettings = ({ form, allowSetBackup }: MetadataSettingsProps
                 )}
                 value={field.state.value}
                 onClick={() => field.handleChange(!field.state.value)}
-                iconColor="primary"
                 disabled={!allowSetBackup}
               />
             )}

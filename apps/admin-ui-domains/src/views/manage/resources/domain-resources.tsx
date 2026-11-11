@@ -8,7 +8,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   Padding,
   Paging,
   Row,
@@ -267,7 +267,7 @@ export const DomainResources = () => {
               padding={{ bottom: 'large' }}
             >
               <Container>
-                <Input
+                <LegacyInput
                   disabled={resourceList.length === 0 && searchString.length === 0}
                   backgroundColor="gray5"
                   label={t('label.search_dot', 'Search…')}

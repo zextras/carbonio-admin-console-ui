@@ -4,12 +4,14 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { LicenseBanner, ListRow } from '@zextras/ui-components';
+import { LicenseBanner } from '@zextras/ui-components';
 import {
   buildPath,
+  getDomainList,
   getRights,
   useCurrentUserRights,
   useDomainInformation,
+  useDomainSearch,
   useHasAllRights,
   useIsAdvanced,
   useServerVersion,
@@ -21,6 +23,7 @@ import {
   ACCOUNTS,
   DISTRIBUTION_LIST,
   DOMAINS_ROUTE_ID,
+  GLOBAL_DOMAIN_LIST_ROUTE,
   LIST,
   LIST_SERVER,
   NOTIFICATION_ROUTE_ID,
@@ -33,6 +36,9 @@ import { DashboardNotification } from './dashboard-notification';
 import { DashboardServerList } from './dashboard-server-list-view';
 import styles from './dashboard-view.module.css';
 import { QuickAccess } from './quick-access-view';
+import { WhiteLabelBanner } from './white-label-banner';
+
+const OWN_DOMAIN_SEARCH_LIMIT = 50;
 
 export const Dashboard = () => {
   const navigate = useNavigate();
@@ -42,7 +48,18 @@ export const Dashboard = () => {
 
   const isAdvanced = useIsAdvanced();
 
-  const { data: domainInformation } = useDomainInformation();
+  const { data: domainInformation, isPending: isDomainInformationPending } =
+    useDomainInformation();
+  // SearchDirectory only returns the domains the admin has rights on: a delegated admin
+  // whose own domain is not in the result cannot open it.
+  const ownDomainName: string | undefined = domainInformation?.name;
+  const { data: ownDomainSearch, isPending: isOwnDomainSearchPending } = useDomainSearch({
+    searchQuery: ownDomainName ?? '',
+    limit: OWN_DOMAIN_SEARCH_LIMIT,
+    offset: 0,
+    enabled: Boolean(ownDomainName),
+    queryFn: () => getDomainList(ownDomainName, 0, OWN_DOMAIN_SEARCH_LIMIT),
+  });
   const { data: rights } = useCurrentUserRights();
   const adminHasAllRights = useHasAllRights();
   const hasListServerRights =
@@ -53,19 +70,26 @@ export const Dashboard = () => {
     );
 
   function openOperationView(operation: string) {
-    if (domainInformation && domainInformation?.id) {
-      if (operation === 'account') {
-        navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, ACCOUNTS));
-      } else if (operation === 'mailinglist') {
-        navigate(buildPath(DOMAINS_ROUTE_ID, domainInformation?.id, DISTRIBUTION_LIST));
-      }
+    // A failed GetDomain (no rights on the own domain) settles as an error, not pending.
+    // Wait for it and for the domain search before deciding where to go.
+    if (isDomainInformationPending || (ownDomainName && isOwnDomainSearchPending)) {
+      return;
+    }
+    const ownDomainId: string | undefined = domainInformation?.id;
+    const canAccessOwnDomain =
+      ownDomainId !== undefined && ownDomainSearch?.domain?.some((d) => d.id === ownDomainId);
+    if (!canAccessOwnDomain) {
+      navigate(buildPath(DOMAINS_ROUTE_ID, GLOBAL_DOMAIN_LIST_ROUTE));
+    } else if (operation === 'account') {
+      navigate(buildPath(DOMAINS_ROUTE_ID, ownDomainId, ACCOUNTS));
+    } else if (operation === 'mailinglist') {
+      navigate(buildPath(DOMAINS_ROUTE_ID, ownDomainId, DISTRIBUTION_LIST));
     }
   }
 
   function goToMailStoreServerList() {
     navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
   }
-
   function goToMailNotification() {
     navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
   }
@@ -75,8 +99,9 @@ export const Dashboard = () => {
       <ds-divider color="gray6"></ds-divider>
       <div className={styles.content}>
         {isAdvanced && adminHasAllRights && <LicenseBanner redirectButtonHasToAppear />}
+        <WhiteLabelBanner />
         <div className={styles.section}>
-          <ListRow>
+          <div className={styles.row}>
             <div className={styles.versionCol}>
               <CarbonioVersionInformation userName={userName} serverVersion={serverVersion} />
             </div>
@@ -86,28 +111,24 @@ export const Dashboard = () => {
                 domainName={domainInformation?.name}
               />
             </div>
-          </ListRow>
+          </div>
         </div>
 
         {isAdvanced && (
           <div className={styles.section}>
-            <ListRow>
-              <div className={styles.notificationCol}>
-                <DashboardNotification goToMailNotification={goToMailNotification} />
-              </div>
-            </ListRow>
+            <div className={styles.notificationCol}>
+              <DashboardNotification goToMailNotification={goToMailNotification} />
+            </div>
           </div>
         )}
         {hasListServerRights && (
           <div className={styles.section}>
-            <ListRow>
-              <div className={styles.serverListCol}>
-                <DashboardServerList
-                  goToMailStoreServerList={goToMailStoreServerList}
-                  serverVersion={serverVersion}
-                />
-              </div>
-            </ListRow>
+            <div className={styles.serverListCol}>
+              <DashboardServerList
+                goToMailStoreServerList={goToMailStoreServerList}
+                serverVersion={serverVersion}
+              />
+            </div>
           </div>
         )}
       </div>

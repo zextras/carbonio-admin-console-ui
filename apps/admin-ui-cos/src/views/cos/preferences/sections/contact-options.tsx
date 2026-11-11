@@ -43,7 +43,6 @@ export const ContactOptions = ({ form, readonlyCOS }: ContactOptionsProps) => {
                       field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
                     }
                     label={t('cos.enable_auto_add_contacts', 'Enable auto-add contacts')}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -58,7 +57,6 @@ export const ContactOptions = ({ form, readonlyCOS }: ContactOptionsProps) => {
                       field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
                     }
                     label={t('cos.use_gal_to_auto_fill', 'Use GAL to auto-fill')}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

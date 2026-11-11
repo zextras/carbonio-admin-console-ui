@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, Input, Switch, Tooltip } from '@zextras/ui-components';
+import { Container, Switch, TextInput, Tooltip } from '@zextras/ui-components';
 import type { ComputedLimit, QuotaSource } from '@zextras/ui-shared';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -20,9 +20,7 @@ type COSQuotasNewProps = {
   showRevertButton: boolean;
 };
 
-function getDerivedQuotaValue(
-  limit: ComputedLimit | undefined,
-): number | 'unlimited' | undefined {
+function getDerivedQuotaValue(limit: ComputedLimit | undefined): number | 'unlimited' | undefined {
   if (limit === undefined) return undefined;
   if (limit.type === 'unlimited') return 'unlimited';
   if (limit.value > 0) return BytesToGB(limit.value);
@@ -105,23 +103,15 @@ export const COSQuotasNew = ({
 
   const revertLabel = t('cos_quota.click_to_revert', 'Click to revert to the inherited value');
 
-  const RevertIcon = showRevertButton
-    ? () => <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
-    : undefined;
-
   return (
     <Container padding={{ right: 'large' }} gap={'1rem'}>
       <Container mainAlignment={'flex-start'} orientation={'horizontal'} gap={'0.5rem'}>
         <Switch
-          iconColor="primary"
           onClick={switchOnChange}
           value={switchValue}
           disabled={readonlyCOS}
-          iconAriaLabel={t('label.unlimited_quota', 'Unlimited quota')}
+          label={t('label.unlimited_quota', 'Unlimited quota')}
         />
-        <ds-text as="span" size="medium">
-          {t('label.unlimited_quota', 'Unlimited quota')}
-        </ds-text>
       </Container>
       <Container
         orientation={'horizontal'}
@@ -129,14 +119,17 @@ export const COSQuotasNew = ({
         mainAlignment={'flex-start'}
         crossAlignment={'center'}
       >
-        <Input
+        <TextInput
           label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
           value={inputValue}
-          backgroundColor="gray5"
-          inputName="totalQuota"
+          name="totalQuota"
           onChange={inputOnChange}
           disabled={readonlyCOS || switchValue}
-          CustomIcon={RevertIcon}
+          icon={
+            showRevertButton ? (
+              <QuotaRevertIcon label={revertLabel} onClick={onChangeReset} />
+            ) : undefined
+          }
         />
         {showQuotaSourceIcon && (
           <Tooltip placement={'top-end'} label={tooltipLabel}>

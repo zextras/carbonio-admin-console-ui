@@ -1,0 +1,110 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.page {
+  height: calc(100vh - 105px);
+  background: var(--color-gray6-regular);
+  overflow-y: auto;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--padding-size-small);
+  padding: var(--padding-size-large);
+}
+
+/*
+ * 6-column base grid: fields spanning 3 sit in half-width columns (2 per row),
+ * fields spanning 2 sit in third-width columns (3 per row). Column boundaries
+ * land on the same tracks in every row, so fields share one vertical grid.
+ */
+.fieldsGrid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  align-items: start;
+  padding-top: var(--padding-size-large);
+  gap: var(--padding-size-medium) var(--padding-size-large);
+  width: 100%;
+}
+
+.field {
+  min-width: 0;
+}
+
+.span2 {
+  composes: field;
+  grid-column: span 2;
+}
+
+.span3 {
+  composes: field;
+  grid-column: span 3;
+}
+
+.span6 {
+  composes: field;
+  grid-column: 1 / -1;
+}
+
+.divider {
+  display: block;
+  width: 100%;
+}
+
+/* Wraps action buttons placed beside labeled fields: stretches to the
+ * height of the grid row. */
+.actionsRow {
+  display: flex;
+  gap: var(--padding-size-large);
+  align-self: stretch;
+}
+
+.quotaButton {
+  display: flex;
+  align-self: stretch;
+}
+
+.cellContent {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.defaultCosCell {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-size-small);
+}
+
+.hoverActions {
+  display: flex;
+  align-items: center;
+  gap: var(--padding-size-small);
+}
+
+.tableWrapper {
+  width: 100%;
+}
+
+.cosEmptyState {
+  margin: var(--padding-size-medium) auto 0;
+  max-width: 30.875rem;
+  text-align: center;
+  white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+  .fieldsGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .span2,
+  .span3 {
+    grid-column: auto;
+  }
+}

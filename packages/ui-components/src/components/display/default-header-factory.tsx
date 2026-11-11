@@ -2,7 +2,7 @@ import clsx from 'clsx';
 import { useCallback, useMemo, useRef } from 'react';
 
 import { Checkbox } from '../inputs/Checkbox';
-import { Select } from '../inputs/Select';
+import { LegacySelect } from '../inputs/LegacySelect';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
 import { THeaderProps } from './Table';
@@ -70,7 +70,7 @@ export const DefaultHeaderFactory = ({
         return (
           <th key={column.id} align={column.align || 'left'}>
             {hasItems && (
-              <Select
+              <LegacySelect
                 label={column.label}
                 multiple
                 items={column.items}

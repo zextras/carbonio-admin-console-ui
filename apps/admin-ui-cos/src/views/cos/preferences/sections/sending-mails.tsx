@@ -43,7 +43,6 @@ export const SendingMails = ({ form, readonlyCOS }: SendingMailsProps) => {
                       field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
                     }
                     label={t('cos.save_to_Sent', 'Save to sent')}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}
@@ -67,7 +66,6 @@ export const SendingMails = ({ form, readonlyCOS }: SendingMailsProps) => {
                       'cos.preferences.allowTheUserToAskForAReadReceipt',
                       'Allow the user to ask for a read receipt',
                     )}
-                    iconColor="primary"
                     disabled={readonlyCOS}
                   />
                 )}

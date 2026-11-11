@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, PlainInput } from '@zextras/ui-components';
+import { Button, TextInput } from '@zextras/ui-components';
 import { ChangeEvent, KeyboardEvent, useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { z } from 'zod';
@@ -91,7 +91,7 @@ export const ChangeTokenModal = ({ onClose, onConfirm }: ChangeTokenModalProps) 
         </ds-text>
       </div>
       <div className={styles.inputWrapper}>
-        <PlainInput
+        <TextInput
           label={t('core.subscription.token', 'Token')}
           hasError={validationError !== null}
           description={validationError}

@@ -7,6 +7,7 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+  parseAbqDevices,
   parseAllDevices,
   parseDeviceStatistics,
   parseZextrasActionResult,
@@ -58,6 +59,24 @@ describe('parse-active-sync', () => {
     expect(parseAllDevices({})).toEqual([]);
   });
 
+  it('dedupes devices returned by multiple server groups', () => {
+    const res = soap({
+      response: {
+        'mailstore-1': { response: { devices: [DEVICE] } },
+        'mailstore-2': { response: { devices: [DEVICE] } },
+      },
+    });
+    expect(parseAllDevices(res)).toHaveLength(1);
+  });
+
+  it('keeps distinct devices that share the same firstSeen', () => {
+    const twin = { ...DEVICE, deviceId: 'DEV-002', accountEmail: 'bob@example.com' };
+    const res = soap({
+      response: { 'mailstore-1': { response: { devices: [DEVICE, twin] } } },
+    });
+    expect(parseAllDevices(res)).toHaveLength(2);
+  });
+
   it('reads the first device statistics payload', () => {
     const stats = parseDeviceStatistics(
       soap({
@@ -80,6 +99,30 @@ describe('parse-active-sync', () => {
       ok: false,
       message: 'Boom',
     });
+  });
+
+  it('parses abqListDevices content into device status entries', () => {
+    const res = soap({
+      ok: true,
+      response: {
+        devices: [
+          { device_id: 'DEV-001/acc-uuid', status: 'Blocked' },
+          { device_id: 'DEV-002', status: 'Allowed' },
+        ],
+      },
+    });
+    expect(parseAbqDevices(res)).toEqual([
+      { deviceId: 'DEV-001', status: 'blocked' },
+      { deviceId: 'DEV-002', status: 'allowed' },
+    ]);
+  });
+
+  it('skips ABQ entries with unknown or missing status and tolerates malformed payloads', () => {
+    expect(
+      parseAbqDevices(soap({ response: { devices: [{ device_id: 'X', status: 'Weird' }] } })),
+    ).toEqual([]);
+    expect(parseAbqDevices(soap({ response: {} }))).toEqual([]);
+    expect(parseAbqDevices({})).toEqual([]);
   });
 
   it('extracts a SOAP-style error string', () => {

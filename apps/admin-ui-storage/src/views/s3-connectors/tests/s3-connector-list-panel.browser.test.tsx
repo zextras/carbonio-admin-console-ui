@@ -261,7 +261,7 @@ describe('S3ConnectorListPanel navigation', () => {
       queryClient,
     });
 
-    const input = page.getByPlaceholder('Select a Server');
+    const input = page.getByRole('combobox', { name: 'Select a Server' });
     await input.click();
     await input.fill('mailstore1');
 
@@ -276,7 +276,7 @@ describe('S3ConnectorListPanel navigation', () => {
       queryClient,
     });
 
-    await page.getByTestId('icon: CloseOutline').click();
+    await page.getByRole('button', { name: 'Clear' }).click();
 
     expect(mockedReplaceHistory).toHaveBeenCalledWith(`/${SERVERS_LIST}`);
   });
@@ -298,7 +298,7 @@ describe('S3ConnectorListPanel navigation', () => {
       queryClient,
     });
 
-    const input = page.getByPlaceholder('Select a Server');
+    const input = page.getByRole('combobox', { name: 'Select a Server' });
     await input.click();
     await input.fill('xyznomatch');
 
@@ -321,7 +321,7 @@ describe('S3ConnectorListPanel navigation', () => {
     });
 
     await expect
-      .element(page.getByPlaceholder('Select a Server'))
+      .element(page.getByRole('combobox', { name: 'Select a Server' }))
       .toHaveValue('mailstore1.test.com');
   });
 });

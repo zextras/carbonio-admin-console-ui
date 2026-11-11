@@ -14,10 +14,10 @@ import { type CSSProperties, type ReactNode } from 'react';
 
 import styles from './app-view.module.css';
 import { ActivateSubscription } from './subscription/activate-subscription';
+import { LegacySubscription } from './subscription/legacy-subscription';
 import { MeteredSubscription } from './subscription/metered-subscription';
 import { PerpetualSubscription } from './subscription/perpetual-subscription';
 import { RegularSubscription } from './subscription/regular-subscription';
-import { Subscription } from './subscription/subscription';
 import { TrialSubscription } from './subscription/trial-subscription';
 
 function getMaxWidth(breakpoint: string, isSidebarOpen = false): string {
@@ -42,7 +42,7 @@ function getSubscriptionView(
   }
 
   if (!featureFlag) {
-    return <Subscription />;
+    return <LegacySubscription />;
   }
 
   if (subscriptionType === 'Purchased' && subType === 'REGULAR') {

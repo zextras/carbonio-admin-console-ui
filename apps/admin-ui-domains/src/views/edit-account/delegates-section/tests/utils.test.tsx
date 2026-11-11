@@ -6,6 +6,13 @@
 import { describe, expect, it } from 'vitest';
 
 import {
+	MANAGE_NO_SEND,
+	READ_MAILS_ONLY,
+	SEND_MAILS_ONLY,
+	SEND_READ_MAILS,
+	SEND_READ_MANAGE_MAILS,
+} from '../../../../constants';
+import {
 	buildAdminRightEnvelope,
 	buildDelegateRows,
 	buildDelegateSearchQuery,
@@ -13,7 +20,10 @@ import {
 	buildFolderRevoke,
 	buildSimplifiedGrantBatch,
 	buildSimplifiedRevokeBatch,
+	getFolderPermForRights,
+	getRightsFromGrant,
 	parseDelegateDirectoryOptions,
+	rightsIncludeSend,
 	selectDelegatesForRemoval,
 } from '../utils';
 
@@ -141,7 +151,53 @@ describe('buildSimplifiedGrantBatch', () => {
 		expect(batch.revokeUsrRigths).toHaveLength(0);
 		expect(batch.grantUsrRigths).toHaveLength(0);
 		expect(batch.folderUsrRights).toHaveLength(1);
-		expect(batch.folderUsrRights[0].action.grant.perm).toBe('rwidxa');
+		expect(batch.folderUsrRights[0].action.grant.perm).toBe('rwidx');
+	});
+
+	it('should build a read-only folder grant when read only is checked', () => {
+		const batch = buildSimplifiedGrantBatch(
+			selected,
+			{ sendRightCheck: false, sendBehalfRightCheck: false, readWriteRightCheck: false, readRightCheck: true },
+			'jane@example.com',
+		);
+		expect(batch.folderUsrRights[0].action.grant.perm).toBe('r');
+	});
+});
+
+describe('getFolderPermForRights', () => {
+	it.each([
+		[SEND_MAILS_ONLY, undefined],
+		[READ_MAILS_ONLY, 'r'],
+		[SEND_READ_MAILS, 'r'],
+		[MANAGE_NO_SEND, 'rwidxa'],
+		[SEND_READ_MANAGE_MAILS, 'rwidxa'],
+	])('should map %s to the folder perm %s', (rights, perm) => {
+		expect(getFolderPermForRights(rights)).toBe(perm);
+	});
+});
+
+describe('getRightsFromGrant', () => {
+	it.each([
+		[undefined, false, SEND_MAILS_ONLY],
+		['r', false, READ_MAILS_ONLY],
+		['r', true, SEND_READ_MAILS],
+		['rwidxa', false, MANAGE_NO_SEND],
+		['rwidxa', true, SEND_READ_MANAGE_MAILS],
+		['rwidx', true, SEND_READ_MAILS],
+	])('should map perm %s (send: %s) to %s', (perm, hasSend, expected) => {
+		expect(getRightsFromGrant(perm, hasSend)).toBe(expected);
+	});
+
+	it.each([
+		SEND_MAILS_ONLY,
+		READ_MAILS_ONLY,
+		SEND_READ_MAILS,
+		MANAGE_NO_SEND,
+		SEND_READ_MANAGE_MAILS,
+	])('should round-trip %s through save and reopen', (rights) => {
+		expect(getRightsFromGrant(getFolderPermForRights(rights), rightsIncludeSend(rights))).toBe(
+			rights,
+		);
 	});
 });
 

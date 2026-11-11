@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { Container, ListRow, Padding, Row } from '@zextras/ui-components';
+import { Container, ListRow, Row } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import { FeatureSwitchField } from '../../fields/feature-switch-field';
@@ -36,24 +36,18 @@ export const TwoFactorSection = ({ form, readonlyCOS }: TwoFactorSectionProps) =
         <ds-text as="strong" weight="bold">
           {t('cos.features.twoFactorAuthenticator', 'Two-Factor authenticator')}
         </ds-text>
-        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
+        <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large', bottom: 'large' }}>
           <FeatureSwitchField
             form={form}
             name="carbonioFeatureOTPMgmtEnabled"
             label={t('cos.features.allowUsersToConfigure2FA', 'Allow users to configure 2FA')}
+            description={t(
+              'cos.features.allowUsersToConfigure2FAInfo',
+              'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
+            )}
             disabled={readonlyCOS}
           />
         </Row>
-        <Padding left={'extralarge'} bottom={'large'}>
-          <Row padding={{ left: 'small' }}>
-            <ds-text as="span" color="gray1" size="small" overflow="break-word">
-              {t(
-                'cos.features.allowUsersToConfigure2FAInfo',
-                'Users will be able to set up and manage their One-Time Password (OTP) from their profile settings.',
-              )}
-            </ds-text>
-          </Row>
-        </Padding>
           <Row mainAlignment="flex-start" width="100%" padding={{ vertical: 'large' }}>
             <ds-text as="strong" weight="bold">
               {t(

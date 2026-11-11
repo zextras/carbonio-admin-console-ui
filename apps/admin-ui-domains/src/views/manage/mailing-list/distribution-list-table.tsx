@@ -8,7 +8,7 @@ import {
   Container,
   CustomHeaderFactory,
   HoverableRowFactory,
-  Input,
+  LegacyInput,
   Paging,
   Row,
   Table,
@@ -65,7 +65,7 @@ export const DistributionListTable: FC<DistributionListTableProps> = ({
           padding={{ bottom: 'large' }}
         >
           <Container>
-            <Input
+            <LegacyInput
               disabled={rows.length === 0 && searchString.length === 0 && !hasError}
               backgroundColor="gray5"
               label={t('label.search_dot', 'Search…')}

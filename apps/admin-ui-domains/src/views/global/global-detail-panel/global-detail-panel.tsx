@@ -9,10 +9,10 @@ import {
   ChipInput,
   Container,
   FormPageLayout,
-  Input,
   ListRow,
   Row,
   Switch,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { useAllConfig, useModifyConfig } from '@zextras/ui-shared';
@@ -187,12 +187,12 @@ const GlobalDetailPanelContent = ({
               {(field) => {
                 const hasError = field.state.meta.errors.length > 0;
                 return (
-                  <Input
-                    isRequired
-                    inputName="carbonioNotificationFrom"
+                  <TextInput
+                    required
+                    name="carbonioNotificationFrom"
                     label={t('label.notification_sender', 'Notification Sender')}
-                    backgroundColor="gray5"
-                    value={field.state.value}
+                    value={field.state.value ?? ''}
+                    autoComplete="off"
                     onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                       field.handleChange(e.target.value);
                     }}
@@ -246,7 +246,6 @@ const GlobalDetailPanelContent = ({
                     'label.enable_disclaimers_for_all_domains',
                     'Mandatory disclaimer for all domains',
                   )}
-                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
@@ -268,7 +267,6 @@ const GlobalDetailPanelContent = ({
                     'label.only_allow_outbound_disclaimers',
                     'Only allow outbound disclaimers',
                   )}
-                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />
@@ -293,7 +291,6 @@ const GlobalDetailPanelContent = ({
                     'domain.globalSettings.allowSearchUserFromAllDomains',
                     `Allow searching users' information in all domains`,
                   )}
-                  iconColor="primary"
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
                 />

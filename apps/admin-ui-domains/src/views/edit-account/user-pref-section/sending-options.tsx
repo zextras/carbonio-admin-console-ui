@@ -50,7 +50,6 @@ export const SendingOptions = () => {
             subValue={accountDetail?.zimbraPrefSaveToSent}
             onChange={toggleAccountValue}
             label={t('account_details.save_to_sent', 'Save to sent')}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefSaveToSent}
             fromSubValue={accSpecificDetail?.zimbraPrefSaveToSent}
             inputName={'zimbraPrefSaveToSent'}
@@ -90,7 +89,6 @@ export const SendingOptions = () => {
               'domain.accounts.editAccount.allowTheUserToAskForAReadReceipt',
               `Allow the user to ask for a read receipt`,
             )}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraFeatureReadReceiptsEnabled}
             fromSubValue={accSpecificDetail?.zimbraFeatureReadReceiptsEnabled}
             inputName={'zimbraFeatureReadReceiptsEnabled'}
@@ -114,7 +112,6 @@ export const SendingOptions = () => {
             subValue={accountDetail?.zimbraPrefMailSignatureEnabled}
             onChange={toggleAccountValue}
             label={t('account_details.mail_signature', 'Mail Signature')}
-            iconColor="primary"
             inheritedValue={cosDetail.zimbraPrefMailSignatureEnabled}
             fromSubValue={accSpecificDetail?.zimbraPrefMailSignatureEnabled}
             inputName={'zimbraPrefMailSignatureEnabled'}

@@ -57,28 +57,30 @@ describe('DomainRenameFields (browser)', () => {
   it('mirrors the account domain into the dropdown label', async () => {
     setupDomainRenameTest(wrapDomainRenameFields());
 
-    const dropdown = page
-      .getByRole('textbox', { name: /domain name/i })
-      .first();
+    const dropdown = page.getByRole('combobox', { name: /domain name/i }).first();
     await expect.element(dropdown).toHaveValue('test-domain.com');
   });
 
   it('shows the domain suggestions when typing a search', async () => {
     setupDomainRenameTest(wrapDomainRenameFields());
 
-    const dropdown = page.getByRole('textbox', { name: /type here a domain|domain name/i }).first();
+    const dropdown = page
+      .getByRole('combobox', { name: /type here a domain|domain name/i })
+      .first();
     await userEvent.fill(dropdown, 'other');
     await dropdown.click();
-    await expect.element(page.getByText('other-domain.com')).toBeVisible();
+    await expect.element(page.getByRole('option', { name: 'other-domain.com' })).toBeVisible();
   });
 
   it('updates the form domain when a suggestion is picked', async () => {
     setupDomainRenameTest(wrapDomainRenameFields());
 
-    const dropdown = page.getByRole('textbox', { name: /type here a domain|domain name/i }).first();
+    const dropdown = page
+      .getByRole('combobox', { name: /type here a domain|domain name/i })
+      .first();
     await userEvent.fill(dropdown, 'other');
     await dropdown.click();
-    const suggestion = page.getByText('other-domain.com');
+    const suggestion = page.getByRole('option', { name: 'other-domain.com' });
     await expect.element(suggestion).toBeVisible();
     await suggestion.click();
 

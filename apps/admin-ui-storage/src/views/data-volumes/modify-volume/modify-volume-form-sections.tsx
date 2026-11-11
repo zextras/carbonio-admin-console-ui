@@ -5,15 +5,16 @@
  */
 import {
   Container,
-  Input,
   ListRow,
+  NumberInput,
   Padding,
   Row,
   Select,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
-import React, { type RefObject } from 'react';
+import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -93,14 +94,13 @@ export function ModifyVolumeBucketSection({
         <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
           <form.Field name="volumePrefix">
             {(field) => (
-              <Input
-                inputName="prefix"
+              <TextInput
+                name="prefix"
                 label={t(
                   'label.prefix_name',
                   'Prefix - all objects will have this prefix in their name',
                 )}
                 value={field.state.value}
-                backgroundColor="gray5"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
                   field.handleChange(e.target.value)
                 }
@@ -117,12 +117,10 @@ export function ModifyVolumeBucketSection({
           <Row mainAlignment="flex-start" padding={{ top: 'large', left: 'small' }} width="100%">
             <Select
               items={backupUnusedConnectorList}
-              background="gray5"
               label={t(
                 'storage.dataVolumes.availableS3ConnectorsList',
                 'Available S3 Connectors List (that are not in use in the backup)',
               )}
-              showCheckbox={false}
               selection={selectedConnectorOption ?? backupUnusedConnectorList[0]}
               onChange={onUnusedConnectorListChange}
             />
@@ -174,7 +172,6 @@ export function ModifyVolumeTieringSection({
                       form.setFieldValue('infrequentAccessThreshold', '');
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -203,15 +200,13 @@ export function ModifyVolumeTieringSection({
           <Row width="52%" mainAlignment="flex-start" padding={{ left: 'extralarge' }}>
             <form.Field name="infrequentAccessThreshold">
               {(field) => (
-                <Input
-                  inputName="infrequentAccessThreshold"
+                <NumberInput
+                  name="infrequentAccessThreshold"
                   label={t('label.bytes_size_threshold', 'Bytes Size Threshold')}
-                  type="number"
-                  backgroundColor="gray5"
-                  value={field.state.value}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>): void =>
-                    field.handleChange(e.target.value)
-                  }
+                  value={field.state.value ?? ''}
+                  onChange={(value): void => {
+                    field.handleChange(value);
+                  }}
                   disabled={!form.state.values.useInfrequentAccess}
                 />
               )}
@@ -232,7 +227,6 @@ export function ModifyVolumeTieringSection({
                       form.setFieldValue('useInfrequentAccess', false);
                     }
                   }}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -267,7 +261,6 @@ type OptionsSectionProps = {
   isLocalBlockDevice: boolean;
   volumeType: number;
   isAdvanced: boolean;
-  isCurrentRef: RefObject<HTMLDivElement | null>;
   setIsCurrentToggle: (value: boolean) => void;
 };
 
@@ -276,7 +269,6 @@ export function ModifyVolumeOptionsSection({
   isLocalBlockDevice,
   volumeType,
   isAdvanced,
-  isCurrentRef,
   setIsCurrentToggle,
 }: Readonly<OptionsSectionProps>) {
   const { t } = useTranslation();
@@ -304,7 +296,6 @@ export function ModifyVolumeOptionsSection({
                   disabled={!field.state.value}
                 >
                   <Switch
-                    ref={isCurrentRef}
                     value={field.state.value}
                     label={t('label.set_as_current', 'Set as Current')}
                     onClick={(): void => {
@@ -312,7 +303,6 @@ export function ModifyVolumeOptionsSection({
                         setIsCurrentToggle(true);
                       }
                     }}
-                    iconColor="primary"
                     disabled={field.state.value}
                   />
                 </Tooltip>
@@ -353,7 +343,6 @@ export function ModifyVolumeOptionsSection({
                     disabled={!field.state.value}
                   >
                     <Switch
-                      ref={isCurrentRef}
                       value={field.state.value}
                       label={t('label.set_as_current', 'Set as Current')}
                       onClick={(): void => {
@@ -361,7 +350,6 @@ export function ModifyVolumeOptionsSection({
                           setIsCurrentToggle(true);
                         }
                       }}
-                      iconColor="primary"
                       disabled={field.state.value}
                     />
                   </Tooltip>
@@ -380,28 +368,22 @@ export function ModifyVolumeOptionsSection({
                     <Switch
                       value={field.state.value}
                       label={t('label.enable_compression', 'Enable Compression')}
+                      description={t(
+                        'this_will_not_affect_data_already_stored',
+                        'This will not affect data already stored',
+                      )}
                       onClick={(): void => field.handleChange(!field.state.value)}
-                      iconColor="primary"
                     />
                   )}
                 </form.Field>
-                <Padding top="extrasmall" left="2rem">
-                  <ds-text as="p" color="secondary" overflow="break-word" size="extrasmall">
-                    {t(
-                      'this_will_not_affect_data_already_stored',
-                      'This will not affect data already stored',
-                    )}
-                  </ds-text>
-                </Padding>
               </Row>
               <Row mainAlignment="flex-start" width="48%">
                 <Row padding={{ top: 'small' }} width="100%">
                   <form.Field name="compressionThreshold">
                     {(field) => (
-                      <Input
+                      <TextInput
                         label={t('label.compression_threshold', 'Compression Threshold')}
                         value={field.state.value}
-                        backgroundColor="gray6"
                         onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                           if (/^\d*$/.test(e.target.value)) {
                             field.handleChange(e.target.value);

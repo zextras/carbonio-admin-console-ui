@@ -39,6 +39,7 @@ export const EditAccountQuotaRevertIcon = ({
         onClick={onClick}
         style={{ cursor: 'pointer' }}
         onChange={(): null => null}
+        value={false}
       />
     </Tooltip>
   );

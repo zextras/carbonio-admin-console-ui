@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { AnyFormApi } from '@tanstack/react-form';
-import { Container, ListRow, Padding } from '@zextras/ui-components';
 import { Trans, useTranslation } from 'react-i18next';
 
 import { themeConfigStore } from '../../../types';
+import styles from './theme-configs.module.css';
 import { ThemeFieldInput } from './theme-field-input';
 import { HTTPS_URL_ERROR_LABEL } from './white-label-schema';
 
@@ -28,114 +28,75 @@ export const AdminPanelThemeConfig = ({
 
   return (
     <>
-      <ListRow>
-        <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h3" size="small" color="gray0" weight="bold">
-            {t('label.admin_panel', 'Admin Panel')}
-          </ds-text>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.admin_panel_theme_description',
-              'In this section you can customize the Admin Panel with your company logo and image.',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
-            {t('label.title_and_copyrights_information', 'Title & Copyrights Information')}
-          </ds-text>
-        </Padding>
-      </ListRow>
-
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t('label.title_theme_note', 'The title is the name that will appear on the browser tab')}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
-          <ThemeFieldInput
-            form={form}
-            name="carbonioAdminUiTitle"
-            label={t('label.title', 'Title')}
-            globalTheme={globalTheme}
-            isGlobalTheme={isGlobalTheme}
-            hasModifyRights={hasModifyRights}
-          />
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.copyrights_theme_note',
-              'The copyrights information will appear on the login box footer',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
-          <ThemeFieldInput
-            form={form}
-            name="carbonioAdminUiDescription"
-            label={t('label.copyrights_information', 'Copyrights information')}
-            globalTheme={globalTheme}
-            isGlobalTheme={isGlobalTheme}
-            hasModifyRights={hasModifyRights}
-          />
-        </Container>
-      </ListRow>
-      <Container padding={{ top: 'small' }}>
+      <div className={styles.groupHeader}>
+        <ds-text as="h3" size="small" color="gray0" weight="bold">
+          {t('label.admin_panel', 'Admin Panel')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t(
+            'label.admin_panel_theme_description',
+            'In this section you can customize the Admin Panel with your company logo and image.',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.groupHeader}>
+        <ds-text as="h4" size="small" color="gray0" weight="bold">
+          {t('label.title_and_copyrights_information', 'Title & Copyrights Information')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t('label.title_theme_note', 'The title is the name that will appear on the browser tab')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldWrapper}>
+        <ThemeFieldInput
+          form={form}
+          name="carbonioAdminUiTitle"
+          label={t('label.title', 'Title')}
+          globalTheme={globalTheme}
+          isGlobalTheme={isGlobalTheme}
+          hasModifyRights={hasModifyRights}
+        />
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t(
+            'label.copyrights_theme_note',
+            'The copyrights information will appear on the login box footer',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.fieldWrapper}>
+        <ThemeFieldInput
+          form={form}
+          name="carbonioAdminUiDescription"
+          label={t('label.copyrights_information', 'Copyrights information')}
+          globalTheme={globalTheme}
+          isGlobalTheme={isGlobalTheme}
+          hasModifyRights={hasModifyRights}
+        />
+      </div>
+      <div className={styles.dividerContainer}>
         <ds-divider></ds-divider>
-      </Container>
-      <ListRow>
-        <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
-            {t('label.logo', 'Logo')}
-          </ds-text>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.logo_description',
-              'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
+      </div>
+      <div className={styles.groupHeader}>
+        <ds-text id="logo" as="h4" size="small" color="gray0" weight="bold">
+          {t('label.logo', 'Logo')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t(
+            'label.logo_description',
+            'Paste the URL of the logo for the login page. Use SVG or PNG file with transparent background, dimension 240x120 pixels.',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.fieldLabel}>
           <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.light_mode"
@@ -144,12 +105,8 @@ export const AdminPanelThemeConfig = ({
             />{' '}
             {t('label.logo_for_login_page', 'Logo for Login Page')}
           </ds-text>
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
+        </div>
+        <div className={styles.fieldLabel}>
           <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.dark_mode"
@@ -158,10 +115,10 @@ export const AdminPanelThemeConfig = ({
             />{' '}
             {t('label.logo_for_login_page', 'Logo for Login Page')}
           </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        </div>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.fieldWrapper}>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUiLoginLogo"
@@ -169,11 +126,12 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.fieldWrapper}>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUiDarkLoginLogo"
@@ -181,17 +139,14 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
+        </div>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.fieldLabel}>
           <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.light_mode"
@@ -200,12 +155,8 @@ export const AdminPanelThemeConfig = ({
             />{' '}
             {t('label.logo_for_webapp', 'Logo for WebApp')}
           </ds-text>
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
+        </div>
+        <div className={styles.fieldLabel}>
           <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.dark_mode"
@@ -214,10 +165,10 @@ export const AdminPanelThemeConfig = ({
             />{' '}
             {t('label.logo_for_webapp', 'Logo for WebApp')}
           </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        </div>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.fieldWrapper}>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUiAppLogo"
@@ -225,11 +176,12 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.fieldWrapper}>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUiDarkAppLogo"
@@ -237,79 +189,59 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-      </ListRow>
-      <Container padding={{ top: 'small' }}>
+        </div>
+      </div>
+      <div className={styles.dividerContainer}>
         <ds-divider></ds-divider>
-      </Container>
-      <ListRow>
-        <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
-            {t('label.favicon', 'Favicon')}
-          </ds-text>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.favicon_description',
-              'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
-          <ThemeFieldInput
-            form={form}
-            name="carbonioAdminUiFavicon"
-            label="Ex. https://upload.yourlogo.com/"
-            globalTheme={globalTheme}
-            isGlobalTheme={isGlobalTheme}
-            hasModifyRights={hasModifyRights}
-            errorLabel={HTTPS_URL_ERROR_LABEL}
-            errorLabelDefault="You need to use the HTTPS protocol"
-          />
-        </Container>
-      </ListRow>
-      <Container padding={{ top: 'small' }}>
+      </div>
+      <div className={styles.groupHeader}>
+        <ds-text as="h4" size="small" color="gray0" weight="bold">
+          {t('label.favicon', 'Favicon')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t(
+            'label.favicon_description',
+            'Paste the URL of the favicon for the login page. Use an ICO file, dimension 32x32 pixels.',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.fieldWrapper}>
+        <ThemeFieldInput
+          form={form}
+          name="carbonioAdminUiFavicon"
+          label="Ex. https://upload.yourlogo.com/"
+          globalTheme={globalTheme}
+          isGlobalTheme={isGlobalTheme}
+          hasModifyRights={hasModifyRights}
+          warnWhenProxyBlocked
+          errorLabel={HTTPS_URL_ERROR_LABEL}
+          errorLabelDefault="You need to use the HTTPS protocol"
+        />
+      </div>
+      <div className={styles.dividerContainer}>
         <ds-divider></ds-divider>
-      </Container>
-      <ListRow>
-        <Padding vertical="large" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
-            {t('label.background_for_the_login_page', 'Background for the Login Page')}
-          </ds-text>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.background_description',
-              'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
+      </div>
+      <div className={styles.groupHeader}>
+        <ds-text as="h4" size="small" color="gray0" weight="bold">
+          {t('label.background_for_the_login_page', 'Background for the Login Page')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t(
+            'label.background_description',
+            'Paste the URL of the image for the login page. Use a JPG or a PNG file, with a minimum resolution of 1280x720 pixels, a ratio of 16:9 and smaller than 800KB.',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.fieldLabel}>
           <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.light_mode"
@@ -318,12 +250,8 @@ export const AdminPanelThemeConfig = ({
             />{' '}
             {t('label.background_login_page', 'Background Login Page')}
           </ds-text>
-        </Container>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
+        </div>
+        <div className={styles.fieldLabel}>
           <ds-text as="label" size="small" color="gray0">
             <Trans
               i18nKey="label.dark_mode"
@@ -332,10 +260,10 @@ export const AdminPanelThemeConfig = ({
             />{' '}
             {t('label.background_login_page', 'Background Login Page')}
           </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
+        </div>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.fieldWrapper}>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUiBackground"
@@ -343,11 +271,12 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-        <Container padding={{ all: 'small' }}>
+        </div>
+        <div className={styles.fieldWrapper}>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUiDarkBackground"
@@ -355,42 +284,35 @@ export const AdminPanelThemeConfig = ({
             globalTheme={globalTheme}
             isGlobalTheme={isGlobalTheme}
             hasModifyRights={hasModifyRights}
+            warnWhenProxyBlocked
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-      </ListRow>
-      <Container padding={{ top: 'small' }}>
+        </div>
+      </div>
+      <div className={styles.dividerContainer}>
         <ds-divider></ds-divider>
-      </Container>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ vertical: 'large', horizontal: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            <Trans
-              i18nKey="label.please_note"
-              defaults="<bold>Please note</bold>"
-              components={{ bold: <strong /> }}
-            />{' '}
-            {t(
-              'label.virtualhost_avaibility_helpertext',
-              'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ bottom: 'small', horizontal: 'small' }}>
-          <ListRow>
-            <Padding bottom="large" horizontal="small" width="100%">
-              <ds-text as="h4" size="small" color="gray0" weight="bold">
-                {t('label.login', 'Login')}
-              </ds-text>
-            </Padding>
-          </ListRow>
+      </div>
+      <div className={styles.noteSpaced}>
+        <ds-text as="p" size="small" color="gray0">
+          <Trans
+            i18nKey="label.please_note"
+            defaults="<bold>Please note</bold>"
+            components={{ bold: <strong /> }}
+          />{' '}
+          {t(
+            'label.virtualhost_avaibility_helpertext',
+            'that in order to make the virtualHost available, nginx configuration must be reloaded on all the proxyes first.',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.listRow}>
+        <div className={styles.subBlock}>
+          <div className={styles.subHeader}>
+            <ds-text as="h4" size="small" color="gray0" weight="bold">
+              {t('label.login', 'Login')}
+            </ds-text>
+          </div>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUILoginURL"
@@ -401,15 +323,13 @@ export const AdminPanelThemeConfig = ({
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-        <Container padding={{ bottom: 'small', horizontal: 'small' }}>
-          <ListRow>
-            <Padding bottom="large" horizontal="small" width="100%">
-              <ds-text as="h4" size="small" color="gray0" weight="bold">
-                {t('label.logout', 'Logout')}
-              </ds-text>
-            </Padding>
-          </ListRow>
+        </div>
+        <div className={styles.subBlock}>
+          <div className={styles.subHeader}>
+            <ds-text as="h4" size="small" color="gray0" weight="bold">
+              {t('label.logout', 'Logout')}
+            </ds-text>
+          </div>
           <ThemeFieldInput
             form={form}
             name="carbonioAdminUILogoutURL"
@@ -420,46 +340,36 @@ export const AdminPanelThemeConfig = ({
             errorLabel={HTTPS_URL_ERROR_LABEL}
             errorLabelDefault="You need to use the HTTPS protocol"
           />
-        </Container>
-      </ListRow>
-      <Container padding={{ top: 'small' }}>
+        </div>
+      </div>
+      <div className={styles.dividerContainer}>
         <ds-divider></ds-divider>
-      </Container>
-      <ListRow>
-        <Padding top="large" bottom="small" horizontal="small" width="100%">
-          <ds-text as="h4" size="small" color="gray0" weight="bold">
-            {t('label.help_documentation_url', 'Help documentation URL')}
-          </ds-text>
-        </Padding>
-      </ListRow>
-      <ListRow>
-        <Container
-          mainAlignment="flex-start"
-          crossAlignment="flex-start"
-          padding={{ all: 'small' }}
-        >
-          <ds-text as="p" size="small" color="gray0">
-            {t(
-              'label.help_documentation_url_note',
-              'If the URL is not set, the documentation will redirect to the default one.',
-            )}
-          </ds-text>
-        </Container>
-      </ListRow>
-      <ListRow>
-        <Container padding={{ all: 'small' }}>
-          <ThemeFieldInput
-            form={form}
-            name="carbonioAdminDocumentationUrl"
-            label={'Ex. https://upload.yourdocs.com/'}
-            globalTheme={globalTheme}
-            isGlobalTheme={isGlobalTheme}
-            hasModifyRights={hasModifyRights}
-            errorLabel={HTTPS_URL_ERROR_LABEL}
-            errorLabelDefault="You need to use the HTTPS protocol"
-          />
-        </Container>
-      </ListRow>
+      </div>
+      <div className={styles.groupHeaderTight}>
+        <ds-text as="h4" size="small" color="gray0" weight="bold">
+          {t('label.help_documentation_url', 'Help documentation URL')}
+        </ds-text>
+      </div>
+      <div className={styles.fieldLabel}>
+        <ds-text as="p" size="small" color="gray0">
+          {t(
+            'label.help_documentation_url_note',
+            'If the URL is not set, the documentation will redirect to the default one.',
+          )}
+        </ds-text>
+      </div>
+      <div className={styles.fieldWrapper}>
+        <ThemeFieldInput
+          form={form}
+          name="carbonioAdminDocumentationUrl"
+          label={'Ex. https://upload.yourdocs.com/'}
+          globalTheme={globalTheme}
+          isGlobalTheme={isGlobalTheme}
+          hasModifyRights={hasModifyRights}
+          errorLabel={HTTPS_URL_ERROR_LABEL}
+          errorLabelDefault="You need to use the HTTPS protocol"
+        />
+      </div>
     </>
   );
 };

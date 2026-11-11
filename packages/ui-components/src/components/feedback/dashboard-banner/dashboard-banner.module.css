@@ -1,0 +1,56 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.outer {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 1.5rem;
+}
+
+/* Top-only padding when no action button is shown; keeps the 1.5rem rhythm of .outer. */
+.outerNoAction {
+	width: 100%;
+	box-sizing: border-box;
+	padding: 1.5rem 0 0 0;
+}
+
+.banner {
+	display: flex;
+	width: 100%;
+	box-sizing: border-box;
+	flex-direction: column;
+	align-items: flex-end;
+	gap: 0.5rem;
+	padding: 0.5rem 1rem;
+}
+
+.warning {
+	background: var(--color-warning-regular);
+}
+
+.error {
+	background: var(--color-error-regular);
+}
+
+.contentRow {
+	display: flex;
+	width: 100%;
+	box-sizing: border-box;
+	align-items: flex-start;
+	gap: 0.5rem;
+}
+
+.iconWrap {
+	padding-right: 0.5rem;
+}
+
+.texts {
+	display: flex;
+	flex: 1 1 0%;
+	min-width: 0;
+	flex-direction: column;
+	gap: 0.5rem;
+}

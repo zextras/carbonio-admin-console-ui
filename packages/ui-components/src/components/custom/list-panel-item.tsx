@@ -5,8 +5,9 @@
  */
 import { noop } from 'lodash-es';
 import React from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
@@ -18,6 +19,7 @@ type ListPanelItemProps = {
 };
 
 export const ListPanelItem = ({ title, isListExpanded, setToggleView }: ListPanelItemProps) => {
+  const { t } = useTranslation();
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
@@ -34,7 +36,6 @@ export const ListPanelItem = ({ title, isListExpanded, setToggleView }: ListPane
         width="100%"
         style={{ cursor: 'pointer' }}
       >
-        <Row padding={{ all: 'small' }} width="100%" mainAlignment="space-between"></Row>
         <Row
           padding={{ all: 'small' }}
           width="100%"
@@ -56,6 +57,9 @@ export const ListPanelItem = ({ title, isListExpanded, setToggleView }: ListPane
               color="text"
               icon={isListExpanded ? 'ChevronUpOutline' : 'ChevronDownOutline'}
               size="small"
+              aria-label={
+                isListExpanded ? t('label.collapse', 'Collapse') : t('label.expand', 'Expand')
+              }
               onClick={noop}
               tabIndex={-1}
               aria-hidden="true"

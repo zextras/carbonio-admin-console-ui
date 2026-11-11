@@ -10,7 +10,7 @@ import React, { useCallback, useEffect } from 'react';
 
 import { resolveThemeColor } from '../../../theme/theme-utils';
 import { type IconName } from '../../../web-components/icon-registry';
-import { Button } from '../../basic/button/Button';
+import { Button } from '../../basic/button/button';
 import { TIMERS } from '../../constants';
 import { Container } from '../../layout/Container';
 import { Row } from '../../layout/Row';

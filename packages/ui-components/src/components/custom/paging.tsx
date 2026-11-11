@@ -7,7 +7,7 @@
 import { type FC, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
 

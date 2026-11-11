@@ -58,12 +58,24 @@ describe('BackupAdvanced', () => {
     it('should render all input fields', async () => {
       await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-      await expect.element(page.getByText(/Latency High Threshold/)).toBeVisible();
-      await expect.element(page.getByText(/Latency Low Threshold/)).toBeVisible();
-      await expect.element(page.getByText('Metadata Size')).toBeVisible();
-      await expect.element(page.getByText('Max Operations / Account')).toBeVisible();
-      await expect.element(page.getByText('Threads For Items')).toBeVisible();
-      await expect.element(page.getByText('Threads For Account')).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: /^Latency High Threshold \(ms\)/ }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: /^Latency Low Threshold \(ms\)/ }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Metadata Size' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Max Operations / Account' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Threads For Items' }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: 'Threads For Account' }))
+        .toBeVisible();
     });
 
     it('should render all switch options', async () => {
@@ -228,7 +240,7 @@ describe('BackupAdvanced', () => {
 
       await expect.element(page.getByText('LDAP Dump')).toBeVisible();
 
-      await page.getByText('LDAP Dump').click();
+      await page.getByText('LDAP Dump').click({ force: true });
 
       expect(page.getByRole('button', { name: 'Save' }).elements()).toHaveLength(0);
     });

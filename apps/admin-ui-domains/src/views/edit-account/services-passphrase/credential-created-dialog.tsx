@@ -95,7 +95,7 @@ export const CredentialCreatedDialog = ({
         <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
           <LabeledValue
             label={t('account_details.service_password', 'Service Password')}
-            backgroundColor="gray5"
+            
             value={password}
             CustomIcon={createCopyPasswordIcon(password)}
             textColor={'gray1'}

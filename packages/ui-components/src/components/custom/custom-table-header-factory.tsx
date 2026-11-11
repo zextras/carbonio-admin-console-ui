@@ -8,7 +8,7 @@ import { isEmpty } from 'lodash-es';
 import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 import { Checkbox } from '../inputs/Checkbox';
-import { Select } from '../inputs/Select';
+import { LegacySelect } from '../inputs/LegacySelect';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
 
@@ -149,7 +149,7 @@ export const CustomHeaderFactory: FC<any> = ({
           >
             {hasItems && (
               <Container width="4rem">
-                <Select
+                <LegacySelect
                   label={column.label}
                   multiple
                   items={column.items}

@@ -14,6 +14,7 @@ import {
   RadioGroup,
   Row,
   Select,
+  type SelectItem,
   Tooltip,
 } from '@zextras/ui-components';
 import { useState } from 'react';
@@ -43,6 +44,8 @@ type FolderSelectItem = {
   label: string;
   value: string;
 };
+
+const EMPTY_SELECTION: SelectItem = { label: '', value: '' };
 
 type ExposedFolderRowProps = {
   folder: AddressBookFolder;
@@ -185,14 +188,11 @@ const InlineExposeForm = ({
       </RadioGroup>
       {folderMode === 'specific' && (
         <Select
-          key={selectedFolder?.value ?? 'folder-unselected'}
           items={availableFolderItems}
-          background="gray5"
           label={t('label.select_an_address_book_ellipsis', 'Select an address book…')}
-          showCheckbox={false}
-          defaultSelection={selectedFolder}
-          onChange={(value: string | null): void => {
-            form.setFieldValue('folderId', value ?? '');
+          selection={selectedFolder ?? EMPTY_SELECTION}
+          onChange={(value: string): void => {
+            form.setFieldValue('folderId', value);
           }}
         />
       )}

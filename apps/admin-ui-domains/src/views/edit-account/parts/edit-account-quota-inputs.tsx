@@ -3,15 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import {
-  Container,
-  Input,
-  InputProps,
-  Padding,
-  Row,
-  Switch,
-  SwitchProps,
-} from '@zextras/ui-components';
+import { Container, NumberInput, Padding, Row, Switch, SwitchProps } from '@zextras/ui-components';
 import { useIsAdvanced } from '@zextras/ui-shared';
 import { TFunction } from 'i18next';
 import React, { ComponentProps, Dispatch, SetStateAction, useState } from 'react';
@@ -85,15 +77,6 @@ function getInheritedValue(
   return undefined;
 }
 
-function createRevertIcon(
-  inheritedValue: string | number | undefined,
-  onClick: () => void,
-): InputProps['CustomIcon'] {
-  return function RevertIcon() {
-    return <EditAccountQuotaRevertIcon inheritedValue={inheritedValue} onClick={onClick} />;
-  };
-}
-
 export const QuotaLimitInput = ({
   totalComputedQuotaLimit,
   initialTotalComputedQuotaLimit,
@@ -116,10 +99,8 @@ export const QuotaLimitInput = ({
     setQuotaValue(quotaValueFromLimit(totalComputedQuotaLimit));
   }
 
-  const inputOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const filteredStringValue = e.target.value.replaceAll(/\D/g, '');
-    const parsedValue =
-      filteredStringValue === '' ? undefined : Number.parseInt(filteredStringValue, 10);
+  const inputOnChange = (value: string): void => {
+    const parsedValue = value === '' ? undefined : Number.parseInt(value, 10);
     const valueInGB = parsedValue !== undefined && parsedValue > 0 ? parsedValue : undefined;
     const valueInBytes = valueInGB === undefined ? undefined : (GbToBytes(valueInGB) as number);
     onChange(valueInBytes ? { type: 'limited', value: valueInBytes } : undefined);
@@ -162,8 +143,6 @@ export const QuotaLimitInput = ({
 
   const inheritedValue = getInheritedValue(domainQuotaConstraint, cosComputedLimit, t);
 
-  const revertIcon = createRevertIcon(inheritedValue, onChangeReset);
-
   if (!isAdvanced) {
     return null;
   }
@@ -173,14 +152,11 @@ export const QuotaLimitInput = ({
       <Padding top={'large'} left={'large'}>
         <Container orientation={'horizontal'} gap={'0.5rem'}>
           <Switch
-            iconColor="primary"
             onClick={switchOnChange}
             value={switchValue}
             disabled={typeof domainQuotaConstraint === 'number'}
+            label={t('label.unlimited_quota', 'Unlimited quota')}
           />
-          <ds-text size="medium" as="label">
-            {t('label.unlimited_quota', 'Unlimited quota')}
-          </ds-text>
         </Container>
       </Padding>
       <Row
@@ -194,24 +170,26 @@ export const QuotaLimitInput = ({
           orientation={'horizontal'}
           gap={'0.5rem'}
           mainAlignment={'flex-start'}
-          crossAlignment={'flex-start'}
+          crossAlignment={'center'}
         >
-          <Input
+          <NumberInput
             description={inputDescription}
             label={t('label.total_quota_limit_gb', 'Total quota(GB)')}
-            background={'gray5'}
-            inputName="totalQuota"
+            name="totalQuota"
             onChange={inputOnChange}
             value={inputValue}
             disabled={switchValue}
             hasError={hasError}
-            CustomIcon={totalQuotaSource === 'account' ? revertIcon : undefined}
+            icon={
+              totalQuotaSource === 'account' ? (
+                <EditAccountQuotaRevertIcon
+                  inheritedValue={inheritedValue}
+                  onClick={onChangeReset}
+                />
+              ) : undefined
+            }
           />
-          {totalQuotaSource !== undefined && (
-            <Padding top={'medium'}>
-              <TotalQuotaSourceIcon source={totalQuotaSource} />
-            </Padding>
-          )}
+          {totalQuotaSource !== undefined && <TotalQuotaSourceIcon source={totalQuotaSource} />}
         </Container>
       </Row>
     </Container>
@@ -231,9 +209,9 @@ export const EditAccountQuotaInputs = ({
   initialAccountDetail,
   setAccountDetail,
 }: EditAccountQuotaInputsProps): React.JSX.Element => {
-  const onTotalComputedQuotaLimitChange: ComponentProps<
-    typeof QuotaLimitInput
-  >['onChange'] = (value) => {
+  const onTotalComputedQuotaLimitChange: ComponentProps<typeof QuotaLimitInput>['onChange'] = (
+    value,
+  ) => {
     setAccountDetail((prev) => ({ ...prev, totalComputedQuotaLimit: value }));
   };
 

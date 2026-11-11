@@ -321,7 +321,7 @@ describe('DomainMailingList (browser)', () => {
       setupSearchDirectoryInterceptor();
       await setupBrowserTest(<DomainMailingList />);
       await expect.element(page.getByText('team@example.com')).toBeInTheDocument();
-      await page.getByTestId('icon: Plus').click();
+      await page.getByRole('button', { name: 'Create mailing list' }).click();
       await expect.element(page.getByText('New Distribution List')).toBeInTheDocument();
     });
 

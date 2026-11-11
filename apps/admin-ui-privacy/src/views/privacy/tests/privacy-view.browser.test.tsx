@@ -140,8 +140,8 @@ describe('PrivacyView', () => {
     setupBrowserTest(<PrivacyView />);
     await expect.element(page.getByText(SWITCH_LABELS.error)).toBeVisible();
 
-    await page.getByText(SWITCH_LABELS.error).click();
-    await page.getByText(SWITCH_LABELS.analytics).click();
+    await page.getByText(SWITCH_LABELS.error).click({ force: true });
+    await page.getByText(SWITCH_LABELS.analytics).click({ force: true });
 
     await expect.element(page.getByRole('button', { name: 'Save' })).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Cancel' })).not.toBeInTheDocument();

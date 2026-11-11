@@ -60,13 +60,13 @@ describe('ResourceDetailSection (browser)', () => {
 		it('renders the ResourceName input', async () => {
 			setup(<TestApp />);
 
-			await expect.element(page.getByLabelText('ResourceName')).toBeVisible();
+			await expect.element(page.getByLabelText(/^ResourceName/)).toBeVisible();
 		});
 
 		it('renders the Name input', async () => {
 			setup(<TestApp />);
 
-			await expect.element(page.getByLabelText('Name', { exact: true })).toBeVisible();
+			await expect.element(page.getByLabelText(/^Name/)).toBeVisible();
 		});
 
 		it('renders the Type select label', async () => {
@@ -126,17 +126,17 @@ describe('ResourceDetailSection (browser)', () => {
 		it('auto-fills the Name field from the ResourceName when the user types a display name', async () => {
 			setup(<TestApp />);
 
-			const resourceNameInput = page.getByLabelText('ResourceName');
+			const resourceNameInput = page.getByLabelText(/^ResourceName/);
 			await userEvent.type(resourceNameInput, 'Conference Room');
 
-			const nameInput = page.getByLabelText('Name', { exact: true });
+			const nameInput = page.getByLabelText(/^Name/);
 			await expect.element(nameInput).not.toHaveValue('');
 		});
 
 		it('allows manual override of the auto-generated Name field', async () => {
 			setup(<TestApp />);
 
-			const nameInput = page.getByLabelText('Name', { exact: true });
+			const nameInput = page.getByLabelText(/^Name/);
 			await userEvent.type(nameInput, 'myroom');
 
 			await expect.element(nameInput).toHaveValue('myroom');

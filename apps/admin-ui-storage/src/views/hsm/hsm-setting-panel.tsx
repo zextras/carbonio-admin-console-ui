@@ -12,13 +12,13 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
   ListRow,
   ModalOverlay,
   Padding,
   Row,
   Switch,
   Table,
+  TextInput,
   useSnackbar,
 } from '@zextras/ui-components';
 import { setCoreAttributes, useAllServers } from '@zextras/ui-shared';
@@ -498,18 +498,16 @@ export function HSMsettingPanel() {
                   !isZxPowerstoreMoveSchedulingEnabled,
                 )
               }
-              iconColor="primary"
             />
           </Padding>
         </ListRow>
         <ListRow>
           <Container padding={{ bottom: 'large' }}>
-            <Input
+            <TextInput
               label={`${t('hsm.schedule', 'Schedule')} (${t(
                 'hsm.example_shedule',
                 'E.g. 0 2 * * 3',
               )})`}
-              backgroundColor="gray5"
               value={powerstoreMoveSchedulerValue}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 form.setFieldValue('powerstoreMoveSchedulerValue', e.target.value);
@@ -523,6 +521,10 @@ export function HSMsettingPanel() {
               'hsm.apply_duplication_after_scheduledhsm',
               'Apply Deduplication after scheduled HSM',
             )}
+            description={t(
+              'hsm.this_function_allow_save_disk_copy_msg',
+              'This function allows you to save disk space by storing a single copy of an item.',
+            )}
             value={deduplicateAfterScheduledMoveBlobs}
             onClick={(): void =>
               form.setFieldValue(
@@ -530,24 +532,7 @@ export function HSMsettingPanel() {
                 !deduplicateAfterScheduledMoveBlobs,
               )
             }
-            iconColor="primary"
           />
-        </ListRow>
-        <ListRow>
-          <Container
-            padding={{ left: 'extralarge' }}
-            crossAlignment="flex-start"
-            mainAlignment="flex-start"
-          >
-            <Padding left="small">
-              <ds-text as="span" size="extrasmall" weight="regular" color="secondary">
-                {t(
-                  'hsm.this_function_allow_save_disk_copy_msg',
-                  'This function allows you to save disk space by storing a single copy of an item.',
-                )}
-              </ds-text>
-            </Padding>
-          </Container>
         </ListRow>
 
         <Row mainAlignment="flex-start" width="100%">
@@ -622,7 +607,6 @@ export function HSMsettingPanel() {
           <Table
             rows={policiesRow}
             headers={headers}
-            showCheckbox={false}
             multiSelect={false}
             selectedRows={selectedPolicies as [] | [string]}
             HeaderFactory={CustomHeaderFactory}
@@ -631,9 +615,8 @@ export function HSMsettingPanel() {
         </ListRow>
         <ListRow>
           <Container padding={{ top: 'large' }}>
-            <Input
+            <TextInput
               label={t('hsm.minimum_space_threshold', 'Minimum Space Threshold')}
-              backgroundColor="gray5"
               value={powerstoreSpaceThreshold}
               onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                 form.setFieldValue('powerstoreSpaceThreshold', Number(e.target.value) || 0);

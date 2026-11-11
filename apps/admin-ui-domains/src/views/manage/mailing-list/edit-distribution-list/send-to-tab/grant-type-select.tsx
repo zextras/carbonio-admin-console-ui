@@ -9,24 +9,22 @@ import { type FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 type GrantTypeSelectProps = {
-	items: Array<any>;
-	selection: any;
-	onChange: (v: any) => void;
+  items: Array<any>;
+  selection: any;
+  onChange: (v: any) => void;
 };
 
 export const GrantTypeSelect: FC<GrantTypeSelectProps> = ({ items, selection, onChange }) => {
-	const [t] = useTranslation();
+  const [t] = useTranslation();
 
-	return (
-		<Container>
-			<Select
-				items={items}
-				background="gray5"
-				label={t('domain.distributionList.sendTo.acceptMessageFrom', 'Accept message from')}
-				showCheckbox={false}
-				onChange={onChange}
-				selection={selection}
-			/>
-		</Container>
-	);
+  return (
+    <Container>
+      <Select
+        items={items}
+        label={t('domain.distributionList.sendTo.acceptMessageFrom', 'Accept message from')}
+        onChange={onChange}
+        selection={selection}
+      />
+    </Container>
+  );
 };

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Checkbox, Container, Modal, Padding } from '@zextras/ui-components';
+import { Button, Checkbox, Modal } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -51,8 +51,8 @@ export const ActiveDeviceConfirmation = ({
       onClose={onClose}
       size="medium"
       customFooter={
-        <Container orientation="horizontal" mainAlignment="flex-end">
-          <Padding all="small">
+        <div className="flex w-full flex-wrap justify-end">
+          <div className="p-sm">
             <Button
               label={yesLabel}
               color="error"
@@ -61,37 +61,31 @@ export const ActiveDeviceConfirmation = ({
               type="outlined"
               onClick={onConfirm}
             />
-          </Padding>
+          </div>
           <Button label={noLabel} color="primary" onClick={onClose} />
-        </Container>
+        </div>
       }
     >
-      <Padding all="medium">
-        <ds-text as="p" overflow="break-word" weight="regular">
-          {isWipe &&
-            t(
-              'label.wiping_device_warning_msg_1',
-              'Wiping a device will restore it to the factory settings. Are you sure you want to continue?',
-            )}
-          {isReset &&
-            t(
-              'label.rest_device_warning_msg_1',
-              'Wiping a device will restore it to the factory settings. Are you sure you want to continue? ',
-            )}
-        </ds-text>
-      </Padding>
-      <Padding all="medium">
-        <ds-text as="p" overflow="break-word" weight="regular">
-          {t('label.account', 'Account')}: {device.accountEmail}
-        </ds-text>
-      </Padding>
-      <Padding left="medium" bottom="medium">
-        <ds-text as="p" overflow="break-word" weight="regular">
-          {t('label.device_id', 'Device ID')}: {device.deviceId}
-        </ds-text>
-      </Padding>
+      <ds-text className="p-md" as="p" overflow="break-word" weight="regular">
+        {isWipe &&
+          t(
+            'label.wiping_device_warning_msg_1',
+            'Wiping a device will restore it to the factory settings. Are you sure you want to continue?',
+          )}
+        {isReset &&
+          t(
+            'label.rest_device_warning_msg_1',
+            'Wiping a device will restore it to the factory settings. Are you sure you want to continue? ',
+          )}
+      </ds-text>
+      <ds-text className="p-md" as="p" overflow="break-word" weight="regular">
+        {t('label.account', 'Account')}: {device.accountEmail}
+      </ds-text>
+      <ds-text className="pl-md pb-md" as="p" overflow="break-word" weight="regular">
+        {t('label.device_id', 'Device ID')}: {device.deviceId}
+      </ds-text>
       {isWipe && (
-        <Padding top="medium" left="medium" bottom="large">
+        <div className="pt-md pl-md pb-lg">
           <Checkbox
             iconColor="primary"
             size="small"
@@ -106,7 +100,7 @@ export const ActiveDeviceConfirmation = ({
               onWipeAcknowledged(next);
             }}
           />
-        </Padding>
+        </div>
       )}
     </Modal>
   );

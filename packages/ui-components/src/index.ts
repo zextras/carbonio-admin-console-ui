@@ -14,7 +14,7 @@ export * from './theme/theme';
 export * from './web-components';
 export { type IconName } from './web-components/icon-registry';
 /** Basic components */
-export * from './components/basic/button/Button';
+export * from './components/basic/button/button';
 export * from './components/basic/copy-to-clipboard-button/copy-to-clipboard-button';
 export * from './components/basic/Link';
 
@@ -37,23 +37,26 @@ export {
   type ChipInputProps,
   type ChipItem,
 } from './components/inputs/chipInput/ChipInput';
+export * from './components/inputs/combobox-input';
 export * from './components/inputs/DatePicker';
 export * from './components/inputs/IconCheckbox';
-export * from './components/inputs/Input';
 export * from './components/inputs/labeled-value';
-export * from './components/inputs/PasswordInput';
-export * from './components/inputs/plain-input';
+export * from './components/inputs/LegacyInput';
+export {
+  LegacySelect,
+  type LegacySelectProps,
+  type MultipleSelectionOnChange,
+  type SingleSelectionOnChange,
+} from './components/inputs/LegacySelect';
+export * from './components/inputs/number-input';
+export * from './components/inputs/password-input';
+export * from './components/inputs/plain-switch';
+export * from './components/inputs/plain-textarea';
 export { Radio, type RadioProps } from './components/inputs/Radio';
 export { RadioGroup, type RadioGroupProps } from './components/inputs/RadioGroup';
-export {
-  type MultipleSelectionOnChange,
-  Select,
-  type SelectItem,
-  type SelectProps,
-  type SingleSelectionOnChange,
-} from './components/inputs/Select';
+export * from './components/inputs/select';
 export * from './components/inputs/Switch';
-export * from './components/inputs/TextArea';
+export * from './components/inputs/text-input';
 
 /** navigation components */
 export * from './components/navigation/route-leaving-guard';
@@ -68,17 +71,13 @@ export {
   type ClickableRowFactoryProps,
 } from './components/custom/clickable-row-factory';
 export * from './components/custom/custom-table-header-factory';
-export * from './components/custom/custom-text-area';
 export * from './components/custom/displayer';
-export * from './components/custom/dropdown-input';
 export * from './components/custom/horizontal-wizard-layout';
 export {
   type TRow as HoverableRow,
   default as HoverableRowFactory,
   type HoverableRowProps,
 } from './components/custom/hoverable-row-factory';
-export * from './components/custom/inherited-input';
-export * from './components/custom/inherited-select';
 export * from './components/custom/inherited-switch';
 export * from './components/custom/list-items';
 export * from './components/custom/list-panel-item';
@@ -95,10 +94,38 @@ export * from './components/custom/track-number-per-page';
 /** display components */
 export * from './components/display/Chip';
 export * from './components/display/CustomChip';
+export {
+  type DataTableBulkAction,
+  type DataTableBulkJobState,
+  type DataTableBulkVariant,
+  type DataTableCellEditCommit,
+  type DataTableColumnDef,
+  type DataTableColumnMeta,
+  type DataTableDateFilterValue,
+  type DataTableEditingState,
+  type DataTableEnumFilterValue,
+  type DataTableFeatures,
+  dataTableFeatures,
+  type DataTableFilterChip,
+  type DataTableFilterDef,
+  type DataTableFilterOption,
+  type DataTableFiltersState,
+  type DataTableFilterValue,
+  type DataTablePeekField,
+  type DataTableRangeFilterValue,
+  type DataTableRowAction,
+  type DataTableStatus,
+} from './components/display/data-table';
 export * from './components/display/Dropdown';
 export * from './components/display/List/List';
 export * from './components/display/ListItem';
 export * from './components/display/Popper';
+export {
+  getStatusBadgeTone,
+  StatusBadge,
+  type StatusBadgeProps,
+  type StatusBadgeTone,
+} from './components/display/status-badge';
 export {
   Table,
   type TableProps,
@@ -106,11 +133,94 @@ export {
   type THeaderProps,
   type TRow,
 } from './components/display/Table';
+
+/**
+ * Composable DataTable parts (Root + parts composition). The legacy
+ * monolithic `DataTable` orchestrator was removed; compose `DataTableRoot`
+ * with the parts below instead.
+ */
+export {
+  type DataTableBulkActionEvent,
+  DataTableBulkBar,
+  type DataTableBulkBarProps,
+} from './components/display/data-table/bulk/bulk-bar';
+export {
+  DataTableBulkJob,
+  type DataTableBulkJobProps,
+} from './components/display/data-table/bulk/bulk-job';
+export {
+  DataTableConfirmDialog,
+  type DataTableConfirmDialogProps,
+} from './components/display/data-table/bulk/confirm-dialog';
+export {
+  DataTableSelectAllMatching,
+  type DataTableSelectAllMatchingProps,
+} from './components/display/data-table/bulk/select-all-matching';
+export {
+  DataTableUndoToast,
+  type DataTableUndoToastProps,
+} from './components/display/data-table/bulk/undo-toast';
+export { DataTableQuotaBar } from './components/display/data-table/cell-ui/quota-bar';
+export {
+  DataTableStatusBadge,
+  type DataTableStatusBadgeVariant,
+} from './components/display/data-table/cell-ui/status-badge';
+export {
+  createDataTableColumnHelper,
+  useDataTable,
+} from './components/display/data-table/create-data-table';
+export { useDataTableContext } from './components/display/data-table/data-table-contexts';
+export {
+  DataTableRoot,
+  type DataTableRootProps,
+} from './components/display/data-table/data-table-root';
+export { DataTableLiveRegion } from './components/display/data-table/live-region';
+export {
+  buildFilterChips,
+  removeFilterChip,
+} from './components/display/data-table/models/filter-model';
+export {
+  DataTablePagination,
+  type DataTablePaginationProps,
+} from './components/display/data-table/pagination';
+export {
+  DataTablePeekPanel,
+  type DataTablePeekPanelProps,
+} from './components/display/data-table/peek-panel';
+export {
+  DataTableStaleBanner,
+  type DataTableStaleBannerProps,
+} from './components/display/data-table/stale-banner';
+export { DataTableTable, type DataTableTableProps } from './components/display/data-table/table';
+export { DataTableTableFooter } from './components/display/data-table/table-footer';
+export type {
+  DataTableDensity,
+  DataTableUndoToastState,
+} from './components/display/data-table/table-ui-store';
+export {
+  DataTableCustomize,
+  type DataTableCustomizeProps,
+} from './components/display/data-table/toolbar/customize';
+export { DataTableFilterChips } from './components/display/data-table/toolbar/filter-chips';
+export {
+  DataTableFilters,
+  type DataTableFiltersProps,
+} from './components/display/data-table/toolbar/filters';
+export { DataTableSearch } from './components/display/data-table/toolbar/search';
+export { DataTableToolbar } from './components/display/data-table/toolbar/toolbar';
 export * from './components/display/Tooltip';
 
 /** Feedback components */
 export { Banner, type BannerProps } from './components/feedback/banner/Banner';
-export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/LicenseBanner';
+export {
+  DashboardBanner,
+  type DashboardBannerAction,
+  type DashboardBannerProps,
+} from './components/feedback/dashboard-banner/dashboard-banner';
+export {
+  LicenseBanner,
+  type LicenseBannerProps,
+} from './components/feedback/license-banner/license-banner';
 export * from './components/feedback/Modal';
 export * from './components/feedback/quota/Quota';
 export * from './components/feedback/snackbar/Snackbar';

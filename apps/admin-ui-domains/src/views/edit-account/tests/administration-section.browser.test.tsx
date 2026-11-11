@@ -100,7 +100,7 @@ describe('EditAccountAdministrationSection (browser)', () => {
 		setupTest();
 
 		// open the domain dropdown (initial empty-search domain list) and pick one
-		const domainInput = page.getByRole('textbox', { name: /^domain$/i });
+		const domainInput = page.getByRole('combobox', { name: /^domain$/i });
 		await vi.waitFor(() => expect.element(domainInput).toBeVisible());
 		await domainInput.click();
 		await page.getByText('zextras.com', { exact: true }).click();

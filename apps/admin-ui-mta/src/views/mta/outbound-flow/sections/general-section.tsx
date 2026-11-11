@@ -8,9 +8,9 @@ import {
   type ChipItem,
   Container,
   CustomChip,
-  Input,
   Select,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { some } from 'lodash-es';
@@ -74,7 +74,6 @@ export const GeneralSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -96,7 +95,6 @@ export const GeneralSection = ({
                   value={field.state.value}
                   onClick={() => field.handleChange(!field.state.value)}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -126,7 +124,6 @@ export const GeneralSection = ({
                   value={field.state.value === 'yes'}
                   onClick={() => field.handleChange(field.state.value === 'yes' ? 'no' : 'yes')}
                   disabled={!allowSetMTA}
-                  iconColor="primary"
                 />
               </Tooltip>
             )}
@@ -137,13 +134,8 @@ export const GeneralSection = ({
             {(field) => (
               <Select
                 items={tlsSecurityOptions}
-                background="gray5"
                 label={t('mta.tls_security_level', 'TLS Security Level')}
-                showCheckbox={false}
-                selection={tlsSecurityOptions.find(
-                  (item: Record<string, string>) => item.value === field.state.value,
-                )}
-                // @ts-expect-error - needs a fix
+                selection={tlsSecurityOptions.find((item) => item.value === field.state.value) ?? tlsSecurityOptions[0]}
                 onChange={(v: string) => field.handleChange(v)}
                 disabled={!allowSetMTA}
               />
@@ -159,7 +151,6 @@ export const GeneralSection = ({
       >
         <ChipInput
           placeholder={t('mta.my_netword', 'My Network')}
-          background="gray5"
           requireUniqueChips
           value={networkValue}
           onChange={onBlockExtensionChange}
@@ -187,7 +178,7 @@ export const GeneralSection = ({
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaSmtpHeloName">
             {(field) => (
-              <Input
+              <TextInput
                 label={t('mta.smtp_helo_name', 'SMTP HELO Name')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -195,7 +186,6 @@ export const GeneralSection = ({
                     field.handleChange(e.target.value);
                   }
                 }}
-                backgroundColor="gray5"
               />
             )}
           </form.Field>
@@ -203,7 +193,7 @@ export const GeneralSection = ({
         <Container>
           <form.Field name="zimbraMtaMyHostname">
             {(field) => (
-              <Input
+              <TextInput
                 label={t('mta.my_hostname', 'My Hostname')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -211,7 +201,6 @@ export const GeneralSection = ({
                     field.handleChange(e.target.value);
                   }
                 }}
-                backgroundColor="gray5"
               />
             )}
           </form.Field>
@@ -228,7 +217,7 @@ export const GeneralSection = ({
         <Container padding={{ right: 'medium' }}>
           <form.Field name="zimbraMtaFallbackRelayHost">
             {(field) => (
-              <Input
+              <TextInput
                 label={t('mta.fallback_relay_host', 'Fallback Relay Host')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -236,7 +225,6 @@ export const GeneralSection = ({
                     field.handleChange(e.target.value);
                   }
                 }}
-                backgroundColor="gray5"
               />
             )}
           </form.Field>
@@ -244,7 +232,7 @@ export const GeneralSection = ({
         <Container>
           <form.Field name="zimbraMtaRelayHost">
             {(field) => (
-              <Input
+              <TextInput
                 label={t('mta.relay_host', 'Relay Host')}
                 value={field.state.value || ''}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -252,7 +240,6 @@ export const GeneralSection = ({
                     field.handleChange(e.target.value);
                   }
                 }}
-                backgroundColor="gray5"
               />
             )}
           </form.Field>
@@ -266,7 +253,7 @@ export const GeneralSection = ({
       >
         <form.Field name="zimbraMtaMyOrigin">
           {(field) => (
-            <Input
+            <TextInput
               label={t('mta.my_origin', 'My Origin')}
               value={field.state.value || ''}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
@@ -274,7 +261,6 @@ export const GeneralSection = ({
                   field.handleChange(e.target.value);
                 }
               }}
-              backgroundColor="gray5"
             />
           )}
         </form.Field>

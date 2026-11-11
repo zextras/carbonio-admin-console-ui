@@ -7,12 +7,12 @@ import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import {
   Container,
-  Input,
   ListRow,
   RouteLeavingGuard,
   Row,
   Select,
   Switch,
+  TextInput,
 } from '@zextras/ui-components';
 import { useCurrentUserRights, useGlobalSettings } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
@@ -87,17 +87,17 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="latencyHighThreshold">
                       {(field) => (
-                        <Input
-                          isRequired
-                          label={`${t(
-                            'backup.latency_high_threshold',
-                            'Latency High Threshold',
-                          )} (${t('backup.kb', 'KB')})`}
+                        <TextInput
+                          required
+                          label={t(
+                            'backup.latency_high_threshold_ms',
+                            'Latency High Threshold (ms)',
+                          )}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -108,17 +108,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="latencyLowThreshold">
                       {(field) => (
-                        <Input
-                          isRequired
-                          label={`${t(
-                            'backup.latency_low_threshold',
-                            'Latency Low Threshold',
-                          )} (${t('backup.kb', 'KB')})`}
+                        <TextInput
+                          required
+                          label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -138,7 +135,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           value={field.state.value}
                           onClick={() => field.handleChange(!field.state.value)}
                           label={t('backup.ldap_dump', 'LDAP Dump')}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -161,7 +157,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                             'backup.store_server_configurations_in_the_backup',
                             'Store Server Configuration in the backup',
                           )}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -181,7 +176,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           value={field.state.value}
                           onClick={() => field.handleChange(!field.state.value)}
                           label={t('backup.purge_old_configurations', 'Purge Old Configurations')}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -201,7 +195,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                           value={field.state.value}
                           onClick={() => field.handleChange(!field.state.value)}
                           label={t('backup.save_index', 'Save Index')}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -212,14 +205,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="maxMetadataSize">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <TextInput
+                          required
                           label={t('backup.metatdata_size', 'Metadata Size')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -230,14 +223,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="maxOperationsPerAccount">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <TextInput
+                          required
                           label={t('backup.max_operations_account', 'Max Operations / Account')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -250,14 +243,13 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                       {(field) => (
                         <Select
                           items={COMPRESS_LEVEL_ITEMS}
-                          background="gray5"
                           label={t('backup.compression_level', 'Compression Level')}
-                          defaultSelection={COMPRESS_LEVEL_ITEMS.find(
-                            (item) =>
-                              item.value === String(globalConfig.backupCompressionLevel ?? ''),
-                          )}
-                          onChange={(v) => field.handleChange(v ?? '')}
-                          showCheckbox={false}
+                          selection={
+                            COMPRESS_LEVEL_ITEMS.find(
+                              (item) => item.value === field.state.value,
+                            ) ?? COMPRESS_LEVEL_ITEMS[0]
+                          }
+                          onChange={(value) => field.handleChange(value)}
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -268,14 +260,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="threadsForItems">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <TextInput
+                          required
                           label={t('backup.threads_for_items', 'Threads For Items')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -286,14 +278,14 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                   <Container padding={{ all: 'small' }}>
                     <form.Field name="threadsForAccounts">
                       {(field) => (
-                        <Input
-                          isRequired
+                        <TextInput
+                          required
                           label={t('backup.threads_for_account', 'Threads For Account')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
                           }
-                          backgroundColor="gray5"
+                          autoComplete="off"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -316,7 +308,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                             'backup.flash_metadata_in_the_disk_at_every_save',
                             'Flash metadata in the disk at every save',
                           )}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}
@@ -339,7 +330,6 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                             'backup.archive_user_metadata_folder_in_the_remote_backup',
                             'Archive user metadata folder in the remote backup',
                           )}
-                          iconColor="primary"
                           disabled={!allowSetBackup}
                         />
                       )}

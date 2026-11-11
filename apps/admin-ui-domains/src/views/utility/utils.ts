@@ -1058,10 +1058,6 @@ export const localeList = (t: TFunction): SelectItem[] => [
     value: 'pl',
   },
   {
-    label: t('locale.label_romanian', { value: 'română', defaultValue: 'Romanian - {{value}}' }),
-    value: 'ro',
-  },
-  {
     label: t('locale.label_russian', { value: 'русский', defaultValue: 'Russian - {{value}}' }),
     value: 'ru',
   },
@@ -1262,13 +1258,16 @@ export const delegateRightsType = (t: TFunction): Array<{ value: string; label: 
     value: SEND_READ_MAILS,
   },
   {
-    label: t('account_details.manage_no_rights_to_send_mails', 'Manage (no rights to send mails)'),
+    label: t(
+      'account_details.manage_no_rights_to_send_mails',
+      'Manage (no rights to send mails, includes permission to administer folders)',
+    ),
     value: MANAGE_NO_SEND,
   },
   {
     label: t(
       'account_details.send_read_manage_mails',
-      'Send, Read and Manage Mails (all of the above)',
+      'Send, Read and Manage Mails (all of the above, includes permission to administer folders)',
     ),
     value: SEND_READ_MANAGE_MAILS,
   },

@@ -10,13 +10,13 @@ import {
   Button,
   Container,
   getFieldErrorProps,
-  Input,
   Padding,
   PasswordInput,
   Row,
   Select,
   type SelectItem as UISelectItem,
   Switch,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { type ChangeEvent, useState } from 'react';
@@ -93,9 +93,7 @@ export function Connection({
       setIsProgressActive(true);
 
       const selectedRegion =
-        value.regionValue === CUSTOM_REGION_VALUE
-          ? value.customRegion.trim()
-          : value.regionValue;
+        value.regionValue === CUSTOM_REGION_VALUE ? value.customRegion.trim() : value.regionValue;
 
       const payload: CreateS3ConnectorRequest = {
         _jsns: ZIMBRA_ADMIN_URN,
@@ -104,13 +102,19 @@ export function Connection({
         iAmSure: true,
         bucketName: value.bucketName,
         label: value.bucketLabel,
-        accessKey: value.accessKey,
-        secret: value.secretKey,
         region: selectedRegion,
         insecureHttps: value.acceptUntrustedSSL,
         notes: '',
       };
 
+      const trimmedAccessKey = (value.accessKey ?? '').trim();
+      if (trimmedAccessKey !== '') {
+        payload.accessKey = trimmedAccessKey;
+      }
+      const trimmedSecretKey = (value.secretKey ?? '').trim();
+      if (trimmedSecretKey !== '') {
+        payload.secret = trimmedSecretKey;
+      }
       if (value.url.trim() !== '') {
         payload.url = value.url.trim();
       }
@@ -194,9 +198,9 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  backgroundColor="gray5"
-                  label={t('storages.s3Connectors.descriptiveName', 'Descriptive name*')}
+                <TextInput
+                  label={t('storages.s3Connectors.descriptiveName', 'Descriptive name')}
+                  required
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                     field.handleChange(e.target.value)
@@ -219,9 +223,9 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('storages.s3Connectors.bucketName', 'Bucket name*')}
+                  <TextInput
+                    label={t('storages.s3Connectors.bucketName', 'Bucket name')}
+                    required
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -245,9 +249,8 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    backgroundColor="gray5"
-                    label={t('storages.s3Connectors.accessKey', 'Access Key ID*')}
+                  <TextInput
+                    label={t('storages.s3Connectors.accessKey', 'Access Key ID')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -271,8 +274,7 @@ export function Connection({
                 );
                 return (
                   <PasswordInput
-                    backgroundColor="gray5"
-                    label={t('label.secret_key', 'Secret Access Key*')}
+                    label={t('label.secret_key', 'Secret Access Key')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                       field.handleChange(e.target.value)
@@ -291,11 +293,9 @@ export function Connection({
             {(field) => (
               <Select
                 items={regionItems}
-                background="gray5"
                 label={t('label.region', 'Region')}
                 selection={regionSelection}
-                onChange={(e: string | null): void => field.handleChange(e ?? NO_REGION_VALUE)}
-                showCheckbox={false}
+                onChange={(value) => field.handleChange(value)}
               />
             )}
           </form.Field>
@@ -311,8 +311,7 @@ export function Connection({
                   S3_CONNECTOR_VALIDATION_MESSAGES,
                 );
                 return (
-                  <Input
-                    backgroundColor="gray5"
+                  <TextInput
                     label={t('label.custom_region', 'Custom region')}
                     value={field.state.value}
                     onChange={(e: ChangeEvent<HTMLInputElement>): void =>
@@ -336,13 +335,9 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <Input
-                  label={
-                    isEndpointUrlRequired
-                      ? t('label.endpoint_url_required', 'Endpoint URL*')
-                      : t('label.endpoint_url', 'Endpoint URL')
-                  }
-                  backgroundColor="gray5"
+                <TextInput
+                  label={t('label.endpoint_url_required', 'Endpoint URL')}
+                  required={isEndpointUrlRequired}
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                     field.handleChange(e.target.value)
@@ -372,9 +367,8 @@ export function Connection({
                 S3_CONNECTOR_VALIDATION_MESSAGES,
               );
               return (
-                <Input
+                <TextInput
                   label={t('label.prefix', 'Prefix')}
-                  backgroundColor="gray5"
                   value={field.state.value}
                   onChange={(e: ChangeEvent<HTMLInputElement>): void =>
                     field.handleChange(e.target.value)
@@ -418,7 +412,6 @@ export function Connection({
                   )}
                   value={field.state.value}
                   onClick={(): void => field.handleChange(!field.state.value)}
-                  iconColor="primary"
                 />
               )}
             </form.Field>
@@ -471,7 +464,10 @@ export function Connection({
             </Padding>
             <Button
               type="default"
-              label={t('buckets.connection.verify_and_create_connector', 'VERIFY & CREATE CONNECTOR')}
+              label={t(
+                'buckets.connection.verify_and_create_connector',
+                'VERIFY & CREATE CONNECTOR',
+              )}
               color="primary"
               onClick={(): void => {
                 void form.handleSubmit();
@@ -483,9 +479,7 @@ export function Connection({
       {isProgressActive && (
         <VerifyProgress isPending={isVerifyPending} onComplete={handleProgressComplete} />
       )}
-      {showVerifyResult && isVerifySuccess && (
-        <VerifySuccess onComplete={handleSuccessComplete} />
-      )}
+      {showVerifyResult && isVerifySuccess && <VerifySuccess onComplete={handleSuccessComplete} />}
       {showVerifyResult && isVerifyError && (
         <VerifyError
           checkDetails={checkDetails}
@@ -496,5 +490,3 @@ export function Connection({
     </Container>
   );
 }
-
-

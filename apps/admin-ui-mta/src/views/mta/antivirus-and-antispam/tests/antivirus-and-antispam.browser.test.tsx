@@ -65,7 +65,7 @@ async function expectAntivirusWarningsSwitchesVisible() {
 async function toggleVerifyDkimSwitch() {
   const dkimSwitch = page.getByRole('switch', { name: 'Verify DKIM validity' });
   await expect.element(dkimSwitch).toBeVisible();
-  await expect.poll(() => dkimSwitch.element().getAttribute('aria-disabled')).toBeNull();
+  await expect.element(dkimSwitch).toBeEnabled();
   await dkimSwitch.click();
 }
 

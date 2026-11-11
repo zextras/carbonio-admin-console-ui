@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Button, Container, Input, ModalOverlay, Row } from '@zextras/ui-components';
+import { Button, Container, LegacyInput, ModalOverlay, Row } from '@zextras/ui-components';
 import { type ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -181,7 +181,7 @@ export const DomainAddressBook = () => {
           )}
         </ds-text>
 
-        <Input
+        <LegacyInput
           label={t('label.search_accounts', 'Search accounts')}
           value={searchString}
           backgroundColor="gray5"

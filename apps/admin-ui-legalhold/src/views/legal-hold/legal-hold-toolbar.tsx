@@ -42,7 +42,6 @@ export const LegalHoldToolbar = ({
             value={isShowOnlyLegalHoldAccount}
             disabled={disableSwitch}
             onClick={onToggleLegalHoldFilter}
-            iconColor="primary"
           />
         </ds-text>
       </Row>

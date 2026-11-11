@@ -155,7 +155,6 @@ export function EditHsmPolicyVolumesSection({
             onClick={(): void => {
               setShowSourceVolume(!showSourceVolume);
             }}
-            iconColor="primary"
           />
         </Padding>
       </ListRow>
@@ -222,7 +221,6 @@ export function EditHsmPolicyVolumesSection({
             onClick={(): void => {
               setShowDestinationVolume(!showDestinationVolume);
             }}
-            iconColor="primary"
           />
         </Padding>
       </ListRow>

@@ -84,7 +84,7 @@ async function setupGlobalSettingsPanel(): Promise<{
 
 	setupBrowserTest(<GlobalDetailPanel />);
 
-	await expect.element(page.getByPlaceholder('Notification Sender')).toBeVisible();
+	await expect.element(page.getByRole('textbox', { name: 'Notification Sender' })).toBeVisible();
 
 	return { capturedModifyConfigs };
 }
@@ -97,7 +97,9 @@ describe('GlobalDetailPanel', { timeout: 20_000 }, () => {
 	it('renders fields from GetAllConfig', async () => {
 		await setupGlobalSettingsPanel();
 
-		await expect.element(page.getByPlaceholder('Notification Sender')).toHaveValue(SENDER);
+		await expect
+			.element(page.getByRole('textbox', { name: 'Notification Sender' }))
+			.toHaveValue(SENDER);
 		await expect.element(page.getByText(RECIPIENT_1)).toBeVisible();
 		await expect.element(page.getByText(RECIPIENT_2)).toBeVisible();
 		await expect
@@ -134,7 +136,7 @@ describe('GlobalDetailPanel', { timeout: 20_000 }, () => {
 	it('shows an inline error and blocks save when sender email is invalid', async () => {
 		const { capturedModifyConfigs } = await setupGlobalSettingsPanel();
 
-		const senderInput = page.getByPlaceholder('Notification Sender');
+		const senderInput = page.getByRole('textbox', { name: 'Notification Sender' });
 		await userEvent.fill(senderInput, 'not-an-email');
 		await page.getByRole('switch', { name: SWITCH_LABELS.searchAllDomains }).click();
 

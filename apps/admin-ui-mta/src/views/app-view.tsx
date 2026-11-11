@@ -4,12 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildSectionMenu, Container, PageHeader } from '@zextras/ui-components';
+import { buildSectionMenu, PageHeader } from '@zextras/ui-components';
 import { useDetailViewMaxWidth } from '@zextras/ui-shared';
 import { Suspense } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Route, Routes, useLocation } from 'react-router';
 
+import styles from './app-view.module.css';
 import { MTADetailPanel } from './mta/mta-detail-panel';
 import { MTAListPanel } from './mta/mta-list-panel';
 import { SECTION_ROUTES } from './mta/mta-section-routes';
@@ -47,7 +48,7 @@ export const AppView = () => {
     isServerRoute && segmentAfterBase ? { [segmentAfterBase]: segmentAfterBase } : undefined;
 
   return (
-    <Container>
+    <div className={styles.root}>
       <PageHeader
         crumbMenus={crumbMenus}
         labelOverrides={labelOverrides}
@@ -57,23 +58,23 @@ export const AppView = () => {
         <Route
           path={'/*'}
           element={
-            <Container orientation="horizontal" mainAlignment="flex-start">
-              <Container style={{ maxWidth: '16.563rem' }}>
+            <div className={styles.layout}>
+              <div className={styles.sidebar}>
                 <Suspense fallback={<ds-spinner />}>
                   <MTAListPanel />
                 </Suspense>
-              </Container>
-              <Container style={{ maxWidth: '100%' }}>
-                <Container style={{ maxWidth: detailViewMaxWidth, transition: 'max-width 300ms' }}>
+              </div>
+              <div className={styles.detailWrapper}>
+                <div className={styles.detailContent} style={{ maxWidth: detailViewMaxWidth }}>
                   <Suspense fallback={<ds-spinner />}>
                     <MTADetailPanel />
                   </Suspense>
-                </Container>
-              </Container>
-            </Container>
+                </div>
+              </div>
+            </div>
           }
         />
       </Routes>
-    </Container>
+    </div>
   );
 };

@@ -11,11 +11,11 @@ import {
   Dropdown,
   DropdownItem,
   getFieldErrorProps,
-  Input,
   LabeledValue,
   ListRow,
   Padding,
   Row,
+  TextInput,
 } from '@zextras/ui-components';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -93,7 +93,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
             <LabeledValue
               label={t('label.gal_mode', 'GAL Mode')}
               value={galModeLabel}
-              backgroundColor="gray6"
+              
             />
           </Padding>
         </Container>
@@ -109,15 +109,15 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
               GAL_VALIDATION_MESSAGES,
             );
             return (
-              <Input
-                isRequired
-                type="number"
+              <TextInput
+                required
                 label={t(
                   'label.limit_search_results_from_address_book_list_to',
                   'Limit search results from Address Book List to',
                 )}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
+                inputMode="numeric"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}
@@ -140,12 +140,12 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
               GAL_VALIDATION_MESSAGES,
             );
             return (
-              <Input
-                isRequired
-                type="number"
+              <TextInput
+                required
                 label={t('domain.page_size', 'Page Size')}
-                value={field.state.value}
-                backgroundColor="gray5"
+                value={field.state.value ?? ''}
+                autoComplete="off"
+                inputMode="numeric"
                 onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
                   field.handleChange(e.target.value);
                 }}

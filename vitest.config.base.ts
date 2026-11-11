@@ -57,7 +57,6 @@ function getOptimizeDepsInclude(): Array<string> {
     'date-fns/locale/ja',
     'date-fns/locale/pt',
     'date-fns/locale/pl',
-    'date-fns/locale/ro',
     'date-fns/locale/ru',
     'date-fns/locale/es',
     'date-fns/locale/th',

@@ -5,13 +5,13 @@
  */
 import { useSelector } from '@tanstack/react-store';
 import {
-  Container,
-  getFieldErrorProps,
-  Input,
-  ListRow,
-  Row,
-  Select,
-  Switch,
+	Container,
+	getFieldErrorProps,
+	ListRow,
+	Row,
+	Select,
+	Switch,
+	TextInput,
 } from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -78,7 +78,6 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 										onClick={() =>
 											field.handleChange(field.state.value === 'TRUE' ? 'FALSE' : 'TRUE')
 										}
-										iconColor="primary"
 										disabled={readonlyCOS}
 									/>
 								)}
@@ -124,11 +123,10 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								return (
 									<>
 										<Container width="72%" padding={{ right: 'small' }}>
-											<Input
+											<TextInput
 												label={labels.passwordLockout.duration}
 												value={num}
-												backgroundColor={'gray5'}
-												inputName="zimbraPasswordLockoutDuration"
+												name="zimbraPasswordLockoutDuration"
 												onChange={(e: ChangeEvent<HTMLInputElement>) =>
 													field.handleChange(e.target.value ? `${e.target.value}${unit}` : '')
 												}
@@ -141,12 +139,10 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 										<Container width="28%" padding={{ left: 'small', right: 'small' }}>
 											<Select
 												items={timeItems}
-												background={'gray5'}
 												label={labels.timeRange}
 												selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}
-												showCheckbox={false}
 												onChange={(newType) => {
-													if (newType) field.handleChange(num ? `${num}${newType}` : '');
+													field.handleChange(num ? `${num}${newType}` : '');
 												}}
 												disabled={!isLockoutEnabled || readonlyCOS}
 											/>
@@ -165,11 +161,10 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 								return (
 									<>
 										<Container width="72%" padding={{ left: 'small', right: 'small' }}>
-											<Input
+											<TextInput
 												label={labels.passwordLockout.failureLifetime}
 												value={num}
-												backgroundColor={'gray5'}
-												inputName="zimbraPasswordLockoutFailureLifetime"
+												name="zimbraPasswordLockoutFailureLifetime"
 												onChange={(e: ChangeEvent<HTMLInputElement>) =>
 													field.handleChange(e.target.value ? `${e.target.value}${unit}` : '')
 												}
@@ -182,12 +177,10 @@ export const COSFailedLoginPolicy = ({ form, readonlyCOS, timeItems }: FailedLog
 										<Container width="28%" padding={{ left: 'small' }}>
 											<Select
 												items={timeItems}
-												background={'gray5'}
 												label={labels.timeRange}
 												selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}
-												showCheckbox={false}
 												onChange={(newType) => {
-													if (newType) field.handleChange(num ? `${num}${newType}` : '');
+													field.handleChange(num ? `${num}${newType}` : '');
 												}}
 												disabled={!isLockoutEnabled || readonlyCOS}
 											/>

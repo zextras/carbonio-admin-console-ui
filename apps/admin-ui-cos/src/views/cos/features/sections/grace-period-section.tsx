@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useField } from '@tanstack/react-form';
-import { Container, Padding, Row, Switch } from '@zextras/ui-components';
+import { Container, Switch } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import type { CosFeaturesFormApi } from '../../types';
@@ -29,33 +29,16 @@ export const GracePeriodSection = ({ form, readonlyCOS }: GracePeriodSectionProp
           'cos.features.allowSetupDeferralDuringGracePeriod',
           'Allow setup deferral during grace period',
         )}
-        iconColor="primary"
+        description={t(
+          'cos.features.allowSetupDeferralDuringGracePeriodInfo',
+          'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
+        )}
         disabled={
           readonlyCOS ||
           otpMgmtField.state.value === 'FALSE' ||
           otpWizardField.state.value === 'FALSE'
         }
       />
-      <Padding left={'extralarge'}>
-        <Row padding={{ left: 'small' }}>
-          <ds-text
-            as="span"
-            color="gray1"
-            size="small"
-            overflow="break-word"
-            disabled={
-              readonlyCOS ||
-              otpMgmtField.state.value === 'FALSE' ||
-              otpWizardField.state.value === 'FALSE'
-            }
-          >
-            {t(
-              'cos.features.allowSetupDeferralDuringGracePeriodInfo',
-              'Users can skip the wizard for a limited time. The prompt will reappear at every login until setup is completed or the grace period expires.',
-            )}{' '}
-          </ds-text>
-        </Row>
-      </Padding>
     </Container>
   );
 };

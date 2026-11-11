@@ -30,7 +30,6 @@ export const DelegatedAdminField = ({ form }: DelegatedAdminFieldProps) => {
 				onClick={(): void => {
 					field.handleChange(!field.state.value);
 				}}
-				iconColor="primary"
 			/>
 		</div>
 	);

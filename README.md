@@ -359,7 +359,7 @@ If builds fail unexpectedly:
 1. **Check Node.js version:**
 
    ```bash
-   node --version  # Should be >=22.14.0
+   node --version  # Should be >=26.0.0
    ```
 
 ### Test Timeout Issues

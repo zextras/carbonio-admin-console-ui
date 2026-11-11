@@ -20,6 +20,9 @@ export const DISTRIBUTION_LIST = 'distribution_list';
 export const SERVERS_LIST = 'servers_list';
 export const SERVER = 'server';
 export const LIST = 'list';
+export const GLOBAL_DOMAIN_LIST_ROUTE = 'global/domains';
+
+export const GLOBAL_WHITELABEL_SETTINGS = 'global/whitelabel_settings';
 
 // Values and Flags
 export const TRUE = 'TRUE';

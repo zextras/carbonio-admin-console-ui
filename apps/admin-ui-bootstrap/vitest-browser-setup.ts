@@ -8,7 +8,7 @@
 
 import 'vitest-browser-react';
 
-import { resetMockWorker, startMockWorker, stopMockWorker, suppressLitDevModeWarning } from 'admin-ui-test-utils';
+import { resetMockWorker, startMockWorker, suppressLitDevModeWarning } from 'admin-ui-test-utils';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 suppressLitDevModeWarning();
@@ -32,7 +32,6 @@ beforeEach(() => {
 });
 
 afterAll(() => {
-  stopMockWorker();
   vi.clearAllMocks();
   resetMockWorker();
 });

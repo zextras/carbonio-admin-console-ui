@@ -19,6 +19,15 @@
   width: 100%;
 }
 
+.row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  box-sizing: border-box;
+  width: 100%;
+}
+
 .versionCol {
   padding: var(--padding-size-extralarge);
 }

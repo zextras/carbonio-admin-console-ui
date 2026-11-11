@@ -23,7 +23,6 @@ export const AccountStatusFlags = () => {
             value={values?.zimbraHideInGal === 'TRUE'}
             onClick={(): void => toggleAccountValue('zimbraHideInGal')}
             label={t('account_details.hidden_in_gal', 'Hidden in GAL')}
-            iconColor="primary"
           />
           <Tooltip placement="top" label={t('label.global_address_list', 'Global Address List')}>
             <ds-text
@@ -44,7 +43,6 @@ export const AccountStatusFlags = () => {
               'account_details.this_user_must_change_password',
               'This user must change password',
             )}
-            iconColor="primary"
           />
         </Row>
       </Row>

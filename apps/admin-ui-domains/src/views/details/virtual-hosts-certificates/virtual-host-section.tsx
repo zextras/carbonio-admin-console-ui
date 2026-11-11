@@ -8,11 +8,11 @@ import { useSelector } from '@tanstack/react-store';
 import {
   Button,
   Container,
-  Input,
   List,
   ListItem,
   Padding,
   Row,
+  TextInput,
   Tooltip,
 } from '@zextras/ui-components';
 import { useState } from 'react';
@@ -34,6 +34,7 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
   const [hoveredRow, setHoveredRow] = useState<string | null>(null);
 
   const isDraftValid = isDraftHostnameValid(virtualHostValue);
+  const isDraftInvalid = virtualHostValue !== '' && !isDraftValid;
   const addButtonDisabled = !isDraftValid;
   const hasSelection = selectedRows.length > 0;
 
@@ -87,30 +88,23 @@ export const VirtualHostSection = ({ form }: VirtualHostSectionProps) => {
         padding={{ vertical: '1rem' }}
       >
         <Row takeAvailableSpace>
-          <Input
+          <TextInput
             label={t(
               'label.add_virtual_host_name',
               'Type a new Virtual Host Name and click on “Add +” to add it to the list',
             )}
-            backgroundColor="gray5"
             value={virtualHostValue}
+            autoComplete="off"
             onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
               setVirtualHostValue(e.target.value);
             }}
-            hasError={virtualHostValue !== '' && !isDraftValid}
+            hasError={isDraftInvalid}
+            description={
+              isDraftInvalid
+                ? t('domain.virtual_host_name_error', 'Please enter valid virtual host name!')
+                : undefined
+            }
           />
-          {virtualHostValue !== '' && !isDraftValid && (
-            <Container
-              mainAlignment="flex-start"
-              crossAlignment="flex-start"
-              width="fill"
-              padding={{ top: 'extrasmall' }}
-            >
-              <ds-text as="strong" color="error" overflow="break-word" size="extrasmall">
-                {t('domain.virtual_host_name_error', 'Please enter valid virtual host name!')}
-              </ds-text>
-            </Container>
-          )}
         </Row>
         <Row width="10%">
           <Tooltip

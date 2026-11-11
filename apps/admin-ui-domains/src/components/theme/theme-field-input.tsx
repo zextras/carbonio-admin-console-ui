@@ -5,10 +5,13 @@
  */
 import type { AnyFormApi } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
-import { InheritedInput } from '@zextras/ui-components';
+import { TextInput } from '@zextras/ui-components';
+import { isSameOriginUrlOutsideProxyAllowlist } from '@zextras/ui-shared';
+import type { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
 
 import type { themeConfigStore } from '../../../types';
+import { RevertToInheritedIcon } from '../../views/utility/revert-to-inherited-icon';
 
 type ThemeFieldInputProps = {
   form: AnyFormApi;
@@ -20,7 +23,17 @@ type ThemeFieldInputProps = {
   /** i18n key shown inline when the field fails schema validation. */
   errorLabel?: string;
   errorLabelDefault?: string;
+  /** When true, shows a non-blocking warning if the value is a same-origin URL outside the proxy embedded-resource allowlist. */
+  warnWhenProxyBlocked?: boolean;
 };
+
+function resolveFieldDescription(
+  t: TFunction,
+  errorLabel: string | undefined,
+  errorLabelDefault: string | undefined,
+): string | undefined {
+  return errorLabel && errorLabelDefault ? t(errorLabel, errorLabelDefault) : undefined;
+}
 
 export const ThemeFieldInput = ({
   form,
@@ -31,6 +44,7 @@ export const ThemeFieldInput = ({
   hasModifyRights = true,
   errorLabel,
   errorLabelDefault,
+  warnWhenProxyBlocked = false,
 }: ThemeFieldInputProps) => {
   const [t] = useTranslation();
   const value = useSelector(form.store, (s) => (s.values as themeConfigStore)[name]);
@@ -40,28 +54,53 @@ export const ThemeFieldInput = ({
       ((s.fieldMeta as Record<string, { errors: Array<unknown> }>)[name]?.errors.length ?? 0) > 0,
   );
 
+  const isInheritedMode = globalTheme !== undefined;
+  const isOverridden = isInheritedMode && value !== undefined;
+
+  const effectiveValue = value ?? globalTheme?.[name] ?? '';
+  const proxyBlocked = warnWhenProxyBlocked && isSameOriginUrlOutsideProxyAllowlist(effectiveValue);
+  const schemaDescription = hasError
+    ? resolveFieldDescription(t, errorLabel, errorLabelDefault)
+    : undefined;
+  const description =
+    schemaDescription ??
+    (proxyBlocked
+      ? t(
+          'label.proxy_blocked_url_blocked_error',
+          'This image URL isn’t allowed. Move it under /static/ or host it elsewhere',
+        )
+      : undefined);
+  const chip =
+    isInheritedMode && !isOverridden && !description
+      ? t('label.inherited', 'Inherited')
+      : undefined;
+
   return (
-    <>
-      <InheritedInput
-        label={label}
-        subValue={value}
-        inheritedValue={globalTheme?.[name]}
-        fromSubValue={globalTheme ? value : ''}
-        inputName={name}
-        onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
-          form.setFieldValue(name, e.target.value);
-        }}
-        onChangeReset={(): void => {
-          form.setFieldValue(name, undefined);
-        }}
-        hasError={hasError}
-        disabled={isGlobalTheme && !hasModifyRights}
-      />
-      {hasError && errorLabel && errorLabelDefault && (
-        <ds-text as="span" size="extrasmall" weight="regular" color="error">
-          {t(errorLabel, errorLabelDefault)}
-        </ds-text>
-      )}
-    </>
+    <TextInput
+      label={label}
+      name={name}
+      autoComplete="off"
+      value={value ?? globalTheme?.[name] ?? ''}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
+        form.setFieldValue(name, e.target.value);
+      }}
+      hasError={hasError || proxyBlocked}
+      description={description}
+      chip={chip}
+      disabled={isGlobalTheme && !hasModifyRights}
+      icon={
+        isOverridden ? (
+          <RevertToInheritedIcon
+            label={t(
+              'label.click_to_revert_to_the_inherited_value',
+              'Click to revert to the inherited value',
+            )}
+            onClick={(): void => {
+              form.setFieldValue(name, undefined);
+            }}
+          />
+        ) : undefined
+      }
+    />
   );
 };

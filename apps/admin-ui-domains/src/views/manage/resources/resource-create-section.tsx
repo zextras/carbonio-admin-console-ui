@@ -83,7 +83,7 @@ export const ResourceCreateSection = () => {
   const schedulePolicyLabel = schedulePolicyLabels[schedulePolicyType] ?? '';
 
   const cosLabel = zimbraCOSId
-    ? (cosList.find((c: { id: string; name: string }) => c.id === zimbraCOSId)?.name ?? zimbraCOSId)
+    ? cosList.find((c: { id: string; name: string }) => c.id === zimbraCOSId)?.name ?? zimbraCOSId
     : t('label.auto', 'Auto');
 
   return (
@@ -107,36 +107,24 @@ export const ResourceCreateSection = () => {
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
-            <LabeledValue
-              label={t('label.resource_name', 'ResourceName')}
-              backgroundColor="gray6"
-              value={displayName}
-            />
+            <LabeledValue label={t('label.resource_name', 'ResourceName')} value={displayName} />
           </Container>
         </ListRow>
         <ListRow>
           <Container
             mainAlignment="space-between"
-            crossAlignment="flex-start"
+            crossAlignment="flex-end"
             orientation="horizontal"
             padding={{ top: 'large' }}
           >
             <Row width="45%">
-              <LabeledValue
-                label={t('label.name', 'Name')}
-                backgroundColor="gray6"
-                value={name}
-              />
+              <LabeledValue label={t('label.name', 'Name')} value={name} />
             </Row>
-            <Row width="10%" style={{ padding: '12px' }}>
+            <Row width="10%" style={{ padding: '0.5rem 0.75rem' }}>
               <ds-icon icon="AtOutline" color="gray0" size="large"></ds-icon>
             </Row>
             <Row width="45%">
-              <LabeledValue
-                label={t('label.domain', 'Domain')}
-                backgroundColor="gray6"
-                value={domainName}
-              />
+              <LabeledValue label={t('label.domain', 'Domain')} value={domainName} />
             </Row>
           </Container>
         </ListRow>
@@ -148,23 +136,14 @@ export const ResourceCreateSection = () => {
             padding={{ top: 'large' }}
           >
             <Container padding={{ right: 'large' }}>
-              <LabeledValue
-                label={t('label.type', 'Type')}
-                backgroundColor="gray6"
-                value={resourceTypeLabel}
-              />
+              <LabeledValue label={t('label.type', 'Type')} value={resourceTypeLabel} />
             </Container>
             <Container padding={{ right: 'large' }}>
-              <LabeledValue
-                label={t('label.status', 'Status')}
-                backgroundColor="gray6"
-                value={accountStatusLabel}
-              />
+              <LabeledValue label={t('label.status', 'Status')} value={accountStatusLabel} />
             </Container>
             <Container>
               <LabeledValue
                 label={t('label.class_of_service', 'Class of Service')}
-                backgroundColor="gray6"
                 value={cosLabel}
               />
             </Container>
@@ -178,23 +157,17 @@ export const ResourceCreateSection = () => {
             padding={{ top: 'large' }}
           >
             <Container padding={{ right: 'large' }}>
-              <LabeledValue
-                label={t('label.auto_refuse', 'Auto-Refuse')}
-                backgroundColor="gray6"
-                value={autoRefuseLabel}
-              />
+              <LabeledValue label={t('label.auto_refuse', 'Auto-Refuse')} value={autoRefuseLabel} />
             </Container>
             <Container padding={{ right: 'large' }}>
               <LabeledValue
                 label={t('label.maximum_conflict', 'Maximum Conflict')}
-                backgroundColor="gray6"
                 value={zimbraCalResMaxNumConflictsAllowed}
               />
             </Container>
             <Container>
               <LabeledValue
                 label={t('label.percentage_maximum_conflict', '% Maximum Conflict')}
-                backgroundColor="gray6"
                 value={zimbraCalResMaxPercentConflictsAllowed}
               />
             </Container>
@@ -209,7 +182,6 @@ export const ResourceCreateSection = () => {
           >
             <LabeledValue
               label={t('label.schedule_policy', 'Set Policy')}
-              backgroundColor="gray6"
               value={schedulePolicyLabel}
             />
           </Container>

@@ -4,7 +4,13 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Container, getFieldErrorProps, Input, ListRow, Select } from '@zextras/ui-components';
+import {
+  Container,
+  getFieldErrorProps,
+  ListRow,
+  Select,
+  TextInput,
+} from '@zextras/ui-components';
 import { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -44,11 +50,10 @@ export const TimeFieldGroup = ({
         return (
           <ListRow>
             <Container width="83%" crossAlignment="flex-start" padding={{ right: 'small' }}>
-              <Input
+              <TextInput
                 label={label}
                 value={num}
-                backgroundColor="gray5"
-                inputName={String(name)}
+                name={String(name)}
                 onChange={(e: ChangeEvent<HTMLInputElement>) => {
                   const v = e.target.value;
                   field.handleChange(v ? `${v}${unit}` : '');
@@ -62,12 +67,10 @@ export const TimeFieldGroup = ({
             <Container width="17%" crossAlignment="flex-end" padding={{ left: 'small' }}>
               <Select
                 items={timeItems}
-                background="gray5"
                 label={t('cos.time_range', 'Time Range')}
                 selection={timeItems.find((item) => item.value === unit) ?? timeItems[0]}
-                showCheckbox={false}
                 onChange={(newUnit) => {
-                  if (newUnit) field.handleChange(num ? `${num}${newUnit}` : '');
+                  field.handleChange(num ? `${num}${newUnit}` : '');
                 }}
                 disabled={isDisabled}
               />

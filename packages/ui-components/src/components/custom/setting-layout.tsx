@@ -10,19 +10,21 @@ import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 
 type SettingLayoutProps = {
-  description: string;
   children: ReactNode;
   descriptionGap?: boolean;
+  description?: string;
 };
 
 export const SettingLayout = ({ description, children, descriptionGap }: SettingLayoutProps) => (
   <Container crossAlignment="flex-start">
     {children}
     {descriptionGap && <Padding top="small" />}
-    <Container height="fit" crossAlignment="flex-start">
-      <ds-text as="p" weight="light" color="gray1" size="small" overflow="break-word">
-        {description}
-      </ds-text>
-    </Container>
+    {description && (
+      <Container height="fit" crossAlignment="flex-start">
+        <ds-text as="p" weight="light" color="gray1" size="small" overflow="break-word">
+          {description}
+        </ds-text>
+      </Container>
+    )}
   </Container>
 );

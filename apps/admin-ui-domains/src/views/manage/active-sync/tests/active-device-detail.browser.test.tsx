@@ -15,9 +15,28 @@ import { ActiveDeviceDetail } from '../active-device-detail';
 type ZextrasRequestBody = {
   Body: {
     zextras: {
+      account?: string;
+      accountName?: string;
       action: string;
+      deviceId?: string;
+      status?: string;
     };
   };
+};
+
+type AbqDevicePayload = { device_id: string; status: string };
+
+type InterceptorOptions = {
+  abqDevices?: Array<AbqDevicePayload>;
+  deviceStatus?: number;
+  abqSaveOk?: boolean;
+  statsGate?: Promise<unknown>;
+};
+
+type ZextrasInterceptor = {
+  capturedBodies: Array<ZextrasRequestBody['Body']['zextras']>;
+  setAbqDevices: (devices: Array<AbqDevicePayload>) => void;
+  setDeviceStatus: (status: number) => void;
 };
 
 const SELECTED_DEVICE: MobileDevice = {
@@ -43,29 +62,53 @@ const DEVICE_STATS = {
   friendlyName: 'Alice iPhone',
 };
 
-function buildStatsContent(): string {
+function buildStatsContent(deviceStatus: number): string {
   return JSON.stringify({
     response: {
       'mail.example.com': {
-        response: DEVICE_STATS,
+        response: { ...DEVICE_STATS, status: deviceStatus },
       },
     },
   });
 }
 
-function setupZextrasInterceptor(): void {
+function setupZextrasInterceptor(options: InterceptorOptions = {}): ZextrasInterceptor {
+  const state = {
+    abqDevices: options.abqDevices ?? [{ device_id: 'DEV-001/uuid', status: 'Allowed' }],
+    deviceStatus: options.deviceStatus ?? 1,
+    abqSaveOk: options.abqSaveOk ?? true,
+  };
+  const capturedBodies: Array<ZextrasRequestBody['Body']['zextras']> = [];
+
   worker.use(
     http.post('/service/admin/soap/zextras', async ({ request }) => {
       const body = (await request.json()) as ZextrasRequestBody;
       const action = body?.Body?.zextras?.action;
 
       if (action === 'getDeviceStatistics') {
+        await options.statsGate;
         return HttpResponse.json({
-          Body: { response: { content: buildStatsContent() } },
+          Body: { response: { content: buildStatsContent(state.deviceStatus) } },
         });
       }
 
-      if (action === 'doSuspendDeviceSync' || action === 'doWipeDevice' || action === 'doResetDevice') {
+      if (action === 'abqListDevices') {
+        return HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify({ ok: true, response: { devices: state.abqDevices } }),
+            },
+          },
+        });
+      }
+
+      if (
+        action === 'doSuspendDeviceSync' ||
+        action === 'doResumeDeviceSync' ||
+        action === 'doWipeDevice' ||
+        action === 'doResetDevice'
+      ) {
+        capturedBodies.push(body?.Body?.zextras);
         return HttpResponse.json({
           Body: {
             response: {
@@ -75,9 +118,34 @@ function setupZextrasInterceptor(): void {
         });
       }
 
+      if (action === 'abqSetDeviceStatus') {
+        capturedBodies.push(body?.Body?.zextras);
+        return HttpResponse.json({
+          Body: {
+            response: {
+              content: JSON.stringify(
+                state.abqSaveOk
+                  ? { ok: true, response: {} }
+                  : { ok: false, error: { message: 'Cannot update device' } },
+              ),
+            },
+          },
+        });
+      }
+
       return HttpResponse.json({ Body: {} });
     }),
   );
+
+  return {
+    capturedBodies,
+    setAbqDevices: (devices: Array<AbqDevicePayload>): void => {
+      state.abqDevices = devices;
+    },
+    setDeviceStatus: (status: number): void => {
+      state.deviceStatus = status;
+    },
+  };
 }
 
 function renderDetail(onClose = vi.fn()) {
@@ -93,7 +161,7 @@ describe('ActiveDeviceDetail (browser)', () => {
     setupZextrasInterceptor();
     await renderDetail();
 
-    await expect.element(page.getByText('iPhone')).toBeVisible();
+    await expect.element(page.getByRole('heading', { name: 'iPhone' })).toBeVisible();
   });
 
   it('renders device statistics after they load', async () => {
@@ -151,5 +219,212 @@ describe('ActiveDeviceDetail (browser)', () => {
 
     await expect.element(page.getByText('The change has been saved successfully')).toBeVisible();
     expect(onClose).toHaveBeenCalled();
+  });
+
+  it('shows a spinner while the device statistics are loading', async () => {
+    let releaseStats: () => void = () => {};
+    const statsGate = new Promise<void>((resolve) => {
+      releaseStats = resolve;
+    });
+    setupZextrasInterceptor({ statsGate });
+    await renderDetail();
+
+    await expect.element(page.getByRole('status')).toBeVisible();
+    await expect.element(page.getByText('Device ID')).not.toBeInTheDocument();
+
+    releaseStats();
+
+    await expect.element(page.getByText('DEV-001')).toBeVisible();
+  });
+
+  it('initializes the ABQ select from abqListDevices', async () => {
+    setupZextrasInterceptor({ abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Blocked' }] });
+    await renderDetail();
+
+    await expect.element(page.getByText('Blocked')).toBeVisible();
+  });
+
+  it('defaults the ABQ select to Allowed when the device is absent from the ABQ list', async () => {
+    setupZextrasInterceptor({ abqDevices: [] });
+    await renderDetail();
+
+    await expect.element(page.getByText('Allowed')).toBeVisible();
+  });
+
+  it('shows Save and Cancel only after a select changes', async () => {
+    setupZextrasInterceptor({
+      abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Quarantined' }],
+    });
+    await renderDetail();
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+    await expect
+      .element(page.getByRole('button', { name: 'Save' }))
+      .not.toBeInTheDocument();
+
+    await page.getByRole('button', { name: 'ABQ Status' }).click();
+    await page.getByRole('option', { name: 'Blocked' }).click();
+
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
+  });
+
+  it('saves the ABQ status via abqSetDeviceStatus and converges clean', async () => {
+    const interceptor = setupZextrasInterceptor({
+      abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Quarantined' }],
+    });
+    await renderDetail();
+    await expect.element(page.getByText('DEV-001')).toBeVisible();
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+    interceptor.setAbqDevices([{ device_id: 'DEV-001/uuid', status: 'Blocked' }]);
+
+    await page.getByRole('button', { name: 'ABQ Status' }).click();
+    await page.getByRole('option', { name: 'Blocked' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect.poll(() => interceptor.capturedBodies[0]).toMatchObject({
+      action: 'abqSetDeviceStatus',
+      deviceId: 'DEV-001',
+      account: 'alice@example.com',
+      status: 'blocked',
+    });
+    await expect
+      .element(page.getByText('The change has been saved successfully'))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole('button', { name: 'Save' }))
+      .not.toBeInTheDocument();
+  });
+
+  it('saves the Status change via suspend without sending an ABQ request', async () => {
+    const interceptor = setupZextrasInterceptor({ deviceStatus: 1 });
+    await renderDetail();
+    await expect.element(page.getByText('DEV-001')).toBeVisible();
+
+    interceptor.setDeviceStatus(2);
+
+    await page.getByRole('button', { name: 'Status' }).click();
+    await page.getByRole('option', { name: 'Can`t receiver' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect.poll(() => interceptor.capturedBodies.length).toBe(1);
+    expect(interceptor.capturedBodies[0]).toMatchObject({
+      action: 'doSuspendDeviceSync',
+      accountName: 'iPhone',
+      deviceId: 'DEV-001',
+    });
+    await expect
+      .element(page.getByText('The change has been saved successfully'))
+      .toBeVisible();
+  });
+
+  it('sends both changed fields in one save and converges clean', async () => {
+    const interceptor = setupZextrasInterceptor({
+      abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Quarantined' }],
+    });
+    await renderDetail();
+    await expect.element(page.getByText('DEV-001')).toBeVisible();
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+    interceptor.setAbqDevices([{ device_id: 'DEV-001/uuid', status: 'Blocked' }]);
+    interceptor.setDeviceStatus(2);
+
+    await page.getByRole('button', { name: 'ABQ Status' }).click();
+    await page.getByRole('option', { name: 'Blocked' }).click();
+    await page.getByRole('button', { name: 'Status' }).click();
+    await page.getByRole('option', { name: 'Can`t receiver' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect.poll(() => interceptor.capturedBodies.length).toBe(2);
+    expect(interceptor.capturedBodies).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({ action: 'abqSetDeviceStatus', status: 'blocked' }),
+        expect.objectContaining({ action: 'doSuspendDeviceSync' }),
+      ]),
+    );
+    await expect
+      .element(page.getByText('The change has been saved successfully'))
+      .toBeVisible();
+    await expect
+      .element(page.getByRole('button', { name: 'Save' }))
+      .not.toBeInTheDocument();
+  });
+
+  it('keeps the dirty state when only one of the two saves succeeds', async () => {
+    const interceptor = setupZextrasInterceptor({
+      abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Quarantined' }],
+      abqSaveOk: false,
+    });
+    await renderDetail();
+    await expect.element(page.getByText('DEV-001')).toBeVisible();
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+    await page.getByRole('button', { name: 'ABQ Status' }).click();
+    await page.getByRole('option', { name: 'Blocked' }).click();
+    await page.getByRole('button', { name: 'Status' }).click();
+    await page.getByRole('option', { name: 'Can`t receiver' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect.poll(() => interceptor.capturedBodies.length).toBe(2);
+    await expect.element(page.getByText('Cannot update device')).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+  });
+
+  it('resumes a suspended device when Status is set back to Can receive', async () => {
+    const interceptor = setupZextrasInterceptor({ deviceStatus: 2 });
+    await renderDetail();
+    await expect.element(page.getByText('DEV-001')).toBeVisible();
+    await expect.element(page.getByText('Can`t receiver')).toBeVisible();
+
+    interceptor.setDeviceStatus(1);
+
+    await page.getByRole('button', { name: 'Status' }).click();
+    await page.getByRole('option', { name: 'Can receive' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect.poll(() => interceptor.capturedBodies[0]).toMatchObject({
+      action: 'doResumeDeviceSync',
+      accountName: 'iPhone',
+      deviceId: 'DEV-001',
+    });
+    await expect
+      .element(page.getByText('The change has been saved successfully'))
+      .toBeVisible();
+  });
+
+  it('resets edits when Cancel is clicked', async () => {
+    setupZextrasInterceptor({
+      abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Quarantined' }],
+    });
+    await renderDetail();
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+    await page.getByRole('button', { name: 'ABQ Status' }).click();
+    await page.getByRole('option', { name: 'Blocked' }).click();
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
+
+    await page.getByRole('button', { name: 'Cancel' }).click();
+
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+    await expect
+      .element(page.getByRole('button', { name: 'Save' }))
+      .not.toBeInTheDocument();
+  });
+
+  it('keeps the dirty state and shows an error snackbar when the backend rejects the change', async () => {
+    setupZextrasInterceptor({
+      abqDevices: [{ device_id: 'DEV-001/uuid', status: 'Quarantined' }],
+      abqSaveOk: false,
+    });
+    await renderDetail();
+    await expect.element(page.getByText('Quarantined')).toBeVisible();
+
+    await page.getByRole('button', { name: 'ABQ Status' }).click();
+    await page.getByRole('option', { name: 'Blocked' }).click();
+    await page.getByRole('button', { name: 'Save' }).click();
+
+    await expect.element(page.getByText('Cannot update device')).toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Save' })).toBeVisible();
   });
 });

@@ -8,76 +8,14 @@ import 'vitest-browser-react';
 // Tailwind utilities for browser tests (no preflight, no global resets — see tailwind.css)
 import './tailwind.css';
 
-import { http, HttpResponse } from 'msw';
 import { afterAll, afterEach, beforeAll, beforeEach, vi } from 'vitest';
 
 // IMPORTANT: Stub globals BEFORE importing anything that might use them
 vi.stubGlobal('BASE_PATH', '');
 
-import {
-  resetMockWorker,
-  startMockWorker,
-  stopMockWorker,
-  worker,
-} from './packages/test-utils/src/browser/worker';
+import { resetMockWorker, startMockWorker } from './packages/test-utils/src/browser/worker';
 import { suppressLitDevModeWarning } from './packages/test-utils/src/browser/utils/lit';
 import { clearQueryClients } from './packages/test-utils/src/browser/utils/query-client-registry';
-
-const zextrasContentResponse = (payload: unknown): HttpResponse =>
-		HttpResponse.json({
-			Body: {
-				response: {
-					content: JSON.stringify(payload),
-				},
-			},
-		});
-
-const zextrasSoapHandler = async ({ request }: { request: Request }): Promise<HttpResponse> => {
-		const body = (await request.json()) as {
-			Body?: { zextras?: { action?: string } };
-		};
-		const action = body?.Body?.zextras?.action;
-
-		if (
-			action === 'listS3Connector' ||
-			action === 'getHSMPolicy' ||
-			action === 'listBuckets'
-		) {
-			return zextrasContentResponse({ ok: true, response: { values: [] } });
-		}
-
-		if (action === 'getAllVolumes') {
-			return zextrasContentResponse({ ok: true, response: {} });
-		}
-
-		if (action === 'get_global_config') {
-			return zextrasContentResponse({ ok: true, response: { values: [] } });
-		}
-
-		return HttpResponse.json({ Body: {} });
-	};
-
-function setupBrowserCatchAllHandlers(): void {
-	worker.use(
-		http.post('/service/admin/soap/zextras', zextrasSoapHandler),
-		http.post('/service/admin/soap', zextrasSoapHandler),
-		http.get(
-			'/service/extension/zextras_admin/core/getAllServers',
-			() => HttpResponse.json({ items: [] }),
-		),
-		http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
-		http.post('/service/admin/soap/GetAllServersRequest', () =>
-			HttpResponse.json({ Body: { GetAllServersResponse: { server: [] } } }),
-		),
-		http.post('/service/admin/soap/GetInfoRequest', () =>
-			HttpResponse.json({ Body: { GetInfoResponse: {} } }),
-		),
-		http.post('/service/admin/soap/GetAllConfigRequest', () =>
-			HttpResponse.json({ Body: { GetAllConfigResponse: {} } }),
-		),
-		http.post('/service/admin/soap/:api', () => HttpResponse.json({ Body: {} })),
-	);
-}
 
 suppressLitDevModeWarning();
 
@@ -108,14 +46,29 @@ vi.stubGlobal('tinymce', {
   },
 });
 
-const localStorageMock = {
-  getItem: vi.fn(),
-  setItem: vi.fn(),
-  removeItem: vi.fn(),
-  clear: vi.fn(),
-};
+const localStorageMock = (() => {
+  let store: Record<string, string> = {};
+  return {
+    getItem: (key: string) => store[key] ?? null,
+    setItem: (key: string, value: string) => {
+      store[key] = String(value);
+    },
+    removeItem: (key: string) => {
+      delete store[key];
+    },
+    clear: () => {
+      store = {};
+    },
+    get length() {
+      return Object.keys(store).length;
+    },
+    key: (index: number) => Object.keys(store)[index] ?? null,
+  };
+})();
 Object.defineProperty(globalThis, 'localStorage', {
   value: localStorageMock,
+  writable: true,
+  configurable: true,
 });
 
 beforeAll(async () => {
@@ -124,12 +77,11 @@ beforeAll(async () => {
 
 beforeEach(() => {
   resetMockWorker();
-  setupBrowserCatchAllHandlers();
+  localStorageMock.clear();
 });
 
 afterAll(() => {
   clearQueryClients();
-  stopMockWorker();
   vi.clearAllMocks();
 });
 

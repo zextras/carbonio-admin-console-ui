@@ -40,7 +40,7 @@ describe('DelegateSelectModeSection (browser)', () => {
       .element(page.getByText(/who will be the delegates/i))
       .toBeVisible();
     await expect
-      .element(page.getByRole('textbox', { name: /search here for an account/i }))
+      .element(page.getByRole('combobox', { name: /search here for an account/i }))
       .toBeVisible();
   });
 
@@ -53,7 +53,7 @@ describe('DelegateSelectModeSection (browser)', () => {
     });
     setupTest();
 
-    const searchInput = page.getByRole('textbox', { name: /search here for an account/i });
+    const searchInput = page.getByRole('combobox', { name: /search here for an account/i });
     await searchInput.fill('jan');
 
     // debounced search (700ms) then the service is called with the LDAP filter
@@ -86,7 +86,7 @@ describe('DelegateSelectModeSection (browser)', () => {
     });
     setupTest({ zimbraId: 'self-id' });
 
-    const searchInput = page.getByRole('textbox', { name: /search here for an account/i });
+    const searchInput = page.getByRole('combobox', { name: /search here for an account/i });
     await searchInput.fill('j');
     await vi.waitFor(() => expect(mockAccountListDirectory).toHaveBeenCalled(), {
       timeout: 5_000,
@@ -107,7 +107,7 @@ describe('DelegateSelectModeSection (browser)', () => {
     await page.getByText(/who will be the delegates/i).click();
     await page.getByText('An Existing Group').click();
 
-    const searchInput = page.getByRole('textbox', { name: /search here for an account/i });
+    const searchInput = page.getByRole('combobox', { name: /search here for an account/i });
     await searchInput.fill('te');
     await vi.waitFor(
       () => {

@@ -148,6 +148,35 @@ describe('RestoreDeleteAccountStartSection (browser)', () => {
 		});
 
 		await expectSummaryLabelsVisible();
+		await expect.element(page.getByText('15 June 2025 | 10:00:00 AM', { exact: true })).toBeVisible();
+	});
+
+	it('shows the selected date and time with AM/PM when the creation date is a timestamp', async () => {
+		await renderStartSection({
+			...fullRestoreAccountDetail,
+			createDate: new Date('2025-06-15T10:00:00').getTime(),
+		});
+
+		await expect.element(page.getByText('20 January 2026 | 03:30:10 PM', { exact: true })).toBeVisible();
+	});
+
+	it('falls back to the creation date when it is a timestamp and the selected date is earlier', async () => {
+		await renderStartSection({
+			...fullRestoreAccountDetail,
+			createDate: new Date('2025-06-15T10:00:00').getTime(),
+			dateTime: '2024-01-01T00:00:00',
+		});
+
+		await expect.element(page.getByText('15 June 2025 | 10:00:00 AM', { exact: true })).toBeVisible();
+	});
+
+	it('shows the selected date when the creation date is missing', async () => {
+		await renderStartSection({
+			...fullRestoreAccountDetail,
+			createDate: undefined,
+		});
+
+		await expect.element(page.getByText('20 January 2026 | 03:30:10 PM', { exact: true })).toBeVisible();
 	});
 
 	it('renders the summary when no date and hour is selected', async () => {

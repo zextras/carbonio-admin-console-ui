@@ -43,7 +43,6 @@ export const MainSettingsSection: FC = () => {
 										!mailingListDetail?.zimbraDistributionListSendShareMessageToNewMembers
 								}));
 							}}
-							iconColor="primary"
 						/>
 					</Container>
 				</ListRow>
@@ -65,7 +64,6 @@ export const MainSettingsSection: FC = () => {
 								zimbraHideInGal: !mailingListDetail?.zimbraHideInGal
 							}));
 						}}
-						iconColor="primary"
 					/>
 				</Container>
 			</ListRow>
@@ -86,7 +84,6 @@ export const MainSettingsSection: FC = () => {
 								zimbraMailStatus: !mailingListDetail?.zimbraMailStatus
 							}));
 						}}
-						iconColor="primary"
 					/>
 				</Container>
 			</ListRow>

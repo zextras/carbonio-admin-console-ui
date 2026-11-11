@@ -9,7 +9,7 @@ import { map } from 'lodash-es';
 import React, { FC, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
 import styles from './horizontal-wizard-layout.module.css';

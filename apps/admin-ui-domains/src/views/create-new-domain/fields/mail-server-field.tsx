@@ -5,7 +5,7 @@
  */
 
 import { useField } from '@tanstack/react-form';
-import { Select,type SelectItem } from '@zextras/ui-components';
+import { Select, type SelectItem } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
 import styles from '../parts/steps.module.css';
@@ -26,11 +26,9 @@ export const MailServerField = ({ form, items }: MailServerFieldProps) => {
 		<div className={styles.fieldStart}>
 			<Select
 				items={items}
-				background="gray5"
 				label={t('domain.mail_server', 'Mail Server')}
-				showCheckbox={false}
 				selection={field.state.value ?? EMPTY_SELECTION}
-				onChange={(value: string | null): void => {
+				onChange={(value: string): void => {
 					field.handleChange(items.find((item) => item.value === value));
 				}}
 			/>

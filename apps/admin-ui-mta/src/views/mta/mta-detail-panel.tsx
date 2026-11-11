@@ -28,7 +28,6 @@ export const MTADetailPanel = () => {
       orientation="column"
       crossAlignment="center"
       mainAlignment="flex-start"
-      style={{ overflowY: 'hidden' }}
       background="gray6"
     >
       <Routes>

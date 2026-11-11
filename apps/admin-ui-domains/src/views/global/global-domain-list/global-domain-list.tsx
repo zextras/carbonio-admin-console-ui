@@ -7,7 +7,7 @@ import {
   ClickableRowFactory,
   Container,
   CustomHeaderFactory,
-  Input,
+  LegacyInput,
   Paging,
   Row,
   Table,
@@ -133,7 +133,7 @@ export const GlobalDomainList = () => {
               padding={{ bottom: 'large' }}
             >
               <Container>
-                <Input
+                <LegacyInput
                   label={t('label.i_am_looking_for_this_domain', `I'm looking for this domain…`)}
                   disabled={domainList.length === 0 && searchString.length === 0 && !isError}
                   value={searchString}

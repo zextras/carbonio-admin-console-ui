@@ -16,6 +16,9 @@ const mockDoRemoveDevice = vi.fn();
 const mockWipeDevice = vi.fn();
 const mockResetDevice = vi.fn();
 const mockSuspendDevice = vi.fn();
+const mockGetAbqDevices = vi.fn();
+const mockAbqSetDeviceStatus = vi.fn();
+const mockResumeDevice = vi.fn();
 
 vi.mock('@zextras/ui-components', () => ({
   useSnackbar: () => mockCreateSnackbar,
@@ -43,13 +46,25 @@ vi.mock('../reset-device', () => ({
 vi.mock('../suspend-device', () => ({
   suspendDevice: (...args: Array<unknown>) => mockSuspendDevice(...args),
 }));
+vi.mock('../get-abq-devices', () => ({
+  getAbqDevices: (...args: Array<unknown>) => mockGetAbqDevices(...args),
+}));
+vi.mock('../abq-set-device-status', () => ({
+  abqSetDeviceStatus: (...args: Array<unknown>) => mockAbqSetDeviceStatus(...args),
+}));
+vi.mock('../resume-device', () => ({
+  resumeDevice: (...args: Array<unknown>) => mockResumeDevice(...args),
+}));
 
 import { domainQueryKeys } from '../domain-query-keys';
 import {
+  useAbqDevices,
   useActiveSyncDevices,
   useActiveSyncDeviceStats,
   useRemoveDevice,
   useResetDevice,
+  useResumeDevice,
+  useSetAbqDeviceStatus,
   useSuspendDevice,
   useWipeDevice,
 } from '../use-active-sync';
@@ -134,6 +149,19 @@ describe('use-active-sync', () => {
     });
   });
 
+  describe('useAbqDevices', () => {
+    it('resolves parsed entries', async () => {
+      mockGetAbqDevices.mockResolvedValue(
+        soap({ ok: true, response: { devices: [{ device_id: 'DEV-001/uuid', status: 'Blocked' }] } }),
+      );
+      const { wrapper } = createWrapper();
+      const { result } = renderHook(() => useAbqDevices(), { wrapper });
+
+      await waitFor(() => expect(result.current.isSuccess).toBe(true));
+      expect(result.current.data).toEqual([{ deviceId: 'DEV-001', status: 'blocked' }]);
+    });
+  });
+
   describe('mutations', () => {
     it('removes a device and invalidates the list', async () => {
       mockDoRemoveDevice.mockResolvedValue(soap({ ok: true }));
@@ -149,6 +177,12 @@ describe('use-active-sync', () => {
       );
       expect(invalidateSpy).toHaveBeenCalledWith({
         queryKey: [...domainQueryKeys.all, 'active-sync-devices'],
+      });
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: [...domainQueryKeys.all, 'active-sync-device-stats'],
+      });
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: [...domainQueryKeys.all, 'active-sync-abq-devices'],
       });
     });
 
@@ -187,6 +221,78 @@ describe('use-active-sync', () => {
       const suspend = renderHook(() => useSuspendDevice(), { wrapper });
       suspend.result.current.mutate({ accountName: 'iPhone', deviceId: 'DEV-001' });
       await waitFor(() => expect(suspend.result.current.isSuccess).toBe(true));
+    });
+
+    it('sends the ABQ status, shows success snackbar and invalidates', async () => {
+      mockAbqSetDeviceStatus.mockResolvedValue(soap({ ok: true }));
+      const { wrapper, queryClient } = createWrapper();
+      const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+      const { result } = renderHook(() => useSetAbqDeviceStatus(), { wrapper });
+
+      await result.current.mutateAsync({
+        deviceId: 'DEV-001',
+        account: 'alice@example.com',
+        status: 'blocked',
+      });
+
+      expect(mockAbqSetDeviceStatus).toHaveBeenCalledWith(
+        'DEV-001',
+        'alice@example.com',
+        'blocked',
+      );
+      expect(mockCreateSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success',
+          label: 'The change has been saved successfully',
+        }),
+      );
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: [...domainQueryKeys.all, 'active-sync-devices'],
+      });
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: [...domainQueryKeys.all, 'active-sync-device-stats'],
+      });
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: [...domainQueryKeys.all, 'active-sync-abq-devices'],
+      });
+    });
+
+    it('shows an error snackbar and rejects when the backend refuses the ABQ change', async () => {
+      mockAbqSetDeviceStatus.mockResolvedValue(soap({ error: { message: 'Cannot update' } }));
+      const { wrapper } = createWrapper();
+      const { result } = renderHook(() => useSetAbqDeviceStatus(), { wrapper });
+
+      await expect(
+        result.current.mutateAsync({
+          deviceId: 'DEV-001',
+          account: 'alice@example.com',
+          status: 'blocked',
+        }),
+      ).rejects.toThrow('Cannot update');
+
+      expect(mockCreateSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({ severity: 'error', label: 'Cannot update' }),
+      );
+    });
+
+    it('resumes a device with module ZxMobile and invalidates', async () => {
+      mockResumeDevice.mockResolvedValue(soap({ ok: true }));
+      const { wrapper, queryClient } = createWrapper();
+      const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+      const { result } = renderHook(() => useResumeDevice(), { wrapper });
+
+      await result.current.mutateAsync({ accountName: 'iPhone', deviceId: 'DEV-001' });
+
+      expect(mockResumeDevice).toHaveBeenCalledWith('ZxMobile', 'iPhone', 'DEV-001');
+      expect(mockCreateSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'success',
+          label: 'The change has been saved successfully',
+        }),
+      );
+      expect(invalidateSpy).toHaveBeenCalledWith({
+        queryKey: [...domainQueryKeys.all, 'active-sync-abq-devices'],
+      });
     });
   });
 });

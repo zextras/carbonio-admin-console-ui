@@ -80,7 +80,6 @@ export const AccountOtpSection: FC<{
                 }}
                 padding={{ top: 'large' }}
                 label={t('label.create_otp_code', 'Create OTP code')}
-                iconColor="primary"
               />
             </Row>
           </Container>
@@ -99,7 +98,6 @@ export const AccountOtpSection: FC<{
                 }}
                 padding={{ top: 'large' }}
                 label={t('label.add_administration_rights', 'Add Administration rights')}
-                iconColor="primary"
               />
             </Row>
           </Container>
