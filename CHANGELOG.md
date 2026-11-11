@@ -1,3 +1,9 @@
+## [0.35.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.0...v0.35.1) (2026-11-11)
+
+### Bug Fixes
+
+* **admin-ui-backup/backup-advanced:** correct latency threshold unit from KB to ms in labels ([#1440](https://github.com/zextras/carbonio-admin-console-ui/issues/1440)) ([dc08114](https://github.com/zextras/carbonio-admin-console-ui/commit/dc08114bbca2be848eed78f59b0f3c4b045f0d3c))
+
 ## [0.35.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.3...v0.35.0) (2026-11-11)
 
 ### Features
