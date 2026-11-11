@@ -39,12 +39,26 @@ const NEW_INPUT_FAMILY_STRICT = [
 ];
 
 export default defineConfig(
-  // base presets: js, typescript-eslint, react, react-hooks
+  // base presets: js, typescript-eslint, react
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
-  reactHooks.configs.flat.recommended,
+
+  // react-hooks: classic rules only. The v7 recommended preset's 14
+  // compiler-powered rules (static-components, use-memo, purity, ...)
+  // share a single ~14s dataflow analysis pass per uncached lint
+  // (55.7% of total rule time, 0 errors repo-wide); any one of them
+  // enabled keeps the whole pass alive. Compiler diagnostics are
+  // already provided by react-compiler/react-compiler, and
+  // components-inside-components is enforced by Sonar S6478.
+  {
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
 
   // global ignores
   globalIgnores([
@@ -137,10 +151,6 @@ export default defineConfig(
       'jsx-a11y/no-autofocus': 'warn',
       'jsx-a11y/no-static-element-interactions': 'warn',
       'jsx-a11y/click-events-have-key-events': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
       'react-compiler/react-compiler': 'warn',
     },
   },
