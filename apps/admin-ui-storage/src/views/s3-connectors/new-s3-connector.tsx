@@ -43,6 +43,7 @@ export function NewS3Connector({
             type="ghost"
             color="text"
             icon="CloseOutline"
+            aria-label={t('label.close', 'Close')}
             onClick={(): void => {
               setToggleWizardSection(false);
               setDetailsConnector(false);

@@ -10,6 +10,7 @@ import {
   Button,
   Container,
   Displayer,
+  type IconName,
   LabeledValue,
   ListRow,
   NumberInput,
@@ -365,6 +366,7 @@ const ResourceEditForm = ({
   const currentStatus =
     currentValues.zimbraAccountStatus ?? attrs.zimbraAccountStatus ?? STATUS.ACTIVE;
 
+  const pinIconName: IconName = isSticky ? 'Pin3Outline' : 'Unpin3Outline';
   const buttons = [
     {
       align: 'right' as const,
@@ -381,7 +383,7 @@ const ResourceEditForm = ({
     },
     {
       align: 'left' as const,
-      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+      icon: pinIconName,
       onClick: () => setIsSticky(!isSticky),
     },
   ];

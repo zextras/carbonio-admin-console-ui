@@ -169,6 +169,7 @@ export const ManageAliases: FC<{
               <Button
                 type="outlined"
                 icon="PlusOutline"
+                aria-label={t('label.add_alias', 'Add alias')}
                 color="primary"
                 size="extralarge"
                 onClick={(): void => {

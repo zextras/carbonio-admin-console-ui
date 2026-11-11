@@ -488,6 +488,7 @@ export function ModifyVolumeForm({
               type="ghost"
               color="text"
               icon="CloseOutline"
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => setmodifyVolumeToggle(false)}
             />
           </Row>

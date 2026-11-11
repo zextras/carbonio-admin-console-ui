@@ -153,7 +153,7 @@ describe('CreateGalsyncAccountModel (browser)', () => {
 		it('closes the modal', async () => {
 			await setup(<TestApp saveHandler={vi.fn()} />);
 
-			await page.getByTestId('icon: Close').click();
+			await page.getByRole('button', { name: 'Close' }).click();
 
 			await expect.element(page.getByText('Create Account')).not.toBeInTheDocument();
 		});
@@ -163,7 +163,7 @@ describe('CreateGalsyncAccountModel (browser)', () => {
 
 			const input = page.getByLabelText('Account Name');
 			await userEvent.type(input, 'new-gal');
-			await page.getByTestId('icon: Close').click();
+			await page.getByRole('button', { name: 'Close' }).click();
 
 			await page.getByTestId('reopen-btn').click();
 

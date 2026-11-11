@@ -539,6 +539,7 @@ export function EditS3ConnectorDetailPanel({
               type="ghost"
               color="text"
               icon="CloseOutline"
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => setShowEditDetailView(false)}
             />
           </Row>

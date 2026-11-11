@@ -243,7 +243,7 @@ describe('EditDistributionList (browser)', () => {
       await waitForLoad();
       await page.getByRole('button', { name: 'MANAGE ALIAS' }).click();
       await userEvent.type(page.getByLabelText('New Alias Name'), 'alias2');
-      await page.getByTestId('icon: PlusOutline').click();
+      await page.getByRole('button', { name: 'Add alias' }).click();
       await expect
         .element(page.getByTestId('modal').getByText('alias2@example.com'))
         .toBeInTheDocument();
@@ -392,7 +392,7 @@ describe('EditDistributionList (browser)', () => {
     it('closes the detail view via the close icon', async () => {
       const { setShowMailingListDetailView } = await setupEditView();
       await waitForLoad();
-      await page.getByTestId('icon: CloseOutline').click();
+      await page.getByRole('button', { name: 'Close' }).click();
       expect(setShowMailingListDetailView).toHaveBeenCalledWith(false);
     });
   });

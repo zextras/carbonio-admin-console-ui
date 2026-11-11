@@ -204,6 +204,7 @@ export function EditHsmPolicy({
               color={'text'}
               size="medium"
               icon="CloseOutline"
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => setShowEditHsmPolicyView(false)}
             />
           )}

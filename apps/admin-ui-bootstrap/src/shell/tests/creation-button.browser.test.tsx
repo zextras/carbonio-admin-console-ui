@@ -59,11 +59,10 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     useIntegrationsStore.setState({ actions: {} });
   });
 
-  it('renders the Create button with a chevron-down icon', async () => {
+  it('renders the Create button', async () => {
     await setupBrowserTest(<CreationButton />);
 
     await expect.element(page.getByRole('button', { name: 'Create' })).toBeVisible();
-    await expect.element(page.getByTestId('icon: ChevronDown')).toBeVisible();
   });
 
   it('maps active route actions to dropdown items', async () => {

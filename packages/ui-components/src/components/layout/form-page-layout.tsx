@@ -6,7 +6,7 @@
 import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { RouteLeavingGuard } from '../navigation/route-leaving-guard';
 import styles from './form-page-layout.module.css';
 

@@ -13,7 +13,7 @@ vi.mock('react-i18next', () => ({
   ],
 }));
 
-vi.mock('../basic/button/Button', () => ({
+vi.mock('../basic/button/button', () => ({
   Button: ({
     label,
     onClick,
