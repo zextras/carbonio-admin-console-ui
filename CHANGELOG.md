@@ -1,3 +1,9 @@
+## [0.35.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.3...v0.35.0) (2026-11-11)
+
+### Features
+
+* **button:** enforce accessible names, loading semantics and keyboard focus ([#1439](https://github.com/zextras/carbonio-admin-console-ui/issues/1439)) ([a55ad9d](https://github.com/zextras/carbonio-admin-console-ui/commit/a55ad9d7a5ed3fbac6feaff1280cd61cc4a093d2))
+
 ## [0.34.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.2...v0.34.3) (2026-11-10)
 
 ### Bug Fixes
