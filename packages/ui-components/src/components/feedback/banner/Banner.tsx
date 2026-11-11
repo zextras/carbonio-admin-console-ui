@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useModal } from '../../../hooks/useModal';
 import { type IconName } from '../../../web-components/icon-registry';
-import { Button, ButtonProps } from '../../basic/button/Button';
+import { Button, ButtonProps } from '../../basic/button/button';
 import { Container } from '../../layout/Container';
 import styles from './Banner.module.css';
 

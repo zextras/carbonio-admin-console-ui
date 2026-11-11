@@ -9,7 +9,7 @@ import { format } from 'date-fns';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { LabeledValue } from '../inputs/labeled-value';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
@@ -126,15 +126,10 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
           <LabeledValue
             label={t('label.date', 'Date') ?? 'Date'}
             value={format(notification?.date, 'dd-MM-yyyy - HH:mm a')}
-            
           />
         </Container>
         <Container padding={{ bottom: 'large', left: 'small', right: 'extralarge' }}>
-          <LabeledValue
-            label={t('label.type', 'Type') ?? 'Type'}
-            value={notification?.level}
-            
-          />
+          <LabeledValue label={t('label.type', 'Type') ?? 'Type'} value={notification?.level} />
         </Container>
       </ListRow>
       <ListRow>
@@ -144,7 +139,6 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
           <LabeledValue
             label={t('label.what_inside', "What's inside?") ?? "What's inside?"}
             value={notification?.subject}
-            
           />
         </Container>
       </ListRow>
@@ -165,7 +159,9 @@ const NotificationDetail: FC<NotificationDetailProps> = ({
           style={{ overflow: 'auto' }}
           mainAlignment="flex-start"
           crossAlignment="flex-start"
-          dangerouslySetInnerHTML={{ __html: notification?.text.replaceAll(/(\r\n|\r|\n)/g, '<br>') }}
+          dangerouslySetInnerHTML={{
+            __html: notification?.text.replaceAll(/(\r\n|\r|\n)/g, '<br>'),
+          }}
         ></Container>
       </Row>
     </Container>

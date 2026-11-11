@@ -8,7 +8,7 @@ import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { IconName } from '../../web-components/icon-registry';
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { Tooltip } from '../display/Tooltip';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
@@ -31,9 +31,9 @@ type DisplayerRightButton = DisplayerButtonBase & {
   align: 'right';
   type?: 'outlined' | 'ghost' | 'default';
 } & (
-  | { label: string; icon?: IconName; tooltiplabel?: string }
-  | { label?: never; tooltiplabel: string; icon: IconName }
-);
+    | { label: string; icon?: IconName; tooltiplabel?: string }
+    | { label?: never; tooltiplabel: string; icon: IconName }
+  );
 type DisplayerButton = DisplayerLeftButton | DisplayerRightButton;
 
 type DisplayerProps = {

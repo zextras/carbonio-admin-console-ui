@@ -7,7 +7,7 @@ import { noop } from 'lodash-es';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../basic/button/Button';
+import { Button } from '../basic/button/button';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
