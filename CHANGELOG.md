@@ -1,3 +1,12 @@
+## [0.20.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.5...v0.20.6) (2026-11-02)
+
+### Bug Fixes
+
+* **quarantine:** [CO-4633] escape mismatched content type when merging multipart body parts ([#1429](https://github.com/zextras/carbonio-admin-console-ui/issues/1429)) ([#1430](https://github.com/zextras/carbonio-admin-console-ui/issues/1430)) ([3e86136](https://github.com/zextras/carbonio-admin-console-ui/commit/3e86136755b07f7aa384f5b039937c8a56b56a0f))
+
+### Other changes
+
+* bump jenkins-lib-common to v5.1.0 ([#1432](https://github.com/zextras/carbonio-admin-console-ui/issues/1432)) ([80bf17c](https://github.com/zextras/carbonio-admin-console-ui/commit/80bf17c87115c728c67c80297fced885b2405c46)), closes [#1430](https://github.com/zextras/carbonio-admin-console-ui/issues/1430)
 ## [0.35.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.0...v0.35.1) (2026-11-11)
 
 ### Bug Fixes
