@@ -13,6 +13,7 @@ This file provides guidance for agentic coding assistants working in this reposi
 - `pnpm type-check` - TypeScript type checking across all packages
 - `pnpm lint` - ESLint across all packages
 - `pnpm lint:fix` - Auto-fix ESLint issues
+- `pnpm lint:inspect` - Launch the ESLint Config Inspector, a visual explorer for the ESLint config at http://localhost:7777
 - `pnpm type-lint` - Type check + lint combined
 - `pnpm reset` - Full clean reinstall (removes node_modules, lock file, cache)
 - `pnpm sonarlint` - Fetch the SonarQube report for the current PR (see "SonarLint-sensitive patterns" below; do not re-run it to verify fixes — it caches results and shows stale output)
@@ -384,6 +385,9 @@ Key enforced rules:
 - `@typescript-eslint/no-explicit-any` - Warn, avoid `any`
 - `no-console` - Error (allow `console.error` only)
 - **Never use `eslint-disable` comments** (line, block, or file level) — not even in tests or type declarations. A disable is a symptom of a bigger problem: solve the root cause instead (fix the dependency array, restructure the effect, derive the state, or type it properly). If a rule feels impossible to satisfy, escalate the design rather than suppressing the lint.
+
+#### Exploring the ESLint config
+Run `pnpm lint:inspect` to launch the ESLint Config Inspector at http://localhost:7777 — a visual explorer of the flat config in `eslint.config.js`: every rule, config block, and plugin, with the file globs each applies to. It live-reloads when the config changes. Use it when tuning rules, reviewing PRs that touch `eslint.config.js`, or getting oriented on which rules apply to a given file type.
 
 ### Naming Conventions
 - Components: PascalCase (`MyComponent`)
