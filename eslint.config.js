@@ -39,19 +39,10 @@ const NEW_INPUT_FAMILY_STRICT = [
 ];
 
 export default defineConfig(
-  // base presets: js, typescript-eslint, react
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
-
-  // react-hooks: classic rules only. The v7 recommended preset's 14
-  // compiler-powered rules (static-components, use-memo, purity, ...)
-  // share a single ~14s dataflow analysis pass per uncached lint
-  // (55.7% of total rule time, 0 errors repo-wide); any one of them
-  // enabled keeps the whole pass alive. Compiler diagnostics are
-  // already provided by react-compiler/react-compiler, and
-  // components-inside-components is enforced by Sonar S6478.
   {
     plugins: { 'react-hooks': reactHooks },
     rules: {
