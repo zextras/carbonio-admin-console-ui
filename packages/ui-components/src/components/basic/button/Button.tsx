@@ -206,6 +206,109 @@ function getColors(
   return colors;
 }
 
+const WIDTHS: Record<ButtonWidth, { button: string; grid: string }> = {
+  fit: { button: 'auto', grid: 'fit-content' },
+  fill: { button: '100%', grid: '100%' },
+};
+
+const CONTENT_ORDER: Record<ButtonIconPlacement, { icon: number; text: number }> = {
+  left: { icon: 1, text: 2 },
+  right: { icon: 2, text: 1 },
+};
+
+function flagAttr(value: boolean | undefined): 'true' | undefined {
+  return value ? 'true' : undefined;
+}
+
+function getButtonClassName(type: ButtonType): string {
+  return clsx(styles.button, type === 'outlined' && styles.outlined);
+}
+
+function createClickHandler(
+  disabled: boolean,
+  loading: boolean,
+  onClick: React.MouseEventHandler<HTMLButtonElement>,
+): React.MouseEventHandler<HTMLButtonElement> {
+  return (clickEvent) => {
+    if (!disabled && !loading && onClick && !clickEvent.defaultPrevented) {
+      onClick(clickEvent);
+    }
+  };
+}
+
+function createSecondaryActionClickHandler(
+  secondaryAction: ButtonSecondaryAction | undefined,
+  loading: boolean,
+): React.MouseEventHandler<HTMLButtonElement> {
+  return (clickEvent) => {
+    if (secondaryAction && !secondaryAction.disabled && !loading) {
+      secondaryAction.onClick(clickEvent);
+    }
+    clickEvent.preventDefault();
+  };
+}
+
+function getButtonStyle({
+  type,
+  padding,
+  gap,
+  width,
+  colorStyles,
+}: {
+  type: ButtonType;
+  padding: string;
+  gap: string;
+  width: ButtonWidth;
+  colorStyles: Record<string, string>;
+}): React.CSSProperties {
+  return {
+    '--btn-padding': padding,
+    '--btn-padding-adjusted': type === 'outlined' ? `calc(${padding} - 0.0625rem)` : padding,
+    '--btn-gap': gap,
+    '--btn-width': WIDTHS[width].button,
+    ...colorStyles,
+  } as React.CSSProperties;
+}
+
+function getGridStyle(
+  width: ButtonWidth,
+  minWidth: string | undefined,
+  padding: string,
+): React.CSSProperties {
+  return {
+    '--btn-width': WIDTHS[width].grid,
+    '--btn-min-width': minWidth ?? '0',
+    '--secondary-margin': padding,
+  } as React.CSSProperties;
+}
+
+function getSecondaryButtonStyle(
+  secondarySizeConfig: { icon: string; padding: string } | null,
+  gap: string,
+  colorStyles: Record<string, string>,
+): React.CSSProperties | null {
+  return secondarySizeConfig
+    ? ({
+        '--btn-padding': secondarySizeConfig.padding,
+        '--btn-padding-adjusted': secondarySizeConfig.padding,
+        '--btn-gap': gap,
+        '--btn-width': 'auto',
+        '--icon-size': secondarySizeConfig.icon,
+        ...colorStyles,
+      } as React.CSSProperties)
+    : null;
+}
+
+function warnIfEmptyAccessibleName(
+  label: string | undefined,
+  ariaLabel: string | undefined,
+): void {
+  const isDev = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ?? false;
+  if (isDev && !label?.trim() && !ariaLabel?.trim()) {
+    console.error('Button: empty accessible name — pass label or aria-label');
+  }
+}
+
 const Button = ({
   type = 'default',
   disabled = false,
@@ -223,69 +326,28 @@ const Button = ({
   ref,
   ...rest
 }: ButtonProps) => {
-  const clickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!disabled && !loading && onClick && !e.defaultPrevented) {
-      onClick(e);
-    }
-  };
-
-  const secondaryActionClickHandler = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (secondaryAction && !secondaryAction.disabled && !loading) {
-      secondaryAction.onClick(e);
-    }
-    e.preventDefault();
-  };
+  const clickHandler = createClickHandler(disabled, loading, onClick);
+  const secondaryActionClickHandler = createSecondaryActionClickHandler(secondaryAction, loading);
 
   const colors = getColors(type, { type, ...rest });
 
   const hasSecondaryAction = secondaryAction && SUPPORTS_SECONDARY_ACTION.includes(size);
 
-  const isDev = (import.meta as ImportMeta & { env?: { DEV?: boolean } }).env?.DEV ?? false;
-  if (isDev && !label?.trim() && !rest['aria-label']?.trim()) {
-    console.error('Button: empty accessible name — pass label or aria-label');
-  }
+  warnIfEmptyAccessibleName(label, rest['aria-label']);
 
-  const sizeConfig = SIZES[size];
-  const padding = sizeConfig.padding;
-  const gap = sizeConfig.gap;
-  const iconSize = sizeConfig.icon;
-  const textSize = sizeConfig.label;
+  const { padding, gap, icon: iconSize, label: textSize } = SIZES[size];
 
-  const buttonWidth = width === 'fill' ? '100%' : 'auto';
-  const gridWidth = width === 'fill' ? '100%' : 'fit-content';
-
-  const buttonClassName = clsx(styles.button, type === 'outlined' && styles.outlined);
-
+  const buttonClassName = getButtonClassName(type);
   const colorStyles = getColorStyles(colors.color, colors.backgroundColor);
-
-  const buttonStyle: React.CSSProperties = {
-    '--btn-padding': padding,
-    '--btn-padding-adjusted': type === 'outlined' ? `calc(${padding} - 0.0625rem)` : padding,
-    '--btn-gap': gap,
-    '--btn-width': buttonWidth,
-    ...colorStyles,
-  } as React.CSSProperties;
-
-  const gridStyle: React.CSSProperties = {
-    '--btn-width': gridWidth,
-    '--btn-min-width': minWidth ?? '0',
-    '--secondary-margin': padding,
-  } as React.CSSProperties;
+  const buttonStyle = getButtonStyle({ type, padding, gap, width, colorStyles });
+  const gridStyle = getGridStyle(width, minWidth, padding);
 
   const secondarySizeConfig = hasSecondaryAction
     ? SIZES[size as 'medium' | 'large' | 'extralarge'].secondaryButton
     : null;
+  const secondaryButtonStyle = getSecondaryButtonStyle(secondarySizeConfig, gap, colorStyles);
 
-  const secondaryButtonStyle: React.CSSProperties | null = secondarySizeConfig
-    ? ({
-        '--btn-padding': secondarySizeConfig.padding,
-        '--btn-padding-adjusted': secondarySizeConfig.padding,
-        '--btn-gap': gap,
-        '--btn-width': 'auto',
-        '--icon-size': secondarySizeConfig.icon,
-        ...colorStyles,
-      } as React.CSSProperties)
-    : null;
+  const contentOrder = CONTENT_ORDER[iconPlacement];
 
   return (
     <div className={styles.grid} style={gridStyle}>
@@ -295,11 +357,11 @@ const Button = ({
         className={buttonClassName}
         style={{ ...buttonStyle, ...rest.style }}
         disabled={disabled}
-        aria-busy={loading || undefined}
-        aria-disabled={loading || undefined}
+        aria-busy={flagAttr(loading)}
+        aria-disabled={flagAttr(loading)}
         onClick={clickHandler}
         ref={ref}
-        data-force-active={!disabled && forceActive ? 'true' : undefined}
+        data-force-active={flagAttr(!disabled && forceActive)}
       >
         {loading && (
           <div className={styles.loadingContainer} aria-hidden="true">
@@ -309,11 +371,11 @@ const Button = ({
         {icon && (
           <span
             className={styles.icon}
-            data-loading={loading ? 'true' : undefined}
+            data-loading={flagAttr(loading)}
             style={
               {
                 '--icon-size': iconSize,
-                '--icon-order': iconPlacement === 'left' ? 1 : 2,
+                '--icon-order': contentOrder.icon,
               } as React.CSSProperties
             }
           >
@@ -328,11 +390,11 @@ const Button = ({
         {label && (
           <span
             className={styles.text}
-            data-loading={loading ? 'true' : undefined}
+            data-loading={flagAttr(loading)}
             style={
               {
                 '--text-size': textSize,
-                '--text-order': iconPlacement === 'left' ? 2 : 1,
+                '--text-order': contentOrder.text,
               } as React.CSSProperties
             }
           >
@@ -364,16 +426,14 @@ const Button = ({
         <button
           type="button"
           aria-label={secondaryAction.ariaLabel}
-          aria-disabled={loading || undefined}
+          aria-disabled={flagAttr(loading)}
           className={clsx(styles.button, styles.secondaryAction)}
           style={secondaryButtonStyle}
           disabled={!!secondaryAction.disabled}
           ref={secondaryAction.ref}
           onClick={secondaryActionClickHandler}
-          data-force-active={
-            !secondaryAction.disabled && !!secondaryAction.forceActive ? 'true' : undefined
-          }
-          data-loading={loading ? 'true' : undefined}
+          data-force-active={flagAttr(!secondaryAction.disabled && !!secondaryAction.forceActive)}
+          data-loading={flagAttr(loading)}
         >
           <ds-icon
             aria-hidden="true"
