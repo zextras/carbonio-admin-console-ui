@@ -59,6 +59,7 @@ export const EditPermissionModal: FC<EditPermissionModalProps> = ({
 			onClose={onCancel}
 		>
 			<RadioGroup
+				aria-label={t('domain.distributionList.sendAs.permissionLevel', 'Permission level')}
 				value={value}
 				onChange={(changed: string | undefined): void => {
 					if (changed) onValueChange(changed as PermissionLevelValue);
@@ -69,14 +70,11 @@ export const EditPermissionModal: FC<EditPermissionModalProps> = ({
 					key={'send-as-option'}
 					label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
 					value="sendAs"
-					iconColor="primary"
-					padding={{ bottom: 'large' }}
 				/>
 				<Radio
 					key={'send-on-behalf-of-option'}
 					label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
 					value="sendOnBehalfOf"
-					iconColor="primary"
 				/>
 			</RadioGroup>
 		</Modal>

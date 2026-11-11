@@ -101,8 +101,6 @@ export const VerifyVolumeChangesModal: FC<VerifyVolumeChangesModalProps> = ({
 
         <div className={styles.checkboxRow}>
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t(
               'storage.volume.changeImportantInformation.confirm',
               'I am sure I want to apply these changes',

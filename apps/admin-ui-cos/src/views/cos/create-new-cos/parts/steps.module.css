@@ -145,12 +145,6 @@
   gap: var(--padding-size-medium);
 }
 
-.editionOption {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
 .featuresHeader {
   display: flex;
   flex-direction: column;
