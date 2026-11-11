@@ -1,3 +1,13 @@
+## [0.35.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.2...v0.35.3) (2026-11-11)
+
+### Bug Fixes
+
+* **deps:** repair stale dompurify entry in pnpm-lock.yaml ([327aee4](https://github.com/zextras/carbonio-admin-console-ui/commit/327aee406440d2640c17914b379e3803e24ba630))
+
+### Other changes
+
+* **lint:** drop react-hooks v7 compiler rules, keep classic pair ([39828ac](https://github.com/zextras/carbonio-admin-console-ui/commit/39828ac2954d669d88c159ccb440b04093c8abfd))
+
 ## [0.35.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.1...v0.35.2) (2026-11-11)
 
 ### Bug Fixes
