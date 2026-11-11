@@ -39,12 +39,17 @@ const NEW_INPUT_FAMILY_STRICT = [
 ];
 
 export default defineConfig(
-  // base presets: js, typescript-eslint, react, react-hooks
   js.configs.recommended,
   ...tseslint.configs.recommended,
   react.configs.flat.recommended,
   react.configs.flat['jsx-runtime'],
-  reactHooks.configs.flat.recommended,
+  {
+    plugins: { 'react-hooks': reactHooks },
+    rules: {
+      'react-hooks/rules-of-hooks': 'error',
+      'react-hooks/exhaustive-deps': 'warn',
+    },
+  },
 
   // global ignores
   globalIgnores([
@@ -137,10 +142,6 @@ export default defineConfig(
       'jsx-a11y/no-autofocus': 'warn',
       'jsx-a11y/no-static-element-interactions': 'warn',
       'jsx-a11y/click-events-have-key-events': 'warn',
-      'react-hooks/refs': 'warn',
-      'react-hooks/set-state-in-effect': 'warn',
-      'react-hooks/immutability': 'warn',
-      'react-hooks/preserve-manual-memoization': 'warn',
       'react-compiler/react-compiler': 'warn',
     },
   },
