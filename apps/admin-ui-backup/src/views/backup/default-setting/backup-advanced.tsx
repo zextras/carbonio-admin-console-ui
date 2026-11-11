@@ -89,10 +89,10 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                       {(field) => (
                         <TextInput
                           required
-                          label={`${t(
-                            'backup.latency_high_threshold',
-                            'Latency High Threshold',
-                          )} (${t('backup.kb', 'KB')})`}
+                          label={t(
+                            'backup.latency_high_threshold_ms',
+                            'Latency High Threshold (ms)',
+                          )}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
@@ -110,10 +110,7 @@ function BackupAdvancedForm({ globalConfig }: { readonly globalConfig: GlobalCon
                       {(field) => (
                         <TextInput
                           required
-                          label={`${t(
-                            'backup.latency_low_threshold',
-                            'Latency Low Threshold',
-                          )} (${t('backup.kb', 'KB')})`}
+                          label={t('backup.latency_low_threshold_ms', 'Latency Low Threshold (ms)')}
                           value={field.state.value}
                           onChange={(e: ChangeEvent<HTMLInputElement>) =>
                             field.handleChange(e.target.value)
