@@ -111,8 +111,9 @@ const CustomModal = ({
       const defaultPaddingRight = window.document.body.style.paddingRight;
 
       window.document.body.style.overflowY = 'hidden';
-      isBodyOverflowing(modalRef, window) &&
-        (window.document.body.style.paddingRight = `${getScrollbarSize(window)}px`);
+      if (isBodyOverflowing(modalRef, window)) {
+        window.document.body.style.paddingRight = `${getScrollbarSize(window)}px`;
+      }
 
       return (): void => {
         window.document.body.style.overflowY = defaultOverflowY;
@@ -128,16 +129,17 @@ const CustomModal = ({
     const endSentinelRefSave = endSentinelRef.current;
 
     if (open) {
-      modalContentRef.current && modalContentRef.current.focus();
-      startSentinelRefSave && startSentinelRefSave.addEventListener('focus', onStartSentinelFocus);
-      endSentinelRefSave && endSentinelRefSave.addEventListener('focus', onEndSentinelFocus);
+      modalContentRef.current?.focus();
+      startSentinelRefSave?.addEventListener('focus', onStartSentinelFocus);
+      endSentinelRefSave?.addEventListener('focus', onEndSentinelFocus);
     }
 
     return (): void => {
-      startSentinelRefSave &&
-        startSentinelRefSave.removeEventListener('focus', onStartSentinelFocus);
-      endSentinelRefSave && endSentinelRefSave.removeEventListener('focus', onEndSentinelFocus);
-      open && focusedElement && focusedElement.focus();
+      startSentinelRefSave?.removeEventListener('focus', onStartSentinelFocus);
+      endSentinelRefSave?.removeEventListener('focus', onEndSentinelFocus);
+      if (open) {
+        focusedElement?.focus();
+      }
     };
   }, [open, onStartSentinelFocus, onEndSentinelFocus]);
 

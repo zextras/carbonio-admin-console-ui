@@ -47,18 +47,20 @@ function useCheckbox({
 	useKeyboard(ref, keyEvents);
 
 	useEffect(() => {
-		value !== undefined && setChecked(value);
+		if (value !== undefined) {
+			setChecked(value);
+		}
 	}, [value]);
 
 	useEffect(() => {
-		onChange && onChange(checked);
+		onChange?.(checked);
 	}, [onChange, checked]);
 
 	useEffect(() => {
 		const refSave = ref.current;
-		refSave && refSave.addEventListener('click', handleClick);
+		refSave?.addEventListener('click', handleClick);
 		return () => {
-			refSave && refSave.removeEventListener('click', handleClick);
+			refSave?.removeEventListener('click', handleClick);
 		};
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [ref.current, handleClick]);

@@ -86,7 +86,9 @@ const Paging: FC<PagingProps> = ({
   };
 
   useEffect(() => {
-    currentPageProp && setCurrentPage(currentPageProp);
+    if (currentPageProp) {
+      setCurrentPage(currentPageProp);
+    }
   }, [currentPageProp]);
 
   useEffect(() => {

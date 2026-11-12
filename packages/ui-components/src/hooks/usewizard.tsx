@@ -60,7 +60,7 @@ export const useWizard = ({
         dataRef.current = newState;
         setInnerData(newState);
       }
-      onChange && onChange(newState);
+      onChange?.(newState);
     },
     [uncontrolledMode, currentStep, onChange],
   );
@@ -72,7 +72,7 @@ export const useWizard = ({
       setInnerData(newState);
       setCurrentStep(steps[0].name);
     }
-    onChange && onChange(newState);
+    onChange?.(newState);
     setCompleteLoading(true);
   }, [uncontrolledMode, onChange, steps]);
 
@@ -88,7 +88,7 @@ export const useWizard = ({
         setInnerData(newState);
         setCurrentStep(stepName);
       }
-      onChange && onChange(newState);
+      onChange?.(newState);
     },
     [stepKeys, uncontrolledMode, onChange],
   );
@@ -103,7 +103,9 @@ export const useWizard = ({
   }, [currentStepIndex, steps, onComplete, resetWizard, goToStep]);
 
   const goBack = useCallback(() => {
-    currentStepIndex > 0 && goToStep(steps[currentStepIndex - 1].name);
+    if (currentStepIndex > 0) {
+      goToStep(steps[currentStepIndex - 1].name);
+    }
   }, [goToStep, steps, currentStepIndex]);
 
   const getData = useCallback(() => dataRef.current, []);

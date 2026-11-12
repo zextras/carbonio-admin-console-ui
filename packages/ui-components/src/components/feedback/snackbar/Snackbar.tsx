@@ -74,7 +74,11 @@ const Snackbar = ({
   ref,
 }: SnackbarProps) => {
   const handleClick = useCallback(() => {
-    onActionClick ? onActionClick() : onClose?.();
+    if (onActionClick) {
+      onActionClick();
+    } else {
+      onClose?.();
+    }
   }, [onActionClick, onClose]);
 
   const enableTimeout = open && !disableAutoHide && onClose !== undefined;

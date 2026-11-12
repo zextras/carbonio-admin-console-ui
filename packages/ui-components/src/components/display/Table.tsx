@@ -199,16 +199,20 @@ const Table = ({
 
   const controlledOnToggleAll = useCallback(() => {
     if (onSelectionChange) {
-      selected.length === rows.length
-        ? onSelectionChange([])
-        : onSelectionChange([...rows.map((row) => row.id)]);
+      if (selected.length === rows.length) {
+        onSelectionChange([]);
+      } else {
+        onSelectionChange([...rows.map((row) => row.id)]);
+      }
     }
   }, [selected, rows, onSelectionChange]);
 
   const uncontrolledOnToggleAll = useCallback(() => {
-    selected.length === rows.length
-      ? dispatchSelected({ type: SELECT_ACTION.RESET })
-      : dispatchSelected({ type: SELECT_ACTION.ADD_ALL, rows });
+    if (selected.length === rows.length) {
+      dispatchSelected({ type: SELECT_ACTION.RESET });
+    } else {
+      dispatchSelected({ type: SELECT_ACTION.ADD_ALL, rows });
+    }
   }, [selected, rows]);
 
   const isFirstRun = useRef(true);
@@ -216,7 +220,7 @@ const Table = ({
   useEffect(() => {
     if (!controlledMode) {
       if (!isFirstRun.current) {
-        onSelectionChange && onSelectionChange(selected);
+        onSelectionChange?.(selected);
       } else {
         isFirstRun.current = false;
       }

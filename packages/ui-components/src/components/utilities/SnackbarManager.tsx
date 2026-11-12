@@ -73,7 +73,11 @@ function SnackbarManager({ children, autoHideDefaultTimeout }: SnackbarManagerPr
         dispatchSnackbar({ type: SNACKBAR_ACTION.POP });
       };
       const handleActionClick = (): void => {
-        onActionClick ? onActionClick() : onClose?.();
+        if (onActionClick) {
+          onActionClick();
+        } else {
+          onClose?.();
+        }
         dispatchSnackbar({ type: SNACKBAR_ACTION.POP });
       };
       const snackKey = key ?? `${severity}-${label}`;

@@ -152,11 +152,15 @@ const Chip = ({
   }, []);
 
   const showLabelTooltip = useCallback(() => {
-    maxWidth && typeof label === 'string' && showInnerTooltip();
+    if (maxWidth && typeof label === 'string') {
+      showInnerTooltip();
+    }
   }, [label, maxWidth, showInnerTooltip]);
 
   const hideLabelTooltip = useCallback(() => {
-    maxWidth && typeof label === 'string' && hideInnerTooltip();
+    if (maxWidth && typeof label === 'string') {
+      hideInnerTooltip();
+    }
   }, [hideInnerTooltip, label, maxWidth]);
 
   const actionItems = useMemo(

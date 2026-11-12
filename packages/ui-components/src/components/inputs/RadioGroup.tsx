@@ -50,7 +50,9 @@ const RadioGroupComponent = <T extends RadioProps['value'] = string>(
   );
 
   useEffect(() => {
-    value && setCurrentValue(value);
+    if (value) {
+      setCurrentValue(value);
+    }
   }, [value]);
 
   const radioClickHandler = useCallback(

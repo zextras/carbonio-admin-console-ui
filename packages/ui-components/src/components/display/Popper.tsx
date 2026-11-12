@@ -67,7 +67,9 @@ const Popper = ({
       wrapperRef.current?.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       ) ?? [];
-    nodeList.length > 0 && nodeList[nodeList.length - 1].focus();
+    if (nodeList.length > 0) {
+      nodeList[nodeList.length - 1].focus();
+    }
   }, []);
 
   const onEndSentinelFocus = useCallback(() => {
@@ -117,7 +119,9 @@ const Popper = ({
     }
     return (): void => {
       window.document.removeEventListener('click', closePopper);
-      listenerTimeout && clearTimeout(listenerTimeout);
+      if (listenerTimeout) {
+        clearTimeout(listenerTimeout);
+      }
     };
   }, [open, closePopper]);
 

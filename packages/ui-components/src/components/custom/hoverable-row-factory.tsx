@@ -104,18 +104,25 @@ const HoverableRowFactory = ({
   );
 
   const _onChange = (): void => {
-    !clickableRow && onChange(row.id);
+    if (!clickableRow) {
+      onChange(row.id);
+    }
   };
 
   const onClick = useCallback<ReactEventHandler>(
     (e) => {
-      showCheckbox &&
+      if (
+        showCheckbox &&
         ckbRef.current &&
         e.target !== ckbRef.current &&
         !ckbRef.current.contains(e.target as Node | null) &&
-        row.onClick &&
+        row.onClick
+      ) {
         row.onClick(e);
-      clickableRow && onChange(row.id);
+      }
+      if (clickableRow) {
+        onChange(row.id);
+      }
     },
     [row, onChange, clickableRow, showCheckbox],
   );

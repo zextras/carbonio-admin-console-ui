@@ -123,7 +123,9 @@ export const useWizardV2 = ({
 	}, [currentStepIndex, steps, onComplete, goToStep]);
 
 	const goBack = useCallback(() => {
-		currentStepIndex > 0 && goToStep(steps[currentStepIndex - 1].name);
+		if (currentStepIndex > 0) {
+			goToStep(steps[currentStepIndex - 1].name);
+		}
 	}, [goToStep, steps, currentStepIndex]);
 
 	const getData = useCallback(() => dataRef.current, []);
