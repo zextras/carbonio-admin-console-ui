@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { InputHTMLAttributes, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { InputHTMLAttributes, useCallback, useEffect, useId, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
@@ -53,11 +53,9 @@ type RadioComponentProps<T extends RadioInputHTMLAttributes['value']> = {
 type RadioProps<T extends RadioInputHTMLAttributes['value'] = string> = RadioComponentProps<T> &
   Omit<RadioInputHTMLAttributes, 'type' | 'checked' | 'id' | keyof RadioComponentProps<T>>;
 
-type RadioType = (<T extends RadioInputHTMLAttributes['value'] = string>(
+type RadioType = <T extends RadioInputHTMLAttributes['value'] = string>(
   p: RadioProps<T> & React.RefAttributes<HTMLDivElement>,
-) => React.ReactElement<RadioProps> | null) & {
-  _id?: number;
-};
+) => React.ReactElement<RadioProps> | null;
 
 const RadioComponent = (
   {
@@ -78,15 +76,8 @@ const RadioComponent = (
   const containerRef = useCombinedRefs<HTMLDivElement>(ref);
   const radioInputRef = useCombinedRefs<HTMLInputElement>(inputRef);
   const [isChecked, setIsChecked] = useState(checked ?? defaultChecked ?? false);
-  const id = useMemo<string>(() => {
-    const RadioComponentAlias = RadioComponent as RadioType;
-    if (RadioComponentAlias._id === undefined) {
-      RadioComponentAlias._id = 0;
-    }
-    const { _id } = RadioComponentAlias;
-    RadioComponentAlias._id += 1;
-    return `Radio-${_id}`;
-  }, []);
+  const generatedId = useId();
+  const id = `Radio-${generatedId}`;
 
   const uncontrolledMode = useMemo(() => typeof checked === 'undefined', [checked]);
 

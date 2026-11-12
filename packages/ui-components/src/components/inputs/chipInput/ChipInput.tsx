@@ -71,12 +71,12 @@ const AdjustWidthInput = ({
   const inputRef = useCombinedRefs<HTMLInputElement>(ref);
 
   const resizeInput = useCallback(() => {
-    if (inputRef.current && hiddenSpanRef.current) {
+    const input = inputRef.current;
+    const hiddenSpan = hiddenSpanRef.current;
+    if (input && hiddenSpan) {
       // fill hidden span with a string with same length of value to get right width
-      hiddenSpanRef.current.textContent = '#'.repeat(inputRef.current.value.length);
-      inputRef.current.style.width = inputRef.current.value
-        ? `${inputRef.current.scrollWidth}px`
-        : '';
+      hiddenSpan.textContent = '#'.repeat(input.value.length);
+      input.style.setProperty('width', input.value ? `${input.scrollWidth}px` : '');
     }
   }, [inputRef]);
 

@@ -19,6 +19,7 @@ import {
   ModalContent,
   ModalWrapper,
 } from './modal-components/ModalComponents';
+import styles from './modal-components/ModalComponents.module.css';
 
 type BareModalProps = {
   /** Modal background */
@@ -60,8 +61,8 @@ const CustomModal = ({
 
   const modalRef = useCombinedRefs<HTMLDivElement>(ref);
   const modalContentRef = useRef<HTMLDivElement>(null);
-  const startSentinelRef = useRef<HTMLDivElement>(null);
-  const endSentinelRef = useRef<HTMLDivElement>(null);
+  const startSentinelRef = useRef<HTMLButtonElement>(null);
+  const endSentinelRef = useRef<HTMLButtonElement>(null);
 
   const onBackdropClick = useCallback(
     (e: KeyboardEvent | React.MouseEvent<HTMLDivElement>) => {
@@ -162,7 +163,7 @@ const CustomModal = ({
         data-testid="modal"
         {...rest}
       >
-        <div tabIndex={0} ref={startSentinelRef} />
+        <button type="button" ref={startSentinelRef} className={styles.focusSentinel} />
         <Transition type="scale-in" apply={delayedOpen}>
           <ModalWrapper>
             <ModalContent $size={size} onClick={onClick}>
@@ -170,7 +171,7 @@ const CustomModal = ({
             </ModalContent>
           </ModalWrapper>
         </Transition>
-        <div tabIndex={0} ref={endSentinelRef} />
+        <button type="button" ref={endSentinelRef} className={styles.focusSentinel} />
       </ModalContainer>
     </Portal>
   );

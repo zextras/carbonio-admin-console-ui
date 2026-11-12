@@ -267,6 +267,17 @@ const Chip = ({
     [onDoubleClick],
   );
 
+  const keyDownHandler = useCallback<React.ReactEventHandler>(
+    (event) => {
+      const { key } = event as React.KeyboardEvent<HTMLDivElement>;
+      if (key === 'Enter' || key === ' ') {
+        event.preventDefault();
+        clickHandler(event);
+      }
+    },
+    [clickHandler],
+  );
+
   const backgroundColor = error ? 'error' : background;
   const isClickable = (onClick || onDoubleClick) && !disabled;
   const isDisabled = !!disabled;
@@ -300,6 +311,10 @@ const Chip = ({
         data-shape={shape}
         data-clickable={isClickable || undefined}
         data-disabled={isDisabled || undefined}
+        role={isClickable ? 'button' : undefined}
+        tabIndex={isClickable ? 0 : undefined}
+        aria-disabled={isDisabled || undefined}
+        onKeyDown={isClickable ? keyDownHandler : undefined}
         onClick={onClick && clickHandler}
         onDoubleClick={onDoubleClick && dblClickHandler}
         {...rest}

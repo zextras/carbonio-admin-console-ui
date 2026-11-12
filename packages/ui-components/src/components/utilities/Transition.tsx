@@ -169,10 +169,13 @@ const TransitionOn = ({
     if (apply && childElement) {
       const toStyles = to || STYLES[type].to;
       applyStyle(toStyles, childElement);
-      childElement.style.transition = `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`;
+      childElement.style.setProperty(
+        'transition',
+        `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`,
+      );
 
       const timeout = setTimeout(() => {
-        childElement.style.transition = '';
+        childElement.style.removeProperty('transition');
         resetStyle(toStyles, childElement);
         const endStyles = end || STYLES[type].end || {};
         applyStyle(endStyles, childElement);

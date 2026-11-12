@@ -61,6 +61,8 @@ export const getQueryClient = (): QueryClient => {
   return queryClient;
 };
 
+const { add: addToContextBridge } = useContextBridge.getState();
+
 export const I18NextTestProvider = ({
   children,
 }: {
@@ -95,8 +97,7 @@ export const BootstrapBridgeProvider = ({
   );
 
   // Initialize the context bridge immediately and synchronously
-  const { add } = useContextBridge.getState();
-  add({
+  addToContextBridge({
     functions: {
       getHistory: () => history,
       createSnackbar,

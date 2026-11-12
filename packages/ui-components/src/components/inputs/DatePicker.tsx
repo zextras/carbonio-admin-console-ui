@@ -135,6 +135,11 @@ export const DatePicker = ({
 
   useEffect(() => {
     if (!isOpen) return;
+    popoverRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent): void => {
       const target = e.target as Node;
       if (popoverRef.current?.contains(target) || inputRef.current?.parentElement?.contains(target))
@@ -283,7 +288,6 @@ export const DatePicker = ({
           onSelect={handleSelect}
           disabled={disabledMatcher}
           styles={dayPickerStyles}
-          autoFocus
         />
       </div>
     </div>

@@ -42,6 +42,7 @@ type ListItemProps = {
    * The ref is set by the list itself.
    */
   listRef?: React.RefObject<HTMLDivElement>;
+  tabIndex?: number;
   /**
    * Content of the item (render prop).
    * Visible arg define if the item is visible on the screen or if is in the hidden part of the list.
@@ -61,6 +62,7 @@ const ListItem = ({
   selected,
   selectedBackground,
   background,
+  tabIndex = 0,
   ref,
   ...rest
 }: ListItemProps) => {
@@ -89,7 +91,7 @@ const ListItem = ({
   );
 
   return (
-    <div tabIndex={0} ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>
+    <div tabIndex={tabIndex} ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>
       {children(inView)}
     </div>
   );

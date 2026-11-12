@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
  *

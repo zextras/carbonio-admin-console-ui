@@ -46,8 +46,8 @@ const Popper = ({
   const popperRef = useCombinedRefs<HTMLDivElement>(ref);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const startSentinelRef = useRef<HTMLDivElement>(null);
-  const endSentinelRef = useRef<HTMLDivElement>(null);
+  const startSentinelRef = useRef<HTMLButtonElement>(null);
+  const endSentinelRef = useRef<HTMLButtonElement>(null);
 
   const closePopper = useCallback(
     (e: Event) => {
@@ -145,11 +145,11 @@ const Popper = ({
   return (
     <Portal show={open} disablePortal={false}>
       <div ref={popperRef} className={popperContainerClassName} data-testid="popper">
-        <div tabIndex={0} ref={startSentinelRef} />
+        <button type="button" ref={startSentinelRef} className={styles.focusSentinel} />
         <div ref={wrapperRef} tabIndex={-1} className={styles.popperWrapper}>
           {children}
         </div>
-        <div tabIndex={0} ref={endSentinelRef} />
+        <button type="button" ref={endSentinelRef} className={styles.focusSentinel} />
       </div>
     </Portal>
   );

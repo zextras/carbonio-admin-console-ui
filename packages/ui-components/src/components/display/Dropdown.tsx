@@ -380,8 +380,8 @@ const Dropdown = ({
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
   const innerTriggerRef = useCombinedRefs(triggerRef);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
-  const startSentinelRef = useRef<HTMLDivElement | null>(null);
-  const endSentinelRef = useRef<HTMLDivElement | null>(null);
+  const startSentinelRef = useRef<HTMLButtonElement | null>(null);
+  const endSentinelRef = useRef<HTMLButtonElement | null>(null);
   const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
   useEffect(() => {
@@ -666,6 +666,8 @@ const Dropdown = ({
               <NestListItem
                 icon={icon}
                 label={label ?? ''}
+                role="menuitem"
+                aria-haspopup="menu"
                 onClick={listItemClickHandler(onClick, keepOpen)}
                 keepOpen={keepOpen}
                 selected={selected}
@@ -680,6 +682,8 @@ const Dropdown = ({
               <PopperListItem
                 icon={icon}
                 label={label ?? ''}
+                role={multiple ? 'option' : 'menuitem'}
+                aria-selected={multiple ? (selected ?? false) : undefined}
                 onClick={listItemClickHandler(onClick, keepOpen)}
                 keepOpen={keepOpen}
                 selected={selected}
@@ -724,7 +728,6 @@ const Dropdown = ({
       maxWidth: width === '100%' ? '100%' : maxWidth,
       '--popper-max-height': maxHeight,
     } as CSSProperties;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [width, maxWidth, maxHeight, open, innerTriggerRef]);
 
   return (
@@ -736,12 +739,13 @@ const Dropdown = ({
           className={clsx(styles.popperList, open && styles.open)}
           style={popperListStyle}
           data-testid="dropdown-popper-list"
+          role={multiple ? 'listbox' : 'menu'}
           onClick={popperListPreventDefaultHandler}
           onKeyDown={popperListKeyDownHandler}
         >
-          <div tabIndex={0} ref={startSentinelRef} />
+          <button type="button" ref={startSentinelRef} className={styles.focusSentinel} />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
-          <div tabIndex={0} ref={endSentinelRef} />
+          <button type="button" ref={endSentinelRef} className={styles.focusSentinel} />
         </div>
       </Portal>
     </div>

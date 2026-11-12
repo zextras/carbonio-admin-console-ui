@@ -6,7 +6,7 @@
 
 import '../../web-components/ds-divider';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -91,6 +91,12 @@ const LegacyInput = ({
     setHasFocus(false);
   }, []);
 
+  useEffect(() => {
+    if (autoFocus) {
+      innerRef.current?.focus();
+    }
+  }, [autoFocus, innerRef]);
+
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLInputElement>) => {
       if (!trimOnPaste) return;
@@ -171,7 +177,6 @@ const LegacyInput = ({
         >
           <input
             className={styles.input}
-            autoFocus={autoFocus || undefined}
             autoComplete={autoComplete || 'off'}
             ref={innerRef}
             type={type}

@@ -62,8 +62,7 @@ function useCheckbox({
 		return () => {
 			refSave?.removeEventListener('click', handleClick);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ref.current, handleClick]);
+	}, [ref, handleClick]);
 
 	return checked;
 }

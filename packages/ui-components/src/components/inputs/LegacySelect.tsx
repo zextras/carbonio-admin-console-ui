@@ -324,7 +324,15 @@ const SelectComponent = function SelectFn<T = string>({
       disablePortal={disablePortal}
       {...rest}
     >
-      <div onFocus={onFocus} onBlur={onBlur} tabIndex={0} className={styles.tabContainer}>
+      <div
+        onFocus={onFocus}
+        onBlur={onBlur}
+        role="button"
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        tabIndex={0}
+        className={styles.tabContainer}
+      >
         <LabelFactory
           label={label}
           isRequired={isRequired}
