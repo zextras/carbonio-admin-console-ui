@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { findIndex, isEmpty, map, pick, take } from 'lodash-es';
-import { type ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { type ComponentType, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 
 export type WizardStepV2 = {
 	name: string;
@@ -48,11 +48,20 @@ export const useWizardV2 = ({
 	activeStep,
 }: WizardV2Props): any => {
 	const uncontrolledMode = useMemo(() => !data, [data]);
-	const [innerData, setInnerData] = useState(
+	const [internalData, setInternalData] = useState(
 		isEmpty(data) ? defaultData || { currentStep: steps[0].name, steps: {} } : data,
 	);
+	const innerData = isEmpty(data) ? internalData : data;
 	const dataRef = useRef(innerData);
-	const [currentStep, setCurrentStep] = useState(innerData.currentStep);
+	const [internalStep, setInternalStep] = useState(activeStep || innerData.currentStep);
+	const [prevActiveStep, setPrevActiveStep] = useState(activeStep);
+	if (activeStep !== prevActiveStep) {
+		setPrevActiveStep(activeStep);
+		if (activeStep) {
+			setInternalStep(activeStep);
+		}
+	}
+	const currentStep = isEmpty(data) ? internalStep : data.currentStep;
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const stepKeys = useMemo(() => map(steps, (step) => step.name), [steps]);
 
@@ -75,7 +84,7 @@ export const useWizardV2 = ({
 			};
 			if (uncontrolledMode) {
 				dataRef.current = newState;
-				setInnerData(newState);
+				setInternalData(newState);
 			}
 			onChange?.(newState);
 		},
@@ -86,11 +95,30 @@ export const useWizardV2 = ({
 		const newState = { currentStep: steps[0].name, steps: {}, reset: true };
 		if (uncontrolledMode) {
 			dataRef.current = newState;
-			setInnerData(newState);
-			setCurrentStep(steps[0].name);
+			setInternalData(newState);
+			setInternalStep(steps[0].name);
 		}
 		onChange?.(newState);
 	}, [uncontrolledMode, onChange, steps]);
+
+	const scrollActiveIntoView = (): void => {
+		const section = sectionRef.current;
+		const active = activeRef.current;
+		if (!section || !active) {
+			return;
+		}
+		const sectionTop = section.getBoundingClientRect().top;
+		const activeTop = active.getBoundingClientRect().top;
+		const sectionBottom = section.getBoundingClientRect().bottom;
+		const activeBottom = active.getBoundingClientRect().bottom;
+		if (activeTop < sectionTop || activeBottom > sectionBottom) {
+			section.scrollBy({ top: activeTop - sectionTop - 16, behavior: 'smooth' });
+		}
+	};
+
+	useLayoutEffect(() => {
+		scrollActiveIntoView();
+	}, []);
 
 	const goToStep = useCallback(
 		(stepName: any) => {
@@ -101,12 +129,13 @@ export const useWizardV2 = ({
 			};
 			if (uncontrolledMode) {
 				dataRef.current = newState;
-				setInnerData(newState);
-				setCurrentStep(stepName);
+				setInternalData(newState);
+				setInternalStep(stepName);
 			}
 			onChange?.(newState);
+			globalThis.requestAnimationFrame(scrollActiveIntoView);
 		},
-		[stepKeys, uncontrolledMode, onChange],
+		[stepKeys, uncontrolledMode, onChange, scrollActiveIntoView],
 	);
 
 	const goNext = useCallback(async () => {
@@ -140,34 +169,8 @@ export const useWizardV2 = ({
 	const canGoNext = useCallback(() => canGoToStep(currentStep), [canGoToStep, currentStep]);
 
 	useEffect(() => {
-		const sectionTop = sectionRef.current?.getBoundingClientRect().top;
-		const activeTop = activeRef.current?.getBoundingClientRect().top;
-		const sectionBottom = sectionRef.current?.getBoundingClientRect().bottom;
-		const activeBottom = activeRef.current?.getBoundingClientRect().bottom;
-		const offset = activeTop - sectionTop - 16;
-		if (activeTop < sectionTop || activeBottom > sectionBottom) {
-			if (sectionRef.current && activeRef.current) {
-				sectionRef.current.scrollBy({ top: offset, behavior: 'smooth' });
-			} else if (sectionRef.current) {
-				sectionRef.current.scrollTo(0, sectionRef.current.scrollHeight);
-			}
-		}
-		if (activeStep) {
-			goToStep(activeStep);
-		}
-	}, [activeRef, activeStep, currentStep, goToStep, sectionRef]);
-
-	useEffect(() => {
-		if (!isEmpty(data)) {
-			setCurrentStep(data.currentStep);
-			dataRef.current.currentStep = data.currentStep;
-		}
-	}, [data]);
-
-	useEffect(() => {
 		if (!isEmpty(data)) {
 			dataRef.current = data;
-			setInnerData(data);
 		}
 	}, [data]);
 

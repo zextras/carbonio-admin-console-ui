@@ -193,8 +193,14 @@ const Table = ({
   );
 
   const uncontrolledOnToggle = useCallback(
-    (id: string) => dispatchSelected({ type: SELECT_ACTION.TOGGLE, id, multiSelect }),
-    [multiSelect],
+    (id: string) => {
+      const action = { type: SELECT_ACTION.TOGGLE, id, multiSelect };
+      dispatchSelected(action);
+      if (!controlledMode) {
+        onSelectionChange?.(selectedReducer(selected, action));
+      }
+    },
+    [multiSelect, selected, controlledMode, onSelectionChange],
   );
 
   const controlledOnToggleAll = useCallback(() => {
@@ -210,22 +216,19 @@ const Table = ({
   const uncontrolledOnToggleAll = useCallback(() => {
     if (selected.length === rows.length) {
       dispatchSelected({ type: SELECT_ACTION.RESET });
+      if (!controlledMode) {
+        onSelectionChange?.([]);
+      }
     } else {
-      dispatchSelected({ type: SELECT_ACTION.ADD_ALL, rows });
-    }
-  }, [selected, rows]);
-
-  const isFirstRun = useRef(true);
-
-  useEffect(() => {
-    if (!controlledMode) {
-      if (!isFirstRun.current) {
-        onSelectionChange?.(selected);
-      } else {
-        isFirstRun.current = false;
+      const action = { type: SELECT_ACTION.ADD_ALL, rows };
+      dispatchSelected(action);
+      if (!controlledMode) {
+        onSelectionChange?.(selectedReducer(selected, action));
       }
     }
-  }, [selected, controlledMode, onSelectionChange]);
+  }, [selected, rows, controlledMode, onSelectionChange]);
+
+  const isFirstRun = useRef(true);
 
   useEffect(() => {
     if (controlledMode) {

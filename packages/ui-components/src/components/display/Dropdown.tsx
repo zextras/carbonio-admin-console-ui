@@ -375,7 +375,8 @@ const Dropdown = ({
   dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
-  const [open, setOpen] = useState<boolean>(forceOpen);
+  const [internalOpen, setInternalOpen] = useState<boolean>(forceOpen);
+  const open = forceOpen || internalOpen;
   const openRef = useRef<boolean>(open);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
   const innerTriggerRef = useCombinedRefs(triggerRef);
@@ -384,13 +385,8 @@ const Dropdown = ({
   const endSentinelRef = useRef<HTMLButtonElement | null>(null);
   const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
-  useEffect(() => {
-    setOpen(forceOpen);
-    openRef.current = forceOpen;
-  }, [forceOpen]);
-
   const openPopper = useCallback(() => {
-    setOpen(true);
+    setInternalOpen(true);
     openRef.current = true;
     onOpen?.();
   }, [onOpen]);
@@ -398,8 +394,8 @@ const Dropdown = ({
   const closePopper = useCallback(
     (e?: React.SyntheticEvent | KeyboardEvent) => {
       e?.preventDefault();
-      setOpen(forceOpen);
-      openRef.current = forceOpen;
+      setInternalOpen(false);
+      openRef.current = open;
       if (!disableRestoreFocus) {
         const triggerElement = innerTriggerRef.current;
         if (triggerElement) {
@@ -412,7 +408,7 @@ const Dropdown = ({
       }
       onClose?.();
     },
-    [disableRestoreFocus, forceOpen, innerTriggerRef, onClose],
+    [disableRestoreFocus, open, innerTriggerRef, onClose],
   );
 
   const toggleOpen = useCallback<(e: React.SyntheticEvent | KeyboardEvent) => void>(
@@ -699,7 +695,7 @@ const Dropdown = ({
       );
     }
     return null;
-  }, [items, listItemClickHandler, itemTextSize]);
+  }, [items, listItemClickHandler, itemTextSize, multiple]);
 
   const popperListPreventDefaultHandler = useCallback<React.MouseEventHandler>((event) => {
     event?.preventDefault?.();

@@ -4,9 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type Location, useLocation, useNavigate } from 'react-router';
+import { useBlocker } from 'react-router';
 
 import { Modal } from '../feedback/Modal';
 
@@ -43,66 +43,34 @@ function DefaultUnsavedChangesBody() {
 /**
  * Guards against leaving the current route when there are unsaved changes.
  *
- * On navigation it intercepts, reverts the navigation, and shows a modal offering
- * "Save and leave" (calls `onSave` then proceeds) or "Leave anyway" (discards).
+ * On navigation it intercepts, and shows a modal offering "Save and leave"
+ * (calls `onSave` then proceeds) or "Leave anyway" (discards).
  */
 export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardProps) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-  const lastLocationInitial = useRef(location).current;
-  const [modalVisible, setModalVisible] = useState(false);
-  const [lastLocation, setLastLocation] = useState<Location>(lastLocationInitial);
-  const [confirmedNavigation, setConfirmedNavigation] = useState(false);
   const [t] = useTranslation();
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      when === true && currentLocation.pathname !== nextLocation.pathname,
+  );
 
-  const onClose = (): void => {
-    setModalVisible(false);
-    setConfirmedNavigation(true);
-  };
-
-  const handleBlockedNavigation = (nextLocation: Location): boolean => {
-    if (
-      !confirmedNavigation &&
-      nextLocation.pathname !== (lastLocation?.pathname || lastLocationInitial.pathname)
-    ) {
-      setModalVisible(true);
-      setLastLocation(nextLocation);
-      return false;
+  const onLeave = (): void => {
+    if (blocker.state === 'blocked') {
+      blocker.proceed();
     }
-    return true;
   };
 
-  const onConfirm = (): void => {
-    setModalVisible(false);
+  const onSaveAndLeave = (): void => {
     onSave();
-    setConfirmedNavigation(true);
+    if (blocker.state === 'blocked') {
+      blocker.proceed();
+    }
   };
-
-  useEffect(() => {
-    if (when && !confirmedNavigation) {
-      if (
-        location.pathname !== lastLocationInitial.pathname &&
-        location.pathname !== lastLocation?.pathname
-      ) {
-        const shouldBlock = handleBlockedNavigation(location);
-        if (!shouldBlock) {
-          navigate(lastLocation?.pathname || lastLocationInitial.pathname, { replace: true });
-        }
-      }
-    }
-  }, [location, when, confirmedNavigation, lastLocation, lastLocationInitial, navigate]);
-
-  useEffect(() => {
-    if (confirmedNavigation && lastLocation) {
-      navigate(lastLocation.pathname);
-    }
-  }, [confirmedNavigation, lastLocation, navigate]);
 
   return (
     <Modal
-      open={modalVisible}
-      onClose={onClose}
-      onConfirm={onConfirm}
+      open={blocker.state === 'blocked'}
+      onClose={onLeave}
+      onConfirm={onSaveAndLeave}
       title={t('label.unsaved_changes', 'You have unsaved changes')}
       dismissLabel={t('label.leave_anyway', 'Leave anyway')}
       confirmLabel={t('label.save_and_leave', 'Save and leave')}

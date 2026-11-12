@@ -6,7 +6,7 @@
 
 import '../../web-components/ds-divider';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -29,7 +29,6 @@ type LegacyInputProps = ContainerProps & {
   value?: string | number;
   defaultValue?: string | number;
   hasError?: boolean;
-  autoFocus?: boolean;
   autoComplete?: string;
   isRequired?: boolean;
   inputName?: string;
@@ -47,7 +46,6 @@ type LegacyInput = React.Ref<LegacyInputProps & React.RefAttributes<HTMLDivEleme
 };
 
 const LegacyInput = ({
-  autoFocus = false,
   autoComplete = 'off',
   borderColor = INPUT_DIVIDER_COLOR,
   backgroundColor = INPUT_BACKGROUND_COLOR,
@@ -90,12 +88,6 @@ const LegacyInput = ({
   const onInputBlur = useCallback(() => {
     setHasFocus(false);
   }, []);
-
-  useEffect(() => {
-    if (autoFocus) {
-      innerRef.current?.focus();
-    }
-  }, [autoFocus, innerRef]);
 
   const handlePaste = useCallback(
     (e: React.ClipboardEvent<HTMLInputElement>) => {

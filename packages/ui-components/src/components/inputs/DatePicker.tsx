@@ -135,11 +135,6 @@ export const DatePicker = ({
 
   useEffect(() => {
     if (!isOpen) return;
-    popoverRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
-  }, [isOpen]);
-
-  useEffect(() => {
-    if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent): void => {
       const target = e.target as Node;
       if (popoverRef.current?.contains(target) || inputRef.current?.parentElement?.contains(target))
@@ -178,9 +173,14 @@ export const DatePicker = ({
 
   const toggleOpen = useCallback(() => {
     if (!disabled) {
-      setIsOpen((prev) => !prev);
+      setIsOpen(!isOpen);
+      if (!isOpen) {
+        globalThis.requestAnimationFrame(() => {
+          popoverRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+        });
+      }
     }
-  }, [disabled]);
+  }, [disabled, isOpen, popoverRef]);
 
   const openPopover = useCallback(() => {
     if (!disabled) setIsOpen(true);
