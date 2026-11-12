@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FieldsetHTMLAttributes, useCallback, useEffect, useMemo, useState } from 'react';
+import React, { FieldsetHTMLAttributes, useCallback, useMemo, useState } from 'react';
 
 import { type RadioProps } from './Radio';
 import styles from './RadioGroup.module.css';
@@ -29,31 +29,20 @@ const RadioGroupComponent = <T extends RadioProps['value'] = string>(
   { children, value, defaultValue, onChange, ...fieldsetProps }: RadioGroupProps<T>,
   ref: React.Ref<HTMLFieldSetElement>,
 ) => {
-  const [currentValue, setCurrentValue] = useState<RadioValue<T> | undefined>(
-    value ?? defaultValue,
-  );
+  const [internalValue, setInternalValue] = useState<RadioValue<T> | undefined>(defaultValue);
+  const currentValue = value ?? internalValue;
   const uncontrolledMode = useMemo(() => typeof value === 'undefined', [value]);
 
   const handleOnClick = useCallback(
     (newValue: RadioValue<T>) => {
-      setCurrentValue((prevValue) => {
-        if (uncontrolledMode) {
-          return newValue;
-        }
-        if (newValue !== prevValue) {
-          onChange?.(newValue);
-        }
-        return prevValue;
-      });
+      if (uncontrolledMode) {
+        setInternalValue(newValue);
+      } else if (newValue !== currentValue) {
+        onChange?.(newValue);
+      }
     },
-    [onChange, uncontrolledMode],
+    [onChange, uncontrolledMode, currentValue],
   );
-
-  useEffect(() => {
-    if (value) {
-      setCurrentValue(value);
-    }
-  }, [value]);
 
   const radioClickHandler = useCallback(
     (radio: RadioGroupProps<T>['children'][number]): RadioProps['onClick'] =>

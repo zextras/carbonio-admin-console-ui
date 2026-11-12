@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type FC, useEffect, useState } from 'react';
+import { type FC, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/button';
@@ -38,17 +38,21 @@ const Paging: FC<PagingProps> = ({
 }) => {
   const [t] = useTranslation();
   const totalPages = Math.ceil(totalItem / pageSize);
-  const [currentPage, setCurrentPage] = useState<number>(currentPageProp ?? FIRST_PAGE);
-  const [isNextPageDisabled, setIsNextPageDisabled] = useState(false);
-  const [isPreviousPageDisabled, setIsPreviousPageDisabled] = useState(false);
-  const [isFirstPageDisabled, setIsFirstPageDisabled] = useState(false);
-  const [isLastPageDisabled, setIsLastPageDisabled] = useState(false);
+  const [internalPage, setInternalPage] = useState<number>(currentPageProp ?? FIRST_PAGE);
+  const currentPage = totalPages === 0 ? FIRST_PAGE : (currentPageProp ?? internalPage);
+
+  const onFirstPageBoundary = currentPage <= 1;
+  const onLastPageBoundary = currentPage >= totalPages;
+  const singlePageList = onFirstPageBoundary && totalItem < pageSize;
+  const isFirstPageDisabled = onFirstPageBoundary || singlePageList;
+  const isPreviousPageDisabled = onFirstPageBoundary || singlePageList;
+  const isNextPageDisabled = onLastPageBoundary || singlePageList;
+  const isLastPageDisabled = onLastPageBoundary || singlePageList;
 
   const onNextPage = (): void => {
     const page = currentPage + 1;
-    setCurrentPage(page);
-    setIsPreviousPageDisabled(false);
-    setIsFirstPageDisabled(false);
+    setInternalPage(page);
+    setOffset?.(page * pageSize - pageSize);
     if (nextPage) {
       nextPage(page);
     }
@@ -59,9 +63,8 @@ const Paging: FC<PagingProps> = ({
     let page = currentPage;
     if (currentPage !== 1) {
       page = currentPage - 1;
-      setCurrentPage(page);
-      setIsNextPageDisabled(false);
-      setIsLastPageDisabled(false);
+      setInternalPage(page);
+      setOffset?.(page * pageSize - pageSize);
     }
     if (previousPage) {
       previousPage(page);
@@ -70,7 +73,8 @@ const Paging: FC<PagingProps> = ({
   };
 
   const onLastPage = (): void => {
-    setCurrentPage(totalPages);
+    setInternalPage(totalPages);
+    setOffset?.(totalPages * pageSize - pageSize);
     if (lastPage) {
       lastPage(totalPages);
     }
@@ -78,45 +82,13 @@ const Paging: FC<PagingProps> = ({
   };
 
   const onFirstPage = (): void => {
-    setCurrentPage(FIRST_PAGE);
+    setInternalPage(FIRST_PAGE);
+    setOffset?.(0);
     if (firstPage) {
       firstPage(FIRST_PAGE);
     }
     onPageChange?.(FIRST_PAGE);
   };
-
-  useEffect(() => {
-    if (currentPageProp) {
-      setCurrentPage(currentPageProp);
-    }
-  }, [currentPageProp]);
-
-  useEffect(() => {
-    if (currentPage >= totalPages) {
-      setIsNextPageDisabled(true);
-      setIsPreviousPageDisabled(false);
-      setIsFirstPageDisabled(false);
-      setIsLastPageDisabled(true);
-    }
-    if (currentPage === 1) {
-      setIsPreviousPageDisabled(true);
-      setIsNextPageDisabled(false);
-      setIsFirstPageDisabled(true);
-      setIsLastPageDisabled(false);
-    }
-    if (currentPage === 1 && totalItem < pageSize) {
-      setIsPreviousPageDisabled(true);
-      setIsNextPageDisabled(true);
-      setIsFirstPageDisabled(true);
-      setIsLastPageDisabled(true);
-    }
-    if (totalPages === 0) {
-      setCurrentPage(FIRST_PAGE);
-      setOffset?.(0);
-    } else {
-      setOffset?.(currentPage * pageSize - pageSize);
-    }
-  }, [currentPage, totalPages, setOffset, pageSize, totalItem]);
 
   return (
     <Container
@@ -172,7 +144,7 @@ const Paging: FC<PagingProps> = ({
           color="primary"
           onClick={onNextPage}
           data-testid="next-page"
-          disabled={isNextPageDisabled || currentPage === totalPages}
+          disabled={isNextPageDisabled}
           aria-label={t('label.next_page', 'Next page')}
         />
       </Row>
@@ -183,7 +155,7 @@ const Paging: FC<PagingProps> = ({
           icon="GoLastOutline"
           color="primary"
           onClick={onLastPage}
-          disabled={isLastPageDisabled || currentPage === totalPages}
+          disabled={isLastPageDisabled}
           aria-label={t('label.last_page', 'Last page')}
         />
       </Row>

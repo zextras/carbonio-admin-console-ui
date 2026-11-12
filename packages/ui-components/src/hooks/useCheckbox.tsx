@@ -25,7 +25,8 @@ function useCheckbox({
 	onClick,
 	onChange
 }: UseCheckboxArgs): boolean {
-	const [checked, setChecked] = useState<boolean>(value || defaultChecked || false);
+	const [internalChecked, setInternalChecked] = useState<boolean>(defaultChecked || false);
+	const checked = value ?? internalChecked;
 
 	const uncontrolledMode = useMemo(() => value === undefined, [value]);
 
@@ -33,28 +34,20 @@ function useCheckbox({
 		(ev: Event) => {
 			if (!disabled) {
 				if (uncontrolledMode) {
-					setChecked((check) => !check);
+					const nextChecked = !checked;
+					setInternalChecked(nextChecked);
+					onChange?.(nextChecked);
 				}
 				if (onClick) {
 					onClick(ev);
 				}
 			}
 		},
-		[disabled, uncontrolledMode, onClick]
+		[disabled, uncontrolledMode, checked, onClick, onChange]
 	);
 
 	const keyEvents = useMemo(() => getKeyboardPreset('button', handleClick), [handleClick]);
 	useKeyboard(ref, keyEvents);
-
-	useEffect(() => {
-		if (value !== undefined) {
-			setChecked(value);
-		}
-	}, [value]);
-
-	useEffect(() => {
-		onChange?.(checked);
-	}, [onChange, checked]);
 
 	useEffect(() => {
 		const refSave = ref.current;

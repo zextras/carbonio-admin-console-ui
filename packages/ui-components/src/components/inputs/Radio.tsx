@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { InputHTMLAttributes, useCallback, useEffect, useId, useMemo, useState } from 'react';
+import React, { InputHTMLAttributes, useCallback, useId, useMemo, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
@@ -75,7 +75,8 @@ const RadioComponent = (
 ) => {
   const containerRef = useCombinedRefs<HTMLDivElement>(ref);
   const radioInputRef = useCombinedRefs<HTMLInputElement>(inputRef);
-  const [isChecked, setIsChecked] = useState(checked ?? defaultChecked ?? false);
+  const [internalChecked, setInternalChecked] = useState(defaultChecked ?? false);
+  const isChecked = checked ?? internalChecked;
   const generatedId = useId();
   const id = `Radio-${generatedId}`;
 
@@ -85,12 +86,14 @@ const RadioComponent = (
     (e) => {
       if (!disabled) {
         if (uncontrolledMode && !e.defaultPrevented) {
-          setIsChecked((prevState) => !prevState);
+          const nextChecked = !isChecked;
+          setInternalChecked(nextChecked);
+          onChange?.(nextChecked);
         }
         onClick?.(e);
       }
     },
-    [disabled, onClick, uncontrolledMode],
+    [disabled, onClick, uncontrolledMode, isChecked, onChange],
   );
 
   const onChangeHandler = useCallback<React.ChangeEventHandler<HTMLInputElement>>(() => {
@@ -98,17 +101,6 @@ const RadioComponent = (
     // TODO: CDS-174: update state here and not in the click. In controlled mode, do not update the internal state,
     // 	just call the external onChange
   }, []);
-
-  useEffect(() => {
-    // TODO: CDS-174: remove this effect, call onChange only from the handler
-    onChange?.(isChecked);
-  }, [onChange, isChecked]);
-
-  useEffect(() => {
-    if (checked !== undefined) {
-      setIsChecked(checked);
-    }
-  }, [checked]);
 
   const radioSize = RADIO_SIZE[size].icon;
 
