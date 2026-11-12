@@ -5,7 +5,7 @@ import { Checkbox } from '../inputs/Checkbox';
 import { LegacySelect } from '../inputs/LegacySelect';
 import { Container } from '../layout/Container';
 import { Row } from '../layout/Row';
-import { THeaderProps } from './Table';
+import { THeader } from './Table';
 import styles from './Table.module.css';
 
 /*
@@ -20,6 +20,15 @@ type LabelFactoryProps = {
   bold?: boolean;
 };
 
+type DefaultHeaderFactoryProps = {
+  headers: Array<THeader>;
+  onChange: () => void;
+  allSelected: boolean;
+  selectionMode: boolean;
+  multiSelect: boolean;
+  showCheckbox: boolean;
+};
+
 export const DefaultHeaderFactory = ({
   headers,
   onChange,
@@ -27,7 +36,7 @@ export const DefaultHeaderFactory = ({
   selectionMode,
   multiSelect,
   showCheckbox,
-}: THeaderProps): React.JSX.Element => {
+}: DefaultHeaderFactoryProps): React.JSX.Element => {
   const trRef = useRef<HTMLTableRowElement>(null);
 
   const LabelFactory = useCallback(
@@ -83,7 +92,11 @@ export const DefaultHeaderFactory = ({
                 }
               />
             )}
-            {!hasItems && <ds-text as="span" weight={column.bold ? 'bold' : 'regular'}>{column.label}</ds-text>}
+            {!hasItems && (
+              <ds-text as="span" weight={column.bold ? 'bold' : 'regular'}>
+                {column.label}
+              </ds-text>
+            )}
           </th>
         );
       }),
