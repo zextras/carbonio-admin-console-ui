@@ -74,7 +74,6 @@ const AdjustWidthInput = ({
     const input = inputRef.current;
     const hiddenSpan = hiddenSpanRef.current;
     if (input && hiddenSpan) {
-      // fill hidden span with a string with same length of value to get right width
       hiddenSpan.textContent = '#'.repeat(input.value.length);
       input.style.setProperty('width', input.value ? `${input.scrollWidth}px` : '');
     }
@@ -154,7 +153,7 @@ function defaultOnAdd<TValue>(valueToAdd: unknown): ChipItem<TValue> {
   if (valueToAdd !== null && typeof valueToAdd === 'object') {
     return {
       label: 'no label',
-      ...valueToAdd, // if valueToAdd has a label, spread will replace the default "no label"
+      ...valueToAdd,
     };
   }
   return { label: 'unknown value' };
@@ -315,12 +314,23 @@ const ChipInputComponent = <TValue = unknown,>({
     return `chipInput-${_newId}`;
   }, []);
 
-  const [forceShowDropdown, setForceShowDropdown] = useState(false);
-  const [dropdownItems, setDropdownItems] = useState<DropdownItem[]>(options);
+  const isInputDisabled = useMemo(
+    () => !!maxChips && items.length >= maxChips,
+    [items.length, maxChips],
+  );
+  const isDropdownDisabled = useMemo(
+    () => disableOptions || isInputDisabled,
+    [disableOptions, isInputDisabled],
+  );
+  const suggestionOpen = isDropdownDisabled && !isEmpty(options);
+  const [forceShowDropdown, setForceShowDropdown] = useState(suggestionOpen);
+  const [prevSuggestionOpen, setPrevSuggestionOpen] = useState(suggestionOpen);
+  if (suggestionOpen !== prevSuggestionOpen) {
+    setPrevSuggestionOpen(suggestionOpen);
+    setForceShowDropdown(suggestionOpen);
+  }
 
   const uncontrolledMode = useMemo(() => value === undefined, [value]);
-
-  const dropdownVisibilityRef = useRef<boolean>(forceShowDropdown);
 
   const setFocus = useCallback(() => {
     inputElRef.current?.focus();
@@ -492,38 +502,34 @@ const ChipInputComponent = <TValue = unknown,>({
     showDropdown(false);
   }, [showDropdown]);
 
+  const initialSuggestionOpenRef = useRef(suggestionOpen);
+  useEffect(() => {
+    if (initialSuggestionOpenRef.current) {
+      showDropdown(true);
+    }
+  }, []);
+
   useEffect(() => {
     if (!uncontrolledMode) {
       dispatch({ type: 'reset', value });
     }
   }, [uncontrolledMode, value]);
 
-  useEffect(() => {
-    setDropdownItems((prevState) => {
-      if (options.length === 0 && prevState.length === 0) {
-        return prevState;
-      }
-      return options.map((o) => ({
-        ...o,
-        onClick: (event): void => {
-          o.onClick?.(event);
-          onOptionClick(o.value ? o.value : o.label);
-        },
-      }));
-    });
-  }, [onOptionClick, options]);
+  const dropdownItems = options.map((o) => ({
+    ...o,
+    onClick: (event): void => {
+      o.onClick?.(event);
+      onOptionClick(o.value ? o.value : o.label);
+    },
+  }));
 
-  // allow horizontal scroll without a scroll bar
   const flipScroll = useCallback<(e: WheelEvent) => void>((ev) => {
     const scrollableElement = ev.currentTarget;
     if (
       scrollableElement instanceof HTMLElement &&
-      // avoid catching scroll if entire content is visible
       scrollableElement.scrollWidth > scrollableElement.clientWidth
     ) {
       ev.preventDefault();
-      // intercept the mouse wheel and use the delta to scroll the container horizontally
-      // noinspection JSSuspiciousNameCombination
       scrollableElement.scrollLeft += ev.deltaY;
     }
   }, []);
@@ -537,50 +543,19 @@ const ChipInputComponent = <TValue = unknown,>({
   }, [flipScroll, scrollContainerRef]);
 
   useEffect(() => {
-    /*
-     * Scroll to end of horizontal or vertical scrollable container when items change,
-     * so that the last chip and the input are fully visible.
-     * This is done with an effect to be sure that every change on the items trigger this
-     * update with the final dimensions of the container
-     */
     if (scrollContainerRef.current) {
       scrollContainerRef.current.scrollLeft = scrollContainerRef.current.scrollWidth;
       scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
     }
   }, [items]);
 
-  const isInputDisabled = useMemo(
-    () => !!maxChips && items.length >= maxChips,
-    [items.length, maxChips],
-  );
-
   const previousIsInputDisabled = usePrevious<boolean>(isInputDisabled);
-
-  useEffect(() => {
-    if (onOptionsDisplayChange && forceShowDropdown !== dropdownVisibilityRef.current) {
-      dropdownVisibilityRef.current = forceShowDropdown;
-      onOptionsDisplayChange(dropdownVisibilityRef.current);
-    }
-  }, [forceShowDropdown, onOptionsDisplayChange]);
 
   useEffect(() => {
     if (isInputDisabled && !previousIsInputDisabled) {
       setIsActive(false);
     }
   }, [previousIsInputDisabled, isInputDisabled]);
-
-  // dropdown disabled does not depend on chipInput disabled, so that options can be still used
-  // even if input is disabled (chip can be added through dropdown but not typing)
-  const isDropdownDisabled = useMemo(
-    () => disableOptions || isInputDisabled,
-    [disableOptions, isInputDisabled],
-  );
-
-  useEffect(() => {
-    // if dropdown is set to not open on click (dropdownDisabled),
-    // force open it on options change to simulate suggestion mode
-    setForceShowDropdown(isDropdownDisabled && !isEmpty(options));
-  }, [isDropdownDisabled, options]);
 
   const hasFocus = useMemo(() => isActive && !isInputDisabled, [isActive, isInputDisabled]);
 
@@ -590,7 +565,6 @@ const ChipInputComponent = <TValue = unknown,>({
     (e) => {
       if (createChipOnPaste) {
         e.preventDefault();
-        // TODO: investigate if reading data from text with uppercase T is right
         const pastedText = e.clipboardData.getData('Text');
         const separatorsRegex = new RegExp(pasteSeparators.join('|'), 'gi');
         const reducedChips = pastedText
