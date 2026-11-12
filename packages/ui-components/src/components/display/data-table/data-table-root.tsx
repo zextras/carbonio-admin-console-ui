@@ -19,7 +19,7 @@ import type {
 } from '@tanstack/react-table';
 import { functionalUpdate } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { Children, isValidElement, type ReactNode, useEffect, useState } from 'react';
+import { Children, isValidElement, type ReactNode, useEffect, useLayoutEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { useDataTable } from './create-data-table';
@@ -491,7 +491,7 @@ const DataTableRootShell = <TData extends RowData>({
     enableRowActions,
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!persistenceKey || !layout) {
       return;
     }

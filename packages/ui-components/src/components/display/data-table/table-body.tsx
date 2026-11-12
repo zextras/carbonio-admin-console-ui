@@ -6,7 +6,7 @@
 
 import type { Cell, Row, RowData } from '@tanstack/react-table';
 import clsx from 'clsx';
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useLayoutEffect } from 'react';
 
 import styles from './data-table.module.css';
 import { useDataTableContext } from './data-table-contexts';
@@ -133,7 +133,7 @@ type EditingReconcilerProps = {
 const EditingReconciler = ({ pageRowIds }: EditingReconcilerProps) => {
   const editing = useTableUi((s) => s.editing);
   const setEditing = useTableUi((s) => s.setEditing);
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (editing !== null && !pageRowIds.includes(editing.rowId)) {
       setEditing(null);
     }

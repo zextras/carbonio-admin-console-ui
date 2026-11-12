@@ -6,7 +6,7 @@
 
 import type { ColumnPinningState } from '@tanstack/react-table';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { describe, expect, it } from 'vitest';
 
 import { useDataTable } from './create-data-table';
@@ -38,7 +38,7 @@ function FooterHarness({
   // Narrow root subscription: footer updates must come from its own Subscribe.
   const table = useDataTable<TestRow, ColumnPinningState>(options, (state) => state.columnPinning);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onTable(table);
   }, [table, onTable]);
 
