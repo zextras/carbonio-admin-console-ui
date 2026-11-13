@@ -91,10 +91,6 @@ describe('getThemeColorVar', () => {
 });
 
 describe('ChipInput', () => {
-  beforeEach(() => {
-    ChipInput._newId = 0;
-  });
-
   const getInput = (): HTMLInputElement => screen.getByRole('textbox');
 
   const findCloseButton = (label: string): HTMLButtonElement | null => {
@@ -916,8 +912,8 @@ describe('ChipInput', () => {
       const id1 = c1.querySelector('input')?.id;
       const id2 = c2.querySelector('input')?.id;
       expect(id1).not.toBe(id2);
-      expect(id1).toMatch(/^chipInput-\d+$/);
-      expect(id2).toMatch(/^chipInput-\d+$/);
+      expect(id1).toMatch(/^chipInput-/);
+      expect(id2).toMatch(/^chipInput-/);
     });
   });
 

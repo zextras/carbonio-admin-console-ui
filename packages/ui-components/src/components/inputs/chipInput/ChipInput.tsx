@@ -11,18 +11,14 @@ import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash-es';
 import React, {
   InputHTMLAttributes,
   useEffect,
+  useId,
   useReducer,
   useRef,
   useState,
 } from 'react';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
-import {
-  getKeyboardPreset,
-  KeyboardPresetKey,
-  KeyboardPresetObj,
-  useKeyboard,
-} from '../../../hooks/useKeyboard';
+import { KeyboardPresetKey, KeyboardPresetObj, useKeyboard } from '../../../hooks/useKeyboard';
 import { AnyColor } from '../../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
@@ -294,16 +290,12 @@ const ChipInputComponent = <TValue = unknown,>({
 }: ChipInputProps<TValue>) => {
   const [items, dispatch] = useReducer(reducer, defaultValue || value || []);
   const [isActive, setIsActive] = useState(false);
+  const [inputHasValue, setInputHasValue] = useState(false);
   const inputElRef = useCombinedRefs<HTMLInputElement>(inputRef);
   const scrollContainerRef = useRef<HTMLDivElement | null>(null);
 
-  const ChipInputCast = ChipInputComponent as ChipInputType;
-  if (ChipInputCast._newId === undefined) {
-    ChipInputCast._newId = 0;
-  }
-  const { _newId } = ChipInputCast;
-  ChipInputCast._newId += 1;
-  const id = `chipInput-${_newId}`;
+  const generatedId = useId();
+  const id = `chipInput-${generatedId}`;
 
   const isInputDisabled = !!maxChips && items.length >= maxChips;
   const isDropdownDisabled = disableOptions || isInputDisabled;
@@ -336,6 +328,7 @@ const ChipInputComponent = <TValue = unknown,>({
     if (inputElRef.current) {
       inputElRef.current.value = '';
       inputElRef.current.dispatchEvent(new Event('change'));
+      setInputHasValue(false);
     }
   };
 
@@ -356,6 +349,7 @@ const ChipInputComponent = <TValue = unknown,>({
     if (inputElRef.current) {
       inputElRef.current.value = '';
       inputElRef.current.dispatchEvent(new Event('change'));
+      setInputHasValue(false);
     }
   };
 
@@ -366,10 +360,8 @@ const ChipInputComponent = <TValue = unknown,>({
     }
   };
 
-  const saveCurrentEvent =
-    separators.length > 0
-      ? getKeyboardPreset('chipInputKeys', saveCurrentValue, undefined, separators)
-      : [];
+  const saveCurrentEvent: KeyboardPresetObj[] =
+    separators.length > 0 ? [{ type: 'keydown', callback: saveCurrentValue, keys: separators }] : [];
 
   useKeyboard(inputElRef, saveCurrentEvent);
 
@@ -420,7 +412,7 @@ const ChipInputComponent = <TValue = unknown,>({
     if (onInputType) {
       onInputType({
         ...ev,
-        textContent: inputElRef.current?.value ?? null,
+        textContent: (ev.target as HTMLInputElement)?.value ?? null,
       });
     }
   }, onInputTypeDebounce);
@@ -504,14 +496,6 @@ const ChipInputComponent = <TValue = unknown,>({
       scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
     }
   }, [items]);
-
-  const [prevIsInputDisabled, setPrevIsInputDisabled] = useState(isInputDisabled);
-  if (isInputDisabled !== prevIsInputDisabled) {
-    setPrevIsInputDisabled(isInputDisabled);
-    if (isInputDisabled) {
-      setIsActive(false);
-    }
-  }
 
   const hasFocus = isActive && !isInputDisabled;
 
@@ -647,13 +631,12 @@ const ChipInputComponent = <TValue = unknown,>({
                 disabled={disabled || isInputDisabled}
                 placeholder={placeholder}
                 onPaste={onPaste}
+                onInput={(e) => setInputHasValue(e.currentTarget.value.length > 0)}
               />
               {placeholder && (
                 <InputLabel
                   className={styles.label}
-                  data-has-items={
-                    items.length > 0 || !!inputElRef.current?.value ? 'true' : undefined
-                  }
+                  data-has-items={items.length > 0 || inputHasValue ? 'true' : undefined}
                   htmlFor={id}
                   $hasFocus={hasFocus}
                   $hasError={hasError}
