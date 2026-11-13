@@ -67,6 +67,40 @@ export default defineConfig(
       'simple-import-sort/exports': 'error',
       'import-x/no-duplicates': 'error',
       'react-compiler/react-compiler': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react',
+              importNames: ['useMemo', 'useCallback', 'memo'],
+              message:
+                'React Compiler memoizes automatically — see AGENTS.md "React Compiler". Use plain values/functions.',
+            },
+          ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.name='useMemo']",
+          message: 'React Compiler memoizes automatically — use a plain value. See AGENTS.md.',
+        },
+        {
+          selector: "CallExpression[callee.name='useCallback']",
+          message: 'React Compiler memoizes automatically — use a plain function. See AGENTS.md.',
+        },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.property.name='useMemo']",
+          message: 'React Compiler memoizes automatically — use a plain value. See AGENTS.md.',
+        },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.property.name='useCallback']",
+          message: 'React Compiler memoizes automatically — use a plain function. See AGENTS.md.',
+        },
+      ],
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {

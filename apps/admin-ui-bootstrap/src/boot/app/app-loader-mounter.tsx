@@ -6,20 +6,16 @@
 
 import { useAppStore } from '@zextras/ui-shared';
 import { isEmpty, map } from 'lodash-es';
-import { memo } from 'react';
 
 export const AppLoaderMounter = () => {
   const entryPoints = useAppStore((store) => store.entryPoints);
   const entries = isEmpty(entryPoints)
     ? null
-    : map(entryPoints, (Comp, appId) => {
-        const MemoComp = memo(Comp);
-        return (
-          <div key={appId} id={appId}>
-            <MemoComp />
-          </div>
-        );
-      });
+    : map(entryPoints, (Comp, appId) => (
+        <div key={appId} id={appId}>
+          <Comp />
+        </div>
+      ));
 
   return (
     <div
