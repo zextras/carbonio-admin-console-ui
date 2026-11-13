@@ -5,7 +5,6 @@
  */
 
 import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query';
-import { useCallback } from 'react';
 
 import { soapFetch } from '../network/fetch';
 
@@ -45,9 +44,9 @@ export const useAllConfig = (options: ConfigOptions = {}) => {
     ...queryOptions,
   });
 
-  const invalidate = useCallback(() => {
+  const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ['all-config'] });
-  }, [queryClient]);
+  };
 
   return {
     ...queryResult,

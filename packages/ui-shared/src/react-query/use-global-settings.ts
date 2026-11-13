@@ -5,7 +5,6 @@
  */
 
 import { keepPreviousData, useQuery, UseQueryOptions } from '@tanstack/react-query';
-import { useMemo } from 'react';
 
 import { postSoapFetchRequest } from '../network/fetch';
 import { useAllConfig } from './use-config';
@@ -54,15 +53,8 @@ export const useGlobalSettings = (options: GlobalConfigOptions = {}) => {
 export const useGlobalCarbonioSendAnalytics = () => {
 	const { data: allConfig, ...result } = useAllConfig();
 
-	const sendAnalytics = useMemo(() => {
-		if (!allConfig) return false;
-
-		const analyticsConfig = allConfig.find(
-			(items: { n: string }) => items.n === 'carbonioSendAnalytics'
-		)?._content;
-
-		return analyticsConfig === 'TRUE';
-	}, [allConfig]);
+	const sendAnalytics =
+		allConfig?.find((items: { n: string }) => items.n === 'carbonioSendAnalytics')?._content === 'TRUE';
 
 	return {
 		...result,
@@ -88,10 +80,7 @@ export const useGlobalConfigValue = <T = any>(
 export const useGlobalConfigList = (options: GlobalConfigOptions = {}) => {
 	const { data, ...result } = useGlobalSettings(options);
 
-	const configList = useMemo(() => {
-		if (!data) return [];
-		return Object.entries(data).map(([key, value]) => ({ key, value }));
-	}, [data]);
+	const configList = data ? Object.entries(data).map(([key, value]) => ({ key, value })) : [];
 
 	return {
 		...result,
