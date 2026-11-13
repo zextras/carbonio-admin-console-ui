@@ -639,8 +639,7 @@ const Dropdown = ({
               <PopperListItem
                 icon={icon}
                 label={label ?? ''}
-                role={multiple ? 'option' : 'menuitem'}
-                aria-selected={multiple ? (selected ?? false) : undefined}
+                role="menuitem"
                 onClick={listItemClickHandler(onClick, keepOpen)}
                 keepOpen={keepOpen}
                 selected={selected}
@@ -688,7 +687,8 @@ const Dropdown = ({
           className={clsx(styles.popperList, open && styles.open)}
           style={popperListStyle}
           data-testid="dropdown-popper-list"
-          role={multiple ? 'listbox' : 'menu'}
+          role="menu"
+          tabIndex={-1}
           onClick={popperListPreventDefaultHandler}
           onKeyDown={popperListKeyDownHandler}
         >

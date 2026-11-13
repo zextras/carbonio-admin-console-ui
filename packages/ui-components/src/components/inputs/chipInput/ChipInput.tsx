@@ -39,6 +39,90 @@ function getThemeColorVar(colorName: string, state: string): string {
   return `var(--color-${sanitized}-${state}, var(--color-${sanitized}-regular, ${colorName}))`;
 }
 
+function clearInputElement(input: HTMLInputElement | null | undefined): void {
+  if (input) {
+    input.value = '';
+    input.dispatchEvent(new Event('change'));
+  }
+}
+
+function getChipDividerColor(deps: {
+  hideBorder: boolean;
+  hasError: boolean;
+  hasFocus: boolean;
+  bottomBorderColor: AnyColor;
+  disabled?: boolean;
+}): AnyColor {
+  const base =
+    (deps.hideBorder && 'transparent') ||
+    (deps.hasError && 'error') ||
+    (deps.hasFocus && 'primary') ||
+    deps.bottomBorderColor;
+  return `${base}${deps.disabled ? '.disabled' : ''}`;
+}
+
+function getChipCursorState(
+  disabled: boolean | undefined,
+  isInputDisabled: boolean,
+  isDropdownDisabled: boolean,
+): 'pointer' | 'text' | undefined {
+  if (disabled || isInputDisabled) {
+    return isDropdownDisabled ? undefined : 'pointer';
+  }
+  return 'text';
+}
+
+function splitPastedChips(pastedText: string, pasteSeparators: Array<string>): Array<string> {
+  const separatorsRegex = new RegExp(pasteSeparators.join('|'), 'gi');
+  return pastedText
+    .split(separatorsRegex)
+    .reduce<Array<string>>((values, textItem) => {
+      if (textItem.trim() !== '') {
+        values.push(textItem.trim());
+      }
+      return values;
+    }, []);
+}
+
+function createOnPaste(deps: {
+  createChipOnPaste: boolean;
+  pasteSeparators: Array<string>;
+  requireUniqueChips: boolean;
+  savePastedValue: (valueToSave: Array<string>) => void;
+}): React.ClipboardEventHandler {
+  return (e) => {
+    if (deps.createChipOnPaste) {
+      e.preventDefault();
+      const reducedChips = splitPastedChips(e.clipboardData.getData('Text'), deps.pasteSeparators);
+      deps.savePastedValue(deps.requireUniqueChips ? uniq(reducedChips) : reducedChips);
+    }
+  };
+}
+
+function createOnBackspace<TValue>(deps: {
+  uncontrolledMode: boolean;
+  dispatch: React.Dispatch<ReducerAction<TValue>>;
+  onChange: ChipInputProps<TValue>['onChange'];
+  items: Array<ChipItem<TValue>>;
+}): (e: KeyboardEvent) => boolean {
+  return (e) => {
+    const inputElement = e.currentTarget instanceof HTMLInputElement && e.currentTarget;
+    if (
+      inputElement &&
+      inputElement.selectionStart === 0 &&
+      inputElement.selectionStart === inputElement.selectionEnd
+    ) {
+      e.preventDefault();
+      if (deps.uncontrolledMode) {
+        deps.dispatch({ type: 'popLast' });
+      }
+      deps.onChange?.(slice(deps.items, 0, deps.items.length - 1));
+      return false;
+    }
+    return true;
+  };
+}
+
 /**
  * Adapt input width on typing
  *
@@ -325,11 +409,8 @@ const ChipInputComponent = <TValue = unknown,>({
       }
       onChange?.([...items, item]);
     }
-    if (inputElRef.current) {
-      inputElRef.current.value = '';
-      inputElRef.current.dispatchEvent(new Event('change'));
-      setInputHasValue(false);
-    }
+    clearInputElement(inputElRef.current);
+    setInputHasValue(false);
   };
 
   const savePastedValue = (valueToSave: string[]) => {
@@ -346,11 +427,8 @@ const ChipInputComponent = <TValue = unknown,>({
       dispatch({ type: 'replace', item });
     }
     onChange?.([...items, item]);
-    if (inputElRef.current) {
-      inputElRef.current.value = '';
-      inputElRef.current.dispatchEvent(new Event('change'));
-      setInputHasValue(false);
-    }
+    clearInputElement(inputElRef.current);
+    setInputHasValue(false);
   };
 
   const saveCurrentValue = () => {
@@ -365,22 +443,12 @@ const ChipInputComponent = <TValue = unknown,>({
 
   useKeyboard(inputElRef, saveCurrentEvent);
 
-  const onBackspace = (e: KeyboardEvent) => {
-    const inputElement = e.currentTarget instanceof HTMLInputElement && e.currentTarget;
-    if (
-      inputElement &&
-      inputElement.selectionStart === 0 &&
-      inputElement.selectionStart === inputElement.selectionEnd
-    ) {
-      e.preventDefault();
-      if (uncontrolledMode) {
-        dispatch({ type: 'popLast' });
-      }
-      onChange?.(slice(items, 0, items.length - 1));
-      return false;
-    }
-    return true;
-  };
+  const onBackspace = createOnBackspace<TValue>({
+    uncontrolledMode,
+    dispatch,
+    onChange,
+    items,
+  });
 
   const backspaceEvent: KeyboardPresetObj[] = [
     {
@@ -501,38 +569,24 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const onInputFocus = () => setIsActive(true);
 
-  const onPaste: React.ClipboardEventHandler = (e) => {
-    if (createChipOnPaste) {
-      e.preventDefault();
-      const pastedText = e.clipboardData.getData('Text');
-      const separatorsRegex = new RegExp(pasteSeparators.join('|'), 'gi');
-      const reducedChips = pastedText
-        .split(separatorsRegex)
-        .reduce<string[]>((values, textItem) => {
-          if (textItem.trim() !== '') {
-            values.push(textItem.trim());
-          }
-          return values;
-        }, []);
-      savePastedValue(requireUniqueChips ? uniq(reducedChips) : reducedChips);
-    }
-  };
+  const onPaste: React.ClipboardEventHandler = createOnPaste({
+    createChipOnPaste,
+    pasteSeparators,
+    requireUniqueChips,
+    savePastedValue,
+  });
 
   const ChipComp = ChipComponent || Chip;
 
-  const dividerColor: AnyColor = `${
-    (hideBorder && 'transparent') ||
-    (hasError && 'error') ||
-    (hasFocus && 'primary') ||
-    bottomBorderColor
-  }${disabled ? '.disabled' : ''}`;
+  const dividerColor: AnyColor = getChipDividerColor({
+    hideBorder,
+    hasError,
+    hasFocus,
+    bottomBorderColor,
+    disabled,
+  });
 
-  let cursorState: 'pointer' | 'text' | undefined;
-  if (disabled || isInputDisabled) {
-    cursorState = isDropdownDisabled ? undefined : 'pointer';
-  } else {
-    cursorState = 'text';
-  }
+  const cursorState = getChipCursorState(disabled, isInputDisabled, isDropdownDisabled);
 
   const containerElClassName = clsx(styles.containerEl);
 

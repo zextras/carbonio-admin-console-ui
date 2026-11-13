@@ -31,7 +31,7 @@ const RadioGroupComponent = <T extends RadioProps['value'] = string>(
 ) => {
   const [internalValue, setInternalValue] = useState<RadioValue<T> | undefined>(defaultValue);
   const currentValue = value ?? internalValue;
-  const uncontrolledMode = typeof value === 'undefined';
+  const uncontrolledMode = value === undefined;
 
   const handleOnClick = (newValue: RadioValue<T>) => {
     if (uncontrolledMode) {

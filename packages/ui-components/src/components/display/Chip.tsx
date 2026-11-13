@@ -6,7 +6,6 @@
 
 import '../../web-components/ds-icon';
 
-import { map } from 'lodash-es';
 import React, { useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -106,6 +105,94 @@ function getChipColorVars(background: string): Record<string, string> {
   };
 }
 
+function createActionItems(
+  chipActions: Array<ChipAction>,
+  deps: {
+    disabled: ChipProps['disabled'];
+    showInnerTooltip: () => void;
+    hideInnerTooltip: () => void;
+    tooltipPlacement: ChipProps['tooltipPlacement'];
+    size: NonNullable<ChipProps['size']>;
+    error: ChipProps['error'];
+    shape: ChipProps['shape'];
+  },
+): Array<React.JSX.Element | undefined> {
+  return chipActions.map((action) => {
+    let item;
+    const actionDisabled = !!deps.disabled || !action.label;
+    const showTooltipHandler = (!actionDisabled && deps.showInnerTooltip) || undefined;
+    const hideTooltipHandler = (!actionDisabled && deps.hideInnerTooltip) || undefined;
+    if (action.type === 'icon') {
+      item = (
+        <Tooltip
+          key={action.id}
+          label={action.label}
+          disabled={actionDisabled}
+          placement={deps.tooltipPlacement}
+        >
+          <div
+            className={styles.actionContainer}
+            onMouseEnter={showTooltipHandler}
+            onMouseLeave={hideTooltipHandler}
+            onFocus={showTooltipHandler}
+            onBlur={hideTooltipHandler}
+            style={{ '--action-spacing': SIZES[deps.size].spacing } as React.CSSProperties}
+          >
+            <ds-icon
+              icon={action.icon}
+              color={deps.error ? 'error' : action.color}
+              disabled={!!deps.disabled || action.disabled}
+              size={SIZES[deps.size].icon}
+            ></ds-icon>
+          </div>
+        </Tooltip>
+      );
+    } else if (action.type === 'button') {
+      const clickHandler = (event: React.MouseEvent) => {
+        event.preventDefault();
+        action.onClick(event);
+      };
+      item = (
+        <Tooltip
+          key={action.id}
+          label={action.label}
+          disabled={actionDisabled}
+          placement={deps.tooltipPlacement}
+        >
+          <button
+            type="button"
+            className={styles.actionButton}
+            onMouseEnter={showTooltipHandler}
+            onMouseLeave={hideTooltipHandler}
+            onFocus={showTooltipHandler}
+            onBlur={hideTooltipHandler}
+            onClick={clickHandler}
+            disabled={!!deps.disabled || action.disabled}
+            style={
+              {
+                '--action-spacing': SIZES[deps.size].spacing,
+                '--action-radius':
+                  deps.shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
+                background: action.background
+                  ? resolveThemeColor(action.background, 'regular')
+                  : undefined,
+              } as React.CSSProperties
+            }
+          >
+            <ds-icon
+              icon={action.icon}
+              color={deps.error ? 'error' : action.color}
+              disabled={!!deps.disabled || action.disabled}
+              size={SIZES[deps.size].icon}
+            ></ds-icon>
+          </button>
+        </Tooltip>
+      );
+    }
+    return item;
+  });
+}
+
 const Chip = ({
   actions = [],
   background = 'gray3',
@@ -160,78 +247,14 @@ const Chip = ({
     }
   };
 
-  const actionItems = map(chipActions, (action) => {
-    let item;
-    const actionDisabled = !!disabled || !action.label;
-    const showTooltipHandler = (!actionDisabled && showInnerTooltip) || undefined;
-    const hideTooltipHandler = (!actionDisabled && hideInnerTooltip) || undefined;
-    if (action.type === 'icon') {
-      item = (
-        <Tooltip
-          key={action.id}
-          label={action.label}
-          disabled={actionDisabled}
-          placement={tooltipPlacement}
-        >
-          <div
-            className={styles.actionContainer}
-            onMouseEnter={showTooltipHandler}
-            onMouseLeave={hideTooltipHandler}
-            onFocus={showTooltipHandler}
-            onBlur={hideTooltipHandler}
-            style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
-          >
-            <ds-icon
-              icon={action.icon}
-              color={error ? 'error' : action.color}
-              disabled={!!disabled || action.disabled}
-              size={SIZES[size].icon}
-            ></ds-icon>
-          </div>
-        </Tooltip>
-      );
-    } else if (action.type === 'button') {
-      const clickHandler = (event: React.MouseEvent) => {
-        event.preventDefault();
-        action.onClick(event);
-      };
-      item = (
-        <Tooltip
-          key={action.id}
-          label={action.label}
-          disabled={actionDisabled}
-          placement={tooltipPlacement}
-        >
-          <button
-            type="button"
-            className={styles.actionButton}
-            onMouseEnter={showTooltipHandler}
-            onMouseLeave={hideTooltipHandler}
-            onFocus={showTooltipHandler}
-            onBlur={hideTooltipHandler}
-            onClick={clickHandler}
-            disabled={!!disabled || action.disabled}
-            style={
-              {
-                '--action-spacing': SIZES[size].spacing,
-                '--action-radius': shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
-                background: action.background
-                  ? resolveThemeColor(action.background, 'regular')
-                  : undefined,
-              } as React.CSSProperties
-            }
-          >
-            <ds-icon
-              icon={action.icon}
-              color={error ? 'error' : action.color}
-              disabled={!!disabled || action.disabled}
-              size={SIZES[size].icon}
-            ></ds-icon>
-          </button>
-        </Tooltip>
-      );
-    }
-    return item;
+  const actionItems = createActionItems(chipActions, {
+    disabled,
+    showInnerTooltip,
+    hideInnerTooltip,
+    tooltipPlacement,
+    size,
+    error,
+    shape,
   });
 
   const clickHandler: React.ReactEventHandler = (event) => {
@@ -244,9 +267,8 @@ const Chip = ({
     onDoubleClick?.(event);
   };
 
-  const keyDownHandler: React.ReactEventHandler = (event) => {
-    const { key } = event as React.KeyboardEvent<HTMLDivElement>;
-    if (key === 'Enter' || key === ' ') {
+  const keyDownHandler: React.KeyboardEventHandler<HTMLButtonElement> = (event) => {
+    if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       clickHandler(event);
     }
@@ -266,6 +288,109 @@ const Chip = ({
     ...rest.style,
   };
 
+  const chipContent = (
+    <div
+      className={styles.content}
+      style={{
+        gap: SIZES[size].spacing,
+        minWidth: maxWidth ? '0' : 'fit',
+      }}
+    >
+      {keyLabel && (
+        <div className={styles.label} style={{ width: 'auto' }}>
+          <ds-text
+            as="span"
+            weight="regular"
+            size={SIZES[size].font}
+            color={error ? 'gray6' : color}
+            disabled={!!disabled}
+          >
+            {keyLabel}
+          </ds-text>
+        </div>
+      )}
+      {label && (
+        <div
+          className={styles.label}
+          style={{
+            width: 'fit',
+            flexShrink: maxWidth ? 1 : 0,
+            minWidth: 0,
+          }}
+          onMouseEnter={showLabelTooltip}
+          onMouseLeave={hideLabelTooltip}
+          onFocus={showLabelTooltip}
+          onBlur={hideLabelTooltip}
+        >
+          <Tooltip
+            label={(typeof label === 'string' && label) || ''}
+            maxWidth="100%"
+            disabled={!maxWidth || typeof label !== 'string'}
+            overflowTooltip
+            placement={tooltipPlacement}
+          >
+            <ds-text
+              as="span"
+              weight="light"
+              size={SIZES[size].font}
+              color={error ? 'gray6' : color}
+              disabled={!!disabled}
+            >
+              {typeof label === 'string' ? label : <Row wrap="nowrap">{label}</Row>}
+            </ds-text>
+          </Tooltip>
+        </div>
+      )}
+      {actionItems && actionItems.length > 0 && (
+        <Container
+          gap={`calc(${SIZES[size].spacing} / 2)`}
+          orientation="horizontal"
+          width="fit"
+          minWidth="fit"
+          flexShrink={0}
+        >
+          {actionItems}
+        </Container>
+      )}
+    </div>
+  );
+
+  if (isClickable) {
+    return (
+      <Tooltip
+        disabled={
+          ((typeof error !== 'string' || !error) && (typeof disabled !== 'string' || !disabled)) ||
+          tooltipVisible
+        }
+        label={
+          (typeof error === 'string' && error) || (typeof disabled === 'string' && disabled) || ''
+        }
+        placement={tooltipPlacement}
+      >
+        <button
+          type="button"
+          // ChipProps extends the div-based RowProps; the extra props are
+          // element-agnostic and safe to forward to the button container.
+          {...(rest as React.ComponentPropsWithoutRef<'button'>)}
+          data-testid="chip"
+          ref={chipRef as unknown as React.Ref<HTMLButtonElement>}
+          className={styles.chip}
+          style={chipStyle}
+          data-shape={shape}
+          data-clickable={isClickable || undefined}
+          data-disabled={isDisabled || undefined}
+          tabIndex={0}
+          aria-disabled={isDisabled || undefined}
+          onKeyDown={keyDownHandler}
+          onClick={onClick && clickHandler}
+          onDoubleClick={onDoubleClick && dblClickHandler}
+        >
+          {chipContent}
+        </button>
+      </Tooltip>
+    );
+  }
+
   return (
     <Tooltip
       disabled={
@@ -278,6 +403,7 @@ const Chip = ({
       placement={tooltipPlacement}
     >
       <div
+        {...rest}
         data-testid="chip"
         ref={chipRef}
         className={styles.chip}
@@ -285,78 +411,13 @@ const Chip = ({
         data-shape={shape}
         data-clickable={isClickable || undefined}
         data-disabled={isDisabled || undefined}
-        role={isClickable ? 'button' : undefined}
         tabIndex={isClickable ? 0 : undefined}
         aria-disabled={isDisabled || undefined}
         onKeyDown={isClickable ? keyDownHandler : undefined}
         onClick={onClick && clickHandler}
         onDoubleClick={onDoubleClick && dblClickHandler}
-        {...rest}
       >
-        <div
-          className={styles.content}
-          style={{
-            gap: SIZES[size].spacing,
-            minWidth: maxWidth ? '0' : 'fit',
-          }}
-        >
-          {keyLabel && (
-            <div className={styles.label} style={{ width: 'auto' }}>
-              <ds-text
-                as="span"
-                weight="regular"
-                size={SIZES[size].font}
-                color={error ? 'gray6' : color}
-                disabled={!!disabled}
-              >
-                {keyLabel}
-              </ds-text>
-            </div>
-          )}
-          {label && (
-            <div
-              className={styles.label}
-              style={{
-                width: 'fit',
-                flexShrink: maxWidth ? 1 : 0,
-                minWidth: 0,
-              }}
-              onMouseEnter={showLabelTooltip}
-              onMouseLeave={hideLabelTooltip}
-              onFocus={showLabelTooltip}
-              onBlur={hideLabelTooltip}
-            >
-              <Tooltip
-                label={(typeof label === 'string' && label) || ''}
-                maxWidth="100%"
-                disabled={!maxWidth || typeof label !== 'string'}
-                overflowTooltip
-                placement={tooltipPlacement}
-              >
-                <ds-text
-                  as="span"
-                  weight="light"
-                  size={SIZES[size].font}
-                  color={error ? 'gray6' : color}
-                  disabled={!!disabled}
-                >
-                  {typeof label === 'string' ? label : <Row wrap="nowrap">{label}</Row>}
-                </ds-text>
-              </Tooltip>
-            </div>
-          )}
-          {actionItems && actionItems.length > 0 && (
-            <Container
-              gap={`calc(${SIZES[size].spacing} / 2)`}
-              orientation="horizontal"
-              width="fit"
-              minWidth="fit"
-              flexShrink={0}
-            >
-              {actionItems}
-            </Container>
-          )}
-        </div>
+        {chipContent}
       </div>
     </Tooltip>
   );

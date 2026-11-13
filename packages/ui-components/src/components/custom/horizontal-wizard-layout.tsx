@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { map } from 'lodash-es';
 import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -133,7 +132,7 @@ export const HorizontalWizardLayout = ({
   activeRef,
 }: Props): React.ReactElement => {
   const { t } = useTranslation();
-  const stepsToRender = map(steps, (step, stepIndex) => {
+  const stepsToRender = steps.map((step, stepIndex) => {
     const isDone = stepIndex < currentStepIndex;
     const isActive = currentStep === step.name;
 
@@ -196,7 +195,7 @@ export const HorizontalWizardLayout = ({
       </Row>
 
       <div style={{ paddingTop: '16px', paddingBottom: '16px' }}>
-        {map(steps, (step, stepIndex) => {
+        {steps.map((step, stepIndex) => {
           const View = steps[stepIndex].view;
           const isDone = stepIndex < currentStepIndex;
           const isActive = currentStep === step.name;

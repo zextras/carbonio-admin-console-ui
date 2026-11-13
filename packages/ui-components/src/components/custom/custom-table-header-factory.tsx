@@ -28,6 +28,43 @@ type THeader = {
   sortable?: boolean;
 };
 
+const LabelFactory = ({ label, open, focus, bold, size }: any) => (
+  <Container
+    orientation="horizontal"
+    width="fill"
+    crossAlignment="center"
+    mainAlignment="space-between"
+    borderRadius="half"
+    padding={{
+      vertical: 'small',
+    }}
+  >
+    <Row
+      takeAvailableSpace
+      mainAlignment="unset"
+      style={{ display: 'inline-table' }}
+      width="auto"
+    >
+      <ds-text
+        as="span"
+        size={size || 'medium'}
+        weight={bold ? 'bold' : 'regular'}
+        color={open || focus ? 'primary' : 'text'}
+      >
+        {label}
+      </ds-text>
+    </Row>
+    <Container>
+      <ds-icon
+        size="medium"
+        icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+        color={open || focus ? 'primary' : 'text'}
+        style={{ alignSelf: 'center' }}
+      ></ds-icon>
+    </Container>
+  </Container>
+);
+
 export const CustomHeaderFactory: FC<any> = ({
   headers,
   onChange,
@@ -62,43 +99,6 @@ export const CustomHeaderFactory: FC<any> = ({
     }
     return <ds-icon icon="ChevronSortEmptyOutline" size="large"></ds-icon>;
   };
-
-  const LabelFactory = ({ label, open, focus, bold, size }: any) => (
-    <Container
-      orientation="horizontal"
-      width="fill"
-      crossAlignment="center"
-      mainAlignment="space-between"
-      borderRadius="half"
-      padding={{
-        vertical: 'small',
-      }}
-    >
-      <Row
-        takeAvailableSpace
-        mainAlignment="unset"
-        style={{ display: 'inline-table' }}
-        width="auto"
-      >
-        <ds-text
-          as="span"
-          size={size || 'medium'}
-          weight={bold ? 'bold' : 'regular'}
-          color={open || focus ? 'primary' : 'text'}
-        >
-          {label}
-        </ds-text>
-      </Row>
-      <Container>
-        <ds-icon
-          size="medium"
-          icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
-          color={open || focus ? 'primary' : 'text'}
-          style={{ alignSelf: 'center' }}
-        ></ds-icon>
-      </Container>
-    </Container>
-  );
 
   const displayCheckbox = () => {
     setShowCkb(true);

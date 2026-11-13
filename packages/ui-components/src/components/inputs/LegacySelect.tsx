@@ -204,10 +204,16 @@ const SelectComponent = function SelectFn<T = string>({
 
   const isControlled = selection !== undefined && selection !== null;
 
-  const updateMultipleSelection = (item: SelectItem<T>, isSelected: boolean) => {
-    const newSelected = isSelected
-      ? selected.filter((obj) => obj.value !== item.value)
-      : [...selected, item];
+  const selectItem = (item: SelectItem<T>) => {
+    const newSelected = [...selected, item];
+    if (!isControlled) {
+      setSelected(newSelected);
+    }
+    (onChange as MultipleSelectionOnChange<T>)(newSelected);
+  };
+
+  const deselectItem = (item: SelectItem<T>) => {
+    const newSelected = selected.filter((obj) => obj.value !== item.value);
     if (!isControlled) {
       setSelected(newSelected);
     }
@@ -225,7 +231,11 @@ const SelectComponent = function SelectFn<T = string>({
     (item: SelectItem<T>, isSelected: boolean) =>
     (): void => {
       if (multiple) {
-        updateMultipleSelection(item, isSelected);
+        if (isSelected) {
+          deselectItem(item);
+        } else {
+          selectItem(item);
+        }
       } else if (selected.length === 0 || item.value !== selected[0].value) {
         updateSingleSelection(item);
       }
@@ -309,13 +319,12 @@ const SelectComponent = function SelectFn<T = string>({
       disablePortal={disablePortal}
       {...rest}
     >
-      <div
+      <button
+        type="button"
         onFocus={onFocus}
         onBlur={onBlur}
-        role="button"
-        aria-haspopup="listbox"
+        aria-haspopup="menu"
         aria-expanded={open}
-        tabIndex={0}
         className={styles.tabContainer}
       >
         <LabelFactory
@@ -328,7 +337,7 @@ const SelectComponent = function SelectFn<T = string>({
           disabled={disabled}
           selected={selected}
         />
-      </div>
+      </button>
     </Dropdown>
   );
 };

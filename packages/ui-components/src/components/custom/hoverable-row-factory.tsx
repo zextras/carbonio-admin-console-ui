@@ -96,8 +96,7 @@ const HoverableRowFactory = ({
   const [hovered, setHovered] = useState<boolean>(false);
   const [hoverTimer, setHoverTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const showCkb = !showCheckboxOnHover || selected || selectionMode || hovered;
-  const clickableRow =
-    (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable;
+  const clickableRow = (!showCheckbox && row.clickable === undefined) || row.clickable;
 
   const _onChange = (): void => {
     if (!clickableRow) {

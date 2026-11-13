@@ -29,6 +29,36 @@ type DefaultHeaderFactoryProps = {
   showCheckbox: boolean;
 };
 
+const LabelFactory = ({ label, open, focus, bold }: LabelFactoryProps) => (
+  <Container
+    orientation="horizontal"
+    width="fill"
+    crossAlignment="center"
+    mainAlignment="space-between"
+    borderRadius="half"
+    padding={{
+      vertical: 'small',
+    }}
+  >
+    <Row takeAvailableSpace mainAlignment="unset">
+      <ds-text
+        as="span"
+        size="medium"
+        weight={bold ? 'bold' : 'regular'}
+        color={open || focus ? 'primary' : 'text'}
+      >
+        {label}
+      </ds-text>
+    </Row>
+    <ds-icon
+      size="medium"
+      icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+      color={open || focus ? 'primary' : 'text'}
+      style={{ alignSelf: 'center' }}
+    ></ds-icon>
+  </Container>
+);
+
 export const DefaultHeaderFactory = ({
   headers,
   onChange,
@@ -38,36 +68,6 @@ export const DefaultHeaderFactory = ({
   showCheckbox,
 }: DefaultHeaderFactoryProps): React.JSX.Element => {
   const trRef = useRef<HTMLTableRowElement>(null);
-
-  const LabelFactory = ({ label, open, focus, bold }: LabelFactoryProps) => (
-    <Container
-      orientation="horizontal"
-      width="fill"
-      crossAlignment="center"
-      mainAlignment="space-between"
-      borderRadius="half"
-      padding={{
-        vertical: 'small',
-      }}
-    >
-      <Row takeAvailableSpace mainAlignment="unset">
-        <ds-text
-          as="span"
-          size="medium"
-          weight={bold ? 'bold' : 'regular'}
-          color={open || focus ? 'primary' : 'text'}
-        >
-          {label}
-        </ds-text>
-      </Row>
-      <ds-icon
-        size="medium"
-        icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
-        color={open || focus ? 'primary' : 'text'}
-        style={{ alignSelf: 'center' }}
-      ></ds-icon>
-    </Container>
-  );
 
   const headerData = headers.map((column) => {
     const hasItems = column.items !== undefined && column.items.length > 0;

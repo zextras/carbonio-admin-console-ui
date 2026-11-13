@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { findIndex, isEmpty, map, pick, take } from 'lodash-es';
+import { isEmpty, pick, take } from 'lodash-es';
 import { type ComponentType, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export type WizardStepV2 = {
@@ -63,9 +63,9 @@ export const useWizardV2 = ({
 	}
 	const currentStep = isEmpty(data) ? internalStep : data.currentStep;
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const stepKeys = map(steps, (step) => step.name);
+	const stepKeys = steps.map((step) => step.name);
 
-	const getStepIndex = (stepName: string) => findIndex(steps, (step) => step.name === stepName);
+	const getStepIndex = (stepName: string) => steps.findIndex((step) => step.name === stepName);
 
 	const currentStepIndex = getStepIndex(currentStep);
 	const isFirstStep = getStepIndex(currentStep) === 0;
@@ -115,7 +115,7 @@ export const useWizardV2 = ({
 	}, []);
 
 	const goToStep = (stepName: any) => {
-		const keysToKeep = take(stepKeys, findIndex(stepKeys, (step) => step === stepName) + 1);
+		const keysToKeep = take(stepKeys, stepKeys.findIndex((step) => step === stepName) + 1);
 		const newState = {
 			currentStep: stepName,
 			steps: pick(dataRef.current.steps, keysToKeep),

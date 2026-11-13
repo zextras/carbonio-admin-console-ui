@@ -16,7 +16,7 @@ import {
 
 import { Modal } from '../feedback/Modal';
 
-type RouteLeavingGuardProps = {
+type RouteLeavingGuardProps = Readonly<{
   /** When true, navigation away is blocked until the user confirms. */
   when?: boolean;
   /** Called when the user chooses "Save and leave". */
@@ -26,7 +26,7 @@ type RouteLeavingGuardProps = {
    * copy is rendered.
    */
   children?: ReactNode;
-};
+}>;
 
 /**
  * Standard body copy shown when no custom children are provided.

@@ -80,7 +80,7 @@ const RadioComponent = (
   const generatedId = useId();
   const id = `Radio-${generatedId}`;
 
-  const uncontrolledMode = typeof checked === 'undefined';
+  const uncontrolledMode = checked === undefined;
 
   const onClickHandler: React.MouseEventHandler<HTMLInputElement> = (e) => {
     if (!disabled) {
