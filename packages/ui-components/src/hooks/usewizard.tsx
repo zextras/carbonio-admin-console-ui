@@ -99,7 +99,7 @@ export const useWizard = ({
   }, []);
 
   const goToStep = (stepName: any) => {
-    const keysToKeep = take(stepKeys, stepKeys.findIndex((step) => step === stepName) + 1);
+    const keysToKeep = take(stepKeys, stepKeys.indexOf(stepName) + 1);
     const newState = {
       currentStep: stepName,
       steps: pick(dataRef.current.steps, keysToKeep),

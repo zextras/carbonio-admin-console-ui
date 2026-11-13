@@ -259,22 +259,20 @@ const SelectComponent = function SelectFn<T = string>({
   const onFocus = () => setFocus(true);
   const onBlur = () => setFocus(false);
 
-  const toggleSelectAll =
-    (isSelected: boolean) =>
-    (): void => {
-      if (isSelected) {
-        if (!isControlled) {
-          setSelected([]);
-        }
-        (onChange as MultipleSelectionOnChange<T>)([]);
-      } else {
-        const newSelected = items.filter((obj) => !obj.disabled);
-        if (!isControlled) {
-          setSelected(newSelected);
-        }
-        (onChange as MultipleSelectionOnChange<T>)(newSelected);
-      }
-    };
+  const deselectAll = (): void => {
+    if (!isControlled) {
+      setSelected([]);
+    }
+    (onChange as MultipleSelectionOnChange<T>)([]);
+  };
+
+  const selectAll = (): void => {
+    const newSelected = items.filter((obj) => !obj.disabled);
+    if (!isControlled) {
+      setSelected(newSelected);
+    }
+    (onChange as MultipleSelectionOnChange<T>)(newSelected);
+  };
 
   let multipleMappedItems: DropdownItem[] = [];
   if (multiple) {
@@ -286,7 +284,7 @@ const SelectComponent = function SelectFn<T = string>({
         id: 'all',
         label: i18nAllLabel,
         ...(showCheckbox ? { icon: isSelected ? 'CheckmarkSquare' : 'Square' } : {}),
-        onClick: toggleSelectAll(isSelected),
+        onClick: isSelected ? deselectAll : selectAll,
         selected: isSelected,
       },
       ...mappedItems,
