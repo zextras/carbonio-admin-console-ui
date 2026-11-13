@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { FieldsetHTMLAttributes, useCallback, useMemo, useState } from 'react';
+import React, { FieldsetHTMLAttributes, useState } from 'react';
 
 import { type RadioProps } from './Radio';
 import styles from './RadioGroup.module.css';
@@ -31,39 +31,30 @@ const RadioGroupComponent = <T extends RadioProps['value'] = string>(
 ) => {
   const [internalValue, setInternalValue] = useState<RadioValue<T> | undefined>(defaultValue);
   const currentValue = value ?? internalValue;
-  const uncontrolledMode = useMemo(() => typeof value === 'undefined', [value]);
+  const uncontrolledMode = typeof value === 'undefined';
 
-  const handleOnClick = useCallback(
-    (newValue: RadioValue<T>) => {
-      if (uncontrolledMode) {
-        setInternalValue(newValue);
-      } else if (newValue !== currentValue) {
-        onChange?.(newValue);
-      }
-    },
-    [onChange, uncontrolledMode, currentValue],
-  );
+  const handleOnClick = (newValue: RadioValue<T>) => {
+    if (uncontrolledMode) {
+      setInternalValue(newValue);
+    } else if (newValue !== currentValue) {
+      onChange?.(newValue);
+    }
+  };
 
-  const radioClickHandler = useCallback(
+  const radioClickHandler =
     (radio: RadioGroupProps<T>['children'][number]): RadioProps['onClick'] =>
-      (e) => {
-        radio.props.onClick?.(e);
-        handleOnClick(radio.props.value);
-      },
-    [handleOnClick],
-  );
+    (e) => {
+      radio.props.onClick?.(e);
+      handleOnClick(radio.props.value);
+    };
 
-  const items = useMemo(
-    () =>
-      children.map((radio) =>
-        React.cloneElement(radio, {
-          key: radio.key ?? `${radio.props.value}`,
-          checked: radio.props.value === currentValue,
-          onClick: radioClickHandler(radio),
-          disabled: radio.props.disabled === true || fieldsetProps.disabled === true,
-        }),
-      ),
-    [children, currentValue, fieldsetProps.disabled, radioClickHandler],
+  const items = children.map((radio) =>
+    React.cloneElement(radio, {
+      key: radio.key ?? `${radio.props.value}`,
+      checked: radio.props.value === currentValue,
+      onClick: radioClickHandler(radio),
+      disabled: radio.props.disabled === true || fieldsetProps.disabled === true,
+    }),
   );
 
   return (

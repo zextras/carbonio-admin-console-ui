@@ -6,7 +6,7 @@
 
 import '../../web-components/ds-divider';
 
-import { useCallback, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -78,69 +78,55 @@ const LegacyInput = ({
     return `input-${LegacyInput._newId++}`;
   });
 
-  const onInputFocus = useCallback(() => {
+  const onInputFocus = () => {
     if (!disabled && innerRef?.current) {
       setHasFocus(true);
       innerRef.current.focus();
     }
-  }, [innerRef, disabled]);
+  };
 
-  const onInputBlur = useCallback(() => {
+  const onInputBlur = () => {
     setHasFocus(false);
-  }, []);
+  };
 
-  const handlePaste = useCallback(
-    (e: React.ClipboardEvent<HTMLInputElement>) => {
-      if (!trimOnPaste) return;
-      e.preventDefault();
-      const pastedText = e.clipboardData.getData('text').trim();
-      const input = e.currentTarget;
-      input.value = pastedText;
-      onChange({ target: input, currentTarget: input } as React.ChangeEvent<HTMLInputElement>);
-    },
-    [trimOnPaste, onChange],
-  );
+  const handlePaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
+    if (!trimOnPaste) return;
+    e.preventDefault();
+    const pastedText = e.clipboardData.getData('text').trim();
+    const input = e.currentTarget;
+    input.value = pastedText;
+    onChange({ target: input, currentTarget: input } as React.ChangeEvent<HTMLInputElement>);
+  };
 
-  const keyboardEvents = useMemo<KeyboardPresetObj[]>(() => {
-    const events: KeyboardPresetObj[] = [];
-    if (onEnter) {
-      events.push({
-        type: 'keyup',
-        callback: onEnter,
-        keys: [{ key: 'Enter', ctrlKey: false }],
-        haveToPreventDefault: true,
-      });
-    }
-    return events;
-  }, [onEnter]);
+  const keyboardEvents: KeyboardPresetObj[] = [];
+  if (onEnter) {
+    keyboardEvents.push({
+      type: 'keyup',
+      callback: onEnter,
+      keys: [{ key: 'Enter', ctrlKey: false }],
+      haveToPreventDefault: true,
+    });
+  }
 
   useKeyboard(innerRef, keyboardEvents);
 
-  const dividerColor = useMemo<AnyColor>(
-    () =>
-      `${
-        (hideBorder && 'transparent') ||
-        (hasError && 'error') ||
-        (hasFocus && 'primary') ||
-        borderColor
-      }${disabled ? '.disabled' : ''}`,
-    [borderColor, disabled, hasError, hasFocus, hideBorder],
+  const dividerColor: AnyColor = `${
+    (hideBorder && 'transparent') ||
+    (hasError && 'error') ||
+    (hasFocus && 'primary') ||
+    borderColor
+  }${disabled ? '.disabled' : ''}`;
+
+  const labelColor = resolveThemeColor(
+    (hasError && 'error') || (hasFocus && 'primary') || 'secondary',
+    disabled ? 'disabled' : 'regular',
   );
 
-  const labelColor = useMemo(() => {
-    const color = (hasError && 'error') || (hasFocus && 'primary') || 'secondary';
-    return resolveThemeColor(color, disabled ? 'disabled' : 'regular');
-  }, [hasError, hasFocus, disabled]);
-
-  const inputColor = useMemo<React.CSSProperties>(
-    () =>
-      ({
-        '--input-color': resolveThemeColor(String(textColor), 'regular'),
-        '--input-color-disabled': resolveThemeColor(String(textColor), 'disabled'),
-        '--label-color': labelColor,
-      } as React.CSSProperties),
-    [textColor, labelColor],
-  );
+  const inputColor = {
+    '--input-color': resolveThemeColor(String(textColor), 'regular'),
+    '--input-color-disabled': resolveThemeColor(String(textColor), 'disabled'),
+    '--label-color': labelColor,
+  } as React.CSSProperties;
 
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">

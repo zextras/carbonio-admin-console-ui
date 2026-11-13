@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { InputHTMLAttributes, useCallback, useId, useMemo, useState } from 'react';
+import React, { InputHTMLAttributes, useId, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
@@ -80,27 +80,24 @@ const RadioComponent = (
   const generatedId = useId();
   const id = `Radio-${generatedId}`;
 
-  const uncontrolledMode = useMemo(() => typeof checked === 'undefined', [checked]);
+  const uncontrolledMode = typeof checked === 'undefined';
 
-  const onClickHandler = useCallback<React.MouseEventHandler<HTMLInputElement>>(
-    (e) => {
-      if (!disabled) {
-        if (uncontrolledMode && !e.defaultPrevented) {
-          const nextChecked = !isChecked;
-          setInternalChecked(nextChecked);
-          onChange?.(nextChecked);
-        }
-        onClick?.(e);
+  const onClickHandler: React.MouseEventHandler<HTMLInputElement> = (e) => {
+    if (!disabled) {
+      if (uncontrolledMode && !e.defaultPrevented) {
+        const nextChecked = !isChecked;
+        setInternalChecked(nextChecked);
+        onChange?.(nextChecked);
       }
-    },
-    [disabled, onClick, uncontrolledMode, isChecked, onChange],
-  );
+      onClick?.(e);
+    }
+  };
 
-  const onChangeHandler = useCallback<React.ChangeEventHandler<HTMLInputElement>>(() => {
+  const onChangeHandler: React.ChangeEventHandler<HTMLInputElement> = () => {
     // do nothing
     // TODO: CDS-174: update state here and not in the click. In controlled mode, do not update the internal state,
     // 	just call the external onChange
-  }, []);
+  };
 
   const radioSize = RADIO_SIZE[size].icon;
 
@@ -118,29 +115,26 @@ const RadioComponent = (
     '--radio-bg-color': resolveThemeColor('gray6', 'regular'),
   } as React.CSSProperties;
 
-  const labelWithClick = useMemo(
-    () =>
-      (typeof label === 'string' && (
-        <label
-          className={`${styles.label} ${disabled ? styles.labelDisabled : ''}`}
-          htmlFor={id}
-          style={{ '--label-font-size': RADIO_SIZE[size].label } as React.CSSProperties}
-        >
-          {label}
-        </label>
-      )) ||
-      (React.isValidElement<{ onClick?: React.MouseEventHandler }>(label) &&
-        React.cloneElement(label, {
-          onClick: (event: React.MouseEvent) => {
-            label.props?.onClick?.(event);
-            if (!event.defaultPrevented && radioInputRef.current) {
-              radioInputRef.current.click();
-            }
-          },
-        })) ||
-      label,
-    [disabled, id, label, radioInputRef, size],
-  );
+  const labelWithClick =
+    (typeof label === 'string' && (
+      <label
+        className={`${styles.label} ${disabled ? styles.labelDisabled : ''}`}
+        htmlFor={id}
+        style={{ '--label-font-size': RADIO_SIZE[size].label } as React.CSSProperties}
+      >
+        {label}
+      </label>
+    )) ||
+    (React.isValidElement<{ onClick?: React.MouseEventHandler }>(label) &&
+      React.cloneElement(label, {
+        onClick: (event: React.MouseEvent) => {
+          label.props?.onClick?.(event);
+          if (!event.defaultPrevented && radioInputRef.current) {
+            radioInputRef.current.click();
+          }
+        },
+      })) ||
+    label;
 
   const containerClassName = `${styles.radioContainer} ${
     disabled ? styles.radioContainerDisabled : ''

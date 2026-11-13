@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import clsx from 'clsx';
-import { CSSProperties, FC, LabelHTMLAttributes, useMemo } from 'react';
+import { CSSProperties, FC, LabelHTMLAttributes } from 'react';
 
 import { resolveThemeColor } from '../../../theme/theme-utils';
 import styles from './InputLabel.module.css';
@@ -25,19 +25,15 @@ export const InputLabel: FC<InputLabelProps> = ({
   children,
   ...rest
 }) => {
-  const labelColor = useMemo(() => {
-    const color = ($hasError && 'error') || ($hasFocus && 'primary') || 'secondary';
-    return resolveThemeColor(color, $disabled ? 'disabled' : 'regular');
-  }, [$hasError, $hasFocus, $disabled]);
-
-  const labelStyle = useMemo<CSSProperties>(
-    () =>
-      ({
-        '--label-color': labelColor,
-        ...style,
-      } as CSSProperties),
-    [labelColor, style],
+  const labelColor = resolveThemeColor(
+    ($hasError && 'error') || ($hasFocus && 'primary') || 'secondary',
+    $disabled ? 'disabled' : 'regular',
   );
+
+  const labelStyle = {
+    '--label-color': labelColor,
+    ...style,
+  } as CSSProperties;
 
   return (
     <label className={clsx(styles.label, className)} style={labelStyle} {...rest}>

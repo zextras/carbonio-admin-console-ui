@@ -6,7 +6,7 @@
 
 import '../../web-components/ds-icon';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
@@ -116,10 +116,7 @@ const DefaultLabelFactory = <T,>({
   background,
   disabled,
 }: LabelFactoryProps<T>): React.JSX.Element => {
-  const selectedLabels = useMemo(
-    () => selected.reduce<string[]>((arr, obj) => [...arr, obj.label], []).join(', '),
-    [selected],
-  );
+  const selectedLabels = selected.reduce<string[]>((arr, obj) => [...arr, obj.label], []).join(', ');
 
   const hasSelection = selected.length > 0;
   const labelColor = (disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary';
@@ -207,64 +204,54 @@ const SelectComponent = function SelectFn<T = string>({
 
   const isControlled = selection !== undefined && selection !== null;
 
-  const updateMultipleSelection = useCallback(
-    (item: SelectItem<T>, isSelected: boolean) => {
-      const newSelected = isSelected
-        ? selected.filter((obj) => obj.value !== item.value)
-        : [...selected, item];
-      if (!isControlled) {
-        setSelected(newSelected);
-      }
-      (onChange as MultipleSelectionOnChange<T>)(newSelected);
-    },
-    [isControlled, onChange, selected],
-  );
+  const updateMultipleSelection = (item: SelectItem<T>, isSelected: boolean) => {
+    const newSelected = isSelected
+      ? selected.filter((obj) => obj.value !== item.value)
+      : [...selected, item];
+    if (!isControlled) {
+      setSelected(newSelected);
+    }
+    (onChange as MultipleSelectionOnChange<T>)(newSelected);
+  };
 
-  const updateSingleSelection = useCallback(
-    (item: SelectItem<T>) => {
-      if (!isControlled) {
-        setSelected(item.value !== null && item.value !== undefined ? [item] : []);
-      }
-      (onChange as SingleSelectionOnChange<T>)(item.value);
-    },
-    [isControlled, onChange],
-  );
+  const updateSingleSelection = (item: SelectItem<T>) => {
+    if (!isControlled) {
+      setSelected(item.value !== null && item.value !== undefined ? [item] : []);
+    }
+    (onChange as SingleSelectionOnChange<T>)(item.value);
+  };
 
-  const clickItemHandler = useCallback(
-    (item: SelectItem<T>, isSelected: boolean) => (): void => {
+  const clickItemHandler =
+    (item: SelectItem<T>, isSelected: boolean) =>
+    (): void => {
       if (multiple) {
         updateMultipleSelection(item, isSelected);
       } else if (selected.length === 0 || item.value !== selected[0].value) {
         updateSingleSelection(item);
       }
-    },
-    [multiple, selected, updateMultipleSelection, updateSingleSelection],
-  );
+    };
 
-  const mappedItems = useMemo(
-    () =>
-      items.map((item, index): DropdownItem => {
-        const isSelected = selected.some((s) => s.value === item.value);
-        return {
-          id: `${index}-${item.label}`,
-          label: item.label,
-          ...(showCheckbox ? { icon: isSelected ? 'CheckmarkSquare' : 'Square' } : {}),
-          onClick: clickItemHandler(item, isSelected),
-          selected: isSelected,
-          disabled: item.disabled,
-          customComponent: item.customComponent,
-        };
-      }),
-    [items, selected, showCheckbox, clickItemHandler],
-  );
+  const mappedItems = items.map((item, index): DropdownItem => {
+    const isSelected = selected.some((s) => s.value === item.value);
+    return {
+      id: `${index}-${item.label}`,
+      label: item.label,
+      ...(showCheckbox ? { icon: isSelected ? 'CheckmarkSquare' : 'Square' } : {}),
+      onClick: clickItemHandler(item, isSelected),
+      selected: isSelected,
+      disabled: item.disabled,
+      customComponent: item.customComponent,
+    };
+  });
 
-  const onOpen = useCallback(() => setOpen(true), []);
-  const onClose = useCallback(() => setOpen(false), []);
-  const onFocus = useCallback(() => setFocus(true), []);
-  const onBlur = useCallback(() => setFocus(false), []);
+  const onOpen = () => setOpen(true);
+  const onClose = () => setOpen(false);
+  const onFocus = () => setFocus(true);
+  const onBlur = () => setFocus(false);
 
-  const toggleSelectAll = useCallback(
-    (isSelected: boolean) => (): void => {
+  const toggleSelectAll =
+    (isSelected: boolean) =>
+    (): void => {
       if (isSelected) {
         if (!isControlled) {
           setSelected([]);
@@ -277,16 +264,14 @@ const SelectComponent = function SelectFn<T = string>({
         }
         (onChange as MultipleSelectionOnChange<T>)(newSelected);
       }
-    },
-    [isControlled, items, onChange],
-  );
+    };
 
-  const multipleMappedItems = useMemo((): DropdownItem[] => {
-    if (!multiple) return [];
+  let multipleMappedItems: DropdownItem[] = [];
+  if (multiple) {
     const selectableItems = items.filter((obj) => !obj.disabled);
     const alreadySelected = selected.filter((obj) => !obj.disabled);
     const isSelected = alreadySelected.length === selectableItems.length;
-    return [
+    multipleMappedItems = [
       {
         id: 'all',
         label: i18nAllLabel,
@@ -296,7 +281,7 @@ const SelectComponent = function SelectFn<T = string>({
       },
       ...mappedItems,
     ];
-  }, [multiple, items, selected, i18nAllLabel, showCheckbox, toggleSelectAll, mappedItems]);
+  }
 
   useEffect(() => {
     if (isControlled) {

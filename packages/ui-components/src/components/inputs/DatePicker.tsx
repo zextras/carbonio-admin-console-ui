@@ -10,7 +10,7 @@ import { DayPicker, type Styles } from '@daypicker/react';
 import { autoUpdate, computePosition, flip, offset, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
 import { format } from 'date-fns';
-import React, { useCallback, useEffect, useId, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 import popupStyles from './combobox-input.module.css';
 import styles from './DatePicker.module.css';
@@ -103,10 +103,7 @@ export const DatePicker = ({
   const popoverRef = useRef<HTMLDivElement | null>(null);
   const [isOpen, setIsOpen] = useState(false);
 
-  const inputValue = useMemo(
-    () => (selected ? format(selected, dateFormat) : ''),
-    [selected, dateFormat],
-  );
+  const inputValue = selected ? format(selected, dateFormat) : '';
 
   const showClear = isClearable && !!selected;
 
@@ -155,23 +152,17 @@ export const DatePicker = ({
     };
   }, [isOpen]);
 
-  const handleSelect = useCallback(
-    (date: Date | undefined) => {
-      onChange?.(date ?? null);
-      setIsOpen(false);
-    },
-    [onChange],
-  );
+  const handleSelect = (date: Date | undefined) => {
+    onChange?.(date ?? null);
+    setIsOpen(false);
+  };
 
-  const handleClear = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
-      e.stopPropagation();
-      onChange?.(null);
-    },
-    [onChange],
-  );
+  const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    onChange?.(null);
+  };
 
-  const toggleOpen = useCallback(() => {
+  const toggleOpen = () => {
     if (!disabled) {
       setIsOpen(!isOpen);
       if (!isOpen) {
@@ -180,29 +171,24 @@ export const DatePicker = ({
         });
       }
     }
-  }, [disabled, isOpen, popoverRef]);
+  };
 
-  const openPopover = useCallback(() => {
+  const openPopover = () => {
     if (!disabled) setIsOpen(true);
-  }, [disabled]);
+  };
 
-  const handleInputKeyDown = useCallback(
-    (e: React.KeyboardEvent<HTMLInputElement>): void => {
-      if (isOpen) return;
-      if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
-        e.preventDefault();
-        openPopover();
-      }
-    },
-    [isOpen, openPopover],
-  );
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    if (isOpen) return;
+    if (e.key === 'Enter' || e.key === ' ' || e.key === 'ArrowDown') {
+      e.preventDefault();
+      openPopover();
+    }
+  };
 
-  const disabledMatcher = useMemo(() => {
-    const matchers: Array<{ before: Date } | { after: Date }> = [];
-    if (minDate) matchers.push({ before: minDate });
-    if (maxDate) matchers.push({ after: maxDate });
-    return matchers.length > 0 ? matchers : undefined;
-  }, [minDate, maxDate]);
+  const matchers: Array<{ before: Date } | { after: Date }> = [];
+  if (minDate) matchers.push({ before: minDate });
+  if (maxDate) matchers.push({ after: maxDate });
+  const disabledMatcher = matchers.length > 0 ? matchers : undefined;
 
   const expandedAttrs = {
     'aria-haspopup': 'dialog',
