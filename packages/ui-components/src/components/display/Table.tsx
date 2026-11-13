@@ -5,7 +5,7 @@
  */
 
 import clsx from 'clsx';
-import React, { HTMLAttributes, useCallback, useEffect, useMemo, useReducer, useRef } from 'react';
+import React, { HTMLAttributes, useReducer, useState } from 'react';
 
 import { NonEmptyArray, SingleItemArray } from '../../types/utils';
 import { type LegacySelectProps, MultipleSelectionOnChange } from '../inputs/LegacySelect';
@@ -175,35 +175,29 @@ const Table = ({
     defaultSelection || selectedRows || [],
   );
 
-  const controlledMode = useMemo(() => selectedRows !== undefined, [selectedRows]);
+  const controlledMode = selectedRows !== undefined;
 
-  const controlledOnToggle = useCallback(
-    (id: string) => {
-      if (onSelectionChange) {
-        if (multiSelect) {
-          onSelectionChange(
-            selected.includes(id) ? selected.filter((_id) => _id !== id) : [...selected, id],
-          );
-        } else {
-          onSelectionChange(selected.includes(id) ? [] : [id]);
-        }
+  const controlledOnToggle = (id: string) => {
+    if (onSelectionChange) {
+      if (multiSelect) {
+        onSelectionChange(
+          selected.includes(id) ? selected.filter((_id) => _id !== id) : [...selected, id],
+        );
+      } else {
+        onSelectionChange(selected.includes(id) ? [] : [id]);
       }
-    },
-    [onSelectionChange, selected, multiSelect],
-  );
+    }
+  };
 
-  const uncontrolledOnToggle = useCallback(
-    (id: string) => {
-      const action = { type: SELECT_ACTION.TOGGLE, id, multiSelect };
-      dispatchSelected(action);
-      if (!controlledMode) {
-        onSelectionChange?.(selectedReducer(selected, action));
-      }
-    },
-    [multiSelect, selected, controlledMode, onSelectionChange],
-  );
+  const uncontrolledOnToggle = (id: string) => {
+    const action = { type: SELECT_ACTION.TOGGLE, id, multiSelect };
+    dispatchSelected(action);
+    if (!controlledMode) {
+      onSelectionChange?.(selectedReducer(selected, action));
+    }
+  };
 
-  const controlledOnToggleAll = useCallback(() => {
+  const controlledOnToggleAll = () => {
     if (onSelectionChange) {
       if (selected.length === rows.length) {
         onSelectionChange([]);
@@ -211,9 +205,9 @@ const Table = ({
         onSelectionChange([...rows.map((row) => row.id)]);
       }
     }
-  }, [selected, rows, onSelectionChange]);
+  };
 
-  const uncontrolledOnToggleAll = useCallback(() => {
+  const uncontrolledOnToggleAll = () => {
     if (selected.length === rows.length) {
       dispatchSelected({ type: SELECT_ACTION.RESET });
       if (!controlledMode) {
@@ -226,19 +220,15 @@ const Table = ({
         onSelectionChange?.(selectedReducer(selected, action));
       }
     }
-  }, [selected, rows, controlledMode, onSelectionChange]);
+  };
 
-  const isFirstRun = useRef(true);
-
-  useEffect(() => {
-    if (controlledMode) {
-      if (!isFirstRun.current) {
-        dispatchSelected({ type: SELECT_ACTION.SET, ids: selectedRows || [] });
-      } else {
-        isFirstRun.current = false;
-      }
+  const [prevSelectedRows, setPrevSelectedRows] = useState(selectedRows);
+  if (selectedRows !== prevSelectedRows) {
+    setPrevSelectedRows(selectedRows);
+    if (selectedRows !== undefined) {
+      dispatchSelected({ type: SELECT_ACTION.SET, ids: selectedRows || [] });
     }
-  }, [controlledMode, selectedRows]);
+  }
 
   return (
     <div

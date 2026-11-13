@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { useIsVisible } from '../../hooks/useIsVisible/useIsVisible';
 import { resolveThemeColor } from '../../theme/theme-utils';
@@ -71,24 +71,18 @@ const ListItem = ({
   const backgroundColor =
     (active && activeBackground) || (selected && selectedBackground) || background;
 
-  const itemStyle = useMemo<React.CSSProperties>(
-    () =>
-      ({
-        '--item-bg': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'regular')
-          : 'transparent',
-        '--item-bg-hover': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'hover')
-          : 'transparent',
-        '--item-bg-focus': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'focus')
-          : 'transparent',
-        '--item-bg-active': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'active')
-          : 'transparent',
-      } as React.CSSProperties),
-    [backgroundColor],
-  );
+  const itemStyle = {
+    '--item-bg': backgroundColor ? resolveThemeColor(backgroundColor, 'regular') : 'transparent',
+    '--item-bg-hover': backgroundColor
+      ? resolveThemeColor(backgroundColor, 'hover')
+      : 'transparent',
+    '--item-bg-focus': backgroundColor
+      ? resolveThemeColor(backgroundColor, 'focus')
+      : 'transparent',
+    '--item-bg-active': backgroundColor
+      ? resolveThemeColor(backgroundColor, 'active')
+      : 'transparent',
+  } as React.CSSProperties;
 
   return (
     <div tabIndex={tabIndex} ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>

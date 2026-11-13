@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import { Checkbox } from '../inputs/Checkbox';
 import { LegacySelect } from '../inputs/LegacySelect';
@@ -39,69 +39,62 @@ export const DefaultHeaderFactory = ({
 }: DefaultHeaderFactoryProps): React.JSX.Element => {
   const trRef = useRef<HTMLTableRowElement>(null);
 
-  const LabelFactory = useCallback(
-    ({ label, open, focus, bold }: LabelFactoryProps) => (
-      <Container
-        orientation="horizontal"
-        width="fill"
-        crossAlignment="center"
-        mainAlignment="space-between"
-        borderRadius="half"
-        padding={{
-          vertical: 'small',
-        }}
-      >
-        <Row takeAvailableSpace mainAlignment="unset">
-          <ds-text
-            as="span"
-            size="medium"
-            weight={bold ? 'bold' : 'regular'}
-            color={open || focus ? 'primary' : 'text'}
-          >
-            {label}
-          </ds-text>
-        </Row>
-        <ds-icon
+  const LabelFactory = ({ label, open, focus, bold }: LabelFactoryProps) => (
+    <Container
+      orientation="horizontal"
+      width="fill"
+      crossAlignment="center"
+      mainAlignment="space-between"
+      borderRadius="half"
+      padding={{
+        vertical: 'small',
+      }}
+    >
+      <Row takeAvailableSpace mainAlignment="unset">
+        <ds-text
+          as="span"
           size="medium"
-          icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+          weight={bold ? 'bold' : 'regular'}
           color={open || focus ? 'primary' : 'text'}
-          style={{ alignSelf: 'center' }}
-        ></ds-icon>
-      </Container>
-    ),
-    [],
+        >
+          {label}
+        </ds-text>
+      </Row>
+      <ds-icon
+        size="medium"
+        icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+        color={open || focus ? 'primary' : 'text'}
+        style={{ alignSelf: 'center' }}
+      ></ds-icon>
+    </Container>
   );
 
-  const headerData = useMemo(
-    () =>
-      headers.map((column) => {
-        const hasItems = column.items !== undefined && column.items.length > 0;
-        return (
-          <th key={column.id} align={column.align || 'left'}>
-            {hasItems && (
-              <LegacySelect
-                label={column.label}
-                multiple
-                items={column.items}
-                i18nAllLabel={column.i18nAllLabel || 'All'}
-                dropdownWidth="auto"
-                onChange={column.onChange}
-                display={column.align ? 'inline-block' : 'block'}
-                LabelFactory={(props): React.JSX.Element =>
-                  LabelFactory({ ...props, bold: column.bold })
-                }
-              />
-            )}
-            {!hasItems && (
-              <ds-text as="span" weight={column.bold ? 'bold' : 'regular'}>
-                {column.label}
-              </ds-text>
-            )}
-          </th>
-        );
-      }),
-    [LabelFactory, headers],
-  );
+  const headerData = headers.map((column) => {
+    const hasItems = column.items !== undefined && column.items.length > 0;
+    return (
+      <th key={column.id} align={column.align || 'left'}>
+        {hasItems && (
+          <LegacySelect
+            label={column.label}
+            multiple
+            items={column.items}
+            i18nAllLabel={column.i18nAllLabel || 'All'}
+            dropdownWidth="auto"
+            onChange={column.onChange}
+            display={column.align ? 'inline-block' : 'block'}
+            LabelFactory={(props): React.JSX.Element =>
+              LabelFactory({ ...props, bold: column.bold })
+            }
+          />
+        )}
+        {!hasItems && (
+          <ds-text as="span" weight={column.bold ? 'bold' : 'regular'}>
+            {column.label}
+          </ds-text>
+        )}
+      </th>
+    );
+  });
 
   return (
     <tr ref={trRef} className={styles.headerRow}>

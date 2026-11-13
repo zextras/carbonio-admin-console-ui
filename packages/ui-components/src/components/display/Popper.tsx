@@ -6,14 +6,7 @@
 
 import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
-import React, {
-  HTMLAttributes,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { HTMLAttributes, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -49,20 +42,17 @@ const Popper = ({
   const startSentinelRef = useRef<HTMLButtonElement>(null);
   const endSentinelRef = useRef<HTMLButtonElement>(null);
 
-  const closePopper = useCallback(
-    (e: Event) => {
-      if (!popperRef.current?.contains(e.target as Node)) {
-        onClose?.();
-      }
-    },
-    [onClose, popperRef],
-  );
+  const closePopper = (e: Event) => {
+    if (!popperRef.current?.contains(e.target as Node)) {
+      onClose?.();
+    }
+  };
 
-  const keyboardClosePopper = useCallback(() => {
+  const keyboardClosePopper = () => {
     onClose?.();
-  }, [onClose]);
+  };
 
-  const onStartSentinelFocus = useCallback(() => {
+  const onStartSentinelFocus = () => {
     const nodeList =
       wrapperRef.current?.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
@@ -70,21 +60,18 @@ const Popper = ({
     if (nodeList.length > 0) {
       nodeList[nodeList.length - 1].focus();
     }
-  }, []);
+  };
 
-  const onEndSentinelFocus = useCallback(() => {
+  const onEndSentinelFocus = () => {
     const node = wrapperRef.current?.querySelector<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     node?.focus();
-  }, []);
+  };
 
-  const escapeEvent = useMemo<KeyboardPresetObj[]>(
-    () => [
-      { type: 'keydown', callback: keyboardClosePopper, keys: [{ key: 'Escape', ctrlKey: false }] },
-    ],
-    [keyboardClosePopper],
-  );
+  const escapeEvent: KeyboardPresetObj[] = [
+    { type: 'keydown', callback: keyboardClosePopper, keys: [{ key: 'Escape', ctrlKey: false }] },
+  ];
 
   useKeyboard(popperRef, escapeEvent);
 

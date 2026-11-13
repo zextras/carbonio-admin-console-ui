@@ -7,7 +7,7 @@
 import '../../web-components/ds-icon';
 
 import { map } from 'lodash-es';
-import React, { useCallback, useMemo, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { resolveThemeColor } from '../../theme/theme-utils';
@@ -129,154 +129,128 @@ const Chip = ({
   const chipRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const chipActions = useMemo(() => {
-    const result = [...actions];
-    if (onClose) {
-      result.push({
-        id: 'CloseChipAction',
-        icon: 'Close',
-        onClick: onClose,
-        type: 'button' as const,
-        disabled: !closable,
-      });
-    }
-    return result;
-  }, [actions, closable, onClose]);
+  const chipActions = [...actions];
+  if (onClose) {
+    chipActions.push({
+      id: 'CloseChipAction',
+      icon: 'Close',
+      onClick: onClose,
+      type: 'button' as const,
+      disabled: !closable,
+    });
+  }
 
-  const showInnerTooltip = useCallback(() => {
+  const showInnerTooltip = () => {
     setTooltipVisible(true);
-  }, []);
+  };
 
-  const hideInnerTooltip = useCallback(() => {
+  const hideInnerTooltip = () => {
     setTooltipVisible(false);
-  }, []);
+  };
 
-  const showLabelTooltip = useCallback(() => {
+  const showLabelTooltip = () => {
     if (maxWidth && typeof label === 'string') {
       showInnerTooltip();
     }
-  }, [label, maxWidth, showInnerTooltip]);
+  };
 
-  const hideLabelTooltip = useCallback(() => {
+  const hideLabelTooltip = () => {
     if (maxWidth && typeof label === 'string') {
       hideInnerTooltip();
     }
-  }, [hideInnerTooltip, label, maxWidth]);
+  };
 
-  const actionItems = useMemo(
-    () =>
-      map(chipActions, (action) => {
-        let item;
-        const actionDisabled = !!disabled || !action.label;
-        const showTooltipHandler = (!actionDisabled && showInnerTooltip) || undefined;
-        const hideTooltipHandler = (!actionDisabled && hideInnerTooltip) || undefined;
-        if (action.type === 'icon') {
-          item = (
-            <Tooltip
-              key={action.id}
-              label={action.label}
-              disabled={actionDisabled}
-              placement={tooltipPlacement}
-            >
-              <div
-                className={styles.actionContainer}
-                onMouseEnter={showTooltipHandler}
-                onMouseLeave={hideTooltipHandler}
-                onFocus={showTooltipHandler}
-                onBlur={hideTooltipHandler}
-                style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
-              >
-                <ds-icon
-                  icon={action.icon}
-                  color={error ? 'error' : action.color}
-                  disabled={!!disabled || action.disabled}
-                  size={SIZES[size].icon}
-                ></ds-icon>
-              </div>
-            </Tooltip>
-          );
-        } else if (action.type === 'button') {
-          const clickHandler = (event: React.MouseEvent) => {
-            event.preventDefault();
-            action.onClick(event);
-          };
-          item = (
-            <Tooltip
-              key={action.id}
-              label={action.label}
-              disabled={actionDisabled}
-              placement={tooltipPlacement}
-            >
-              <button
-                type="button"
-                className={styles.actionButton}
-                onMouseEnter={showTooltipHandler}
-                onMouseLeave={hideTooltipHandler}
-                onFocus={showTooltipHandler}
-                onBlur={hideTooltipHandler}
-                onClick={clickHandler}
-                disabled={!!disabled || action.disabled}
-                style={
-                  {
-                    '--action-spacing': SIZES[size].spacing,
-                    '--action-radius':
-                      shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
-                    background: action.background
-                      ? resolveThemeColor(action.background, 'regular')
-                      : undefined,
-                  } as React.CSSProperties
-                }
-              >
-                <ds-icon
-                  icon={action.icon}
-                  color={error ? 'error' : action.color}
-                  disabled={!!disabled || action.disabled}
-                  size={SIZES[size].icon}
-                ></ds-icon>
-              </button>
-            </Tooltip>
-          );
-        }
-        return item;
-      }),
-    [
-      chipActions,
-      disabled,
-      showInnerTooltip,
-      hideInnerTooltip,
-      tooltipPlacement,
-      size,
-      error,
-      shape,
-    ],
-  );
-
-  const clickHandler = useCallback<React.ReactEventHandler>(
-    (event) => {
-      event.preventDefault();
-      onClick?.(event);
-    },
-    [onClick],
-  );
-
-  const dblClickHandler = useCallback<React.ReactEventHandler>(
-    (event) => {
-      event.preventDefault();
-      onDoubleClick?.(event);
-    },
-    [onDoubleClick],
-  );
-
-  const keyDownHandler = useCallback<React.ReactEventHandler>(
-    (event) => {
-      const { key } = event as React.KeyboardEvent<HTMLDivElement>;
-      if (key === 'Enter' || key === ' ') {
+  const actionItems = map(chipActions, (action) => {
+    let item;
+    const actionDisabled = !!disabled || !action.label;
+    const showTooltipHandler = (!actionDisabled && showInnerTooltip) || undefined;
+    const hideTooltipHandler = (!actionDisabled && hideInnerTooltip) || undefined;
+    if (action.type === 'icon') {
+      item = (
+        <Tooltip
+          key={action.id}
+          label={action.label}
+          disabled={actionDisabled}
+          placement={tooltipPlacement}
+        >
+          <div
+            className={styles.actionContainer}
+            onMouseEnter={showTooltipHandler}
+            onMouseLeave={hideTooltipHandler}
+            onFocus={showTooltipHandler}
+            onBlur={hideTooltipHandler}
+            style={{ '--action-spacing': SIZES[size].spacing } as React.CSSProperties}
+          >
+            <ds-icon
+              icon={action.icon}
+              color={error ? 'error' : action.color}
+              disabled={!!disabled || action.disabled}
+              size={SIZES[size].icon}
+            ></ds-icon>
+          </div>
+        </Tooltip>
+      );
+    } else if (action.type === 'button') {
+      const clickHandler = (event: React.MouseEvent) => {
         event.preventDefault();
-        clickHandler(event);
-      }
-    },
-    [clickHandler],
-  );
+        action.onClick(event);
+      };
+      item = (
+        <Tooltip
+          key={action.id}
+          label={action.label}
+          disabled={actionDisabled}
+          placement={tooltipPlacement}
+        >
+          <button
+            type="button"
+            className={styles.actionButton}
+            onMouseEnter={showTooltipHandler}
+            onMouseLeave={hideTooltipHandler}
+            onFocus={showTooltipHandler}
+            onBlur={hideTooltipHandler}
+            onClick={clickHandler}
+            disabled={!!disabled || action.disabled}
+            style={
+              {
+                '--action-spacing': SIZES[size].spacing,
+                '--action-radius': shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
+                background: action.background
+                  ? resolveThemeColor(action.background, 'regular')
+                  : undefined,
+              } as React.CSSProperties
+            }
+          >
+            <ds-icon
+              icon={action.icon}
+              color={error ? 'error' : action.color}
+              disabled={!!disabled || action.disabled}
+              size={SIZES[size].icon}
+            ></ds-icon>
+          </button>
+        </Tooltip>
+      );
+    }
+    return item;
+  });
+
+  const clickHandler: React.ReactEventHandler = (event) => {
+    event.preventDefault();
+    onClick?.(event);
+  };
+
+  const dblClickHandler: React.ReactEventHandler = (event) => {
+    event.preventDefault();
+    onDoubleClick?.(event);
+  };
+
+  const keyDownHandler: React.ReactEventHandler = (event) => {
+    const { key } = event as React.KeyboardEvent<HTMLDivElement>;
+    if (key === 'Enter' || key === ' ') {
+      event.preventDefault();
+      clickHandler(event);
+    }
+  };
 
   const backgroundColor = error ? 'error' : background;
   const isClickable = (onClick || onDoubleClick) && !disabled;

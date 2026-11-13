@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useEffect, useMemo, useRef } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { useIntersectionObserver } from '../../../hooks/useIntersectionObserver/useIntersectionObserver';
@@ -44,25 +44,20 @@ const List = ({
 }: ListProps) => {
 	const listRef = useCombinedRefs(ref);
 
-	const keyEvents = useMemo<KeyboardPresetObj[]>(
-		() => (keyboardShortcutsIsDisabled ? [] : getKeyboardPreset('list', undefined, listRef)),
-		[listRef, keyboardShortcutsIsDisabled]
-	);
+	const keyEvents: KeyboardPresetObj[] = keyboardShortcutsIsDisabled
+		? []
+		: getKeyboardPreset('list', undefined, listRef);
 	useKeyboard(listRef, keyEvents);
 
 	const bottomElementRef = useRef<HTMLDivElement>(null);
 
-	const listItems = useMemo(
-		() =>
-			children.map((child) =>
-				React.cloneElement(child, {
-					listRef: listRef as React.RefObject<HTMLDivElement>,
-					selectedBackground: child.props.selectedBackground ?? selectedBackground,
-					activeBackground: child.props.activeBackground ?? activeBackground,
-					background: child.props.background ?? background
-				})
-			),
-		[activeBackground, background, children, listRef, selectedBackground]
+	const listItems = children.map((child) =>
+		React.cloneElement(child, {
+			listRef: listRef as React.RefObject<HTMLDivElement>,
+			selectedBackground: child.props.selectedBackground ?? selectedBackground,
+			activeBackground: child.props.activeBackground ?? activeBackground,
+			background: child.props.background ?? background
+		})
 	);
 
 	const onListBottomRef = useRef(onListBottom);
@@ -71,11 +66,11 @@ const List = ({
 		onListBottomRef.current = onListBottom;
 	}, [onListBottom]);
 
-	const onIntersect = useCallback((entry: IntersectionObserverEntry) => {
+	const onIntersect = (entry: IntersectionObserverEntry) => {
 		if (entry.target === bottomElementRef.current && entry.isIntersecting) {
 			onListBottomRef.current?.();
 		}
-	}, []);
+	};
 
 	const { observe, unobserve } = useIntersectionObserver(
 		listRef,
