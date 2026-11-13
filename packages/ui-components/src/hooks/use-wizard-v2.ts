@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { findIndex, isEmpty, map, pick, take } from 'lodash-es';
-import { type ComponentType, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { type ComponentType, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export type WizardStepV2 = {
 	name: string;
@@ -47,7 +47,7 @@ export const useWizardV2 = ({
 	title,
 	activeStep,
 }: WizardV2Props): any => {
-	const uncontrolledMode = useMemo(() => !data, [data]);
+	const uncontrolledMode = !data;
 	const [internalData, setInternalData] = useState(
 		isEmpty(data) ? defaultData || { currentStep: steps[0].name, steps: {} } : data,
 	);
@@ -63,35 +63,29 @@ export const useWizardV2 = ({
 	}
 	const currentStep = isEmpty(data) ? internalStep : data.currentStep;
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const stepKeys = useMemo(() => map(steps, (step) => step.name), [steps]);
+	const stepKeys = map(steps, (step) => step.name);
 
-	const getStepIndex = useCallback(
-		(stepName: string) => findIndex(steps, (step) => step.name === stepName),
-		[steps],
-	);
+	const getStepIndex = (stepName: string) => findIndex(steps, (step) => step.name === stepName);
 
-	const currentStepIndex = useMemo(() => getStepIndex(currentStep), [getStepIndex, currentStep]);
-	const isFirstStep = useMemo(() => getStepIndex(currentStep) === 0, [currentStep, getStepIndex]);
+	const currentStepIndex = getStepIndex(currentStep);
+	const isFirstStep = getStepIndex(currentStep) === 0;
 
-	const onSelection = useCallback(
-		(_data: any, replace = true) => {
-			const newState = {
-				currentStep: dataRef.current.currentStep,
-				steps: {
-					...dataRef.current.steps,
-					[currentStep]: replace ? _data : { ...dataRef.current.steps[currentStep], ..._data },
-				},
-			};
-			if (uncontrolledMode) {
-				dataRef.current = newState;
-				setInternalData(newState);
-			}
-			onChange?.(newState);
-		},
-		[uncontrolledMode, currentStep, onChange],
-	);
+	const onSelection = (_data: any, replace = true) => {
+		const newState = {
+			currentStep: dataRef.current.currentStep,
+			steps: {
+				...dataRef.current.steps,
+				[currentStep]: replace ? _data : { ...dataRef.current.steps[currentStep], ..._data },
+			},
+		};
+		if (uncontrolledMode) {
+			dataRef.current = newState;
+			setInternalData(newState);
+		}
+		onChange?.(newState);
+	};
 
-	const resetWizard = useCallback(() => {
+	const resetWizard = () => {
 		const newState = { currentStep: steps[0].name, steps: {}, reset: true };
 		if (uncontrolledMode) {
 			dataRef.current = newState;
@@ -99,7 +93,7 @@ export const useWizardV2 = ({
 			setInternalStep(steps[0].name);
 		}
 		onChange?.(newState);
-	}, [uncontrolledMode, onChange, steps]);
+	};
 
 	const scrollActiveIntoView = (): void => {
 		const section = sectionRef.current;
@@ -120,25 +114,22 @@ export const useWizardV2 = ({
 		scrollActiveIntoView();
 	}, []);
 
-	const goToStep = useCallback(
-		(stepName: any) => {
-			const keysToKeep = take(stepKeys, findIndex(stepKeys, (step) => step === stepName) + 1);
-			const newState = {
-				currentStep: stepName,
-				steps: pick(dataRef.current.steps, keysToKeep),
-			};
-			if (uncontrolledMode) {
-				dataRef.current = newState;
-				setInternalData(newState);
-				setInternalStep(stepName);
-			}
-			onChange?.(newState);
-			globalThis.requestAnimationFrame(scrollActiveIntoView);
-		},
-		[stepKeys, uncontrolledMode, onChange, scrollActiveIntoView],
-	);
+	const goToStep = (stepName: any) => {
+		const keysToKeep = take(stepKeys, findIndex(stepKeys, (step) => step === stepName) + 1);
+		const newState = {
+			currentStep: stepName,
+			steps: pick(dataRef.current.steps, keysToKeep),
+		};
+		if (uncontrolledMode) {
+			dataRef.current = newState;
+			setInternalData(newState);
+			setInternalStep(stepName);
+		}
+		onChange?.(newState);
+		globalThis.requestAnimationFrame(scrollActiveIntoView);
+	};
 
-	const goNext = useCallback(async () => {
+	const goNext = async () => {
 		if (currentStepIndex === steps.length - 1) {
 			setIsSubmitting(true);
 			try {
@@ -149,24 +140,21 @@ export const useWizardV2 = ({
 		} else {
 			goToStep(steps[currentStepIndex + 1].name);
 		}
-	}, [currentStepIndex, steps, onComplete, goToStep]);
+	};
 
-	const goBack = useCallback(() => {
+	const goBack = () => {
 		if (currentStepIndex > 0) {
 			goToStep(steps[currentStepIndex - 1].name);
 		}
-	}, [goToStep, steps, currentStepIndex]);
+	};
 
-	const getData = useCallback(() => dataRef.current, []);
+	const getData = () => dataRef.current;
 
-	const canGoToStep = useCallback(
-		(stepName: any) => {
-			const stepIndex = getStepIndex(stepName);
-			return steps[stepIndex]?.canGoNext ? steps[stepIndex].canGoNext() : true;
-		},
-		[getStepIndex, steps],
-	);
-	const canGoNext = useCallback(() => canGoToStep(currentStep), [canGoToStep, currentStep]);
+	const canGoToStep = (stepName: any) => {
+		const stepIndex = getStepIndex(stepName);
+		return steps[stepIndex]?.canGoNext ? steps[stepIndex].canGoNext() : true;
+	};
+	const canGoNext = () => canGoToStep(currentStep);
 
 	useEffect(() => {
 		if (!isEmpty(data)) {

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback, useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { useCombinedRefs } from '../useCombinedRefs';
 import { useIntersectionObserver } from '../useIntersectionObserver/useIntersectionObserver';
@@ -17,9 +17,9 @@ const useIsVisible = <T extends HTMLElement>(
 	const [visible, setVisible] = useState(false);
 	const ref = useCombinedRefs(itemRef ?? null);
 
-	const onIntersect = useCallback((entry: IntersectionObserverEntry) => {
+	const onIntersect = (entry: IntersectionObserverEntry) => {
 		setVisible(entry.isIntersecting);
-	}, []);
+	};
 
 	const { observe, unobserve } = useIntersectionObserver(
 		containerRef,

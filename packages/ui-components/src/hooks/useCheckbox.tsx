@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback,useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { getKeyboardPreset, useKeyboard } from './useKeyboard';
 
@@ -28,25 +28,22 @@ function useCheckbox({
 	const [internalChecked, setInternalChecked] = useState<boolean>(defaultChecked || false);
 	const checked = value ?? internalChecked;
 
-	const uncontrolledMode = useMemo(() => value === undefined, [value]);
+	const uncontrolledMode = value === undefined;
 
-	const handleClick = useCallback(
-		(ev: Event) => {
-			if (!disabled) {
-				if (uncontrolledMode) {
-					const nextChecked = !checked;
-					setInternalChecked(nextChecked);
-					onChange?.(nextChecked);
-				}
-				if (onClick) {
-					onClick(ev);
-				}
+	const handleClick = (ev: Event) => {
+		if (!disabled) {
+			if (uncontrolledMode) {
+				const nextChecked = !checked;
+				setInternalChecked(nextChecked);
+				onChange?.(nextChecked);
 			}
-		},
-		[disabled, uncontrolledMode, checked, onClick, onChange]
-	);
+			if (onClick) {
+				onClick(ev);
+			}
+		}
+	};
 
-	const keyEvents = useMemo(() => getKeyboardPreset('button', handleClick), [handleClick]);
+	const keyEvents = getKeyboardPreset('button', handleClick);
 	useKeyboard(ref, keyEvents);
 
 	useEffect(() => {
