@@ -105,91 +105,116 @@ function getChipColorVars(background: string): Record<string, string> {
   };
 }
 
+type ActionTooltipHandlers = {
+  show: (() => void) | undefined;
+  hide: (() => void) | undefined;
+};
+
+type ActionItemDeps = {
+  disabled: ChipProps['disabled'];
+  tooltipPlacement: ChipProps['tooltipPlacement'];
+  size: NonNullable<ChipProps['size']>;
+  error: ChipProps['error'];
+};
+
+function renderIconActionItem(
+  action: ChipAction,
+  handlers: ActionTooltipHandlers,
+  deps: ActionItemDeps,
+): React.JSX.Element {
+  return (
+    <Tooltip
+      key={action.id}
+      label={action.label}
+      disabled={!!deps.disabled || !action.label}
+      placement={deps.tooltipPlacement}
+    >
+      <div
+        className={styles.actionContainer}
+        onMouseEnter={handlers.show}
+        onMouseLeave={handlers.hide}
+        onFocus={handlers.show}
+        onBlur={handlers.hide}
+        style={{ '--action-spacing': SIZES[deps.size].spacing } as React.CSSProperties}
+      >
+        <ds-icon
+          icon={action.icon}
+          color={deps.error ? 'error' : action.color}
+          disabled={!!deps.disabled || action.disabled}
+          size={SIZES[deps.size].icon}
+        ></ds-icon>
+      </div>
+    </Tooltip>
+  );
+}
+
+function renderButtonActionItem(
+  action: Extract<ChipAction, { type: 'button' }>,
+  handlers: ActionTooltipHandlers,
+  deps: ActionItemDeps & { shape: ChipProps['shape'] },
+): React.JSX.Element {
+  const clickHandler = (event: React.MouseEvent) => {
+    event.preventDefault();
+    action.onClick(event);
+  };
+  return (
+    <Tooltip
+      key={action.id}
+      label={action.label}
+      disabled={!!deps.disabled || !action.label}
+      placement={deps.tooltipPlacement}
+    >
+      <button
+        type="button"
+        className={styles.actionButton}
+        onMouseEnter={handlers.show}
+        onMouseLeave={handlers.hide}
+        onFocus={handlers.show}
+        onBlur={handlers.hide}
+        onClick={clickHandler}
+        disabled={!!deps.disabled || action.disabled}
+        style={
+          {
+            '--action-spacing': SIZES[deps.size].spacing,
+            '--action-radius': deps.shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
+            background: action.background
+              ? resolveThemeColor(action.background, 'regular')
+              : undefined,
+          } as React.CSSProperties
+        }
+      >
+        <ds-icon
+          icon={action.icon}
+          color={deps.error ? 'error' : action.color}
+          disabled={!!deps.disabled || action.disabled}
+          size={SIZES[deps.size].icon}
+        ></ds-icon>
+      </button>
+    </Tooltip>
+  );
+}
+
 function createActionItems(
   chipActions: Array<ChipAction>,
-  deps: {
-    disabled: ChipProps['disabled'];
+  deps: ActionItemDeps & {
+    shape: ChipProps['shape'];
     showInnerTooltip: () => void;
     hideInnerTooltip: () => void;
-    tooltipPlacement: ChipProps['tooltipPlacement'];
-    size: NonNullable<ChipProps['size']>;
-    error: ChipProps['error'];
-    shape: ChipProps['shape'];
   },
 ): Array<React.JSX.Element | undefined> {
   return chipActions.map((action) => {
-    let item;
     const actionDisabled = !!deps.disabled || !action.label;
-    const showTooltipHandler = (!actionDisabled && deps.showInnerTooltip) || undefined;
-    const hideTooltipHandler = (!actionDisabled && deps.hideInnerTooltip) || undefined;
+    const handlers: ActionTooltipHandlers = {
+      show: (!actionDisabled && deps.showInnerTooltip) || undefined,
+      hide: (!actionDisabled && deps.hideInnerTooltip) || undefined,
+    };
     if (action.type === 'icon') {
-      item = (
-        <Tooltip
-          key={action.id}
-          label={action.label}
-          disabled={actionDisabled}
-          placement={deps.tooltipPlacement}
-        >
-          <div
-            className={styles.actionContainer}
-            onMouseEnter={showTooltipHandler}
-            onMouseLeave={hideTooltipHandler}
-            onFocus={showTooltipHandler}
-            onBlur={hideTooltipHandler}
-            style={{ '--action-spacing': SIZES[deps.size].spacing } as React.CSSProperties}
-          >
-            <ds-icon
-              icon={action.icon}
-              color={deps.error ? 'error' : action.color}
-              disabled={!!deps.disabled || action.disabled}
-              size={SIZES[deps.size].icon}
-            ></ds-icon>
-          </div>
-        </Tooltip>
-      );
-    } else if (action.type === 'button') {
-      const clickHandler = (event: React.MouseEvent) => {
-        event.preventDefault();
-        action.onClick(event);
-      };
-      item = (
-        <Tooltip
-          key={action.id}
-          label={action.label}
-          disabled={actionDisabled}
-          placement={deps.tooltipPlacement}
-        >
-          <button
-            type="button"
-            className={styles.actionButton}
-            onMouseEnter={showTooltipHandler}
-            onMouseLeave={hideTooltipHandler}
-            onFocus={showTooltipHandler}
-            onBlur={hideTooltipHandler}
-            onClick={clickHandler}
-            disabled={!!deps.disabled || action.disabled}
-            style={
-              {
-                '--action-spacing': SIZES[deps.size].spacing,
-                '--action-radius':
-                  deps.shape === 'round' ? '100vh' : `calc(var(--border-radius) * 2)`,
-                background: action.background
-                  ? resolveThemeColor(action.background, 'regular')
-                  : undefined,
-              } as React.CSSProperties
-            }
-          >
-            <ds-icon
-              icon={action.icon}
-              color={deps.error ? 'error' : action.color}
-              disabled={!!deps.disabled || action.disabled}
-              size={SIZES[deps.size].icon}
-            ></ds-icon>
-          </button>
-        </Tooltip>
-      );
+      return renderIconActionItem(action, handlers, deps);
     }
-    return item;
+    if (action.type === 'button') {
+      return renderButtonActionItem(action, handlers, deps);
+    }
+    return undefined;
   });
 }
 
@@ -364,7 +389,7 @@ const Chip = ({
     </div>
   );
 
-  const hasClickHandlers = !!(onClick || onDoubleClick);
+  const hasClickHandlers = !!(onClick ?? onDoubleClick);
 
   // A clickable chip with actions cannot be a single <button>, because the
   // action buttons would end up nested inside it (invalid HTML). Only the

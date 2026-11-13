@@ -7,7 +7,7 @@
 import '../../../web-components/ds-divider';
 
 import clsx from 'clsx';
-import { debounce, filter, isEmpty, slice, trim, uniq } from 'lodash-es';
+import { debounce, filter, isEmpty, slice, trim } from 'lodash-es';
 import React, {
   InputHTMLAttributes,
   useEffect,
@@ -94,7 +94,7 @@ function createOnPaste(deps: {
     if (deps.createChipOnPaste) {
       e.preventDefault();
       const reducedChips = splitPastedChips(e.clipboardData.getData('Text'), deps.pasteSeparators);
-      deps.savePastedValue(deps.requireUniqueChips ? uniq(reducedChips) : reducedChips);
+      deps.savePastedValue(deps.requireUniqueChips ? [...new Set(reducedChips)] : reducedChips);
     }
   };
 }
@@ -116,11 +116,73 @@ function createOnBackspace<TValue>(deps: {
       if (deps.uncontrolledMode) {
         deps.dispatch({ type: 'popLast' });
       }
-      deps.onChange?.(slice(deps.items, 0, deps.items.length - 1));
+      deps.onChange?.(deps.items.slice(0, -1));
       return false;
     }
     return true;
   };
+}
+
+function normalizeChipValue(valueToSave: unknown): unknown {
+  return typeof valueToSave === 'string' ? trim(valueToSave) : valueToSave;
+}
+
+function isDuplicateChip<TValue>(
+  items: Array<ChipItem<TValue>>,
+  value: unknown,
+  requireUniqueChips: boolean,
+): boolean {
+  return requireUniqueChips && items.some((item) => item.label === value);
+}
+
+function createSavePastedValue<TValue>(deps: {
+  uncontrolledMode: boolean;
+  dispatch: React.Dispatch<ReducerAction<TValue>>;
+  onChange: ChipInputProps<TValue>['onChange'];
+  items: Array<ChipItem<TValue>>;
+  onAdd: (value: unknown) => ChipItem<TValue>;
+}): (valueToSave: Array<string>) => void {
+  return (valueToSave) => {
+    const pastedItems = valueToSave.map((vts) => deps.onAdd(vts));
+    if (deps.uncontrolledMode) {
+      deps.dispatch({ type: 'pushMultiples', items: pastedItems });
+    }
+    deps.onChange?.([...deps.items, ...pastedItems]);
+  };
+}
+
+function createDropdownDisplayHandlers(deps: {
+  onOptionsDisplayChange: ChipInputProps['onOptionsDisplayChange'];
+  options: Array<DropdownItem & { value?: unknown }>;
+  setForceShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
+}): { showDropdown: (isVisible: boolean) => void; onOpen: () => void; onClose: () => void } {
+  const showDropdown = (isVisible: boolean): void => {
+    if (deps.onOptionsDisplayChange && !isEmpty(deps.options)) {
+      deps.onOptionsDisplayChange(isVisible);
+    }
+  };
+  return {
+    showDropdown,
+    onOpen: (): void => showDropdown(true),
+    onClose: (): void => {
+      deps.setForceShowDropdown(false);
+      showDropdown(false);
+    },
+  };
+}
+
+function getDescriptionStyle(
+  errorBackgroundColor: string | undefined,
+  description: string | undefined,
+): React.CSSProperties {
+  return {
+    '--description-bg-color': errorBackgroundColor
+      ? getThemeColorVar(errorBackgroundColor, 'regular')
+      : 'transparent',
+    paddingTop: description ? '0.25rem' : undefined,
+    minHeight: description ? '1.125rem' : undefined,
+    lineHeight: description ? '1.5' : undefined,
+  } as React.CSSProperties;
 }
 
 /**
@@ -398,9 +460,9 @@ const ChipInputComponent = <TValue = unknown,>({
   };
 
   const saveValue = (valueToSave: unknown) => {
-    const trimmedValue = typeof valueToSave === 'string' ? trim(valueToSave) : valueToSave;
+    const trimmedValue = normalizeChipValue(valueToSave);
 
-    const isDuplicated = requireUniqueChips && items.some((item) => item.label === trimmedValue);
+    const isDuplicated = isDuplicateChip(items, trimmedValue, requireUniqueChips);
 
     if (trimmedValue && !isDuplicated) {
       const item = onAdd(trimmedValue);
@@ -413,13 +475,13 @@ const ChipInputComponent = <TValue = unknown,>({
     setInputHasValue(false);
   };
 
-  const savePastedValue = (valueToSave: string[]) => {
-    const pastedItems = valueToSave.map((vts) => onAdd(vts));
-    if (uncontrolledMode) {
-      dispatch({ type: 'pushMultiples', items: pastedItems });
-    }
-    onChange?.([...items, ...pastedItems]);
-  };
+  const savePastedValue = createSavePastedValue<TValue>({
+    uncontrolledMode,
+    dispatch,
+    onChange,
+    items,
+    onAdd,
+  });
 
   const replaceValue = (valueToSave: unknown) => {
     const item = onAdd(valueToSave);
@@ -501,20 +563,11 @@ const ChipInputComponent = <TValue = unknown,>({
     setFocus();
   };
 
-  const showDropdown = (isVisible: boolean) => {
-    if (onOptionsDisplayChange && !isEmpty(options)) {
-      onOptionsDisplayChange(isVisible);
-    }
-  };
-
-  const onOpen = () => {
-    showDropdown(true);
-  };
-
-  const onClose = () => {
-    setForceShowDropdown(false);
-    showDropdown(false);
-  };
+  const { onOpen, onClose } = createDropdownDisplayHandlers({
+    onOptionsDisplayChange,
+    options,
+    setForceShowDropdown,
+  });
 
   const initialSuggestionOpenRef = useRef(suggestionOpen);
   useEffect(() => {
@@ -590,14 +643,7 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const containerElClassName = clsx(styles.containerEl);
 
-  const descriptionStyle = {
-    '--description-bg-color': errorBackgroundColor
-      ? getThemeColorVar(errorBackgroundColor, 'regular')
-      : 'transparent',
-    paddingTop: description ? '0.25rem' : undefined,
-    minHeight: description ? '1.125rem' : undefined,
-    lineHeight: description ? '1.5' : undefined,
-  } as React.CSSProperties;
+  const descriptionStyle = getDescriptionStyle(errorBackgroundColor, description);
 
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
