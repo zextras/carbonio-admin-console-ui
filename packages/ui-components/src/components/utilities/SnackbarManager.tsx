@@ -10,7 +10,7 @@ import {
   type CreateSnackbarFnArgs,
   SnackbarManagerContext,
 } from '@zextras/ui-shared';
-import { type JSX, type PropsWithChildren, useCallback, useReducer } from 'react';
+import { type JSX, type PropsWithChildren, useReducer } from 'react';
 
 import { Snackbar } from '../feedback/snackbar/Snackbar';
 
@@ -57,17 +57,16 @@ type SnackbarManagerProps = PropsWithChildren<{
 function SnackbarManager({ children, autoHideDefaultTimeout }: SnackbarManagerProps): JSX.Element {
   const [snackbars, dispatchSnackbar] = useReducer(snackbarsReducer, []);
 
-  const createSnackbar = useCallback<CreateSnackbarFn>(
-    ({
-      label,
-      key,
-      severity = 'info',
-      onActionClick,
-      onClose,
-      autoHideTimeout,
-      replace,
-      ...rest
-    }) => {
+  const createSnackbar: CreateSnackbarFn = ({
+    label,
+    key,
+    severity = 'info',
+    onActionClick,
+    onClose,
+    autoHideTimeout,
+    replace,
+    ...rest
+  }) => {
       const handleClose = (): void => {
         onClose?.();
         dispatchSnackbar({ type: SNACKBAR_ACTION.POP });
@@ -99,9 +98,7 @@ function SnackbarManager({ children, autoHideDefaultTimeout }: SnackbarManagerPr
       });
 
       return () => dispatchSnackbar({ type: 'remove', key: snackKey });
-    },
-    [dispatchSnackbar, autoHideDefaultTimeout],
-  );
+  };
 
   return (
     <>

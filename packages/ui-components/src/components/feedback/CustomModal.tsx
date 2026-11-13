@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -64,46 +64,40 @@ const CustomModal = ({
   const startSentinelRef = useRef<HTMLButtonElement>(null);
   const endSentinelRef = useRef<HTMLButtonElement>(null);
 
-  const onBackdropClick = useCallback(
-    (e: KeyboardEvent | React.MouseEvent<HTMLDivElement>) => {
-      if (e) {
-        e.stopPropagation();
-      }
-      if (
-        !e.defaultPrevented &&
-        modalContentRef.current &&
-        onClose &&
-        e.target instanceof Node &&
-        !modalContentRef.current.contains(e.target)
-      ) {
-        onClose(e);
-      }
-    },
-    [onClose],
-  );
+  const onBackdropClick = (e: KeyboardEvent | React.MouseEvent<HTMLDivElement>) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    if (
+      !e.defaultPrevented &&
+      modalContentRef.current &&
+      onClose &&
+      e.target instanceof Node &&
+      !modalContentRef.current.contains(e.target)
+    ) {
+      onClose(e);
+    }
+  };
 
-  const onStartSentinelFocus = useCallback(() => {
+  const onStartSentinelFocus = () => {
     if (modalContentRef.current) {
       const nodeList = modalContentRef.current.querySelectorAll<HTMLElement>('[tabindex]');
       nodeList[nodeList.length - 1].focus();
     }
-  }, []);
+  };
 
-  const onEndSentinelFocus = useCallback(() => {
+  const onEndSentinelFocus = () => {
     if (modalContentRef.current) {
       const nodeEl = modalContentRef.current.querySelector<HTMLElement>('[tabindex]');
       nodeEl?.focus();
     }
-  }, []);
+  };
 
-  const escapeEvent = useMemo<KeyboardPresetObj[]>(
-    () =>
-      (onClose && [
-        { type: 'keydown', callback: onClose, keys: [{ key: 'Escape', ctrlKey: false }] },
-      ]) ||
-      [],
-    [onClose],
-  );
+  const escapeEvent: KeyboardPresetObj[] =
+    (onClose && [
+      { type: 'keydown', callback: onClose, keys: [{ key: 'Escape', ctrlKey: false }] },
+    ]) ||
+    [];
   useKeyboard(modalRef, escapeEvent);
 
   useEffect(() => {

@@ -5,7 +5,7 @@
  */
 
 import { isEmpty } from 'lodash-es';
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 
 import { Checkbox } from '../inputs/Checkbox';
 import { LegacySelect } from '../inputs/LegacySelect';
@@ -41,81 +41,72 @@ export const CustomHeaderFactory: FC<any> = ({
   const [sortedColumn, setSortedColumn] = useState<string>('');
   const [sortOrder, setSortOrder] = useState<typeof ASC | typeof DESC>(ASC);
 
-  const handleSortChange = useCallback(
-    (id: string) => {
-      const newOrder = id === sortedColumn && sortOrder === ASC ? DESC : ASC;
-      setSortedColumn(id);
-      setSortOrder(newOrder);
-      headers.forEach((header: any) => {
-        if (header.id === id) {
-          header.onSortChange(id, newOrder);
-        }
-      });
-    },
-    [headers, sortedColumn, sortOrder],
-  );
-
-  const renderSortingIcon = useCallback(
-    (column: THeader) => {
-      if (column.id === sortedColumn) {
-        return sortOrder === ASC ? (
-          <ds-icon icon="ChevronSortUpOutline" size="large"></ds-icon>
-        ) : (
-          <ds-icon icon="ChevronSortDownOutline" size="large"></ds-icon>
-        );
+  const handleSortChange = (id: string) => {
+    const newOrder = id === sortedColumn && sortOrder === ASC ? DESC : ASC;
+    setSortedColumn(id);
+    setSortOrder(newOrder);
+    headers.forEach((header: any) => {
+      if (header.id === id) {
+        header.onSortChange(id, newOrder);
       }
-      return <ds-icon icon="ChevronSortEmptyOutline" size="large"></ds-icon>;
-    },
-    [sortedColumn, sortOrder],
-  );
+    });
+  };
 
-  const LabelFactory = useCallback(
-    ({ label, open, focus, bold, size }: any) => (
-      <Container
-        orientation="horizontal"
-        width="fill"
-        crossAlignment="center"
-        mainAlignment="space-between"
-        borderRadius="half"
-        padding={{
-          vertical: 'small',
-        }}
+  const renderSortingIcon = (column: THeader) => {
+    if (column.id === sortedColumn) {
+      return sortOrder === ASC ? (
+        <ds-icon icon="ChevronSortUpOutline" size="large"></ds-icon>
+      ) : (
+        <ds-icon icon="ChevronSortDownOutline" size="large"></ds-icon>
+      );
+    }
+    return <ds-icon icon="ChevronSortEmptyOutline" size="large"></ds-icon>;
+  };
+
+  const LabelFactory = ({ label, open, focus, bold, size }: any) => (
+    <Container
+      orientation="horizontal"
+      width="fill"
+      crossAlignment="center"
+      mainAlignment="space-between"
+      borderRadius="half"
+      padding={{
+        vertical: 'small',
+      }}
+    >
+      <Row
+        takeAvailableSpace
+        mainAlignment="unset"
+        style={{ display: 'inline-table' }}
+        width="auto"
       >
-        <Row
-          takeAvailableSpace
-          mainAlignment="unset"
-          style={{ display: 'inline-table' }}
-          width="auto"
+        <ds-text
+          as="span"
+          size={size || 'medium'}
+          weight={bold ? 'bold' : 'regular'}
+          color={open || focus ? 'primary' : 'text'}
         >
-          <ds-text
-            as="span"
-            size={size || 'medium'}
-            weight={bold ? 'bold' : 'regular'}
-            color={open || focus ? 'primary' : 'text'}
-          >
-            {label}
-          </ds-text>
-        </Row>
-        <Container>
-          <ds-icon
-            size="medium"
-            icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
-            color={open || focus ? 'primary' : 'text'}
-            style={{ alignSelf: 'center' }}
-          ></ds-icon>
-        </Container>
+          {label}
+        </ds-text>
+      </Row>
+      <Container>
+        <ds-icon
+          size="medium"
+          icon={open ? 'ChevronUpOutline' : 'ChevronDownOutline'}
+          color={open || focus ? 'primary' : 'text'}
+          style={{ alignSelf: 'center' }}
+        ></ds-icon>
       </Container>
-    ),
-    [],
+    </Container>
   );
 
-  const displayCheckbox = useCallback(() => {
+  const displayCheckbox = () => {
     setShowCkb(true);
-  }, []);
+  };
 
-  const hideCheckbox = useCallback(() => {
+  const hideCheckbox = () => {
     setShowCkb(false);
-  }, []);
+  };
 
   useEffect(() => {
     const refSave = trRef.current;
@@ -135,18 +126,16 @@ export const CustomHeaderFactory: FC<any> = ({
     };
   }, [displayCheckbox, hideCheckbox, showCheckbox]);
 
-  const headerData = useMemo(
-    () =>
-      headers.map((column: any) => {
-        const hasItems = !isEmpty(column.items);
-        const isSortable = column.sortable === true;
-        return (
-          <th
-            key={column.id}
-            align={column.align || 'left'}
-            style={{ width: column?.width, height: '2.625rem' }}
-            onClick={isSortable ? (): void => handleSortChange(column.id) : undefined}
-          >
+  const headerData = headers.map((column: any) => {
+    const hasItems = !isEmpty(column.items);
+    const isSortable = column.sortable === true;
+    return (
+      <th
+        key={column.id}
+        align={column.align || 'left'}
+        style={{ width: column?.width, height: '2.625rem' }}
+        onClick={isSortable ? (): void => handleSortChange(column.id) : undefined}
+      >
             {hasItems && (
               <Container width="4rem">
                 <LegacySelect
@@ -175,9 +164,7 @@ export const CustomHeaderFactory: FC<any> = ({
             )}
           </th>
         );
-      }),
-    [headers, renderSortingIcon, handleSortChange, LabelFactory],
-  );
+  });
   return (
     <tr ref={trRef} style={{ height: '3rem' }}>
       <th align="center" style={{ width: '30px' }}>

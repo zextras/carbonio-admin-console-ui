@@ -8,8 +8,6 @@ import React, {
   FunctionComponent,
   ReactElement,
   ReactEventHandler,
-  useCallback,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -98,10 +96,8 @@ const HoverableRowFactory = ({
   const [hovered, setHovered] = useState<boolean>(false);
   const [hoverTimer, setHoverTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
   const showCkb = !showCheckboxOnHover || selected || selectionMode || hovered;
-  const clickableRow = useMemo(
-    () => (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable,
-    [showCheckbox, row.clickable],
-  );
+  const clickableRow =
+    (!showCheckbox && typeof row.clickable === 'undefined') || row.clickable;
 
   const _onChange = (): void => {
     if (!clickableRow) {
@@ -109,58 +105,48 @@ const HoverableRowFactory = ({
     }
   };
 
-  const onClick = useCallback<ReactEventHandler>(
-    (e) => {
-      if (
-        showCheckbox &&
-        ckbRef.current &&
-        e.target !== ckbRef.current &&
-        !ckbRef.current.contains(e.target as Node | null) &&
-        row.onClick
-      ) {
-        row.onClick(e);
-      }
-      if (clickableRow) {
-        onChange(row.id);
-      }
-    },
-    [row, onChange, clickableRow, showCheckbox],
-  );
+  const onClick: ReactEventHandler = (e) => {
+    if (
+      showCheckbox &&
+      ckbRef.current &&
+      e.target !== ckbRef.current &&
+      !ckbRef.current.contains(e.target as Node | null) &&
+      row.onClick
+    ) {
+      row.onClick(e);
+    }
+    if (clickableRow) {
+      onChange(row.id);
+    }
+  };
 
-  const displayCheckbox = useCallback(() => {
+  const displayCheckbox = () => {
     if (hoverDelay > 0) {
       const timer = setTimeout(() => setHovered(true), hoverDelay);
       setHoverTimer(timer);
     } else {
       setHovered(true);
     }
-  }, [hoverDelay]);
+  };
 
-  const hideCheckbox = useCallback(() => {
+  const hideCheckbox = () => {
     if (hoverTimer !== null) {
       clearTimeout(hoverTimer);
       setHoverTimer(null);
     }
     setHovered(false);
-  }, [hoverTimer]);
+  };
 
   const hoverHandlersEnabled = showCheckboxOnHover && showCheckbox;
 
-  const rowData = useMemo(
-    () =>
-      row.columns.map((column, i) => (
-        <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={i}>
-          {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
-        </td>
-      )),
-    [row.columns, cellClassName],
-  );
+  const rowData = row.columns.map((column, i) => (
+    <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={i}>
+      {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
+    </td>
+  ));
 
   const CheckboxComponentToRender = CheckboxComponent || Checkbox;
-  const displayBlockCheckbox = useMemo(
-    () => !showCheckboxOnHover || selected || (multiSelect && selectionMode),
-    [showCheckboxOnHover, selected, multiSelect, selectionMode],
-  );
+  const displayBlockCheckbox = !showCheckboxOnHover || selected || (multiSelect && selectionMode);
 
   return (
     <tr
