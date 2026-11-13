@@ -200,7 +200,7 @@ export const HorizontalWizardLayout = ({
           const isDone = stepIndex < currentStepIndex;
           const isActive = currentStep === step.name;
           return (
-            <Row>
+            <Row key={step.name}>
               {View && isDone && isActive && (
                 <View
                   step={step}
