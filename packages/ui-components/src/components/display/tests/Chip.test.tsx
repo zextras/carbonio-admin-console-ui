@@ -64,6 +64,65 @@ describe('Chip', () => {
     expect(onClick).not.toHaveBeenCalled();
   });
 
+  it.each(['Enter', ' '])('activates the clickable chip with the "%s" key', (key) => {
+    const onClick = vi.fn();
+    render(<Chip label="label" onClick={onClick} />);
+
+    fireEvent.keyDown(screen.getByTestId('chip'), { key });
+    expect(onClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('ignores other keys on the clickable chip', () => {
+    const onClick = vi.fn();
+    render(<Chip label="label" onClick={onClick} />);
+
+    fireEvent.keyDown(screen.getByTestId('chip'), { key: 'a' });
+    expect(onClick).not.toHaveBeenCalled();
+  });
+
+  it('calls onDoubleClick on double click', () => {
+    const onDoubleClick = vi.fn();
+    render(<Chip label="label" onDoubleClick={onDoubleClick} />);
+
+    fireEvent.doubleClick(screen.getByTestId('chip'));
+    expect(onDoubleClick).toHaveBeenCalledTimes(1);
+  });
+
+  it('renders icon actions as non-interactive decorations', () => {
+    render(
+      <Chip
+        label="label"
+        actions={[{ id: 'info', type: 'icon', icon: 'InfoOutline', label: 'Info' }]}
+      />,
+    );
+
+    expect(screen.getByTestId('chip').innerHTML).toContain('ds-icon');
+    expect(screen.queryByRole('button')).toBeNull();
+  });
+
+  it('skips actions with an unknown type', () => {
+    render(
+      <Chip
+        label="label"
+        actions={[{ id: 'unknown', type: 'unknown', icon: 'InfoOutline' } as never]}
+      />,
+    );
+
+    expect(screen.getByTestId('chip').innerHTML).not.toContain('ds-icon');
+  });
+
+  it('toggles the label tooltip handlers on hover when maxWidth is set', () => {
+    render(<Chip label="a very long label" maxWidth="40px" />);
+
+    const label = screen.getByText('a very long label');
+    fireEvent.mouseEnter(label);
+    fireEvent.mouseLeave(label);
+    fireEvent.focus(label);
+    fireEvent.blur(label);
+
+    expect(screen.getByText('a very long label')).toBeTruthy();
+  });
+
   it('renders a non-interactive container when no click handlers are provided', () => {
     render(<Chip label="label" />);
 
