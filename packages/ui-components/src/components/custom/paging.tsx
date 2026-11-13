@@ -39,6 +39,13 @@ const Paging: FC<PagingProps> = ({
   const [t] = useTranslation();
   const totalPages = Math.ceil(totalItem / pageSize);
   const [internalPage, setInternalPage] = useState<number>(currentPageProp ?? FIRST_PAGE);
+  const [prevTotalPages, setPrevTotalPages] = useState(totalPages);
+  if (totalPages !== prevTotalPages) {
+    setPrevTotalPages(totalPages);
+    if (totalPages === 0) {
+      setInternalPage(FIRST_PAGE);
+    }
+  }
   const currentPage = totalPages === 0 ? FIRST_PAGE : (currentPageProp ?? internalPage);
 
   const onFirstPageBoundary = currentPage <= 1;

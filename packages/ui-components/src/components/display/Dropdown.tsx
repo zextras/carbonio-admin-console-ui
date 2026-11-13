@@ -378,6 +378,10 @@ const Dropdown = ({
   const [internalOpen, setInternalOpen] = useState<boolean>(forceOpen);
   const open = forceOpen || internalOpen;
   const openRef = useRef<boolean>(open);
+
+  useLayoutEffect(() => {
+    openRef.current = open;
+  }, [open]);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
   const innerTriggerRef = useCombinedRefs(triggerRef);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
