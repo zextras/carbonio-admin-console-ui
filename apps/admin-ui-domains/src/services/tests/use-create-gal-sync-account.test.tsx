@@ -21,6 +21,14 @@ vi.mock('../create-gal-sync-service', () => ({
   createGalSyncAccount: vi.fn(),
 }));
 
+vi.mock('../get-datasource-service', () => ({
+  getDatasource: vi.fn(),
+}));
+
+vi.mock('../re-sync-gal-account-service', () => ({
+  reSyncGalAccount: vi.fn(),
+}));
+
 vi.mock('@zextras/ui-shared', () => ({
   domainByIdKey: (domainId: string, applyConfig = 1) => ['domain', 'by-id', domainId, applyConfig],
 }));
@@ -30,6 +38,8 @@ import { domainByIdKey } from '@zextras/ui-shared';
 
 import { createGalSyncAccount } from '../create-gal-sync-service';
 import { domainQueryKeys } from '../domain-query-keys';
+import { getDatasource } from '../get-datasource-service';
+import { reSyncGalAccount } from '../re-sync-gal-account-service';
 import { useCreateGalSyncAccount } from '../use-create-gal-sync-account';
 
 const mockCreateSnackbar = vi.fn();
@@ -49,6 +59,9 @@ describe('useCreateGalSyncAccount', () => {
   beforeEach(() => {
     vi.mocked(useSnackbar).mockReturnValue(mockCreateSnackbar);
     mockCreateSnackbar.mockClear();
+    vi.mocked(reSyncGalAccount).mockReset();
+    vi.mocked(getDatasource).mockResolvedValue({ dataSource: [{ id: 'ds-1' }] });
+    vi.mocked(reSyncGalAccount).mockResolvedValue({});
   });
 
   const vars = {
@@ -60,7 +73,7 @@ describe('useCreateGalSyncAccount', () => {
   };
 
   it('should call createGalSyncAccount with the provided vars', async () => {
-    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: { id: 'acc-1' } });
+    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: [{ id: 'acc-1' }] });
 
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useCreateGalSyncAccount('domain-1'), { wrapper });
@@ -80,7 +93,7 @@ describe('useCreateGalSyncAccount', () => {
   });
 
   it('should invalidate gal and domain caches on success', async () => {
-    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: { id: 'acc-1' } });
+    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: [{ id: 'acc-1' }] });
 
     const { wrapper, queryClient } = createWrapper();
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
@@ -95,7 +108,7 @@ describe('useCreateGalSyncAccount', () => {
   });
 
   it('should show a success snackbar on success', async () => {
-    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: { id: 'acc-1' } });
+    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: [{ id: 'acc-1' }] });
 
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useCreateGalSyncAccount('domain-1'), { wrapper });
@@ -108,6 +121,38 @@ describe('useCreateGalSyncAccount', () => {
         severity: 'success',
         label: 'You have created the GALSync account name',
       })
+    );
+  });
+
+  it('should request a first sync of the new GAL account on success', async () => {
+    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: [{ id: 'acc-1' }] });
+
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useCreateGalSyncAccount('domain-1'), { wrapper });
+
+    result.current.mutate(vars);
+
+    await waitFor(() => expect(reSyncGalAccount).toHaveBeenCalledWith('acc-1', 'ds-1'));
+    expect(getDatasource).toHaveBeenCalledWith('acc-1');
+  });
+
+  it('should show a warning snackbar when the first sync cannot be started', async () => {
+    vi.mocked(createGalSyncAccount).mockResolvedValue({ account: [{ id: 'acc-1' }] });
+    vi.mocked(reSyncGalAccount).mockRejectedValue(new Error('Sync failed'));
+
+    const { wrapper } = createWrapper();
+    const { result } = renderHook(() => useCreateGalSyncAccount('domain-1'), { wrapper });
+
+    result.current.mutate(vars);
+
+    await waitFor(() =>
+      expect(mockCreateSnackbar).toHaveBeenCalledWith(
+        expect.objectContaining({
+          severity: 'warning',
+          label:
+            'The GALSync account was created, but the first sync could not be started. Use RE-SYNC to start it.',
+        })
+      )
     );
   });
 

@@ -964,12 +964,25 @@ export const GalServerTableheaders = (t: TFunction): Array<any> => [
     id: 'server',
     label: t('label.server', 'Server'),
     bold: true,
-    width: '30%',
+    width: '20%',
   },
   {
     id: 'galsync_account',
     label: t('label.galsync_account', 'GALSync Account'),
     bold: true,
+    width: '42%',
+  },
+  {
+    id: 'last_successful_sync',
+    label: t('label.last_successful_sync', 'Last successful sync'),
+    bold: true,
+    width: '26%',
+  },
+  {
+    id: 'gal_status',
+    label: t('label.status', 'Status'),
+    bold: true,
+    width: '12%',
   },
 ];
 

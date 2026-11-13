@@ -11,6 +11,8 @@ import { useTranslation } from 'react-i18next';
 
 import { createGalSyncAccount } from './create-gal-sync-service';
 import { domainQueryKeys } from './domain-query-keys';
+import { getDatasource } from './get-datasource-service';
+import { reSyncGalAccount } from './re-sync-gal-account-service';
 
 type AccountEntry = {
   by: string;
@@ -26,6 +28,19 @@ type CreateGalSyncAccountVars = {
   a?: Array<{ n: string; _content: string }>;
   folder?: string;
 };
+
+type CreateGalSyncAccountResponse = {
+  account?: Array<{ id?: string; name?: string }>;
+};
+
+async function requestInitialGalSync(response: CreateGalSyncAccountResponse): Promise<void> {
+  const accountId = response?.account?.[0]?.id;
+  if (!accountId) throw new Error('Missing GAL account id');
+  const dsResponse = await getDatasource(accountId);
+  const dataSourceId: string | undefined = dsResponse?.dataSource?.[0]?.id;
+  if (!dataSourceId) throw new Error('Missing GAL data source id');
+  await reSyncGalAccount(accountId, dataSourceId);
+}
 
 export function useCreateGalSyncAccount(domainId: string | undefined) {
   const [t] = useTranslation();
@@ -43,7 +58,22 @@ export function useCreateGalSyncAccount(domainId: string | undefined) {
         vars.a,
         vars.folder
       ),
-    onSuccess: () => {
+    onSuccess: (response: CreateGalSyncAccountResponse) => {
+      requestInitialGalSync(response)
+        .then(() => queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() }))
+        .catch(() => {
+          createSnackbar({
+            key: 'warning',
+            severity: 'warning',
+            label: t(
+              'label.gal_initial_sync_failed',
+              'The GALSync account was created, but the first sync could not be started. Use RE-SYNC to start it.',
+            ),
+            autoHideTimeout: 5000,
+            hideButton: true,
+            replace: true,
+          });
+        });
       queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       if (domainId) {
         queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
