@@ -100,6 +100,11 @@ export default defineConfig(
             "CallExpression[callee.type='MemberExpression'][callee.property.name='useCallback']",
           message: 'React Compiler memoizes automatically — use a plain function. See AGENTS.md.',
         },
+        {
+          selector: "CallExpression[callee.object.name='React'][callee.property.name='memo']",
+          message:
+            'React Compiler memoizes automatically — export a plain component. See AGENTS.md.',
+        },
       ],
       '@typescript-eslint/ban-ts-comment': [
         'error',
