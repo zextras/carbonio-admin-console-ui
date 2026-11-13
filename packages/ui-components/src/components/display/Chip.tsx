@@ -355,7 +355,9 @@ const Chip = ({
     </div>
   );
 
-  if (isClickable) {
+  const hasClickHandlers = !!(onClick || onDoubleClick);
+
+  if (hasClickHandlers) {
     return (
       <Tooltip
         disabled={
@@ -379,7 +381,6 @@ const Chip = ({
           data-shape={shape}
           data-clickable={isClickable || undefined}
           data-disabled={isDisabled || undefined}
-          tabIndex={0}
           aria-disabled={isDisabled || undefined}
           onKeyDown={keyDownHandler}
           onClick={onClick && clickHandler}
@@ -411,11 +412,7 @@ const Chip = ({
         data-shape={shape}
         data-clickable={isClickable || undefined}
         data-disabled={isDisabled || undefined}
-        tabIndex={isClickable ? 0 : undefined}
         aria-disabled={isDisabled || undefined}
-        onKeyDown={isClickable ? keyDownHandler : undefined}
-        onClick={onClick && clickHandler}
-        onDoubleClick={onDoubleClick && dblClickHandler}
       >
         {chipContent}
       </div>
