@@ -37,21 +37,19 @@ function getQuotaSourceMeta(source: QuotaSource): QuotaSourceMeta | undefined {
   return source === 'account' ? undefined : QUOTA_SOURCE_META[source];
 }
 
-export const TotalQuotaSourceIcon = React.memo(
-  ({ source }: TotalQuotaSourceIconProps): React.JSX.Element | null => {
-    const { t } = useTranslation();
-    const meta = getQuotaSourceMeta(source);
+export const TotalQuotaSourceIcon = ({
+  source,
+}: TotalQuotaSourceIconProps): React.JSX.Element | null => {
+  const { t } = useTranslation();
+  const meta = getQuotaSourceMeta(source);
 
-    if (!meta) {
-      return null;
-    }
+  if (!meta) {
+    return null;
+  }
 
-    return (
-      <Tooltip placement={'top-end'} label={t(meta.tooltipKey, meta.tooltipDefault)}>
-        <ds-icon icon={meta.icon} size="large" />
-      </Tooltip>
-    );
-  },
-);
-
-TotalQuotaSourceIcon.displayName = 'TotalQuotaSourceIcon';
+  return (
+    <Tooltip placement={'top-end'} label={t(meta.tooltipKey, meta.tooltipDefault)}>
+      <ds-icon icon={meta.icon} size="large" />
+    </Tooltip>
+  );
+};
