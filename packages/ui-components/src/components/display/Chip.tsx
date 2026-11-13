@@ -288,14 +288,13 @@ const Chip = ({
     ...rest.style,
   };
 
-  const chipContent = (
-    <div
-      className={styles.content}
-      style={{
-        gap: SIZES[size].spacing,
-        minWidth: maxWidth ? '0' : 'fit',
-      }}
-    >
+  const contentStyle: React.CSSProperties = {
+    gap: SIZES[size].spacing,
+    minWidth: maxWidth ? '0' : 'fit',
+  };
+
+  const labelItems = (
+    <>
       {keyLabel && (
         <div className={styles.label} style={{ width: 'auto' }}>
           <ds-text
@@ -341,21 +340,75 @@ const Chip = ({
           </Tooltip>
         </div>
       )}
-      {actionItems && actionItems.length > 0 && (
-        <Container
-          gap={`calc(${SIZES[size].spacing} / 2)`}
-          orientation="horizontal"
-          width="fit"
-          minWidth="fit"
-          flexShrink={0}
-        >
-          {actionItems}
-        </Container>
-      )}
+    </>
+  );
+
+  const hasActions = actionItems.length > 0;
+
+  const actionsContainer = hasActions && (
+    <Container
+      gap={`calc(${SIZES[size].spacing} / 2)`}
+      orientation="horizontal"
+      width="fit"
+      minWidth="fit"
+      flexShrink={0}
+    >
+      {actionItems}
+    </Container>
+  );
+
+  const chipContent = (
+    <div className={styles.content} style={contentStyle}>
+      {labelItems}
+      {actionsContainer}
     </div>
   );
 
   const hasClickHandlers = !!(onClick || onDoubleClick);
+
+  // A clickable chip with actions cannot be a single <button>, because the
+  // action buttons would end up nested inside it (invalid HTML). Only the
+  // label area becomes the clickable button; the actions stay its siblings.
+  if (hasClickHandlers && hasActions) {
+    return (
+      <Tooltip
+        disabled={
+          ((typeof error !== 'string' || !error) && (typeof disabled !== 'string' || !disabled)) ||
+          tooltipVisible
+        }
+        label={
+          (typeof error === 'string' && error) || (typeof disabled === 'string' && disabled) || ''
+        }
+        placement={tooltipPlacement}
+      >
+        <div
+          {...rest}
+          data-testid="chip"
+          ref={chipRef}
+          className={styles.chip}
+          style={chipStyle}
+          data-shape={shape}
+          data-clickable={isClickable || undefined}
+          data-disabled={isDisabled || undefined}
+        >
+          <div className={styles.content} style={contentStyle}>
+            <button
+              type="button"
+              className={styles.labelButton}
+              style={contentStyle}
+              aria-disabled={isDisabled || undefined}
+              onKeyDown={keyDownHandler}
+              onClick={onClick && clickHandler}
+              onDoubleClick={onDoubleClick && dblClickHandler}
+            >
+              {labelItems}
+            </button>
+            {actionsContainer}
+          </div>
+        </div>
+      </Tooltip>
+    );
+  }
 
   if (hasClickHandlers) {
     return (
