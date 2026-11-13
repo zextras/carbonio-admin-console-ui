@@ -17,7 +17,31 @@ export type GalAccountData = {
   zimbraMailHost?: string;
   zimbraDataSourceGalPollingInterval?: string;
   dataSourceId?: string;
+  lastSuccessfulSync?: string;
+  galStatus?: string;
 };
+
+type GalDataSourceInfo = {
+  dataSourceId?: string;
+  lastSuccessfulSync?: string;
+  galStatus?: string;
+};
+
+async function fetchGalDataSourceInfo(accountId: string): Promise<GalDataSourceInfo> {
+  try {
+    const dsResponse = await getDatasource(accountId);
+    const dataSource = dsResponse?.dataSource?.[0] as
+      | { id?: string; _attrs?: Record<string, string | undefined> }
+      | undefined;
+    return {
+      dataSourceId: dataSource?.id,
+      lastSuccessfulSync: dataSource?._attrs?.zimbraGalLastSuccessfulSyncTimestamp,
+      galStatus: dataSource?._attrs?.zimbraGalStatus,
+    };
+  } catch {
+    return {};
+  }
+}
 
 async function fetchGalAccounts(accountIds: Array<string>): Promise<Array<GalAccountData>> {
   if (accountIds.length === 0) return [];
@@ -39,20 +63,14 @@ async function fetchGalAccounts(accountIds: Array<string>): Promise<Array<GalAcc
           }
         });
 
-        let dataSourceId: string | undefined;
-        try {
-          const dsResponse = await getDatasource(accountId);
-          dataSourceId = dsResponse?.dataSource?.[0]?.id as string | undefined;
-        } catch {
-          dataSourceId = undefined;
-        }
+        const dataSourceInfo = await fetchGalDataSourceInfo(accountId);
 
         return {
           id: account.id,
           name: account.name,
           zimbraMailHost: attrMap.zimbraMailHost,
           zimbraDataSourceGalPollingInterval: attrMap.zimbraDataSourceGalPollingInterval,
-          dataSourceId,
+          ...dataSourceInfo,
         };
       } catch {
         return null;
@@ -69,7 +87,7 @@ export function useGalAccountsForDomain(accountIds: Array<string>) {
     queryFn: () => fetchGalAccounts(accountIds),
     enabled: accountIds.length > 0,
     staleTime: 30_000,
-    placeholderData: keepPreviousData,
+    placeholderData: accountIds.length > 0 ? keepPreviousData : undefined,
     retry: 1,
     refetchOnWindowFocus: false,
   });

@@ -4,24 +4,34 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import { domainQueryKeys } from './domain-query-keys';
 import { reSyncGalAccount } from './re-sync-gal-account-service';
+
+export type GalSyncTarget = {
+  accountId: string;
+  dataSourceId: string;
+};
 
 export function useReSyncGalAccount() {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
+  const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (accountIds: Array<string>) =>
-      Promise.all(accountIds.map((id) => reSyncGalAccount(id))),
+    mutationFn: (targets: Array<GalSyncTarget>) =>
+      Promise.all(
+        targets.map(({ accountId, dataSourceId }) => reSyncGalAccount(accountId, dataSourceId)),
+      ),
     onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       createSnackbar({
         key: 'success',
         severity: 'success',
-        label: t('label.gal_successfully_re_synced', 'GAL successfully re-synced'),
+        label: t('label.gal_sync_requested', 'GAL sync requested'),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,

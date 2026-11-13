@@ -20,6 +20,8 @@ import { DomainGalSettings } from '../domain-gal-settings';
 const DOMAIN_NAME = 'example.com';
 const DOMAIN_ID = 'test-domain-id';
 const GAL_ACCOUNT_ID = 'gal-account-id-1';
+const DATA_SOURCE_ID = 'datasource-1';
+const LAST_SYNC_TIMESTAMP = '20261103162435.843Z';
 
 type DomainAttribute = { n: string; _content: string };
 
@@ -76,11 +78,13 @@ function setupGalApiInterceptors(): void {
           GetDataSourcesResponse: {
             dataSource: [
               {
-                id: 'datasource-1',
+                id: DATA_SOURCE_ID,
                 name: 'gal-datasource',
                 type: 'gal',
                 _attrs: {
                   zimbraDataSourcePollingInterval: '1d',
+                  zimbraGalLastSuccessfulSyncTimestamp: LAST_SYNC_TIMESTAMP,
+                  zimbraGalStatus: 'enabled',
                 },
               },
             ],
@@ -428,23 +432,50 @@ describe('DomainGalSettings (browser)', () => {
   });
 
   describe('GALSync lifecycle', () => {
-    it('should call SyncGalAccount when RE-SYNC is clicked', async () => {
+    it('should call SyncGalAccount with the data source when RE-SYNC is clicked', async () => {
       const syncInterceptor = createBrowserSoapAPIInterceptor('SyncGalAccount', {});
 
       await setupAndRender();
+      const reSyncButton = page.getByRole('button', { name: /re-sync/i });
+      await expect.poll(async () => !(await reSyncButton.element()).hasAttribute('disabled')).toBe(true);
+
+      await reSyncButton.click();
+
+      const params = (await syncInterceptor) as {
+        account?: {
+          id?: string;
+          datasource?: { by?: string; fullSync?: number; reset?: number; _content?: string };
+        };
+      };
+      expect(params.account?.id).toBe(GAL_ACCOUNT_ID);
+      expect(params.account?.datasource).toEqual({
+        by: 'id',
+        fullSync: 1,
+        _content: DATA_SOURCE_ID,
+      });
+      await expect.element(page.getByText('GAL sync requested')).toBeVisible();
+    });
+
+    it('should disable RE-SYNC when the domain has no GAL account', async () => {
+      await setupAndRender([{ n: 'zimbraGalAccountId', _content: '' }]);
       await expect.element(page.getByText('mail1.example.com').first()).toBeVisible();
 
-      await page.getByRole('button', { name: /re-sync/i }).click();
+      await expect.element(page.getByRole('button', { name: /re-sync/i })).toBeDisabled();
+    });
 
-      const params = (await syncInterceptor) as { account?: { id?: string } };
-      expect(params.account?.id).toBe(GAL_ACCOUNT_ID);
-      await expect.element(page.getByText('GAL successfully re-synced')).toBeVisible();
+    it('should show the last successful sync and the status of the GAL account', async () => {
+      await setupAndRender();
+
+      await expect.element(page.getByText('Last successful sync')).toBeVisible();
+      await expect.element(page.getByText('03 Nov 2026', { exact: false })).toBeVisible();
+      await expect.element(page.getByText('enabled', { exact: true })).toBeVisible();
     });
 
     it('should open create modal and call CreateGalSyncAccount', async () => {
       const createInterceptor = createBrowserSoapAPIInterceptor('CreateGalSyncAccount', {
         account: [{ id: 'new-gal-id', name: `galsync.${DOMAIN_NAME}` }],
       });
+      const syncInterceptor = createBrowserSoapAPIInterceptor('SyncGalAccount', {});
       createBrowserSoapAPIInterceptor('FlushCache', {});
       createBrowserSoapAPIInterceptor('GetDomain', {
         domain: [
@@ -473,11 +504,20 @@ describe('DomainGalSettings (browser)', () => {
       await expect
         .element(page.getByText(/You have created the GALSync account/i))
         .toBeVisible();
+      const syncParams = (await syncInterceptor) as {
+        account?: { id?: string; datasource?: { _content?: string } };
+      };
+      expect(syncParams.account?.id).toBe('new-gal-id');
+      expect(syncParams.account?.datasource?._content).toBe(DATA_SOURCE_ID);
     });
 
     it('should open destroy modal and call DeleteGalSyncAccount', async () => {
       const deleteInterceptor = createBrowserSoapAPIInterceptor('DeleteGalSyncAccount', {});
       createBrowserSoapAPIInterceptor('FlushCache', {});
+
+      await setupAndRender();
+      await expect.element(page.getByText(`galsync.${DOMAIN_NAME}`)).toBeVisible();
+
       createBrowserSoapAPIInterceptor('GetDomain', {
         domain: [
           {
@@ -487,9 +527,6 @@ describe('DomainGalSettings (browser)', () => {
           },
         ],
       });
-
-      await setupAndRender();
-      await expect.element(page.getByText(`galsync.${DOMAIN_NAME}`)).toBeVisible();
 
       await page.getByText('mail1.example.com').first().click();
       const deleteButton = page.getByRole('button', { name: /^delete$/i });
@@ -501,6 +538,8 @@ describe('DomainGalSettings (browser)', () => {
 
       await deleteInterceptor;
       await expect.element(page.getByText('Your changes has been saved!')).toBeVisible();
+      await expect.element(page.getByText(`galsync.${DOMAIN_NAME}`)).not.toBeInTheDocument();
+      await expect.element(page.getByRole('button', { name: /re-sync/i })).toBeDisabled();
     });
   });
 

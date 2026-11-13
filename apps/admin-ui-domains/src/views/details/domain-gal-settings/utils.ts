@@ -14,6 +14,9 @@ export type GalAccount = {
   name: string;
   zimbraMailHost?: string;
   zimbraDataSourceGalPollingInterval?: string;
+  dataSourceId?: string;
+  lastSuccessfulSync?: string;
+  galStatus?: string;
 };
 
 export type ServerGalRow = {
@@ -23,6 +26,9 @@ export type ServerGalRow = {
     id: string;
     name: string;
     server: string;
+    dataSourceId?: string;
+    lastSuccessfulSync?: string;
+    galStatus?: string;
   } | null;
 };
 
@@ -77,6 +83,9 @@ export function buildServerGalRows(
             id: matchingAccount.id,
             name: matchingAccount.name,
             server: matchingAccount.zimbraMailHost ?? '',
+            dataSourceId: matchingAccount.dataSourceId,
+            lastSuccessfulSync: matchingAccount.lastSuccessfulSync,
+            galStatus: matchingAccount.galStatus,
           }
         : null,
     };
