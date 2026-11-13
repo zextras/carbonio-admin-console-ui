@@ -144,13 +144,20 @@ export const ClickableRowFactory = ({
   const CheckboxComponentToRender = CheckboxComponent || Checkbox;
   const displayBlockCheckbox = !showCheckboxOnHover || selected || (multiSelect && selectionMode);
 
+  const hoverHandlers =
+    showCheckboxOnHover && showCheckbox
+      ? {
+          onMouseEnter: displayCheckbox,
+          onMouseLeave: hideCheckbox,
+          onFocus: displayCheckbox,
+          onBlur: hideCheckbox,
+        }
+      : {};
+
   return (
     <tr
       onClick={onClick}
-      onMouseEnter={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
-      onMouseLeave={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
-      onFocus={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
-      onBlur={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
+      {...hoverHandlers}
       className={getTableRowClassNames(
         selected,
         row.highlight,
