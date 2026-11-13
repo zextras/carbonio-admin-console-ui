@@ -77,6 +77,39 @@ function calcColor(label: string): string {
   return `avatar_${(sum % 50) + 1}`;
 }
 
+function getAvatarStyles(deps: {
+  size: AvatarPropTypes['size'];
+  selecting: AvatarPropTypes['selecting'];
+  selected: AvatarPropTypes['selected'];
+  background: AvatarPropTypes['background'];
+  disabled: AvatarPropTypes['disabled'];
+  calculatedColor: ReturnType<typeof calcColor>;
+  picture: AvatarPropTypes['picture'];
+  shape: AvatarPropTypes['shape'];
+  color: AvatarPropTypes['color'];
+}): { containerStyle: React.CSSProperties; capitalsStyle: React.CSSProperties } {
+  const containerStyle = {
+    '--avatar-diameter': `var(--avatar-${deps.size}-diameter)`,
+    '--avatar-bg':
+      (deps.selecting && resolveThemeColor(deps.selected ? 'primary' : 'gray6', 'regular')) ||
+      (deps.background &&
+        resolveThemeColor(deps.background, deps.disabled ? 'disabled' : 'regular')) ||
+      getAvatarColorVar(deps.calculatedColor),
+    '--avatar-picture': deps.picture && !deps.selecting ? `url(${deps.picture})` : 'none',
+    '--avatar-radius': deps.shape === 'round' ? '50%' : '15%',
+    '--avatar-border': deps.selecting
+      ? `0.125rem solid ${resolveThemeColor('primary', 'regular')}`
+      : 'none',
+  } as React.CSSProperties;
+
+  const capitalsStyle = {
+    '--avatar-font': `var(--avatar-${deps.size}-font)`,
+    '--capitals-color': resolveThemeColor(deps.color ?? 'gray6', 'regular'),
+  } as React.CSSProperties;
+
+  return { containerStyle, capitalsStyle };
+}
+
 const Avatar = ({
   size = 'medium',
   label,
@@ -94,23 +127,17 @@ const Avatar = ({
 
   const capitals = calcCapitals(label.toUpperCase());
 
-  const containerStyle = {
-    '--avatar-diameter': `var(--avatar-${size}-diameter)`,
-    '--avatar-bg':
-      (selecting && resolveThemeColor(selected ? 'primary' : 'gray6', 'regular')) ||
-      (background && resolveThemeColor(background, disabled ? 'disabled' : 'regular')) ||
-      getAvatarColorVar(calculatedColor),
-    '--avatar-picture': picture && !selecting ? `url(${picture})` : 'none',
-    '--avatar-radius': shape === 'round' ? '50%' : '15%',
-    '--avatar-border': selecting
-      ? `0.125rem solid ${resolveThemeColor('primary', 'regular')}`
-      : 'none',
-  } as React.CSSProperties;
-
-  const capitalsStyle = {
-    '--avatar-font': `var(--avatar-${size}-font)`,
-    '--capitals-color': resolveThemeColor(color ?? 'gray6', 'regular'),
-  } as React.CSSProperties;
+  const { containerStyle, capitalsStyle } = getAvatarStyles({
+    size,
+    selecting,
+    selected,
+    background,
+    disabled,
+    calculatedColor,
+    picture,
+    shape,
+    color,
+  });
 
   let symbol: React.ReactNode;
   if (selecting) {
