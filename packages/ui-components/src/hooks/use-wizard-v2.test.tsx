@@ -259,6 +259,21 @@ describe('useWizardV2', () => {
 			});
 			expect(result.current.isSubmitting).toBe(false);
 		});
+
+		it('resets isSubmitting and rethrows when onComplete rejects', async () => {
+			const error = new Error('submit failed');
+			const onComplete = vi.fn().mockRejectedValue(error);
+			const { result } = renderWizard({ onComplete });
+			act(() => {
+				result.current.goToStep('step3');
+			});
+
+			await act(async () => {
+				await expect(result.current.goNext()).rejects.toBe(error);
+			});
+			expect(result.current.isSubmitting).toBe(false);
+			expect(result.current.currentStep).toBe('step3');
+		});
 	});
 
 	describe('goBack', () => {
@@ -379,6 +394,40 @@ describe('useWizardV2', () => {
 		it('does not navigate when activeStep is not provided', () => {
 			const { result } = renderWizard();
 			expect(result.current.currentStep).toBe('step1');
+		});
+
+		it('navigates to the new activeStep when the prop changes', () => {
+			const { result, rerender, steps, sectionRef, activeRef } = renderWizard();
+			rerender({
+				data: undefined,
+				defaultData: undefined,
+				steps,
+				onChange: undefined,
+				onComplete: vi.fn(),
+				sectionRef,
+				activeRef,
+				title: 'Test Wizard',
+				activeStep: 'step3',
+			});
+			expect(result.current.currentStep).toBe('step3');
+		});
+
+		it('keeps the current step when activeStep is cleared', () => {
+			const { result, rerender, steps, sectionRef, activeRef } = renderWizard({
+				activeStep: 'step2',
+			});
+			rerender({
+				data: undefined,
+				defaultData: undefined,
+				steps,
+				onChange: undefined,
+				onComplete: vi.fn(),
+				sectionRef,
+				activeRef,
+				title: 'Test Wizard',
+				activeStep: undefined,
+			});
+			expect(result.current.currentStep).toBe('step2');
 		});
 	});
 

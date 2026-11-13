@@ -6,7 +6,6 @@
 
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { get, join } from "lodash-es";
-import { useMemo } from "react";
 
 import { Account, AccountSettings } from "../../types";
 import { queryClient } from "../providers/react-query-provider";
@@ -52,7 +51,7 @@ export const useUserAccount = (): Account | undefined => {
 
 export const useUserAccounts = (): Array<Account> => {
   const account = useUserAccount();
-  return useMemo(() => (account ? [account] : []), [account]);
+  return account ? [account] : [];
 };
 
 export const useUserSettings = (): AccountSettings => {

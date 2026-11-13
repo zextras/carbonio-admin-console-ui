@@ -6,7 +6,7 @@
 
 import type { RowSelectionState } from '@tanstack/react-table';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { useDataTable } from '../create-data-table';
@@ -74,7 +74,7 @@ const bodyProps = {
 
 function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
   const store = useTableUiStore();
-  useEffect(() => {
+  useLayoutEffect(() => {
     onStore(store);
   }, [store, onStore]);
   return null;
@@ -93,7 +93,7 @@ function BulkBarHarness({ onTable, onStore, withPeekBody = false, barProps = {} 
     (state) => state.rowSelection,
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onTable(table);
   }, [table, onTable]);
 

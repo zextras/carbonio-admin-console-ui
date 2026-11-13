@@ -5,7 +5,7 @@
  */
 
 import clsx from 'clsx';
-import React, { useMemo, useRef } from 'react';
+import React, { useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -68,28 +68,21 @@ export const Checkbox = ({
     onChange,
   });
 
-  const computedIconSize = useMemo(
-    () =>
-      // TODO simplify when iconSize will be removed
-      iconSize ?? (size === 'medium' ? 'large' : 'medium'),
-    [size, iconSize],
-  );
+  const computedIconSize =
+    // TODO simplify when iconSize will be removed
+    iconSize ?? (size === 'medium' ? 'large' : 'medium');
 
   const iconWrapperClassName = clsx(styles.iconWrapper, disabled && styles.disabled);
 
-  const iconWrapperStyle: React.CSSProperties = useMemo(
-    () =>
-      ({
-        '--icon-wrapper-height':
-          size === 'medium'
-            ? 'calc(var(--font-size-medium) * 1.5)'
-            : 'calc(var(--font-size-small) * 1.5)',
-        '--icon-color-focus': resolveThemeColor(iconColor, 'focus'),
-        '--icon-color-hover': resolveThemeColor(iconColor, 'hover'),
-        '--icon-color-active': resolveThemeColor(iconColor, 'active'),
-      } as React.CSSProperties),
-    [size, iconColor],
-  );
+  const iconWrapperStyle = {
+    '--icon-wrapper-height':
+      size === 'medium'
+        ? 'calc(var(--font-size-medium) * 1.5)'
+        : 'calc(var(--font-size-small) * 1.5)',
+    '--icon-color-focus': resolveThemeColor(iconColor, 'focus'),
+    '--icon-color-hover': resolveThemeColor(iconColor, 'hover'),
+    '--icon-color-active': resolveThemeColor(iconColor, 'active'),
+  } as React.CSSProperties;
 
   return (
     <Container

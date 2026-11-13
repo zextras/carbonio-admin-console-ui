@@ -7,25 +7,22 @@
 /* THIS FILE CONTAINS HOOKS, BUT ESLINT IS DUMB */
 
 import { compact, map } from 'lodash-es';
-import { useMemo } from 'react';
 
 import { Action } from '../../../types';
 import { useIntegrationsStore } from './store';
 
 export const useActions = <T,>(target: T, type: string): Array<Action> => {
 	const factories = useIntegrationsStore((s) => s.actions[type]);
-	return useMemo(
-		() =>
-			compact(
-				map(factories, (f) => {
-					try {
-						return f(target);
-					} catch (e) {
-						console.error(e);
-						return undefined;
-					}
-				})
-			) ?? [],
-		[factories, target]
+	return (
+		compact(
+			map(factories, (f) => {
+				try {
+					return f(target);
+				} catch (e) {
+					console.error(e);
+					return undefined;
+				}
+			})
+		) ?? []
 	);
 };

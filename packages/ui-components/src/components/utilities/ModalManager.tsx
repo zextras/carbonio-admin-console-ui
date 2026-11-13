@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { createContext, useCallback, useMemo, useReducer } from 'react';
+import React, { createContext, useReducer } from 'react';
 
 import { CustomModal, CustomModalProps } from '../feedback/CustomModal';
 import { Modal, ModalProps } from '../feedback/Modal';
@@ -62,8 +62,10 @@ function isStandardModal(
 function ModalManager({ children }: ModalManagerProps): React.JSX.Element {
   const [modals, dispatchModal] = useReducer(modalsReducer, []);
 
-  const createModal = useCallback<CreateModalFn>(
-    ({ id, onClose, children: modalChildren, ...rest }, custom = false) => {
+  const createModal: CreateModalFn = (
+    { id, onClose, children: modalChildren, ...rest },
+    custom = false,
+  ) => {
       const overflow = window.document.body.style.overflowY;
 
       const handleClose = (event: KeyboardEvent | React.MouseEvent): void => {
@@ -112,17 +114,15 @@ function ModalManager({ children }: ModalManagerProps): React.JSX.Element {
         type: 'push',
         value: { id, modal },
       });
-    },
-    [],
-  );
+  };
 
-  const closeModal = useCallback<CloseModalFn>((id) => {
+  const closeModal: CloseModalFn = (id) => {
     dispatchModal({ type: MODAL_ACTION.REMOVE, value: id });
-  }, []);
+  };
 
-  const modalElements = useMemo(() => modals.map((value) => value.modal), [modals]);
+  const modalElements = modals.map((value) => value.modal);
 
-  const providerValue = useMemo(() => ({ createModal, closeModal }), [createModal, closeModal]);
+  const providerValue = { createModal, closeModal };
 
   return (
     <>

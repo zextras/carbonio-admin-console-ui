@@ -5,7 +5,7 @@
  */
 import { flip, limitShift, offset, type Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
-import { useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import { useId, useLayoutEffect, useRef, useState } from 'react';
 
 import { setupFloating } from '../../utils/floating-ui';
 import styles from './breadcrumb-menu.module.css';
@@ -61,8 +61,12 @@ export function BreadcrumbMenu({
       return;
     }
     const selectedIndex = items.findIndex((item) => item.selected);
-    setActiveIndex(Math.max(selectedIndex, 0));
+    const nextIndex = Math.max(selectedIndex, 0);
+    setActiveIndex(nextIndex);
     setOpen(true);
+    globalThis.requestAnimationFrame(() => {
+      itemRefs.current[nextIndex]?.focus();
+    });
   };
 
   const activate = (index: number) => {
@@ -98,11 +102,6 @@ export function BreadcrumbMenu({
     menu.style.display = 'none';
     return undefined;
   }, [anchorRef, open, placement]);
-
-  useEffect(() => {
-    if (!open) return;
-    itemRefs.current[activeIndex]?.focus();
-  }, [activeIndex, open]);
 
   const handleToggle = (event: React.ToggleEvent<HTMLDivElement>) => {
     if (event.newState === 'closed') {

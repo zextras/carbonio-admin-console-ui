@@ -4,13 +4,19 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useContext, useLayoutEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { type Location, useLocation, useNavigate } from 'react-router';
+import {
+  type Location,
+  UNSAFE_DataRouterContext,
+  useBlocker,
+  useLocation,
+  useNavigate,
+} from 'react-router';
 
 import { Modal } from '../feedback/Modal';
 
-type RouteLeavingGuardProps = {
+type RouteLeavingGuardProps = Readonly<{
   /** When true, navigation away is blocked until the user confirms. */
   when?: boolean;
   /** Called when the user chooses "Save and leave". */
@@ -20,7 +26,7 @@ type RouteLeavingGuardProps = {
    * copy is rendered.
    */
   children?: ReactNode;
-};
+}>;
 
 /**
  * Standard body copy shown when no custom children are provided.
@@ -35,7 +41,9 @@ function DefaultUnsavedChangesBody() {
           'Are you sure you want to leave this page without saving?',
         )}
       </ds-text>
-      <ds-text as="p">{t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}</ds-text>
+      <ds-text as="p">
+        {t('label.unsaved_changes_line2', 'All your unsaved changes will be lost')}
+      </ds-text>
     </>
   );
 }
@@ -43,10 +51,62 @@ function DefaultUnsavedChangesBody() {
 /**
  * Guards against leaving the current route when there are unsaved changes.
  *
+ * Uses react-router's blocker API under a data router (createMemoryRouter /
+ * createBrowserRouter + RouterProvider) and falls back to a location-revert
+ * implementation under the plain routers (BrowserRouter / MemoryRouter +
+ * Routes) the production shell renders, where useBlocker would throw.
+ */
+export const RouteLeavingGuard = (props: RouteLeavingGuardProps) => {
+  const dataRouterContext = useContext(UNSAFE_DataRouterContext);
+  if (dataRouterContext) {
+    return <RouteLeavingGuardDataRouter {...props} />;
+  }
+  return <RouteLeavingGuardBrowserRouter {...props} />;
+};
+
+/**
+ * On navigation it intercepts, and shows a modal offering "Save and leave"
+ * (calls `onSave` then proceeds) or "Leave anyway" (discards).
+ */
+function RouteLeavingGuardDataRouter({ children, when, onSave }: RouteLeavingGuardProps) {
+  const [t] = useTranslation();
+  const blocker = useBlocker(
+    ({ currentLocation, nextLocation }) =>
+      when === true && currentLocation.pathname !== nextLocation.pathname,
+  );
+
+  const onLeave = (): void => {
+    if (blocker.state === 'blocked') {
+      blocker.proceed();
+    }
+  };
+
+  const onSaveAndLeave = (): void => {
+    onSave();
+    if (blocker.state === 'blocked') {
+      blocker.proceed();
+    }
+  };
+
+  return (
+    <Modal
+      open={blocker.state === 'blocked'}
+      onClose={onLeave}
+      onConfirm={onSaveAndLeave}
+      title={t('label.unsaved_changes', 'You have unsaved changes')}
+      dismissLabel={t('label.leave_anyway', 'Leave anyway')}
+      confirmLabel={t('label.save_and_leave', 'Save and leave')}
+    >
+      {children ?? <DefaultUnsavedChangesBody />}
+    </Modal>
+  );
+}
+
+/**
  * On navigation it intercepts, reverts the navigation, and shows a modal offering
  * "Save and leave" (calls `onSave` then proceeds) or "Leave anyway" (discards).
  */
-export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardProps) => {
+function RouteLeavingGuardBrowserRouter({ children, when, onSave }: RouteLeavingGuardProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const lastLocationInitial = useRef(location).current;
@@ -60,25 +120,24 @@ export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardP
     setConfirmedNavigation(true);
   };
 
-  const handleBlockedNavigation = (nextLocation: Location): boolean => {
-    if (
-      !confirmedNavigation &&
-      nextLocation.pathname !== (lastLocation?.pathname || lastLocationInitial.pathname)
-    ) {
-      setModalVisible(true);
-      setLastLocation(nextLocation);
-      return false;
-    }
-    return true;
-  };
-
   const onConfirm = (): void => {
     setModalVisible(false);
     onSave();
     setConfirmedNavigation(true);
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    function handleBlockedNavigation(nextLocation: Location): boolean {
+      if (
+        !confirmedNavigation &&
+        nextLocation.pathname !== (lastLocation?.pathname || lastLocationInitial.pathname)
+      ) {
+        setModalVisible(true);
+        setLastLocation(nextLocation);
+        return false;
+      }
+      return true;
+    }
     if (when && !confirmedNavigation) {
       if (
         location.pathname !== lastLocationInitial.pathname &&
@@ -92,7 +151,7 @@ export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardP
     }
   }, [location, when, confirmedNavigation, lastLocation, lastLocationInitial, navigate]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (confirmedNavigation && lastLocation) {
       navigate(lastLocation.pathname);
     }
@@ -110,4 +169,4 @@ export const RouteLeavingGuard = ({ children, when, onSave }: RouteLeavingGuardP
       {children ?? <DefaultUnsavedChangesBody />}
     </Modal>
   );
-};
+}

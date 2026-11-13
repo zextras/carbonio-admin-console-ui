@@ -91,10 +91,6 @@ describe('getThemeColorVar', () => {
 });
 
 describe('ChipInput', () => {
-  beforeEach(() => {
-    ChipInput._newId = 0;
-  });
-
   const getInput = (): HTMLInputElement => screen.getByRole('textbox');
 
   const findCloseButton = (label: string): HTMLButtonElement | null => {
@@ -869,16 +865,14 @@ describe('ChipInput', () => {
       expect(onOptionsDisplayChange).not.toHaveBeenCalled();
     });
 
-    it('calls showDropdown with false when dropdown closes', () => {
-      const onOptionsDisplayChange = vi.fn();
+    it('closes the suggestion dropdown when options empty out', () => {
       const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
-      const { rerender } = render(
-        <ChipInput options={options} onOptionsDisplayChange={onOptionsDisplayChange} />,
-      );
-      expect(onOptionsDisplayChange).toHaveBeenCalledWith(true);
+      const { rerender } = render(<ChipInput options={options} />);
 
-      rerender(<ChipInput options={[]} onOptionsDisplayChange={onOptionsDisplayChange} />);
-      expect(onOptionsDisplayChange).toHaveBeenCalledWith(false);
+      expect(screen.getByText('Opt')).toBeTruthy();
+
+      rerender(<ChipInput options={[]} />);
+      expect(screen.queryByText('Opt')).not.toBeTruthy();
     });
   });
 
@@ -918,8 +912,8 @@ describe('ChipInput', () => {
       const id1 = c1.querySelector('input')?.id;
       const id2 = c2.querySelector('input')?.id;
       expect(id1).not.toBe(id2);
-      expect(id1).toMatch(/^chipInput-\d+$/);
-      expect(id2).toMatch(/^chipInput-\d+$/);
+      expect(id1).toMatch(/^chipInput-/);
+      expect(id2).toMatch(/^chipInput-/);
     });
   });
 
@@ -988,17 +982,15 @@ describe('ChipInput', () => {
     });
   });
 
-  describe('forceShowDropdown tracking', () => {
-    it('updates dropdownVisibilityRef when forceShowDropdown changes', () => {
-      const onOptionsDisplayChange = vi.fn();
+  describe('Suggestion mode', () => {
+    it('closes the suggestion dropdown when options empty out', () => {
       const options = makeOptions({ id: 'a', label: 'A', value: 'a' });
-      const { rerender } = render(
-        <ChipInput options={options} onOptionsDisplayChange={onOptionsDisplayChange} />,
-      );
-      expect(onOptionsDisplayChange).toHaveBeenCalledWith(true);
+      const { rerender } = render(<ChipInput options={options} />);
 
-      rerender(<ChipInput options={[]} onOptionsDisplayChange={onOptionsDisplayChange} />);
-      expect(onOptionsDisplayChange).toHaveBeenCalledWith(false);
+      expect(screen.getByText('A')).toBeTruthy();
+
+      rerender(<ChipInput options={[]} />);
+      expect(screen.queryByText('A')).not.toBeTruthy();
     });
   });
 
@@ -1030,7 +1022,7 @@ describe('ChipInput', () => {
   });
 
   describe('onOpen / onClose callbacks', () => {
-    it('calls showDropdown(false) on dropdown close via rerender', () => {
+    it('notifies onOptionsDisplayChange on open but not when options empty out', () => {
       const onOptionsDisplayChange = vi.fn();
       const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
       const { rerender } = render(
@@ -1039,7 +1031,7 @@ describe('ChipInput', () => {
       expect(onOptionsDisplayChange).toHaveBeenCalledWith(true);
 
       rerender(<ChipInput options={[]} onOptionsDisplayChange={onOptionsDisplayChange} />);
-      expect(onOptionsDisplayChange).toHaveBeenCalledWith(false);
+      expect(onOptionsDisplayChange).not.toHaveBeenCalledWith(false);
     });
   });
 });

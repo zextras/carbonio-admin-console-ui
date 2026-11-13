@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { CSSProperties, useEffect, useMemo } from 'react';
+import React, { CSSProperties, useEffect } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 
@@ -154,14 +154,10 @@ const TransitionOn = ({
 }: TransitionOnProps): React.JSX.Element => {
   const childRef = useCombinedRefs<HTMLElement>(ref);
 
-  const duration = useMemo(
-    () => transitionDuration || STYLES[type].transitionDuration || DEFAULT_TRANSITION_DURATION,
-    [type, transitionDuration],
-  );
-  const timing = useMemo(
-    () => transitionTiming || STYLES[type].transitionTimingFunction || DEFAULT_TRANSITION_TIMING,
-    [type, transitionTiming],
-  );
+  const duration =
+    transitionDuration || STYLES[type].transitionDuration || DEFAULT_TRANSITION_DURATION;
+  const timing =
+    transitionTiming || STYLES[type].transitionTimingFunction || DEFAULT_TRANSITION_TIMING;
 
   useEffect(() => {
     const childElement = childRef.current;
@@ -169,10 +165,13 @@ const TransitionOn = ({
     if (apply && childElement) {
       const toStyles = to || STYLES[type].to;
       applyStyle(toStyles, childElement);
-      childElement.style.transition = `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`;
+      childElement.style.setProperty(
+        'transition',
+        `${transitionTarget} ${duration}ms ${timing} ${transitionDelay}ms`,
+      );
 
       const timeout = setTimeout(() => {
-        childElement.style.transition = '';
+        childElement.style.removeProperty('transition');
         resetStyle(toStyles, childElement);
         const endStyles = end || STYLES[type].end || {};
         applyStyle(endStyles, childElement);

@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useCallback,useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { getKeyboardPreset, useKeyboard } from './useKeyboard';
 
@@ -25,43 +25,34 @@ function useCheckbox({
 	onClick,
 	onChange
 }: UseCheckboxArgs): boolean {
-	const [checked, setChecked] = useState<boolean>(value || defaultChecked || false);
+	const [internalChecked, setInternalChecked] = useState<boolean>(defaultChecked || false);
+	const checked = value ?? internalChecked;
 
-	const uncontrolledMode = useMemo(() => value === undefined, [value]);
+	const uncontrolledMode = value === undefined;
 
-	const handleClick = useCallback(
-		(ev: Event) => {
-			if (!disabled) {
-				if (uncontrolledMode) {
-					setChecked((check) => !check);
-				}
-				if (onClick) {
-					onClick(ev);
-				}
+	const handleClick = (ev: Event) => {
+		if (!disabled) {
+			if (uncontrolledMode) {
+				const nextChecked = !checked;
+				setInternalChecked(nextChecked);
+				onChange?.(nextChecked);
 			}
-		},
-		[disabled, uncontrolledMode, onClick]
-	);
+			if (onClick) {
+				onClick(ev);
+			}
+		}
+	};
 
-	const keyEvents = useMemo(() => getKeyboardPreset('button', handleClick), [handleClick]);
+	const keyEvents = getKeyboardPreset('button', handleClick);
 	useKeyboard(ref, keyEvents);
 
 	useEffect(() => {
-		value !== undefined && setChecked(value);
-	}, [value]);
-
-	useEffect(() => {
-		onChange && onChange(checked);
-	}, [onChange, checked]);
-
-	useEffect(() => {
 		const refSave = ref.current;
-		refSave && refSave.addEventListener('click', handleClick);
+		refSave?.addEventListener('click', handleClick);
 		return () => {
-			refSave && refSave.removeEventListener('click', handleClick);
+			refSave?.removeEventListener('click', handleClick);
 		};
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [ref.current, handleClick]);
+	}, [ref, handleClick]);
 
 	return checked;
 }

@@ -58,6 +58,7 @@ type ModalContainerProps = React.HTMLAttributes<HTMLDivElement> & {
 	$mounted?: boolean;
 	$open?: boolean;
 	$zIndex?: number;
+	style?: React.CSSProperties;
 };
 
 function ModalContainer({
@@ -88,6 +89,7 @@ function ModalWrapper({ className, ...props }: ModalWrapperProps) {
 
 type ModalContentProps = React.HTMLAttributes<HTMLDivElement> & {
 	$size: keyof typeof modalMinWidth & keyof typeof modalWidth;
+	style?: React.CSSProperties;
 };
 
 function ModalContent({

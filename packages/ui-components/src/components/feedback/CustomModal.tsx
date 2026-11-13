@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import React, { HTMLAttributes, useEffect, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -19,6 +19,7 @@ import {
   ModalContent,
   ModalWrapper,
 } from './modal-components/ModalComponents';
+import styles from './modal-components/ModalComponents.module.css';
 
 type BareModalProps = {
   /** Modal background */
@@ -60,49 +61,43 @@ const CustomModal = ({
 
   const modalRef = useCombinedRefs<HTMLDivElement>(ref);
   const modalContentRef = useRef<HTMLDivElement>(null);
-  const startSentinelRef = useRef<HTMLDivElement>(null);
-  const endSentinelRef = useRef<HTMLDivElement>(null);
+  const startSentinelRef = useRef<HTMLButtonElement>(null);
+  const endSentinelRef = useRef<HTMLButtonElement>(null);
 
-  const onBackdropClick = useCallback(
-    (e: KeyboardEvent | React.MouseEvent<HTMLDivElement>) => {
-      if (e) {
-        e.stopPropagation();
-      }
-      if (
-        !e.defaultPrevented &&
-        modalContentRef.current &&
-        onClose &&
-        e.target instanceof Node &&
-        !modalContentRef.current.contains(e.target)
-      ) {
-        onClose(e);
-      }
-    },
-    [onClose],
-  );
+  const onBackdropClick = (e: KeyboardEvent | React.MouseEvent<HTMLDivElement>) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    if (
+      !e.defaultPrevented &&
+      modalContentRef.current &&
+      onClose &&
+      e.target instanceof Node &&
+      !modalContentRef.current.contains(e.target)
+    ) {
+      onClose(e);
+    }
+  };
 
-  const onStartSentinelFocus = useCallback(() => {
+  const onStartSentinelFocus = () => {
     if (modalContentRef.current) {
       const nodeList = modalContentRef.current.querySelectorAll<HTMLElement>('[tabindex]');
       nodeList[nodeList.length - 1].focus();
     }
-  }, []);
+  };
 
-  const onEndSentinelFocus = useCallback(() => {
+  const onEndSentinelFocus = () => {
     if (modalContentRef.current) {
       const nodeEl = modalContentRef.current.querySelector<HTMLElement>('[tabindex]');
       nodeEl?.focus();
     }
-  }, []);
+  };
 
-  const escapeEvent = useMemo<KeyboardPresetObj[]>(
-    () =>
-      (onClose && [
-        { type: 'keydown', callback: onClose, keys: [{ key: 'Escape', ctrlKey: false }] },
-      ]) ||
-      [],
-    [onClose],
-  );
+  const escapeEvent: KeyboardPresetObj[] =
+    (onClose && [
+      { type: 'keydown', callback: onClose, keys: [{ key: 'Escape', ctrlKey: false }] },
+    ]) ||
+    [];
   useKeyboard(modalRef, escapeEvent);
 
   useEffect(() => {
@@ -111,8 +106,9 @@ const CustomModal = ({
       const defaultPaddingRight = window.document.body.style.paddingRight;
 
       window.document.body.style.overflowY = 'hidden';
-      isBodyOverflowing(modalRef, window) &&
-        (window.document.body.style.paddingRight = `${getScrollbarSize(window)}px`);
+      if (isBodyOverflowing(modalRef, window)) {
+        window.document.body.style.paddingRight = `${getScrollbarSize(window)}px`;
+      }
 
       return (): void => {
         window.document.body.style.overflowY = defaultOverflowY;
@@ -128,16 +124,17 @@ const CustomModal = ({
     const endSentinelRefSave = endSentinelRef.current;
 
     if (open) {
-      modalContentRef.current && modalContentRef.current.focus();
-      startSentinelRefSave && startSentinelRefSave.addEventListener('focus', onStartSentinelFocus);
-      endSentinelRefSave && endSentinelRefSave.addEventListener('focus', onEndSentinelFocus);
+      modalContentRef.current?.focus();
+      startSentinelRefSave?.addEventListener('focus', onStartSentinelFocus);
+      endSentinelRefSave?.addEventListener('focus', onEndSentinelFocus);
     }
 
     return (): void => {
-      startSentinelRefSave &&
-        startSentinelRefSave.removeEventListener('focus', onStartSentinelFocus);
-      endSentinelRefSave && endSentinelRefSave.removeEventListener('focus', onEndSentinelFocus);
-      open && focusedElement && focusedElement.focus();
+      startSentinelRefSave?.removeEventListener('focus', onStartSentinelFocus);
+      endSentinelRefSave?.removeEventListener('focus', onEndSentinelFocus);
+      if (open) {
+        focusedElement?.focus();
+      }
     };
   }, [open, onStartSentinelFocus, onEndSentinelFocus]);
 
@@ -160,7 +157,7 @@ const CustomModal = ({
         data-testid="modal"
         {...rest}
       >
-        <div tabIndex={0} ref={startSentinelRef} />
+        <button type="button" ref={startSentinelRef} className={styles.focusSentinel} />
         <Transition type="scale-in" apply={delayedOpen}>
           <ModalWrapper>
             <ModalContent $size={size} onClick={onClick}>
@@ -168,7 +165,7 @@ const CustomModal = ({
             </ModalContent>
           </ModalWrapper>
         </Transition>
-        <div tabIndex={0} ref={endSentinelRef} />
+        <button type="button" ref={endSentinelRef} className={styles.focusSentinel} />
       </ModalContainer>
     </Portal>
   );

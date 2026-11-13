@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { RefObject, useCallback, useEffect, useRef } from 'react';
+import { RefObject, useEffect, useRef } from 'react';
 
 export const useIntersectionObserver = (
 	containerRef: RefObject<Element | Document | null> | undefined,
@@ -49,17 +49,17 @@ export const useIntersectionObserver = (
 		};
 	}, [containerRef, rootMargin, threshold]);
 
-	const observe = useCallback((element: Element) => {
+	const observe = (element: Element) => {
 		if (observerRef.current && !observedElementsRef.current.includes(element)) {
 			observedElementsRef.current.push(element);
 			observerRef.current.observe(element);
 		}
-	}, []);
+	};
 
-	const unobserve = useCallback((element: Element) => {
+	const unobserve = (element: Element) => {
 		observerRef.current?.unobserve(element);
 		observedElementsRef.current.splice(observedElementsRef.current.indexOf(element), 1);
-	}, []);
+	};
 
 	return { observe, unobserve };
 };

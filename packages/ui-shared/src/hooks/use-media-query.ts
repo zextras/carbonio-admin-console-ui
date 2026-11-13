@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCallback, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 
 function getSnapshot(query: string): boolean {
 	return window.matchMedia(query).matches;
@@ -15,14 +15,11 @@ function getServerSnapshot(): boolean {
 }
 
 function useMediaQuery(query: string): boolean {
-	const subscribe = useCallback(
-		(onStoreChange: () => void) => {
-			const mediaQuery = window.matchMedia(query);
-			mediaQuery.addEventListener('change', onStoreChange);
-			return () => mediaQuery.removeEventListener('change', onStoreChange);
-		},
-		[query],
-	);
+	const subscribe = (onStoreChange: () => void) => {
+		const mediaQuery = window.matchMedia(query);
+		mediaQuery.addEventListener('change', onStoreChange);
+		return () => mediaQuery.removeEventListener('change', onStoreChange);
+	};
 
 	return useSyncExternalStore(subscribe, () => getSnapshot(query), getServerSnapshot);
 }

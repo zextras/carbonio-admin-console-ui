@@ -5,7 +5,7 @@
  */
 
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { useEffect, useState } from 'react';
+import { useEffect, useLayoutEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { TableUiProvider, useTableUi } from '../table-ui-store';
@@ -85,7 +85,7 @@ function ModalFlag({ value }: { value: boolean }) {
 /** Mirrors the store's rowMenuOpen slice into a callback for assertions. */
 function RowMenuOpenProbe({ onValue }: { onValue: (value: boolean) => void }) {
   const rowMenuOpen = useTableUi((s) => s.rowMenuOpen);
-  useEffect(() => {
+  useLayoutEffect(() => {
     onValue(rowMenuOpen);
   }, [onValue, rowMenuOpen]);
   return null;
