@@ -134,9 +134,11 @@ export const useWizardV2 = ({
 			setIsSubmitting(true);
 			try {
 				await onComplete(dataRef.current);
-			} finally {
+			} catch (error) {
 				setIsSubmitting(false);
+				throw error;
 			}
+			setIsSubmitting(false);
 		} else {
 			goToStep(steps[currentStepIndex + 1].name);
 		}
