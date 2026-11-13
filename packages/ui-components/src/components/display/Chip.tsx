@@ -105,6 +105,128 @@ function getChipColorVars(background: string): Record<string, string> {
   };
 }
 
+function getChipActions(
+  actions: Array<ChipAction>,
+  onClose: ChipProps['onClose'],
+  closable: boolean,
+): Array<ChipAction> {
+  const chipActions = [...actions];
+  if (onClose) {
+    chipActions.push({
+      id: 'CloseChipAction',
+      icon: 'Close',
+      onClick: onClose,
+      type: 'button' as const,
+      disabled: !closable,
+    });
+  }
+  return chipActions;
+}
+
+function getChipTooltipProps(deps: {
+  error: ChipProps['error'];
+  disabled: ChipProps['disabled'];
+  tooltipVisible: boolean;
+}): { disabled: boolean; label: string } {
+  return {
+    disabled:
+      ((typeof deps.error !== 'string' || !deps.error) &&
+        (typeof deps.disabled !== 'string' || !deps.disabled)) ||
+      deps.tooltipVisible,
+    label:
+      (typeof deps.error === 'string' && deps.error) ||
+      (typeof deps.disabled === 'string' && deps.disabled) ||
+      '',
+  };
+}
+
+function getChipStyles(deps: {
+  backgroundColor: string;
+  maxWidth: string | undefined;
+  size: NonNullable<ChipProps['size']>;
+  style: React.CSSProperties | undefined;
+}): { chipStyle: React.CSSProperties; contentStyle: React.CSSProperties } {
+  const spacing = SIZES[deps.size].spacing;
+  const chipStyle = {
+    ...getChipColorVars(deps.backgroundColor),
+    maxWidth: deps.maxWidth || 'fit-content',
+    minWidth: deps.maxWidth ? '0' : 'max-content',
+    gap: spacing,
+    padding: `calc(${spacing} / 4) calc(${spacing} / 2)`,
+    backgroundColor: `var(--chip-bg)`,
+    ...deps.style,
+  } as React.CSSProperties;
+  const contentStyle = {
+    gap: spacing,
+    minWidth: deps.maxWidth ? '0' : 'fit',
+  } as React.CSSProperties;
+  return { chipStyle, contentStyle };
+}
+
+function renderLabelItems(deps: {
+  keyLabel: ChipProps['keyLabel'];
+  label: ChipProps['label'];
+  maxWidth: ChipProps['maxWidth'];
+  size: NonNullable<ChipProps['size']>;
+  error: ChipProps['error'];
+  color: ChipProps['color'];
+  disabled: ChipProps['disabled'];
+  tooltipPlacement: ChipProps['tooltipPlacement'];
+  showLabelTooltip: () => void;
+  hideLabelTooltip: () => void;
+}): React.JSX.Element {
+  const { keyLabel, label, maxWidth, size, error, color, disabled } = deps;
+  return (
+    <>
+      {keyLabel && (
+        <div className={styles.label} style={{ width: 'auto' }}>
+          <ds-text
+            as="span"
+            weight="regular"
+            size={SIZES[size].font}
+            color={error ? 'gray6' : color}
+            disabled={!!disabled}
+          >
+            {keyLabel}
+          </ds-text>
+        </div>
+      )}
+      {label && (
+        <div
+          className={styles.label}
+          style={{
+            width: 'fit',
+            flexShrink: maxWidth ? 1 : 0,
+            minWidth: 0,
+          }}
+          onMouseEnter={deps.showLabelTooltip}
+          onMouseLeave={deps.hideLabelTooltip}
+          onFocus={deps.showLabelTooltip}
+          onBlur={deps.hideLabelTooltip}
+        >
+          <Tooltip
+            label={(typeof label === 'string' && label) || ''}
+            maxWidth="100%"
+            disabled={!maxWidth || typeof label !== 'string'}
+            overflowTooltip
+            placement={deps.tooltipPlacement}
+          >
+            <ds-text
+              as="span"
+              weight="light"
+              size={SIZES[size].font}
+              color={error ? 'gray6' : color}
+              disabled={!!disabled}
+            >
+              {typeof label === 'string' ? label : <Row wrap="nowrap">{label}</Row>}
+            </ds-text>
+          </Tooltip>
+        </div>
+      )}
+    </>
+  );
+}
+
 type ActionTooltipHandlers = {
   show: (() => void) | undefined;
   hide: (() => void) | undefined;
@@ -241,16 +363,7 @@ const Chip = ({
   const chipRef = useCombinedRefs<HTMLDivElement>(ref, innerRef);
   const [tooltipVisible, setTooltipVisible] = useState(false);
 
-  const chipActions = [...actions];
-  if (onClose) {
-    chipActions.push({
-      id: 'CloseChipAction',
-      icon: 'Close',
-      onClick: onClose,
-      type: 'button' as const,
-      disabled: !closable,
-    });
-  }
+  const chipActions = getChipActions(actions, onClose, closable);
 
   const showInnerTooltip = () => {
     setTooltipVisible(true);
@@ -303,70 +416,25 @@ const Chip = ({
   const isClickable = (onClick || onDoubleClick) && !disabled;
   const isDisabled = !!disabled;
 
-  const chipStyle: React.CSSProperties = {
-    ...getChipColorVars(backgroundColor),
-    maxWidth: maxWidth || 'fit-content',
-    minWidth: maxWidth ? '0' : 'max-content',
-    gap: SIZES[size].spacing,
-    padding: `calc(${SIZES[size].spacing} / 4) calc(${SIZES[size].spacing} / 2)`,
-    backgroundColor: `var(--chip-bg)`,
-    ...rest.style,
-  };
+  const { chipStyle, contentStyle } = getChipStyles({
+    backgroundColor,
+    maxWidth,
+    size,
+    style: rest.style,
+  });
 
-  const contentStyle: React.CSSProperties = {
-    gap: SIZES[size].spacing,
-    minWidth: maxWidth ? '0' : 'fit',
-  };
-
-  const labelItems = (
-    <>
-      {keyLabel && (
-        <div className={styles.label} style={{ width: 'auto' }}>
-          <ds-text
-            as="span"
-            weight="regular"
-            size={SIZES[size].font}
-            color={error ? 'gray6' : color}
-            disabled={!!disabled}
-          >
-            {keyLabel}
-          </ds-text>
-        </div>
-      )}
-      {label && (
-        <div
-          className={styles.label}
-          style={{
-            width: 'fit',
-            flexShrink: maxWidth ? 1 : 0,
-            minWidth: 0,
-          }}
-          onMouseEnter={showLabelTooltip}
-          onMouseLeave={hideLabelTooltip}
-          onFocus={showLabelTooltip}
-          onBlur={hideLabelTooltip}
-        >
-          <Tooltip
-            label={(typeof label === 'string' && label) || ''}
-            maxWidth="100%"
-            disabled={!maxWidth || typeof label !== 'string'}
-            overflowTooltip
-            placement={tooltipPlacement}
-          >
-            <ds-text
-              as="span"
-              weight="light"
-              size={SIZES[size].font}
-              color={error ? 'gray6' : color}
-              disabled={!!disabled}
-            >
-              {typeof label === 'string' ? label : <Row wrap="nowrap">{label}</Row>}
-            </ds-text>
-          </Tooltip>
-        </div>
-      )}
-    </>
-  );
+  const labelItems = renderLabelItems({
+    keyLabel,
+    label,
+    maxWidth,
+    size,
+    error,
+    color,
+    disabled,
+    tooltipPlacement,
+    showLabelTooltip,
+    hideLabelTooltip,
+  });
 
   const hasActions = actionItems.length > 0;
 
@@ -390,22 +458,14 @@ const Chip = ({
   );
 
   const hasClickHandlers = !!(onClick ?? onDoubleClick);
+  const tooltipProps = getChipTooltipProps({ error, disabled, tooltipVisible });
 
   // A clickable chip with actions cannot be a single <button>, because the
   // action buttons would end up nested inside it (invalid HTML). Only the
   // label area becomes the clickable button; the actions stay its siblings.
   if (hasClickHandlers && hasActions) {
     return (
-      <Tooltip
-        disabled={
-          ((typeof error !== 'string' || !error) && (typeof disabled !== 'string' || !disabled)) ||
-          tooltipVisible
-        }
-        label={
-          (typeof error === 'string' && error) || (typeof disabled === 'string' && disabled) || ''
-        }
-        placement={tooltipPlacement}
-      >
+      <Tooltip {...tooltipProps} placement={tooltipPlacement}>
         <div
           {...rest}
           data-testid="chip"
@@ -437,16 +497,7 @@ const Chip = ({
 
   if (hasClickHandlers) {
     return (
-      <Tooltip
-        disabled={
-          ((typeof error !== 'string' || !error) && (typeof disabled !== 'string' || !disabled)) ||
-          tooltipVisible
-        }
-        label={
-          (typeof error === 'string' && error) || (typeof disabled === 'string' && disabled) || ''
-        }
-        placement={tooltipPlacement}
-      >
+      <Tooltip {...tooltipProps} placement={tooltipPlacement}>
         <button
           type="button"
           // ChipProps extends the div-based RowProps; the extra props are
@@ -471,16 +522,7 @@ const Chip = ({
   }
 
   return (
-    <Tooltip
-      disabled={
-        ((typeof error !== 'string' || !error) && (typeof disabled !== 'string' || !disabled)) ||
-        tooltipVisible
-      }
-      label={
-        (typeof error === 'string' && error) || (typeof disabled === 'string' && disabled) || ''
-      }
-      placement={tooltipPlacement}
-    >
+    <Tooltip {...tooltipProps} placement={tooltipPlacement}>
       <div
         {...rest}
         data-testid="chip"
