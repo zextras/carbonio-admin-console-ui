@@ -631,7 +631,7 @@ describe('CreateAccount OTP Step (browser)', () => {
     await fillDetailsAndCreate();
 
     await page.getByRole('switch', { name: 'Create OTP code' }).click();
-    await page.getByRole('button', { name: 'CLOSE', exact: true }).click();
+    await page.getByRole('button', { name: 'NEXT', exact: true }).click();
 
     await expect.element(page.getByText('OTPSECRET123456')).toBeVisible();
     await expect.element(page.getByText('12345678')).toBeVisible();
@@ -684,7 +684,7 @@ describe('CreateAccount OTP Step (browser)', () => {
     await fillDetailsAndCreate();
 
     await page.getByRole('switch', { name: 'Add Administration rights' }).click();
-    await page.getByRole('button', { name: 'CLOSE', exact: true }).click();
+    await page.getByRole('button', { name: 'NEXT', exact: true }).click();
 
     expect(wizardProps.setShowCreateAccountView).toHaveBeenCalledWith(false);
     expect(wizardProps.openDetailView).toHaveBeenCalledWith(

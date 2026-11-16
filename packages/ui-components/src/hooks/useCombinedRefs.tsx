@@ -4,11 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { useEffect, useRef } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 
 function useCombinedRefs<T>(...refs: Array<React.Ref<T> | undefined>): React.RefObject<T | null> {
 	const targetRef = useRef<T>(null);
-	useEffect(() => {
+	useLayoutEffect(() => {
 		refs.forEach((ref) => {
 			if (!ref) return;
 

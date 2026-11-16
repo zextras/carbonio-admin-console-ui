@@ -1,12 +1,10 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /*
  * SPDX-FileCopyrightText: 2022 Zextras <https://www.zextras.com>
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { map } from 'lodash-es';
-import React, { FC, useMemo } from 'react';
+import React, { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { Button } from '../basic/button/button';
@@ -28,24 +26,22 @@ const StepNavigator: FC<{
   canGoToStep: any;
   isFirstStep: any;
 }> = ({ step, isDone, isActive, isLastStep, onClick, stepIndex, currentStepIndex, steps }) => {
-  const color = useMemo(() => {
-    if (isActive) return 'primary';
-    return isDone ? 'secondary' : 'gray1';
-  }, [isActive, isDone]);
+  let color: string;
+  if (isActive) {
+    color = 'primary';
+  } else {
+    color = isDone ? 'secondary' : 'gray1';
+  }
 
-  const renderElement = useMemo(
-    () =>
-      !!(
-        (currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
-        (currentStepIndex === steps.length - 1 &&
-          (stepIndex === steps.length - 1 ||
-            stepIndex === steps.length - 2 ||
-            stepIndex === steps.length - 3)) ||
-        currentStepIndex === stepIndex ||
-        currentStepIndex === stepIndex + 1 ||
-        currentStepIndex === stepIndex - 1
-      ),
-    [currentStepIndex, stepIndex],
+  const renderElement = !!(
+    (currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
+    (currentStepIndex === steps.length - 1 &&
+      (stepIndex === steps.length - 1 ||
+        stepIndex === steps.length - 2 ||
+        stepIndex === steps.length - 3)) ||
+    currentStepIndex === stepIndex ||
+    currentStepIndex === stepIndex + 1 ||
+    currentStepIndex === stepIndex - 1
   );
 
   return (
@@ -136,78 +132,56 @@ export const HorizontalWizardLayout = ({
   activeRef,
 }: Props): React.ReactElement => {
   const { t } = useTranslation();
-  const stepsToRender = useMemo(
-    () =>
-      map(steps, (step, stepIndex) => {
-        const isDone = stepIndex < currentStepIndex;
-        const isActive = currentStep === step.name;
+  const stepsToRender = steps.map((step, stepIndex) => {
+    const isDone = stepIndex < currentStepIndex;
+    const isActive = currentStep === step.name;
 
-        const renderElement = (): any =>
-          !!(
-            (currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
-            (currentStepIndex === steps.length - 1 &&
-              (stepIndex === steps.length - 1 ||
-                stepIndex === steps.length - 2 ||
-                stepIndex === steps.length - 3)) ||
-            currentStepIndex === stepIndex ||
-            currentStepIndex === stepIndex + 1 ||
-            currentStepIndex === stepIndex - 1
-          );
+    const renderElement = (): any =>
+      !!(
+        (currentStepIndex === 0 && (stepIndex === 0 || stepIndex === 1 || stepIndex === 2)) ||
+        (currentStepIndex === steps.length - 1 &&
+          (stepIndex === steps.length - 1 ||
+            stepIndex === steps.length - 2 ||
+            stepIndex === steps.length - 3)) ||
+        currentStepIndex === stepIndex ||
+        currentStepIndex === stepIndex + 1 ||
+        currentStepIndex === stepIndex - 1
+      );
 
-        return (
-          <Row
-            key={step.name}
-            height="auto"
-            minWidth={renderElement() ? '120px' : '50px'}
-            minHeight="50px"
-          >
-            <StepNavigator
-              step={step}
-              isDone={isDone}
-              isActive={isActive}
-              isLastStep={stepIndex === steps.length - 1}
-              onClick={(): any =>
-                !step.clickDisabled &&
-                !isActive &&
-                (isDone ? goToStep(step.name) : (canGoNext() && goNext()) || goToStep(step.name))
-              }
-              goToStep={goToStep}
-              goNext={goNext}
-              canGoToStep={canGoToStep}
-              stepIndex={stepIndex}
-              currentStepIndex={currentStepIndex}
-              isFirstStep={isFirstStep}
-              steps={steps}
-            />
-          </Row>
-        );
-      }),
-    [
-      steps,
-      currentStepIndex,
-      currentStep,
-      goToStep,
-      goNext,
-      canGoToStep,
-      getData,
-      onSelection,
-      title,
-      setCompleteLoading,
-      activeRef,
-      onComplete,
-      canGoNext,
-      externalData,
-    ],
-  );
+    return (
+      <Row
+        key={step.name}
+        height="auto"
+        minWidth={renderElement() ? '120px' : '50px'}
+        minHeight="50px"
+      >
+        <StepNavigator
+          step={step}
+          isDone={isDone}
+          isActive={isActive}
+          isLastStep={stepIndex === steps.length - 1}
+          onClick={(): any =>
+            !step.clickDisabled &&
+            !isActive &&
+            (isDone ? goToStep(step.name) : (canGoNext() && goNext()) || goToStep(step.name))
+          }
+          goToStep={goToStep}
+          goNext={goNext}
+          canGoToStep={canGoToStep}
+          stepIndex={stepIndex}
+          currentStepIndex={currentStepIndex}
+          isFirstStep={isFirstStep}
+          steps={steps}
+        />
+      </Row>
+    );
+  });
 
-  const [NextButton, PrevButton, CancelButton] = useMemo(
-    () => [
-      steps[currentStepIndex].NextButton || Button,
-      steps[currentStepIndex].PrevButton || Button,
-      steps[currentStepIndex].CancelButton || Button,
-    ],
-    [currentStepIndex],
-  );
+  const [NextButton, PrevButton, CancelButton] = [
+    steps[currentStepIndex].NextButton || Button,
+    steps[currentStepIndex].PrevButton || Button,
+    steps[currentStepIndex].CancelButton || Button,
+  ];
 
   const wizard = (
     <div ref={activeRef} style={{ overflowY: 'auto', width: '100%' }}>
@@ -221,12 +195,12 @@ export const HorizontalWizardLayout = ({
       </Row>
 
       <div style={{ paddingTop: '16px', paddingBottom: '16px' }}>
-        {map(steps, (step, stepIndex) => {
+        {steps.map((step, stepIndex) => {
           const View = steps[stepIndex].view;
           const isDone = stepIndex < currentStepIndex;
           const isActive = currentStep === step.name;
           return (
-            <Row>
+            <Row key={step.name}>
               {View && isDone && isActive && (
                 <View
                   step={step}

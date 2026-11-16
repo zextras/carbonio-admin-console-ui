@@ -7,7 +7,7 @@
 import '../../web-components/ds-divider';
 
 import { noop } from 'lodash-es';
-import React, { HTMLAttributes, useCallback, useRef } from 'react';
+import React, { HTMLAttributes, useRef } from 'react';
 
 import { CustomModal, CustomModalProps } from './CustomModal';
 import { ModalBody } from './modal-components/ModalBody';
@@ -67,7 +67,7 @@ const Modal = ({
 }: ModalProps) => {
   const modalBodyRef = useRef<HTMLDivElement | null>(null);
 
-  const onCopyClipboard = useCallback(() => copyToClipboard(modalBodyRef.current, window), []);
+  const onCopyClipboard = () => copyToClipboard(modalBodyRef.current, window);
 
   return (
     <CustomModal onClose={onClose} ref={ref} {...rest}>

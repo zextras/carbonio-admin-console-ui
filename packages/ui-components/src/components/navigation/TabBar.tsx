@@ -5,7 +5,7 @@
  */
 
 import { map } from 'lodash-es';
-import React, { HTMLAttributes, useCallback, useMemo } from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { getKeyboardPreset, useKeyboard } from '../../hooks/useKeyboard';
@@ -79,18 +79,15 @@ const DefaultTabBarItem = (
   }: DefaultTabBarItemProps,
   ref?: React.Ref<HTMLDivElement>,
 ) => {
-  const activationCb = useCallback(
-    (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => {
-      if (!item.disabled) {
-        onClick(ev);
-      }
-    },
-    [item.disabled, onClick],
-  );
+  const activationCb = (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent) => {
+    if (!item.disabled) {
+      onClick(ev);
+    }
+  };
 
   const combinedRef = useCombinedRefs<HTMLDivElement>(ref);
 
-  const keyEvents = useMemo(() => getKeyboardPreset('button', activationCb), [activationCb]);
+  const keyEvents = getKeyboardPreset('button', activationCb);
   useKeyboard(combinedRef, keyEvents);
 
   const tabItemClassName = [
@@ -143,13 +140,11 @@ const TabBar = ({
   ref,
   ...rest
 }: TabBarProps) => {
-  const onItemClickCb = useCallback(
+  const onItemClickCb =
     (id: string) =>
-      (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent): void => {
-        onChange(ev, id);
-      },
-    [onChange],
-  );
+    (ev: React.MouseEvent<HTMLDivElement> | KeyboardEvent): void => {
+      onChange(ev, id);
+    };
   return (
     <Container
       ref={ref}

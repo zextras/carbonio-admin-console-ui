@@ -6,7 +6,7 @@
 
 import '../../../web-components/ds-icon';
 
-import React, { useCallback, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { resolveThemeColor } from '../../../theme/theme-utils';
 import { type IconName } from '../../../web-components/icon-registry';
@@ -73,9 +73,13 @@ const Snackbar = ({
   progressBar = true,
   ref,
 }: SnackbarProps) => {
-  const handleClick = useCallback(() => {
-    onActionClick ? onActionClick() : onClose?.();
-  }, [onActionClick, onClose]);
+  const handleClick = () => {
+    if (onActionClick) {
+      onActionClick();
+    } else {
+      onClose?.();
+    }
+  };
 
   const enableTimeout = open && !disableAutoHide && onClose !== undefined;
 

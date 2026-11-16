@@ -5,7 +5,7 @@
  */
 
 import clsx from 'clsx';
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import { Checkbox } from '../inputs/Checkbox';
 import { Row } from '../layout/Row';
@@ -33,40 +33,34 @@ export const DefaultRowFactory = ({
 }: TRowProps): React.JSX.Element => {
   const ckbRef = useRef<HTMLDivElement>(null);
   const trRef = useRef<HTMLTableRowElement>(null);
-  const clickableRow = useMemo(
-    () => (!showCheckbox && row.clickable === undefined) || row.clickable,
-    [showCheckbox, row.clickable],
-  );
+  const clickableRow = (!showCheckbox && row.clickable === undefined) || row.clickable;
 
   const _onChange = (): void => {
-    !clickableRow && onChange(row.id);
+    if (!clickableRow) {
+      onChange(row.id);
+    }
   };
 
-  const onClick = useCallback<React.ReactEventHandler>(
-    (e) => {
+  const onClick: React.ReactEventHandler = (e) => {
+    if (
       showCheckbox &&
-        ckbRef.current &&
-        e.target !== ckbRef.current &&
-        !ckbRef.current.contains(e.target as Node | null) &&
-        row.onClick &&
-        row.onClick(e);
-      clickableRow && onChange(row.id);
-    },
-    [row, onChange, clickableRow, showCheckbox],
-  );
+      ckbRef.current &&
+      e.target !== ckbRef.current &&
+      !ckbRef.current.contains(e.target as Node | null) &&
+      row.onClick
+    ) {
+      row.onClick(e);
+    }
+    if (clickableRow) {
+      onChange(row.id);
+    }
+  };
 
-  const rowData = useMemo(
-    () =>
-      row.columns.map((column, i) => (
-        <td key={i}>{typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}</td>
-      )),
-    [row.columns],
-  );
+  const rowData = row.columns.map((column, i) => (
+    <td key={i}>{typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}</td>
+  ));
 
-  const displayBlockCheckbox = useMemo(
-    () => selected || (selectionMode && multiSelect),
-    [multiSelect, selected, selectionMode],
-  );
+  const displayBlockCheckbox = selected || (selectionMode && multiSelect);
 
   const isClickable =
     row.clickable === true || (typeof row.clickable === 'undefined' && !showCheckbox);
