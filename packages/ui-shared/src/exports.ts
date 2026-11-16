@@ -61,6 +61,19 @@ export type {
 	QuotaSource,
 	UnlimitedComputedLimit,
 } from './services/get-cos-quota';
+export type {
+	LicenseV1Info,
+	LicenseV1MaintenanceStatus,
+	LicenseV1MeteredInfo,
+	LicenseV1PerpetualInfo,
+	LicenseV1RegularInfo,
+	LicenseV1Result,
+	LicenseV1SeatItem,
+	LicenseV1SeatStatus,
+	LicenseV1Status,
+	LicenseV1TrialInfo,
+	LicenseV1Type,
+} from './services/license-info-service';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -177,6 +190,7 @@ import {
 } from './services/get-core-attributes';
 import { getCosQuota } from './services/get-cos-quota';
 import { getDomainInformation } from './services/get-domain-information';
+import { fetchLicenseV1Info } from './services/license-info-service';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
 import {
@@ -274,6 +288,7 @@ export {
   fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
+  fetchLicenseV1Info,
   flushCache,
   FORUM_URL,
   getAccount,

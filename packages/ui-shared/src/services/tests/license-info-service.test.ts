@@ -1,0 +1,206 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+import { createAPIInterceptor } from 'admin-ui-test-utils';
+import { HttpResponse } from 'msw';
+
+import { fetchLicenseV1Info } from '../license-info-service';
+
+describe('fetchLicenseV1Info', () => {
+  describe('regular license', () => {
+    const license = {
+      licenseType: 'regular',
+      status: 'valid',
+      companyName: 'Acme Corp',
+      partner: 'Zextras Partner',
+      orderId: 'ORD-123',
+      carbonioVersion: '25.1.2',
+      activationToken: 'activation-token',
+      startDate: '2026-01-01T00:00:00.000Z',
+      endDate: '2027-01-01T00:00:00.000Z',
+      editions: [{ name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 10 }],
+      addOns: [{ name: 'ActiveSync', status: 'green', assignedSeats: 3, totalSeats: 10 }],
+    };
+
+    it('should return success with the parsed license', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'success', license });
+    });
+  });
+
+  describe('trial license', () => {
+    const license = {
+      licenseType: 'trial',
+      status: 'valid',
+      companyName: 'Acme Corp',
+      partner: 'Zextras Partner',
+      orderId: 'ORD-TRIAL',
+      carbonioVersion: '25.1.2',
+      activationToken: 'activation-token',
+      startDate: '2026-01-01T00:00:00.000Z',
+      endDate: '2026-12-01T00:00:00.000Z',
+      editions: [{ name: 'Workspace', status: 'green', assignedSeats: 2, totalSeats: 5 }],
+      addOns: [],
+    };
+
+    it('should return success with the parsed license', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'success', license });
+    });
+  });
+
+  describe('perpetual license', () => {
+    const license = {
+      licenseType: 'perpetual',
+      status: 'valid',
+      companyName: 'Acme Corp',
+      partner: 'Zextras Partner',
+      orderId: 'ORD-999',
+      carbonioVersion: '25.1.2',
+      activationToken: 'activation-token',
+      startDate: '2026-01-01T00:00:00.000Z',
+      endDate: '2027-01-01T00:00:00.000Z',
+      maxCarbonioVersion: '25.X.X',
+      maintenanceEndDate: '2027-06-30T00:00:00.000Z',
+      maintenanceStatus: 'active',
+      editions: [{ name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 10 }],
+      addOns: [],
+    };
+
+    it('should return success with the maintenance fields', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'success', license });
+    });
+  });
+
+  describe('metered license', () => {
+    const license = {
+      licenseType: 'metered',
+      status: 'valid',
+      companyName: 'Acme Corp',
+      partner: 'Zextras Partner',
+      orderId: 'ORD-456',
+      carbonioVersion: '25.1.2',
+      activationToken: 'activation-token',
+      startDate: '2026-01-01T00:00:00.000Z',
+      endDate: '2027-01-01T00:00:00.000Z',
+      lastValidationCheck: '2026-11-01T00:00:00.000Z',
+      nextValidationDeadline: '2026-11-08T00:00:00.000Z',
+      renewTimeLeft: 123456789,
+      maxTotalSeats: 500,
+      addOns: [{ name: 'ActiveSync', status: 'green', assignedSeats: 3 }],
+      bundles: [{ name: 'Files', assignedSeats: 12 }],
+    };
+
+    it('should return success with bundles, maxTotalSeats and validation dates', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'success', license });
+    });
+  });
+
+  describe('isp license', () => {
+    const license = {
+      licenseType: 'isp',
+      status: 'valid',
+      companyName: 'Acme ISP',
+      partner: 'Zextras Partner',
+      orderId: 'ORD-ISP',
+      carbonioVersion: '25.1.2',
+      activationToken: 'activation-token',
+      startDate: '2026-01-01T00:00:00.000Z',
+      endDate: '2027-01-01T00:00:00.000Z',
+      lastValidationCheck: '2026-11-01T00:00:00.000Z',
+      nextValidationDeadline: '2026-11-08T00:00:00.000Z',
+      renewTimeLeft: 987654321,
+      maxTotalSeats: 1000,
+      addOns: [{ name: 'ActiveSync', status: 'not active', assignedSeats: 0 }],
+      bundles: [{ name: 'Chats', assignedSeats: 40 }],
+    };
+
+    it('should return success with the parsed license', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'success', license });
+    });
+  });
+
+  describe('no license', () => {
+    it('should return no-license on 404', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () =>
+        HttpResponse.json({}, { status: 404 }),
+      );
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'no-license' });
+    });
+  });
+
+  describe('error handling', () => {
+    it('should return an error on 401 without redirecting to login', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () =>
+        HttpResponse.json({}, { status: 401 }),
+      );
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result).toEqual({ type: 'error', error: 'Unauthorized' });
+    });
+
+    it('should return an error on server failure', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () =>
+        HttpResponse.json({}, { status: 500 }),
+      );
+      const failure = await fetchLicenseV1Info();
+      expect(failure.type).toBe('error');
+      if (failure.type !== 'error') return;
+      expect(failure.error).toContain('500');
+
+      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.error());
+      const networkFailure = await fetchLicenseV1Info();
+      expect(networkFailure.type).toBe('error');
+      if (networkFailure.type !== 'error') return;
+      expect(networkFailure.error).toContain('Failed to fetch');
+    });
+
+    it('should return an error when the body is not JSON', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () =>
+        HttpResponse.text('<html>Bad Gateway</html>', { status: 200 }),
+      );
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result.type).toBe('error');
+      if (result.type !== 'error') return;
+      expect(result.error).toMatch(/invalid license payload/i);
+    });
+
+    it('should return an error for an unknown licenseType', async () => {
+      createAPIInterceptor('get', '/license/v1/info', () =>
+        HttpResponse.json({ licenseType: 'quantum', status: 'valid' }),
+      );
+
+      const result = await fetchLicenseV1Info();
+
+      expect(result.type).toBe('error');
+      if (result.type !== 'error') return;
+      expect(result.error).toMatch(/invalid license payload/i);
+    });
+  });
+});
