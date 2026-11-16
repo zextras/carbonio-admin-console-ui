@@ -4,33 +4,33 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Container } from '@zextras/ui-components';
-
 function findAttrContent(item: any, name: string): string | undefined {
 	return item?.a?.find((attribute: any) => attribute?.n === name)?._content;
 }
 
 type CellProps = {
-	cellKey: string;
 	weight: 'regular' | 'light';
 	onCellClick: (e: { stopPropagation: () => void }) => void;
 	children: string | undefined;
 };
 
-const DistributionListCell = ({ cellKey, weight, onCellClick, children }: CellProps) => (
-	<Container
-		crossAlignment="flex-start"
-		key={cellKey}
-		style={{ cursor: 'pointer' }}
+/**
+ * Rendered straight into the table cell (no flex wrapper) so the block-level ds-text takes the
+ * fixed column width and truncates with an ellipsis instead of spilling into the next column.
+ */
+const DistributionListCell = ({ weight, onCellClick, children }: CellProps) => (
+	<ds-text
+		as="span"
+		size="small"
+		weight={weight}
+		color="gray0"
 		onClick={(e: { stopPropagation: () => void }): void => {
 			e.stopPropagation();
 			onCellClick(e);
 		}}
 	>
-		<ds-text as="span" size="small" weight={weight} color="gray0">
-			{children}
-		</ds-text>
-	</Container>
+		{children || '\u00a0'}
+	</ds-text>
 );
 
 export type BuildDistributionListRowDeps = {
@@ -49,7 +49,6 @@ export function buildDistributionListRow(item: any, deps: BuildDistributionListR
 		columns: [
 			<DistributionListCell
 				key={`${item?.id}-display-child`}
-				cellKey={item?.id}
 				weight="regular"
 				onCellClick={onCellClick}
 			>
@@ -57,7 +56,6 @@ export function buildDistributionListRow(item: any, deps: BuildDistributionListR
 			</DistributionListCell>,
 			<DistributionListCell
 				key={`${item?.id}-address-child`}
-				cellKey={`${item?.id}-address`}
 				weight="light"
 				onCellClick={onCellClick}
 			>
@@ -65,7 +63,6 @@ export function buildDistributionListRow(item: any, deps: BuildDistributionListR
 			</DistributionListCell>,
 			<DistributionListCell
 				key={`${item?.id}-status-child`}
-				cellKey={`${item?.id}-status`}
 				weight="light"
 				onCellClick={onCellClick}
 			>
@@ -75,7 +72,6 @@ export function buildDistributionListRow(item: any, deps: BuildDistributionListR
 			</DistributionListCell>,
 			<DistributionListCell
 				key={`${item?.id}-dynamic-child`}
-				cellKey={`${item?.id}-dynamic`}
 				weight="light"
 				onCellClick={onCellClick}
 			>
@@ -83,7 +79,6 @@ export function buildDistributionListRow(item: any, deps: BuildDistributionListR
 			</DistributionListCell>,
 			<DistributionListCell
 				key={`${item?.id}-gal-child`}
-				cellKey={`${item?.id}-gal`}
 				weight="light"
 				onCellClick={onCellClick}
 			>
@@ -91,7 +86,6 @@ export function buildDistributionListRow(item: any, deps: BuildDistributionListR
 			</DistributionListCell>,
 			<DistributionListCell
 				key={`${item?.id}-description-child`}
-				cellKey={`${item?.id}-description`}
 				weight="light"
 				onCellClick={onCellClick}
 			>

@@ -48,20 +48,25 @@ type ResourceTableCellProps = {
   children: React.ReactNode;
 };
 
-/** Module-level cell so table rows do not define components inside DomainResources (S6478). */
+/**
+ * Module-level cell so table rows do not define components inside DomainResources (S6478).
+ * Rendered straight into the table cell (no flex wrapper) so the block-level ds-text takes the
+ * fixed column width and truncates with an ellipsis instead of spilling into the next column.
+ */
 function ResourceTableCell({ onActivate, children }: Readonly<ResourceTableCellProps>) {
   return (
-    <Container
-      crossAlignment="flex-start"
+    <ds-text
+      as="span"
+      size="small"
+      weight="light"
+      color="gray0"
       onClick={(e: { stopPropagation: () => void; detail: number }) => {
         e.stopPropagation();
         onActivate(e.detail);
       }}
     >
-      <ds-text as="span" size="small" weight="light" color="gray0">
-        {children}
-      </ds-text>
-    </Container>
+      {children || '\u00a0'}
+    </ds-text>
   );
 }
 
