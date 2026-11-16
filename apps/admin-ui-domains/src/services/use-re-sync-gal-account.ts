@@ -27,7 +27,7 @@ export function useReSyncGalAccount() {
         targets.map(({ accountId, dataSourceId }) => reSyncGalAccount(accountId, dataSourceId)),
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       createSnackbar({
         key: 'success',
         severity: 'success',
