@@ -6,7 +6,7 @@
 
 import type { RowSelectionState } from '@tanstack/react-table';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useDataTable } from '../create-data-table';
@@ -64,7 +64,7 @@ function JobHarness({ job, onCancel, onRetryFailed, onDismiss, onTable }: JobHar
     (state) => state.rowSelection,
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onTable(table);
   }, [table, onTable]);
 

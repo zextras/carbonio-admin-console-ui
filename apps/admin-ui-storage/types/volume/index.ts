@@ -192,8 +192,8 @@ export type CreateS3ConnectorRequest = {
   label: string;
   region: string;
   url?: string;
-  accessKey: string;
-  secret: string;
+  accessKey?: string;
+  secret?: string;
   destinationPath?: string;
   insecureHttps?: boolean;
   notes?: string;

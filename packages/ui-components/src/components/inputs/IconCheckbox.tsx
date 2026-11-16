@@ -6,7 +6,7 @@
 
 import '../../web-components/ds-icon';
 
-import { useCallback, useMemo, useRef } from 'react';
+import { useRef } from 'react';
 
 import { useCheckbox } from '../../hooks/useCheckbox';
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
@@ -53,9 +53,9 @@ const IconCheckbox = ({
 
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const onClick = useCallback(() => {
+  const onClick = () => {
     onChange?.();
-  }, [onChange]);
+  };
 
   const checked = useCheckbox({
     ref: containerRef,
@@ -66,36 +66,30 @@ const IconCheckbox = ({
     onChange,
   });
 
-  const iconSize = useMemo(() => (size === 'small' ? 'medium' : 'large'), [size]);
+  const iconSize = size === 'small' ? 'medium' : 'large';
 
-  const iconWrapperStyle = useMemo(
-    () =>
-      ({
-        '--icon-wrapper-radius': borderRadius === 'regular' ? 'var(--border-radius)' : '50%',
-        '--icon-wrapper-bg': checked ? resolveThemeColor('primary', 'regular') : 'transparent',
-        '--icon-wrapper-bg-hover': checked
-          ? resolveThemeColor('primary', 'hover')
-          : resolveThemeColor('transparent', 'hover'),
-        '--icon-wrapper-bg-focus': checked
-          ? resolveThemeColor('primary', 'focus')
-          : resolveThemeColor('transparent', 'focus'),
-        '--icon-wrapper-bg-active': checked
-          ? resolveThemeColor('primary', 'active')
-          : resolveThemeColor('transparent', 'active'),
-        '--icon-wrapper-bg-disabled': checked
-          ? resolveThemeColor('primary', 'disabled')
-          : resolveThemeColor('transparent', 'disabled'),
-        '--icon-fill': checked ? resolveThemeColor('gray6', 'regular') : 'currentColor',
-        '--icon-fill-hover': checked
-          ? resolveThemeColor('gray6', 'hover')
-          : resolveThemeColor('primary', 'hover'),
-        '--icon-fill-focus': checked
-          ? resolveThemeColor('gray6', 'focus')
-          : resolveThemeColor('primary', 'focus'),
-        '--icon-fill-disabled': checked ? resolveThemeColor('gray6', 'disabled') : 'currentColor',
-      } as React.CSSProperties),
-    [borderRadius, checked],
-  );
+  const iconWrapperStyle = {
+    '--icon-wrapper-radius': borderRadius === 'regular' ? 'var(--border-radius)' : '50%',
+    '--icon-wrapper-bg': checked ? resolveThemeColor('primary', 'regular') : 'transparent',
+    '--icon-wrapper-bg-hover': checked
+      ? resolveThemeColor('primary', 'hover')
+      : resolveThemeColor('transparent', 'hover'),
+    '--icon-wrapper-bg-focus': checked
+      ? resolveThemeColor('primary', 'focus')
+      : resolveThemeColor('transparent', 'focus'),
+    '--icon-wrapper-bg-active': checked
+      ? resolveThemeColor('primary', 'active')
+      : resolveThemeColor('transparent', 'active'),
+    '--icon-wrapper-bg-disabled': checked
+      ? resolveThemeColor('primary', 'disabled')
+      : resolveThemeColor('transparent', 'disabled'),
+    '--icon-fill': checked ? resolveThemeColor('gray6', 'regular') : 'currentColor',
+    '--icon-fill-hover': checked ? resolveThemeColor('gray6', 'hover') : resolveThemeColor('primary', 'hover'),
+    '--icon-fill-focus': checked
+      ? resolveThemeColor('gray6', 'focus')
+      : resolveThemeColor('primary', 'focus'),
+    '--icon-fill-disabled': checked ? resolveThemeColor('gray6', 'disabled') : 'currentColor',
+  } as React.CSSProperties;
 
   const iconWrapperClassName = `${styles.iconWrapper} ${disabled ? styles.disabled : ''}`;
 

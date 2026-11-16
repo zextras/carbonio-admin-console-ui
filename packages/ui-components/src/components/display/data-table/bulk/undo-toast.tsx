@@ -43,6 +43,7 @@ export const DataTableUndoToast = ({
 }: DataTableUndoToastProps) => {
   const { t } = useTranslation();
   const [left, setLeft] = useState(durationSeconds);
+  const leftRef = useRef(durationSeconds);
   const hoveredRef = useRef(false);
   const focusedRef = useRef(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
@@ -65,7 +66,15 @@ export const DataTableUndoToast = ({
       if (hoveredRef.current || focusedRef.current) {
         return;
       }
-      setLeft((value) => Math.max(0, value - 1));
+      leftRef.current = Math.max(0, leftRef.current - 1);
+      setLeft(leftRef.current);
+      if (leftRef.current === 0) {
+        if (intervalRef.current !== null) {
+          globalThis.clearInterval(intervalRef.current);
+          intervalRef.current = null;
+        }
+        onExpireRef.current();
+      }
     }, 1000);
     return () => {
       if (intervalRef.current !== null) {
@@ -74,17 +83,6 @@ export const DataTableUndoToast = ({
       }
     };
   }, []);
-
-  useEffect(() => {
-    if (left > 0) {
-      return;
-    }
-    if (intervalRef.current !== null) {
-      globalThis.clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-    onExpireRef.current();
-  }, [left]);
 
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent): void {

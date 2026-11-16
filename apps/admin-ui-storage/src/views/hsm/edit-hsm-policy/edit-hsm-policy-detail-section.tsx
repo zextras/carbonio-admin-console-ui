@@ -427,6 +427,7 @@ export function EditHsmPolicyDetailSection() {
               color="error"
               icon="Trash2Outline"
               size="large"
+              aria-label={t('label.delete', 'Delete')}
               onClick={onDeletePolicy}
               disabled={selectedPolicies.length === 0}
             />

@@ -58,8 +58,12 @@ describe('BackupAdvanced', () => {
     it('should render all input fields', async () => {
       await setupBrowserTest(<BackupAdvanced />, { queryClient });
 
-      await expect.element(page.getByText(/Latency High Threshold/)).toBeVisible();
-      await expect.element(page.getByText(/Latency Low Threshold/)).toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: /^Latency High Threshold \(ms\)/ }))
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('textbox', { name: /^Latency Low Threshold \(ms\)/ }))
+        .toBeVisible();
       await expect
         .element(page.getByRole('textbox', { name: 'Metadata Size' }))
         .toBeVisible();

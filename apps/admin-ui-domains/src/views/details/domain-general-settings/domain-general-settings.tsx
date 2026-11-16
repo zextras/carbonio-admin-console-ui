@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, FormPageLayout } from '@zextras/ui-components';
+import { FormPageLayout } from '@zextras/ui-components';
 import { useCosList, useIsAdvanced, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
@@ -22,6 +22,7 @@ import { useSelectedDomain } from '../../../hooks/use-selected-domain';
 import { useDomainQuota } from '../../../services/use-domain-quota';
 import { BytesToGB, getDateFromStr, getFormatedDate } from '../../utility/utils';
 import { DomainCosLink } from './domain-cos-link';
+import styles from './domain-general-settings.module.css';
 import type { DomainGeneralSettingsFormValues } from './schema';
 import { DomainBasicsSection } from './sections/domain-basics-section';
 import { DomainDeleteSection } from './sections/domain-delete-section';
@@ -89,13 +90,7 @@ export const DomainGeneralSettings = () => {
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
 
   return (
-    <Container
-      height="calc(100vh - 105px)"
-      background="gray6"
-      crossAlignment="flex-start"
-      mainAlignment="flex-start"
-      style={{ overflowY: 'auto' }}
-    >
+    <div className={styles.page}>
       <FormPageLayout
         title={t('label.general_settings', 'General Settings')}
         unsavedChanges={isDirty}
@@ -133,7 +128,7 @@ export const DomainGeneralSettings = () => {
           closedStatusValue={CLOSED}
         />
       </FormPageLayout>
-    </Container>
+    </div>
   );
 };
 

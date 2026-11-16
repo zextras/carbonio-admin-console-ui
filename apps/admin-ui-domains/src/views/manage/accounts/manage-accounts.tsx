@@ -525,6 +525,7 @@ export const ManageAccounts = () => {
 							<Button
 								color="primary"
 								icon="Plus"
+								aria-label={t('label.create_account', 'Create account')}
 								onClick={(): void => setShowCreateAccountView(true)}
 							/>
 						</div>

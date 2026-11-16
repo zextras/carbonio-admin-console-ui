@@ -14,7 +14,7 @@ export * from './theme/theme';
 export * from './web-components';
 export { type IconName } from './web-components/icon-registry';
 /** Basic components */
-export * from './components/basic/button/Button';
+export * from './components/basic/button/button';
 export * from './components/basic/copy-to-clipboard-button/copy-to-clipboard-button';
 export * from './components/basic/Link';
 
@@ -160,9 +160,7 @@ export {
   DataTableUndoToast,
   type DataTableUndoToastProps,
 } from './components/display/data-table/bulk/undo-toast';
-export {
-  DataTableQuotaBar,
-} from './components/display/data-table/cell-ui/quota-bar';
+export { DataTableQuotaBar } from './components/display/data-table/cell-ui/quota-bar';
 export {
   DataTableStatusBadge,
   type DataTableStatusBadgeVariant,
@@ -219,7 +217,10 @@ export {
   type DashboardBannerAction,
   type DashboardBannerProps,
 } from './components/feedback/dashboard-banner/dashboard-banner';
-export { LicenseBanner, type LicenseBannerProps } from './components/feedback/license-banner/license-banner';
+export {
+  LicenseBanner,
+  type LicenseBannerProps,
+} from './components/feedback/license-banner/license-banner';
 export * from './components/feedback/Modal';
 export * from './components/feedback/quota/Quota';
 export * from './components/feedback/snackbar/Snackbar';

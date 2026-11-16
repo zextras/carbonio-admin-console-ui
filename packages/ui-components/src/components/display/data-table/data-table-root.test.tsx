@@ -5,7 +5,7 @@
  */
 
 import { act, fireEvent, render, screen, within } from '@testing-library/react';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { DataTableBulkBar } from './bulk/bulk-bar';
@@ -182,7 +182,7 @@ const pagedRows: Array<TestRow> = Array.from({ length: 12 }, (_, index) => ({
 
 function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
   const store = useTableUiStore();
-  useEffect(() => {
+  useLayoutEffect(() => {
     onStore(store);
   }, [store, onStore]);
   return null;

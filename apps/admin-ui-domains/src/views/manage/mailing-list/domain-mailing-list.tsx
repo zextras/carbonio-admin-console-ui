@@ -101,6 +101,7 @@ export const DomainMailingList: FC = () => {
                 <Button
                   color="primary"
                   icon="Plus"
+                  aria-label={t('label.create_mailing_list', 'Create mailing list')}
                   onClick={(): void => setShowCreateMailingListView(true)}
                 />
               </Padding>

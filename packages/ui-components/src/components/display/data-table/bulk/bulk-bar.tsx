@@ -8,7 +8,7 @@ import type { RowData, RowSelectionState } from '@tanstack/react-table';
 import { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../../../basic/button/Button';
+import { Button } from '../../../basic/button/button';
 import styles from '../data-table.module.css';
 import { useDataTableContext } from '../data-table-contexts';
 import type { DataTableBulkAction, DataTableBulkJobState } from '../models/types';

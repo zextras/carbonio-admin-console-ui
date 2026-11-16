@@ -19,7 +19,7 @@ import {
 import { createPortal } from 'react-dom';
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../../../basic/button/Button';
+import { Button } from '../../../basic/button/button';
 import { Select, type SelectItem } from '../../../inputs/select';
 import styles from '../data-table.module.css';
 import {
@@ -258,13 +258,7 @@ const FiltersPanel = ({
           label={clearDraftLabel}
           onClick={onClearDraft}
         />
-        <Button
-          type="default"
-          color="primary"
-          width="fill"
-          label={applyLabel}
-          onClick={onApply}
-        />
+        <Button type="default" color="primary" width="fill" label={applyLabel} onClick={onApply} />
       </div>
     </dialog>
   );

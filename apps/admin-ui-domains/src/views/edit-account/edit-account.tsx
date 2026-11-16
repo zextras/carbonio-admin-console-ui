@@ -204,6 +204,7 @@ export const EditAccount = ({
               type="ghost"
               color={'text'}
               icon="CloseOutline"
+              aria-label={t('label.close', 'Close')}
               onClick={handleClose}
             />
           </div>

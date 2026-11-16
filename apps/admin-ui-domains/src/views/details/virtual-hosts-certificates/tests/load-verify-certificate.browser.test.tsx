@@ -122,7 +122,7 @@ describe('LoadAndVerifyCert (browser)', () => {
       const verifyBtn = page.getByRole('button', { name: /verify/i });
       await verifyBtn.click();
 
-      await expect.element(page.getByRole('status')).toBeVisible();
+      await expect.element(verifyBtn).toHaveAttribute('aria-busy', 'true');
     });
 
     it('uploads the certificate after a successful verification', async () => {

@@ -6,7 +6,7 @@
 
 import { useTranslation } from 'react-i18next';
 
-import { Button } from '../../../basic/button/Button';
+import { Button } from '../../../basic/button/button';
 import styles from '../data-table.module.css';
 import type { DataTableFilterChip } from '../models/types';
 
@@ -109,7 +109,7 @@ export const DataTableFilterChips = ({
           return (
             <li key={chip.key} className={styles.filterChip}>
               <span>{displayLabel}</span>
-                              <button
+              <button
                 type="button"
                 className={styles.filterChipRemove}
                 aria-label={t('data_table.remove_filter', 'Remove filter: {{label}}', {

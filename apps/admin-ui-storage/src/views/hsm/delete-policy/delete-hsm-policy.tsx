@@ -22,8 +22,16 @@ const CopyActionContext = createContext<{ onCopy: () => void }>({ onCopy: () => 
 
 function CopyPolicyIcon() {
 	const { onCopy } = useContext(CopyActionContext);
+	const { t } = useTranslation();
 	return (
-		<Button type="ghost" color={'grey'} icon="CopyOutline" size="large" onClick={onCopy} />
+		<Button
+			type="ghost"
+			color={'grey'}
+			icon="CopyOutline"
+			size="large"
+			aria-label={t('label.copy', 'Copy')}
+			onClick={onCopy}
+		/>
 	);
 }
 
