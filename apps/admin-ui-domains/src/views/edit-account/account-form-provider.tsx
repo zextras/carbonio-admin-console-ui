@@ -202,8 +202,6 @@ export function useAccountFormProvider({
   const userSetting = useUserSettings();
   const currentUser = useUserAccount();
   const [isSaving, setIsSaving] = useState(false);
-  const [folderList, setFolderList] = useState<Array<any>>([]);
-  const [folderListSeed, setFolderListSeed] = useState<Array<any> | undefined>(undefined);
   const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
 
   const { data: accountDetailData } = useAccountDetail(account.id);
@@ -392,12 +390,6 @@ export function useAccountFormProvider({
   });
   const allowedDeletePassword = !!deletePasswordRight?.allow;
 
-  const grantsFolderList = grants?.folderList;
-  if (grantsFolderList !== folderListSeed) {
-    setFolderListSeed(grantsFolderList);
-    setFolderList(grantsFolderList ?? []);
-  }
-
   const resetToSaved = (): void => {
     form.reset(baseline?.values ?? {}, { keepDefaultValues: true });
   };
@@ -416,8 +408,6 @@ export function useAccountFormProvider({
     otpList: otps ?? [],
     credentialList: credentials ?? [],
     identitiesList: grants?.identitiesList ?? [],
-    folderList,
-    setFolderList,
     deligateDetail,
     setDeligateDetail,
     sessions,

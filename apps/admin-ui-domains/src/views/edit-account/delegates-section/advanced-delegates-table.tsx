@@ -54,7 +54,7 @@ export const AdvancedDelegatesTable = ({
 }: AdvancedDelegatesTableProps) => {
 	const [t] = useTranslation();
 	const createSnackbar = useSnackbar();
-	const { form, folderList, deligateDetail, setDeligateDetail } = useAccountForm();
+	const { form, deligateDetail, setDeligateDetail } = useAccountForm();
 	const accountDetail = useSelector(form.store, (s) => s.values as Record<string, any>);
 	const batchDelegates = useBatchDelegates(accountDetail?.zimbraId);
 
@@ -106,7 +106,6 @@ export const AdvancedDelegatesTable = ({
 		setEditMode(true);
 		setDeligateDetail({
 			...selectedIdentity,
-			folderSelection: selectedIdentity.folder?.length ? 'all_folders' : '',
 			delegeteRights: getDelegateRightsType(selectedIdentity),
 		});
 		setShowCreateIdentity(true);
@@ -183,16 +182,9 @@ export const AdvancedDelegatesTable = ({
 			rightsType === MANAGE_NO_SEND ||
 			rightsType === SEND_READ_MANAGE_MAILS
 		) {
-			const selectedFolderIds = folderList
-				.filter((entry: any) => entry.selected)
-				.map((obj: any) => obj.id);
-
 			folderUsrRights.push(
 				buildFolderGrant({
-					folderIds:
-						deligateDetail?.folderSelection === 'i_want_to_select' && selectedFolderIds.length > 0
-							? selectedFolderIds.join(',')
-							: '1',
+					folderIds: '1',
 					granteeType: grantee?.type,
 					granteeName: grantee?.name,
 					perm: rightsType === READ_MAILS_ONLY || rightsType === SEND_READ_MAILS ? 'r' : 'rwidxa',

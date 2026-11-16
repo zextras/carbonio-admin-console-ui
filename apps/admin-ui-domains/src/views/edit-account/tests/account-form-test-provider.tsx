@@ -27,7 +27,6 @@ export const AccountFormTestProvider = ({
     defaultValues: values,
     onSubmit: async () => {},
   });
-  const [folderList, setFolderList] = useState<Array<any>>([]);
   const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
   const contextValue: AccountFormContextValue = {
     form,
@@ -45,8 +44,6 @@ export const AccountFormTestProvider = ({
     otpList: [],
     credentialList: [],
     identitiesList: [],
-    folderList,
-    setFolderList,
     deligateDetail,
     setDeligateDetail,
     sessions: [],

@@ -24,7 +24,6 @@ describe('mergeFolderGrants', () => {
     const existing = [{ grantee: [{ id: 'z9', name: 'other@x.com', type: 'usr' }], folder: [] }];
     const result = mergeFolderGrants(folders, existing);
     expect(result.identitiesList).toHaveLength(2);
-    expect(result.folderList).toBe(folders);
   });
 });
 

@@ -60,7 +60,6 @@ function setupTest(
 			}}
 			contextOverrides={{
 				identitiesList: IDENTITIES,
-				folderList: [],
 				refetchGrants: vi.fn(),
 				...contextOverrides,
 			}}

@@ -55,7 +55,6 @@ function mergeAdminGrants(grants: Array<any>): Array<any> {
 }
 
 export type AccountGrants = {
-  folderList: Array<any>;
   identitiesList: Array<any>;
 };
 
@@ -84,7 +83,7 @@ export function mergeFolderGrants(
       }
     });
   });
-  return { folderList: filteredFolders, identitiesList };
+  return { identitiesList };
 }
 
 export const useAccountGrants = (account: { id: string; name: string } | undefined) =>

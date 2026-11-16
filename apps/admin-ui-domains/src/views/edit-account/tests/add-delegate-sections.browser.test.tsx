@@ -9,7 +9,6 @@ import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import {
-	MANAGE_NO_SEND,
 	READ_MAILS_ONLY,
 	SEND_MAILS_ONLY,
 	SEND_READ_MANAGE_MAILS,
@@ -49,9 +48,6 @@ describe('DelegateSetRightsSection (browser)', () => {
 		await expect.element(page.getByText('Delegate`s rights')).toBeVisible();
 		await expect.element(page.getByText('What rights will the delegate have?')).toBeVisible();
 		await expect.element(page.getByText('Sending Options')).not.toBeInTheDocument();
-		await expect
-			.element(page.getByText(/select which folders the delegate can view/i))
-			.not.toBeInTheDocument();
 	});
 
 	it('changing the rights to send-only reveals the sending options radios', async () => {
@@ -66,31 +62,24 @@ describe('DelegateSetRightsSection (browser)', () => {
 		await expect
 			.element(page.getByRole('radio', { name: /recipients will see the sender/i }))
 			.toBeVisible();
-		await expect
-			.element(page.getByText(/select which folders the delegate can view/i))
-			.not.toBeInTheDocument();
 	});
 
-	it('read-only rights reveal the folder section and keep the sending options hidden', async () => {
+	it('read-only rights keep the sending options hidden and offer no folder selection', async () => {
 		setupSection(<DelegateSetRightsSection />);
 
 		await selectRights('Read Mails only (no rights to send mails)');
 
-		await expect
-			.element(page.getByText(/select which folders the delegate can view/i))
-			.toBeVisible();
+		await expect.element(page.getByText('Delegate`s rights')).toBeVisible();
 		await expect.element(page.getByText('Sending Options')).not.toBeInTheDocument();
+		await expect.element(page.getByRole('radio')).not.toBeInTheDocument();
 	});
 
-	it('manage rights reveal both the sending options and the folder section', async () => {
+	it('manage rights reveal the sending options', async () => {
 		setupSection(<DelegateSetRightsSection />);
 
 		await selectRights('Send, Read and Manage Mails (all of the above)');
 
 		await expect.element(page.getByText('Sending Options')).toBeVisible();
-		await expect
-			.element(page.getByText(/select which folders the delegate can view/i))
-			.toBeVisible();
 	});
 
 	it('marks the stored sending option as the checked radio', async () => {
@@ -112,39 +101,6 @@ describe('DelegateSetRightsSection (browser)', () => {
 		await expect
 			.element(page.getByRole('radio', { name: /recipients will see the sender/i }))
 			.toBeVisible();
-	});
-
-	it('checks the all-folders radio when folders were granted on all folders', async () => {
-		setupSection(<DelegateSetRightsSection />, {
-			deligateDetail: {
-				delegeteRights: READ_MAILS_ONLY,
-				folderSelection: 'all_folders',
-			},
-		});
-
-		await expect.element(page.getByRole('radio', { name: /^all folders/i })).toBeChecked();
-		await expect.element(page.getByText('Inbox')).not.toBeInTheDocument();
-	});
-
-	it('lists the selectable folders excluding the root folder', async () => {
-		setupSection(<DelegateSetRightsSection />, {
-			deligateDetail: {
-				delegeteRights: MANAGE_NO_SEND,
-				folderSelection: 'i_want_to_select',
-			},
-			folderList: [
-				{ id: '1', name: 'USER_ROOT', selected: false },
-				{ id: '10', name: 'Inbox', selected: false },
-				{ id: '11', name: 'Drafts', selected: true },
-			],
-		});
-
-		await expect.element(page.getByText('Inbox')).toBeVisible();
-		await expect.element(page.getByText('Drafts')).toBeVisible();
-		await expect.element(page.getByText('USER_ROOT')).not.toBeInTheDocument();
-
-		await page.getByText('Inbox').click();
-		await expect.element(page.getByText('Inbox')).toBeVisible();
 	});
 });
 

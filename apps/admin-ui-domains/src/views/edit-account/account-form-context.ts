@@ -34,8 +34,6 @@ export type AccountFormContextValue = {
   otpList: Array<any>;
   credentialList: Array<any>;
   identitiesList: Array<any>;
-  folderList: Array<any>;
-  setFolderList: React.Dispatch<React.SetStateAction<Array<any>>>;
   deligateDetail: Record<string, any>;
   setDeligateDetail: React.Dispatch<React.SetStateAction<Record<string, any>>>;
   sessions: Array<any>;

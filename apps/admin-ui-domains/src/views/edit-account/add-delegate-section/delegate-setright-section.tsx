@@ -4,14 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useSelector } from '@tanstack/react-store';
-import { Checkbox, Container, Radio, RadioGroup, Row, Select } from '@zextras/ui-components';
-import { cloneDeep } from 'lodash-es';
+import { Container, Radio, RadioGroup, Row, Select } from '@zextras/ui-components';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
-  MANAGE_NO_SEND,
-  READ_MAILS_ONLY,
   SEND_MAILS_ONLY,
   SEND_READ_MAILS,
   SEND_READ_MANAGE_MAILS,
@@ -23,7 +20,7 @@ export const DelegateSetRightsSection: FC = () => {
   const [t] = useTranslation();
   const sendingOption = '';
   const DELEGETES_RIGHTS_TYPE = delegateRightsType(t);
-  const { form, deligateDetail, setDeligateDetail, folderList, setFolderList } = useAccountForm();
+  const { form, deligateDetail, setDeligateDetail } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const accountDetail = values;
 
@@ -31,11 +28,6 @@ export const DelegateSetRightsSection: FC = () => {
     setDeligateDetail((prev: any) => ({ ...prev, delegeteRights: v }));
   };
 
-  const onFolderSelect = (v: any, index: number): any => {
-    const changeFolder = cloneDeep(folderList);
-    changeFolder[index].selected = !changeFolder[index].selected;
-    setFolderList(changeFolder);
-  };
   return (
     <Container
       mainAlignment="flex-start"
@@ -117,73 +109,6 @@ export const DelegateSetRightsSection: FC = () => {
                   iconColor="primary"
                 />
               </RadioGroup>
-            </Row>
-          </Row>
-        </>
-      )}
-      {(deligateDetail?.delegeteRights === READ_MAILS_ONLY ||
-        deligateDetail?.delegeteRights === MANAGE_NO_SEND ||
-        deligateDetail?.delegeteRights === SEND_READ_MAILS ||
-        deligateDetail?.delegeteRights === SEND_READ_MANAGE_MAILS) && (
-        <>
-          <Row mainAlignment="flex-start" width="100%">
-            <Row padding={{ top: 'large' }} width="100%" mainAlignment="space-between">
-              <ds-text size="small" color="gray0" weight="bold" as="h3">
-                {t(
-                  'account_details.select_delegate_folder',
-                  `Select which folders the delegate can view`,
-                )}
-              </ds-text>
-            </Row>
-          </Row>
-          <Row padding={{ top: 'large', left: 'large' }} width="100%" mainAlignment="space-between">
-            <Row width="100%" mainAlignment="flex-start">
-              <Row width="100%" mainAlignment="space-between">
-                <Row width="100%" mainAlignment="space-between">
-                  <RadioGroup value={deligateDetail?.folderSelection || 'all_folders'}>
-                    <Radio
-                      label={t(
-                        'account_details.all_folders',
-                        `All Folders ( it includes also folders that will be created later on)`,
-                      )}
-                      value="all_folders"
-                      width="19rem"
-                      onChange={(): void => {
-                        setDeligateDetail((prev: any) => ({
-                          ...prev,
-                          folderSelection: 'all_folders',
-                        }));
-                      }}
-                      iconColor="primary"
-                    />
-                    <Radio
-                      label={t('account_details.i_want_to_select', `I want to select the Folders`)}
-                      value="i_want_to_select"
-                      width="300px"
-                      style={{ display: 'none' }}
-                      iconColor="primary"
-                    />
-                  </RadioGroup>
-                </Row>
-
-                {deligateDetail?.folderSelection === 'i_want_to_select' && (
-                  <Row width="100%">
-                    {folderList.map(
-                      (ele: any, index) =>
-                        ele.id !== '1' && (
-                          <Row key={ele.id} width="200px">
-                            <Checkbox
-                              defaultChecked={ele.selected || false}
-                              label={ele.name}
-                              onClick={(): void => onFolderSelect(ele, index)}
-                              iconColor="primary"
-                            />
-                          </Row>
-                        ),
-                    )}
-                  </Row>
-                )}
-              </Row>
             </Row>
           </Row>
         </>
