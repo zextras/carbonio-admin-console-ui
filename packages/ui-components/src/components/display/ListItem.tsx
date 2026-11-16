@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { useIsVisible } from '../../hooks/useIsVisible/useIsVisible';
 import { resolveThemeColor } from '../../theme/theme-utils';
@@ -42,6 +42,7 @@ type ListItemProps = {
    * The ref is set by the list itself.
    */
   listRef?: React.RefObject<HTMLDivElement>;
+  tabIndex?: number;
   /**
    * Content of the item (render prop).
    * Visible arg define if the item is visible on the screen or if is in the hidden part of the list.
@@ -61,6 +62,7 @@ const ListItem = ({
   selected,
   selectedBackground,
   background,
+  tabIndex = 0,
   ref,
   ...rest
 }: ListItemProps) => {
@@ -69,27 +71,21 @@ const ListItem = ({
   const backgroundColor =
     (active && activeBackground) || (selected && selectedBackground) || background;
 
-  const itemStyle = useMemo<React.CSSProperties>(
-    () =>
-      ({
-        '--item-bg': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'regular')
-          : 'transparent',
-        '--item-bg-hover': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'hover')
-          : 'transparent',
-        '--item-bg-focus': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'focus')
-          : 'transparent',
-        '--item-bg-active': backgroundColor
-          ? resolveThemeColor(backgroundColor, 'active')
-          : 'transparent',
-      } as React.CSSProperties),
-    [backgroundColor],
-  );
+  const itemStyle = {
+    '--item-bg': backgroundColor ? resolveThemeColor(backgroundColor, 'regular') : 'transparent',
+    '--item-bg-hover': backgroundColor
+      ? resolveThemeColor(backgroundColor, 'hover')
+      : 'transparent',
+    '--item-bg-focus': backgroundColor
+      ? resolveThemeColor(backgroundColor, 'focus')
+      : 'transparent',
+    '--item-bg-active': backgroundColor
+      ? resolveThemeColor(backgroundColor, 'active')
+      : 'transparent',
+  } as React.CSSProperties;
 
   return (
-    <div tabIndex={0} ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>
+    <div tabIndex={tabIndex} ref={itemRef} className={styles.listItem} style={itemStyle} {...rest}>
       {children(inView)}
     </div>
   );

@@ -86,7 +86,7 @@ describe('VerifySuccess', () => {
       vi.advanceTimersByTime(VERIFY_SUCCESS_AUTO_CLOSE_MS + 1);
     });
 
-    expect(hidePopoverSpy).not.toHaveBeenCalled();
+    expect(hidePopoverSpy).toHaveBeenCalledTimes(1);
     expect(onComplete).not.toHaveBeenCalled();
   });
 
@@ -115,5 +115,28 @@ describe('VerifySuccess', () => {
     // onComplete and hidePopover each called exactly once (from handleClose), not again from timer
     expect(onComplete).toHaveBeenCalledTimes(1);
     expect(hidePopoverSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('should show creation wording by default', () => {
+    render(<VerifySuccess />);
+
+    expect(screen.getByText('Connector verified and created')).toBeDefined();
+    expect(screen.getByText('Everything is validated, your connector are now on')).toBeDefined();
+  });
+
+  it('should show update wording for the verifiedAndUpdated variant', () => {
+    render(<VerifySuccess variant="verifiedAndUpdated" />);
+
+    expect(screen.getByText('Connector verified and updated')).toBeDefined();
+    expect(screen.getByText('Everything is validated, your connector are now on')).toBeDefined();
+    expect(screen.queryByText('Connector verified and created')).toBeNull();
+  });
+
+  it('should show verification-only wording for the verified variant', () => {
+    render(<VerifySuccess variant="verified" />);
+
+    expect(screen.getByText('Connector verified')).toBeDefined();
+    expect(screen.getByText('Everything is validated')).toBeDefined();
+    expect(screen.queryByText('Connector verified and created')).toBeNull();
   });
 });

@@ -30,6 +30,14 @@
 .tabContainer {
 	position: relative;
 	cursor: pointer;
+	border: none;
+	background: none;
+	padding: 0;
+	margin: 0;
+	font: inherit;
+	text-align: left;
+	display: block;
+	width: 100%;
 }
 
 .tabContainer:focus {

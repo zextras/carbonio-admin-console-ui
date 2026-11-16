@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import React, { HTMLAttributes, useMemo } from 'react';
+import React, { HTMLAttributes } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import styles from './Collapse.module.css';
@@ -21,15 +21,11 @@ export const Collapse = ({ children, open, ref, ...rest }: CollapseProps) => {
 
 	const propToTransition = 'height';
 
-	const propScrollLabel = useMemo<`scroll${Capitalize<typeof propToTransition>}`>(
-		() =>
-			`scroll${
-				(propToTransition.charAt(0).toUpperCase() + propToTransition.slice(1)) as Capitalize<
-					typeof propToTransition
-				>
-			}`,
-		[propToTransition],
-	);
+	const propScrollLabel = `scroll${
+		(propToTransition.charAt(0).toUpperCase() + propToTransition.slice(1)) as Capitalize<
+			typeof propToTransition
+		>
+	}` as `scroll${Capitalize<typeof propToTransition>}`;
 
 	return (
 		<Transition

@@ -172,7 +172,6 @@ export const LoadAndVerifyCert = ({
           type="outlined"
           label={t('label.upload', 'UPLOAD')}
           color="primary"
-          aria-label={t('label.upload_domain_certificate', 'Upload domain certificate')}
           onClick={() =>
             pickFile((_name, content) => form.setFieldValue('certificate', content))
           }

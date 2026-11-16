@@ -9,7 +9,6 @@ import {
   cloneElement,
   createRef,
   forwardRef,
-  useCallback,
   useEffect,
   useLayoutEffect,
   useRef,
@@ -107,7 +106,7 @@ const Tooltip = ({
   const tooltipRef = useCombinedRefs<HTMLElement>();
   const timeoutRef = useRef<null | ReturnType<typeof setTimeout>>(null);
 
-  const showTooltip = useCallback(() => {
+  const showTooltip = () => {
     const triggerElement = combinedTriggerRef.current;
     if (triggerElement) {
       const textIsCropped =
@@ -120,14 +119,14 @@ const Tooltip = ({
         }, triggerDelay);
       }
     }
-  }, [overflowTooltip, combinedTriggerRef, triggerDelay]);
+  };
 
-  const hideTooltip = useCallback(() => {
+  const hideTooltip = () => {
     setOpen(false);
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-  }, []);
+  };
 
   useLayoutEffect(() => {
     let cleanup: ReturnType<typeof setupFloating>;

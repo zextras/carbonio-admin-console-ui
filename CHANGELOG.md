@@ -1,3 +1,68 @@
+## [0.35.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.2...v0.35.3) (2026-11-11)
+
+### Bug Fixes
+
+* **deps:** repair stale dompurify entry in pnpm-lock.yaml ([327aee4](https://github.com/zextras/carbonio-admin-console-ui/commit/327aee406440d2640c17914b379e3803e24ba630))
+
+### Other changes
+
+* **lint:** drop react-hooks v7 compiler rules, keep classic pair ([39828ac](https://github.com/zextras/carbonio-admin-console-ui/commit/39828ac2954d669d88c159ccb440b04093c8abfd))
+
+## [0.35.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.1...v0.35.2) (2026-11-11)
+
+### Bug Fixes
+
+* **quarantine:** [CO-4633] escape mismatched content type when merging multipart body parts ([#1429](https://github.com/zextras/carbonio-admin-console-ui/issues/1429)) ([#1430](https://github.com/zextras/carbonio-admin-console-ui/issues/1430)) ([3e86136](https://github.com/zextras/carbonio-admin-console-ui/commit/3e86136755b07f7aa384f5b039937c8a56b56a0f))
+
+### Other changes
+
+* bump jenkins-lib-common to v5.1.0 ([#1432](https://github.com/zextras/carbonio-admin-console-ui/issues/1432)) ([80bf17c](https://github.com/zextras/carbonio-admin-console-ui/commit/80bf17c87115c728c67c80297fced885b2405c46)), closes [#1430](https://github.com/zextras/carbonio-admin-console-ui/issues/1430)
+
+## [0.20.6](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.20.5...v0.20.6) (2026-11-02)
+
+### Bug Fixes
+
+* **quarantine:** [CO-4633] escape mismatched content type when merging multipart body parts ([#1429](https://github.com/zextras/carbonio-admin-console-ui/issues/1429)) ([#1430](https://github.com/zextras/carbonio-admin-console-ui/issues/1430)) ([3e86136](https://github.com/zextras/carbonio-admin-console-ui/commit/3e86136755b07f7aa384f5b039937c8a56b56a0f))
+
+### Other changes
+
+* bump jenkins-lib-common to v5.1.0 ([#1432](https://github.com/zextras/carbonio-admin-console-ui/issues/1432)) ([80bf17c](https://github.com/zextras/carbonio-admin-console-ui/commit/80bf17c87115c728c67c80297fced885b2405c46)), closes [#1430](https://github.com/zextras/carbonio-admin-console-ui/issues/1430)
+## [0.35.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.0...v0.35.1) (2026-11-11)
+
+### Bug Fixes
+
+* **admin-ui-backup/backup-advanced:** correct latency threshold unit from KB to ms in labels ([#1440](https://github.com/zextras/carbonio-admin-console-ui/issues/1440)) ([dc08114](https://github.com/zextras/carbonio-admin-console-ui/commit/dc08114bbca2be848eed78f59b0f3c4b045f0d3c))
+
+## [0.35.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.3...v0.35.0) (2026-11-11)
+
+### Features
+
+* **button:** enforce accessible names, loading semantics and keyboard focus ([#1439](https://github.com/zextras/carbonio-admin-console-ui/issues/1439)) ([a55ad9d](https://github.com/zextras/carbonio-admin-console-ui/commit/a55ad9d7a5ed3fbac6feaff1280cd61cc4a093d2))
+
+## [0.34.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.2...v0.34.3) (2026-11-10)
+
+### Bug Fixes
+
+* **domain-settings:** fix general settings alignment ([#1438](https://github.com/zextras/carbonio-admin-console-ui/issues/1438)) ([6fdb85d](https://github.com/zextras/carbonio-admin-console-ui/commit/6fdb85dfb612de5b7d4519d38e811183f0d2c0f8))
+
+## [0.34.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.1...v0.34.2) (2026-11-10)
+
+### Bug Fixes
+
+* removed romanian language ([#1437](https://github.com/zextras/carbonio-admin-console-ui/issues/1437)) ([ea4931d](https://github.com/zextras/carbonio-admin-console-ui/commit/ea4931dbb9602844fb4b51ea9dba621c38dfe531))
+
+## [0.34.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.34.0...v0.34.1) (2026-11-06)
+
+### Bug Fixes
+
+* restore am/pm visibility ([#1435](https://github.com/zextras/carbonio-admin-console-ui/issues/1435)) ([f74f781](https://github.com/zextras/carbonio-admin-console-ui/commit/f74f781b0b7ab9d7411374d4c8fbd3cee98219b0))
+
+## [0.34.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.2...v0.34.0) (2026-11-06)
+
+### Features
+
+* [CO-4626] s3connector make accesskey and secret optional ([#1428](https://github.com/zextras/carbonio-admin-console-ui/issues/1428)) ([d46ab1d](https://github.com/zextras/carbonio-admin-console-ui/commit/d46ab1d0beed1256c6752a3765a54acd92a4830f))
+
 ## [0.33.2](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.33.1...v0.33.2) (2026-11-02)
 
 ### Bug Fixes

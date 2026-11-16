@@ -5,9 +5,10 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { Container, getFieldErrorProps, ListRow, NumberInput, Row } from '@zextras/ui-components';
+import { getFieldErrorProps, NumberInput } from '@zextras/ui-components';
 import { useTranslation } from 'react-i18next';
 
+import styles from '../domain-general-settings.module.css';
 import { QuotaReportDownloadButton } from '../quota-report-download-button';
 import { DOMAIN_GENERAL_VALIDATION_MESSAGES } from '../schema';
 import type { DomainGeneralSettingsFormApi } from '../use-domain-general-form';
@@ -18,29 +19,21 @@ type DomainQuotaSectionProps = {
   isGlobalAdmin: boolean;
 };
 
-export const DomainQuotaSection = ({ form, domainName, isGlobalAdmin }: DomainQuotaSectionProps) => {
+export const DomainQuotaSection = ({
+  form,
+  domainName,
+  isGlobalAdmin,
+}: DomainQuotaSectionProps) => {
   const [t] = useTranslation();
   const isSubmitted = useSelector(form.store, (s) => s.submissionAttempts > 0);
 
   return (
-    <>
-      <Row
-        mainAlignment="flex-start"
-        width="100%"
-        background="gray6"
-        padding={{ top: 'large', left: 'small' }}
-      >
-        <ds-text as="h3" size="small" weight="bold" color="gray0">
-          {t('label.accountQuotaSetting', 'Account Quota Settings')}
-        </ds-text>
-      </Row>
-      <ListRow>
-        <Container
-          orientation="horizontal"
-          crossAlignment="stretch"
-          padding={{ all: 'small' }}
-          gap="1rem"
-        >
+    <div className={styles.section}>
+      <ds-text as="h3" size="small" weight="bold" color="gray0">
+        {t('label.accountQuotaSetting', 'Account Quota Settings')}
+      </ds-text>
+      <div className={styles.fieldsGrid}>
+        <div className={styles.span3}>
           <form.Field name="domainQuotaGB">
             {(field) => {
               const error = getFieldErrorProps(
@@ -67,9 +60,11 @@ export const DomainQuotaSection = ({ form, domainName, isGlobalAdmin }: DomainQu
               );
             }}
           </form.Field>
+        </div>
+        <div className={`${styles.span3} ${styles.quotaButton}`}>
           <QuotaReportDownloadButton domainName={domainName} />
-        </Container>
-      </ListRow>
-    </>
+        </div>
+      </div>
+    </div>
   );
 };

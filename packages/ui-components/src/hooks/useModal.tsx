@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useCallback, useContext } from 'react';
+import { useContext } from 'react';
 
 import {
 	CloseModalFn,
@@ -14,14 +14,14 @@ import {
 
 function useModal(): { createModal: CreateModalFn; closeModal: CloseModalFn } {
 	const context = useContext(ModalManagerContext);
-	const fallback = useCallback<CreateModalFn>(() => {
+	const fallback: CreateModalFn = () => {
 		console.error('Modal manager context not initialized');
 		return (): void => undefined;
-	}, []);
-	const closeFallback = useCallback<CloseModalFn>(() => {
+	};
+	const closeFallback: CloseModalFn = () => {
 		console.error('Modal manager context not initialized');
 		return (): void => undefined;
-	}, []);
+	};
 	return {
 		createModal: context?.createModal ?? fallback,
 		closeModal: context?.closeModal ?? closeFallback

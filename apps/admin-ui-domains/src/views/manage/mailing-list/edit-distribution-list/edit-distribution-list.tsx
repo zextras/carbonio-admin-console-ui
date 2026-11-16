@@ -439,6 +439,7 @@ function EditDistributionListContent({
               color={'text'}
               size="medium"
               icon="CloseOutline"
+              aria-label={t('label.close', 'Close')}
               onClick={(): void => setShowMailingListDetailView(false)}
             />
           </Row>

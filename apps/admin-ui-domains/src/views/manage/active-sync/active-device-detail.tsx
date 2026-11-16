@@ -10,6 +10,7 @@ import {
   Button,
   Displayer,
   FormPageLayout,
+  type IconName,
   LabeledValue,
   Select,
   useSnackbar,
@@ -256,6 +257,7 @@ const ActiveDeviceDetailForm = ({
     );
   }
 
+  const pinIconName: IconName = isSticky ? 'Pin3Outline' : 'Unpin3Outline';
   const buttons = [
     {
       align: 'right' as const,
@@ -265,7 +267,7 @@ const ActiveDeviceDetailForm = ({
         'Wipe the device to the factory settings',
       ),
       loading: isStatsFetching,
-      disable: isStatsFetching,
+      disabled: isStatsFetching,
       onClick: (): void => setOperationType(WIPE_DEVICE),
     },
     {
@@ -275,7 +277,7 @@ const ActiveDeviceDetailForm = ({
       color: 'primary',
       onClick: (): void => setOperationType(RESET_DEVICE),
       loading: isStatsFetching,
-      disable: isStatsFetching,
+      disabled: isStatsFetching,
     },
     {
       align: 'right' as const,
@@ -284,11 +286,11 @@ const ActiveDeviceDetailForm = ({
       tooltiplabel: t('label.active_sync_active_paused', 'The activesync is active / paused'),
       onClick: suspendNow,
       loading: isStatsFetching || isOperationPending,
-      disable: isStatsFetching || isOperationPending,
+      disabled: isStatsFetching || isOperationPending,
     },
     {
       align: 'left' as const,
-      icon: isSticky ? 'Pin3Outline' : 'Unpin3Outline',
+      icon: pinIconName,
       onClick: (): void => setIsSticky(!isSticky),
     },
   ];

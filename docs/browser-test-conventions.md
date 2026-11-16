@@ -60,6 +60,8 @@ Options: `{ initialRouterEntry?, queryClient?, grantRights?: 'cos' | 'config', w
 
 **Accessibility note:** the Zextras `Input` component renders `<label htmlFor={id}>` from its `label` prop, and `Button` uses its `label` prop as the accessible name. So `getByRole('textbox', { name: 'Cos Name' })` resolves to the input whose `label="Cos Name"`.
 
+**Icon-only buttons (since CO-3930):** every `Button` must expose an accessible name — a visible `label` or an `aria-label` (enforced at type level; icon-only usage requires `aria-label`). Locate them with `getByRole('button', { name: '…' })`, never by the icon. `getByTestId('icon: …')` remains acceptable **only** for icons rendered outside interactive controls (quota legend icons, logo, checkbox internals) or for clickable bare `ds-icon` elements that have not yet been refactored to real buttons.
+
 ## Interactions
 
 ```tsx

@@ -245,6 +245,7 @@ export const MTAStatsMail = ({
             color={'text'}
             size="medium"
             icon="CloseOutline"
+            aria-label={t('label.close', 'Close')}
             onClick={(): void => closeDialog(true)}
           />
         </Row>
