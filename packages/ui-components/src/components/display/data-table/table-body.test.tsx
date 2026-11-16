@@ -6,7 +6,7 @@
 
 import type { ColumnPinningState } from '@tanstack/react-table';
 import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react';
-import { useEffect, useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useDataTable } from './create-data-table';
@@ -65,7 +65,7 @@ const bodyProps = {
 
 function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
   const store = useTableUiStore();
-  useEffect(() => {
+  useLayoutEffect(() => {
     onStore(store);
   }, [store, onStore]);
   return null;
@@ -133,7 +133,7 @@ function BodyHarness({
     (state) => state.columnPinning,
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onTable(table);
   }, [table, onTable]);
 
@@ -197,7 +197,7 @@ function EditableBodyHarness({
     (state) => state.columnPinning,
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onTable(table);
   }, [table, onTable]);
 

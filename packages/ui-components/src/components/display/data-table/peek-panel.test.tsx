@@ -6,7 +6,7 @@
 
 import type { ColumnPinningState } from '@tanstack/react-table';
 import { act, fireEvent, render, screen } from '@testing-library/react';
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import { describe, expect, it, vi } from 'vitest';
 
 import { useDataTable } from './create-data-table';
@@ -56,7 +56,7 @@ const tableConfig = {
 
 function StoreProbe({ onStore }: { onStore: (store: DataTableUiStore) => void }) {
   const store = useTableUiStore();
-  useEffect(() => {
+  useLayoutEffect(() => {
     onStore(store);
   }, [store, onStore]);
   return null;
@@ -80,7 +80,7 @@ function PeekHarness({ peekProps, onTable, onStore }: PeekHarnessProps) {
     (state) => state.columnPinning,
   );
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     onTable(table);
   }, [table, onTable]);
 

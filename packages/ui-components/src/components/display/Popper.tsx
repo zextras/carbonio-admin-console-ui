@@ -6,14 +6,7 @@
 
 import { flip, limitShift, offset, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
-import React, {
-  HTMLAttributes,
-  useCallback,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-} from 'react';
+import React, { HTMLAttributes, useEffect, useLayoutEffect, useRef } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
@@ -46,43 +39,39 @@ const Popper = ({
   const popperRef = useCombinedRefs<HTMLDivElement>(ref);
   const wrapperRef = useRef<HTMLDivElement>(null);
 
-  const startSentinelRef = useRef<HTMLDivElement>(null);
-  const endSentinelRef = useRef<HTMLDivElement>(null);
+  const startSentinelRef = useRef<HTMLButtonElement>(null);
+  const endSentinelRef = useRef<HTMLButtonElement>(null);
 
-  const closePopper = useCallback(
-    (e: Event) => {
-      if (!popperRef.current?.contains(e.target as Node)) {
-        onClose?.();
-      }
-    },
-    [onClose, popperRef],
-  );
+  const closePopper = (e: Event) => {
+    if (!popperRef.current?.contains(e.target as Node)) {
+      onClose?.();
+    }
+  };
 
-  const keyboardClosePopper = useCallback(() => {
+  const keyboardClosePopper = () => {
     onClose?.();
-  }, [onClose]);
+  };
 
-  const onStartSentinelFocus = useCallback(() => {
+  const onStartSentinelFocus = () => {
     const nodeList =
       wrapperRef.current?.querySelectorAll<HTMLElement>(
         'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
       ) ?? [];
-    nodeList.length > 0 && nodeList[nodeList.length - 1].focus();
-  }, []);
+    if (nodeList.length > 0) {
+      nodeList[nodeList.length - 1].focus();
+    }
+  };
 
-  const onEndSentinelFocus = useCallback(() => {
+  const onEndSentinelFocus = () => {
     const node = wrapperRef.current?.querySelector<HTMLElement>(
       'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
     );
     node?.focus();
-  }, []);
+  };
 
-  const escapeEvent = useMemo<KeyboardPresetObj[]>(
-    () => [
-      { type: 'keydown', callback: keyboardClosePopper, keys: [{ key: 'Escape', ctrlKey: false }] },
-    ],
-    [keyboardClosePopper],
-  );
+  const escapeEvent: KeyboardPresetObj[] = [
+    { type: 'keydown', callback: keyboardClosePopper, keys: [{ key: 'Escape', ctrlKey: false }] },
+  ];
 
   useKeyboard(popperRef, escapeEvent);
 
@@ -117,7 +106,9 @@ const Popper = ({
     }
     return (): void => {
       window.document.removeEventListener('click', closePopper);
-      listenerTimeout && clearTimeout(listenerTimeout);
+      if (listenerTimeout) {
+        clearTimeout(listenerTimeout);
+      }
     };
   }, [open, closePopper]);
 
@@ -141,11 +132,11 @@ const Popper = ({
   return (
     <Portal show={open} disablePortal={false}>
       <div ref={popperRef} className={popperContainerClassName} data-testid="popper">
-        <div tabIndex={0} ref={startSentinelRef} />
+        <button type="button" ref={startSentinelRef} className={styles.focusSentinel} />
         <div ref={wrapperRef} tabIndex={-1} className={styles.popperWrapper}>
           {children}
         </div>
-        <div tabIndex={0} ref={endSentinelRef} />
+        <button type="button" ref={endSentinelRef} className={styles.focusSentinel} />
       </div>
     </Portal>
   );

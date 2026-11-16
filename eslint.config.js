@@ -17,27 +17,6 @@ function toSeverity(rules, severity) {
   return Object.fromEntries(Object.keys(rules).map((rule) => [rule, severity]));
 }
 
-// new input family (created 2026-09/10): held to the full strict rule set
-const NEW_INPUT_FAMILY_STRICT = [
-  'packages/ui-components/src/components/inputs/commons/**',
-  'packages/ui-components/src/components/inputs/input-shell.tsx',
-  'packages/ui-components/src/components/inputs/text-input.tsx',
-  'packages/ui-components/src/components/inputs/number-input.tsx',
-  'packages/ui-components/src/components/inputs/password-input.tsx',
-  'packages/ui-components/src/components/inputs/plain-textarea.tsx',
-  'packages/ui-components/src/components/inputs/select.tsx',
-  'packages/ui-components/src/components/inputs/combobox-input.tsx',
-  'packages/ui-components/src/components/inputs/labeled-value.tsx',
-  'packages/ui-components/src/components/inputs/tests/text-input.browser.test.tsx',
-  'packages/ui-components/src/components/inputs/tests/number-input.browser.test.tsx',
-  'packages/ui-components/src/components/inputs/tests/number-input.test.ts',
-  'packages/ui-components/src/components/inputs/tests/password-input.browser.test.tsx',
-  'packages/ui-components/src/components/inputs/tests/plain-textarea.browser.test.tsx',
-  'packages/ui-components/src/components/inputs/tests/select.browser.test.tsx',
-  'packages/ui-components/src/components/inputs/tests/combobox-input.browser.test.tsx',
-  'packages/ui-components/src/components/inputs/tests/labeled-value.browser.test.tsx',
-];
-
 export default defineConfig(
   js.configs.recommended,
   ...tseslint.configs.recommended,
@@ -87,6 +66,46 @@ export default defineConfig(
       'simple-import-sort/imports': 'error',
       'simple-import-sort/exports': 'error',
       'import-x/no-duplicates': 'error',
+      'react-compiler/react-compiler': 'error',
+      'no-restricted-imports': [
+        'error',
+        {
+          paths: [
+            {
+              name: 'react',
+              importNames: ['useMemo', 'useCallback', 'memo'],
+              message:
+                'React Compiler memoizes automatically — see AGENTS.md "React Compiler". Use plain values/functions.',
+            },
+          ],
+        },
+      ],
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "CallExpression[callee.name='useMemo']",
+          message: 'React Compiler memoizes automatically — use a plain value. See AGENTS.md.',
+        },
+        {
+          selector: "CallExpression[callee.name='useCallback']",
+          message: 'React Compiler memoizes automatically — use a plain function. See AGENTS.md.',
+        },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.property.name='useMemo']",
+          message: 'React Compiler memoizes automatically — use a plain value. See AGENTS.md.',
+        },
+        {
+          selector:
+            "CallExpression[callee.type='MemberExpression'][callee.property.name='useCallback']",
+          message: 'React Compiler memoizes automatically — use a plain function. See AGENTS.md.',
+        },
+        {
+          selector: "CallExpression[callee.object.name='React'][callee.property.name='memo']",
+          message:
+            'React Compiler memoizes automatically — export a plain component. See AGENTS.md.',
+        },
+      ],
       '@typescript-eslint/ban-ts-comment': [
         'error',
         {
@@ -122,36 +141,6 @@ export default defineConfig(
     },
   },
 
-  // package-specific downgrades
-  // ui-components: targeted downgrades only, to be tightened incrementally;
-  // the new input family is excluded and held to the strict rules
-  {
-    files: ['packages/ui-components/**'],
-    ignores: NEW_INPUT_FAMILY_STRICT,
-    rules: {
-      'react/prop-types': 'off',
-      '@typescript-eslint/no-unused-expressions': 'warn',
-      'react-you-might-not-need-an-effect/no-event-handler': 'warn',
-      'react-you-might-not-need-an-effect/no-adjust-state-on-prop-change': 'warn',
-      'react-you-might-not-need-an-effect/no-chain-state-updates': 'warn',
-      'react-you-might-not-need-an-effect/no-derived-state': 'warn',
-      'react-you-might-not-need-an-effect/no-pass-live-state-to-parent': 'warn',
-      'react-you-might-not-need-an-effect/no-pass-data-to-parent': 'warn',
-      'react-you-might-not-need-an-effect/no-external-store-subscription': 'warn',
-      'jsx-a11y/no-noninteractive-tabindex': 'warn',
-      'jsx-a11y/no-autofocus': 'warn',
-      'jsx-a11y/no-static-element-interactions': 'warn',
-      'jsx-a11y/click-events-have-key-events': 'warn',
-      'react-compiler/react-compiler': 'warn',
-    },
-  },
-  // new input family: strict; react-compiler diagnostics enforced
-  {
-    files: NEW_INPUT_FAMILY_STRICT,
-    rules: {
-      'react-compiler/react-compiler': 'error',
-    },
-  },
   // ui-shared: only logging and minor type-lint downgrades
   {
     files: ['packages/ui-shared/**'],
@@ -160,13 +149,6 @@ export default defineConfig(
       '@typescript-eslint/no-unused-expressions': 'warn',
       '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-unsafe-function-type': 'warn',
-    },
-  },
-  // test-utils: strict, keeps react-compiler diagnostics visible
-  {
-    files: ['packages/test-utils/**'],
-    rules: {
-      'react-compiler/react-compiler': 'warn',
     },
   },
 );

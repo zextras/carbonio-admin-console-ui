@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMemo } from 'react';
-
 import { Container, type ContainerProps } from './Container';
 import styles from './Row.module.css';
 
@@ -35,25 +33,20 @@ const Row = ({
   ref,
   ...rest
 }: RowProps) => {
-  const rowStyle = useMemo(
-    () => ({
-      '--row-display': display,
-      '--row-order': order,
-      ...style,
-    }),
-    [display, order, style],
-  );
+  const rowStyle = {
+    '--row-display': display,
+    '--row-order': order,
+    ...style,
+  };
 
-  const rowClassName = useMemo(() => {
-    const classes = [styles.row];
-    if (takeAvailableSpace) {
-      classes.push(styles.takeAvailableSpace);
-    }
-    if (className) {
-      classes.push(className);
-    }
-    return classes.join(' ');
-  }, [takeAvailableSpace, className]);
+  const classes = [styles.row];
+  if (takeAvailableSpace) {
+    classes.push(styles.takeAvailableSpace);
+  }
+  if (className) {
+    classes.push(className);
+  }
+  const rowClassName = classes.join(' ');
 
   return (
     <Container

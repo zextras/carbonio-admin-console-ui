@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import clsx from 'clsx';
-import React, { CSSProperties, HTMLAttributes, useMemo } from 'react';
+import React, { CSSProperties, HTMLAttributes } from 'react';
 
 import { getPaddingVar, PaddingVarObj, resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor, LiteralUnion } from '../../types/utils';
@@ -107,64 +107,41 @@ export const Container = ({
   className,
   ...rest
 }: ContainerProps) => {
-  const containerStyle = useMemo<CSSProperties>(() => {
-    const inlineStile: Record<string, string | number | undefined> = {
-      flexDirection: resolveOrientation(orientation),
-      alignItems: crossAlignment,
-      justifyContent: mainAlignment,
-      flexWrap: wrap,
-      flexGrow,
-      flexShrink,
-      flexBasis,
-      gap,
-      padding: padding !== undefined ? getPaddingVar(padding) : undefined,
-      background: background ? resolveColorVar(background) : undefined,
-      marginLeft: margin?.left,
-      marginRight: margin?.right,
-      width: resolveDimension(width),
-      minWidth: minWidth !== 'unset' ? resolveDimension(minWidth) : undefined,
-      maxWidth: maxWidth !== 'unset' ? resolveDimension(maxWidth) : undefined,
-      height: resolveDimension(height),
-      minHeight: minHeight !== 'unset' ? resolveDimension(minHeight) : undefined,
-      maxHeight: maxHeight !== 'unset' ? resolveDimension(maxHeight) : undefined,
-      borderRadius: BORDER_RADIUS[borderRadius],
-    };
-
-    if (borderColor) {
-      if (typeof borderColor === 'string') {
-        inlineStile.border = BORDER(borderColor);
-      } else {
-        const sides: BorderSides[] = ['top', 'right', 'bottom', 'left'];
-        for (const side of sides) {
-          const c = borderColor[side];
-          if (c) inlineStile[`border${side.charAt(0).toUpperCase()}${side.slice(1)}`] = BORDER(c);
-        }
-      }
-    }
-
-    return { ...inlineStile, ...style } as CSSProperties;
-  }, [
-    orientation,
-    crossAlignment,
-    mainAlignment,
-    wrap,
+  const inlineStile: Record<string, string | number | undefined> = {
+    flexDirection: resolveOrientation(orientation),
+    alignItems: crossAlignment,
+    justifyContent: mainAlignment,
+    flexWrap: wrap,
     flexGrow,
     flexShrink,
     flexBasis,
     gap,
-    padding,
-    background,
-    margin,
-    width,
-    minWidth,
-    maxWidth,
-    height,
-    minHeight,
-    maxHeight,
-    borderRadius,
-    borderColor,
-    style,
-  ]);
+    padding: padding !== undefined ? getPaddingVar(padding) : undefined,
+    background: background ? resolveColorVar(background) : undefined,
+    marginLeft: margin?.left,
+    marginRight: margin?.right,
+    width: resolveDimension(width),
+    minWidth: minWidth !== 'unset' ? resolveDimension(minWidth) : undefined,
+    maxWidth: maxWidth !== 'unset' ? resolveDimension(maxWidth) : undefined,
+    height: resolveDimension(height),
+    minHeight: minHeight !== 'unset' ? resolveDimension(minHeight) : undefined,
+    maxHeight: maxHeight !== 'unset' ? resolveDimension(maxHeight) : undefined,
+    borderRadius: BORDER_RADIUS[borderRadius],
+  };
+
+  if (borderColor) {
+    if (typeof borderColor === 'string') {
+      inlineStile.border = BORDER(borderColor);
+    } else {
+      const sides: BorderSides[] = ['top', 'right', 'bottom', 'left'];
+      for (const side of sides) {
+        const c = borderColor[side];
+        if (c) inlineStile[`border${side.charAt(0).toUpperCase()}${side.slice(1)}`] = BORDER(c);
+      }
+    }
+  }
+
+  const containerStyle = { ...inlineStile, ...style } as CSSProperties;
 
   return (
     <div ref={ref} className={clsx(styles.container, className)} style={containerStyle} {...rest}>

@@ -5,7 +5,7 @@
  */
 
 import { isMatch } from 'lodash-es';
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect } from 'react';
 
 import { RequireAtLeastOne } from '../types/utils';
 
@@ -238,20 +238,16 @@ function useKeyboard(
 	presets: KeyboardPresetObj[],
 	registerListener = true
 ): void {
-	const keyboardListeners = useMemo(
-		() =>
-			presets.map<(e: KeyboardEvent) => void>(
-				({ keys, callback, haveToPreventDefault = true }) =>
-					(e) => {
-						if (keys.length === 0 || keys.some((key) => isMatch(e, key))) {
-							if (haveToPreventDefault) {
-								e.preventDefault();
-							}
-							callback(e);
-						}
+	const keyboardListeners = presets.map<(e: KeyboardEvent) => void>(
+		({ keys, callback, haveToPreventDefault = true }) =>
+			(e) => {
+				if (keys.length === 0 || keys.some((key) => isMatch(e, key))) {
+					if (haveToPreventDefault) {
+						e.preventDefault();
 					}
-			),
-		[presets]
+					callback(e);
+				}
+			}
 	);
 
 	useEffect(() => {

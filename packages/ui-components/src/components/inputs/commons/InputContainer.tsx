@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import clsx from 'clsx';
-import { CSSProperties, FC, HTMLAttributes, useMemo } from 'react';
+import { CSSProperties, FC, HTMLAttributes } from 'react';
 
 import { resolveThemeColor } from '../../../theme/theme-utils';
 import { Container, ContainerProps } from '../../layout/Container';
@@ -33,17 +33,15 @@ export const InputContainer: FC<InputContainerProps> = ({
   style,
   ...rest
 }) => {
-  const containerStyle = useMemo<CSSProperties>(() => {
-    const baseColor = background.replace(COLOR_SPLIT_REGEXP, '');
-    return {
-      '--input-container-bg': resolveColorVar(background, 'regular'),
-      '--input-container-bg-hover': resolveColorVar(`${baseColor}.hover`, 'hover'),
-      '--input-container-bg-focus': resolveColorVar(`${baseColor}.focus`, 'focus'),
-      '--input-container-bg-active': resolveColorVar(`${baseColor}.active`, 'active'),
-      '--input-container-bg-disabled': resolveColorVar(`${baseColor}.disabled`, 'disabled'),
-      ...style,
-    } as CSSProperties;
-  }, [background, style]);
+  const baseColor = background.replace(COLOR_SPLIT_REGEXP, '');
+  const containerStyle = {
+    '--input-container-bg': resolveColorVar(background, 'regular'),
+    '--input-container-bg-hover': resolveColorVar(`${baseColor}.hover`, 'hover'),
+    '--input-container-bg-focus': resolveColorVar(`${baseColor}.focus`, 'focus'),
+    '--input-container-bg-active': resolveColorVar(`${baseColor}.active`, 'active'),
+    '--input-container-bg-disabled': resolveColorVar(`${baseColor}.disabled`, 'disabled'),
+    ...style,
+  } as CSSProperties;
 
   return (
     <Container

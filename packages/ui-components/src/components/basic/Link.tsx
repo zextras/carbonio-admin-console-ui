@@ -4,8 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useMemo } from 'react';
-
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { DsTextProps } from '../../web-components/ds-text';
 import styles from './link.module.css';
@@ -17,7 +15,7 @@ type LinkProps = {
   Pick<DsTextProps, 'color' | 'size' | 'weight'>;
 
 const Link = ({ children, underlined = false, color = 'primary', style, ...rest }: LinkProps) => {
-  const hoverColorVar = useMemo(() => resolveThemeColor(color, 'hover'), [color]);
+  const hoverColorVar = resolveThemeColor(color, 'hover');
 
   const linkStyle = {
     ...style,

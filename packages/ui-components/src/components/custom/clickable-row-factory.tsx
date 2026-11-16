@@ -9,8 +9,6 @@ import {
   type ReactElement,
   type ReactEventHandler,
   type ReactNode,
-  useCallback,
-  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -97,28 +95,26 @@ export const ClickableRowFactory = ({
   const ckbRef = useRef<HTMLDivElement>(null);
   const hoverTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showCkb, setShowCkb] = useState<boolean>(selected || selectionMode);
-  const clickableRow = useMemo(
-    () => (!showCheckbox && row.clickable === undefined) || row.clickable,
-    [showCheckbox, row.clickable],
-  );
+  const clickableRow = (!showCheckbox && row.clickable === undefined) || row.clickable;
 
   const _onChange = (): void => {
-    !clickableRow && onChange(row.id);
+    if (!clickableRow) {
+      onChange(row.id);
+    }
   };
 
-  const onClick = useCallback<ReactEventHandler>(
-    (e) => {
-      const clickedOnCheckbox =
-        showCheckbox &&
-        ckbRef.current &&
-        (e.target === ckbRef.current || ckbRef.current.contains(e.target as Node | null));
-      if (!clickedOnCheckbox && row.onClick) {
-        row.onClick(e);
-      }
-      clickableRow && onChange(row.id);
-    },
-    [row, onChange, clickableRow, showCheckbox],
-  );
+  const onClick: ReactEventHandler = (e) => {
+    const clickedOnCheckbox =
+      showCheckbox &&
+      ckbRef.current &&
+      (e.target === ckbRef.current || ckbRef.current.contains(e.target as Node | null));
+    if (!clickedOnCheckbox && row.onClick) {
+      row.onClick(e);
+    }
+    if (clickableRow) {
+      onChange(row.id);
+    }
+  };
 
   const displayCheckbox = () => {
     if (hoverDelay > 0) {
@@ -136,32 +132,32 @@ export const ClickableRowFactory = ({
     setShowCkb(false);
   };
 
-  const rowData = useMemo(
-    () =>
-      row.columns.map((column, i) => (
-        <td
-          className={getTableCellClassName(styles.tableRowCell, cellClassName, i)}
-          key={`${row.id}-col-${i}`}
-        >
-          {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
-        </td>
-      )),
-    [row.columns, cellClassName, row.id],
-  );
+  const rowData = row.columns.map((column, i) => (
+    <td
+      className={getTableCellClassName(styles.tableRowCell, cellClassName, i)}
+      key={`${row.id}-col-${i}`}
+    >
+      {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
+    </td>
+  ));
 
   const CheckboxComponentToRender = CheckboxComponent || Checkbox;
-  const displayBlockCheckbox = useMemo(
-    () => !showCheckboxOnHover || selected || (multiSelect && selectionMode),
-    [showCheckboxOnHover, selected, multiSelect, selectionMode],
-  );
+  const displayBlockCheckbox = !showCheckboxOnHover || selected || (multiSelect && selectionMode);
+
+  const hoverHandlers =
+    showCheckboxOnHover && showCheckbox
+      ? {
+          onMouseEnter: displayCheckbox,
+          onMouseLeave: hideCheckbox,
+          onFocus: displayCheckbox,
+          onBlur: hideCheckbox,
+        }
+      : {};
 
   return (
     <tr
       onClick={onClick}
-      onMouseEnter={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
-      onMouseLeave={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
-      onFocus={showCheckboxOnHover && showCheckbox ? displayCheckbox : undefined}
-      onBlur={showCheckboxOnHover && showCheckbox ? hideCheckbox : undefined}
+      {...hoverHandlers}
       className={getTableRowClassNames(
         selected,
         row.highlight,

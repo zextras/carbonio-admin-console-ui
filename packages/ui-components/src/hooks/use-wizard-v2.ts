@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { findIndex, isEmpty, map, pick, take } from 'lodash-es';
-import { type ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { isEmpty, pick, take } from 'lodash-es';
+import { type ComponentType, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 export type WizardStepV2 = {
 	name: string;
@@ -47,125 +47,120 @@ export const useWizardV2 = ({
 	title,
 	activeStep,
 }: WizardV2Props): any => {
-	const uncontrolledMode = useMemo(() => !data, [data]);
-	const [innerData, setInnerData] = useState(
+	const uncontrolledMode = !data;
+	const [internalData, setInternalData] = useState(
 		isEmpty(data) ? defaultData || { currentStep: steps[0].name, steps: {} } : data,
 	);
+	const innerData = isEmpty(data) ? internalData : data;
 	const dataRef = useRef(innerData);
-	const [currentStep, setCurrentStep] = useState(innerData.currentStep);
+	const [internalStep, setInternalStep] = useState(activeStep || innerData.currentStep);
+	const [prevActiveStep, setPrevActiveStep] = useState(activeStep);
+	if (activeStep !== prevActiveStep) {
+		setPrevActiveStep(activeStep);
+		if (activeStep) {
+			setInternalStep(activeStep);
+		}
+	}
+	const currentStep = isEmpty(data) ? internalStep : data.currentStep;
 	const [isSubmitting, setIsSubmitting] = useState(false);
-	const stepKeys = useMemo(() => map(steps, (step) => step.name), [steps]);
+	const stepKeys = steps.map((step) => step.name);
 
-	const getStepIndex = useCallback(
-		(stepName: string) => findIndex(steps, (step) => step.name === stepName),
-		[steps],
-	);
+	const getStepIndex = (stepName: string) => steps.findIndex((step) => step.name === stepName);
 
-	const currentStepIndex = useMemo(() => getStepIndex(currentStep), [getStepIndex, currentStep]);
-	const isFirstStep = useMemo(() => getStepIndex(currentStep) === 0, [currentStep, getStepIndex]);
+	const currentStepIndex = getStepIndex(currentStep);
+	const isFirstStep = getStepIndex(currentStep) === 0;
 
-	const onSelection = useCallback(
-		(_data: any, replace = true) => {
-			const newState = {
-				currentStep: dataRef.current.currentStep,
-				steps: {
-					...dataRef.current.steps,
-					[currentStep]: replace ? _data : { ...dataRef.current.steps[currentStep], ..._data },
-				},
-			};
-			if (uncontrolledMode) {
-				dataRef.current = newState;
-				setInnerData(newState);
-			}
-			onChange?.(newState);
-		},
-		[uncontrolledMode, currentStep, onChange],
-	);
+	const onSelection = (_data: any, replace = true) => {
+		const newState = {
+			currentStep: dataRef.current.currentStep,
+			steps: {
+				...dataRef.current.steps,
+				[currentStep]: replace ? _data : { ...dataRef.current.steps[currentStep], ..._data },
+			},
+		};
+		if (uncontrolledMode) {
+			dataRef.current = newState;
+			setInternalData(newState);
+		}
+		onChange?.(newState);
+	};
 
-	const resetWizard = useCallback(() => {
+	const resetWizard = () => {
 		const newState = { currentStep: steps[0].name, steps: {}, reset: true };
 		if (uncontrolledMode) {
 			dataRef.current = newState;
-			setInnerData(newState);
-			setCurrentStep(steps[0].name);
+			setInternalData(newState);
+			setInternalStep(steps[0].name);
 		}
 		onChange?.(newState);
-	}, [uncontrolledMode, onChange, steps]);
+	};
 
-	const goToStep = useCallback(
-		(stepName: any) => {
-			const keysToKeep = take(stepKeys, findIndex(stepKeys, (step) => step === stepName) + 1);
-			const newState = {
-				currentStep: stepName,
-				steps: pick(dataRef.current.steps, keysToKeep),
-			};
-			if (uncontrolledMode) {
-				dataRef.current = newState;
-				setInnerData(newState);
-				setCurrentStep(stepName);
-			}
-			onChange?.(newState);
-		},
-		[stepKeys, uncontrolledMode, onChange],
-	);
+	const scrollActiveIntoView = (): void => {
+		const section = sectionRef.current;
+		const active = activeRef.current;
+		if (!section || !active) {
+			return;
+		}
+		const sectionTop = section.getBoundingClientRect().top;
+		const activeTop = active.getBoundingClientRect().top;
+		const sectionBottom = section.getBoundingClientRect().bottom;
+		const activeBottom = active.getBoundingClientRect().bottom;
+		if (activeTop < sectionTop || activeBottom > sectionBottom) {
+			section.scrollBy({ top: activeTop - sectionTop - 16, behavior: 'smooth' });
+		}
+	};
 
-	const goNext = useCallback(async () => {
+	useLayoutEffect(() => {
+		scrollActiveIntoView();
+	}, []);
+
+	const goToStep = (stepName: any) => {
+		const keysToKeep = take(stepKeys, stepKeys.indexOf(stepName) + 1);
+		const newState = {
+			currentStep: stepName,
+			steps: pick(dataRef.current.steps, keysToKeep),
+		};
+		if (uncontrolledMode) {
+			dataRef.current = newState;
+			setInternalData(newState);
+			setInternalStep(stepName);
+		}
+		onChange?.(newState);
+		globalThis.requestAnimationFrame(scrollActiveIntoView);
+	};
+
+	const goNext = async () => {
 		if (currentStepIndex === steps.length - 1) {
 			setIsSubmitting(true);
 			try {
 				await onComplete(dataRef.current);
-			} finally {
+			} catch (error) {
 				setIsSubmitting(false);
+				throw error;
 			}
+			setIsSubmitting(false);
 		} else {
 			goToStep(steps[currentStepIndex + 1].name);
 		}
-	}, [currentStepIndex, steps, onComplete, goToStep]);
+	};
 
-	const goBack = useCallback(() => {
-		currentStepIndex > 0 && goToStep(steps[currentStepIndex - 1].name);
-	}, [goToStep, steps, currentStepIndex]);
-
-	const getData = useCallback(() => dataRef.current, []);
-
-	const canGoToStep = useCallback(
-		(stepName: any) => {
-			const stepIndex = getStepIndex(stepName);
-			return steps[stepIndex]?.canGoNext ? steps[stepIndex].canGoNext() : true;
-		},
-		[getStepIndex, steps],
-	);
-	const canGoNext = useCallback(() => canGoToStep(currentStep), [canGoToStep, currentStep]);
-
-	useEffect(() => {
-		const sectionTop = sectionRef.current?.getBoundingClientRect().top;
-		const activeTop = activeRef.current?.getBoundingClientRect().top;
-		const sectionBottom = sectionRef.current?.getBoundingClientRect().bottom;
-		const activeBottom = activeRef.current?.getBoundingClientRect().bottom;
-		const offset = activeTop - sectionTop - 16;
-		if (activeTop < sectionTop || activeBottom > sectionBottom) {
-			if (sectionRef.current && activeRef.current) {
-				sectionRef.current.scrollBy({ top: offset, behavior: 'smooth' });
-			} else if (sectionRef.current) {
-				sectionRef.current.scrollTo(0, sectionRef.current.scrollHeight);
-			}
+	const goBack = () => {
+		if (currentStepIndex > 0) {
+			goToStep(steps[currentStepIndex - 1].name);
 		}
-		if (activeStep) {
-			goToStep(activeStep);
-		}
-	}, [activeRef, activeStep, currentStep, goToStep, sectionRef]);
+	};
 
-	useEffect(() => {
-		if (!isEmpty(data)) {
-			setCurrentStep(data.currentStep);
-			dataRef.current.currentStep = data.currentStep;
-		}
-	}, [data]);
+	const getData = () => dataRef.current;
+
+	const canGoToStep = (stepName: any) => {
+		const stepIndex = getStepIndex(stepName);
+		return steps[stepIndex]?.canGoNext ? steps[stepIndex].canGoNext() : true;
+	};
+	const canGoNext = () => canGoToStep(currentStep);
 
 	useEffect(() => {
 		if (!isEmpty(data)) {
 			dataRef.current = data;
-			setInnerData(data);
 		}
 	}, [data]);
 

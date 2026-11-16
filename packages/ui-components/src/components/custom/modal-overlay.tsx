@@ -18,8 +18,13 @@ export const ModalOverlay = ({ children, open, maxWidth }: ModalOverlayProps) =>
 
   useEffect(() => {
     if (open) {
+      const defaultOverflowY = document.body.style.overflowY;
       document.body.style.overflowY = 'hidden';
+      return (): void => {
+        document.body.style.overflowY = defaultOverflowY;
+      };
     }
+    return (): void => undefined;
   }, [open]);
 
   return (
