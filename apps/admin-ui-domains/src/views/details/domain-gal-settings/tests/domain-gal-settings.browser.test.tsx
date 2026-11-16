@@ -15,6 +15,7 @@ import { http, HttpResponse } from 'msw';
 import { describe, expect, it } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
+import { formatZimbraDate } from '../../../utility/utils';
 import { DomainGalSettings } from '../domain-gal-settings';
 
 const DOMAIN_NAME = 'example.com';
@@ -467,7 +468,7 @@ describe('DomainGalSettings (browser)', () => {
       await setupAndRender();
 
       await expect.element(page.getByText('Last successful sync')).toBeVisible();
-      await expect.element(page.getByText('03 Nov 2026', { exact: false })).toBeVisible();
+      await expect.element(page.getByText(formatZimbraDate(LAST_SYNC_TIMESTAMP))).toBeVisible();
       await expect.element(page.getByText('enabled', { exact: true })).toBeVisible();
     });
 

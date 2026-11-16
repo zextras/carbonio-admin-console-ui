@@ -60,7 +60,6 @@ export function useCreateGalSyncAccount(domainId: string | undefined) {
       ),
     onSuccess: (response: CreateGalSyncAccountResponse) => {
       requestInitialGalSync(response)
-        .then(() => queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() }))
         .catch(() => {
           createSnackbar({
             key: 'warning',
@@ -73,8 +72,8 @@ export function useCreateGalSyncAccount(domainId: string | undefined) {
             hideButton: true,
             replace: true,
           });
-        });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+        })
+        .finally(() => queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() }));
       if (domainId) {
         queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
         queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
