@@ -15,7 +15,7 @@ describe('getManageExternalVolumeBucketList', () => {
   ];
 
   const matchedBucket: BucketItem = {
-    storeType: 'S3',
+    label: 'S3',
     bucketName: 'bucket-3',
     uuid: 'uuid-3',
   };
