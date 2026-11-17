@@ -366,7 +366,7 @@ export const ManageAccounts = () => {
 	function handleBulkAction({
 		action,
 		selectedCount,
-	}: DataTableBulkActionEvent): BulkUndoPayload {
+	}: DataTableBulkActionEvent): Promise<BulkUndoPayload> {
 		const message = t('label.bulk_action_done', '{{count}} accounts: {{action}}', {
 			count: selectedCount,
 			action: action.label,
@@ -378,9 +378,9 @@ export const ManageAccounts = () => {
 				label: message,
 				hideButton: true,
 			});
-			return undefined;
+			return Promise.resolve(undefined);
 		}
-		return {
+		return Promise.resolve({
 			undo: {
 				message,
 				onUndo: () => {
@@ -392,7 +392,7 @@ export const ManageAccounts = () => {
 					});
 				},
 			},
-		};
+		});
 	}
 
 	// Only name and display name are sortable server-side; clearing them
