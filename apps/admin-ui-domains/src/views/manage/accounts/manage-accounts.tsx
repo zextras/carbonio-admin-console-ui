@@ -363,10 +363,10 @@ export const ManageAccounts = () => {
 		{ id: 'delete', label: t('label.delete', 'Delete'), danger: true },
 	];
 
-	async function handleBulkAction({
+	function handleBulkAction({
 		action,
 		selectedCount,
-	}: DataTableBulkActionEvent): Promise<BulkUndoPayload> {
+	}: DataTableBulkActionEvent): BulkUndoPayload {
 		const message = t('label.bulk_action_done', '{{count}} accounts: {{action}}', {
 			count: selectedCount,
 			action: action.label,
