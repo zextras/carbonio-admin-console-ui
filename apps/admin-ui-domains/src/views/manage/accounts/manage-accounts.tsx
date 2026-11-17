@@ -511,21 +511,24 @@ export const ManageAccounts = () => {
 				<div className={styles.headerBar}>
 					<div className={styles.headerRow}>
 						<div className={styles.headerSide}>
-							<ds-text as="h1" size="medium" weight="bold" color="gray0">
-								{t('domain.account_list', 'Accounts List')}
-							</ds-text>
-						</div>
-						<div className={styles.headerSide}>
-							<ds-text as="p" size="medium" overflow="break-word">
-								{t('domain.accounts.totalAccounts', 'Total Accounts')} :{' '}
-								{totalAccountCreated ?? 0}
-							</ds-text>
+							<div className={styles.headerTitles}>
+								<ds-text as="h1" size="medium" weight="bold" color="gray0">
+									{t('domain.accounts.title', 'Accounts')}
+								</ds-text>
+								<ds-text as="p" size="small" weight="light" color="gray1">
+									{t('domain.accounts.count', '{{count}} accounts', {
+										count: totalAccountCreated ?? 0,
+									})}
+								</ds-text>
+							</div>
 						</div>
 						<div className={styles.headerActions}>
 							<Button
 								color="primary"
 								icon="Plus"
-								aria-label={t('label.create_account', 'Create account')}
+								iconPlacement="left"
+								label={t('label.add_account', 'Add account')}
+								style={{ textTransform: 'none' }}
 								onClick={(): void => setShowCreateAccountView(true)}
 							/>
 						</div>
@@ -557,6 +560,7 @@ export const ManageAccounts = () => {
 								enableRowSelection
 								enableSelectAllPageRows={false}
 								rowActions={rowActions}
+								rowActionsMode="direct"
 								onRowAction={({ action, row }) => {
 									if (action.id === 'edit') {
 										openDetailView(row);
@@ -606,7 +610,7 @@ export const ManageAccounts = () => {
 									totalMatchingCount={totalAccount}
 								/>
 								<DataTableTable
-									aria-label={t('domain.account_list', 'Accounts List')}
+									aria-label={t('domain.accounts.title', 'Accounts')}
 									status={tableStatus}
 									onRetry={() => {
 										void refetch();

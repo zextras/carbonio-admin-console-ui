@@ -185,4 +185,27 @@ describe('DataTableRowActions', () => {
       expect(values[values.length - 1]).toBe(false);
     });
   });
+
+  it('fires onSelect immediately in direct mode without opening a menu', () => {
+    const onSelect = vi.fn();
+    render(
+      <TableUiProvider>
+        <DataTableRowActions
+          rowLabel="Row 1"
+          actions={testActions}
+          mode="direct"
+          open={false}
+          onToggle={vi.fn()}
+          onClose={vi.fn()}
+          onSelect={onSelect}
+        />
+      </TableUiProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: 'Open details for Row 1' }));
+    expect(onSelect).toHaveBeenCalledTimes(1);
+    expect(onSelect).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'open', label: 'Open details' }),
+    );
+    expect(screen.queryByRole('menu')).toBeNull();
+  });
 });

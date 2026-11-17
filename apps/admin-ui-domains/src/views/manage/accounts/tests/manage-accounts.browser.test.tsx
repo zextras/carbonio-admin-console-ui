@@ -190,11 +190,11 @@ describe('ManageAccounts (browser)', () => {
     });
 
     describe('Rendering', () => {
-        it('should render the Accounts List title', async () => {
+        it('should render the Accounts title', async () => {
             setupSearchDirectoryInterceptor();
             await setupBrowserTest(<ManageAccounts />);
             await expect
-                .element(page.getByText('Accounts List', { exact: true }))
+                .element(page.getByRole('heading', { name: 'Accounts' }))
                 .toBeInTheDocument();
         });
 
@@ -704,7 +704,7 @@ describe('ManageAccounts (browser)', () => {
                 .toBeVisible();
         });
 
-        it('should open the account edit view from row actions', async () => {
+        it('should open the account edit view from the open arrow', async () => {
             setupEditAccountInterceptors();
             const describedAccounts = [
                 buildAccount('user1@example.com', 'acc-1', {
@@ -718,8 +718,9 @@ describe('ManageAccounts (browser)', () => {
             await expect
                 .element(page.getByText('Primary mailbox for User One'))
                 .toBeInTheDocument();
-            await page.getByRole('button', { name: /Actions for user1@example.com/ }).click();
-            await page.getByRole('menuitem', { name: 'Edit account' }).click();
+            await page
+                .getByRole('button', { name: /Edit account for user1@example.com/ })
+                .click();
 
             await expect
                 .element(page.getByRole('heading', { name: 'user1@example.com' }))
