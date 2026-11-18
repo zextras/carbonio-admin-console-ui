@@ -160,7 +160,10 @@ describe('fetchLicenseV1Info', () => {
 
       const result = await fetchLicenseV1Info();
 
-      expect(result).toEqual({ type: 'error', error: 'Unauthorized' });
+      expect(result).toMatchObject({
+        type: 'error',
+        error: { kind: 'http-error', status: 401 },
+      });
     });
 
     it('should return an error on server failure', async () => {
@@ -168,15 +171,17 @@ describe('fetchLicenseV1Info', () => {
         HttpResponse.json({}, { status: 500 }),
       );
       const failure = await fetchLicenseV1Info();
-      expect(failure.type).toBe('error');
-      if (failure.type !== 'error') return;
-      expect(failure.error).toContain('500');
+      expect(failure).toMatchObject({
+        type: 'error',
+        error: { kind: 'http-error', status: 500 },
+      });
 
       createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.error());
       const networkFailure = await fetchLicenseV1Info();
-      expect(networkFailure.type).toBe('error');
-      if (networkFailure.type !== 'error') return;
-      expect(networkFailure.error).toContain('Failed to fetch');
+      expect(networkFailure).toMatchObject({
+        type: 'error',
+        error: { kind: 'network-error' },
+      });
     });
 
     it('should return an error when the body is not JSON', async () => {
@@ -186,9 +191,9 @@ describe('fetchLicenseV1Info', () => {
 
       const result = await fetchLicenseV1Info();
 
-      expect(result.type).toBe('error');
+      expect(result).toMatchObject({ type: 'error', error: { kind: 'invalid-payload' } });
       if (result.type !== 'error') return;
-      expect(result.error).toMatch(/invalid license payload/i);
+      expect(result.error.detail).toMatch(/invalid license payload/i);
     });
 
     it('should return an error for an unknown licenseType', async () => {
@@ -198,9 +203,9 @@ describe('fetchLicenseV1Info', () => {
 
       const result = await fetchLicenseV1Info();
 
-      expect(result.type).toBe('error');
+      expect(result).toMatchObject({ type: 'error', error: { kind: 'invalid-payload' } });
       if (result.type !== 'error') return;
-      expect(result.error).toMatch(/invalid license payload/i);
+      expect(result.error.detail).toContain("licenseType 'quantum'");
     });
   });
 });
