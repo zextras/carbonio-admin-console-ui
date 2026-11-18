@@ -5,11 +5,11 @@
  */
 
 import {
-	createBrowserZextrasActionInterceptor,
-	delayedBrowserZextrasActionInterceptor,
-	getQueryClient,
-	resetMockWorker,
-	setupBrowserTest,
+  createBrowserZextrasActionInterceptor,
+  delayedBrowserZextrasActionInterceptor,
+  getQueryClient,
+  resetMockWorker,
+  setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
@@ -36,7 +36,6 @@ function setupActivateSubscriptionTest(
 }
 
 describe('ActivateSubscription', () => {
-
   afterEach(() => {
     resetMockWorker();
   });
@@ -46,23 +45,13 @@ describe('ActivateSubscription', () => {
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
-      await expect.element(page.getByText('No license installed')).toBeVisible();
-      await expect
-        .element(page.getByText(/There is no active license on this Carbonio installation/i))
-        .toBeVisible();
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
       await expect.element(page.getByText('Activate subscription')).toBeVisible();
       await expect
-        .element(
-          page.getByText('Enter the activation token you received from Zextras or your partner'),
-        )
-        .toBeVisible();
-      await expect
-        .element(page.getByRole('link', { name: 'Learn how to get a license' }))
+        .element(page.getByText(/Seems like you don't have a subscription token active yet/i))
         .toBeVisible();
       await expect.element(page.getByRole('img', { name: 'subscription logo' })).toBeVisible();
     });
-
   });
 
   describe('Input interaction', () => {
