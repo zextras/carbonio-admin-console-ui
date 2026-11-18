@@ -62,7 +62,11 @@ export type {
 	UnlimitedComputedLimit,
 } from './services/get-cos-quota';
 export type {
+	LicenseV1AssignedSeatItem,
+	LicenseV1BundleItem,
+	LicenseV1Error,
 	LicenseV1Info,
+	LicenseV1IspInfo,
 	LicenseV1MaintenanceStatus,
 	LicenseV1MeteredInfo,
 	LicenseV1PerpetualInfo,
