@@ -46,10 +46,19 @@ describe('ActivateSubscription', () => {
       setupActivateSubscriptionTest(<ActivateSubscription />);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('No license installed')).toBeVisible();
+      await expect
+        .element(page.getByText(/There is no active license on this Carbonio installation/i))
+        .toBeVisible();
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
       await expect.element(page.getByText('Activate subscription')).toBeVisible();
       await expect
-        .element(page.getByText(/Seems like you don't have a subscription token active yet/i))
+        .element(
+          page.getByText('Enter the activation token you received from Zextras or your partner'),
+        )
+        .toBeVisible();
+      await expect
+        .element(page.getByRole('link', { name: 'Learn how to get a license' }))
         .toBeVisible();
       await expect.element(page.getByRole('img', { name: 'subscription logo' })).toBeVisible();
     });
