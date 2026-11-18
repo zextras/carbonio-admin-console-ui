@@ -34,6 +34,9 @@ type LicenseV1Common = {
   activationToken: string;
   startDate: string;
   endDate: string;
+  totalActiveAccountsNumber: number;
+  // The backend sends null when no license update time is recorded
+  lastSyncTime: string | null;
 };
 
 export type LicenseV1RegularInfo = LicenseV1Common & {

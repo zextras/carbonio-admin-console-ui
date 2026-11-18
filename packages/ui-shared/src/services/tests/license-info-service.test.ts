@@ -20,6 +20,8 @@ describe('fetchLicenseV1Info', () => {
       activationToken: 'activation-token',
       startDate: '2026-01-01T00:00:00.000Z',
       endDate: '2027-01-01T00:00:00.000Z',
+      totalActiveAccountsNumber: 42,
+      lastSyncTime: '2026-11-16T10:30:00.000Z',
       editions: [{ name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 10 }],
       addOns: [{ name: 'ActiveSync', status: 'green', assignedSeats: 3, totalSeats: 10 }],
     };
@@ -44,6 +46,8 @@ describe('fetchLicenseV1Info', () => {
       activationToken: 'activation-token',
       startDate: '2026-01-01T00:00:00.000Z',
       endDate: '2026-12-01T00:00:00.000Z',
+      totalActiveAccountsNumber: 7,
+      lastSyncTime: null,
       editions: [{ name: 'Workspace', status: 'green', assignedSeats: 2, totalSeats: 5 }],
       addOns: [],
     };
@@ -71,6 +75,8 @@ describe('fetchLicenseV1Info', () => {
       maxCarbonioVersion: '25.X.X',
       maintenanceEndDate: '2027-06-30T00:00:00.000Z',
       maintenanceStatus: 'active',
+      totalActiveAccountsNumber: 100,
+      lastSyncTime: '2026-11-15T08:00:00.000Z',
       editions: [{ name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 10 }],
       addOns: [],
     };
@@ -99,6 +105,8 @@ describe('fetchLicenseV1Info', () => {
       nextValidationDeadline: '2026-11-08T00:00:00.000Z',
       renewTimeLeft: 123456789,
       maxTotalSeats: 500,
+      totalActiveAccountsNumber: 250,
+      lastSyncTime: '2026-11-17T12:00:00.000Z',
       addOns: [{ name: 'ActiveSync', status: 'green', assignedSeats: 3 }],
       bundles: [{ name: 'Files', assignedSeats: 12 }],
     };
@@ -127,6 +135,8 @@ describe('fetchLicenseV1Info', () => {
       nextValidationDeadline: '2026-11-08T00:00:00.000Z',
       renewTimeLeft: 987654321,
       maxTotalSeats: 1000,
+      totalActiveAccountsNumber: 900,
+      lastSyncTime: '2026-11-17T09:45:00.000Z',
       addOns: [{ name: 'ActiveSync', status: 'not active', assignedSeats: 0 }],
       bundles: [{ name: 'Chats', assignedSeats: 40 }],
     };
