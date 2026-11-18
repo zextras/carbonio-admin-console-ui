@@ -5,11 +5,11 @@
  */
 
 import {
-	createBrowserZextrasActionInterceptor,
-	delayedBrowserZextrasActionInterceptor,
-	getQueryClient,
-	resetMockWorker,
-	setupBrowserTest,
+  createBrowserZextrasActionInterceptor,
+  delayedBrowserZextrasActionInterceptor,
+  getQueryClient,
+  resetMockWorker,
+  setupBrowserTest,
 } from 'admin-ui-test-utils';
 import { HttpResponse } from 'msw';
 import React from 'react';
@@ -36,7 +36,6 @@ function setupActivateSubscriptionTest(
 }
 
 describe('ActivateSubscription', () => {
-
   afterEach(() => {
     resetMockWorker();
   });
@@ -53,7 +52,6 @@ describe('ActivateSubscription', () => {
         .toBeVisible();
       await expect.element(page.getByRole('img', { name: 'subscription logo' })).toBeVisible();
     });
-
   });
 
   describe('Input interaction', () => {
