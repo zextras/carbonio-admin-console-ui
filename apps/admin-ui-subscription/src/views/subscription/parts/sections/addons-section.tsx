@@ -5,7 +5,7 @@
  */
 
 import { type IconName } from '@zextras/ui-components';
-import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { AddonsCardActive } from '../cards/addons-card-active';
@@ -24,7 +24,7 @@ export type AddonDisplayConfig = {
 
 const ADDON_CONFIGS: Array<AddonDisplayConfig> = [
   {
-    name: 'activesync_addon',
+    name: 'ActiveSync',
     labelKey: 'label.activesync',
     labelDefault: 'ActiveSync',
     icon: 'Sync',
@@ -33,7 +33,7 @@ const ADDON_CONFIGS: Array<AddonDisplayConfig> = [
       'Enables synchronization with mobile devices and external clients, supporting enterprise mobility requirements.',
   },
   {
-    name: 'replica_addon',
+    name: 'MailReplica',
     labelKey: 'label.mailreplica',
     labelDefault: 'UserReplica',
     icon: 'BackupOutline',
@@ -45,17 +45,18 @@ const ADDON_CONFIGS: Array<AddonDisplayConfig> = [
 
 export const AddonsSection = () => {
   const { t } = useTranslation();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: license } = useLicenseV1Info();
 
-  const editionsData = licenseData?.response?.editions ?? [];
+  // Only the regular subscription renders add-ons for now: the other license
+  // types migrate one by one, starting with regular.
+  if (license && license.licenseType !== 'regular') return null;
 
-  const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => {
-    const editionQuantity = editionsData.find((e) => e.name === config.name)?.quantity;
-    return {
-      ...config,
-      active: isUnlimitedQuantity(editionQuantity) || Number(editionQuantity) > 0,
-    };
-  });
+  const addOnsData = license?.addOns ?? [];
+
+  const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => ({
+    ...config,
+    active: addOnsData.some((addOn) => addOn.name === config.name && addOn.totalSeats > 0),
+  }));
 
   return (
     <div className={styles.sectionWrapper}>
@@ -73,7 +74,7 @@ export const AddonsSection = () => {
       <div className={styles.addonsContainer}>
         {presentAddons.map((config) =>
           config.active ? (
-            <AddonsCardActive key={config.name} config={config} editions={editionsData} />
+            <AddonsCardActive key={config.name} config={config} addOns={addOnsData} />
           ) : (
             <AddonsCardInactive key={config.name} config={config} />
           ),

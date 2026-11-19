@@ -139,6 +139,11 @@ import { useDomainSearch } from './react-query/use-domain-search';
 import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
+import {
+	LicenseV1QueryError,
+	licenseV1QueryKeys,
+	useLicenseV1Info,
+} from './react-query/use-license-v1-info';
 import { useMailstoreServers } from './react-query/use-mailstore-servers';
 import { modifyConfigAttributes, useModifyConfig } from './react-query/use-modify-config';
 import {
@@ -316,6 +321,8 @@ export {
   isSameOriginUrlOutsideProxyAllowlist,
   isUnlimitedQuantity,
   isValidDecimalInput,
+  LicenseV1QueryError,
+  licenseV1QueryKeys,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
   LOGIN_V3_CONFIG_PATH,
   loginConfig,
@@ -375,6 +382,7 @@ export {
   useIsAdvanced,
   useLastLoginTimestamp,
   useLicenseInfo,
+  useLicenseV1Info,
   useLocalStorage,
   useLoginConfigStore,
   useMailstoreServers,

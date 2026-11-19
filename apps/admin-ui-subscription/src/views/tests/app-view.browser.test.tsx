@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLoginConfigStore } from '@zextras/ui-shared';
+import { licenseV1QueryKeys, useLoginConfigStore } from '@zextras/ui-shared';
 import {
   getQueryClient,
   grantUserConfigRights,
@@ -38,6 +38,27 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+// REST license: feeds the page children already migrated to /license/v1/info
+const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
+  licenseType: 'regular',
+  status: 'valid',
+  companyName: 'Test End User',
+  partner: 'Test Customer',
+  orderId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
+  carbonioVersion: '24.10.0',
+  activationToken: 'TEST_TOKEN',
+  startDate: '2022-05-10T00:00:00.000Z',
+  endDate: '2029-06-18T00:00:00.000Z',
+  totalActiveAccountsNumber: 7,
+  lastSyncTime: '2026-06-20T00:00:00.000Z',
+  editions: [
+    { name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 500 },
+    { name: 'Workspace', status: 'green', assignedSeats: 10, totalSeats: 100 },
+  ],
+  addOns: [],
+  ...overrides,
+});
+
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
@@ -51,9 +72,15 @@ describe('AppView', () => {
     resetMockWorker();
   });
 
-  function setupTest(licenseData?: Record<string, unknown> | null) {
+  function setupTest(
+    licenseData?: Record<string, unknown> | null,
+    restLicense?: Record<string, unknown>,
+  ) {
     if (licenseData !== undefined) {
       queryClient.setQueryData(['subscription', 'license'], licenseData);
+    }
+    if (licenseData) {
+      queryClient.setQueryData(licenseV1QueryKeys.all, restLicense ?? createRestLicense());
     }
 
     return setupBrowserTest(<AppView />, { queryClient });
@@ -165,7 +192,8 @@ describe('AppView', () => {
       setupTest(licenseData);
 
       await expect.element(page.getByText('Expires on')).toBeVisible();
-      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
+      // The activation token section no longer renders on the regular page
+      expect(page.getByText('Activation token', { exact: true }).elements()).toHaveLength(0);
     });
 
     it('should render PerpetualSubscription for Purchased + PERPETUAL', async () => {
@@ -188,7 +216,7 @@ describe('AppView', () => {
           nextValidationDeadline: new Date('2026-05-20T00:00:00Z').getTime(),
         },
       });
-      setupTest(licenseData);
+      setupTest(licenseData, createRestLicense({ licenseType: 'metered', editions: undefined }));
 
       await expect.element(page.getByText('Data valid until')).toBeVisible();
     });
@@ -220,7 +248,10 @@ describe('AppView', () => {
     });
 
     it('should render Activation token section when license is present and feature flag is on', async () => {
-      const licenseData = createMockLicenseData();
+      // The token section was removed from the regular page; the perpetual page still renders it
+      const licenseData = createMockLicenseData({
+        response: { type: 'Purchased', subType: 'PERPETUAL' },
+      });
       setupTest(licenseData);
 
       await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();

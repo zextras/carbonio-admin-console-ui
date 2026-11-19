@@ -5,7 +5,7 @@
  */
 
 import { type IconName } from '@zextras/ui-components';
-import { isUnlimitedQuantity, useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { EditionCardActive } from '../cards/edition-card-active';
@@ -21,9 +21,9 @@ export type EditionDisplayConfig = {
 };
 
 const MAIN_EDITION_CONFIGS: Array<EditionDisplayConfig> = [
-  { name: 'email_edition', labelKey: 'label.email', labelDefault: 'Email', icon: 'EmailOutline' },
+  { name: 'Email', labelKey: 'label.email', labelDefault: 'Email', icon: 'EmailOutline' },
   {
-    name: 'workspace_edition',
+    name: 'Workspace',
     labelKey: 'label.workspace',
     labelDefault: 'Workspace',
     icon: 'BuildingOutline',
@@ -32,17 +32,17 @@ const MAIN_EDITION_CONFIGS: Array<EditionDisplayConfig> = [
 
 export const ActiveEditionSection = () => {
   const { t } = useTranslation();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: license } = useLicenseV1Info();
 
-  const editionsData = licenseData?.response?.editions ?? [];
+  // Only the regular subscription renders editions for now: the other license
+  // types migrate one by one, starting with regular.
+  if (license && license.licenseType !== 'regular') return null;
+
+  const editionsData = license?.editions ?? [];
 
   const mainEditions: Array<EditionDisplayConfig> = MAIN_EDITION_CONFIGS.map((config) => ({
     ...config,
-    active: editionsData.some(
-      (e) =>
-        e.name === config.name &&
-        (isUnlimitedQuantity(e.quantity) || Number(e.quantity) > 0),
-    ),
+    active: editionsData.some((edition) => edition.name === config.name && edition.totalSeats > 0),
   }));
 
   return (

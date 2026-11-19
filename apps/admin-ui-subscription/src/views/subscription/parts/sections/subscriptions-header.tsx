@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Button } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -14,8 +14,8 @@ import styles from './sections.module.css';
 export const SubscriptionsHeader = () => {
   const { t } = useTranslation();
 
-  const { data: licenseData, isFetching, refetch } = useLicenseInfo();
-  const updateTime = licenseData?.response?.updateTime;
+  const { data: licenseData, isFetching, refetch } = useLicenseV1Info();
+  const lastSyncTime = licenseData?.lastSyncTime;
 
   return (
     <div className={styles.header}>
@@ -23,9 +23,9 @@ export const SubscriptionsHeader = () => {
         {t('label.subscriptions', 'Subscriptions')}
       </ds-text>
       <div className={styles.syncRow}>
-        {updateTime && (
+        {lastSyncTime && (
           <ds-text size="small">
-            {`${t('label.last_sync', 'Last sync')} ${format(updateTime, DATE_FORMAT)}`}
+            {`${t('label.last_sync', 'Last sync')} ${format(lastSyncTime, DATE_FORMAT)}`}
           </ds-text>
         )}
         <Button

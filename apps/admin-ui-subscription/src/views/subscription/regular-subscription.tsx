@@ -6,7 +6,6 @@
 
 import { SubscriptionExpiry } from './parts/cards/subscription-expiry';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
-import { ActivationTokenSection } from './parts/sections/activation-token-section';
 import { ActiveEditionSection } from './parts/sections/active-edition-section';
 import { AddonsSection } from './parts/sections/addons-section';
 import { DetailsSection } from './parts/sections/details-section';
@@ -26,7 +25,6 @@ export const RegularSubscription = () => {
         <AddonsSection />
         <ds-divider style={{ padding: '1.5rem 0' }}></ds-divider>
         <DetailsSection />
-        <ActivationTokenSection />
       </div>
     </div>
   );

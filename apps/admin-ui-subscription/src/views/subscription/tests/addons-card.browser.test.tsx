@@ -20,7 +20,7 @@ const setupTest = (component: React.ReactElement) => {
 };
 
 const addonConfig: AddonDisplayConfig = {
-  name: 'activesync_addon',
+  name: 'ActiveSync',
   labelKey: 'label.activesync',
   labelDefault: 'ActiveSync',
   icon: 'Sync' as IconName,
@@ -29,17 +29,17 @@ const addonConfig: AddonDisplayConfig = {
 };
 
 describe('AddonsCardActive', () => {
-  it('renders nothing when editions is undefined', async () => {
-    setupTest(<AddonsCardActive config={addonConfig} editions={undefined} />);
+  it('renders nothing when addOns is undefined', async () => {
+    setupTest(<AddonsCardActive config={addonConfig} addOns={undefined} />);
 
     expect(page.getByText('Total seat').elements()).toHaveLength(0);
   });
 
-  it('renders the total seat count and active badge when the edition is present', async () => {
+  it('renders the total seat count and active badge when the add-on is present', async () => {
     setupTest(
       <AddonsCardActive
         config={addonConfig}
-        editions={[{ name: 'activesync_addon', quantity: '100' }]}
+        addOns={[{ name: 'ActiveSync', status: 'green', assignedSeats: 1, totalSeats: 100 }]}
       />,
     );
 
@@ -48,13 +48,13 @@ describe('AddonsCardActive', () => {
     await expect.element(page.getByText('ACTIVE', { exact: true })).toBeVisible();
   });
 
-  it('renders correctly when a non-matching edition precedes the matching one', async () => {
+  it('renders correctly when a non-matching add-on precedes the matching one', async () => {
     setupTest(
       <AddonsCardActive
         config={addonConfig}
-        editions={[
-          { name: 'replica_addon', quantity: '0' },
-          { name: 'activesync_addon', quantity: '50' },
+        addOns={[
+          { name: 'MailReplica', status: 'not active', assignedSeats: 0, totalSeats: 0 },
+          { name: 'ActiveSync', status: 'green', assignedSeats: 1, totalSeats: 50 },
         ]}
       />,
     );

@@ -5,7 +5,7 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -15,10 +15,8 @@ import styles from './card.module.css';
 export const SubscriptionStatus = () => {
   const { t } = useTranslation();
 
-  const { data: licenseData } = useLicenseInfo();
-  const startDate = licenseData?.response?.dateStart
-    ? format(licenseData.response.dateStart, DATE_FORMAT)
-    : '';
+  const { data: licenseData } = useLicenseV1Info();
+  const startDate = licenseData?.startDate ? format(licenseData.startDate, DATE_FORMAT) : '';
   const startDateLabel = `${t('label.since', 'Since')} ${startDate}`;
 
   return (
