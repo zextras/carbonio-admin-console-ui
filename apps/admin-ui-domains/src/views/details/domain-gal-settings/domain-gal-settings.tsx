@@ -60,6 +60,9 @@ export const DomainGalSettings = () => {
       name: acc.name,
       zimbraMailHost: acc.zimbraMailHost,
       zimbraDataSourceGalPollingInterval: acc.zimbraDataSourceGalPollingInterval,
+      dataSourceId: acc.dataSourceId,
+      lastSuccessfulSync: acc.lastSuccessfulSync,
+      galStatus: acc.galStatus,
     })),
   );
 
