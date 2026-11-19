@@ -242,6 +242,8 @@ describe('AppView', () => {
 
       await expect.element(page.getByText('Data valid until')).toBeVisible();
       await expect.element(page.getByText('Add-ons', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Feature bundles', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Files & Docs', { exact: true })).toBeVisible();
     });
 
     it('should render TrialSubscription for a trial license', async () => {
