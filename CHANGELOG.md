@@ -1,3 +1,9 @@
+## [0.35.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.3...v0.35.4) (2026-11-19)
+
+### Bug Fixes
+
+* [CO-4469] MigrateBackupVolume Admin UI fix ([#1445](https://github.com/zextras/carbonio-admin-console-ui/issues/1445)) ([d01fe61](https://github.com/zextras/carbonio-admin-console-ui/commit/d01fe613bee663ffa81ef896927736e090788adf))
+
 ## [0.35.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.2...v0.35.3) (2026-11-11)
 
 ### Bug Fixes
