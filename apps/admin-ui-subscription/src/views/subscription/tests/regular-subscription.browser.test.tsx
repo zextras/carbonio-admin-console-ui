@@ -39,7 +39,7 @@ const setupTest = (component: React.ReactElement, license?: Record<string, unkno
   const queryClient = getQueryClient();
 
   // Seeding the cache (license value or null for "no license") avoids any network fetch
-  queryClient.setQueryData(licenseV1QueryKeys.all, license);
+  queryClient.setQueryData(licenseV1QueryKeys.all, license ?? null);
 
   return setupBrowserTest(component, { queryClient });
 };
@@ -78,6 +78,7 @@ describe('RegularSubscription', () => {
       await expect.element(page.getByText('Active edition')).toBeVisible();
       await expect.element(page.getByText('Add-ons')).toBeVisible();
       await expect.element(page.getByText('Details')).toBeVisible();
+      await expect.element(page.getByText('Activation token')).toBeVisible();
     });
   });
 
@@ -240,6 +241,20 @@ describe('RegularSubscription', () => {
       setupTest(<RegularSubscription />, createMockLicense());
 
       await expect.element(page.getByText('Regular', { exact: true })).toBeVisible();
+    });
+  });
+
+  describe('ActivationToken section', () => {
+    it('should render the Activation token heading', async () => {
+      setupTest(<RegularSubscription />, createMockLicense());
+
+      await expect.element(page.getByText('Activation token')).toBeVisible();
+    });
+
+    it('should render the Show token control when a token is present', async () => {
+      setupTest(<RegularSubscription />, createMockLicense());
+
+      await expect.element(page.getByText('Show token')).toBeVisible();
     });
   });
 });

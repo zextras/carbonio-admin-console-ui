@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { licenseV1QueryKeys } from '@zextras/ui-shared';
 import {
 	createBrowserZextrasActionInterceptor,
 	getQueryClient,
@@ -29,27 +30,41 @@ vi.mock('../../../constants', async (importOriginal) => {
 const LONG_TOKEN = 'ABCDEFGHIJKLMNOP';
 const SHORT_TOKEN = 'AB12';
 
-const createMockLicenseData = (responseOverrides: Record<string, unknown> = {}) => ({
-	ok: true,
-	response: {
-		type: 'Purchased',
-		subType: 'REGULAR',
-		expired: false,
-		authenticationToken: LONG_TOKEN,
-		dateStart: new Date('2024-01-15T00:00:00Z').getTime(),
-		lastValidationCheck: new Date('2024-06-01T00:00:00Z').getTime(),
-		nextValidationDeadline: new Date('2024-12-31T00:00:00Z').getTime(),
-		features: [],
-		...responseOverrides,
-	},
+const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
+	licenseType: 'regular',
+	status: 'valid',
+	companyName: 'Test End User',
+	partner: 'Test Customer',
+	orderId: 'ORD-1',
+	carbonioVersion: '24.10.0',
+	activationToken: LONG_TOKEN,
+	startDate: '2024-01-15T00:00:00.000Z',
+	endDate: '2029-01-01T00:00:00.000Z',
+	totalActiveAccountsNumber: 7,
+	lastSyncTime: '2026-06-20T00:00:00.000Z',
+	editions: [],
+	addOns: [],
+	...overrides,
 });
+
+const createMeteredRestLicense = (overrides: Record<string, unknown> = {}) =>
+	createRestLicense({
+		licenseType: 'metered',
+		lastValidationCheck: '2024-06-01T00:00:00.000Z',
+		nextValidationDeadline: '2024-12-31T00:00:00.000Z',
+		renewTimeLeft: 123456789,
+		maxTotalSeats: 500,
+		addOns: [],
+		bundles: [],
+		...overrides,
+	});
 
 const setupTest = (
 	component: React.ReactElement,
-	responseOverrides?: Record<string, unknown>,
+	license?: Record<string, unknown> | null,
 ) => {
 	const queryClient = getQueryClient();
-	queryClient.setQueryData(['subscription', 'license'], createMockLicenseData(responseOverrides));
+	queryClient.setQueryData(licenseV1QueryKeys.all, license ?? createRestLicense());
 	return setupBrowserTest(component, { queryClient });
 };
 
@@ -81,13 +96,13 @@ describe('ActivationTokenSection', () => {
 		});
 
 		it('renders a short token unchanged (no masking)', async () => {
-			setupTest(<ActivationTokenSection />, { authenticationToken: SHORT_TOKEN });
+			setupTest(<ActivationTokenSection />, createRestLicense({ activationToken: SHORT_TOKEN }));
 
 			await expect.element(page.getByText(SHORT_TOKEN, { exact: true })).toBeVisible();
 		});
 
 		it('does not render the Show token control when no token is present', async () => {
-			setupTest(<ActivationTokenSection />, { authenticationToken: undefined });
+			setupTest(<ActivationTokenSection />, createRestLicense({ activationToken: undefined }));
 
 			expect(page.getByText('Show token').elements()).toHaveLength(0);
 			expect(page.getByText('Hide token').elements()).toHaveLength(0);
@@ -224,22 +239,24 @@ describe('ActivationTokenSection', () => {
 	});
 
 	describe('validation rows', () => {
-		it('shows the validation check rows for a non-ISP subscription', async () => {
+		it('omits the validation check rows for a regular subscription', async () => {
 			setupTest(<ActivationTokenSection />);
-
-			await expect.element(page.getByText('Last validation check')).toBeVisible();
-			await expect.element(page.getByText('Next validation check')).toBeVisible();
-		});
-
-		it('hides the validation check rows for an ISP subscription', async () => {
-			setupTest(<ActivationTokenSection />, { type: 'ISP' });
 
 			expect(page.getByText('Last validation check').elements()).toHaveLength(0);
 			expect(page.getByText('Next validation check').elements()).toHaveLength(0);
 		});
 
+		it('shows the validation check rows for a metered subscription with the REST dates', async () => {
+			setupTest(<ActivationTokenSection />, createMeteredRestLicense());
+
+			await expect.element(page.getByText('Last validation check')).toBeVisible();
+			await expect.element(page.getByText(/01\s+Jun\s+2024/)).toBeVisible();
+			await expect.element(page.getByText('Next validation check')).toBeVisible();
+			await expect.element(page.getByText(/31\s+Dec\s+2024/)).toBeVisible();
+		});
+
 		it('renders a dash for a missing start date without crashing', async () => {
-			setupTest(<ActivationTokenSection />, { dateStart: undefined });
+			setupTest(<ActivationTokenSection />, createRestLicense({ startDate: undefined }));
 
 			await expect.element(page.getByText('Start date')).toBeVisible();
 		});

@@ -192,8 +192,7 @@ describe('AppView', () => {
       setupTest(licenseData);
 
       await expect.element(page.getByText('Expires on')).toBeVisible();
-      // The activation token section no longer renders on the regular page
-      expect(page.getByText('Activation token', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
     it('should render PerpetualSubscription for Purchased + PERPETUAL', async () => {
@@ -248,10 +247,7 @@ describe('AppView', () => {
     });
 
     it('should render Activation token section when license is present and feature flag is on', async () => {
-      // The token section was removed from the regular page; the perpetual page still renders it
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'PERPETUAL' },
-      });
+      const licenseData = createMockLicenseData();
       setupTest(licenseData);
 
       await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
