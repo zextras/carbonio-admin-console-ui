@@ -763,65 +763,6 @@ describe('ManageAccounts (browser)', () => {
         });
     });
 
-    describe('Selection reset on query-shape change (#4)', () => {
-        // Review fix #4 resets page AND selection whenever the query shape
-        // changes. Variant A swaps the toolbar (search box included) for
-        // the bulk bar while rows are selected, so a new search cannot be
-        // typed with a live selection; sorting is the query-shape change
-        // that IS reachable from the bulk state and it runs the exact hook
-        // path a new search takes (applyQueryShapeValue ->
-        // resetPageAndSelection). The search half is then exercised from
-        // the restored toolbar to lock the fresh-query flow.
-        it('clears the bulk selection when the query shape changes and serves the next search banner-free', async () => {
-            const accounts = Array.from({ length: 10 }, (_, i) =>
-                buildAccount(`sel-${i + 1}@${DOMAIN_NAME}`, `sel-acc-${i + 1}`, {
-                    displayName: `Sel ${i + 1}`,
-                }),
-            );
-            const initialRequest = setupSearchDirectoryInterceptor(accounts);
-            await setupBrowserTest(<ManageAccounts />);
-            await initialRequest;
-            await expect.element(page.getByText('sel-1@example.com')).toBeInTheDocument();
-
-            const searchInput = page.getByLabelText("I'm looking for this account…");
-            await page.getByRole('checkbox', { name: 'Select row' }).first().click();
-            await expect
-                .element(page.getByRole('toolbar', { name: 'Bulk actions, 1 selected' }))
-                .toBeVisible();
-            await expect.element(searchInput).not.toBeInTheDocument();
-
-            // Sorting is a query-shape change: #4 drops the selection (and
-            // the page) in the same batched event and the server sees the
-            // new sort (name toggles ascending -> descending).
-            const sortedRequest = setupSearchDirectoryInterceptor(accounts);
-            await page.getByRole('button', { name: 'Email' }).click();
-            const sortedParams = await sortedRequest;
-            expect(sortedParams.sortBy).toBe('name');
-            expect(sortedParams.sortAscending).toBe(0);
-
-            await expect
-                .element(page.getByRole('toolbar', { name: /Bulk actions/ }))
-                .not.toBeInTheDocument();
-            await expect.element(searchInput).toBeVisible();
-
-            // The next search starts from the restored toolbar: fresh
-            // query at offset 0, filtered rows, no banner resurrection.
-            const searchRequest = setupSearchDirectoryInterceptor([
-                buildAccount('sel-filtered@example.com', 'sel-acc-filtered', {
-                    displayName: 'Sel Filtered',
-                }),
-            ]);
-            await searchInput.fill('filtered');
-            const searchParams = await searchRequest;
-            expect(String(searchParams.query)).toContain('filtered');
-            expect(searchParams.offset).toBe(0);
-            await expect.element(page.getByText('sel-filtered@example.com')).toBeInTheDocument();
-            await expect
-                .element(page.getByRole('toolbar', { name: /Bulk actions/ }))
-                .not.toBeInTheDocument();
-        }, 20_000);
-    });
-
     describe('Last-page clamp (#5)', () => {
         afterEach(() => {
             resetMockWorker();

@@ -7,9 +7,6 @@ import { useQueryClient } from '@tanstack/react-query';
 import {
 	buildFilterChips,
 	Button,
-	type DataTableBulkAction,
-	type DataTableBulkActionEvent,
-	DataTableBulkBar,
 	type DataTableColumnDef,
 	DataTableCustomize,
 	DataTableFilterChips,
@@ -49,7 +46,6 @@ import {
 	parseAccountListDirectory,
 	useAccountListDirectory,
 } from '../../../services/use-account-list-directory';
-import { useCountAccount } from '../../../services/use-count-account';
 import { useModifyAccountAttributes } from '../../../services/use-modify-account-attributes';
 import { getAccountStatusBadgeTone, getStatusDisplay } from '../../../utils/status';
 import { EditAccount } from '../../edit-account/edit-account';
@@ -102,8 +98,6 @@ type AccountListData = {
 	accounts: Array<AccountListEntry>;
 	total: number;
 };
-
-type BulkUndoPayload = { undo?: { message: string; onUndo: () => void } } | undefined;
 
 function selectAccountListWithTotal(res: { searchTotal?: number }): AccountListData {
 	return {
@@ -250,8 +244,6 @@ export const ManageAccounts = () => {
 		setSorting,
 		pagination,
 		setPagination,
-		rowSelection,
-		setRowSelection,
 		searchString,
 		setSearchString,
 		filters,
@@ -290,7 +282,6 @@ export const ManageAccounts = () => {
 	}
 
 	const modifyAccountAttributes = useModifyAccountAttributes();
-	const { data: totalAccountCreated } = useCountAccount(domainName);
 
 	useQueryErrorSnackbar(error);
 
@@ -356,44 +347,6 @@ export const ManageAccounts = () => {
 	const rowActions: Array<DataTableRowAction> = [
 		{ id: 'edit', label: t('label.edit_account', 'Edit account') },
 	];
-
-	const bulkActions: Array<DataTableBulkAction> = [
-		{ id: 'enable', label: t('label.enable', 'Enable'), reversible: true },
-		{ id: 'disable', label: t('label.disable', 'Disable'), reversible: true },
-		{ id: 'delete', label: t('label.delete', 'Delete'), danger: true },
-	];
-
-	function handleBulkAction({
-		action,
-		selectedCount,
-	}: DataTableBulkActionEvent): Promise<BulkUndoPayload> {
-		const message = t('label.bulk_action_done', '{{count}} accounts: {{action}}', {
-			count: selectedCount,
-			action: action.label,
-		});
-		if (action.danger) {
-			createSnackbar({
-				key: `bulk-${action.id}`,
-				severity: 'success',
-				label: message,
-				hideButton: true,
-			});
-			return Promise.resolve(undefined);
-		}
-		return Promise.resolve({
-			undo: {
-				message,
-				onUndo: () => {
-					createSnackbar({
-						key: `bulk-undo-${action.id}`,
-						severity: 'info',
-						label: t('label.undone', 'Undone'),
-						hideButton: true,
-					});
-				},
-			},
-		});
-	}
 
 	// Only name and display name are sortable server-side; clearing them
 	// falls back to name ascending (the SearchDirectory default).
@@ -497,11 +450,6 @@ export const ManageAccounts = () => {
 		},
 	];
 
-	// Bulk variant A: while rows are selected the bulk bar replaces the
-	// toolbar and the active filter chips (the parts render independently,
-	// so the view owns the swap).
-	const hasSelection = Object.values(rowSelection).some(Boolean);
-
 	const filterChips = buildFilterChips(filters, filterDefs);
 	const showPaginationControls = totalAccount > RECORD_DISPLAY_LIMIT;
 
@@ -517,7 +465,7 @@ export const ManageAccounts = () => {
 								</ds-text>
 								<ds-text as="p" size="small" weight="light" color="gray1">
 									{t('domain.accounts.count', '{{count}} accounts', {
-										count: totalAccountCreated ?? 0,
+										count: totalAccount,
 									})}
 								</ds-text>
 							</div>
@@ -553,12 +501,9 @@ export const ManageAccounts = () => {
 								manualFiltering
 								rowCount={totalAccount}
 								persistenceKey="admin.domains.manage-accounts"
-								state={{ sorting, pagination, rowSelection }}
+								state={{ sorting, pagination }}
 								onSortingChange={handleSortingChange}
 								onPaginationChange={setPagination}
-								onRowSelectionChange={setRowSelection}
-								enableRowSelection
-								enableSelectAllPageRows={false}
 								rowActions={rowActions}
 								rowActionsMode="direct"
 								onRowAction={({ action, row }) => {
@@ -568,32 +513,28 @@ export const ManageAccounts = () => {
 								}}
 							>
 								<DataTableLiveRegion />
-								{!hasSelection && (
-									<DataTableToolbar>
-										<DataTableSearch
-											value={searchString}
-											onSearchChange={setSearchString}
-											placeholder={t(
-												'label.i_am_looking_for_this_account',
-												`I'm looking for this account…`,
-											)}
-											label={t(
-												'label.i_am_looking_for_this_account',
-												`I'm looking for this account…`,
-											)}
-										/>
-										<DataTableFilters
-											filterDefs={filterDefs}
-											filters={filters}
-											onFiltersChange={setFilters}
-											// Page/selection reset is owned by the server
-											// table state hook (query-shape change).
-											onApplyResetSelection={noop}
-										/>
-										<DataTableCustomize />
-									</DataTableToolbar>
-								)}
-								{!hasSelection && filterChips.length > 0 && (
+								<DataTableToolbar>
+									<DataTableSearch
+										value={searchString}
+										onSearchChange={setSearchString}
+										placeholder={t(
+											'label.i_am_looking_for_this_account',
+											`I'm looking for this account…`,
+										)}
+										label={t(
+											'label.i_am_looking_for_this_account',
+											`I'm looking for this account…`,
+										)}
+									/>
+									<DataTableFilters
+										filterDefs={filterDefs}
+										filters={filters}
+										onFiltersChange={setFilters}
+										onApplyResetSelection={noop}
+									/>
+									<DataTableCustomize />
+								</DataTableToolbar>
+								{filterChips.length > 0 && (
 									<DataTableFilterChips
 										chips={filterChips}
 										onRemoveChip={(chip) => {
@@ -604,11 +545,6 @@ export const ManageAccounts = () => {
 										}}
 									/>
 								)}
-								<DataTableBulkBar
-									actions={bulkActions}
-									onBulkAction={handleBulkAction}
-									totalMatchingCount={totalAccount}
-								/>
 								<DataTableTable
 									aria-label={t('domain.accounts.title', 'Accounts')}
 									status={tableStatus}
