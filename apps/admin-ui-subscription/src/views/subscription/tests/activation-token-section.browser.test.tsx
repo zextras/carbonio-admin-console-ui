@@ -249,9 +249,9 @@ describe('ActivationTokenSection', () => {
 		it('shows the validation check rows for a metered subscription with the REST dates', async () => {
 			setupTest(<ActivationTokenSection />, createMeteredRestLicense());
 
-			await expect.element(page.getByText('Last validation check')).toBeVisible();
+			await expect.element(page.getByText('Last sync')).toBeVisible();
 			await expect.element(page.getByText(/01\s+Jun\s+2024/)).toBeVisible();
-			await expect.element(page.getByText('Next validation check')).toBeVisible();
+			await expect.element(page.getByText('Next sync')).toBeVisible();
 			await expect.element(page.getByText(/31\s+Dec\s+2024/)).toBeVisible();
 		});
 

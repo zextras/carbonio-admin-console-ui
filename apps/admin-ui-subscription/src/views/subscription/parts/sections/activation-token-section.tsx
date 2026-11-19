@@ -238,7 +238,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
             <>
               <div className={styles.detailItem}>
                 <ds-text size="small" className={styles.detailLabel}>
-                  {t('core.subscription.lastValidationCheck', 'Last validation check')}
+                  {t('label.last_sync', 'Last sync')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
                   <ds-text className={styles.detailValue}>
@@ -249,7 +249,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
 
               <div className={styles.detailItem}>
                 <ds-text size="small" className={styles.detailLabel}>
-                  {t('core.subscription.nextValidationCheck', 'Next validation check')}
+                  {t('label.next_sync', 'Next sync')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
                   <ds-text className={styles.detailValue}>
