@@ -150,6 +150,11 @@
   padding-top: 0.75rem;
 }
 
+/* Forces an item onto its own full-width row beneath the previous one */
+.activationFullWidthRow {
+  grid-column: 1 / -1;
+}
+
 .showTokenButton {
   border: none;
   background: transparent;

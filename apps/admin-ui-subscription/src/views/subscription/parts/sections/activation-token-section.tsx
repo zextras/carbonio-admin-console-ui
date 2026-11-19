@@ -223,7 +223,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
             </div>
           </div>
 
-          <div className={styles.detailItem}>
+          <div className={`${styles.detailItem} ${styles.activationFullWidthRow}`}>
             <ds-text size="small" className={styles.detailLabel}>
               {t('core.subscription.startDate', 'Start date')}
             </ds-text>
