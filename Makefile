@@ -98,3 +98,6 @@ deploy:
 ## deploy-dev: Deploy development build to TEST_HOST defined in .env
 deploy-dev:
 	pnpm run deploy:dev ${TEST_HOST}
+
+dev:
+	VITE_TARGET=${TEST_HOST} pnpm dev

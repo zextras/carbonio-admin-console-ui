@@ -20,7 +20,7 @@ describe('listBuckets', () => {
     vi.clearAllMocks();
   });
 
-  it('calls postSoapFetchRequest with the listBuckets SOAP request', async () => {
+  it('calls postSoapFetchRequest with the listS3Connector SOAP request', async () => {
     const content = JSON.stringify({ ok: true, response: { values: [] } });
     vi.mocked(postSoapFetchRequest).mockResolvedValue({
       Body: { response: { content } },
@@ -32,9 +32,8 @@ describe('listBuckets', () => {
       '/service/admin/soap/zextras',
       {
         _jsns: ZIMBRA_ADMIN_URN,
-        module: 'ZxCore',
-        action: 'listBuckets',
-        type: 'all',
+        module: 'ZxPowerstore',
+        action: 'listS3Connector',
         targetServer: 'mail.example.com',
         showSecrets: true,
       },
@@ -43,7 +42,10 @@ describe('listBuckets', () => {
   });
 
   it('parses and returns the JSON content from the SOAP response', async () => {
-    const buckets = { ok: true, response: { values: [{ storeType: 'S3', bucketName: 'b1', uuid: 'u1' }] } };
+    const buckets = {
+      ok: true,
+      response: { values: [{ label: 'S3', bucketName: 'b1', uuid: 'u1' }] },
+    };
     vi.mocked(postSoapFetchRequest).mockResolvedValue({
       Body: { response: { content: JSON.stringify(buckets) } },
     } as never);

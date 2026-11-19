@@ -109,8 +109,8 @@ function mockZextrasListBucketsWithData() {
             ok: true,
             response: {
               values: [
-                { storeType: 'S3', bucketName: 'bucket-1', uuid: 'uuid-1' },
-                { storeType: 'S3', bucketName: 'bucket-2', uuid: 'uuid-2' },
+                { label: 'S3', bucketName: 'bucket-1', uuid: 'uuid-1' },
+                { label: 'S3', bucketName: 'bucket-2', uuid: 'uuid-2' },
               ],
             },
           }),

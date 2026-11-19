@@ -53,7 +53,7 @@ export function getManageExternalVolumeBucketList(
   }
   if (matchedBucket) {
     return {
-      label: `${matchedBucket?.storeType} | ${matchedBucket?.bucketName}`,
+      label: `${matchedBucket?.label} | ${matchedBucket?.bucketName}`,
       value: matchedBucket?.uuid,
     };
   }
@@ -75,7 +75,7 @@ export const VolumeManagement = ({
 
   const bucketList: Array<BucketItem> = bucketData?.buckets ?? [];
   const bucketListOption: Array<SelectOption> = bucketList.map((item) => ({
-    label: `${item?.storeType} | ${item?.bucketName}`,
+    label: `${item?.label} | ${item?.bucketName}`,
     value: item?.uuid,
   }));
 
