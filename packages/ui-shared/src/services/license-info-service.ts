@@ -139,7 +139,9 @@ function describeInvalidPayload(text: string): string {
 
 export const fetchLicenseV1Info = async (): Promise<LicenseV1Result> => {
   try {
-    const response = await fetch('/license/v1/info');
+    // Public path: nginx exposes the license sidecar under /services/license/
+    // (proxy_pass http://carbonio-license/license/), same convention as /services/catalog/
+    const response = await fetch('/services/license/v1/info');
 
     if (response.status === 404) {
       return { type: 'no-license' };

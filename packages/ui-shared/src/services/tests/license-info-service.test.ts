@@ -27,7 +27,7 @@ describe('fetchLicenseV1Info', () => {
     };
 
     it('should return success with the parsed license', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+      createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(license));
 
       const result = await fetchLicenseV1Info();
 
@@ -53,7 +53,7 @@ describe('fetchLicenseV1Info', () => {
     };
 
     it('should return success with the parsed license', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+      createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(license));
 
       const result = await fetchLicenseV1Info();
 
@@ -82,7 +82,7 @@ describe('fetchLicenseV1Info', () => {
     };
 
     it('should return success with the maintenance fields', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+      createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(license));
 
       const result = await fetchLicenseV1Info();
 
@@ -112,7 +112,7 @@ describe('fetchLicenseV1Info', () => {
     };
 
     it('should return success with bundles, maxTotalSeats and validation dates', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+      createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(license));
 
       const result = await fetchLicenseV1Info();
 
@@ -142,7 +142,7 @@ describe('fetchLicenseV1Info', () => {
     };
 
     it('should return success with the parsed license', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(license));
+      createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(license));
 
       const result = await fetchLicenseV1Info();
 
@@ -152,7 +152,7 @@ describe('fetchLicenseV1Info', () => {
 
   describe('no license', () => {
     it('should return no-license on 404', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () =>
+      createAPIInterceptor('get', '/services/license/v1/info', () =>
         HttpResponse.json({}, { status: 404 }),
       );
 
@@ -164,7 +164,7 @@ describe('fetchLicenseV1Info', () => {
 
   describe('error handling', () => {
     it('should return an error on 401 without redirecting to login', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () =>
+      createAPIInterceptor('get', '/services/license/v1/info', () =>
         HttpResponse.json({}, { status: 401 }),
       );
 
@@ -177,7 +177,7 @@ describe('fetchLicenseV1Info', () => {
     });
 
     it('should return an error on server failure', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () =>
+      createAPIInterceptor('get', '/services/license/v1/info', () =>
         HttpResponse.json({}, { status: 500 }),
       );
       const failure = await fetchLicenseV1Info();
@@ -186,7 +186,7 @@ describe('fetchLicenseV1Info', () => {
         error: { kind: 'http-error', status: 500 },
       });
 
-      createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.error());
+      createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.error());
       const networkFailure = await fetchLicenseV1Info();
       expect(networkFailure).toMatchObject({
         type: 'error',
@@ -195,7 +195,7 @@ describe('fetchLicenseV1Info', () => {
     });
 
     it('should return an error when the body is not JSON', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () =>
+      createAPIInterceptor('get', '/services/license/v1/info', () =>
         HttpResponse.text('<html>Bad Gateway</html>', { status: 200 }),
       );
 
@@ -207,7 +207,7 @@ describe('fetchLicenseV1Info', () => {
     });
 
     it('should return an error for an unknown licenseType', async () => {
-      createAPIInterceptor('get', '/license/v1/info', () =>
+      createAPIInterceptor('get', '/services/license/v1/info', () =>
         HttpResponse.json({ licenseType: 'quantum', status: 'valid' }),
       );
 

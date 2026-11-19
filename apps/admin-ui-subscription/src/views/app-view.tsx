@@ -5,10 +5,11 @@
  */
 import { PageHeader } from '@zextras/ui-components';
 import {
-  useBreakpoint,
-  useLicenseInfo,
-  useNewSubscriptionFeatureFlag,
-  usePrimaryBarState,
+	type LicenseV1Type,
+	useBreakpoint,
+	useLicenseV1Info,
+	useNewSubscriptionFeatureFlag,
+	usePrimaryBarState,
 } from '@zextras/ui-shared';
 import { type CSSProperties, type ReactNode } from 'react';
 
@@ -32,12 +33,9 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProper
   };
 }
 
-function getSubscriptionView(
-  subscriptionType: string | undefined,
-  subType: string | undefined,
-  featureFlag: boolean,
-): ReactNode {
-  if (!subscriptionType) {
+function getSubscriptionView(licenseType: LicenseV1Type | null, featureFlag: boolean): ReactNode {
+  // No license (or no usable license data): the admin lands on the activation page
+  if (!licenseType) {
     return <ActivateSubscription />;
   }
 
@@ -45,16 +43,16 @@ function getSubscriptionView(
     return <LegacySubscription />;
   }
 
-  if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
+  if (licenseType === 'regular') {
     return <RegularSubscription />;
   }
-  if (subscriptionType === 'Purchased' && subType === 'PERPETUAL') {
+  if (licenseType === 'perpetual') {
     return <PerpetualSubscription />;
   }
-  if (subscriptionType === 'Purchased' && subType === 'TRIAL') {
+  if (licenseType === 'trial') {
     return <TrialSubscription />;
   }
-  if (subscriptionType === 'Purchased' && subType === 'METERED') {
+  if (licenseType === 'metered' || licenseType === 'isp') {
     return <MeteredSubscription />;
   }
   return null;
@@ -65,9 +63,8 @@ export const AppView = () => {
   const breakpoint = useBreakpoint();
   const featureFlag = useNewSubscriptionFeatureFlag();
 
-  const { data: licenseData, isLoading } = useLicenseInfo();
-  const subscriptionType = licenseData?.response?.type;
-  const subType = licenseData?.response?.subType;
+  const { data: license, isLoading } = useLicenseV1Info();
+  const licenseType = license?.licenseType ?? null;
 
   return (
     <div className={styles.root}>
@@ -78,7 +75,7 @@ export const AppView = () => {
             className={styles.detailContent}
             style={getContainerStyle(breakpoint, isPrimaryBarExpanded)}
           >
-            {getSubscriptionView(subscriptionType, subType, featureFlag)}
+            {getSubscriptionView(licenseType, featureFlag)}
           </div>
         </div>
       )}

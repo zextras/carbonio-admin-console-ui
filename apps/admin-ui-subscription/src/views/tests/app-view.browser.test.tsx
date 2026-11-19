@@ -16,7 +16,9 @@ import { page } from 'vitest/browser';
 
 import { AppView } from '../app-view';
 
-const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
+// SOAP license: feeds the pages that still host SOAP cards (legacy page,
+// MaxVersion, metered cards, trial banner)
+const createSoapLicenseData = (responseOverrides: Record<string, unknown> = {}) => ({
   ok: true,
   response: {
     type: 'Purchased',
@@ -34,11 +36,12 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
     authenticationToken: 'TEST_TOKEN',
     endUser: 'Test End User',
     features: [],
+    maxCarbonioVersion: '23.12.0',
+    ...responseOverrides,
   },
-  ...overrides,
 });
 
-// REST license: feeds the page children already migrated to /license/v1/info
+// REST license: drives the routing and every page already migrated to /license/v1/info
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'regular',
   status: 'valid',
@@ -59,6 +62,28 @@ const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   ...overrides,
 });
 
+const createPerpetualRestLicense = (overrides: Record<string, unknown> = {}) =>
+  createRestLicense({
+    licenseType: 'perpetual',
+    maxCarbonioVersion: '23.12.0',
+    maintenanceEndDate: '2025-06-18T00:00:00.000Z',
+    maintenanceStatus: 'active',
+    ...overrides,
+  });
+
+const createMeteredRestLicense = (overrides: Record<string, unknown> = {}) =>
+  createRestLicense({
+    licenseType: 'metered',
+    editions: undefined,
+    lastValidationCheck: '2026-04-20T00:00:00.000Z',
+    nextValidationDeadline: '2026-05-20T00:00:00.000Z',
+    renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
+    maxTotalSeats: 500,
+    addOns: [],
+    bundles: [{ name: 'Files', assignedSeats: 12 }],
+    ...overrides,
+  });
+
 describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
@@ -72,15 +97,20 @@ describe('AppView', () => {
     resetMockWorker();
   });
 
+  /**
+   * Seeds the REST license cache (routing + migrated pages). Passing `undefined`
+   * leaves the cache empty so the query fetches and fails (no valid license data).
+   * The optional SOAP license feeds pages that still host SOAP cards.
+   */
   function setupTest(
-    licenseData?: Record<string, unknown> | null,
-    restLicense?: Record<string, unknown>,
+    restLicense: Record<string, unknown> | null = null,
+    soapLicense?: Record<string, unknown>,
   ) {
-    if (licenseData !== undefined) {
-      queryClient.setQueryData(['subscription', 'license'], licenseData);
+    if (restLicense !== undefined) {
+      queryClient.setQueryData(licenseV1QueryKeys.all, restLicense);
     }
-    if (licenseData) {
-      queryClient.setQueryData(licenseV1QueryKeys.all, restLicense ?? createRestLicense());
+    if (soapLicense) {
+      queryClient.setQueryData(['subscription', 'license'], soapLicense);
     }
 
     return setupBrowserTest(<AppView />, { queryClient });
@@ -88,22 +118,21 @@ describe('AppView', () => {
 
   describe('Breadcrumb', () => {
     it('should always render the breadcrumb', async () => {
-      setupTest(null);
+      setupTest();
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
     });
   });
 
-  describe('No license (subscriptionType is null)', () => {
-    it('should render ActivateSubscription when license data is null', async () => {
+  describe('No license', () => {
+    it('should render ActivateSubscription when the REST license data is null', async () => {
       setupTest(null);
 
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
     });
 
-    it('should render ActivateSubscription when license type is None', async () => {
-      const noneLicense = { ok: true, response: { type: 'None', features: [] } };
-      setupTest(noneLicense as Record<string, unknown>);
+    it('should render ActivateSubscription when the REST license request fails', async () => {
+      setupTest(undefined);
 
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
     });
@@ -121,44 +150,43 @@ describe('AppView', () => {
       useLoginConfigStore.setState({
         featureFlags: { enforceSubscriptionRequirements: false },
       });
-      const licenseData = createMockLicenseData();
-      setupTest(licenseData);
+      setupTest(createRestLicense(), createSoapLicenseData());
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
 
-    it('should render legacy Subscription for Purchased + PERPETUAL with feature flag off', async () => {
+    it('should render legacy Subscription for a perpetual license with feature flag off', async () => {
       useLoginConfigStore.setState({
         featureFlags: { enforceSubscriptionRequirements: false },
       });
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'PERPETUAL' },
-      });
-      setupTest(licenseData);
+      setupTest(
+        createPerpetualRestLicense(),
+        createSoapLicenseData({ response: { subType: 'PERPETUAL', maxCarbonioVersion: '23.12.0' } }),
+      );
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
 
-    it('should render legacy Subscription for ISP license with feature flag off', async () => {
+    it('should render legacy Subscription for an ISP license with feature flag off', async () => {
       useLoginConfigStore.setState({
         featureFlags: { enforceSubscriptionRequirements: false },
       });
-      const licenseData = createMockLicenseData({
-        response: { type: 'ISP' },
-      });
-      setupTest(licenseData);
+      setupTest(
+        createMeteredRestLicense({ licenseType: 'isp' }),
+        createSoapLicenseData({ response: { type: 'ISP' } }),
+      );
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
 
-    it('should render legacy Subscription for Purchased + TRIAL with feature flag off', async () => {
+    it('should render legacy Subscription for a trial license with feature flag off', async () => {
       useLoginConfigStore.setState({
         featureFlags: { enforceSubscriptionRequirements: false },
       });
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'TRIAL' },
-      });
-      setupTest(licenseData);
+      setupTest(
+        createRestLicense({ licenseType: 'trial' }),
+        createSoapLicenseData({ response: { subType: 'TRIAL', type: 'Trial' } }),
+      );
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
@@ -167,10 +195,7 @@ describe('AppView', () => {
       useLoginConfigStore.setState({
         featureFlags: { enforceSubscriptionRequirements: false },
       });
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'REGULAR' },
-      });
-      setupTest(licenseData);
+      setupTest(createRestLicense(), createSoapLicenseData());
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
       const expiresOnElements = page.getByText('Expires on').elements();
@@ -185,60 +210,54 @@ describe('AppView', () => {
       });
     });
 
-    it('should render RegularSubscription for Purchased + REGULAR', async () => {
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'REGULAR' },
-      });
-      setupTest(licenseData);
+    it('should render RegularSubscription for a regular license', async () => {
+      setupTest(createRestLicense());
 
       await expect.element(page.getByText('Expires on')).toBeVisible();
       await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
-    it('should render PerpetualSubscription for Purchased + PERPETUAL', async () => {
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'PERPETUAL' },
-      });
-      setupTest(licenseData);
+    it('should render PerpetualSubscription for a perpetual license', async () => {
+      setupTest(
+        createPerpetualRestLicense(),
+        createSoapLicenseData({ response: { subType: 'PERPETUAL', maxCarbonioVersion: '23.12.0' } }),
+      );
 
       await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
     });
 
-    it('should render MeteredSubscription for Purchased + METERED', async () => {
-      const licenseData = createMockLicenseData({
-        response: {
-          type: 'Purchased',
-          subType: 'METERED',
-          renewDaysLeft: 15,
-          renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
-          lastValidationCheck: new Date('2026-04-20T00:00:00Z').getTime(),
-          nextValidationDeadline: new Date('2026-05-20T00:00:00Z').getTime(),
-        },
-      });
-      setupTest(licenseData, createRestLicense({ licenseType: 'metered', editions: undefined }));
+    it('should render MeteredSubscription for a metered license', async () => {
+      setupTest(
+        createMeteredRestLicense(),
+        createSoapLicenseData({
+          response: {
+            subType: 'METERED',
+            renewDaysLeft: 15,
+            renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
+            lastValidationCheck: new Date('2026-04-20T00:00:00Z').getTime(),
+            nextValidationDeadline: new Date('2026-05-20T00:00:00Z').getTime(),
+          },
+        }),
+      );
 
       await expect.element(page.getByText('Data valid until')).toBeVisible();
     });
 
-    it('should render TrialSubscription for Purchased + TRIAL', async () => {
-      const licenseData = createMockLicenseData({
-        response: {
-          type: 'Purchased',
-          subType: 'TRIAL',
-          dateEnd: new Date('2029-06-18T00:00:00Z').getTime(),
-        },
-      });
-      setupTest(licenseData);
+    it('should render TrialSubscription for a trial license', async () => {
+      setupTest(
+        createRestLicense({ licenseType: 'trial' }),
+        createSoapLicenseData({
+          response: { subType: 'TRIAL', type: 'Trial', dateEnd: new Date('2029-06-18T00:00:00Z').getTime() },
+        }),
+      );
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
-      await expect.element(page.getByText('Active edition')).toBeVisible();
+      // Editions render only for the regular license type
+      expect(page.getByText('Active edition', { exact: true }).elements()).toHaveLength(0);
     });
 
-    it('should render empty for unknown type with feature flag on', async () => {
-      const licenseData = createMockLicenseData({
-        response: { type: 'Unknown' },
-      });
-      setupTest(licenseData);
+    it('should render empty for an unknown license type with feature flag on', async () => {
+      setupTest(createRestLicense({ licenseType: 'quantum' }));
 
       const detailsElements = page.getByText('Details', { exact: true }).elements();
       expect(detailsElements).toHaveLength(0);
@@ -247,27 +266,21 @@ describe('AppView', () => {
     });
 
     it('should render Activation token section when license is present and feature flag is on', async () => {
-      const licenseData = createMockLicenseData();
-      setupTest(licenseData);
+      setupTest(createRestLicense());
 
       await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
     });
 
     it('should not render legacy Subscription when feature flag is on and type matches', async () => {
-      const licenseData = createMockLicenseData({
-        response: { type: 'Purchased', subType: 'REGULAR' },
-      });
-      setupTest(licenseData);
+      setupTest(createRestLicense());
 
-      const detailsElements = page.getByText('Details', { exact: true }).elements();
-      expect(detailsElements).toHaveLength(0);
+      await expect.element(page.getByText('Active edition', { exact: true })).toBeVisible();
     });
   });
 
   describe('Feature flag initialization', () => {
     it('should default to legacy Subscription when feature flag is unset', async () => {
-      const licenseData = createMockLicenseData();
-      setupTest(licenseData);
+      setupTest(createRestLicense(), createSoapLicenseData());
 
       await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
@@ -275,8 +288,7 @@ describe('AppView', () => {
 
   describe('RouteContainer layout', () => {
     it('should render content inside a container with correct structure', async () => {
-      const licenseData = createMockLicenseData();
-      const result = await setupTest(licenseData);
+      const result = await setupTest(createRestLicense(), createSoapLicenseData());
 
       const outerDiv = result.container.firstChild as HTMLElement;
       expect(outerDiv).not.toBeNull();

@@ -276,6 +276,9 @@ describe('useActivateLicense', () => {
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['subscription', 'license'],
     });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['license', 'v1-info'],
+    });
     invalidateSpy.mockRestore();
   });
 });
@@ -301,6 +304,9 @@ describe('invalidateLicenseQuery', () => {
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['subscription', 'license'],
     });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['license', 'v1-info'],
+    });
     invalidateSpy.mockRestore();
   });
 });
@@ -324,6 +330,9 @@ describe('useRemoveLicense', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['subscription', 'license'],
+    });
+    expect(invalidateSpy).toHaveBeenCalledWith({
+      queryKey: ['license', 'v1-info'],
     });
     invalidateSpy.mockRestore();
   });

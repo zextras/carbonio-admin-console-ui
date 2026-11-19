@@ -11,6 +11,7 @@ import { useTranslation } from 'react-i18next';
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
+import { licenseV1QueryKeys } from './use-license-v1-info';
 export type LicenseType = 'ISP' | 'Purchased' | 'None';
 
 export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
@@ -144,6 +145,7 @@ export const useVersion = () => {
 
 export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryClient>): void {
   queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+  queryClient.invalidateQueries({ queryKey: licenseV1QueryKeys.all });
 }
 
 export const useActivateLicense = () => {
@@ -158,7 +160,7 @@ export const useActivateLicense = () => {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+      invalidateLicenseQuery(queryClient);
     },
   });
 };
@@ -183,7 +185,7 @@ export const useRemoveLicense = () => {
             ),
           replace: true,
         });
-        queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+        invalidateLicenseQuery(queryClient);
       } else {
         createSnackbar({
           key: '1',

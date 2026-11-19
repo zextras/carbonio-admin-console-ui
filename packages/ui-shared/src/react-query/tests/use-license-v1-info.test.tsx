@@ -48,13 +48,13 @@ function createWrapper(queryClient: QueryClient) {
 
 describe('queryFnLicenseV1Info', () => {
 	it('should unwrap the license on success', async () => {
-		createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(regularLicense));
+		createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(regularLicense));
 
 		await expect(queryFnLicenseV1Info()).resolves.toEqual(regularLicense);
 	});
 
 	it('should return null when no license is installed', async () => {
-		createAPIInterceptor('get', '/license/v1/info', () =>
+		createAPIInterceptor('get', '/services/license/v1/info', () =>
 			HttpResponse.json({}, { status: 404 }),
 		);
 
@@ -62,7 +62,7 @@ describe('queryFnLicenseV1Info', () => {
 	});
 
 	it('should throw a LicenseV1QueryError carrying the LicenseV1Error on failure', async () => {
-		createAPIInterceptor('get', '/license/v1/info', () =>
+		createAPIInterceptor('get', '/services/license/v1/info', () =>
 			HttpResponse.json({}, { status: 500 }),
 		);
 
@@ -115,7 +115,7 @@ describe('licenseV1Retry', () => {
 
 describe('useLicenseV1Info', () => {
 	it('should return the license as data', async () => {
-		createAPIInterceptor('get', '/license/v1/info', () => HttpResponse.json(regularLicense));
+		createAPIInterceptor('get', '/services/license/v1/info', () => HttpResponse.json(regularLicense));
 		const queryClient = createQueryClient();
 
 		const { result } = renderHook(() => useLicenseV1Info(), {
@@ -127,7 +127,7 @@ describe('useLicenseV1Info', () => {
 	});
 
 	it('should return null data without error state when no license is installed', async () => {
-		createAPIInterceptor('get', '/license/v1/info', () =>
+		createAPIInterceptor('get', '/services/license/v1/info', () =>
 			HttpResponse.json({}, { status: 404 }),
 		);
 		const queryClient = createQueryClient();
@@ -143,7 +143,7 @@ describe('useLicenseV1Info', () => {
 
 	it('should retry a 500 twice before surfacing the error', async () => {
 		let calls = 0;
-		createAPIInterceptor('get', '/license/v1/info', () => {
+		createAPIInterceptor('get', '/services/license/v1/info', () => {
 			calls += 1;
 			return HttpResponse.json({}, { status: 500 });
 		});
@@ -160,7 +160,7 @@ describe('useLicenseV1Info', () => {
 
 	it('should not retry an invalid-payload failure', async () => {
 		let calls = 0;
-		createAPIInterceptor('get', '/license/v1/info', () => {
+		createAPIInterceptor('get', '/services/license/v1/info', () => {
 			calls += 1;
 			return HttpResponse.json({ licenseType: 'quantum', status: 'valid' });
 		});
