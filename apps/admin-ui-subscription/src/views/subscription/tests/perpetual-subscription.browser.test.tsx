@@ -98,10 +98,12 @@ describe('PerpetualSubscription', () => {
       expect(page.getByText('Add-ons', { exact: true }).elements()).toHaveLength(0);
     });
 
-    it('should render the Update data button', async () => {
+    it('should not render the Update data button', async () => {
       setupTest(<PerpetualSubscription />, createMockLicenseData());
 
-      await expect.element(page.getByText('Update data')).toBeVisible();
+      await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
+
+      expect(await page.getByRole('button', { name: 'Update data' }).elements()).toHaveLength(0);
     });
 
     it('should render the last sync time when present', async () => {

@@ -52,10 +52,12 @@ describe('RegularSubscription', () => {
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
     });
 
-    it('should render the Update data button', async () => {
+    it('should not render the Update data button', async () => {
       setupTest(<RegularSubscription />, createMockLicense());
 
-      await expect.element(page.getByText('Update data')).toBeVisible();
+      await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
+
+      expect(await page.getByRole('button', { name: 'Update data' }).elements()).toHaveLength(0);
     });
 
     it('should render the last sync time when present', async () => {
