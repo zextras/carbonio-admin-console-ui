@@ -194,6 +194,18 @@ describe('CreateNewCos wizard', () => {
         .element(page.getByText('Everything in Email, plus Files & Docs and Chat & Video.'))
         .toBeVisible();
     });
+
+    it('links each edition description to its radio', async () => {
+      await setupWizardTest();
+      await expect
+        .element(page.getByRole('radio', { name: 'Email edition' }))
+        .toHaveAccessibleDescription(
+          'Includes email, mobile apps, push notifications, and real-time backup.',
+        );
+      await expect
+        .element(page.getByRole('radio', { name: 'Workspace edition' }))
+        .toHaveAccessibleDescription('Everything in Email, plus Files & Docs and Chat & Video.');
+    });
   });
 
   describe('Cancel', () => {

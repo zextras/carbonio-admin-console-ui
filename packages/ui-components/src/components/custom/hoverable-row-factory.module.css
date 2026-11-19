@@ -33,3 +33,21 @@
 	cursor: pointer;
 	color: #414141;
 }
+
+/* Keeps the row checkbox in the tab order while hidden; it shows up when focused. */
+.revealOnFocus {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.revealOnFocus:focus-within {
+  position: static;
+  width: auto;
+  height: auto;
+  overflow: visible;
+  clip-path: none;
+}

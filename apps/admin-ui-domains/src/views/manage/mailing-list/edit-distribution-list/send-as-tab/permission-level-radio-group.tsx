@@ -23,6 +23,7 @@ export const PermissionLevelRadioGroup: FC<PermissionLevelRadioGroupProps> = ({
 
 	return (
 		<RadioGroup
+			aria-label={t('domain.distributionList.sendAs.permissionLevel', 'Permission level')}
 			value={value}
 			onChange={(changed: string | undefined): void => {
 				if (changed) onChange(changed as PermissionLevelValue);
@@ -31,39 +32,21 @@ export const PermissionLevelRadioGroup: FC<PermissionLevelRadioGroupProps> = ({
 			<Radio
 				key="sendAs"
 				label={t('domain.distributionList.sendAs.sendAs', 'Send As')}
-				value="sendAs"
-				iconColor="primary"
-			/>
-			<ds-text
-				as="p"
-				key="sendAs-description"
-				size="small"
-				color="gray0"
-				style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}
-			>
-				{t(
+				description={t(
 					'domain.distributionList.sendAs.permissionLevelSendMsg',
 					'Allows a user to send emails that appear to come directly from a distribution list, with no indication of who actually sent it'
 				)}
-			</ds-text>
+				value="sendAs"
+			/>
 			<Radio
 				key="sendOnBehalfOf"
 				label={t('domain.distributionList.sendAs.sendOnBehalfOf', 'Send on behalf of')}
-				value="sendOnBehalfOf"
-				iconColor="primary"
-			/>
-			<ds-text
-				as="p"
-				key="sendOnBehalfOf-description"
-				size="small"
-				color="gray0"
-				style={{ marginBottom: '1rem', marginLeft: '1.8rem' }}
-			>
-				{t(
+				description={t(
 					'domain.distributionList.sendAs.permissionLevelSendOnBehalfOfMsg',
 					'Allows a user to send an email where the recipient sees e.g. "name.surname@mail.com on behalf of a distribution list"'
 				)}
-			</ds-text>
+				value="sendOnBehalfOf"
+			/>
 		</RadioGroup>
 	);
 };

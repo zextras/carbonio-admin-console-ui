@@ -68,7 +68,10 @@ describe('MailstoresCreate (browser)', () => {
     await page.getByLabelText('Volume Name').fill('secondary-volume');
     await page.getByLabelText('Volume path').fill('/opt/zextras/secondary');
 
-    await expect.element(page.getByText('Primary Volume', { exact: true })).toBeVisible();
-    await page.getByText('Secondary Volume', { exact: true }).click();
+    const group = page.getByRole('radiogroup', { name: 'Volume Type' });
+    await expect.element(group.getByRole('radio', { name: 'Primary Volume' })).toBeChecked();
+    await group.getByRole('radio', { name: 'Secondary Volume' }).click();
+    await expect.element(group.getByRole('radio', { name: 'Secondary Volume' })).toBeChecked();
+    await expect.element(group.getByRole('radio', { name: 'Primary Volume' })).not.toBeChecked();
   });
 });

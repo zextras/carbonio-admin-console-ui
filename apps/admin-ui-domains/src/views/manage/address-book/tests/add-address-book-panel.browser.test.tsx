@@ -217,6 +217,23 @@ describe('AddAddressBookPanel (browser)', () => {
 			.toBeInTheDocument();
 	});
 
+	it('should describe the address book options group with the LDAP helper text', async () => {
+		setupAddressBookZextrasInterceptor();
+		await renderPanel(
+			<AddAddressBookPanel
+				domainName={DOMAIN_NAME}
+				existingEntries={[]}
+				onClose={vi.fn()}
+			/>,
+		);
+
+		await expect
+			.element(page.getByRole('radiogroup', { name: 'Address books to expose' }))
+			.toHaveAccessibleDescription(
+				'The selected address books become searchable through the LDAP Address Book service.',
+			);
+	});
+
 	it('should show Account is required after clearing the account field', async () => {
 		setupAddressBookZextrasInterceptor();
 		await renderPanel(
@@ -408,6 +425,11 @@ describe('AddAddressBookPanel (browser)', () => {
 			)
 			.toBeInTheDocument();
 		await expect.element(page.getByRole('button', { name: 'Add' })).toBeDisabled();
+		await expect
+			.element(page.getByRole('radiogroup', { name: 'Address books to expose' }))
+			.toHaveAccessibleDescription(
+				'All address books of this account are already exposed. The selected address books become searchable through the LDAP Address Book service.',
+			);
 	});
 
 	it('should filter linked folders and label exposed ones in the folder select', async () => {

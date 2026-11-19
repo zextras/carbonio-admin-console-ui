@@ -87,8 +87,6 @@ export const ActiveDeviceConfirmation = ({
       {isWipe && (
         <div className="pt-md pl-md pb-lg">
           <Checkbox
-            iconColor="primary"
-            size="small"
             label={t(
               'label.aware_of_doing_device_factory_settings',
               'I am aware of what I’m doing, I want to reset it to the factory settings ',

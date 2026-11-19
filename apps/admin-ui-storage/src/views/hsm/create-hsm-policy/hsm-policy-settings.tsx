@@ -324,73 +324,65 @@ export function HSMpolicySettings() {
         </Padding>
       </ListRow>
       <ListRow>
-        <Container mainAlignment="flex-start" crossAlignment="flex-start">
-          <Checkbox
-            iconColor="primary"
-            size="small"
-            label={t('hsm.all', 'All')}
-            value={all}
-            onClick={(): void => {
-              onClickAll(!all);
-            }}
-          />
-        </Container>
-        <Container mainAlignment="flex-start" crossAlignment="flex-start">
-          <Checkbox
-            iconColor="primary"
-            size="small"
-            label={t('hsm.message', 'Message')}
-            value={isMessageEnable}
-            onClick={(): void => {
-              const newValue = !isMessageEnable;
-              setIsMessageEnable(newValue);
-              form.setFieldValue('isMessageEnabled', newValue);
-              form.setFieldValue('isAllEnabled', newValue && isContactEnable && isEventEnable && isDocument);
-            }}
-          />
-        </Container>
-        <Container mainAlignment="flex-start" crossAlignment="flex-start">
-          <Checkbox
-            iconColor="primary"
-            size="small"
-            label={t('hsm.document', 'Document')}
-            value={isDocument}
-            onClick={(): void => {
-              const newValue = !isDocument;
-              setIsDocument(newValue);
-              form.setFieldValue('isDocumentEnabled', newValue);
-              form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && isEventEnable && newValue);
-            }}
-          />
-        </Container>
-        <Container mainAlignment="flex-start" crossAlignment="flex-start">
-          <Checkbox
-            iconColor="primary"
-            size="small"
-            label={t('hsm.event', 'Event')}
-            value={isEventEnable}
-            onClick={(): void => {
-              const newValue = !isEventEnable;
-              setIsEventEnable(newValue);
-              form.setFieldValue('isEventEnabled', newValue);
-              form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && newValue && isDocument);
-            }}
-          />
-        </Container>
-        <Container mainAlignment="flex-start" crossAlignment="flex-start">
-          <Checkbox
-            iconColor="primary"
-            size="small"
-            label={t('hsm.contact', 'Contact')}
-            value={isContactEnable}
-            onClick={(): void => {
-              const newValue = !isContactEnable;
-              setIsContactEnable(newValue);
-              form.setFieldValue('isContactEnabled', newValue);
-              form.setFieldValue('isAllEnabled', isMessageEnable && newValue && isEventEnable && isDocument);
-            }}
-          />
-        </Container>
+        <fieldset aria-label={t('hsm.items', 'Items')} className="contents">
+          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+            <Checkbox
+              label={t('hsm.all', 'All')}
+              value={all}
+              onClick={(): void => {
+                onClickAll(!all);
+              }}
+            />
+          </Container>
+          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+            <Checkbox
+              label={t('hsm.message', 'Message')}
+              value={isMessageEnable}
+              onClick={(): void => {
+                const newValue = !isMessageEnable;
+                setIsMessageEnable(newValue);
+                form.setFieldValue('isMessageEnabled', newValue);
+                form.setFieldValue('isAllEnabled', newValue && isContactEnable && isEventEnable && isDocument);
+              }}
+            />
+          </Container>
+          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+            <Checkbox
+              label={t('hsm.document', 'Document')}
+              value={isDocument}
+              onClick={(): void => {
+                const newValue = !isDocument;
+                setIsDocument(newValue);
+                form.setFieldValue('isDocumentEnabled', newValue);
+                form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && isEventEnable && newValue);
+              }}
+            />
+          </Container>
+          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+            <Checkbox
+              label={t('hsm.event', 'Event')}
+              value={isEventEnable}
+              onClick={(): void => {
+                const newValue = !isEventEnable;
+                setIsEventEnable(newValue);
+                form.setFieldValue('isEventEnabled', newValue);
+                form.setFieldValue('isAllEnabled', isMessageEnable && isContactEnable && newValue && isDocument);
+              }}
+            />
+          </Container>
+          <Container mainAlignment="flex-start" crossAlignment="flex-start">
+            <Checkbox
+              label={t('hsm.contact', 'Contact')}
+              value={isContactEnable}
+              onClick={(): void => {
+                const newValue = !isContactEnable;
+                setIsContactEnable(newValue);
+                form.setFieldValue('isContactEnabled', newValue);
+                form.setFieldValue('isAllEnabled', isMessageEnable && newValue && isEventEnable && isDocument);
+              }}
+            />
+          </Container>
+        </fieldset>
       </ListRow>
       <ListRow>
         <Padding bottom="large" top="large">
