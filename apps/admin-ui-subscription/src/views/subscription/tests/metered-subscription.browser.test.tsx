@@ -57,14 +57,13 @@ describe.skip('MeteredSubscription', () => {
       await expect.element(page.getByText('Subscriptions')).toBeVisible();
     });
 
-    it('should render all four cards in the row', async () => {
+    it('should render all three cards in the row', async () => {
       const mockLicenseData = createMockLicenseData();
       setupTest(<MeteredSubscription />, mockLicenseData);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Last time data has been sent')).toBeVisible();
       await expect.element(page.getByText('Data valid until')).toBeVisible();
-      await expect.element(page.getByText('Total active accounts')).toBeVisible();
     });
   });
 
@@ -94,33 +93,6 @@ describe.skip('MeteredSubscription', () => {
       setupTest(<MeteredSubscription />, null);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
-    });
-  });
-
-  describe('TotalAccounts card', () => {
-    it('should render the Total active accounts label', async () => {
-      const mockLicenseData = createMockLicenseData();
-      setupTest(<MeteredSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('Total active accounts')).toBeVisible();
-    });
-
-    it('should display the licensedUsers count', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: { licensedUsers: '500' },
-      });
-      setupTest(<MeteredSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('500')).toBeVisible();
-    });
-
-    it('should render without crashing when licensedUsers is missing', async () => {
-      const mockLicenseData = createMockLicenseData({
-        response: { licensedUsers: undefined },
-      });
-      setupTest(<MeteredSubscription />, mockLicenseData);
-
-      await expect.element(page.getByText('Total active accounts')).toBeVisible();
     });
   });
 

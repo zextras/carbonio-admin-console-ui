@@ -7,7 +7,6 @@
 import { DataValidity } from './parts/cards/data-validity';
 import { LastDataSent } from './parts/cards/last-data-sent';
 import { SubscriptionStatus } from './parts/cards/subscription-status';
-import { TotalAccounts } from './parts/cards/total-accounts';
 import { ActivationTokenSection } from './parts/sections/activation-token-section';
 import { ActiveEditionSection } from './parts/sections/active-edition-section';
 import { DetailsSection } from './parts/sections/details-section';
@@ -22,7 +21,6 @@ export const MeteredSubscription = () => {
         <SubscriptionStatus />
         <LastDataSent />
         <DataValidity />
-        <TotalAccounts />
       </div>
       <div className={styles.content}>
         <ds-divider style={{ paddingBottom: '1.9rem', paddingTop: '0.4rem' }}></ds-divider>
