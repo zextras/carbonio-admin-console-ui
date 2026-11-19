@@ -78,7 +78,7 @@ export type BackupArchivingStore = {
 };
 
 export type BucketItem = {
-  storeType: string;
+  label: string;
   bucketName: string;
   uuid: string;
 };

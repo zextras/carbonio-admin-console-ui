@@ -109,7 +109,7 @@ export const fetchAccountSettings = async (): Promise<AccountSettings> => {
     GetInfoResponse
   >("GetInfo", {
     _jsns: "urn:zimbraAccount",
-    sections: "prefs,attrs,props,zimlets",
+    sections: "prefs,attrs,props",
   });
 
   if (!response) {

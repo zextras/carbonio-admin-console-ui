@@ -33,7 +33,7 @@ describe('useListBuckets', () => {
 
   it('fetches and returns bucket list', async () => {
     const mockBuckets = [
-      { storeType: 'S3', bucketName: 'b1', uuid: 'u1' },
+      { label: 'S3', bucketName: 'b1', uuid: 'u1' },
     ];
     vi.mocked(listBuckets).mockResolvedValue({
       ok: true,

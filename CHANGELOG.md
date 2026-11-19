@@ -1,3 +1,15 @@
+## [0.35.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.4...v0.35.5) (2026-11-19)
+
+### Other changes
+
+* [CO-4806] stop requesting the GetInfo zimlets section ([#1447](https://github.com/zextras/carbonio-admin-console-ui/issues/1447)) ([ef6554c](https://github.com/zextras/carbonio-admin-console-ui/commit/ef6554cec7e81be7ffe70b33af0bdf561e9d27f1))
+
+## [0.35.4](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.3...v0.35.4) (2026-11-19)
+
+### Bug Fixes
+
+* [CO-4469] MigrateBackupVolume Admin UI fix ([#1445](https://github.com/zextras/carbonio-admin-console-ui/issues/1445)) ([d01fe61](https://github.com/zextras/carbonio-admin-console-ui/commit/d01fe613bee663ffa81ef896927736e090788adf))
+
 ## [0.35.3](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.2...v0.35.3) (2026-11-11)
 
 ### Bug Fixes

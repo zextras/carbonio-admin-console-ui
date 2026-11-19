@@ -14,9 +14,8 @@ export const listBuckets = async (server: string): Promise<ListBucketsContent> =
     '/service/admin/soap/zextras',
     {
       _jsns: ZIMBRA_ADMIN_URN,
-      module: 'ZxCore',
-      action: 'listBuckets',
-      type: 'all',
+      module: 'ZxPowerstore',
+      action: 'listS3Connector',
       targetServer: server,
       showSecrets: true,
     },
