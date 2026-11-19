@@ -56,8 +56,14 @@ const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   maxCarbonioVersion: '23.12.0',
   maintenanceEndDate: '2025-06-18T00:00:00.000Z',
   maintenanceStatus: 'active',
-  editions: [],
-  addOns: [],
+  editions: [
+    { name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 500 },
+    { name: 'Workspace', status: 'green', assignedSeats: 10, totalSeats: 100 },
+  ],
+  addOns: [
+    { name: 'ActiveSync', status: 'green', assignedSeats: 10, totalSeats: 100 },
+    { name: 'MailReplica', status: 'not active', assignedSeats: 0, totalSeats: 0 },
+  ],
   ...overrides,
 });
 
@@ -86,16 +92,15 @@ describe('PerpetualSubscription', () => {
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
     });
 
-    it('should render the shared sections but hide the regular-only ones', async () => {
+    it('should render every section of the page', async () => {
       setupTest(<PerpetualSubscription />, createMockLicenseData());
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
       await expect.element(page.getByText('Details')).toBeVisible();
       await expect.element(page.getByText('Activation token')).toBeVisible();
-      // Editions and add-ons render only for the regular license type for now
-      expect(page.getByText('Active edition', { exact: true }).elements()).toHaveLength(0);
-      expect(page.getByText('Add-ons', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Active edition')).toBeVisible();
+      await expect.element(page.getByText('Add-ons')).toBeVisible();
     });
 
     it('should not render the Update data button', async () => {
@@ -176,18 +181,20 @@ describe('PerpetualSubscription', () => {
   });
 
   describe('Edition and add-on sections', () => {
-    it('should not render the Active edition section for perpetual licenses', async () => {
+    it('should render the edition cards from the REST editions', async () => {
       setupTest(<PerpetualSubscription />, createMockLicenseData());
 
-      expect(page.getByText('Active edition', { exact: true }).elements()).toHaveLength(0);
-      expect(page.getByText('Email', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Active edition')).toBeVisible();
+      await expect.element(page.getByText('Email', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Workspace', { exact: true })).toBeVisible();
     });
 
-    it('should not render the Add-ons section for perpetual licenses', async () => {
+    it('should render the add-on cards from the REST add-ons', async () => {
       setupTest(<PerpetualSubscription />, createMockLicenseData());
 
-      expect(page.getByText('Add-ons', { exact: true }).elements()).toHaveLength(0);
-      expect(page.getByText('ActiveSync', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Add-ons')).toBeVisible();
+      await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('UserReplica', { exact: true })).toBeVisible();
     });
   });
 

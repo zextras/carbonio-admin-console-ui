@@ -34,9 +34,11 @@ export const ActiveEditionSection = () => {
   const { t } = useTranslation();
   const { data: license } = useLicenseV1Info();
 
-  // Only the regular subscription renders editions for now: the other license
-  // types migrate one by one, starting with regular.
-  if (license && license.licenseType !== 'regular') return null;
+  // Editions render for regular and perpetual licenses; metered/isp are
+  // bundle-based, and trial migrates later — one license type at a time.
+  if (license && license.licenseType !== 'regular' && license.licenseType !== 'perpetual') {
+    return null;
+  }
 
   const editionsData = license?.editions ?? [];
 

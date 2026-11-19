@@ -47,9 +47,11 @@ export const AddonsSection = () => {
   const { t } = useTranslation();
   const { data: license } = useLicenseV1Info();
 
-  // Only the regular subscription renders add-ons for now: the other license
-  // types migrate one by one, starting with regular.
-  if (license && license.licenseType !== 'regular') return null;
+  // Add-ons render for regular and perpetual licenses; metered/isp add-ons
+  // have no totalSeats, and trial migrates later — one license type at a time.
+  if (license && license.licenseType !== 'regular' && license.licenseType !== 'perpetual') {
+    return null;
+  }
 
   const addOnsData = license?.addOns ?? [];
 
