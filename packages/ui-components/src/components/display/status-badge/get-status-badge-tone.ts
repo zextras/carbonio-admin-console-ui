@@ -26,6 +26,7 @@ const LABEL_TONE_MAP: Record<string, StatusBadgeTone> = {
   'Not enabled': 'neutral',
   Off: 'neutral',
   Maintenance: 'info',
+  'In maintenance': 'info',
   Public: 'info',
 };
 

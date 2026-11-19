@@ -22,7 +22,12 @@ export const AppView: FC = () => {
   return (
     <Container>
       <DomainPageHeader />
-      <Container orientation="horizontal" mainAlignment="flex-start" style={{ overflow: 'hidden' }}>
+      <Container
+        orientation="horizontal"
+        mainAlignment="flex-start"
+        height="auto"
+        style={{ overflow: 'hidden', flex: '1 1 auto', minHeight: 0 }}
+      >
         {!isCreateNewDomain && (
           <Container style={{ maxWidth: '265px' }}>
             <Suspense fallback={<ds-spinner />}>
