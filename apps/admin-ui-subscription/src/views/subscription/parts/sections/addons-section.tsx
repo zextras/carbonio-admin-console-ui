@@ -5,7 +5,11 @@
  */
 
 import { type IconName } from '@zextras/ui-components';
-import { useLicenseV1Info } from '@zextras/ui-shared';
+import {
+	type LicenseV1AssignedSeatItem,
+	type LicenseV1SeatItem,
+	useLicenseV1Info,
+} from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { AddonsCardActive } from '../cards/addons-card-active';
@@ -43,21 +47,24 @@ const ADDON_CONFIGS: Array<AddonDisplayConfig> = [
   },
 ];
 
+function isAddOnActive(addOn: LicenseV1SeatItem | LicenseV1AssignedSeatItem): boolean {
+  // Seat-capped licenses (regular/perpetual): a positive capacity means active.
+  // Metered/isp add-ons carry no totalSeats: their activity comes from the status.
+  return 'totalSeats' in addOn ? addOn.totalSeats > 0 : addOn.status !== 'not active';
+}
+
 export const AddonsSection = () => {
   const { t } = useTranslation();
   const { data: license } = useLicenseV1Info();
 
-  // Add-ons render for regular and perpetual licenses; metered/isp add-ons
-  // have no totalSeats, and trial migrates later — one license type at a time.
-  if (license && license.licenseType !== 'regular' && license.licenseType !== 'perpetual') {
-    return null;
-  }
+  // Add-ons render for every migrated license type; trial migrates later.
+  if (license && license.licenseType === 'trial') return null;
 
   const addOnsData = license?.addOns ?? [];
 
   const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => ({
     ...config,
-    active: addOnsData.some((addOn) => addOn.name === config.name && addOn.totalSeats > 0),
+    active: addOnsData.some((addOn) => addOn.name === config.name && isAddOnActive(addOn)),
   }));
 
   return (

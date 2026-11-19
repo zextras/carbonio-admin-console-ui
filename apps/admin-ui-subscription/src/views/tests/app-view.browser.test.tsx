@@ -79,7 +79,7 @@ const createMeteredRestLicense = (overrides: Record<string, unknown> = {}) =>
     nextValidationDeadline: '2026-05-20T00:00:00.000Z',
     renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
     maxTotalSeats: 500,
-    addOns: [],
+    addOns: [{ name: 'ActiveSync', status: 'green', assignedSeats: 42 }],
     bundles: [{ name: 'Files', assignedSeats: 12 }],
     ...overrides,
   });
@@ -241,6 +241,7 @@ describe('AppView', () => {
       );
 
       await expect.element(page.getByText('Data valid until')).toBeVisible();
+      await expect.element(page.getByText('Add-ons', { exact: true })).toBeVisible();
     });
 
     it('should render TrialSubscription for a trial license', async () => {

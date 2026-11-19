@@ -5,14 +5,17 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { type LicenseV1SeatItem } from '@zextras/ui-shared';
+import {
+	type LicenseV1AssignedSeatItem,
+	type LicenseV1SeatItem,
+} from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { type AddonDisplayConfig } from '../sections/addons-section';
 import styles from './addons-card.module.css';
 
 type AddonsCardProps = {
-  addOns?: Array<LicenseV1SeatItem>;
+  addOns?: Array<LicenseV1SeatItem | LicenseV1AssignedSeatItem>;
   config: AddonDisplayConfig;
 };
 
@@ -22,6 +25,8 @@ export const AddonsCardActive = ({ addOns, config }: AddonsCardProps) => {
   if (!addOns) return null;
 
   const addOn = addOns.find((item) => item.name === config.name)!;
+  // Metered/isp add-ons have no seat capacity: "Total seat" shows Unlimited.
+  const isSeatCapped = 'totalSeats' in addOn;
 
   return (
     <div key={config.name} className={styles.addonRowActive}>
@@ -45,7 +50,7 @@ export const AddonsCardActive = ({ addOns, config }: AddonsCardProps) => {
         <div className={styles.statItem}>
           <ds-text size="extrasmall">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
-            {addOn.totalSeats}
+            {isSeatCapped ? addOn.totalSeats : t('label.unlimited', 'Unlimited')}
           </ds-text>
         </div>
       </div>

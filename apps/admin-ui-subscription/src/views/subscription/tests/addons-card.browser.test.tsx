@@ -61,6 +61,19 @@ describe('AddonsCardActive', () => {
 
     await expect.element(page.getByText('50', { exact: true })).toBeVisible();
   });
+
+  it('renders Unlimited as the total seat value for a metered add-on without totalSeats', async () => {
+    setupTest(
+      <AddonsCardActive
+        config={addonConfig}
+        addOns={[{ name: 'ActiveSync', status: 'green', assignedSeats: 42 }]}
+      />,
+    );
+
+    await expect.element(page.getByText('Total seat')).toBeVisible();
+    await expect.element(page.getByText('Unlimited', { exact: true })).toBeVisible();
+    expect(await page.getByText('Assigned accounts').elements()).toHaveLength(0);
+  });
 });
 
 describe('AddonsCardInactive', () => {
