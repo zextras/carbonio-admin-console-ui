@@ -15,10 +15,13 @@ export const fetchLicenseV1Capability = async (
   accountId?: string,
 ): Promise<LicenseV1CapabilityResult> => {
   try {
-    const url = `/services/license/v1/capabilities/allowed?capability=${encodeURIComponent(
-      capability,
-    )}${accountId ? `&accountId=${encodeURIComponent(accountId)}` : ''}`;
-    const response = await fetch(url);
+    const searchParams = new URLSearchParams({ capability });
+    if (accountId) {
+      searchParams.set('accountId', accountId);
+    }
+    const response = await fetch(
+      `/services/license/v1/capabilities/allowed?${searchParams.toString()}`,
+    );
 
     if (!response.ok) {
       const body = (await response.text()).trim().slice(0, 200);

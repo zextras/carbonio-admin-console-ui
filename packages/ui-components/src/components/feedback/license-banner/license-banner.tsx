@@ -52,7 +52,7 @@ function getBannerDescription(maintenanceStatus: string, descriptions: BannerDes
 
 export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps) => {
   const { data: license } = useLicenseV1Info();
-  const [isOpen, setIsLicenseBannerOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(true);
 
   const perpetualLicense = license?.licenseType === 'perpetual' ? license : undefined;
   const licenseBannerShouldBeDisplayed =
@@ -130,7 +130,7 @@ export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps)
     invalid: bannerInvalidDescription,
   });
 
-  const onClose = () => setIsLicenseBannerOpen(false);
+  const onClose = () => setIsOpen(false);
   const navigate = useNavigate();
 
   if (!licenseBannerShouldBeDisplayed) return null;

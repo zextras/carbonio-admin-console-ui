@@ -120,7 +120,7 @@ export const useVersion = () => {
 };
 
 export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryClient>): void {
-  queryClient.invalidateQueries({ queryKey: licenseV1QueryKeys.all });
+  void queryClient.invalidateQueries({ queryKey: licenseV1QueryKeys.all });
 }
 
 export const useActivateLicense = () => {
