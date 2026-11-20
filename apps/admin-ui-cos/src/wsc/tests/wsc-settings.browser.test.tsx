@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
+import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
 import {
 	createBrowserAPIInterceptor,
 	createBrowserSoapAPIInterceptor,
-	createBrowserZextrasActionInterceptor,
 	getGetInfoResponseMock,
 	getQueryClient,
 	resetMockWorker,
@@ -37,21 +37,9 @@ const ALL_ENABLED_VALUES: WscCosFormValues = {
 	carbonioWscMaxAttachmentSize: '25',
 };
 
-const LICENSE_MOCK = {
-	ok: true,
-	response: {
-		type: 'Purchased',
-		features: [{ name: 'wsc_basic', enabled: true }],
-	},
-};
+const LICENSE_MOCK = true;
 
-const UNLICENSED_MOCK = {
-	ok: true,
-	response: {
-		type: 'Purchased',
-		features: [{ name: 'wsc_basic', enabled: false }],
-	},
-};
+const UNLICENSED_MOCK = false;
 
 type WscSettingsWrapperProps = {
 	defaultValues?: WscCosFormValues;
@@ -91,7 +79,7 @@ function seedQueryCache(
 		props: [],
 	});
 	queryClient.setQueryData(
-		['subscription', 'license'],
+		licenseV1CapabilityQueryKeys.capability('CHATS'),
 		licensed ? LICENSE_MOCK : UNLICENSED_MOCK,
 	);
 }
@@ -101,10 +89,10 @@ function setupApiFallbacks(licenseMock = LICENSE_MOCK): void {
 		HttpResponse.json({ items: [] }),
 	);
 	createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-	createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
-		HttpResponse.json({
-			Body: { response: { content: JSON.stringify(licenseMock) } },
-		}),
+	createBrowserAPIInterceptor(
+		'get',
+		'/services/license/v1/capabilities/allowed?capability=CHATS',
+		() => HttpResponse.json({ allowed: licenseMock }),
 	);
 }
 

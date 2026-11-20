@@ -32,7 +32,7 @@ import {
   removeRoute,
   useCurrentUserRights,
   useIsAdvanced,
-  useLicenseInfo,
+  useLicenseV1Info,
 } from '@zextras/ui-shared';
 import { useNavigate } from 'react-router';
 
@@ -76,13 +76,13 @@ const RIGHTS_WITHOUT_COS = [
 ];
 
 describe('App', () => {
-  const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
+  const useLicenseInfoMock = useLicenseV1Info as unknown as Mock;
   const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
 
   beforeEach(() => {
     (useCurrentUserRights as Mock).mockReturnValue({ data: RIGHTS_WITH_COS_AND_CREATE });
     (useNavigate as Mock).mockReturnValue(vi.fn());
-    useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
+    useLicenseInfoMock.mockReturnValue({ data: { licenseType: 'regular' } });
     useIsAdvancedMock.mockReturnValue(true);
   });
 

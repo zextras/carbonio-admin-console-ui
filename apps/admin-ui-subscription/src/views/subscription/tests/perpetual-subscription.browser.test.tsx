@@ -12,33 +12,6 @@ import { page } from 'vitest/browser';
 
 import { PerpetualSubscription } from '../perpetual-subscription';
 
-const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
-  response: {
-    subType: 'PERPETUAL',
-    expired: false,
-    dateStart: new Date('2022-05-10T00:00:00Z').getTime(),
-    dateEnd: new Date('2029-06-18T00:00:00Z').getTime(),
-    maintenanceEndDate: new Date('2025-06-18T00:00:00Z').getTime(),
-    maintenanceStatus: 'active' as const,
-    type: 'Purchased',
-    customer: 'Test Customer',
-    accountCount: 7,
-    licensedUsers: '99',
-    notYetValid: false,
-    infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
-    authenticationToken: 'TEST_TOKEN',
-    carbonioVersion: '24.10.0',
-    maxCarbonioVersion: '23.12.0',
-    updateTime: new Date('2026-06-20T00:00:00Z').getTime(),
-    endUser: 'Test End User',
-    features: [],
-    editions: [],
-    ...(overrides.response as Record<string, unknown>),
-  },
-  ok: true,
-  ...Object.fromEntries(Object.entries(overrides).filter(([key]) => key !== 'response')),
-});
-
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'perpetual',
   status: 'valid',
@@ -67,14 +40,10 @@ const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
 
 const setupTest = (
   component: React.ReactElement,
-  soapLicense?: ReturnType<typeof createMockLicenseData> | null,
   restLicense?: ReturnType<typeof createRestLicense> | null,
 ) => {
   const queryClient = getQueryClient();
 
-  if (soapLicense) {
-    queryClient.setQueryData(['subscription', 'license'], soapLicense);
-  }
   if (restLicense !== null) {
     queryClient.setQueryData(licenseV1QueryKeys.all, restLicense ?? createRestLicense());
   }
@@ -85,13 +54,13 @@ const setupTest = (
 describe('PerpetualSubscription', () => {
   describe('layout and header', () => {
     it('should render the Subscriptions heading', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
     });
 
     it('should render every section of the page', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
@@ -102,7 +71,7 @@ describe('PerpetualSubscription', () => {
     });
 
     it('should not render the Update data button', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Subscriptions', { exact: true })).toBeVisible();
 
@@ -110,7 +79,7 @@ describe('PerpetualSubscription', () => {
     });
 
     it('should render the last sync time when present', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText(/Last sync\s+\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
     });
@@ -118,7 +87,6 @@ describe('PerpetualSubscription', () => {
     it('should not render the last sync time when lastSyncTime is null', async () => {
       setupTest(
         <PerpetualSubscription />,
-        createMockLicenseData(),
         createRestLicense({ lastSyncTime: null }),
       );
 
@@ -128,25 +96,25 @@ describe('PerpetualSubscription', () => {
 
   describe('SubscriptionStatus card', () => {
     it('should render the Subscription status label', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
     });
 
     it('should display ACTIVE text in the badge', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('ACTIVE', { exact: true }).first()).toBeVisible();
     });
 
     it('should display the start date with Since prefix', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText(/Since\s+\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
     });
 
     it('should render without crashing when license data is missing', async () => {
-      setupTest(<PerpetualSubscription />, null, null);
+      setupTest(<PerpetualSubscription />, null);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
     });
@@ -154,25 +122,19 @@ describe('PerpetualSubscription', () => {
 
   describe('MaxVersion card', () => {
     it('should render the Max Carbonio Version label', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
     });
 
-    it('should display the maxCarbonioVersion value', async () => {
-      setupTest(
-        <PerpetualSubscription />,
-        createMockLicenseData({ response: { maxCarbonioVersion: '25.1.0' } }),
-      );
+    it('should display the maxCarbonioVersion value from the REST license', async () => {
+      setupTest(<PerpetualSubscription />, createRestLicense({ maxCarbonioVersion: '25.1.0' }));
 
       await expect.element(page.getByText('25.1.0')).toBeVisible();
     });
 
     it('should render without crashing when maxCarbonioVersion is missing', async () => {
-      setupTest(
-        <PerpetualSubscription />,
-        createMockLicenseData({ response: { maxCarbonioVersion: undefined } }),
-      );
+      setupTest(<PerpetualSubscription />, createRestLicense({ maxCarbonioVersion: undefined }));
 
       await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
     });
@@ -180,7 +142,7 @@ describe('PerpetualSubscription', () => {
 
   describe('Edition and add-on sections', () => {
     it('should render the edition cards from the REST editions', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Active edition')).toBeVisible();
       await expect.element(page.getByText('Email', { exact: true })).toBeVisible();
@@ -188,7 +150,7 @@ describe('PerpetualSubscription', () => {
     });
 
     it('should render the add-on cards from the REST add-ons', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Add-ons')).toBeVisible();
       await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
@@ -198,13 +160,13 @@ describe('PerpetualSubscription', () => {
 
   describe('Details section', () => {
     it('should render the Details heading', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Details')).toBeVisible();
     });
 
     it('should display the company name, partner and order id', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Test End User')).toBeVisible();
       await expect.element(page.getByText('Test Customer')).toBeVisible();
@@ -212,13 +174,13 @@ describe('PerpetualSubscription', () => {
     });
 
     it('should display the formatted subscription type', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Perpetual', { exact: true })).toBeVisible();
     });
 
     it('should display the module version', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('24.10.0')).toBeVisible();
     });
@@ -226,7 +188,6 @@ describe('PerpetualSubscription', () => {
     it('should display the maintenance expiration date for perpetual licenses', async () => {
       setupTest(
         <PerpetualSubscription />,
-        createMockLicenseData(),
         createRestLicense({ maintenanceEndDate: '2025-06-18T00:00:00.000Z' }),
       );
 
@@ -237,7 +198,6 @@ describe('PerpetualSubscription', () => {
     it('should not display the maintenance expiration date when maintenanceEndDate is missing', async () => {
       setupTest(
         <PerpetualSubscription />,
-        createMockLicenseData(),
         createRestLicense({ maintenanceEndDate: undefined }),
       );
 
@@ -249,13 +209,13 @@ describe('PerpetualSubscription', () => {
 
   describe('ActivationToken section', () => {
     it('should render the Activation token heading', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Activation token')).toBeVisible();
     });
 
     it('should render the Show token control when a token is present', async () => {
-      setupTest(<PerpetualSubscription />, createMockLicenseData());
+      setupTest(<PerpetualSubscription />);
 
       await expect.element(page.getByText('Show token')).toBeVisible();
     });

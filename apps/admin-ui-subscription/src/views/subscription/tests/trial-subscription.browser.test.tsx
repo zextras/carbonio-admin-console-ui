@@ -12,29 +12,6 @@ import { page } from 'vitest/browser';
 
 import { TrialSubscription } from '../trial-subscription';
 
-const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
-  response: {
-    subType: 'TRIAL',
-    expired: false,
-    dateStart: new Date('2026-04-01T00:00:00Z').getTime(),
-    dateEnd: new Date('2026-07-01T00:00:00Z').getTime(),
-    maintenanceEndDate: new Date('2026-07-01T00:00:00Z').getTime(),
-    maintenanceStatus: 'active' as const,
-    type: 'Trial',
-    customer: 'Trial Customer',
-    accountCount: 3,
-    licensedUsers: '50',
-    notYetValid: false,
-    infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
-    authenticationToken: 'TEST_TOKEN',
-    endUser: 'Trial End User',
-    features: [],
-    ...(overrides.response as Record<string, unknown>),
-  },
-  ok: true,
-  ...Object.fromEntries(Object.entries(overrides).filter(([key]) => key !== 'response')),
-});
-
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'trial',
   status: 'valid',
@@ -57,14 +34,10 @@ const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
 
 const setupTest = (
   component: React.ReactElement,
-  soapLicense?: ReturnType<typeof createMockLicenseData> | null,
   restLicense?: ReturnType<typeof createRestLicense> | null,
 ) => {
   const queryClient = getQueryClient();
 
-  if (soapLicense) {
-    queryClient.setQueryData(['subscription', 'license'], soapLicense);
-  }
   if (restLicense !== null) {
     queryClient.setQueryData(licenseV1QueryKeys.all, restLicense ?? createRestLicense());
   }
@@ -75,13 +48,13 @@ const setupTest = (
 describe('TrialSubscription', () => {
   describe('layout and header', () => {
     it('should render the Subscriptions heading', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('Subscriptions')).toBeVisible();
     });
 
     it('should render the row cards and the edition/add-on sections', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Expires on')).toBeVisible();
@@ -92,16 +65,24 @@ describe('TrialSubscription', () => {
   });
 
   describe('TrialBanner', () => {
-    it('should render the trial banner with days remaining', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it('should render the trial banner with days remaining from the REST end date', async () => {
+      vi.useFakeTimers({ now: new Date('2026-06-01T00:00:00Z'), toFake: ['Date'] });
+      setupTest(
+        <TrialSubscription />,
+        createRestLicense({ endDate: '2026-08-01T00:00:00.000Z' }),
+      );
 
       await expect
-        .element(page.getByText(/Trial active\s+—\s+\d+\s+days?\s+remaining/))
+        .element(page.getByText('Trial active — 61 days remaining'))
         .toBeVisible();
     });
 
     it('should render the contact provider message', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect
         .element(page.getByText('To upgrade your license, please contact your service provider.'))
@@ -109,20 +90,20 @@ describe('TrialSubscription', () => {
     });
 
     it('should render the days left badge', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText(/days?\s+left/)).toBeVisible();
     });
 
     it('should render the ClockOutline icon', async () => {
-      const result = await setupTest(<TrialSubscription />, createMockLicenseData());
+      const result = await setupTest(<TrialSubscription />);
 
       const icon = result.container.querySelector('ds-icon[icon="ClockOutline"]');
       expect(icon).not.toBeNull();
     });
 
     it('should render without crashing when license data is missing', async () => {
-      setupTest(<TrialSubscription />, null, null);
+      setupTest(<TrialSubscription />, null);
 
       await expect.element(page.getByText(/Trial active/)).toBeVisible();
     });
@@ -130,19 +111,19 @@ describe('TrialSubscription', () => {
 
   describe('SubscriptionStatus card', () => {
     it('should render the Subscription status label', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
     });
 
     it('should display ACTIVE text in the badge', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('ACTIVE', { exact: true }).first()).toBeVisible();
     });
 
     it('should display the start date with Since prefix', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText(/Since\s+\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
     });
@@ -150,7 +131,7 @@ describe('TrialSubscription', () => {
 
   describe('Edition and add-on sections', () => {
     it('should render the edition cards from the REST editions', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('Active edition')).toBeVisible();
       await expect.element(page.getByText('Email', { exact: true })).toBeVisible();
@@ -158,7 +139,7 @@ describe('TrialSubscription', () => {
     });
 
     it('should render the add-on cards from the REST add-ons', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('Add-ons')).toBeVisible();
       await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
@@ -171,7 +152,7 @@ describe('TrialSubscription', () => {
     });
 
     it('should render the Expires on label', async () => {
-      setupTest(<TrialSubscription />, createMockLicenseData());
+      setupTest(<TrialSubscription />);
 
       await expect.element(page.getByText('Expires on')).toBeVisible();
     });
@@ -179,7 +160,6 @@ describe('TrialSubscription', () => {
     it('should display the formatted expiration date', async () => {
       setupTest(
         <TrialSubscription />,
-        createMockLicenseData(),
         createRestLicense({ endDate: '2027-03-15T00:00:00.000Z' }),
       );
 
@@ -190,7 +170,6 @@ describe('TrialSubscription', () => {
       vi.useFakeTimers({ now: new Date('2026-06-01T00:00:00Z'), toFake: ['Date'] });
       setupTest(
         <TrialSubscription />,
-        createMockLicenseData(),
         createRestLicense({ endDate: '2026-07-01T00:00:00.000Z' }),
       );
 
@@ -200,7 +179,6 @@ describe('TrialSubscription', () => {
     it('should display years remaining text when expiry is more than a year away', async () => {
       setupTest(
         <TrialSubscription />,
-        createMockLicenseData(),
         createRestLicense({ endDate: '2029-06-18T00:00:00.000Z' }),
       );
 

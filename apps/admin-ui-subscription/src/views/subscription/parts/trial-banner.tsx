@@ -4,15 +4,15 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { theme } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { differenceInCalendarDays } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
 import styles from './trial-banner.module.css';
 
 export const TrialBanner = () => {
-  const { data: licenseData } = useLicenseInfo();
-  const dateLicenceEnd = licenseData?.response?.dateEnd;
+  const { data: licenseData } = useLicenseV1Info();
+  const dateLicenceEnd = licenseData?.endDate;
   const { t } = useTranslation();
 
   const daysLeft = dateLicenceEnd

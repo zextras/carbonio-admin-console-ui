@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { licenseV1QueryKeys, useLoginConfigStore } from '@zextras/ui-shared';
+import { licenseV1QueryKeys } from '@zextras/ui-shared';
 import {
   getQueryClient,
   grantUserConfigRights,
@@ -15,29 +15,6 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
 import { AppView } from '../app-view';
-
-const createSoapLicenseData = (responseOverrides: Record<string, unknown> = {}) => ({
-  ok: true,
-  response: {
-    type: 'Purchased',
-    subType: 'REGULAR',
-    expired: false,
-    dateStart: new Date('2022-05-10T00:00:00Z').getTime(),
-    dateEnd: new Date('2029-06-18T00:00:00Z').getTime(),
-    maintenanceEndDate: new Date('2025-06-18T00:00:00Z').getTime(),
-    maintenanceStatus: 'active' as const,
-    customer: 'Test Customer',
-    accountCount: 7,
-    licensedUsers: '99',
-    notYetValid: false,
-    infrastructureId: '8b2458ac-61e5-47c0-b70b-d27701c3c68d',
-    authenticationToken: 'TEST_TOKEN',
-    endUser: 'Test End User',
-    features: [],
-    maxCarbonioVersion: '23.12.0',
-    ...responseOverrides,
-  },
-});
 
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'regular',
@@ -85,7 +62,6 @@ describe('AppView', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
   beforeEach(async () => {
-    useLoginConfigStore.setState({ featureFlags: null });
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
   });
@@ -94,15 +70,9 @@ describe('AppView', () => {
     resetMockWorker();
   });
 
-  function setupTest(
-    restLicense: Record<string, unknown> | null = null,
-    soapLicense?: Record<string, unknown>,
-  ) {
+  function setupTest(restLicense: Record<string, unknown> | null = null) {
     if (restLicense !== undefined) {
       queryClient.setQueryData(licenseV1QueryKeys.all, restLicense);
-    }
-    if (soapLicense) {
-      queryClient.setQueryData(['subscription', 'license'], soapLicense);
     }
 
     return setupBrowserTest(<AppView />, { queryClient });
@@ -129,7 +99,7 @@ describe('AppView', () => {
       await expect.element(page.getByText('Insert here the activation token')).toBeVisible();
     });
 
-    it('should not render legacy Subscription when no license', async () => {
+    it('should not render subscription details when no license', async () => {
       setupTest(null);
 
       const detailsElements = page.getByText('Details', { exact: true }).elements();
@@ -137,71 +107,7 @@ describe('AppView', () => {
     });
   });
 
-  describe('Feature flag off (default)', () => {
-    it('should render legacy Subscription component when feature flag is false', async () => {
-      useLoginConfigStore.setState({
-        featureFlags: { enforceSubscriptionRequirements: false },
-      });
-      setupTest(createRestLicense(), createSoapLicenseData());
-
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
-    });
-
-    it('should render legacy Subscription for a perpetual license with feature flag off', async () => {
-      useLoginConfigStore.setState({
-        featureFlags: { enforceSubscriptionRequirements: false },
-      });
-      setupTest(
-        createPerpetualRestLicense(),
-        createSoapLicenseData({ response: { subType: 'PERPETUAL', maxCarbonioVersion: '23.12.0' } }),
-      );
-
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
-    });
-
-    it('should render legacy Subscription for an ISP license with feature flag off', async () => {
-      useLoginConfigStore.setState({
-        featureFlags: { enforceSubscriptionRequirements: false },
-      });
-      setupTest(
-        createMeteredRestLicense({ licenseType: 'isp' }),
-        createSoapLicenseData({ response: { type: 'ISP' } }),
-      );
-
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
-    });
-
-    it('should render legacy Subscription for a trial license with feature flag off', async () => {
-      useLoginConfigStore.setState({
-        featureFlags: { enforceSubscriptionRequirements: false },
-      });
-      setupTest(
-        createRestLicense({ licenseType: 'trial' }),
-        createSoapLicenseData({ response: { subType: 'TRIAL', type: 'Trial' } }),
-      );
-
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
-    });
-
-    it('should not render new subscription components when feature flag is off', async () => {
-      useLoginConfigStore.setState({
-        featureFlags: { enforceSubscriptionRequirements: false },
-      });
-      setupTest(createRestLicense(), createSoapLicenseData());
-
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
-      const expiresOnElements = page.getByText('Expires on').elements();
-      expect(expiresOnElements).toHaveLength(0);
-    });
-  });
-
-  describe('Feature flag on', () => {
-    beforeEach(() => {
-      useLoginConfigStore.setState({
-        featureFlags: { enforceSubscriptionRequirements: true },
-      });
-    });
-
+  describe('Routing by license type', () => {
     it('should render RegularSubscription for a regular license', async () => {
       setupTest(createRestLicense());
 
@@ -210,27 +116,13 @@ describe('AppView', () => {
     });
 
     it('should render PerpetualSubscription for a perpetual license', async () => {
-      setupTest(
-        createPerpetualRestLicense(),
-        createSoapLicenseData({ response: { subType: 'PERPETUAL', maxCarbonioVersion: '23.12.0' } }),
-      );
+      setupTest(createPerpetualRestLicense());
 
       await expect.element(page.getByText('Max Carbonio Version')).toBeVisible();
     });
 
     it('should render MeteredSubscription for a metered license', async () => {
-      setupTest(
-        createMeteredRestLicense(),
-        createSoapLicenseData({
-          response: {
-            subType: 'METERED',
-            renewDaysLeft: 15,
-            renewTimeLeft: 15 * 24 * 60 * 60 * 1000,
-            lastValidationCheck: new Date('2026-04-20T00:00:00Z').getTime(),
-            nextValidationDeadline: new Date('2026-05-20T00:00:00Z').getTime(),
-          },
-        }),
-      );
+      setupTest(createMeteredRestLicense());
 
       await expect.element(page.getByText('Data valid until')).toBeVisible();
       await expect.element(page.getByText('Add-ons', { exact: true })).toBeVisible();
@@ -239,12 +131,7 @@ describe('AppView', () => {
     });
 
     it('should render TrialSubscription for a trial license', async () => {
-      setupTest(
-        createRestLicense({ licenseType: 'trial' }),
-        createSoapLicenseData({
-          response: { subType: 'TRIAL', type: 'Trial', dateEnd: new Date('2029-06-18T00:00:00Z').getTime() },
-        }),
-      );
+      setupTest(createRestLicense({ licenseType: 'trial' }));
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Active edition', { exact: true })).toBeVisible();
@@ -259,30 +146,16 @@ describe('AppView', () => {
       expect(activateElements).toHaveLength(0);
     });
 
-    it('should render Activation token section when license is present and feature flag is on', async () => {
+    it('should render Activation token section when license is present', async () => {
       setupTest(createRestLicense());
 
       await expect.element(page.getByText('Activation token', { exact: true })).toBeVisible();
-    });
-
-    it('should not render legacy Subscription when feature flag is on and type matches', async () => {
-      setupTest(createRestLicense());
-
-      await expect.element(page.getByText('Active edition', { exact: true })).toBeVisible();
-    });
-  });
-
-  describe('Feature flag initialization', () => {
-    it('should default to legacy Subscription when feature flag is unset', async () => {
-      setupTest(createRestLicense(), createSoapLicenseData());
-
-      await expect.element(page.getByText('Details', { exact: true })).toBeVisible();
     });
   });
 
   describe('RouteContainer layout', () => {
     it('should render content inside a container with correct structure', async () => {
-      const result = await setupTest(createRestLicense(), createSoapLicenseData());
+      const result = await setupTest(createRestLicense());
 
       const outerDiv = result.container.firstChild as HTMLElement;
       expect(outerDiv).not.toBeNull();

@@ -54,7 +54,7 @@ export const useLocalStorage = vi.fn((_key, initialValue) => [initialValue, vi.f
 export const useNewSubscriptionFeatureFlag = vi.fn(() => false);
 export const useBreakpoint = vi.fn(() => 'xl');
 export const getResponsiveContainerStyle = vi.fn(() => ({}));
-export const useLicenseInfo = vi.fn();
+export const useLicenseV1Info = vi.fn();
 export const useDomainSearch = vi.fn(() => ({
   data: undefined,
   isFetching: false,

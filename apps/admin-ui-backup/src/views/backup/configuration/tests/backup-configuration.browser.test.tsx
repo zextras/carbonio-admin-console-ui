@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -134,28 +135,13 @@ function restoreAccountAndRights(qc: ReturnType<typeof getQueryClient>) {
   ]);
 }
 
-function buildLicenseData(features: Array<{ name: string; quantity: string; enabled: boolean }>) {
-  return {
-    ok: true,
-    response: {
-      type: 'REGULAR',
-      subType: 'PERPETUAL',
-      maintenanceStatus: 'active',
-      features,
-    },
-  };
-}
-
 describe('BackupConfiguration', () => {
   let queryClient: ReturnType<typeof getQueryClient>;
 
   beforeEach(async () => {
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
-    queryClient.setQueryData(
-      ['subscription', 'license'],
-      buildLicenseData([{ name: 'backup_basic', quantity: '1', enabled: true }]),
-    );
+    queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), true);
     queryClient.setQueryData(['all-servers'], [{ name: SERVER_NAME, id: SERVER_ID }]);
     currentConfigResponse = buildServerConfigResponse();
   });
@@ -314,11 +300,8 @@ describe('BackupConfiguration', () => {
       mockZextrasListBuckets();
 
       queryClient.setQueryData(
-        ['subscription', 'license'],
-        buildLicenseData([
-          { name: 'backup_basic', quantity: '1', enabled: true },
-          { name: 'backup_realtime', quantity: '1', enabled: true },
-        ]),
+        licenseV1CapabilityQueryKeys.capability('REAL_TIME_BACKUP'),
+        true,
       );
 
       await setupBrowserTest(<BackupConfigurationWithRoute />, {

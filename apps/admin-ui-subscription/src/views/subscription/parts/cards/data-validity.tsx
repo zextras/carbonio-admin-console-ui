@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
@@ -15,9 +15,12 @@ export const DataValidity = () => {
   const { t } = useTranslation();
 
   const title = t('core.subscription.data_validity', 'Data valid until');
-  const { data: licenseData } = useLicenseInfo();
+  const { data: license } = useLicenseV1Info();
 
-  const lastValidationDate = licenseData?.response?.nextValidationDeadline;
+  const lastValidationDate =
+    license && (license.licenseType === 'metered' || license.licenseType === 'isp')
+      ? license.nextValidationDeadline
+      : undefined;
 
   const dataValidityLabel = lastValidationDate ? format(lastValidationDate, DATE_FORMAT) : '';
   return (

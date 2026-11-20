@@ -14,12 +14,11 @@ import {
   Switch,
   TextInput,
 } from '@zextras/ui-components';
-import { useCurrentUserRights, useGlobalSettings, useModuleLicenseInfo } from '@zextras/ui-shared';
+import { useCurrentUserRights, useGlobalSettings, useLicenseV1Capability } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { GlobalConfig } from '../../../../types';
-import { BACKUP_BASIC, BACKUP_REALTIME } from '../../../constants';
 import { useModifyBackupConfig } from '../../../services/use-modify-backup-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
 import { BackupConfigHeader } from '../components/backup/backup-config-header';
@@ -32,14 +31,8 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
 
-  const { moduleLicenseInfo } = useModuleLicenseInfo();
-  const licenseFeatures = moduleLicenseInfo?.features ?? [];
-  const isBackupModuleLicensed = licenseFeatures.some(
-    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
-  );
-  const isBackupRealTimeFeatureLicensed = licenseFeatures.some(
-    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
-  );
+  const { data: isBackupModuleLicensed } = useLicenseV1Capability('BACKUP');
+  const { data: isBackupRealTimeFeatureLicensed } = useLicenseV1Capability('REAL_TIME_BACKUP');
 
   const form = useForm({
     defaultValues: mapGlobalConfigToFormValues(globalConfig),
