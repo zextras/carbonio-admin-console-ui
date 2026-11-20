@@ -53,7 +53,6 @@ export const BundlesSection = () => {
   const { t } = useTranslation();
   const { data: license } = useLicenseV1Info();
 
-  // Bundles exist only on metered/isp licenses: usage-billed, no seat capacity
   const bundlesData =
     license && (license.licenseType === 'metered' || license.licenseType === 'isp')
       ? license.bundles
@@ -66,7 +65,7 @@ export const BundlesSection = () => {
 
   return (
     <div className={styles.sectionWrapper}>
-      <div>
+      <div className="pb-xl">
         <ds-text weight="bold" size="large">
           {t('core.subscription.feature_bundles', 'Feature bundles')}
         </ds-text>

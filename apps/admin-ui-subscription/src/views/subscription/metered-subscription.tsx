@@ -24,7 +24,6 @@ export const MeteredSubscription = () => {
         <DataValidity />
       </div>
       <div className={styles.content}>
-        <ds-divider style={{ paddingBottom: '1.9rem', paddingTop: '0.4rem' }}></ds-divider>
         <BundlesSection />
         <AddonsSection />
         <DetailsSection />
