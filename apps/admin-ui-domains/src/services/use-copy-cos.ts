@@ -19,7 +19,7 @@ export function useCopyCos() {
   return useMutation({
     mutationFn: ({ newName, cosId }: CopyCosVariables) => copyCos(newName, cosId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['cos', 'list'] });
+      void queryClient.invalidateQueries({ queryKey: ['cos', 'list'] });
     },
   });
 }

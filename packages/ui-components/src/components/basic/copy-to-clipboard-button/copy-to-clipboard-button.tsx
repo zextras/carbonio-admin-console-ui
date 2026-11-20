@@ -44,7 +44,7 @@ export const CopyToClipboardButton = ({
       pill.showPopover();
       floatingCleanupRef.current?.();
       floatingCleanupRef.current = autoUpdate(button, pill, () => {
-        computePosition(button, pill, {
+        void computePosition(button, pill, {
           placement: 'right',
           strategy: 'fixed',
           middleware: [offset(8), flip(), shift({ padding: 8 })],

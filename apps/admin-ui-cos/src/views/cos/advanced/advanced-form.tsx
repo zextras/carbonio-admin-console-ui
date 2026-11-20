@@ -146,7 +146,7 @@ export const CosAdvancedForm = ({
       try {
         await saveBackupAttributes(value, cosName);
         if (isAdvanced && cosName) {
-          queryClient.invalidateQueries({
+          void queryClient.invalidateQueries({
             queryKey: cosQueryKeys.coreAttributes([
               {
                 configType: COS,

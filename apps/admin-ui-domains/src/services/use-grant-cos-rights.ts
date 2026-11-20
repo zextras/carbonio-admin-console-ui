@@ -38,7 +38,7 @@ export const useGrantAllCosRights = () => {
     mutationFn: ({ domainName, cosIds }: GrantAllCosRightsVariables) =>
       grantAllCosRights(domainName, cosIds),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: [...domainQueryKeys.all, 'initialized-domains'],
       });
     },

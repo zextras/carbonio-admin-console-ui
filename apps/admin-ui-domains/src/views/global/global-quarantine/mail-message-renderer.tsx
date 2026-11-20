@@ -217,7 +217,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
     );
 
     const images = iframeDoc?.body?.getElementsByTagName('img');
-    if (images)
+    if (images) {
       forEach(images, (p: HTMLImageElement) => {
         if (p.hasAttribute('dfsrc') && showImage) {
           p.setAttribute('src', p.getAttribute('dfsrc') ?? '');
@@ -230,6 +230,7 @@ const HtmlMessageRenderer: FC<_HtmlMessageRendererType> = ({
           p.setAttribute('src', `/service/home/~/?auth=co&id=${msgId}&part=${part.name}`);
         }
       });
+    }
 
     const resizeObserver = new ResizeObserver(calculateHeight);
     if (divRef.current) {

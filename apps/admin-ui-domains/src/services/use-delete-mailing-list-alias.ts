@@ -19,8 +19,8 @@ export const useDeleteMailingListAlias = (listId: string) => {
   return useMutation({
     mutationFn: (alias: string) => deleteMailingListAliasRequest(listId, alias),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
     },
   });
 };

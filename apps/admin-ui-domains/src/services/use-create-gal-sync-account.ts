@@ -41,13 +41,13 @@ export function useCreateGalSyncAccount(domainId: string | undefined) {
         vars.account,
         vars.type,
         vars.a,
-        vars.folder
+        vars.folder,
       ),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       if (domainId) {
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
       }
       createSnackbar({
         key: 'success',

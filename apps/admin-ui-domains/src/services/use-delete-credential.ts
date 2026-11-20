@@ -15,19 +15,19 @@ import { domainQueryKeys } from './domain-query-keys';
  * `mutate(vars, { onSuccess, onError })` (recorded repo convention).
  */
 export const useDeleteCredential = (accountName: string) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: async ({ passwordId }: { passwordId: string }) => {
-			const res = await deleteCredential(accountName, passwordId);
-			if (!res.ok) {
-				throw new Error('delete credential failed');
-			}
-			return res;
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.credentialList(accountName),
-			});
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ passwordId }: { passwordId: string }) => {
+      const res = await deleteCredential(accountName, passwordId);
+      if (!res.ok) {
+        throw new Error('delete credential failed');
+      }
+      return res;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.credentialList(accountName),
+      });
+    },
+  });
 };

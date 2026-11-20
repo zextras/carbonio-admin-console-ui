@@ -164,6 +164,10 @@ export const SendAsTab: FC<SendAsTabProps> = ({
           ),
         );
         return;
+      case 'ok':
+        break;
+      default:
+        return;
     }
 
     setIsShowSendEmailError(false);

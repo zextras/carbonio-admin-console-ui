@@ -45,32 +45,19 @@ function resolvePaddingObj(props: PaddingVarObj): string {
     return getPaddingCssVars(String(props.all));
   }
 
-  const p = ['0', '0', '0', '0'];
+  const side = (value: unknown): string | undefined =>
+    value !== undefined && value !== '' ? parsePaddingToken(String(value)) : undefined;
+  const vertical = side('vertical' in props ? props.vertical : undefined);
+  const horizontal = side('horizontal' in props ? props.horizontal : undefined);
 
-  if ('vertical' in props && props.vertical) {
-    const v = parsePaddingToken(String(props.vertical));
-    p[0] = v;
-    p[2] = v;
-  }
-  if ('horizontal' in props && props.horizontal) {
-    const h = parsePaddingToken(String(props.horizontal));
-    p[1] = h;
-    p[3] = h;
-  }
-  if ('top' in props && props.top) {
-    p[0] = parsePaddingToken(String(props.top));
-  }
-  if ('right' in props && props.right) {
-    p[1] = parsePaddingToken(String(props.right));
-  }
-  if ('bottom' in props && props.bottom) {
-    p[2] = parsePaddingToken(String(props.bottom));
-  }
-  if ('left' in props && props.left) {
-    p[3] = parsePaddingToken(String(props.left));
-  }
+  const sides = {
+    top: side('top' in props ? props.top : undefined) ?? vertical ?? '0',
+    right: side('right' in props ? props.right : undefined) ?? horizontal ?? '0',
+    bottom: side('bottom' in props ? props.bottom : undefined) ?? vertical ?? '0',
+    left: side('left' in props ? props.left : undefined) ?? horizontal ?? '0',
+  };
 
-  return p.join(' ');
+  return `${sides.top} ${sides.right} ${sides.bottom} ${sides.left}`;
 }
 
 const paddingObjKeys = Object.keys({

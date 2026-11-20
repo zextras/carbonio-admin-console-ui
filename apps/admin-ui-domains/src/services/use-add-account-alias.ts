@@ -19,10 +19,10 @@ export const useAddAccountAlias = () => {
   return useMutation({
     mutationFn: (vars: AccountAliasVars) => addAccountAliasRequest(vars.id, vars.alias),
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountDetail(vars.id),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
     },

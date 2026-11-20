@@ -20,11 +20,7 @@ type UseDomainAuthFormArgs = {
   isAdvanced: boolean;
 };
 
-export function useDomainAuthForm({
-  defaultValues,
-  zimbraId,
-  isAdvanced,
-}: UseDomainAuthFormArgs) {
+export function useDomainAuthForm({ defaultValues, zimbraId, isAdvanced }: UseDomainAuthFormArgs) {
   const saveInFlightRef = useRef(false);
   const queryClient = useQueryClient();
   const modifyDomainMutation = useModifyDomain(zimbraId);
@@ -45,8 +41,8 @@ export function useDomainAuthForm({
 
         formApi.reset(value, { keepDefaultValues: true });
         if (zimbraId) {
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
         }
       } catch {
         // Mutation hook already reports errors via snackbar.

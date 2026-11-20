@@ -26,7 +26,7 @@ export const useEndSession = () => {
       return response;
     },
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.userSessions(vars.accountName),
       });
     },

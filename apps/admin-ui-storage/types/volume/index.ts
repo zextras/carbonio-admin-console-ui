@@ -397,7 +397,7 @@ export type DeleteVolumeModelProps = {
  */
 export type ModifyVolumeProps = {
   volumeId: number | string;
-  setmodifyVolumeToggle: (v: boolean) => void;
+  setModifyVolumeToggle: (v: boolean) => void;
   getAllVolumesRequest: () => void;
   selectedServerId: string;
   volumeList: {

@@ -163,6 +163,10 @@ export const MembersTab: FC<MembersTabProps> = ({
           ),
         );
         return;
+      case 'ok':
+        break;
+      default:
+        return;
     }
 
     const newMembers = resolution.members;

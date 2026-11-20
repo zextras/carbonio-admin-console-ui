@@ -99,19 +99,12 @@ export const useRightsByType = (options: RightsOptions & { rightType?: string } 
 
 // Utility function to extract rights of a specific type from the rights array
 export const getRights = (rights: Right[], type: string): Array<{ n?: string }> => {
-  let right: Array<{ n?: string }> = [];
   const filteredType = rights.filter((item) => item?.type === type);
 
-  if (filteredType && filteredType.length > 0) {
-    if (
-      filteredType[0]?.all &&
-      Array.isArray(filteredType[0]?.all) &&
-      filteredType[0]?.all.length > 0
-    ) {
-      right = filteredType[0]?.all[0].right || [];
-    }
+  if (filteredType.length > 0 && filteredType[0]?.all && filteredType[0]?.all.length > 0) {
+    return filteredType[0]?.all[0].right || [];
   }
-  return right;
+  return [];
 };
 
 // Utility function to get all rights of a specific type

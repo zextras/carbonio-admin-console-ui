@@ -73,7 +73,7 @@ const App = () => {
         label: t('label.create_new_cos', 'Create New COS'),
         icon: '',
         onClick: () => {
-          navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
+          void navigate(`/${MANAGE}/${COS_ROUTE_ID}/${CREATE_NEW_COS_ROUTE_ID}`);
         },
         disabled: !canCreate,
         tooltipLabel: !canCreate ? tooltipLabel : undefined,

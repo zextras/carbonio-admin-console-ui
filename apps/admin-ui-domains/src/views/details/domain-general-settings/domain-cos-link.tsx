@@ -97,7 +97,7 @@ export const DomainCosLink = ({
       attributes.push({ n: '+zimbraDomainCOSMaxAccounts', _content: `${cId}:${cosMaxAccValue}` });
     }
 
-    modifyDomainMutation
+    void modifyDomainMutation
       .mutateAsync({ id: domainId, _jsns: ZIMBRA_ADMIN_URN, a: attributes })
       .then(() => {
         setMaxAccountValue('');
@@ -130,7 +130,7 @@ export const DomainCosLink = ({
       { n: '-zimbraDomainCOSMaxAccounts', _content: `${cId}:${cosMaxAccValue}` },
     ];
 
-    modifyDomainMutation
+    void modifyDomainMutation
       .mutateAsync({ id: domainId, _jsns: ZIMBRA_ADMIN_URN, a: attributes })
       .then(() => {
         setMaxAccountValue('');
@@ -141,7 +141,7 @@ export const DomainCosLink = ({
 
   function markAsDefaultCos(cId: string): void {
     if (!cId) return;
-    modifyDomainMutation.mutateAsync({
+    void modifyDomainMutation.mutateAsync({
       id: domainId,
       _jsns: ZIMBRA_ADMIN_URN,
       a: [{ n: 'zimbraDomainDefaultCOSId', _content: cId }],

@@ -43,7 +43,7 @@ export const useTracker = (): Tracker => {
 
   useEffect(() => {
     if (account?.id) {
-      hashToSHA256(account.id).then((arrayBuffer) => {
+      void hashToSHA256(account.id).then((arrayBuffer) => {
         const hashUserId = arrayBufferToBase64(arrayBuffer);
         postHog.identify(hashUserId, { is_ce: !isAdvanced });
       });

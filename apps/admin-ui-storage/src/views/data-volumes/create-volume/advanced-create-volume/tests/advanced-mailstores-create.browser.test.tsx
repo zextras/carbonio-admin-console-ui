@@ -10,7 +10,15 @@ import { setupBrowserTest } from 'admin-ui-test-utils';
 import { describe, expect, it } from 'vitest';
 import { page } from 'vitest/browser';
 
-import { DISABLED, ENABLED, EXTERNAL_TYPE_VALUE, LOCAL_TYPE_VALUE, NO, S3, YES } from '../../../../../constants';
+import {
+  DISABLED,
+  ENABLED,
+  EXTERNAL_TYPE_VALUE,
+  LOCAL_TYPE_VALUE,
+  NO,
+  S3,
+  YES,
+} from '../../../../../constants';
 import { volumeCreateSchema } from '../../schema';
 import { VolumeContext } from '../../volume-context';
 import { AdvancedMailstoresCreate } from '../advanced-mailstores-create';
@@ -74,10 +82,7 @@ function renderHarness(options: HarnessOptions = {}) {
   return {
     render: () =>
       setupBrowserTest(
-        <Harness
-          initialAdvanced={options.initialAdvanced}
-          externalData={options.externalData}
-        />,
+        <Harness initialAdvanced={options.initialAdvanced} externalData={options.externalData} />,
       ),
   };
 }
@@ -170,13 +175,7 @@ describe('AdvancedMailstoresCreate (browser)', () => {
 
   it('should display YES for isCurrent when current is true', async () => {
     await renderHarness({ initialAdvanced: { isCurrent: true } }).render();
-    await expect
-      .element(
-        page.getByRole('paragraph').filter({ hasText: YES }).elements().length > 0
-          ? page.getByText(YES, { exact: true }).first()
-          : page.getByText(YES, { exact: true }).first(),
-      )
-      .toBeVisible();
+    await expect.element(page.getByText(YES, { exact: true }).first()).toBeVisible();
   });
 
   it('should display NO for isCurrent when current is false', async () => {
@@ -208,9 +207,7 @@ describe('AdvancedMailstoresCreate (browser)', () => {
     }).render();
 
     await expect.element(page.getByText('Volume path', { exact: true })).toBeVisible();
-    await expect
-      .element(page.getByText('/opt/zextras/store', { exact: true }))
-      .toBeVisible();
+    await expect.element(page.getByText('/opt/zextras/store', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Enable Compression', { exact: true })).toBeVisible();
     await expect.element(page.getByText('Compression Threshold', { exact: true })).toBeVisible();
     await expect.element(page.getByText('4096', { exact: true })).toBeVisible();

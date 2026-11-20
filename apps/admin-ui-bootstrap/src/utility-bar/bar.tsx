@@ -79,7 +79,7 @@ export const ShellUtilityBar = () => {
       id: 'logout',
       label: t('label.logout', 'Logout'),
       onClick: (): void => {
-        logout();
+        void logout();
       },
       icon: 'LogOut' as IconName,
     },

@@ -171,7 +171,7 @@ const ShellPrimaryBar = ({ activeRoute }: ShellPrimaryBarProps) => {
                   <PrimaryBarElement
                     key={view?.id}
                     onClick={(): void => {
-                      navigate(`/${routes[view?.id]}`);
+                      void navigate(`/${routes[view?.id]}`);
                     }}
                     view={view}
                     isExpanded={isOpen}
@@ -206,7 +206,7 @@ const ShellPrimaryBar = ({ activeRoute }: ShellPrimaryBarProps) => {
                     <PrimaryBarElement
                       key={item?.id}
                       onClick={(): void => {
-                        navigate(`/${routes[item?.id]}`);
+                        void navigate(`/${routes[item?.id]}`);
                       }}
                       view={item}
                       isExpanded={isOpen}

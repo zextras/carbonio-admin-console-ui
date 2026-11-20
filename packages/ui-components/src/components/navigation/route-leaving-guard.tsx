@@ -138,22 +138,22 @@ function RouteLeavingGuardBrowserRouter({ children, when, onSave }: RouteLeaving
       }
       return true;
     }
-    if (when && !confirmedNavigation) {
-      if (
-        location.pathname !== lastLocationInitial.pathname &&
-        location.pathname !== lastLocation?.pathname
-      ) {
-        const shouldBlock = handleBlockedNavigation(location);
-        if (!shouldBlock) {
-          navigate(lastLocation?.pathname || lastLocationInitial.pathname, { replace: true });
-        }
+    if (
+      when &&
+      !confirmedNavigation &&
+      location.pathname !== lastLocationInitial.pathname &&
+      location.pathname !== lastLocation?.pathname
+    ) {
+      const shouldBlock = handleBlockedNavigation(location);
+      if (!shouldBlock) {
+        void navigate(lastLocation?.pathname || lastLocationInitial.pathname, { replace: true });
       }
     }
   }, [location, when, confirmedNavigation, lastLocation, lastLocationInitial, navigate]);
 
   useLayoutEffect(() => {
     if (confirmedNavigation && lastLocation) {
-      navigate(lastLocation.pathname);
+      void navigate(lastLocation.pathname);
     }
   }, [confirmedNavigation, lastLocation, navigate]);
 

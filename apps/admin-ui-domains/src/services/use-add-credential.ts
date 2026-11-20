@@ -15,25 +15,19 @@ import { domainQueryKeys } from './domain-query-keys';
  * `mutate(vars, { onSuccess, onError })` (recorded repo convention).
  */
 export const useAddCredential = (accountName: string) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: async ({
-			label,
-			services,
-		}: {
-			label: string;
-			services: string;
-		}) => {
-			const res = await addCredential(accountName, label, services);
-			if (!res.ok) {
-				throw new Error('add credential failed');
-			}
-			return res;
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.credentialList(accountName),
-			});
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ label, services }: { label: string; services: string }) => {
+      const res = await addCredential(accountName, label, services);
+      if (!res.ok) {
+        throw new Error('add credential failed');
+      }
+      return res;
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.credentialList(accountName),
+      });
+    },
+  });
 };

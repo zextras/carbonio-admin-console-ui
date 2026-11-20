@@ -12,7 +12,7 @@ export function getLicenseV1ErrorMessage(t: TFunction, error: LicenseV1Error): s
       return t('subscription.errors.load_failed', 'Unable to load the subscription information');
     case 'network-error':
       return t('subscription.errors.unreachable', 'Unable to reach the server');
-    case 'invalid-payload':
+    default:
       return t('error.something_went_wrong', 'Something went wrong');
   }
 }

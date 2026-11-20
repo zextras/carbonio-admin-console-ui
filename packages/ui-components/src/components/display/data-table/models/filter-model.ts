@@ -229,10 +229,8 @@ export function sanitizeFilters(
       }
       return;
     }
-    if (def.type === 'date' && isDateValue(value)) {
-      if (value.from || value.to) {
-        clean[def.id] = { from: value.from, to: value.to };
-      }
+    if (def.type === 'date' && isDateValue(value) && (value.from || value.to)) {
+      clean[def.id] = { from: value.from, to: value.to };
     }
   });
   return clean;
@@ -395,10 +393,8 @@ export function toColumnFilters(
       }
       return;
     }
-    if (def.type === 'date' && isDateValue(value)) {
-      if (value.from || value.to) {
-        columnFilters.push({ id: def.id, value: [value.from, value.to] });
-      }
+    if (def.type === 'date' && isDateValue(value) && (value.from || value.to)) {
+      columnFilters.push({ id: def.id, value: [value.from, value.to] });
     }
   });
   return columnFilters;

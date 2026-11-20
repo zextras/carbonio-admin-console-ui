@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { type QueryClient,useMutation, useQueryClient } from '@tanstack/react-query';
+import { type QueryClient, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
 import { domainByIdKey, flushCache } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
@@ -25,12 +25,12 @@ async function invalidateCertCaches(
 ): Promise<void> {
   if (domainId) {
     await flushCache('domain', 'id', domainId);
-    queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
-    queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
-    queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainCert(domainId) });
+    void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
+    void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
+    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainCert(domainId) });
   }
   if (domainName) {
-    queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainSslMaterial(domainName) });
+    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainSslMaterial(domainName) });
   }
 }
 

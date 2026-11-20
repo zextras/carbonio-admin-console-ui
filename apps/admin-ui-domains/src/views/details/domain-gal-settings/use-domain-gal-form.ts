@@ -14,10 +14,7 @@ import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { useModifyAccount } from '../../../services/use-modify-account';
 import { useModifyDataSource } from '../../../services/use-modify-data-source';
 import { useModifyDomain } from '../../../services/use-modify-domain';
-import {
-  type DomainGalSettingsFormValues,
-  domainGalSettingsSchema,
-} from './schema';
+import { type DomainGalSettingsFormValues, domainGalSettingsSchema } from './schema';
 import { buildGalDomainAttributes, formatPollingInterval } from './utils';
 
 type UseDomainGalFormArgs = {
@@ -86,9 +83,9 @@ export function useDomainGalForm({
 
         formApi.reset(value, { keepDefaultValues: true });
         if (zimbraId) {
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
-          queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
+          void queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
         }
       } catch {
         // Mutation hooks already report errors via snackbar.

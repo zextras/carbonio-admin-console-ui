@@ -79,7 +79,7 @@ export const CosListPanel = () => {
 
   useEffect(() => {
     if (!!prevCosRef.current && prevCosRef.current !== cosName) {
-      queryClient.invalidateQueries({ queryKey: cosQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: cosQueryKeys.all });
     }
     prevCosRef.current = cosName;
   }, [cosName, queryClient]);

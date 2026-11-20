@@ -82,7 +82,7 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
           appsWithShell,
           (acc, app): Record<string, i18n> => {
             const newI18n = i18next.createInstance();
-            newI18n
+            void newI18n
               // load translation using http -> see /public/locales (i.e. https://github.com/i18next/react-i18next/tree/master/example/react/public/locales)
               // learn more: https://github.com/i18next/i18next-http-backend
               .use(Backend)
@@ -113,7 +113,7 @@ export const useI18nStore = create<I18nState & I18nActions>()((set) => ({
   },
 }));
 
-defaultI18n
+void defaultI18n
   .use(Backend)
   // pass the i18n instance to react-i18next.
   .use(initReactI18next)

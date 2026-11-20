@@ -143,7 +143,7 @@ export const useVersion = () => {
 };
 
 export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryClient>): void {
-  queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+  void queryClient.invalidateQueries({ queryKey: queryKeys.license() });
 }
 
 export const useActivateLicense = () => {
@@ -158,7 +158,7 @@ export const useActivateLicense = () => {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+      void queryClient.invalidateQueries({ queryKey: queryKeys.license() });
     },
   });
 };
@@ -183,7 +183,7 @@ export const useRemoveLicense = () => {
             ),
           replace: true,
         });
-        queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+        void queryClient.invalidateQueries({ queryKey: queryKeys.license() });
       } else {
         createSnackbar({
           key: '1',

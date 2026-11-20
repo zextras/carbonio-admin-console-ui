@@ -85,28 +85,20 @@ export function getPaddingVar(padding: string | PaddingVarObj | 0): string | und
   if ('all' in padding && padding.all !== undefined && padding.all !== '') {
     return getPaddingVar(padding.all);
   }
-  const p = ['0', '0', '0', '0'];
-  if ('vertical' in padding && padding.vertical) {
-    p[0] = String(padding.vertical);
-    p[2] = String(padding.vertical);
-  }
-  if ('horizontal' in padding && padding.horizontal) {
-    p[1] = String(padding.horizontal);
-    p[3] = String(padding.horizontal);
-  }
-  if ('top' in padding && padding.top) {
-    p[0] = String(padding.top);
-  }
-  if ('right' in padding && padding.right) {
-    p[1] = String(padding.right);
-  }
-  if ('bottom' in padding && padding.bottom) {
-    p[2] = String(padding.bottom);
-  }
-  if ('left' in padding && padding.left) {
-    p[3] = String(padding.left);
-  }
-  return p.map((val) => paddingTokenToVar(val)).join(' ');
+
+  const side = (value: unknown): string | undefined =>
+    value !== undefined && value !== '' ? String(value) : undefined;
+  const vertical = side('vertical' in padding ? padding.vertical : undefined);
+  const horizontal = side('horizontal' in padding ? padding.horizontal : undefined);
+
+  const sides = [
+    side('top' in padding ? padding.top : undefined) ?? vertical ?? '0',
+    side('right' in padding ? padding.right : undefined) ?? horizontal ?? '0',
+    side('bottom' in padding ? padding.bottom : undefined) ?? vertical ?? '0',
+    side('left' in padding ? padding.left : undefined) ?? horizontal ?? '0',
+  ];
+
+  return sides.map((val) => paddingTokenToVar(val)).join(' ');
 }
 
 const INHERITED_CSS_PROPERTIES = new Set([

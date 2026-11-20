@@ -72,9 +72,9 @@ export function useDomainGeneralForm({
 
         formApi.reset(value, { keepDefaultValues: true });
         if (zimbraId) {
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
-          queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(zimbraId) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
+          void queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(zimbraId) });
         }
       } catch {
         // Mutation hooks already report errors via snackbar.

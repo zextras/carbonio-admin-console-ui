@@ -13,7 +13,7 @@ import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../../../constants';
 import { useModifyDomain } from '../../../services/use-modify-domain';
-import { virtualHostsFormSchema,type VirtualHostsFormValues } from './schema';
+import { virtualHostsFormSchema, type VirtualHostsFormValues } from './schema';
 import { buildVirtualHostAttributes } from './utils';
 
 type ModifyDomainWarning = { type?: string; message?: string };
@@ -65,8 +65,8 @@ export function useVirtualHostsForm({ defaultValues, zimbraId }: UseVirtualHosts
 
         formApi.reset(value, { keepDefaultValues: true });
         if (zimbraId) {
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
         }
       } catch {
         // Mutation hook already reports errors via snackbar.

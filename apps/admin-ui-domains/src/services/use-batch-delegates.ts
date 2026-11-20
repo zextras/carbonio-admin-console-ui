@@ -19,10 +19,10 @@ export const useBatchDelegates = (accountId: string) => {
   return useMutation({
     mutationFn: (vars: BatchDelegatesVars) => batchService(vars.reqObject, vars.otherAccount),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountGrants(accountId),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountMembership(accountId),
       });
     },

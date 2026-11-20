@@ -86,10 +86,15 @@ function resolveSchedulePolicy(
   autoAccept: string | undefined,
   autoDeclineIfBusy: string | undefined,
 ): number {
-  if (autoAccept === 'TRUE' && autoDeclineIfBusy === 'TRUE') return SCHEDULE_POLICY_TYPE.AUTO_ACCEPT;
-  if (autoAccept === 'FALSE' && autoDeclineIfBusy === 'TRUE') return SCHEDULE_POLICY_TYPE.MANUAL_ACCEPT;
-  if (autoAccept === 'TRUE' && autoDeclineIfBusy === 'FALSE')
+  if (autoAccept === 'TRUE' && autoDeclineIfBusy === 'TRUE') {
+    return SCHEDULE_POLICY_TYPE.AUTO_ACCEPT;
+  }
+  if (autoAccept === 'FALSE' && autoDeclineIfBusy === 'TRUE') {
+    return SCHEDULE_POLICY_TYPE.MANUAL_ACCEPT;
+  }
+  if (autoAccept === 'TRUE' && autoDeclineIfBusy === 'FALSE') {
     return SCHEDULE_POLICY_TYPE.AUTO_ACCEPT_ALWAYS;
+  }
   return SCHEDULE_POLICY_TYPE.NO_AUTO_ACCEPT;
 }
 
@@ -189,11 +194,7 @@ type ResourceEditFormProps = {
   onClose: () => void;
 };
 
-const ResourceEditForm = ({
-  selectedResource,
-  rawResource,
-  onClose,
-}: ResourceEditFormProps) => {
+const ResourceEditForm = ({ selectedResource, rawResource, onClose }: ResourceEditFormProps) => {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const { isSticky, setIsSticky } = useStickyBarStore();
@@ -266,8 +267,7 @@ const ResourceEditForm = ({
 
   const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
   const currentValues = useSelector(form.store, (s) => s.values);
-  const sendInviteDirty =
-    JSON.stringify(sendInviteList) !== JSON.stringify(originalSendInviteList);
+  const sendInviteDirty = JSON.stringify(sendInviteList) !== JSON.stringify(originalSendInviteList);
   const isFormDirty = isDirty || sendInviteDirty;
 
   function handleSave(): void {
@@ -482,360 +482,347 @@ const ResourceEditForm = ({
         background="white"
         style={{ overflow: 'auto' }}
       >
-          <>
-            <Displayer buttons={buttons} pinIcon={isSticky} />
-            <Row>
-              <ds-text as="h3" size="small" weight="bold">
-                {t('label.resource', 'Resource')}
-              </ds-text>
-            </Row>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ right: 'small' }}>
-                  <form.Field name="displayName">
-                    {(field) => (
-                      <TextInput
-                        required
-                        name="displayName"
-                        label={t('label.name', 'Name')}
-                        value={field.state.value ?? ''}
-                        autoComplete="off"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          field.handleChange(e.target.value)
-                        }
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-              <Container
-                mainAlignment="flex-end"
-                crossAlignment="center"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ left: 'small' }}>
-                  <form.Field name="mail">
-                    {(field) => (
-                      <TextInput
-                        required
-                        name="mail"
-                        label={t('label.email', 'Email')}
-                        value={field.state.value ?? ''}
-                        autoComplete="off"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          field.handleChange(e.target.value)
-                        }
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ right: 'small' }}>
-                  <LabeledValue
-                    label={t('label.server', 'Server')}
-                    
-                    value={attrs.zimbraMailHost}
-                  />
-                </Row>
-              </Container>
-              <Container
-                mainAlignment="flex-end"
-                crossAlignment="center"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ left: 'small' }}>
-                  <form.Field name="zimbraCalResType">
-                    {(field) => (
-                      <Select
-                        items={resourceTypeOptions}
-                        label={t('label.type', 'Type')}
-                        onChange={(v) => {
-                          field.handleChange(v);
-                        }}
-                        selection={selectedResourceType}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ right: 'small' }}>
-                  <form.Field name="zimbraAccountStatus">
-                    {(field) => (
-                      <Select
-                        items={accountStatusOptions}
-                        label={t('label.status', 'Status')}
-                        onChange={(v) => {
-                          field.handleChange(v);
-                        }}
-                        selection={selectedStatus}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-              <Container
-                mainAlignment="flex-end"
-                crossAlignment="center"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ left: 'small' }}>
-                  <form.Field name="zimbraCOSId">
-                    {(field) => (
-                      <Select
-                        items={cosItems}
-                        label={t('label.class_of_service', 'Class of Service')}
-                        onChange={(v) => {
-                          field.handleChange(v);
-                        }}
-                        selection={selectedCosItem}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%">
-                  <form.Field name="zimbraCalResAutoDeclineRecurring">
-                    {(field) => (
-                      <Select
-                        items={autoRefuseOptions}
-                        label={t('label.auto_refuse', 'Auto-Refuse')}
-                        onChange={(v) => {
-                          field.handleChange(v);
-                        }}
-                        selection={selectedAutoRefuse}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%">
-                  <form.Field name="schedulePolicyType">
-                    {(field) => (
-                      <Select
-                        items={schedulePolicyOptions}
-                        label={t('label.schedule_policy', 'Set Policy')}
-                        onChange={(v) => {
-                          field.handleChange(v);
-                        }}
-                        selection={selectedSchedulePolicy}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ right: 'small' }}>
-                  <form.Field name="zimbraCalResMaxNumConflictsAllowed">
-                    {(field) => (
-                      <NumberInput
-                        label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
-                        value={field.state.value ?? ''}
-                        onChange={(value: string) => {
-                          field.handleChange(value);
-                        }}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-              <Container
-                mainAlignment="flex-end"
-                crossAlignment="center"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ left: 'small' }}>
-                  <form.Field name="zimbraCalResMaxPercentConflictsAllowed">
-                    {(field) => (
-                      <NumberInput
-                        label={t(
-                          'label.percentage_maximum_conflict_allowed',
-                          '% Maximum Conflict Allowed',
-                        )}
-                        value={field.state.value ?? ''}
-                        onChange={(value: string) => {
-                          field.handleChange(value);
-                        }}
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ right: 'small' }}>
-                  <LabeledValue
-                    label={t('label.id_lbl', 'ID')}
-                    
-                    value={selectedResource.id}
-                  />
-                </Row>
-              </Container>
-              <Container
-                mainAlignment="flex-end"
-                crossAlignment="center"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%" padding={{ left: 'small' }}>
-                  <LabeledValue
-                    label={t('label.creation_date', 'Creation Date')}
-                    
-                    value={
-                      attrs.zimbraCreateTimestamp
-                        ? format(
-                            parse(
-                              attrs.zimbraCreateTimestamp,
-                              'yyyyMMddHHmmss.SSSX',
-                              new Date(),
-                            ),
-                            'dd MMM yyyy | hh:mm:ss a',
-                          )
-                        : '--'
-                    }
-                  />
-                </Row>
-              </Container>
-            </ListRow>
+        <>
+          <Displayer buttons={buttons} pinIcon={isSticky} />
+          <Row>
+            <ds-text as="h3" size="small" weight="bold">
+              {t('label.resource', 'Resource')}
+            </ds-text>
+          </Row>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ right: 'small' }}>
+                <form.Field name="displayName">
+                  {(field) => (
+                    <TextInput
+                      required
+                      name="displayName"
+                      label={t('label.name', 'Name')}
+                      value={field.state.value ?? ''}
+                      autoComplete="off"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        field.handleChange(e.target.value)
+                      }
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+            <Container
+              mainAlignment="flex-end"
+              crossAlignment="center"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ left: 'small' }}>
+                <form.Field name="mail">
+                  {(field) => (
+                    <TextInput
+                      required
+                      name="mail"
+                      label={t('label.email', 'Email')}
+                      value={field.state.value ?? ''}
+                      autoComplete="off"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        field.handleChange(e.target.value)
+                      }
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ right: 'small' }}>
+                <LabeledValue label={t('label.server', 'Server')} value={attrs.zimbraMailHost} />
+              </Row>
+            </Container>
+            <Container
+              mainAlignment="flex-end"
+              crossAlignment="center"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ left: 'small' }}>
+                <form.Field name="zimbraCalResType">
+                  {(field) => (
+                    <Select
+                      items={resourceTypeOptions}
+                      label={t('label.type', 'Type')}
+                      onChange={(v) => {
+                        field.handleChange(v);
+                      }}
+                      selection={selectedResourceType}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ right: 'small' }}>
+                <form.Field name="zimbraAccountStatus">
+                  {(field) => (
+                    <Select
+                      items={accountStatusOptions}
+                      label={t('label.status', 'Status')}
+                      onChange={(v) => {
+                        field.handleChange(v);
+                      }}
+                      selection={selectedStatus}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+            <Container
+              mainAlignment="flex-end"
+              crossAlignment="center"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ left: 'small' }}>
+                <form.Field name="zimbraCOSId">
+                  {(field) => (
+                    <Select
+                      items={cosItems}
+                      label={t('label.class_of_service', 'Class of Service')}
+                      onChange={(v) => {
+                        field.handleChange(v);
+                      }}
+                      selection={selectedCosItem}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%">
+                <form.Field name="zimbraCalResAutoDeclineRecurring">
+                  {(field) => (
+                    <Select
+                      items={autoRefuseOptions}
+                      label={t('label.auto_refuse', 'Auto-Refuse')}
+                      onChange={(v) => {
+                        field.handleChange(v);
+                      }}
+                      selection={selectedAutoRefuse}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%">
+                <form.Field name="schedulePolicyType">
+                  {(field) => (
+                    <Select
+                      items={schedulePolicyOptions}
+                      label={t('label.schedule_policy', 'Set Policy')}
+                      onChange={(v) => {
+                        field.handleChange(v);
+                      }}
+                      selection={selectedSchedulePolicy}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ right: 'small' }}>
+                <form.Field name="zimbraCalResMaxNumConflictsAllowed">
+                  {(field) => (
+                    <NumberInput
+                      label={t('label.maximum_conflict_allowed', 'Maximum Conflict Allowed')}
+                      value={field.state.value ?? ''}
+                      onChange={(value: string) => {
+                        field.handleChange(value);
+                      }}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+            <Container
+              mainAlignment="flex-end"
+              crossAlignment="center"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ left: 'small' }}>
+                <form.Field name="zimbraCalResMaxPercentConflictsAllowed">
+                  {(field) => (
+                    <NumberInput
+                      label={t(
+                        'label.percentage_maximum_conflict_allowed',
+                        '% Maximum Conflict Allowed',
+                      )}
+                      value={field.state.value ?? ''}
+                      onChange={(value: string) => {
+                        field.handleChange(value);
+                      }}
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ right: 'small' }}>
+                <LabeledValue label={t('label.id_lbl', 'ID')} value={selectedResource.id} />
+              </Row>
+            </Container>
+            <Container
+              mainAlignment="flex-end"
+              crossAlignment="center"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%" padding={{ left: 'small' }}>
+                <LabeledValue
+                  label={t('label.creation_date', 'Creation Date')}
+                  value={
+                    attrs.zimbraCreateTimestamp
+                      ? format(
+                          parse(attrs.zimbraCreateTimestamp, 'yyyyMMddHHmmss.SSSX', new Date()),
+                          'dd MMM yyyy | hh:mm:ss a',
+                        )
+                      : '--'
+                  }
+                />
+              </Row>
+            </Container>
+          </ListRow>
 
-            <Row width="100%" padding={{ top: 'medium' }}>
-              <ds-divider color="gray3"></ds-divider>
-            </Row>
-            <Row padding={{ top: 'extralarge' }}>
-              <ds-text as="h3" size="small" weight="bold">
-                {t('label.password', 'Password')}
-              </ds-text>
-            </Row>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%">
-                  <form.Field name="password">
-                    {(field) => (
-                      <PasswordInput
-                        required
-                        label={t('label.password', 'Password')}
-                        value={field.state.value ?? ''}
-                        name="password"
-                        autoComplete="new-password"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          field.handleChange(e.target.value)
-                        }
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
-            <ListRow>
-              <Container
-                mainAlignment="flex-start"
-                crossAlignment="flex-start"
-                orientation="horizontal"
-                padding={{ top: 'large' }}
-              >
-                <Row width="100%">
-                  <form.Field name="repeatPassword">
-                    {(field) => (
-                      <PasswordInput
-                        required
-                        label={t('label.repeat_password', 'Repeat Password')}
-                        value={field.state.value ?? ''}
-                        name="repeatPassword"
-                        autoComplete="new-password"
-                        onChange={(e: ChangeEvent<HTMLInputElement>) =>
-                          field.handleChange(e.target.value)
-                        }
-                      />
-                    )}
-                  </form.Field>
-                </Row>
-              </Container>
-            </ListRow>
+          <Row width="100%" padding={{ top: 'medium' }}>
+            <ds-divider color="gray3"></ds-divider>
+          </Row>
+          <Row padding={{ top: 'extralarge' }}>
+            <ds-text as="h3" size="small" weight="bold">
+              {t('label.password', 'Password')}
+            </ds-text>
+          </Row>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%">
+                <form.Field name="password">
+                  {(field) => (
+                    <PasswordInput
+                      required
+                      label={t('label.password', 'Password')}
+                      value={field.state.value ?? ''}
+                      name="password"
+                      autoComplete="new-password"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        field.handleChange(e.target.value)
+                      }
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
+          <ListRow>
+            <Container
+              mainAlignment="flex-start"
+              crossAlignment="flex-start"
+              orientation="horizontal"
+              padding={{ top: 'large' }}
+            >
+              <Row width="100%">
+                <form.Field name="repeatPassword">
+                  {(field) => (
+                    <PasswordInput
+                      required
+                      label={t('label.repeat_password', 'Repeat Password')}
+                      value={field.state.value ?? ''}
+                      name="repeatPassword"
+                      autoComplete="new-password"
+                      onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                        field.handleChange(e.target.value)
+                      }
+                    />
+                  )}
+                </form.Field>
+              </Row>
+            </Container>
+          </ListRow>
 
-            <Row width="100%" padding={{ top: 'medium' }}>
-              <ds-divider color="gray3"></ds-divider>
-            </Row>
-            <SendInviteAccounts
-              isEditable
-              sendInviteList={sendInviteList}
-              setSendInviteList={setSendInviteList}
-            />
-            <Row width="100%" padding={{ top: 'medium' }}>
-              <ds-divider color="gray3"></ds-divider>
-            </Row>
+          <Row width="100%" padding={{ top: 'medium' }}>
+            <ds-divider color="gray3"></ds-divider>
+          </Row>
+          <SendInviteAccounts
+            isEditable
+            sendInviteList={sendInviteList}
+            setSendInviteList={setSendInviteList}
+          />
+          <Row width="100%" padding={{ top: 'medium' }}>
+            <ds-divider color="gray3"></ds-divider>
+          </Row>
 
-            <Row padding={{ top: 'extralarge' }} width="100%">
-              <form.Field name="zimbraNotes">
-                {(field) => (
-                  <PlainTextarea
-                    label={t('label.description', 'Description')}
-                    value={field.state.value ?? ''}
-                    onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
-                      field.handleChange(e.target.value)
-                    }
-                  />
-                )}
-              </form.Field>
-            </Row>
-          </>
+          <Row padding={{ top: 'extralarge' }} width="100%">
+            <form.Field name="zimbraNotes">
+              {(field) => (
+                <PlainTextarea
+                  label={t('label.description', 'Description')}
+                  value={field.state.value ?? ''}
+                  onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                    field.handleChange(e.target.value)
+                  }
+                />
+              )}
+            </form.Field>
+          </Row>
+        </>
       </Container>
 
       {showDeleteDialog && (
