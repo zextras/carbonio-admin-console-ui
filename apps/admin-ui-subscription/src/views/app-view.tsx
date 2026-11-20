@@ -5,16 +5,15 @@
  */
 import { PageHeader } from '@zextras/ui-components';
 import {
-  useBreakpoint,
-  useLicenseInfo,
-  useNewSubscriptionFeatureFlag,
-  usePrimaryBarState,
+	type LicenseV1Type,
+	useBreakpoint,
+	useLicenseV1Info,
+	usePrimaryBarState,
 } from '@zextras/ui-shared';
 import { type CSSProperties, type ReactNode } from 'react';
 
 import styles from './app-view.module.css';
 import { ActivateSubscription } from './subscription/activate-subscription';
-import { LegacySubscription } from './subscription/legacy-subscription';
 import { MeteredSubscription } from './subscription/metered-subscription';
 import { PerpetualSubscription } from './subscription/perpetual-subscription';
 import { RegularSubscription } from './subscription/regular-subscription';
@@ -32,29 +31,21 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProper
   };
 }
 
-function getSubscriptionView(
-  subscriptionType: string | undefined,
-  subType: string | undefined,
-  featureFlag: boolean,
-): ReactNode {
-  if (!subscriptionType) {
+function getSubscriptionView(licenseType: LicenseV1Type | null): ReactNode {
+  if (!licenseType) {
     return <ActivateSubscription />;
   }
 
-  if (!featureFlag) {
-    return <LegacySubscription />;
-  }
-
-  if (subscriptionType === 'Purchased' && subType === 'REGULAR') {
+  if (licenseType === 'regular') {
     return <RegularSubscription />;
   }
-  if (subscriptionType === 'Purchased' && subType === 'PERPETUAL') {
+  if (licenseType === 'perpetual') {
     return <PerpetualSubscription />;
   }
-  if (subscriptionType === 'Purchased' && subType === 'TRIAL') {
+  if (licenseType === 'trial') {
     return <TrialSubscription />;
   }
-  if (subscriptionType === 'Purchased' && subType === 'METERED') {
+  if (licenseType === 'metered' || licenseType === 'isp') {
     return <MeteredSubscription />;
   }
   return null;
@@ -63,11 +54,9 @@ function getSubscriptionView(
 export const AppView = () => {
   const isPrimaryBarExpanded = usePrimaryBarState();
   const breakpoint = useBreakpoint();
-  const featureFlag = useNewSubscriptionFeatureFlag();
 
-  const { data: licenseData, isLoading } = useLicenseInfo();
-  const subscriptionType = licenseData?.response?.type;
-  const subType = licenseData?.response?.subType;
+  const { data: license, isLoading } = useLicenseV1Info();
+  const licenseType = license?.licenseType ?? null;
 
   return (
     <div className={styles.root}>
@@ -78,7 +67,7 @@ export const AppView = () => {
             className={styles.detailContent}
             style={getContainerStyle(breakpoint, isPrimaryBarExpanded)}
           >
-            {getSubscriptionView(subscriptionType, subType, featureFlag)}
+            {getSubscriptionView(licenseType)}
           </div>
         </div>
       )}

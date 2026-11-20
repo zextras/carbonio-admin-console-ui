@@ -15,7 +15,7 @@ import {
   SettingLayout,
   Switch,
 } from '@zextras/ui-components';
-import { useIsAdvanced, useLicenseInfo, useUserSettings } from '@zextras/ui-shared';
+import { useIsAdvanced, useLicenseV1Capability, useUserSettings } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { TRUE } from '../constants';
@@ -34,12 +34,9 @@ export const WscSettings = ({ form, readonlyFeatures = false }: WscSettingsProps
 
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-  const { data: licenseData, isLoading, error } = useLicenseInfo();
+  const { data: chatsAllowed, isLoading, error } = useLicenseV1Capability('CHATS');
 
-  const wscFeature = licenseData?.response?.features?.find(
-    (feature) => feature.name === 'wsc_basic',
-  );
-  const isLicensed = !!wscFeature?.enabled;
+  const isLicensed = chatsAllowed === true;
   const requiresLicenseCheck = isAdvanced;
 
   const wscLicenseDisabledWarningLabel = t(

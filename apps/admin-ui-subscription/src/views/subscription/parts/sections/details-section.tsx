@@ -5,7 +5,7 @@
  */
 
 import { CopyToClipboardButton, Tooltip } from '@zextras/ui-components';
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -16,17 +16,12 @@ import styles from './sections.module.css';
 export const DetailsSection = () => {
   const { t } = useTranslation();
   const [open, setOpen] = useState(true);
-  const { data: licenseData } = useLicenseInfo();
+  const { data: license } = useLicenseV1Info();
 
-  const response = licenseData?.response;
+  if (!license) return null;
 
-  if (!response) return null;
-
-  const isPerpetualSubscription = response.subType === 'PERPETUAL';
-
-  const subscriptionType = response.subType
-    ? response.subType.charAt(0) + response.subType.slice(1).toLowerCase()
-    : '';
+  const subscriptionType =
+    license.licenseType.charAt(0).toUpperCase() + license.licenseType.slice(1).toLowerCase();
 
   return (
     <div className={`${styles.sectionWrapper} ${styles.detailsSection}`}>
@@ -47,7 +42,7 @@ export const DetailsSection = () => {
               {t('core.subscription.company_name', 'Company Name')}
             </ds-text>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{response.endUser ?? ''}</ds-text>
+              <ds-text className={styles.detailValue}>{license.companyName ?? ''}</ds-text>
             </div>
           </div>
 
@@ -56,7 +51,7 @@ export const DetailsSection = () => {
               {t('core.subscription.partner', 'Partner')}
             </ds-text>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{response.customer ?? ''}</ds-text>
+              <ds-text className={styles.detailValue}>{license.partner ?? ''}</ds-text>
             </div>
           </div>
 
@@ -65,10 +60,8 @@ export const DetailsSection = () => {
               {t('core.subscription.orderId', 'Order ID')}
             </ds-text>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{response.infrastructureId ?? ''}</ds-text>
-              {response.infrastructureId && (
-                <CopyToClipboardButton value={response.infrastructureId} />
-              )}
+              <ds-text className={styles.detailValue}>{license.orderId ?? ''}</ds-text>
+              {license.orderId && <CopyToClipboardButton value={license.orderId} />}
             </div>
           </div>
 
@@ -77,7 +70,7 @@ export const DetailsSection = () => {
               {t('core.subscription.version', 'Module version')}
             </ds-text>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{response.carbonioVersion ?? ''}</ds-text>
+              <ds-text className={styles.detailValue}>{license.carbonioVersion ?? ''}</ds-text>
             </div>
           </div>
 
@@ -106,18 +99,18 @@ export const DetailsSection = () => {
               </Tooltip>
             </div>
             <div className={styles.detailValueRow}>
-              <ds-text className={styles.detailValue}>{`${response.accountCount ?? 0}`}</ds-text>
+              <ds-text className={styles.detailValue}>{`${license.totalActiveAccountsNumber ?? 0}`}</ds-text>
             </div>
           </div>
 
-          {isPerpetualSubscription && response.maintenanceEndDate && (
+          {license.licenseType === 'perpetual' && license.maintenanceEndDate && (
             <div className={styles.detailItem}>
               <ds-text size="small" className={styles.detailLabel}>
                 {t('core.subscription.maintenance_end_date', 'Maintenance expiration date')}
               </ds-text>
               <div className={styles.detailValueRow}>
                 <ds-text className={styles.detailValue}>
-                  {format(response.maintenanceEndDate, DATE_FORMAT)}
+                  {format(license.maintenanceEndDate, DATE_FORMAT)}
                 </ds-text>
               </div>
             </div>

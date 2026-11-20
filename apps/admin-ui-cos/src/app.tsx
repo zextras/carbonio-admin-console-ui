@@ -10,7 +10,7 @@ import {
   removeRoute,
   useCurrentUserRights,
   useIsAdvanced,
-  useLicenseInfo,
+  useLicenseV1Info,
 } from '@zextras/ui-shared';
 import { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -33,7 +33,7 @@ const App = () => {
   const navigate = useNavigate();
 
   const { data: rights } = useCurrentUserRights();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData } = useLicenseV1Info();
   const isAdvanced = useIsAdvanced();
   const showCOS = checkShowCOS(rights);
   const createCosRight = checkCreateCosRight(rights);

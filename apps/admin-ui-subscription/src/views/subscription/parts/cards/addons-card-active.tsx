@@ -5,26 +5,27 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { isUnlimitedQuantity, LicenseInfo } from '@zextras/ui-shared';
+import {
+	type LicenseV1AssignedSeatItem,
+	type LicenseV1SeatItem,
+} from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { type AddonDisplayConfig } from '../sections/addons-section';
 import styles from './addons-card.module.css';
 
 type AddonsCardProps = {
-  editions: LicenseInfo['editions'];
+  addOns?: Array<LicenseV1SeatItem | LicenseV1AssignedSeatItem>;
   config: AddonDisplayConfig;
 };
 
-export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
+export const AddonsCardActive = ({ addOns, config }: AddonsCardProps) => {
   const { t } = useTranslation();
 
-  if (!editions) return null;
+  if (!addOns) return null;
 
-  const edition = editions.find((e) => e.name === config.name)!;
-  const isUnlimited = isUnlimitedQuantity(edition.quantity);
-  const total = Number.parseInt(edition.quantity, 10);
-  const safeTotal = Number.isNaN(total) ? 0 : total;
+  const addOn = addOns.find((item) => item.name === config.name)!;
+  const isSeatCapped = 'totalSeats' in addOn;
 
   return (
     <div key={config.name} className={styles.addonRowActive}>
@@ -48,7 +49,7 @@ export const AddonsCardActive = ({ editions, config }: AddonsCardProps) => {
         <div className={styles.statItem}>
           <ds-text size="extrasmall">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1rem' }}>
-            {isUnlimited ? t('label.unlimited', 'Unlimited') : safeTotal}
+            {isSeatCapped ? addOn.totalSeats : t('label.unlimited', 'Unlimited')}
           </ds-text>
         </div>
       </div>

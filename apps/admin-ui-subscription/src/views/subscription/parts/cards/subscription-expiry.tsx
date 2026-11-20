@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { differenceInCalendarDays, format } from 'date-fns';
 import { TFunction } from 'i18next';
 import { useTranslation } from 'react-i18next';
@@ -31,12 +31,12 @@ function getDaysLeftLabel(t: TFunction, daysLeft: number): string {
 export const SubscriptionExpiry = () => {
   const { t } = useTranslation();
 
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData } = useLicenseV1Info();
 
-  const dateEnd = licenseData?.response?.dateEnd;
+  const endDate = licenseData?.endDate;
 
-  const expirationDateLabel = dateEnd ? format(dateEnd, DATE_FORMAT) : '';
-  const daysLeft = dateEnd ? Math.max(0, differenceInCalendarDays(dateEnd, new Date())) : 0;
+  const expirationDateLabel = endDate ? format(endDate, DATE_FORMAT) : '';
+  const daysLeft = endDate ? Math.max(0, differenceInCalendarDays(endDate, new Date())) : 0;
   const daysLeftLabel = getDaysLeftLabel(t, daysLeft);
   return (
     <div className={styles.card}>

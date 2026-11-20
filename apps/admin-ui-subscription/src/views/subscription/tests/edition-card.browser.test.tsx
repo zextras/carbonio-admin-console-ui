@@ -20,7 +20,7 @@ const setupTest = (component: React.ReactElement) => {
 };
 
 const editionConfig: EditionDisplayConfig = {
-	name: 'email_edition',
+	name: 'Email',
 	labelKey: 'label.email',
 	labelDefault: 'Email',
 	icon: 'EmailOutline' as IconName,
@@ -31,7 +31,7 @@ describe('EditionCardActive', () => {
 		setupTest(
 			<EditionCardActive
 				config={editionConfig}
-				editions={[{ name: 'email_edition', quantity: '500' }]}
+				editions={[{ name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 500 }]}
 			/>,
 		);
 
@@ -45,8 +45,8 @@ describe('EditionCardActive', () => {
 			<EditionCardActive
 				config={editionConfig}
 				editions={[
-					{ name: 'workspace_edition', quantity: '0' },
-					{ name: 'email_edition', quantity: '300' },
+					{ name: 'Workspace', status: 'not active', assignedSeats: 0, totalSeats: 0 },
+					{ name: 'Email', status: 'green', assignedSeats: 3, totalSeats: 300 },
 				]}
 			/>,
 		);

@@ -4,6 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   delayedBrowserZextrasActionInterceptor,
@@ -42,19 +43,11 @@ function setLicenseData(
   queryClient: ReturnType<typeof getQueryClient>,
   { backupBasic = true, backupRealtime = true } = {},
 ) {
-  queryClient.setQueryData(['subscription', 'license'], {
-    ok: true,
-    response: {
-      type: 'SUBSCRIPTION',
-      subType: 'SUBSCRIPTION',
-      expired: false,
-      maintenanceStatus: 'active',
-      features: [
-        { name: 'backup_basic', enabled: backupBasic },
-        { name: 'backup_realtime', enabled: backupRealtime },
-      ],
-    },
-  });
+  queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), backupBasic);
+  queryClient.setQueryData(
+    licenseV1CapabilityQueryKeys.capability('REAL_TIME_BACKUP'),
+    backupRealtime,
+  );
 }
 
 describe('BackupServerConfig', () => {

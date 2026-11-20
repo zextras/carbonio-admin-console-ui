@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container } from '@zextras/ui-components';
-import { useIsAdvanced, useLicenseInfo, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
+import { useIsAdvanced, useLicenseV1Info, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import { Navigate, Route, Routes } from 'react-router';
 
 import { COS_LIST, CREATE_NEW_COS_ROUTE_ID } from '../../constants';
@@ -16,7 +16,7 @@ export const CosDetailPanel = () => {
   const featureFlag = useNewSubscriptionFeatureFlag();
 
   const isAdvanced = useIsAdvanced();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData } = useLicenseV1Info();
 
   return (
     <Container

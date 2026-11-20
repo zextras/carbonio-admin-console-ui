@@ -5,7 +5,7 @@
  */
 import {
   useIsAdvanced,
-  useLicenseInfo,
+  useLicenseV1Info,
   useNewSubscriptionFeatureFlag,
   usePrimaryBarState,
 } from '@zextras/ui-shared';
@@ -23,7 +23,7 @@ export const AppView = () => {
   const featureFlag = useNewSubscriptionFeatureFlag();
 
   const isAdvanced = useIsAdvanced();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData } = useLicenseV1Info();
   const isPrimaryBarExpanded = usePrimaryBarState();
   const { pathname } = useLocation();
   const isCreateNewCos = pathname.includes(CREATE_NEW_COS_ROUTE_ID);

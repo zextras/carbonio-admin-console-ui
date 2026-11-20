@@ -3,11 +3,11 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
 import {
   advancedSupportedApiForBrowser,
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
-  createBrowserZextrasActionInterceptor,
   delayedSoapApiForBrowser,
   getGetInfoResponseMock,
   getQueryClient,
@@ -72,22 +72,8 @@ function seedLicenseAndAdminSettings(): void {
     attrs: { zimbraIsAdminAccount: 'TRUE' },
     props: [],
   });
-  queryClient.setQueryData(['subscription', 'license'], {
-    ok: true,
-    response: {
-      type: 'Purchased',
-      features: [{ name: 'wsc_basic', enabled: true }],
-    },
-  });
+  queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('CHATS'), true);
 }
-
-const LICENSE_MOCK = {
-  ok: true,
-  response: {
-    type: 'Purchased',
-    features: [{ name: 'wsc_basic', enabled: true }],
-  },
-};
 
 function mockCatalogServices(): void {
   createBrowserAPIInterceptor('get', '/services/catalog/services', () =>
@@ -95,17 +81,13 @@ function mockCatalogServices(): void {
   );
 }
 
+const CHATS_CAPABILITY_URL = '/services/license/v1/capabilities/allowed?capability=CHATS';
+
 function setupUnhandledApiInterceptors(): void {
   mockCatalogServices();
   createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-  createBrowserZextrasActionInterceptor('getLicenseInfo', () =>
-    HttpResponse.json({
-      Body: {
-        response: {
-          content: JSON.stringify(LICENSE_MOCK),
-        },
-      },
-    }),
+  createBrowserAPIInterceptor('get', CHATS_CAPABILITY_URL, () =>
+    HttpResponse.json({ allowed: true }),
   );
 }
 

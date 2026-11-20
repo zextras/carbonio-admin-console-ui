@@ -14,8 +14,8 @@ import {
   getRights,
   replaceHistory,
   useCurrentUserRights,
+  useLicenseV1Capability,
   useMailstoreServers,
-  useModuleLicenseInfo,
   useRelativePathname,
 } from '@zextras/ui-shared';
 import React, { useState } from 'react';
@@ -24,7 +24,6 @@ import { matchPath } from 'react-router';
 
 import {
   ADVANCED_LBL,
-  BACKUP_BASIC,
   CONFIGURATION_BACKUP,
   IMPORT_EXTERNAL_BACKUP,
   IS_DEFAULT_SETTINGS_EXPANDED,
@@ -58,11 +57,7 @@ export const BackupListPanel = () => {
     setPrevSelectedServer(selectedServer);
     setSearchServer(selectedServer);
   }
-  const { moduleLicenseInfo } = useModuleLicenseInfo();
-  const licenseFeatures = moduleLicenseInfo?.features ?? [];
-  const isBackupModuleLicensed = licenseFeatures.some(
-    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_BASIC && f?.enabled,
-  );
+  const { data: isBackupModuleLicensed } = useLicenseV1Capability('BACKUP');
   const { data: rights } = useCurrentUserRights();
   const serverRights = rights && rights.length > 0 ? getRights(rights, SERVER) : [];
   const hasListServerRights = serverRights.some(
