@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SUBSCRIPTIONS_ROUTE_ID, useAppStore } from '@zextras/ui-shared';
+import { licenseV1QueryKeys, SUBSCRIPTIONS_ROUTE_ID, useAppStore } from '@zextras/ui-shared';
 import { getQueryClient, LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -13,18 +13,26 @@ import { page } from 'vitest/browser';
 import { LicenseBanner } from '../license-banner';
 
 describe('LicenseBanner', () => {
-	const maintenanceEndDate = 1750272000000;
+	const maintenanceEndDate = '2025-06-18T00:00:00.000Z';
 
 	function createLicenseData(maintenanceStatus: 'expiring' | 'expired' | 'invalid') {
 		return {
-			response: {
-				type: 'REGULAR',
-				subType: 'PERPETUAL',
-				maintenanceEndDate,
-				maintenanceStatus,
-				features: [],
-			},
-			ok: true,
+			licenseType: 'perpetual',
+			status: 'valid',
+			companyName: 'Test',
+			partner: 'Test',
+			orderId: 'ORD-1',
+			carbonioVersion: '25.1.0',
+			activationToken: 'TOKEN',
+			startDate: '2022-05-10T00:00:00.000Z',
+			endDate: '2029-06-18T00:00:00.000Z',
+			totalActiveAccountsNumber: 1,
+			lastSyncTime: '2026-06-20T00:00:00.000Z',
+			maxCarbonioVersion: '25.X.X',
+			maintenanceEndDate,
+			maintenanceStatus,
+			editions: [],
+			addOns: [],
 		};
 	}
 
@@ -33,7 +41,10 @@ describe('LicenseBanner', () => {
 		maintenanceStatus: 'expiring' | 'expired' | 'invalid',
 	) {
 		const queryClient = getQueryClient();
-		queryClient.setQueryData(['subscription', 'license'], createLicenseData(maintenanceStatus));
+		queryClient.setQueryData(
+			licenseV1QueryKeys.all,
+			createLicenseData(maintenanceStatus),
+		);
 
 		// Register the subscriptions route so buildPath resolves the prefixed
 		// path (/manage/subscriptions), mirroring how the shell bootstraps routes.
