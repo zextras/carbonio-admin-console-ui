@@ -12,7 +12,6 @@ import { page } from 'vitest/browser';
 
 import { TrialSubscription } from '../trial-subscription';
 
-// SOAP license: feeds the trial banner
 const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   response: {
     subType: 'TRIAL',
@@ -36,7 +35,6 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   ...Object.fromEntries(Object.entries(overrides).filter(([key]) => key !== 'response')),
 });
 
-// REST license: feeds the shared children migrated to /license/v1/info
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'trial',
   status: 'valid',

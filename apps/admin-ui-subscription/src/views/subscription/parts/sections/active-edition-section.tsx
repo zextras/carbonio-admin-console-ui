@@ -34,8 +34,6 @@ export const ActiveEditionSection = () => {
   const { t } = useTranslation();
   const { data: license } = useLicenseV1Info();
 
-  // Editions render for every seat-capped license type (regular, trial,
-  // perpetual); metered/isp are bundle-based and carry no editions.
   if (license && (license.licenseType === 'metered' || license.licenseType === 'isp')) {
     return null;
   }

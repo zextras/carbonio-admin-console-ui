@@ -31,8 +31,6 @@ export const queryFnLicenseV1Info = async (): Promise<LicenseV1Info | null> => {
 		case 'success':
 			return result.license;
 		case 'no-license':
-			// No license installed is a state, not a failure: data becomes null
-			// so React Query treats it as success and does not retry.
 			return null;
 		case 'error':
 			throw new LicenseV1QueryError(result.error);

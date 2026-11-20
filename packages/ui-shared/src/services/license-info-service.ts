@@ -35,7 +35,6 @@ type LicenseV1Common = {
   startDate: string;
   endDate: string;
   totalActiveAccountsNumber: number;
-  // The backend sends null when no license update time is recorded
   lastSyncTime: string | null;
 };
 
@@ -80,7 +79,6 @@ export type LicenseV1Info =
   | LicenseV1MeteredInfo
   | LicenseV1IspInfo;
 
-// Discriminant values derived from the union so the alias cannot drift from the members
 export type LicenseV1Type = LicenseV1Info['licenseType'];
 
 export type LicenseV1Error =
@@ -132,15 +130,13 @@ function describeInvalidPayload(text: string): string {
       }
     }
   } catch {
-    // the body is not JSON at all
+    return 'Invalid license payload: response is not valid JSON';
   }
   return 'Invalid license payload: response is not valid JSON';
 }
 
 export const fetchLicenseV1Info = async (): Promise<LicenseV1Result> => {
   try {
-    // Public path: nginx exposes the license sidecar under /services/license/
-    // (proxy_pass http://carbonio-license/license/), same convention as /services/catalog/
     const response = await fetch('/services/license/v1/info');
 
     if (response.status === 404) {

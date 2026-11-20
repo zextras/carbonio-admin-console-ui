@@ -16,8 +16,6 @@ import { page } from 'vitest/browser';
 
 import { AppView } from '../app-view';
 
-// SOAP license: feeds the pages that still host SOAP cards (legacy page,
-// MaxVersion, metered cards, trial banner)
 const createSoapLicenseData = (responseOverrides: Record<string, unknown> = {}) => ({
   ok: true,
   response: {
@@ -41,7 +39,6 @@ const createSoapLicenseData = (responseOverrides: Record<string, unknown> = {}) 
   },
 });
 
-// REST license: drives the routing and every page already migrated to /license/v1/info
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'regular',
   status: 'valid',
@@ -97,11 +94,6 @@ describe('AppView', () => {
     resetMockWorker();
   });
 
-  /**
-   * Seeds the REST license cache (routing + migrated pages). Passing `undefined`
-   * leaves the cache empty so the query fetches and fails (no valid license data).
-   * The optional SOAP license feeds pages that still host SOAP cards.
-   */
   function setupTest(
     restLicense: Record<string, unknown> | null = null,
     soapLicense?: Record<string, unknown>,
@@ -255,7 +247,6 @@ describe('AppView', () => {
       );
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
-      // The trial page renders like the regular page (editions included) plus its banner
       await expect.element(page.getByText('Active edition', { exact: true })).toBeVisible();
     });
 

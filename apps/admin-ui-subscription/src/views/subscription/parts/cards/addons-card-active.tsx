@@ -25,7 +25,6 @@ export const AddonsCardActive = ({ addOns, config }: AddonsCardProps) => {
   if (!addOns) return null;
 
   const addOn = addOns.find((item) => item.name === config.name)!;
-  // Metered/isp add-ons have no seat capacity: "Total seat" shows Unlimited.
   const isSeatCapped = 'totalSeats' in addOn;
 
   return (

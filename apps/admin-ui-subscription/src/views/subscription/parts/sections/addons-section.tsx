@@ -48,8 +48,6 @@ const ADDON_CONFIGS: Array<AddonDisplayConfig> = [
 ];
 
 function isAddOnActive(addOn: LicenseV1SeatItem | LicenseV1AssignedSeatItem): boolean {
-  // Seat-capped licenses (regular/perpetual): a positive capacity means active.
-  // Metered/isp add-ons carry no totalSeats: their activity comes from the status.
   return 'totalSeats' in addOn ? addOn.totalSeats > 0 : addOn.status !== 'not active';
 }
 

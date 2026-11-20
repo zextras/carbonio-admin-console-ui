@@ -12,7 +12,6 @@ import { page } from 'vitest/browser';
 
 import { PerpetualSubscription } from '../perpetual-subscription';
 
-// SOAP license: feeds the page-specific cards (MaxVersion, ActivationTokenSection)
 const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   response: {
     subType: 'PERPETUAL',
@@ -40,7 +39,6 @@ const createMockLicenseData = (overrides: Record<string, unknown> = {}) => ({
   ...Object.fromEntries(Object.entries(overrides).filter(([key]) => key !== 'response')),
 });
 
-// REST license: feeds the shared children migrated to /license/v1/info
 const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
   licenseType: 'perpetual',
   status: 'valid',

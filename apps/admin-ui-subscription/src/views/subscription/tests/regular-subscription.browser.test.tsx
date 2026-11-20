@@ -38,7 +38,6 @@ const createMockLicense = (overrides: Record<string, unknown> = {}) => ({
 const setupTest = (component: React.ReactElement, license?: Record<string, unknown> | null) => {
   const queryClient = getQueryClient();
 
-  // Seeding the cache (license value or null for "no license") avoids any network fetch
   queryClient.setQueryData(licenseV1QueryKeys.all, license ?? null);
 
   return setupBrowserTest(component, { queryClient });

@@ -34,7 +34,6 @@ function getContainerStyle(breakpoint: string, isSidebarOpen = false): CSSProper
 }
 
 function getSubscriptionView(licenseType: LicenseV1Type | null, featureFlag: boolean): ReactNode {
-  // No license (or no usable license data): the admin lands on the activation page
   if (!licenseType) {
     return <ActivateSubscription />;
   }
