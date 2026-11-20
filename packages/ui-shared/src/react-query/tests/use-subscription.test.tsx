@@ -12,8 +12,6 @@ import React from 'react';
 import {
   invalidateLicenseQuery,
   useActivateLicense,
-  useLicenseInfo,
-  useModuleLicenseInfo,
   useRemoveLicense,
   useVersion,
 } from '../use-subscription';
@@ -71,75 +69,6 @@ function createWrapper(queryClient: QueryClient) {
     return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>;
   };
 }
-
-describe('useLicenseInfo', () => {
-  it('should fetch and return license data', async () => {
-    const licenseData = {
-      ok: true,
-      response: {
-        type: 'Purchased',
-        subType: 'REGULAR',
-        expired: false,
-        accountCount: 7,
-        licensedUsers: '99',
-        features: [],
-      },
-    };
-    interceptSoapAction('getLicenseInfo', () => createSoapResponse(licenseData));
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data?.ok).toBe(true);
-    expect(result.current.data?.response?.type).toBe('Purchased');
-    expect(result.current.data?.response?.subType).toBe('REGULAR');
-    expect(result.current.data?.response?.accountCount).toBe(7);
-  });
-
-  it('should return null when response has type None', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: { type: 'None', features: [] },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toBeNull();
-  });
-
-  it('should return null when ok is false', async () => {
-    interceptSoapAction('getLicenseInfo', () => createSoapResponse({ ok: false }));
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toBeNull();
-  });
-
-  it('should return null when response is missing', async () => {
-    interceptSoapAction('getLicenseInfo', () => createSoapResponse({ ok: true }));
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(result.current.data).toBeNull();
-  });
-});
 
 describe('useVersion', () => {
   it('should fetch and return the version string', async () => {
@@ -274,38 +203,26 @@ describe('useActivateLicense', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: ['subscription', 'license'],
-    });
-    expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['license', 'v1-info'],
+    });
+    expect(invalidateSpy).not.toHaveBeenCalledWith({
+      queryKey: ['subscription', 'license'],
     });
     invalidateSpy.mockRestore();
   });
 });
 
 describe('invalidateLicenseQuery', () => {
-  it('should invalidate the license query key', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: { type: 'Purchased', subType: 'REGULAR', features: [] },
-      }),
-    );
-
+  it('should invalidate the REST license query key', () => {
     const queryClient = createQueryClient();
-    const { result } = renderHook(() => useLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.isSuccess).toBe(true));
 
     const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
     invalidateLicenseQuery(queryClient);
     expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: ['subscription', 'license'],
-    });
-    expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['license', 'v1-info'],
+    });
+    expect(invalidateSpy).not.toHaveBeenCalledWith({
+      queryKey: ['subscription', 'license'],
     });
     invalidateSpy.mockRestore();
   });
@@ -329,10 +246,10 @@ describe('useRemoveLicense', () => {
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(invalidateSpy).toHaveBeenCalledWith({
-      queryKey: ['subscription', 'license'],
-    });
-    expect(invalidateSpy).toHaveBeenCalledWith({
       queryKey: ['license', 'v1-info'],
+    });
+    expect(invalidateSpy).not.toHaveBeenCalledWith({
+      queryKey: ['subscription', 'license'],
     });
     invalidateSpy.mockRestore();
   });
@@ -355,167 +272,5 @@ describe('useRemoveLicense', () => {
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
     expect(invalidateSpy).not.toHaveBeenCalled();
     invalidateSpy.mockRestore();
-  });
-});
-
-describe('useModuleLicenseInfo', () => {
-  it('should return module license info from license data', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: {
-          type: 'Purchased',
-          subType: 'REGULAR',
-          expired: false,
-          maintenanceEndDate: 1750000000000,
-          maintenanceStatus: 'active',
-          features: [{ name: 'backup_realtime', quantity: 'unlimited', enabled: true }],
-          updateTime: 1700000000000,
-          maxCarbonioVersion: '24.12.0',
-          carbonioVersion: '24.7.0',
-        },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.moduleLicenseInfo).not.toBeNull());
-    expect(result.current.moduleLicenseInfo?.subType).toBe('REGULAR');
-    expect(result.current.moduleLicenseInfo?.maintenanceStatus).toBe('active');
-    expect(result.current.moduleLicenseInfo?.features).toHaveLength(1);
-  });
-
-  it('should return null when no license data', async () => {
-    interceptSoapAction('getLicenseInfo', () => createSoapResponse({ ok: false }));
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.moduleLicenseInfo).toBeNull());
-  });
-
-  it('should override maintenanceStatus to invalid for expired perpetual licenses', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: {
-          type: 'Purchased',
-          subType: 'PERPETUAL',
-          expired: true,
-          maintenanceStatus: 'active',
-          features: [],
-        },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.moduleLicenseInfo).not.toBeNull());
-    expect(result.current.moduleLicenseInfo?.maintenanceStatus).toBe('invalid');
-  });
-
-  it('should not show license banner for active perpetual licenses', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: {
-          type: 'Purchased',
-          subType: 'PERPETUAL',
-          expired: false,
-          maintenanceStatus: 'active',
-          features: [],
-        },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.moduleLicenseInfo).not.toBeNull());
-    expect(result.current.licenseBannerShouldBeDisplayed).toBe(false);
-  });
-
-  it('should show license banner for perpetual license with non-active maintenance', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: {
-          type: 'Purchased',
-          subType: 'PERPETUAL',
-          expired: false,
-          maintenanceStatus: 'expired',
-          features: [],
-        },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.moduleLicenseInfo).not.toBeNull());
-    expect(result.current.licenseBannerShouldBeDisplayed).toBe(true);
-  });
-
-  it('should hide license banner after setIsLicenseBannerOpen(false)', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: {
-          type: 'Purchased',
-          subType: 'PERPETUAL',
-          expired: false,
-          maintenanceStatus: 'expired',
-          features: [],
-        },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.licenseBannerShouldBeDisplayed).toBe(true));
-
-    act(() => {
-      result.current.setIsLicenseBannerOpen(false);
-    });
-
-    expect(result.current.licenseBannerShouldBeDisplayed).toBe(false);
-  });
-
-  it('should not show license banner for non-perpetual licenses', async () => {
-    interceptSoapAction('getLicenseInfo', () =>
-      createSoapResponse({
-        ok: true,
-        response: {
-          type: 'Purchased',
-          subType: 'REGULAR',
-          expired: false,
-          maintenanceStatus: 'expired',
-          features: [],
-        },
-      }),
-    );
-
-    const queryClient = createQueryClient();
-    const { result } = renderHook(() => useModuleLicenseInfo(), {
-      wrapper: createWrapper(queryClient),
-    });
-
-    await waitFor(() => expect(result.current.moduleLicenseInfo).not.toBeNull());
-    expect(result.current.licenseBannerShouldBeDisplayed).toBe(false);
   });
 });

@@ -61,6 +61,7 @@ export type {
 	QuotaSource,
 	UnlimitedComputedLimit,
 } from './services/get-cos-quota';
+export type { LicenseV1CapabilityResult } from './services/license-capability-service';
 export type {
 	LicenseV1AssignedSeatItem,
 	LicenseV1BundleItem,
@@ -140,6 +141,10 @@ import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
 import {
+	licenseV1CapabilityQueryKeys,
+	useLicenseV1Capability,
+} from './react-query/use-license-v1-capability';
+import {
 	LicenseV1QueryError,
 	licenseV1QueryKeys,
 	useLicenseV1Info,
@@ -168,10 +173,7 @@ import {
   type LicenseSubType,
   type LicenseType,
   type MaintenanceStatus,
-  type ModuleLicenseInfo,
   useActivateLicense,
-  useLicenseInfo,
-  useModuleLicenseInfo,
   useRemoveLicense,
   useVersion,
 } from './react-query/use-subscription';
@@ -199,6 +201,7 @@ import {
 } from './services/get-core-attributes';
 import { getCosQuota } from './services/get-cos-quota';
 import { getDomainInformation } from './services/get-domain-information';
+import { fetchLicenseV1Capability } from './services/license-capability-service';
 import { fetchLicenseV1Info } from './services/license-info-service';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
@@ -297,6 +300,7 @@ export {
   fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
+  fetchLicenseV1Capability,
   fetchLicenseV1Info,
   flushCache,
   FORUM_URL,
@@ -321,6 +325,7 @@ export {
   isSameOriginUrlOutsideProxyAllowlist,
   isUnlimitedQuantity,
   isValidDecimalInput,
+  licenseV1CapabilityQueryKeys,
   LicenseV1QueryError,
   licenseV1QueryKeys,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
@@ -381,7 +386,7 @@ export {
   useIntegrationsStore,
   useIsAdvanced,
   useLastLoginTimestamp,
-  useLicenseInfo,
+  useLicenseV1Capability,
   useLicenseV1Info,
   useLocalStorage,
   useLoginConfigStore,
@@ -389,7 +394,6 @@ export {
   useMediaQuery,
   useModifyConfig,
   useModuleCrumbMenu,
-  useModuleLicenseInfo,
   useMtaServers,
   useNewSubscriptionFeatureFlag,
   usePrimaryBarState,
@@ -428,6 +432,5 @@ export type {
   LicenseSubType,
   LicenseType,
   MaintenanceStatus,
-  ModuleLicenseInfo,
 };
 export type { Notification };
