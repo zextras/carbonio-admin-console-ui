@@ -53,7 +53,7 @@ const createRestLicense = (overrides: Record<string, unknown> = {}) => ({
     { name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 50 },
     { name: 'Workspace', status: 'green', assignedSeats: 2, totalSeats: 25 },
   ],
-  addOns: [],
+  addOns: [{ name: 'ActiveSync', status: 'green', assignedSeats: 2, totalSeats: 50 }],
   ...overrides,
 });
 
@@ -82,15 +82,14 @@ describe('TrialSubscription', () => {
       await expect.element(page.getByText('Subscriptions')).toBeVisible();
     });
 
-    it('should render the row cards and hide the regular-only sections', async () => {
+    it('should render the row cards and the edition/add-on sections', async () => {
       setupTest(<TrialSubscription />, createMockLicenseData());
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
       await expect.element(page.getByText('Expires on')).toBeVisible();
       await expect.element(page.getByText('Details')).toBeVisible();
-      // Editions and add-ons render only for the regular license type for now
-      expect(page.getByText('Active edition', { exact: true }).elements()).toHaveLength(0);
-      expect(page.getByText('Add-ons', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Active edition')).toBeVisible();
+      await expect.element(page.getByText('Add-ons')).toBeVisible();
     });
   });
 
@@ -152,17 +151,19 @@ describe('TrialSubscription', () => {
   });
 
   describe('Edition and add-on sections', () => {
-    it('should not render the Active edition section for trial licenses', async () => {
+    it('should render the edition cards from the REST editions', async () => {
       setupTest(<TrialSubscription />, createMockLicenseData());
 
-      expect(page.getByText('Active edition', { exact: true }).elements()).toHaveLength(0);
-      expect(page.getByText('Email', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Active edition')).toBeVisible();
+      await expect.element(page.getByText('Email', { exact: true })).toBeVisible();
+      await expect.element(page.getByText('Workspace', { exact: true })).toBeVisible();
     });
 
-    it('should not render the Add-ons section for trial licenses', async () => {
+    it('should render the add-on cards from the REST add-ons', async () => {
       setupTest(<TrialSubscription />, createMockLicenseData());
 
-      expect(page.getByText('Add-ons', { exact: true }).elements()).toHaveLength(0);
+      await expect.element(page.getByText('Add-ons')).toBeVisible();
+      await expect.element(page.getByText('ActiveSync', { exact: true })).toBeVisible();
     });
   });
 

@@ -255,8 +255,8 @@ describe('AppView', () => {
       );
 
       await expect.element(page.getByText('Subscription status')).toBeVisible();
-      // Editions render only for the regular license type
-      expect(page.getByText('Active edition', { exact: true }).elements()).toHaveLength(0);
+      // The trial page renders like the regular page (editions included) plus its banner
+      await expect.element(page.getByText('Active edition', { exact: true })).toBeVisible();
     });
 
     it('should render empty for an unknown license type with feature flag on', async () => {

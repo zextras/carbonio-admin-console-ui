@@ -57,9 +57,6 @@ export const AddonsSection = () => {
   const { t } = useTranslation();
   const { data: license } = useLicenseV1Info();
 
-  // Add-ons render for every migrated license type; trial migrates later.
-  if (license && license.licenseType === 'trial') return null;
-
   const addOnsData = license?.addOns ?? [];
 
   const presentAddons: Array<AddonDisplayConfig> = ADDON_CONFIGS.map((config) => ({
