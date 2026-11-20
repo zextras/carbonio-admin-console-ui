@@ -149,7 +149,7 @@ function ServerAdvancedContent({
         });
       } else {
         form.reset(value, { keepDefaultValues: true });
-        queryClient.invalidateQueries({ queryKey: backupQueryKeys.serverConfig(serverId) });
+        void queryClient.invalidateQueries({ queryKey: backupQueryKeys.serverConfig(serverId) });
         createSnackbar({
           key: 'success',
           severity: 'success',

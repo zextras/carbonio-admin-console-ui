@@ -59,7 +59,7 @@ export const WhiteLabelBanner = () => {
       action={{
         label: t('button.go_to_whitelabel_settings', 'Go to Whitelabel Settings'),
         onClick: (): void => {
-          navigate(`${buildPath(DOMAINS_ROUTE_ID, GLOBAL_WHITELABEL_SETTINGS)}#logo`);
+          void navigate(`${buildPath(DOMAINS_ROUTE_ID, GLOBAL_WHITELABEL_SETTINGS)}#logo`);
         },
       }}
     />

@@ -9,8 +9,8 @@ import { useQuery, useQueryClient, UseQueryOptions } from '@tanstack/react-query
 import { soapFetch } from '../network/fetch';
 
 type Attribute = {
-	n: string;
-	_content: string;
+  n: string;
+  _content: string;
 };
 
 type ConfigOptions = Omit<UseQueryOptions<Array<Attribute>>, 'queryKey' | 'queryFn'> & {
@@ -45,7 +45,7 @@ export const useAllConfig = (options: ConfigOptions = {}) => {
   });
 
   const invalidate = () => {
-    queryClient.invalidateQueries({ queryKey: ['all-config'] });
+    void queryClient.invalidateQueries({ queryKey: ['all-config'] });
   };
 
   return {

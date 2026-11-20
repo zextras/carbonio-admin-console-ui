@@ -93,7 +93,6 @@ async function setupQuarantineView(
     worker.use(
       http.post('/service/admin/soap/MsgActionRequest', () => {
         listEmpty = true;
-        return;
       }),
     );
   }
@@ -142,9 +141,7 @@ describe('GlobalQuarantine', () => {
     await setupQuarantineView();
 
     await page.getByText('Spam subject').click();
-    await expect
-      .element(page.getByRole('button', { name: 'DELIVER', exact: true }))
-      .toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'DELIVER', exact: true })).toBeVisible();
 
     await page.getByRole('button', { name: 'DELIVER', exact: true }).click();
     await page.getByRole('button', { name: /yes, deliver/i }).click();
@@ -175,9 +172,7 @@ describe('GlobalQuarantine', () => {
     await setupQuarantineView();
 
     await page.getByText('Spam subject').click();
-    await expect
-      .element(page.getByRole('button', { name: 'Close', exact: true }))
-      .toBeVisible();
+    await expect.element(page.getByRole('button', { name: 'Close', exact: true })).toBeVisible();
   });
 
   it('creates the quarantine account from the empty state and reports success', async () => {
@@ -192,9 +187,7 @@ describe('GlobalQuarantine', () => {
 
     await createAccountParams;
     expect(JSON.stringify(await modifyConfigParams)).toContain(newAccountName);
-    await expect
-      .element(page.getByText('The account has been created successfully'))
-      .toBeVisible();
+    await expect.element(page.getByText('The account has been created successfully')).toBeVisible();
   });
 
   it('refreshes the message list when REFRESH LIST is clicked', async () => {
@@ -241,9 +234,7 @@ describe('GlobalQuarantine', () => {
     await createAccountParams;
     expect(JSON.stringify(await modifyConfigParams)).toContain(newAccountName);
     expect(JSON.stringify(await deleteAccountParams)).toContain('acc-1');
-    await expect
-      .element(page.getByText('The account has been created successfully'))
-      .toBeVisible();
+    await expect.element(page.getByText('The account has been created successfully')).toBeVisible();
   });
 
   it('keeps the quarantine account when the recreate confirmation is cancelled', async () => {
@@ -252,7 +243,9 @@ describe('GlobalQuarantine', () => {
       '/service/admin/soap/CreateAccountRequest',
       () =>
         HttpResponse.json({
-          Body: { CreateAccountResponse: { account: [{ name: 'virus-quarantine.new@example.com' }] } },
+          Body: {
+            CreateAccountResponse: { account: [{ name: 'virus-quarantine.new@example.com' }] },
+          },
         }),
     );
     await setupQuarantineView();

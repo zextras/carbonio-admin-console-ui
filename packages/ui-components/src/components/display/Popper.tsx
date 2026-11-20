@@ -79,17 +79,15 @@ const Popper = ({
     let cleanup: ReturnType<typeof setupFloating>;
     if (open) {
       const anchorElement = anchorEl.current;
-      if (anchorElement) {
-        if (popperRef.current) {
-          cleanup = setupFloating(anchorElement, popperRef.current, {
-            placement,
-            middleware: [
-              offset(8),
-              flip({ fallbackPlacements: ['bottom'] }),
-              shift({ limiter: limitShift() }),
-            ],
-          });
-        }
+      if (anchorElement && popperRef.current) {
+        cleanup = setupFloating(anchorElement, popperRef.current, {
+          placement,
+          middleware: [
+            offset(8),
+            flip({ fallbackPlacements: ['bottom'] }),
+            shift({ limiter: limitShift() }),
+          ],
+        });
       }
     }
     return (): void => {

@@ -84,7 +84,7 @@ const App: FC = () => {
         label: t('label.create_new_domain', 'Create New Domain'),
         icon: '',
         onClick: (): void => {
-          navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
+          void navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}/${CREATE_NEW_DOMAIN_ROUTE_ID}`);
         },
         disabled: !createDomainRight,
         group: APP_ID,

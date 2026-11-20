@@ -24,9 +24,9 @@ export function useDeleteDomain(domainId: string | undefined) {
     },
     onSuccess: () => {
       if (domainId) {
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
+        void queryClient.invalidateQueries({ queryKey: domainQueryKeys.quota(domainId) });
       }
       createSnackbar({
         key: 'success',

@@ -9,7 +9,7 @@ import { Chip, type ChipProps } from './Chip';
 type CustomChipProps = ChipProps & { value?: unknown };
 
 function copyClipboard(label: string): void {
-  navigator.clipboard.writeText(label);
+  void navigator.clipboard.writeText(label);
 }
 
 export const CustomChip = (props: Readonly<CustomChipProps>) => {

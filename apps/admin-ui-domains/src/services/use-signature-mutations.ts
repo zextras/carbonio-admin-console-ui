@@ -18,47 +18,47 @@ import { modifySignature } from './modify-signature-service';
  */
 
 export const useCreateSignature = (accountId: string) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: ({ name, content }: { name: string; content: string }) =>
-			createSignature(accountId, name, content),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.accountSignatures(accountId),
-			});
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ name, content }: { name: string; content: string }) =>
+      createSignature(accountId, name, content),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.accountSignatures(accountId),
+      });
+    },
+  });
 };
 
 export const useDeleteSignature = (accountId: string) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: ({ signatureIds }: { signatureIds: Array<string> }) =>
-			Promise.all(signatureIds.map((signatureId) => deleteSignature(accountId, signatureId))),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.accountSignatures(accountId),
-			});
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ signatureIds }: { signatureIds: Array<string> }) =>
+      Promise.all(signatureIds.map((signatureId) => deleteSignature(accountId, signatureId))),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.accountSignatures(accountId),
+      });
+    },
+  });
 };
 
 export const useModifySignature = (accountId: string) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: ({
-			signatureId,
-			name,
-			content,
-		}: {
-			signatureId: string;
-			name: string;
-			content: string;
-		}) => modifySignature(accountId, signatureId, name, content),
-		onSuccess: () => {
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.accountSignatures(accountId),
-			});
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      signatureId,
+      name,
+      content,
+    }: {
+      signatureId: string;
+      name: string;
+      content: string;
+    }) => modifySignature(accountId, signatureId, name, content),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.accountSignatures(accountId),
+      });
+    },
+  });
 };

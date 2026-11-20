@@ -119,7 +119,12 @@ export function useActiveSyncDeviceStats(params: DeviceStatsParams | undefined) 
     queryFn: async () => {
       try {
         return parseDeviceStatistics(
-          await getMobileDeviceDetail(ZX_MOBILE, accountEmail, deviceId, params?.accountServer ?? ''),
+          await getMobileDeviceDetail(
+            ZX_MOBILE,
+            accountEmail,
+            deviceId,
+            params?.accountServer ?? '',
+          ),
         );
       } catch (err) {
         error(err);
@@ -159,9 +164,13 @@ export function useAbqDevices() {
 function useInvalidateActiveSyncDevices() {
   const queryClient = useQueryClient();
   return () => {
-    queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'active-sync-devices'] });
-    queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'active-sync-device-stats'] });
-    queryClient.invalidateQueries({ queryKey: domainQueryKeys.activeSyncAbqDevices() });
+    void queryClient.invalidateQueries({
+      queryKey: [...domainQueryKeys.all, 'active-sync-devices'],
+    });
+    void queryClient.invalidateQueries({
+      queryKey: [...domainQueryKeys.all, 'active-sync-device-stats'],
+    });
+    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.activeSyncAbqDevices() });
   };
 }
 

@@ -168,7 +168,7 @@ export const AdminRightsSection = ({
 
   const onAdd = (): void => {
     if (!selectedOption) return;
-    addMutation.mutateAsync(
+    void addMutation.mutateAsync(
       {
         listId: selectedOption.value,
         member: accountName,

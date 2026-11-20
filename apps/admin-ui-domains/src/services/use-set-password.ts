@@ -19,7 +19,7 @@ export const useSetPassword = () => {
   return useMutation({
     mutationFn: (vars: SetPasswordVars) => setPasswordRequest(vars.id, vars.newPassword),
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountDetail(vars.id),
       });
     },

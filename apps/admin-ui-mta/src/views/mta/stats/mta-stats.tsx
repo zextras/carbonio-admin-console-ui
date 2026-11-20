@@ -132,7 +132,13 @@ export const MTAStats = () => {
           setSelectedServer([item?.id]);
         }}
       >
-        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+        <ds-text
+          as="span"
+          size="small"
+          weight="regular"
+          key={`${item?.id}display-child`}
+          color="gray0"
+        >
           {item?.serverName}
         </ds-text>
       </Container>,
@@ -144,7 +150,13 @@ export const MTAStats = () => {
           setSelectedServer([item.id]);
         }}
       >
-        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+        <ds-text
+          as="span"
+          size="small"
+          weight="regular"
+          key={`${item?.id}display-child`}
+          color="gray0"
+        >
           {item?.active}
         </ds-text>
       </Container>,
@@ -156,7 +168,13 @@ export const MTAStats = () => {
           setSelectedServer([item?.id]);
         }}
       >
-        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+        <ds-text
+          as="span"
+          size="small"
+          weight="regular"
+          key={`${item?.id}display-child`}
+          color="gray0"
+        >
           {item?.corrupt}
         </ds-text>
       </Container>,
@@ -168,7 +186,13 @@ export const MTAStats = () => {
           setSelectedServer([item?.id]);
         }}
       >
-        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+        <ds-text
+          as="span"
+          size="small"
+          weight="regular"
+          key={`${item?.id}display-child`}
+          color="gray0"
+        >
           {item?.deferred}
         </ds-text>
       </Container>,
@@ -180,7 +204,13 @@ export const MTAStats = () => {
           setSelectedServer([item?.id]);
         }}
       >
-        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+        <ds-text
+          as="span"
+          size="small"
+          weight="regular"
+          key={`${item?.id}display-child`}
+          color="gray0"
+        >
           {item?.incoming}
         </ds-text>
       </Container>,
@@ -192,7 +222,13 @@ export const MTAStats = () => {
           setSelectedServer([item?.id]);
         }}
       >
-        <ds-text as="span" size="small" weight="regular" key={`${item?.id}display-child`} color="gray0">
+        <ds-text
+          as="span"
+          size="small"
+          weight="regular"
+          key={`${item?.id}display-child`}
+          color="gray0"
+        >
           {item?.hold}
         </ds-text>
       </Container>,
@@ -202,7 +238,7 @@ export const MTAStats = () => {
   function scanServer() {
     setScanTime(new Date());
     mtaServerList.forEach((server) => {
-      queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(server.name) });
+      void queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(server.name) });
     });
   }
 
@@ -225,7 +261,7 @@ export const MTAStats = () => {
         await Promise.all(flushRequest);
         setSelectedServer([]);
         mtaServerList.forEach((server) => {
-          queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(server.name) });
+          void queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(server.name) });
         });
         createSnackbar({
           key: 'success',
@@ -239,8 +275,9 @@ export const MTAStats = () => {
         createSnackbar({
           key: 'error',
           severity: 'error',
-          label: (error as { error?: { message?: string } })?.error?.message
-            ?? t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
+          label:
+            (error as { error?: { message?: string } })?.error?.message ??
+            t('label.something_wrong_error_msg', 'Something went wrong. Please try again.'),
           autoHideTimeout: 3000,
           hideButton: true,
           replace: true,
@@ -255,7 +292,8 @@ export const MTAStats = () => {
     setSelectedServer([]);
   }
 
-  const currentTime = scanTime ?? (serverQueueQueries.some((q) => q.dataUpdatedAt) ? new Date() : null);
+  const currentTime =
+    scanTime ?? (serverQueueQueries.some((q) => q.dataUpdatedAt) ? new Date() : null);
 
   return (
     <Container background="gray6" mainAlignment="flex-start">
@@ -442,4 +480,4 @@ export const MTAStats = () => {
       </Container>
     </Container>
   );
-}
+};

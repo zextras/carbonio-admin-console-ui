@@ -22,12 +22,13 @@ export type DistributionListActionVars = {
 export const useDistributionListAction = (listId: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (vars: DistributionListActionVars) =>
-      distributionListAction(vars.dl, vars.action),
+    mutationFn: (vars: DistributionListActionVars) => distributionListAction(vars.dl, vars.action),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionListGrants(listId) });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.distributionListGrants(listId),
+      });
     },
   });
 };

@@ -81,6 +81,21 @@ function resolveOrientation(o: string): ContainerElProps['orientation'] {
     .replace('vertical', 'column') as ContainerElProps['orientation'];
 }
 
+function applyBorderColor(
+  inlineStile: Record<string, string | number | undefined>,
+  borderColor: NonNullable<ContainerProps['borderColor']>,
+): void {
+  if (typeof borderColor === 'string') {
+    inlineStile.border = BORDER(borderColor);
+    return;
+  }
+  const sides: BorderSides[] = ['top', 'right', 'bottom', 'left'];
+  for (const side of sides) {
+    const c = borderColor[side];
+    if (c) inlineStile[`border${side.charAt(0).toUpperCase()}${side.slice(1)}`] = BORDER(c);
+  }
+}
+
 export const Container = ({
   orientation = 'vertical',
   borderRadius = 'regular',
@@ -130,15 +145,7 @@ export const Container = ({
   };
 
   if (borderColor) {
-    if (typeof borderColor === 'string') {
-      inlineStile.border = BORDER(borderColor);
-    } else {
-      const sides: BorderSides[] = ['top', 'right', 'bottom', 'left'];
-      for (const side of sides) {
-        const c = borderColor[side];
-        if (c) inlineStile[`border${side.charAt(0).toUpperCase()}${side.slice(1)}`] = BORDER(c);
-      }
-    }
+    applyBorderColor(inlineStile, borderColor);
   }
 
   const containerStyle = { ...inlineStile, ...style } as CSSProperties;

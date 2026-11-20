@@ -23,7 +23,7 @@ export function useModifyCos(cosId?: string) {
     onSuccess: async (_data, body) => {
       await flushCache('cos', 'id', body.id._content);
       if (cosId) {
-        queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
+        void queryClient.invalidateQueries({ queryKey: cosQueryKeys.detail(cosId) });
       }
       createSnackbar({
         key: 'success',

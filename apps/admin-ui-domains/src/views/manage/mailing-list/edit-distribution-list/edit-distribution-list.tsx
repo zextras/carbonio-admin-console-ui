@@ -194,6 +194,8 @@ function EditDistributionListContent({
         });
       case 'action':
         return actionMutation.mutateAsync({ dl: operation.dl, action: operation.action });
+      default:
+        throw new Error('Unknown save operation');
     }
   }
 

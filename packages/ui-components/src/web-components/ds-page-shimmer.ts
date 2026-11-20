@@ -108,6 +108,10 @@ export class DsPageShimmer extends LitElement {
     super.disconnectedCallback();
   }
 
+  private renderRow(idx: number): TemplateResult {
+    return html`<div class="row" style="width: ${80 + Math.sin(idx) * 15}%"></div>`;
+  }
+
   override render(): TemplateResult {
     return html`
       <div class="page-shimmer" role="status" aria-label="Loading">
@@ -118,13 +122,13 @@ export class DsPageShimmer extends LitElement {
         ${repeat(
           Array.from({ length: this.rows ?? 8 }),
           (_, idx) => idx,
-          (_, idx) => html`<div class="row" style="width: ${80 + Math.sin(idx) * 15}%"></div>`,
+          (_, idx) => this.renderRow(idx),
         )}
         <div class="divider"></div>
         ${repeat(
           Array.from({ length: this.rows ?? 8 }),
           (_, idx) => idx,
-          (_, idx) => html`<div class="row" style="width: ${80 + Math.sin(idx) * 15}%"></div>`,
+          (_, idx) => this.renderRow(idx),
         )}
       </div>
     `;

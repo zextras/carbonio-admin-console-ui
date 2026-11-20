@@ -25,7 +25,7 @@ export default class I18nFactory implements II18nFactory {
     if (this.locale !== locale) {
       this.locale = locale;
       forEach(this._cache, (appI18n) => {
-        appI18n.changeLanguage(locale);
+        void appI18n.changeLanguage(locale);
       });
     }
   }
@@ -39,7 +39,7 @@ export default class I18nFactory implements II18nFactory {
       appPkgDescription.name === SHELL_APP_ID
         ? BASE_PATH
         : dropRight((appPkgDescription as CarbonioModule).js_entrypoint.split('/')).join('/');
-    newI18n.use(Backend).init({
+    void newI18n.use(Backend).init({
       compatibilityJSON: 'v4',
       lng: this.locale,
       fallbackLng: 'en',

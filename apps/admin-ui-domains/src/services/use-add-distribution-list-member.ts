@@ -19,29 +19,26 @@ import { domainQueryKeys } from './domain-query-keys';
  * (recorded repo convention).
  */
 export const useAddDistributionListMember = (accountId?: string, mutationScope?: string) => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationKey: mutationScope ? ['distribution-list-member-add', mutationScope] : undefined,
-		mutationFn: ({ listId, member }: { listId: string; member: string }) =>
-			addDistributionListMember(
-				{ n: 'id', _content: listId },
-				{ n: 'dlm', _content: member },
-			),
-		onSuccess: (_data, { listId }) => {
-			if (accountId) {
-				queryClient.invalidateQueries({
-					queryKey: domainQueryKeys.accountMembership(accountId),
-				});
-			}
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.distributionList(listId),
-			});
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.distributionLists(),
-			});
-			queryClient.invalidateQueries({
-				queryKey: domainQueryKeys.distributionListMembership(listId),
-			});
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationKey: mutationScope ? ['distribution-list-member-add', mutationScope] : undefined,
+    mutationFn: ({ listId, member }: { listId: string; member: string }) =>
+      addDistributionListMember({ n: 'id', _content: listId }, { n: 'dlm', _content: member }),
+    onSuccess: (_data, { listId }) => {
+      if (accountId) {
+        void queryClient.invalidateQueries({
+          queryKey: domainQueryKeys.accountMembership(accountId),
+        });
+      }
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.distributionList(listId),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.distributionLists(),
+      });
+      void queryClient.invalidateQueries({
+        queryKey: domainQueryKeys.distributionListMembership(listId),
+      });
+    },
+  });
 };

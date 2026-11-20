@@ -59,7 +59,7 @@ export const DomainDeleteSection = ({
   const isDomainClosed = domainStatusValue === closedStatusValue;
 
   function deleteOnlyDomain(): void {
-    deleteDomainMutation.mutateAsync().then(() => {
+    void deleteDomainMutation.mutateAsync().then(() => {
       setIsRequestInProgress(false);
       setOpenDeleteDomainConfirmDialog(false);
       setDomainDirectories({ account: [], dl: [], alias: [], calresource: [] });
@@ -69,7 +69,7 @@ export const DomainDeleteSection = ({
 
   function onDeleteAccountAndDomain(): void {
     setIsRequestInProgress(true);
-    batchDeleteContentsMutation
+    void batchDeleteContentsMutation
       .mutateAsync({
         accounts: domainDirectories.account,
         distributionLists: domainDirectories.dl,

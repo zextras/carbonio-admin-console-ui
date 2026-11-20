@@ -19,10 +19,10 @@ export const useDeleteAccountAlias = () => {
   return useMutation({
     mutationFn: (vars: AccountAliasVars) => deleteAccountAliasRequest(vars.id, vars.alias),
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountDetail(vars.id),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
     },

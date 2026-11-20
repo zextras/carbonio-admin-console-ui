@@ -148,6 +148,10 @@ export const OwnersTab: FC<OwnersTabProps> = ({
           ),
         );
         return;
+      case 'ok':
+        break;
+      default:
+        return;
     }
 
     setIsShowOwnerError(false);

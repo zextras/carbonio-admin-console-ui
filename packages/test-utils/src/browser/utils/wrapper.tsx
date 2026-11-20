@@ -23,7 +23,7 @@ const getAppI18n = (): i18n => {
     return cachedAppI18n;
   }
   cachedAppI18n = i18next.createInstance();
-  cachedAppI18n.init({
+  void cachedAppI18n.init({
     lng: 'en',
     fallbackLng: 'en',
     debug: false,

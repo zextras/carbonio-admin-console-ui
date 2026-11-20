@@ -24,8 +24,8 @@ export function useModifyAccount() {
   return useMutation({
     mutationFn: (vars: ModifyAccountVars) => modifyAccountRequest(vars.id, vars.modifiedData),
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.galAccount(vars.id) });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.galAccount(vars.id) });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
     },
     onError: (error: Error) => {
       createSnackbar({

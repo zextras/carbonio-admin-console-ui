@@ -9,21 +9,21 @@ import { Trans, useTranslation } from 'react-i18next';
 
 /** Copy-to-clipboard icon for the one-time service password (module-level factory: S6478). */
 function createCopyPasswordIcon(password?: string): React.ComponentType {
-	return function CopyPasswordIcon() {
-		return (
-			<ds-icon
-				icon="CopyOutline"
-				size="large"
-				color="Gray0"
-				onClick={(e: React.MouseEvent): void => {
-					e.preventDefault();
-					e.stopPropagation();
-					navigator.clipboard.writeText(password || '');
-				}}
-				style={{ cursor: 'pointer' }}
-			></ds-icon>
-		);
-	};
+  return function CopyPasswordIcon() {
+    return (
+      <ds-icon
+        icon="CopyOutline"
+        size="large"
+        color="Gray0"
+        onClick={(e: React.MouseEvent): void => {
+          e.preventDefault();
+          e.stopPropagation();
+          void navigator.clipboard.writeText(password || '');
+        }}
+        style={{ cursor: 'pointer' }}
+      ></ds-icon>
+    );
+  };
 }
 
 type CredentialCreatedDialogProps = {
@@ -56,10 +56,7 @@ export const CredentialCreatedDialog = ({
         <Container orientation="horizontal" mainAlignment="flex-end">
           <Row style={{ gap: '1rem' }}>
             <Button
-              label={t(
-                'account_details.i_have_copied_the_password',
-                'I HAVE COPIED THE PASSWORD',
-              )}
+              label={t('account_details.i_have_copied_the_password', 'I HAVE COPIED THE PASSWORD')}
               color="primary"
               onClick={onClose}
             />
@@ -95,7 +92,6 @@ export const CredentialCreatedDialog = ({
         <Row width="100%" mainAlignment="flex-start" padding={{ top: 'large' }}>
           <LabeledValue
             label={t('account_details.service_password', 'Service Password')}
-            
             value={password}
             CustomIcon={createCopyPasswordIcon(password)}
             textColor={'gray1'}

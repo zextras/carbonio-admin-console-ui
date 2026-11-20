@@ -48,8 +48,7 @@ export const Dashboard = () => {
 
   const isAdvanced = useIsAdvanced();
 
-  const { data: domainInformation, isPending: isDomainInformationPending } =
-    useDomainInformation();
+  const { data: domainInformation, isPending: isDomainInformationPending } = useDomainInformation();
   // SearchDirectory only returns the domains the admin has rights on: a delegated admin
   // whose own domain is not in the result cannot open it.
   const ownDomainName: string | undefined = domainInformation?.name;
@@ -79,19 +78,19 @@ export const Dashboard = () => {
     const canAccessOwnDomain =
       ownDomainId !== undefined && ownDomainSearch?.domain?.some((d) => d.id === ownDomainId);
     if (!canAccessOwnDomain) {
-      navigate(buildPath(DOMAINS_ROUTE_ID, GLOBAL_DOMAIN_LIST_ROUTE));
+      void navigate(buildPath(DOMAINS_ROUTE_ID, GLOBAL_DOMAIN_LIST_ROUTE));
     } else if (operation === 'account') {
-      navigate(buildPath(DOMAINS_ROUTE_ID, ownDomainId, ACCOUNTS));
+      void navigate(buildPath(DOMAINS_ROUTE_ID, ownDomainId, ACCOUNTS));
     } else if (operation === 'mailinglist') {
-      navigate(buildPath(DOMAINS_ROUTE_ID, ownDomainId, DISTRIBUTION_LIST));
+      void navigate(buildPath(DOMAINS_ROUTE_ID, ownDomainId, DISTRIBUTION_LIST));
     }
   }
 
   function goToMailStoreServerList() {
-    navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
+    void navigate(buildPath(STORAGES_ROUTE_ID, SERVERS_LIST));
   }
   function goToMailNotification() {
-    navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
+    void navigate(buildPath(NOTIFICATION_ROUTE_ID, LIST));
   }
 
   return (
@@ -135,4 +134,3 @@ export const Dashboard = () => {
     </div>
   );
 };
-

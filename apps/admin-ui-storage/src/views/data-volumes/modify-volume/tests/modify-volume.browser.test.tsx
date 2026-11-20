@@ -26,24 +26,18 @@ import {
 import { ModifyVolume } from '../modify-volume';
 
 vi.mock('../../s3-connectors/parts/verify/verify-progress', () => ({
-	VerifyProgress: ({
-		isPending,
-		onComplete,
-	}: {
-		isPending: boolean;
-		onComplete?: () => void;
-	}) => {
-		const wasPending = useRef(isPending);
+  VerifyProgress: ({ isPending, onComplete }: { isPending: boolean; onComplete?: () => void }) => {
+    const wasPending = useRef(isPending);
 
-		useEffect(() => {
-			if (wasPending.current && !isPending) {
-				onComplete?.();
-			}
-			wasPending.current = isPending;
-		}, [isPending, onComplete]);
+    useEffect(() => {
+      if (wasPending.current && !isPending) {
+        onComplete?.();
+      }
+      wasPending.current = isPending;
+    }, [isPending, onComplete]);
 
-		return <div>{isPending ? 'verify-pending' : 'verify-idle'}</div>;
-	},
+    return <div>{isPending ? 'verify-pending' : 'verify-idle'}</div>;
+  },
 }));
 
 const SERVER_NAME = 'mailstore1.test.com';
@@ -119,16 +113,19 @@ function renderModifyVolume(
   volumeId: number,
   volumeList = VOLUME_LIST,
   overrides?: Partial<{
-    setmodifyVolumeToggle: (v: boolean) => void;
+    setModifyVolumeToggle: (v: boolean) => void;
     getAllVolumesRequest: () => void;
     setOpen: (v: boolean) => void;
     advancedGetVolumeResponse: unknown;
   }>,
 ) {
-  const selectedVolume = [...volumeList.primaries, ...volumeList.secondaries, ...volumeList.indexes]
-    .find((volume) => volume.id === volumeId);
+  const selectedVolume = [
+    ...volumeList.primaries,
+    ...volumeList.secondaries,
+    ...volumeList.indexes,
+  ].find((volume) => volume.id === volumeId);
 
-  const setmodifyVolumeToggle = overrides?.setmodifyVolumeToggle ?? vi.fn();
+  const setModifyVolumeToggle = overrides?.setModifyVolumeToggle ?? vi.fn();
   const getAllVolumesRequest = overrides?.getAllVolumesRequest ?? vi.fn();
   const setOpen = overrides?.setOpen ?? vi.fn();
   const advancedGetVolumeResponse = overrides?.advancedGetVolumeResponse ?? selectedVolume ?? {};
@@ -159,7 +156,7 @@ function renderModifyVolume(
           <ModifyVolume
             volumeId={volumeId}
             volumeName={selectedVolume?.name ?? ''}
-            setmodifyVolumeToggle={setmodifyVolumeToggle}
+            setModifyVolumeToggle={setModifyVolumeToggle}
             getAllVolumesRequest={getAllVolumesRequest}
             selectedServerId={SERVER_ID}
             volumeList={volumeList}
@@ -330,13 +327,13 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
         .toHaveValue(PRIMARY_VOLUME.path as string);
     });
 
-    it('should not call setmodifyVolumeToggle when volumeId does not match any volume', async () => {
-      const setmodifyVolumeToggle = vi.fn();
-      await setupBrowserTest(renderModifyVolume(9999, VOLUME_LIST, { setmodifyVolumeToggle }), {
+    it('should not call setModifyVolumeToggle when volumeId does not match any volume', async () => {
+      const setModifyVolumeToggle = vi.fn();
+      await setupBrowserTest(renderModifyVolume(9999, VOLUME_LIST, { setModifyVolumeToggle }), {
         initialRouterEntry: VOLUME_ROUTE_ENTRY,
       });
       // No match: toggle should not have been called with true
-      expect(setmodifyVolumeToggle).not.toHaveBeenCalledWith(true);
+      expect(setModifyVolumeToggle).not.toHaveBeenCalledWith(true);
     });
 
     it('should render the Volume Name input with the correct value for secondary volume', async () => {
@@ -413,9 +410,7 @@ describe('ModifyVolume - getVolumeDetailData (advanced mode)', () => {
         { initialRouterEntry: VOLUME_ROUTE_ENTRY },
       );
 
-      await page
-        .getByRole('button', { name: 'Open Amazon Storage Class Documentation' })
-        .click();
+      await page.getByRole('button', { name: 'Open Amazon Storage Class Documentation' }).click();
       await page.getByRole('button', { name: 'Open Amazon Tiering Documentation' }).click();
 
       expect(openSpy).toHaveBeenCalledTimes(2);
@@ -444,7 +439,7 @@ describe('GetVolume failure (non-advanced mode)', () => {
       HttpResponse.json({ Body: { Fault: { Code: 'Error', Reason: { Text: 'fail' } } } }),
     );
 
-    const setmodifyVolumeToggle = vi.fn();
+    const setModifyVolumeToggle = vi.fn();
     const getAllVolumesRequest = vi.fn();
 
     await setupBrowserTest(
@@ -452,7 +447,7 @@ describe('GetVolume failure (non-advanced mode)', () => {
         42,
         { primaries: [], secondaries: [], indexes: [] },
         {
-          setmodifyVolumeToggle,
+          setModifyVolumeToggle,
           getAllVolumesRequest,
         },
       ),
@@ -468,7 +463,7 @@ describe('GetVolume failure (non-advanced mode)', () => {
     );
 
     await expect.element(page.getByText('Something went wrong, please try again')).toBeVisible();
-    expect(setmodifyVolumeToggle).not.toHaveBeenCalledWith(true);
+    expect(setModifyVolumeToggle).not.toHaveBeenCalledWith(true);
   });
 });
 
@@ -699,12 +694,12 @@ describe('advanced save', () => {
       }),
     );
 
-    const setmodifyVolumeToggle = vi.fn();
+    const setModifyVolumeToggle = vi.fn();
     const getAllVolumesRequest = vi.fn();
 
     await setupBrowserTest(
       renderModifyVolume(ADVANCED_LOCAL_VOLUME.id as number, ADVANCED_VOLUME_LIST, {
-        setmodifyVolumeToggle,
+        setModifyVolumeToggle,
         getAllVolumesRequest,
       }),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
@@ -719,7 +714,7 @@ describe('advanced save', () => {
     await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
     await expect.element(page.getByText('All changes have been saved successfully')).toBeVisible();
     expect(getAllVolumesRequest).toHaveBeenCalled();
-    expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+    expect(setModifyVolumeToggle).toHaveBeenCalledWith(false);
   });
 
   it('should show error snackbar when advanced update response is not ok', async () => {
@@ -736,11 +731,11 @@ describe('advanced save', () => {
       }),
     );
 
-    const setmodifyVolumeToggle = vi.fn();
+    const setModifyVolumeToggle = vi.fn();
 
     await setupBrowserTest(
       renderModifyVolume(ADVANCED_LOCAL_VOLUME.id as number, ADVANCED_VOLUME_LIST, {
-        setmodifyVolumeToggle,
+        setModifyVolumeToggle,
       }),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
@@ -749,7 +744,7 @@ describe('advanced save', () => {
     await page.getByRole('button', { name: /^save$/i }).click();
 
     await expect.element(page.getByText('Something went wrong, please try again')).toBeVisible();
-    expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+    expect(setModifyVolumeToggle).toHaveBeenCalledWith(false);
   });
 
   it('should show error snackbar when fetchSoap throws during advanced save', async () => {
@@ -761,11 +756,11 @@ describe('advanced save', () => {
       }),
     );
 
-    const setmodifyVolumeToggle = vi.fn();
+    const setModifyVolumeToggle = vi.fn();
 
     await setupBrowserTest(
       renderModifyVolume(ADVANCED_LOCAL_VOLUME.id as number, ADVANCED_VOLUME_LIST, {
-        setmodifyVolumeToggle,
+        setModifyVolumeToggle,
       }),
       { initialRouterEntry: VOLUME_ROUTE_ENTRY },
     );
@@ -776,7 +771,7 @@ describe('advanced save', () => {
     // The Fault propagates as soon as the response arrives; the fetch layer has no retries
     await vi.waitFor(
       () => {
-        expect(setmodifyVolumeToggle).toHaveBeenCalledWith(false);
+        expect(setModifyVolumeToggle).toHaveBeenCalledWith(false);
       },
       { timeout: 5_000 },
     );
@@ -962,9 +957,7 @@ describe('prefix-change confirmation dialog', () => {
     await expect.element(page.getByText('Change important information')).toBeVisible();
 
     // Confirm the checkbox to enable APPLY CHANGES
-    await page
-      .getByText('I am sure I want to apply these changes')
-      .click();
+    await page.getByText('I am sure I want to apply these changes').click();
 
     const applyButton = page.getByRole('button', { name: /apply changes/i });
     await expect.element(applyButton).not.toBeDisabled();
@@ -1060,14 +1053,11 @@ describe('external volume bucket data loading', () => {
       },
     ]);
 
-    await setupBrowserTest(
-      renderModifyVolume(UUID_VOLUME.id as number, UUID_VOLUME_LIST),
-      { initialRouterEntry: VOLUME_ROUTE_ENTRY },
-    );
+    await setupBrowserTest(renderModifyVolume(UUID_VOLUME.id as number, UUID_VOLUME_LIST), {
+      initialRouterEntry: VOLUME_ROUTE_ENTRY,
+    });
 
     await expect.element(page.getByText('Use infrequent access', { exact: true })).toBeVisible();
-    await expect
-      .element(page.getByText('Use intelligent tiering', { exact: true }))
-      .toBeVisible();
+    await expect.element(page.getByText('Use intelligent tiering', { exact: true })).toBeVisible();
   });
 });

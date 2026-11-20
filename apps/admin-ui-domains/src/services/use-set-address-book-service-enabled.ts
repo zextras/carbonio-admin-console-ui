@@ -10,11 +10,11 @@ import { domainQueryKeys } from './domain-query-keys';
 import { setAddressBookServiceEnabled } from './set-address-book-service-enabled';
 
 export const useSetAddressBookServiceEnabled = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: (enabled: boolean) => setAddressBookServiceEnabled(enabled),
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: domainQueryKeys.addressBookService() });
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (enabled: boolean) => setAddressBookServiceEnabled(enabled),
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.addressBookService() });
+    },
+  });
 };

@@ -12,7 +12,7 @@ import { MemoryRouter } from 'react-router';
 
 const getAppI18n = (): i18n => {
   const newI18n = i18next.createInstance();
-  newI18n.init({
+  void newI18n.init({
     lng: 'en',
     fallbackLng: 'en',
     debug: false,

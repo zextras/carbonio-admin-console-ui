@@ -21,18 +21,18 @@ import { APPOINTMENT, CONTACT, DOCUMENT, MESSAGE } from '../../../constants';
 const CopyActionContext = createContext<{ onCopy: () => void }>({ onCopy: () => {} });
 
 function CopyPolicyIcon() {
-	const { onCopy } = useContext(CopyActionContext);
-	const { t } = useTranslation();
-	return (
-		<Button
-			type="ghost"
-			color={'grey'}
-			icon="CopyOutline"
-			size="large"
-			aria-label={t('label.copy', 'Copy')}
-			onClick={onCopy}
-		/>
-	);
+  const { onCopy } = useContext(CopyActionContext);
+  const { t } = useTranslation();
+  return (
+    <Button
+      type="ghost"
+      color={'grey'}
+      icon="CopyOutline"
+      size="large"
+      aria-label={t('label.copy', 'Copy')}
+      onClick={onCopy}
+    />
+  );
 }
 
 export function DeleteHsmPolicy({
@@ -46,7 +46,8 @@ export function DeleteHsmPolicy({
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const getHSMType = (query: string): string => {
-    const hsmType = policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === query)?.hsmType ?? [];
+    const hsmType =
+      policies.find((item: HsmPolicyFromServer) => item?.hsmQuery === query)?.hsmType ?? [];
     let hsmTypeString = '';
     if (hsmType && hsmType?.length > 0) {
       if (hsmType.length === 4) {
@@ -72,7 +73,7 @@ export function DeleteHsmPolicy({
 
   const copyToClipboard = () => {
     if (navigator) {
-      navigator.clipboard.writeText(`${getHSMType(selectedPolicies)}${selectedPolicies}`);
+      void navigator.clipboard.writeText(`${getHSMType(selectedPolicies)}${selectedPolicies}`);
       createSnackbar({
         severity: 'info',
         label: t('hsm.policy_has_been_coppied', 'HSM Policy has been copied to the clipboard'),
@@ -142,7 +143,6 @@ export function DeleteHsmPolicy({
         <Container padding={{ top: 'small', bottom: 'small' }}>
           <CopyActionContext.Provider value={{ onCopy: copyToClipboard }}>
             <LabeledValue
-              
               label={t('hsm.hsm_policy', 'HSM Policy')}
               value={`${getHSMType(selectedPolicies)}${selectedPolicies}`}
               CustomIcon={CopyPolicyIcon}

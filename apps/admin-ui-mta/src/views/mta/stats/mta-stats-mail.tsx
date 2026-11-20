@@ -50,21 +50,43 @@ function buildTableRows(queueItems: Array<MtaMailQueueItem>): Array<TRow> {
     id: item?.id,
     columns: [
       <Container crossAlignment="flex-start" key={item?.id}>
-        <ds-text as="span" color="gray0" weight="regular">{item?.id}</ds-text>
+        <ds-text as="span" color="gray0" weight="regular">
+          {item?.id}
+        </ds-text>
       </Container>,
       <ds-text as="span" color="gray0" weight="light" key={item?.id}>
         {format(new Date(Number.parseInt(item?.arrivalTime, 10)), 'dd/MM/yy - HH:mm')}
       </ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.size}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.fromDomain}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.toDomain}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.sender}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.receiver}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.host}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.ip}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.reason}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.filter}</ds-text>,
-      <ds-text as="span" color="gray0" weight="light" key={item?.id}>{item?.receiveid}</ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.size}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.fromDomain}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.toDomain}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.sender}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.receiver}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.host}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.ip}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.reason}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.filter}
+      </ds-text>,
+      <ds-text as="span" color="gray0" weight="light" key={item?.id}>
+        {item?.receiveid}
+      </ds-text>,
     ],
   }));
 }
@@ -72,14 +94,19 @@ function buildTableRows(queueItems: Array<MtaMailQueueItem>): Array<TRow> {
 function extractQueueCounts(queue: Array<MailQueueInfo>): Record<string, number> {
   return {
     queued: queue.find((item: Record<string, string | number>) => item?.name === ACTIVE)?.n || 0,
-    corrupted: queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)?.n || 0,
-    deferred: queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)?.n || 0,
-    incoming: queue.find((item: Record<string, string | number>) => item?.name === INCOMING)?.n || 0,
+    corrupted:
+      queue.find((item: Record<string, string | number>) => item?.name === CORRUPT)?.n || 0,
+    deferred:
+      queue.find((item: Record<string, string | number>) => item?.name === DEFERRED)?.n || 0,
+    incoming:
+      queue.find((item: Record<string, string | number>) => item?.name === INCOMING)?.n || 0,
     onhold: queue.find((item: Record<string, string | number>) => item?.name === HOLD)?.n || 0,
   };
 }
 
-function parseQueueItems(serverData: { queue?: Array<{ qi?: Array<Record<string, string>>; total?: number }> } | undefined): { items: Array<MtaMailQueueItem>; total: number } {
+function parseQueueItems(
+  serverData: { queue?: Array<{ qi?: Array<Record<string, string>>; total?: number }> } | undefined,
+): { items: Array<MtaMailQueueItem>; total: number } {
   const queue = serverData?.queue?.[0];
   const total = queue?.total ?? 0;
   const items: Array<MtaMailQueueItem> = [];
@@ -129,10 +156,13 @@ export const MTAStatsMail = ({
 
   const { data: queueInfoData } = useMailQueueInfo(serverName, Boolean(serverName));
 
-  const {
-    data: mailQueueData,
-    isLoading: isMailQueueLoading,
-  } = useMailQueue(serverName, change, offset, limit, Boolean(serverName));
+  const { data: mailQueueData, isLoading: isMailQueueLoading } = useMailQueue(
+    serverName,
+    change,
+    offset,
+    limit,
+    Boolean(serverName),
+  );
 
   const queueInfo = queueInfoData?.server?.[0]?.queue ?? [];
   const mailStatCount = extractQueueCounts(queueInfo);
@@ -142,11 +172,36 @@ export const MTAStatsMail = ({
   const mailRows = buildTableRows(queueItems);
 
   const items = [
-    { id: ACTIVE, label: t('mta.queued', 'Queued'), count: mailStatCount?.queued, CustomComponent: ReusedDefaultTabBar },
-    { id: CORRUPT, label: t('mta.corrupted', 'Corrupted'), count: mailStatCount?.corrupted, CustomComponent: ReusedDefaultTabBar },
-    { id: DEFERRED, label: t('mta.deferred', 'Deferred'), count: mailStatCount?.deferred, CustomComponent: ReusedDefaultTabBar },
-    { id: INCOMING, label: t('mta.incoming', 'Incoming'), count: mailStatCount?.incoming, CustomComponent: ReusedDefaultTabBar },
-    { id: HOLD, label: t('mta.onhold', 'On Hold'), count: mailStatCount?.onhold, CustomComponent: ReusedDefaultTabBar },
+    {
+      id: ACTIVE,
+      label: t('mta.queued', 'Queued'),
+      count: mailStatCount?.queued,
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: CORRUPT,
+      label: t('mta.corrupted', 'Corrupted'),
+      count: mailStatCount?.corrupted,
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: DEFERRED,
+      label: t('mta.deferred', 'Deferred'),
+      count: mailStatCount?.deferred,
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: INCOMING,
+      label: t('mta.incoming', 'Incoming'),
+      count: mailStatCount?.incoming,
+      CustomComponent: ReusedDefaultTabBar,
+    },
+    {
+      id: HOLD,
+      label: t('mta.onhold', 'On Hold'),
+      count: mailStatCount?.onhold,
+      CustomComponent: ReusedDefaultTabBar,
+    },
   ];
 
   async function callAllRequest(request: Array<MailQueueActionRequest>) {
@@ -155,7 +210,9 @@ export const MTAStatsMail = ({
         serverName,
         MailQueueActionRequest: request,
       });
-      await queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueue(serverName, change, offset, limit) });
+      await queryClient.invalidateQueries({
+        queryKey: mtaQueryKeys.mailQueue(serverName, change, offset, limit),
+      });
       await queryClient.invalidateQueries({ queryKey: mtaQueryKeys.mailQueueInfo(serverName) });
       setSelectedRow([]);
     } catch {
@@ -180,7 +237,7 @@ export const MTAStatsMail = ({
           },
         });
       });
-      callAllRequest(mailActionRequestData);
+      void callAllRequest(mailActionRequestData);
     }
   }
 
@@ -305,4 +362,4 @@ export const MTAStatsMail = ({
       </Container>
     </Container>
   );
-}
+};

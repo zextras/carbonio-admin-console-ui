@@ -30,16 +30,13 @@ export function PrivacyView() {
   const rightsConfig = find(rights, { type: CONFIG }) || { all: [], type: CONFIG };
   const allowSetPrivacy = !!rightsConfig?.all?.[0]?.setAttrs?.[0]?.all;
 
-  const privacyFeedbackInitialValue = !!(
-    config.find((item: { n: string }) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE
-  );
-  const privacyAnalyticsInitialValue = !!(
-    config.find((item: { n: string }) => item?.n === CARBONIO_SEND_ANALYTICS)?._content === TRUE
-  );
-  const privacyErrorInitialValue = !!(
+  const privacyFeedbackInitialValue =
+    config.find((item: { n: string }) => item?.n === CARBONIO_ALLOW_FEEDBACK)?._content === TRUE;
+  const privacyAnalyticsInitialValue =
+    config.find((item: { n: string }) => item?.n === CARBONIO_SEND_ANALYTICS)?._content === TRUE;
+  const privacyErrorInitialValue =
     config.find((item: { n: string }) => item?.n === CARBONIO_SEND_FULL_ERROR_STACK)?._content ===
-    TRUE
-  );
+    TRUE;
 
   const form = useForm({
     defaultValues: {
