@@ -97,6 +97,7 @@
 
 .activationMenuWrapper {
   position: relative;
+  margin-right: 1rem;
 }
 
 .menuTriggerButton {
@@ -104,7 +105,11 @@
   background: transparent;
   color: var(--color-text-regular);
   cursor: pointer;
-  margin-right: 1rem;
+}
+
+.menuTriggerButtonOpen {
+  border-radius: 0.125rem;
+  background: var(--color-gray5-regular);
 }
 
 .activationMenuList {

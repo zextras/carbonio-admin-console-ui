@@ -160,7 +160,11 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
           <div ref={menuWrapperRef} className={styles.activationMenuWrapper}>
             <button
               type="button"
-              className={styles.menuTriggerButton}
+              className={
+                menuOpen
+                  ? `${styles.menuTriggerButton} ${styles.menuTriggerButtonOpen}`
+                  : styles.menuTriggerButton
+              }
               aria-label={t('label.moreOptions', 'More options')}
               onClick={(): void => setMenuOpen((prev) => !prev)}
             >
