@@ -43,7 +43,7 @@ const BUNDLE_CONFIGS: Array<BundleDisplayConfig> = [
     name: 'Chats',
     labelKey: 'label.chats_video',
     labelDefault: 'Chats & Video',
-    icon: 'Video',
+    icon: 'ChatsVideo',
     descriptionKey: 'core.subscription.bundle_chats_description',
     descriptionDefault: 'Team messaging, video calls and recordings',
   },
