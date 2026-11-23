@@ -81,7 +81,7 @@ describe('PerpetualSubscription', () => {
     it('should render the last sync time when present', async () => {
       setupTest(<PerpetualSubscription />);
 
-      await expect.element(page.getByText(/Last sync\s+\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
+      await expect.element(page.getByText(/Last sync\s+\d{1,2}\s+\w+\s+\d{4}\s+\d{2}:\d{2}/)).toBeVisible();
     });
 
     it('should not render the last sync time when lastSyncTime is null', async () => {

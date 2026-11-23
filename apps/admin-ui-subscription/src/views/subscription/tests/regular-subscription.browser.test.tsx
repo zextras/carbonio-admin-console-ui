@@ -62,7 +62,7 @@ describe('RegularSubscription', () => {
     it('should render the last sync time when present', async () => {
       setupTest(<RegularSubscription />, createMockLicense());
 
-      await expect.element(page.getByText(/Last sync\s+\d{1,2}\s+\w+\s+\d{4}/)).toBeVisible();
+      await expect.element(page.getByText(/Last sync\s+\d{1,2}\s+\w+\s+\d{4}\s+\d{2}:\d{2}/)).toBeVisible();
     });
 
     it('should hide the last sync time when no sync time is recorded', async () => {

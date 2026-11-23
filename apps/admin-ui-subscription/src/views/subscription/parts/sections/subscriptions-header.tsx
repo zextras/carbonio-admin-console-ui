@@ -7,7 +7,7 @@ import { useLicenseV1Info } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
 
-import { DATE_FORMAT } from '../../constants';
+import { TIME_FORMAT } from '../../constants';
 import styles from './sections.module.css';
 
 export const SubscriptionsHeader = () => {
@@ -24,7 +24,7 @@ export const SubscriptionsHeader = () => {
       <div className={styles.syncRow}>
         {lastSyncTime && (
           <ds-text size="small">
-            {`${t('label.last_sync', 'Last sync')} ${format(lastSyncTime, DATE_FORMAT)}`}
+            {`${t('label.last_sync', 'Last sync')} ${format(lastSyncTime, TIME_FORMAT)}`}
           </ds-text>
         )}
       </div>
