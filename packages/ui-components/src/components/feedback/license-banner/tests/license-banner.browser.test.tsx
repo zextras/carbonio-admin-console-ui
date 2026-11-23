@@ -15,9 +15,12 @@ import { LicenseBanner } from '../license-banner';
 describe('LicenseBanner', () => {
 	const maintenanceEndDate = '2025-06-18T00:00:00.000Z';
 
-	function createLicenseData(maintenanceStatus: 'expiring' | 'expired' | 'invalid') {
+	function createLicenseData(
+		maintenanceStatus: 'active' | 'expiring' | 'expired' | 'invalid',
+		licenseType: 'perpetual' | 'regular' = 'perpetual',
+	) {
 		return {
-			licenseType: 'perpetual',
+			licenseType,
 			status: 'valid',
 			companyName: 'Test',
 			partner: 'Test',
@@ -38,13 +41,16 @@ describe('LicenseBanner', () => {
 
 	async function setupLicenseBannerTest(
 		component: React.ReactElement,
-		maintenanceStatus: 'expiring' | 'expired' | 'invalid',
+		maintenanceStatus: 'active' | 'expiring' | 'expired' | 'invalid' | null,
+		licenseType: 'perpetual' | 'regular' = 'perpetual',
 	) {
 		const queryClient = getQueryClient();
-		queryClient.setQueryData(
-			licenseV1QueryKeys.all,
-			createLicenseData(maintenanceStatus),
-		);
+		if (maintenanceStatus !== null) {
+			queryClient.setQueryData(
+				licenseV1QueryKeys.all,
+				createLicenseData(maintenanceStatus, licenseType),
+			);
+		}
 
 		// Register the subscriptions route so buildPath resolves the prefixed
 		// path (/manage/subscriptions), mirroring how the shell bootstraps routes.
@@ -83,6 +89,27 @@ describe('LicenseBanner', () => {
 		await expect
 			.element(page.getByText(/Your maintenance does not support Carbonio version/i))
 			.toBeVisible();
+	});
+
+	it('renders nothing when maintenance status is active', async () => {
+		await setupLicenseBannerTest(<LicenseBanner />, 'active');
+
+		expect(page.getByText(/maintenance/i).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: /close/i }).elements()).toHaveLength(0);
+	});
+
+	it('renders nothing for a non-perpetual license with non-active maintenance', async () => {
+		await setupLicenseBannerTest(<LicenseBanner />, 'expired', 'regular');
+
+		expect(page.getByText(/maintenance/i).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: /close/i }).elements()).toHaveLength(0);
+	});
+
+	it('renders nothing when no license data is available', async () => {
+		await setupLicenseBannerTest(<LicenseBanner />, null);
+
+		expect(page.getByText(/maintenance/i).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: /close/i }).elements()).toHaveLength(0);
 	});
 
 	it('shows redirect button when redirectButtonHasToAppear is true', async () => {
