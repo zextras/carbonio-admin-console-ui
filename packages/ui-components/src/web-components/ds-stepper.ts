@@ -40,43 +40,55 @@ export class DsStepper extends LitElement {
     return 'upcoming';
   }
 
+  private renderIndicatorContent(state: StepState, index: number): TemplateResult {
+    if (state === 'completed') {
+      return html`<ds-icon icon="Checkmark" color="white" size="small"></ds-icon>`;
+    }
+    return html`<span>${index + 1}</span>`;
+  }
+
+  private renderConnector(isLast: boolean): TemplateResult | typeof nothing {
+    return isLast ? nothing : html`<div class="connector"></div>`;
+  }
+
+  private renderDescription(description?: string): TemplateResult | typeof nothing {
+    if (!description) return nothing;
+    return html`<ds-text as="p" overflow="break-word" size="small" color="gray1">
+      ${description}
+    </ds-text>`;
+  }
+
+  private renderStep(step: DsStepperStep, index: number, stepsCount: number): TemplateResult {
+    const state = this.getState(index);
+    const isLast = index === stepsCount - 1;
+    const isActive = state === 'active';
+    return html`
+      <li class="step" data-state=${state} aria-current=${isActive ? 'step' : nothing}>
+        <div class="indicator">
+          <div class="circle">${this.renderIndicatorContent(state, index)}</div>
+          ${this.renderConnector(isLast)}
+        </div>
+        <div class="body">
+          <ds-text
+            as="h3"
+            size="medium"
+            overflow="break-word"
+            weight=${isActive ? 'bold' : 'regular'}
+            color=${isActive ? 'primary' : 'text'}
+          >
+            ${step.label}
+          </ds-text>
+          ${this.renderDescription(step.description)}
+        </div>
+      </li>
+    `;
+  }
+
   override render(): TemplateResult {
     const steps = this.steps ?? [];
     return html`
       <ol>
-        ${steps.map((step, index) => {
-          const state = this.getState(index);
-          const isLast = index === steps.length - 1;
-          const isActive = state === 'active';
-          return html`
-            <li class="step" data-state=${state} aria-current=${isActive ? 'step' : nothing}>
-              <div class="indicator">
-                <div class="circle">
-                  ${state === 'completed'
-                    ? html`<ds-icon icon="Checkmark" color="white" size="small"></ds-icon>`
-                    : html`<span>${index + 1}</span>`}
-                </div>
-                ${isLast ? nothing : html`<div class="connector"></div>`}
-              </div>
-              <div class="body">
-                <ds-text
-                  as="h3"
-                  size="medium"
-                  overflow="break-word"
-                  weight=${isActive ? 'bold' : 'regular'}
-                  color=${isActive ? 'primary' : 'text'}
-                >
-                  ${step.label}
-                </ds-text>
-                ${step.description
-                  ? html`<ds-text as="p" overflow="break-word" size="small" color="gray1">
-                      ${step.description}
-                    </ds-text>`
-                  : nothing}
-              </div>
-            </li>
-          `;
-        })}
+        ${steps.map((step, index) => this.renderStep(step, index, steps.length))}
       </ol>
     `;
   }

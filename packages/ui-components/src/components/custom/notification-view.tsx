@@ -39,7 +39,7 @@ const DEFAULT_PAGE_SIZE = 10;
 
 const copyTextToClipboard = (text: string): void => {
   if (navigator) {
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
   }
 };
 

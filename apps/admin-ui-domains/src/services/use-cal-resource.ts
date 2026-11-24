@@ -144,8 +144,10 @@ export function useSaveCalResource(resourceId: string) {
         hideButton: true,
         replace: true,
       });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.calResource(resourceId) });
-      queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'cal-resource-list'] });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.calResource(resourceId) });
+      void queryClient.invalidateQueries({
+        queryKey: [...domainQueryKeys.all, 'cal-resource-list'],
+      });
     },
     onError: (error: Error) => {
       createSnackbar({
@@ -173,12 +175,17 @@ export function useDeleteCalResource() {
       createSnackbar({
         key: 'delete-resource-success',
         severity: 'success',
-        label: t('label.resource_deleted_successfully_generic', 'Resource has been deleted successfully'),
+        label: t(
+          'label.resource_deleted_successfully_generic',
+          'Resource has been deleted successfully',
+        ),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
-      queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'cal-resource-list'] });
+      void queryClient.invalidateQueries({
+        queryKey: [...domainQueryKeys.all, 'cal-resource-list'],
+      });
     },
     onError: (error: Error) => {
       createSnackbar({
@@ -207,12 +214,17 @@ export function useDisableCalResource() {
       createSnackbar({
         key: 'disable-resource-success',
         severity: 'success',
-        label: t('label.resource_disabled_successfully_generic', 'Resource has been disabled successfully'),
+        label: t(
+          'label.resource_disabled_successfully_generic',
+          'Resource has been disabled successfully',
+        ),
         autoHideTimeout: 3000,
         hideButton: true,
         replace: true,
       });
-      queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'cal-resource-list'] });
+      void queryClient.invalidateQueries({
+        queryKey: [...domainQueryKeys.all, 'cal-resource-list'],
+      });
     },
     onError: (error: Error) => {
       createSnackbar({
@@ -264,25 +276,24 @@ export function useCreateCalResource() {
             {
               n: 'zimbraPrefCalendarAutoAcceptSignatureId',
               _content: input.zimbraPrefCalendarAutoAcceptSignatureId.value
-                ? (sigList.find(
+                ? sigList.find(
                     (s) => s?.name === input.zimbraPrefCalendarAutoAcceptSignatureId.label,
-                  )?.id ?? '')
+                  )?.id ?? ''
                 : '',
             },
             {
               n: 'zimbraPrefCalendarAutoDeclineSignatureId',
               _content: input.zimbraPrefCalendarAutoDeclineSignatureId.value
-                ? (sigList.find(
+                ? sigList.find(
                     (s) => s?.name === input.zimbraPrefCalendarAutoDeclineSignatureId.label,
-                  )?.id ?? '')
+                  )?.id ?? ''
                 : '',
             },
             {
               n: 'zimbraPrefCalendarAutoDenySignatureId',
               _content: input.zimbraPrefCalendarAutoDenySignatureId.value
-                ? (sigList.find(
-                    (s) => s?.name === input.zimbraPrefCalendarAutoDenySignatureId.label,
-                  )?.id ?? '')
+                ? sigList.find((s) => s?.name === input.zimbraPrefCalendarAutoDenySignatureId.label)
+                    ?.id ?? ''
                 : '',
             },
           ];
@@ -303,7 +314,9 @@ export function useCreateCalResource() {
         hideButton: true,
         replace: true,
       });
-      queryClient.invalidateQueries({ queryKey: [...domainQueryKeys.all, 'cal-resource-list'] });
+      void queryClient.invalidateQueries({
+        queryKey: [...domainQueryKeys.all, 'cal-resource-list'],
+      });
     },
     onError: (error: Error) => {
       createSnackbar({

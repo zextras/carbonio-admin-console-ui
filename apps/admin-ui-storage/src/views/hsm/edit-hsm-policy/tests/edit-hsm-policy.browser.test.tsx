@@ -76,11 +76,7 @@ describe('EditHsmPolicy (browser)', () => {
 			await renderAndWait(
 				makeProps({ policies: [], selectedPolicies: 'does-not-exist' }),
 			);
-			expect(
-				(await page
-					.getByRole('button', { name: /^save$/i })
-					.elements()).length,
-			).toBe(0);
+			expect((await page.getByRole('button', { name: /^save$/i })).elements()).toHaveLength(0);
 		});
 	});
 

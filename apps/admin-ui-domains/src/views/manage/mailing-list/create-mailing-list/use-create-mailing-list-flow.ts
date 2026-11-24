@@ -45,7 +45,7 @@ export function useCreateMailingListFlow(onClose: () => void) {
   }
 
   function invalidateLists(): void {
-    queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
+    void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
   }
 
   function callAllRequests(requests: Array<Promise<any>>): void {

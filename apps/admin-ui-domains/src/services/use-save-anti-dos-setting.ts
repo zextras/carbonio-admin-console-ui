@@ -11,29 +11,32 @@ import { domainQueryKeys } from './domain-query-keys';
 import { type MobileAntiDosAttribute, setMobileAntiDosService } from './mobile-anti-dos-service';
 
 export type SaveAntiDosSettingInput =
-	| { field: 'enabled'; value: boolean }
-	| { field: 'jailDuration'; value: number }
-	| { field: 'maxRequests'; value: number }
-	| { field: 'timeWindow'; value: number };
+  | { field: 'enabled'; value: boolean }
+  | { field: 'jailDuration'; value: number }
+  | { field: 'maxRequests'; value: number }
+  | { field: 'timeWindow'; value: number };
 
-const ANTI_DOS_ATTRIBUTE_BY_FIELD: Record<SaveAntiDosSettingInput['field'], MobileAntiDosAttribute> = {
-	enabled: 'mobileAntiDosServiceEnabled',
-	jailDuration: 'mobileAntiDosServiceJailDuration',
-	maxRequests: 'mobileAntiDosServiceMaxRequests',
-	timeWindow: 'mobileAntiDosServiceTimeWindow'
+const ANTI_DOS_ATTRIBUTE_BY_FIELD: Record<
+  SaveAntiDosSettingInput['field'],
+  MobileAntiDosAttribute
+> = {
+  enabled: 'mobileAntiDosServiceEnabled',
+  jailDuration: 'mobileAntiDosServiceJailDuration',
+  maxRequests: 'mobileAntiDosServiceMaxRequests',
+  timeWindow: 'mobileAntiDosServiceTimeWindow',
 };
 
 export const useSaveAntiDosSetting = () => {
-	const queryClient = useQueryClient();
-	return useMutation({
-		mutationFn: async (input: SaveAntiDosSettingInput): Promise<void> => {
-			assertNoFault(
-				await setMobileAntiDosService(ANTI_DOS_ATTRIBUTE_BY_FIELD[input.field], input.value),
-				'anti-dos setting save failed'
-			);
-		},
-		onSuccess: () => {
-			queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
-		},
-	});
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async (input: SaveAntiDosSettingInput): Promise<void> => {
+      assertNoFault(
+        await setMobileAntiDosService(ANTI_DOS_ATTRIBUTE_BY_FIELD[input.field], input.value),
+        'anti-dos setting save failed',
+      );
+    },
+    onSuccess: () => {
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.antiDosConfig() });
+    },
+  });
 };

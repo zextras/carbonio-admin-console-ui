@@ -261,7 +261,7 @@ export function VolumesDetailPanel() {
   const [indexerVolumeSelection, setIndexerVolumeSelection] = useState<string[]>([]);
   const [toggleWizardLocal, setToggleWizardLocal] = useState(false);
   const [toggleWizardExternal, setToggleWizardExternal] = useState(false);
-  const [modifyVolumeToggle, setmodifyVolumeToggle] = useState<boolean>(false);
+  const [modifyVolumeToggle, setModifyVolumeToggle] = useState<boolean>(false);
   const { data: serverList = [] } = useAllServers();
   const selectedServerId = serverList?.find((s: { name?: string }) => s?.name === server)?.id ?? '';
   const [isPendingProgress, setIsPendingProgress] = useState<boolean>(false);
@@ -295,7 +295,10 @@ export function VolumesDetailPanel() {
   };
   const createSnackbar = useSnackbar();
 
-  const defaultCreateErrorMessage = t('label.volume_create_error_default', 'Something went wrong, please try again');
+  const defaultCreateErrorMessage = t(
+    'label.volume_create_error_default',
+    'Something went wrong, please try again',
+  );
 
   const openErrorDetailsModal = (message?: unknown): void => {
     setErrorDetailsMessage(extractErrorDetailsMessage(message, defaultCreateErrorMessage));
@@ -352,7 +355,7 @@ export function VolumesDetailPanel() {
               label: t('label.volume_deleted', 'Volume deleted successfully'),
             });
             invalidateVolumes();
-            setmodifyVolumeToggle(false);
+            setModifyVolumeToggle(false);
             setOpen(false);
           } else {
             createSnackbar({
@@ -401,7 +404,7 @@ export function VolumesDetailPanel() {
             });
           }
           invalidateVolumes();
-          setmodifyVolumeToggle(false);
+          setModifyVolumeToggle(false);
           setOpen(false);
         })
         .catch(() => {
@@ -426,7 +429,7 @@ export function VolumesDetailPanel() {
             rootpath: '',
             type: 0,
           });
-          setmodifyVolumeToggle(false);
+          setModifyVolumeToggle(false);
           invalidateVolumes();
           setOpen(false);
         });
@@ -559,7 +562,7 @@ export function VolumesDetailPanel() {
       } else if (attr?.type === 10) {
         volType = 'index';
       }
-      postSoapFetchRequest(
+      void postSoapFetchRequest(
         `/service/admin/soap/zextras`,
         {
           _jsns: ZIMBRA_ADMIN_URN,
@@ -640,16 +643,14 @@ export function VolumesDetailPanel() {
           if (res?.volume && Array.isArray(res?.volume)) {
             const vol = res?.volume[0];
 
-            if (vol && vol?.id) {
-              if (attr?.isCurrent === 1) {
-                await setCurrentVolumeRequest(vol?.id, vol?.type)
-                  .then(() => {
-                    activateOutcome = 'success';
-                  })
-                  .catch(() => {
-                    activateOutcome = 'error';
-                  });
-              }
+            if (vol?.id && attr?.isCurrent === 1) {
+              await setCurrentVolumeRequest(vol.id, vol.type)
+                .then(() => {
+                  activateOutcome = 'success';
+                })
+                .catch(() => {
+                  activateOutcome = 'error';
+                });
             }
           }
           pendingOnCompleteRef.current = (): void => {
@@ -690,7 +691,7 @@ export function VolumesDetailPanel() {
     const volumeObject = data?.find((_volume: Volume, index: number) => index === i);
     const typeVol = volumeObject as Volume;
     setVolume(typeVol);
-    setmodifyVolumeToggle(true);
+    setModifyVolumeToggle(true);
   };
 
   return (
@@ -726,7 +727,7 @@ export function VolumesDetailPanel() {
             volumeId={volume?.id ?? 0}
             volumeName={volume?.name ?? ''}
             setOpen={setOpen}
-            setmodifyVolumeToggle={setmodifyVolumeToggle}
+            setModifyVolumeToggle={setModifyVolumeToggle}
             getAllVolumesRequest={invalidateVolumes}
             selectedServerId={selectedServerId}
             volumeList={volumeList}

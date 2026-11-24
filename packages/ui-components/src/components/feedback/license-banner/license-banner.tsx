@@ -146,7 +146,9 @@ export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps)
         redirectButtonHasToAppear
           ? {
               label: detailsButton,
-              onClick: () => navigate(buildPath(SUBSCRIPTIONS_ROUTE_ID)),
+              onClick: () => {
+                void navigate(buildPath(SUBSCRIPTIONS_ROUTE_ID));
+              },
             }
           : undefined
       }

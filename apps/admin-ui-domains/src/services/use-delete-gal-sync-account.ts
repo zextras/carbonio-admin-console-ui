@@ -20,10 +20,10 @@ export function useDeleteGalSyncAccount(domainId: string | undefined) {
   return useMutation({
     mutationFn: (accountId: string) => destroyAccount(accountId),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       if (domainId) {
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
       }
       createSnackbar({
         key: 'success',

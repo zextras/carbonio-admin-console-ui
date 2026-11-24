@@ -24,9 +24,11 @@ export function useIssueCert({ domainId, domainName }: UseIssueCertArgs) {
   return useMutation({
     mutationFn: (chainType: string) => issueCert(domainId, chainType),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainCert(domainId) });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainCert(domainId) });
       if (domainName) {
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.domainSslMaterial(domainName) });
+        void queryClient.invalidateQueries({
+          queryKey: domainQueryKeys.domainSslMaterial(domainName),
+        });
       }
       createSnackbar({
         key: 'success',

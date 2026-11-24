@@ -1425,7 +1425,7 @@ export const getFormatedShortDate = (date: Date): any => {
 
 export const copyTextToClipboard = (text: string): void => {
   if (navigator) {
-    navigator.clipboard.writeText(text);
+    void navigator.clipboard.writeText(text);
   }
 };
 
@@ -1573,7 +1573,9 @@ export const TwoFactorPolicyArray = (t: TFunction): TwoFactorPolicy[] => [
 
 export const generateRandomString = (length = 10): string => {
   const bytes = crypto.getRandomValues(new Uint8Array(Math.ceil(length / 2)));
-  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0')).join('').substring(0, length);
+  return Array.from(bytes, (b) => b.toString(16).padStart(2, '0'))
+    .join('')
+    .substring(0, length);
 };
 
 export const BytesToGB = (data: any): any => divide(data || 0, 1024 ** 3);

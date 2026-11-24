@@ -18,9 +18,10 @@ type CreateAccountVars = {
 export const useCreateAccount = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (vars: CreateAccountVars) => createAccountRequest(vars.attr, vars.name, vars.password),
+    mutationFn: (vars: CreateAccountVars) =>
+      createAccountRequest(vars.attr, vars.name, vars.password),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
     },

@@ -19,8 +19,8 @@ export const useRenameDistributionList = (listId: string) => {
   return useMutation({
     mutationFn: (newName: string) => renameDistributionList(listId, newName),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionList(listId) });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.distributionLists() });
     },
   });
 };

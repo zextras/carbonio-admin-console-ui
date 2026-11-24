@@ -37,17 +37,16 @@ export const volumeCreateSchema = volumeCreateBase.superRefine((val, ctx) => {
       message: 'storage.validation.volume_path_required',
     });
   }
-  if (val.isCompression) {
-    if (
-      !val.compressionThreshold ||
+  if (
+    val.isCompression &&
+    (!val.compressionThreshold ||
       val.compressionThreshold === '' ||
-      !/^\d*$/.test(String(val.compressionThreshold))
-    ) {
-      ctx.addIssue({
-        code: 'custom',
-        path: ['compressionThreshold'],
-        message: 'storage.validation.compression_threshold_required',
-      });
-    }
+      !/^\d*$/.test(String(val.compressionThreshold)))
+  ) {
+    ctx.addIssue({
+      code: 'custom',
+      path: ['compressionThreshold'],
+      message: 'storage.validation.compression_threshold_required',
+    });
   }
 });

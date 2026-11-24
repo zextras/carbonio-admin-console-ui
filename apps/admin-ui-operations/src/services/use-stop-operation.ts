@@ -55,7 +55,7 @@ export const useStopOperation = (
           hideButton: true,
           replace: true,
         });
-        queryClient.invalidateQueries({ queryKey: operationQueryKeys.allOperations() });
+        void queryClient.invalidateQueries({ queryKey: operationQueryKeys.allOperations() });
       } else {
         createSnackbar({
           key: 'error',

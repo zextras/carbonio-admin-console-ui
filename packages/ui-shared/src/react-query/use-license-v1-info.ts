@@ -34,6 +34,8 @@ export const queryFnLicenseV1Info = async (): Promise<LicenseV1Info | null> => {
 			return null;
 		case 'error':
 			throw new LicenseV1QueryError(result.error);
+		default:
+			throw new Error('Unknown license result type');
 	}
 };
 

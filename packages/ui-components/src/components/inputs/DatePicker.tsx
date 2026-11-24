@@ -120,7 +120,7 @@ export const DatePicker = ({
     popover.showPopover();
 
     return autoUpdate(anchor, popover, () => {
-      computePosition(anchor, popover, {
+      void computePosition(anchor, popover, {
         placement: 'bottom-start',
         middleware: [offset(8), flip({ fallbackPlacements: ['bottom', 'top'] }), shift()],
       }).then(({ x, y }) => {
@@ -134,8 +134,12 @@ export const DatePicker = ({
     if (!isOpen) return;
     const handleClickOutside = (e: MouseEvent): void => {
       const target = e.target as Node;
-      if (popoverRef.current?.contains(target) || inputRef.current?.parentElement?.contains(target))
+      if (
+        popoverRef.current?.contains(target) ||
+        inputRef.current?.parentElement?.contains(target)
+      ) {
         return;
+      }
       setIsOpen(false);
     };
     const handleKeyDown = (e: KeyboardEvent): void => {

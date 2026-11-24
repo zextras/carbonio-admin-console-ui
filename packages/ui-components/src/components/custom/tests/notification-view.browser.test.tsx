@@ -103,7 +103,7 @@ describe('NotificationView', () => {
     await setupNotificationViewTest([]);
 
     await expect.element(page.getByText('Server')).toBeVisible();
-    expect(page.getByText(/items per page/i).elements().length).toBe(0);
+    expect(page.getByText(/items per page/i).elements()).toHaveLength(0);
   });
 
   it('limits displayed rows to the first page', async () => {
@@ -111,7 +111,7 @@ describe('NotificationView', () => {
 
     await expect.element(page.getByText('Subject-015')).toBeVisible();
     await expect.element(page.getByText('Subject-006')).toBeVisible();
-    expect(page.getByText('Subject-005').elements().length).toBe(0);
+    expect(page.getByText('Subject-005').elements()).toHaveLength(0);
   });
 
   it('resets pagination when switching filter tabs', async () => {
@@ -145,8 +145,8 @@ describe('NotificationView', () => {
     // Warning items are the indexes i where i % 3 === 1.
     await expect.element(page.getByText('Subject-002')).toBeVisible();
     await expect.element(page.getByText('Subject-008')).toBeVisible();
-    expect(page.getByText('Subject-001').elements().length).toBe(0);
-    expect(page.getByText('Subject-003').elements().length).toBe(0);
+    expect(page.getByText('Subject-001').elements()).toHaveLength(0);
+    expect(page.getByText('Subject-003').elements()).toHaveLength(0);
   });
 
   it('marks a notification as unread from the detail modal', async () => {
@@ -178,9 +178,7 @@ describe('NotificationView', () => {
     await page.getByText('Subject-014').click();
 
     await expect.element(page.getByText(/Notification Details/i)).toBeVisible();
-    expect(
-      page.getByText('Notification mark as read successfully').elements().length,
-    ).toBe(0);
+    expect(page.getByText('Notification mark as read successfully').elements()).toHaveLength(0);
 
     await vi.waitFor(() => {
       expect(ackInterceptor.getCalledTimes()).toBeGreaterThan(0);

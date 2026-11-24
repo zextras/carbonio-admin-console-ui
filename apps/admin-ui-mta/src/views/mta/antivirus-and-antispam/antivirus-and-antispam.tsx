@@ -6,7 +6,13 @@
 import { useForm } from '@tanstack/react-form';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, SelectItem, useSnackbar } from '@zextras/ui-components';
-import { type ConfigAttribute, useAllConfig, useCurrentUserRights, useIsAdvanced, useModifyConfig } from '@zextras/ui-shared';
+import {
+  type ConfigAttribute,
+  useAllConfig,
+  useCurrentUserRights,
+  useIsAdvanced,
+  useModifyConfig,
+} from '@zextras/ui-shared';
 import { find } from 'lodash-es';
 import { ReactElement, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -110,20 +116,24 @@ const MTAAntiVirusAndAntiSpamForm = ({ configInformation }: MTAAntiVirusAndAntiS
       };
 
       pushMulti(ZIMBRA_CLAM_AVDATABASE_MIRROR, value.zimbraClamAVDatabaseMirror);
-      if (value.zimbraVirusDefinitionsUpdateFrequency)
+      if (value.zimbraVirusDefinitionsUpdateFrequency) {
         attrs.push({
           n: ZIMBRA_VIRUS_DEFINITIONS_UPDATE_FREQUENCY,
           _content: value.zimbraVirusDefinitionsUpdateFrequency,
         });
-      if (value.zimbraSpamTagPercent)
+      }
+      if (value.zimbraSpamTagPercent) {
         attrs.push({ n: ZIMBRA_SPAM_TAG_PERCENT, _content: value.zimbraSpamTagPercent });
-      if (value.zimbraSpamSubjectTag)
+      }
+      if (value.zimbraSpamSubjectTag) {
         attrs.push({ n: ZIMBRA_SPAM_SUBJECT_TAG, _content: value.zimbraSpamSubjectTag });
-      if (value.zimbraAmavisFinalSpamDestiny)
+      }
+      if (value.zimbraAmavisFinalSpamDestiny) {
         attrs.push({
           n: ZIMBRA_AMAVIS_FINAL_SPAM_DESTINY,
           _content: value.zimbraAmavisFinalSpamDestiny,
         });
+      }
 
       attrs.push(
         {

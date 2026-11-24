@@ -156,7 +156,7 @@ export type ModifyVolumeFormProps = {
   readonly volumeId: string;
   readonly volumeInUse: boolean;
   readonly currentVolumeName?: string;
-  readonly setmodifyVolumeToggle: (newValue: boolean) => void;
+  readonly setModifyVolumeToggle: (newValue: boolean) => void;
   readonly getAllVolumesRequest: () => void;
   readonly setOpen: (newValue: boolean) => void;
   readonly onShowErrorSnackbar?: (errorDetails?: unknown) => void;
@@ -174,7 +174,7 @@ export function ModifyVolumeForm({
   volumeId,
   volumeInUse,
   currentVolumeName,
-  setmodifyVolumeToggle,
+  setModifyVolumeToggle,
   getAllVolumesRequest,
   setOpen,
   onShowErrorSnackbar,
@@ -274,7 +274,7 @@ export function ModifyVolumeForm({
         pendingOnCompleteRef.current = (): void => {
           showVolumeSaveSuccess(createSnackbar, t);
           getAllVolumesRequest();
-          setmodifyVolumeToggle(false);
+          setModifyVolumeToggle(false);
           after?.();
         };
         setIsPendingProgress(false);
@@ -287,7 +287,7 @@ export function ModifyVolumeForm({
           } else {
             showVolumeSaveError(createSnackbar, t);
           }
-          setmodifyVolumeToggle(false);
+          setModifyVolumeToggle(false);
         };
         setIsPendingProgress(false);
       };
@@ -489,7 +489,7 @@ export function ModifyVolumeForm({
               color="text"
               icon="CloseOutline"
               aria-label={t('label.close', 'Close')}
-              onClick={(): void => setmodifyVolumeToggle(false)}
+              onClick={(): void => setModifyVolumeToggle(false)}
             />
           </Row>
         </Row>

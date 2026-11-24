@@ -21,10 +21,7 @@ type ModifyDataSourceBody = {
   };
 };
 
-export function useModifyDataSource(
-  domainId: string | undefined,
-  accountId: string | undefined
-) {
+export function useModifyDataSource(domainId: string | undefined, accountId: string | undefined) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
   const queryClient = useQueryClient();
@@ -33,12 +30,12 @@ export function useModifyDataSource(
     mutationFn: (body: ModifyDataSourceBody) => modifyDataSource(body),
     onSuccess: () => {
       if (accountId) {
-        queryClient.invalidateQueries({ queryKey: domainQueryKeys.galDataSources(accountId) });
+        void queryClient.invalidateQueries({ queryKey: domainQueryKeys.galDataSources(accountId) });
       }
-      queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
+      void queryClient.invalidateQueries({ queryKey: domainQueryKeys.gal() });
       if (domainId) {
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 1) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(domainId, 0) });
       }
     },
     onError: (error: Error) => {

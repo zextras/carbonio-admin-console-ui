@@ -219,18 +219,13 @@ export const useSidebarOptions = ({
           item.id !== SECURITY_GROUP,
       );
 
-  const detailItems: Array<ListItemType> = detailOptions.filter((item) => {
-    if (!isAdvanced) {
-      if (
-        item.id === WHITELABEL_SETTINGS ||
-        item.id === SAML ||
-        item.id === TWO_FACTOR_AUTHENTICATION
-      ) {
-        return false;
-      }
-    }
-    return true;
-  });
+  const detailItems: Array<ListItemType> = detailOptions.filter(
+    (item) =>
+      isAdvanced ||
+      (item.id !== WHITELABEL_SETTINGS &&
+        item.id !== SAML &&
+        item.id !== TWO_FACTOR_AUTHENTICATION),
+  );
 
   const globalOptionsItems: Array<ListItemType> = isAdvanced
     ? globalOptionItems

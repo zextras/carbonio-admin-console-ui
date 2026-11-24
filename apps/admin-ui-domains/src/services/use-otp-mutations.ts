@@ -14,7 +14,7 @@ export const useGenerateTotp = () => {
   return useMutation({
     mutationFn: ({ account }: { account: string }) => generateTotp(account),
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.otpList(vars.account),
       });
     },
@@ -26,7 +26,7 @@ export const useDeleteTotp = (account: string) => {
   return useMutation({
     mutationFn: ({ id }: { id: string }) => deleteTotp(account, id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.otpList(account),
       });
     },
@@ -38,7 +38,7 @@ export const useRestoreTotp = (account: string) => {
   return useMutation({
     mutationFn: ({ id }: { id: string }) => restoreTotp(account, id),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.otpList(account),
       });
     },

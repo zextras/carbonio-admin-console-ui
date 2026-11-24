@@ -126,7 +126,7 @@ describe('DashboardServerList', () => {
     it('does not render pagination controls when no servers exist', async () => {
       await setupServerListTest({ servers: [] });
 
-      expect(page.getByText(/items per page/i).elements().length).toBe(0);
+      expect(page.getByText(/items per page/i).elements()).toHaveLength(0);
     });
 
     it('limits displayed rows to the first page', async () => {
@@ -134,7 +134,7 @@ describe('DashboardServerList', () => {
 
       await expect.element(page.getByText('mailstore1.test.com')).toBeVisible();
       await expect.element(page.getByText('mailstore10.test.com')).toBeVisible();
-      expect(page.getByText('mailstore11.test.com').elements().length).toBe(0);
+      expect(page.getByText('mailstore11.test.com').elements()).toHaveLength(0);
     });
 
     it('navigates to the next page', async () => {
@@ -148,7 +148,7 @@ describe('DashboardServerList', () => {
       await expect.element(page.getByText('2 of 2')).toBeVisible();
       await expect.element(page.getByText('mailstore11.test.com')).toBeVisible();
       await expect.element(page.getByText('mailstore15.test.com')).toBeVisible();
-      expect(page.getByText('mailstore1.test.com').elements().length).toBe(0);
+      expect(page.getByText('mailstore1.test.com').elements()).toHaveLength(0);
     });
   });
 });

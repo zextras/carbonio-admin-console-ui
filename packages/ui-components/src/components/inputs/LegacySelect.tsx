@@ -116,7 +116,9 @@ const DefaultLabelFactory = <T,>({
   background,
   disabled,
 }: LabelFactoryProps<T>): React.JSX.Element => {
-  const selectedLabels = selected.reduce<string[]>((arr, obj) => [...arr, obj.label], []).join(', ');
+  const selectedLabels = selected
+    .reduce<string[]>((arr, obj) => [...arr, obj.label], [])
+    .join(', ');
 
   const hasSelection = selected.length > 0;
   const labelColor = (disabled && 'gray2') || ((open || focus) && 'primary') || 'secondary';
@@ -145,7 +147,9 @@ const DefaultLabelFactory = <T,>({
           horizontal: 'large',
           vertical: 'small',
         }}
-        className={`${styles.container}${focus ? ` ${styles.containerFocused}` : ''}`}
+        className={[styles.container, focus ? styles.containerFocused : '']
+          .filter(Boolean)
+          .join(' ')}
         style={containerStyle}
       >
         <Row takeAvailableSpace mainAlignment="unset">
@@ -227,19 +231,17 @@ const SelectComponent = function SelectFn<T = string>({
     (onChange as SingleSelectionOnChange<T>)(item.value);
   };
 
-  const clickItemHandler =
-    (item: SelectItem<T>, isSelected: boolean) =>
-    (): void => {
-      if (multiple) {
-        if (isSelected) {
-          deselectItem(item);
-        } else {
-          selectItem(item);
-        }
-      } else if (selected.length === 0 || item.value !== selected[0].value) {
-        updateSingleSelection(item);
+  const clickItemHandler = (item: SelectItem<T>, isSelected: boolean) => (): void => {
+    if (multiple) {
+      if (isSelected) {
+        deselectItem(item);
+      } else {
+        selectItem(item);
       }
-    };
+    } else if (selected.length === 0 || item.value !== selected[0].value) {
+      updateSingleSelection(item);
+    }
+  };
 
   const mappedItems = items.map((item, index): DropdownItem => {
     const isSelected = selected.some((s) => s.value === item.value);

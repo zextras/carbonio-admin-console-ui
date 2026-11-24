@@ -55,7 +55,7 @@ export function useRestoreLegalHoldAccount() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: legalHoldQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: legalHoldQueryKeys.all });
       createSnackbar({
         key: 'success',
         severity: 'success',

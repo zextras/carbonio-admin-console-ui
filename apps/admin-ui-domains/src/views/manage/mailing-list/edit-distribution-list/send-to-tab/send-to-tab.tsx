@@ -155,6 +155,10 @@ export const SendToTab: FC<SendToTabProps> = ({ form, searchUserLabelValue }) =>
           ),
         );
         return;
+      case 'ok':
+        break;
+      default:
+        return;
     }
 
     setGrantEmailItem('');

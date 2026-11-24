@@ -178,7 +178,7 @@ describe('CosServerPools', () => {
       expect(requestBody._jsns).toBe('urn:zimbraAdmin');
       expect(requestBody.id._content).toBe(COS_ID);
       const poolAttrs = requestBody.a.filter((a: { n: string }) => a.n === 'zimbraMailHostPool');
-      expect(poolAttrs.length).toBe(3);
+      expect(poolAttrs).toHaveLength(3);
       expect(poolAttrs.map((a: { _content: string }) => a._content)).toEqual([
         'server-1-id',
         'server-2-id',
@@ -233,7 +233,7 @@ describe('CosServerPools', () => {
       const requestBody = (await modifyCosPromise) as ModifyCosBody;
       expect(requestBody.id._content).toBe(COS_ID);
       const poolAttrs = requestBody.a.filter((a: { n: string }) => a.n === 'zimbraMailHostPool');
-      expect(poolAttrs.length).toBe(1);
+      expect(poolAttrs).toHaveLength(1);
       expect(poolAttrs[0]._content).toBe('server-2-id');
     });
 
@@ -268,7 +268,7 @@ describe('CosServerPools', () => {
 
       const requestBody = (await modifyCosPromise) as ModifyCosBody;
       const poolAttrs = requestBody.a.filter((a: { n: string }) => a.n === 'zimbraMailHostPool');
-      expect(poolAttrs.length).toBe(1);
+      expect(poolAttrs).toHaveLength(1);
       expect(poolAttrs[0]._content).toBe('');
     });
 

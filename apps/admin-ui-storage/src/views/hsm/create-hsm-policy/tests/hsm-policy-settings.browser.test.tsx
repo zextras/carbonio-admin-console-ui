@@ -310,9 +310,7 @@ describe('HSMpolicySettings (browser)', () => {
 				.toBeVisible();
 			await page.getByRole('button', { name: /^add$/i }).click();
 			await vi.waitFor(() => {
-				expect(
-					page.getByText('This list is empty.', { exact: true }).elements().length,
-				).toBe(0);
+				expect(page.getByText('This list is empty.', { exact: true }).elements()).toHaveLength(0);
 			});
 		});
 	});

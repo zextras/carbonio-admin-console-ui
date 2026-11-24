@@ -19,10 +19,10 @@ export const useRenameAccount = () => {
   return useMutation({
     mutationFn: (vars: RenameAccountVars) => renameAccountRequest(vars.id, vars.newName),
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountDetail(vars.id),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
     },

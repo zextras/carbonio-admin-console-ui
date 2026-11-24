@@ -153,7 +153,7 @@ describe('DataTableBulkJob', () => {
     await act(async () => {
       getTable()?.getRowModel().rows[0].toggleSelected(true);
     });
-    expect(Object.keys(getTable()?.atoms.rowSelection.get() ?? {}).length).toBe(1);
+    expect(Object.keys(getTable()?.atoms.rowSelection.get() ?? {})).toHaveLength(1);
     fireEvent.click(screen.getByRole('button', { name: 'Dismiss' }));
     expect(onDismiss).toHaveBeenCalledTimes(1);
     expect(getTable()?.atoms.rowSelection.get()).toEqual({});

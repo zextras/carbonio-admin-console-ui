@@ -60,8 +60,8 @@ export function useDomainThemeForm({
 
         formApi.reset(value, { keepDefaultValues: true });
         if (zimbraId) {
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
-          queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
+          void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
         }
       } catch {
         // Mutation hook already reports errors via snackbar.
@@ -90,8 +90,8 @@ export function useDomainThemeForm({
       });
       form.reset(buildDomainResetValues(), { keepDefaultValues: true });
       if (zimbraId) {
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
-        queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 1) });
+        void queryClient.invalidateQueries({ queryKey: domainByIdKey(zimbraId, 0) });
       }
     } catch {
       // Mutation hook already reports errors via snackbar.

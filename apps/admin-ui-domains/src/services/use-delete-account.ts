@@ -18,7 +18,7 @@ export const useDeleteAccount = () => {
   return useMutation({
     mutationFn: (vars: DeleteAccountVars) => deleteAccount(vars.accountId),
     onSuccess: () => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
     },

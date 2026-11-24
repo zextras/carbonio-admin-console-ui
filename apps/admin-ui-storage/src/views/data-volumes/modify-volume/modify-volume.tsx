@@ -47,10 +47,7 @@ function getNormalizedVolumeType(volData: Volume, isAdvanced: boolean): number {
   return volData?.type ?? 0;
 }
 
-function buildVolumeDetail(
-  volData: Volume,
-  isAdvanced: boolean,
-): VolumeDetailSnapshot {
+function buildVolumeDetail(volData: Volume, isAdvanced: boolean): VolumeDetailSnapshot {
   return {
     name: volData.name ?? '',
     id: volData.id ?? 0,
@@ -61,9 +58,9 @@ function buildVolumeDetail(
     isCurrent: isAdvanced
       ? volData.isCurrent === true || volData.isCurrent === 1
       : Boolean(volData.isCurrent),
-    rootpath: isAdvanced ? (volData.path ?? '') : (volData.rootpath ?? ''),
+    rootpath: isAdvanced ? volData.path ?? '' : volData.rootpath ?? '',
     compressionThreshold: isAdvanced
-      ? (volData.compressionThreshold ?? '')
+      ? volData.compressionThreshold ?? ''
       : String(volData.compressionThreshold ?? ''),
   };
 }
@@ -76,7 +73,7 @@ function isVolumeInUse(volume: Volume | undefined): boolean {
 export function ModifyVolume({
   volumeId,
   volumeName,
-  setmodifyVolumeToggle,
+  setModifyVolumeToggle,
   getAllVolumesRequest,
   selectedServerId,
   volumeList,
@@ -85,7 +82,7 @@ export function ModifyVolume({
 }: Readonly<{
   volumeId: string | number | undefined;
   volumeName?: string;
-  setmodifyVolumeToggle: (newValue: boolean) => void;
+  setModifyVolumeToggle: (newValue: boolean) => void;
   getAllVolumesRequest: () => void;
   selectedServerId: string | number | undefined;
   volumeList: {
@@ -162,7 +159,7 @@ export function ModifyVolume({
     );
   }
 
-    return (
+  return (
     <ModifyVolumeForm
       volumeDetail={volumeDetail}
       externalVolDetail={externalVolDetail}
@@ -175,7 +172,7 @@ export function ModifyVolume({
       volumeId={String(volumeId)}
       volumeInUse={volumeInUse}
       currentVolumeName={currentVolumeName}
-      setmodifyVolumeToggle={setmodifyVolumeToggle}
+      setModifyVolumeToggle={setModifyVolumeToggle}
       getAllVolumesRequest={getAllVolumesRequest}
       setOpen={setOpen}
       onShowErrorSnackbar={onShowErrorSnackbar}

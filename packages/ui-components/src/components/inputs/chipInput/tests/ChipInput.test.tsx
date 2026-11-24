@@ -518,7 +518,7 @@ describe('ChipInput', () => {
       await waitFor(() => {
         expect(onChange).toHaveBeenCalled();
         const chips = onChange.mock.calls[0][0];
-        expect(chips.length).toBe(2);
+        expect(chips).toHaveLength(2);
       });
     });
 
@@ -547,7 +547,7 @@ describe('ChipInput', () => {
       await waitFor(() => {
         expect(onChange).toHaveBeenCalled();
         const chips = onChange.mock.calls[0][0];
-        expect(chips.length).toBe(2);
+        expect(chips).toHaveLength(2);
       });
     });
   });

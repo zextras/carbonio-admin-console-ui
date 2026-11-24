@@ -44,7 +44,7 @@ const App = () => {
       trackerLabel: PRIMARY_BAR_DASHBOARD,
     });
     if (pathname === '/') {
-      navigate(DASHBOARD);
+      void navigate(DASHBOARD);
     }
   }, [navigate, pathname, t]);
 

@@ -5,7 +5,7 @@
  */
 
 import { useSelector } from '@tanstack/react-store';
-import { InheritedSwitch, Row,Select, TextInput } from '@zextras/ui-components';
+import { InheritedSwitch, Row, Select, TextInput } from '@zextras/ui-components';
 import { ChangeEvent, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -104,11 +104,12 @@ export const EmailPreferences = () => {
     setAccountValues((prev: Record<string, any>) => ({ ...prev, zimbraPrefGroupMailBy: v }));
   };
   const onCharactorSetChange = (v: string): void => {
-    if (v)
+    if (v) {
       setAccountValues((prev: Record<string, any>) => ({
         ...prev,
         zimbraPrefMailDefaultCharset: v,
       }));
+    }
   };
   const onPollingIntervalChange = (v: string): void => {
     setAccountValues((prev: Record<string, any>) => ({

@@ -29,10 +29,10 @@ export const useSetAccountQuota = () => {
       return result;
     },
     onSuccess: (_data, vars) => {
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountQuota(vars.accountId),
       });
-      queryClient.invalidateQueries({
+      void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountDetail(vars.accountId),
       });
     },

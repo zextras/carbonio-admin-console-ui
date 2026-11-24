@@ -183,7 +183,7 @@ export function useCreateDomainForm() {
   }
 
   function handleCancel(): void {
-    navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
+    void navigate(`/${MANAGE}/${DOMAINS_ROUTE_ID}`);
   }
 
   function handleBack(): void {

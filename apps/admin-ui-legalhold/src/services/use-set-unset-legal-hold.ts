@@ -31,7 +31,7 @@ export function useSetUnsetLegalHold() {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: legalHoldQueryKeys.all });
+      void queryClient.invalidateQueries({ queryKey: legalHoldQueryKeys.all });
     },
     onError: (error: Error) => {
       createSnackbar({

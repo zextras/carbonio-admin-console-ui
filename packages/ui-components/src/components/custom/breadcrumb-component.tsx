@@ -98,9 +98,11 @@ export const BreadcrumbComponent = ({
   const navigable = !isLast(index) && !nonNavigableSet.has(item.segment);
   const interactive: React.HTMLAttributes<HTMLElement> = navigable
     ? {
-        onClick: () => navigate(target),
+        onClick: () => {
+          void navigate(target);
+        },
         onKeyDown: (e) => {
-          if (e.key === 'Enter') navigate(target);
+          if (e.key === 'Enter') void navigate(target);
         },
         role: 'link',
         tabIndex: 0,
