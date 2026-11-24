@@ -57,8 +57,54 @@ const useStateSymmetricNaming = {
   },
 };
 
+const preferOptionalChaining = {
+  meta: {
+    type: 'suggestion',
+    docs: {
+      description:
+        'A nullish guard followed by an optional chain is redundant — use the optional chain alone (Sonar S6582)',
+    },
+    schema: [],
+    messages: {
+      preferOptionalChain:
+        "Prefer using an optional chain expression instead: '{{guard}} && {{guard}}?.{{prop}}' can simply be '{{guard}}?.{{prop}}' (Sonar S6582).",
+    },
+  },
+  create(context) {
+    function isOptionalMemberOf(node, name) {
+      return (
+        node.type === 'MemberExpression' &&
+        node.optional === true &&
+        !node.computed &&
+        node.property.type === 'Identifier' &&
+        node.object.type === 'Identifier' &&
+        node.object.name === name
+      );
+    }
+    return {
+      LogicalExpression(node) {
+        if (node.operator !== '&&') return;
+        const guard = node.left;
+        if (guard.type !== 'Identifier') return;
+        const target =
+          node.right.type === 'ChainExpression' ? node.right.expression : node.right;
+        if (isOptionalMemberOf(target, guard.name)) {
+          context.report({
+            node: node.right,
+            messageId: 'preferOptionalChain',
+            data: { guard: guard.name, prop: target.property.name },
+          });
+        }
+      },
+    };
+  },
+};
+
 const localPlugin = {
-  rules: { 'use-state-symmetric-naming': useStateSymmetricNaming },
+  rules: {
+    'use-state-symmetric-naming': useStateSymmetricNaming,
+    'prefer-optional-chaining': preferOptionalChaining,
+  },
 };
 
 export default defineConfig(
@@ -184,7 +230,9 @@ export default defineConfig(
       'sonarjs/prefer-single-boolean-return': 'error',
       'sonarjs/no-inverted-boolean-check': 'error',
       'sonarjs/no-element-overwrite': 'error',
+      'sonarjs/prefer-specific-assertions': 'error',
       'local/use-state-symmetric-naming': 'error',
+      'local/prefer-optional-chaining': 'error',
       ...jsxA11y.configs.recommended.rules,
       ...reactYouMightNotNeedAnEffect.configs.strict.rules,
     },
@@ -199,6 +247,7 @@ export default defineConfig(
       '@typescript-eslint/no-floating-promises': 'error',
       '@typescript-eslint/await-thenable': 'error',
       '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+      '@typescript-eslint/no-base-to-string': 'warn',
       '@typescript-eslint/no-misused-promises': [
         'error',
         { checksVoidReturn: { attributes: false } },
