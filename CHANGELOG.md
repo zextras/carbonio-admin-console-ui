@@ -1,3 +1,9 @@
+## [0.36.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.5...v0.36.0) (2026-11-24)
+
+### Features
+
+* **admin-ui-domains:** migrate Manage Accounts to DataTable ([#1383](https://github.com/zextras/carbonio-admin-console-ui/issues/1383)) ([2a3d5c0](https://github.com/zextras/carbonio-admin-console-ui/commit/2a3d5c05b74b98c8a1ce2e61c8aa59c3a60ce3fa))
+
 ## [0.35.5](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.4...v0.35.5) (2026-11-19)
 
 ### Other changes

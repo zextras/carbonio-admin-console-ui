@@ -40,7 +40,11 @@ import {
 import { getCellDisplayValue } from './models/row-ui';
 import type { DataTableRowAction, DataTableState } from './models/types';
 import { DataTablePeekPanel } from './peek-panel';
-import { DataTableRowActions } from './row-ui/row-actions';
+import {
+  DataTableDirectRowAction,
+  DataTableRowActions,
+  type DataTableRowActionsMode,
+} from './row-ui/row-actions';
 import { SelectionCheckbox } from './row-ui/selection-checkbox';
 import { type DataTableTableConfig, TableConfigProvider } from './table-config-context';
 import {
@@ -95,6 +99,11 @@ export type DataTableRootProps<TData extends RowData> = {
   enableSelectAllPageRows?: boolean;
   rowActions?: Array<DataTableRowAction>;
   onRowAction?: (payload: { action: DataTableRowAction; row: TData }) => void;
+  /**
+   * How the sticky actions column renders. `'menu'` (default) opens a kebab
+   * dropdown; `'direct'` shows an arrow that fires the first action immediately.
+   */
+  rowActionsMode?: DataTableRowActionsMode;
   /** Accessible name for the sticky actions column header (defaults to visually empty). */
   actionsColumnLabel?: string;
   /**
@@ -330,22 +339,65 @@ type RowActionsCellProps<TData extends RowData> = {
   actions: Array<DataTableRowAction>;
   getRowLabel: (row: TData) => string;
   onSelectAction: (action: DataTableRowAction, row: TData) => void;
+  mode: DataTableRowActionsMode;
 };
 
 /**
  * Module-level cell component (S6478): each rendered cell owns its own
  * menu-open state, replacing the orchestrator's shared `menuRowId` state.
+ * Direct mode skips the menu and fires the first action immediately.
  */
 const RowActionsCell = <TData extends RowData>({
   row,
   actions,
   getRowLabel,
   onSelectAction,
+  mode,
 }: RowActionsCellProps<TData>) => {
+  const rowLabel = getRowLabel(row);
+  if (mode === 'direct') {
+    const action = actions[0];
+    if (!action) {
+      return null;
+    }
+    return (
+      <DataTableDirectRowAction
+        rowLabel={rowLabel}
+        action={action}
+        onSelect={(selected) => {
+          onSelectAction(selected, row);
+        }}
+      />
+    );
+  }
+
+  return (
+    <RowActionsMenuCell
+      row={row}
+      actions={actions}
+      rowLabel={rowLabel}
+      onSelectAction={onSelectAction}
+    />
+  );
+};
+
+type RowActionsMenuCellProps<TData extends RowData> = {
+  row: TData;
+  actions: Array<DataTableRowAction>;
+  rowLabel: string;
+  onSelectAction: (action: DataTableRowAction, row: TData) => void;
+};
+
+const RowActionsMenuCell = <TData extends RowData>({
+  row,
+  actions,
+  rowLabel,
+  onSelectAction,
+}: RowActionsMenuCellProps<TData>) => {
   const [open, setOpen] = useState(false);
   return (
     <DataTableRowActions
-      rowLabel={getRowLabel(row)}
+      rowLabel={rowLabel}
       actions={actions}
       open={open}
       onToggle={() => {
@@ -367,6 +419,7 @@ function buildActionsColumn<TData extends RowData>(options: {
   headerLabel: string;
   getRowLabel: (row: TData) => string;
   onSelectAction: (action: DataTableRowAction, row: TData) => void;
+  mode: DataTableRowActionsMode;
 }): DataTableColumnDef<TData> {
   return {
     id: ACTIONS_COLUMN_ID,
@@ -383,6 +436,7 @@ function buildActionsColumn<TData extends RowData>(options: {
         actions={options.actions}
         getRowLabel={options.getRowLabel}
         onSelectAction={options.onSelectAction}
+        mode={options.mode}
       />
     ),
   };
@@ -452,6 +506,7 @@ const DataTableRootShell = <TData extends RowData>({
   enableSelectAllPageRows = true,
   rowActions,
   onRowAction,
+  rowActionsMode = 'menu',
   actionsColumnLabel = '',
   getRowLabel: getRowLabelProp,
   manualSorting = true,
@@ -567,6 +622,7 @@ const DataTableRootShell = <TData extends RowData>({
         actions: resolvedRowActions,
         headerLabel: actionsColumnLabel,
         getRowLabel: resolveRowLabel,
+        mode: rowActionsMode,
         onSelectAction: (action, row) => {
           onRowAction?.({ action, row });
         },

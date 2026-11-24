@@ -21,9 +21,6 @@ export const useDeleteAccount = () => {
       void queryClient.invalidateQueries({
         queryKey: domainQueryKeys.accountListDirectory.base(),
       });
-      void queryClient.invalidateQueries({
-        queryKey: domainQueryKeys.accountCount.base(),
-      });
     },
   });
 };

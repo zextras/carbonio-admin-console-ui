@@ -15,9 +15,46 @@ import styles from '../data-table.module.css';
 import { useTableUi, useTableUiStore } from '../table-ui-store';
 import type { DataTableRowAction } from '../types';
 
+export type DataTableRowActionsMode = 'menu' | 'direct';
+
 type MenuPosition = {
   top: number;
   right: number;
+};
+
+type DataTableDirectRowActionProps = {
+  rowLabel: string;
+  action: DataTableRowAction;
+  onSelect: (action: DataTableRowAction) => void;
+};
+
+/** Sticky-column affordance that fires the single action immediately (no menu). */
+export const DataTableDirectRowAction = ({
+  rowLabel,
+  action,
+  onSelect,
+}: DataTableDirectRowActionProps) => {
+  const ariaLabel = `${action.label} for ${rowLabel}`;
+  return (
+    <div className={styles.rowActions}>
+      <button
+        type="button"
+        className={styles.kebabButton}
+        aria-label={ariaLabel}
+        onClick={(event) => {
+          event.stopPropagation();
+          onSelect(action);
+        }}
+        onKeyDown={(event) => {
+          if (event.key !== 'Escape') {
+            event.stopPropagation();
+          }
+        }}
+      >
+        <ds-icon icon="ArrowForwardOutline" size="small" aria-hidden="true" />
+      </button>
+    </div>
+  );
 };
 
 type DataTableRowActionsProps = {
@@ -27,6 +64,7 @@ type DataTableRowActionsProps = {
   onToggle: () => void;
   onClose: () => void;
   onSelect: (action: DataTableRowAction) => void;
+  mode?: DataTableRowActionsMode;
 };
 
 function getMenuPosition(button: HTMLButtonElement): MenuPosition {
@@ -44,7 +82,44 @@ export const DataTableRowActions = ({
   onToggle,
   onClose,
   onSelect,
+  mode = 'menu',
 }: DataTableRowActionsProps) => {
+  const directAction = mode === 'direct' ? actions[0] : undefined;
+  if (directAction) {
+    return (
+      <DataTableDirectRowAction rowLabel={rowLabel} action={directAction} onSelect={onSelect} />
+    );
+  }
+
+  return (
+    <DataTableRowActionsMenu
+      rowLabel={rowLabel}
+      actions={actions}
+      open={open}
+      onToggle={onToggle}
+      onClose={onClose}
+      onSelect={onSelect}
+    />
+  );
+};
+
+type DataTableRowActionsMenuProps = {
+  rowLabel: string;
+  actions: Array<DataTableRowAction>;
+  open: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  onSelect: (action: DataTableRowAction) => void;
+};
+
+const DataTableRowActionsMenu = ({
+  rowLabel,
+  actions,
+  open,
+  onToggle,
+  onClose,
+  onSelect,
+}: DataTableRowActionsMenuProps) => {
   const rootRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
