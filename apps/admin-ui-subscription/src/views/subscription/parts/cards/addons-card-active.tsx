@@ -24,7 +24,8 @@ export const AddonsCardActive = ({ addOns, config }: AddonsCardProps) => {
 
   if (!addOns) return null;
 
-  const addOn = addOns.find((item) => item.name === config.name)!;
+  const addOn = addOns.find((item) => item.name === config.name);
+  if (!addOn) return null;
   const isSeatCapped = 'totalSeats' in addOn;
 
   return (

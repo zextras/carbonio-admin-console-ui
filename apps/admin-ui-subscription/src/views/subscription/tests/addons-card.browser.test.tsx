@@ -35,6 +35,20 @@ describe('AddonsCardActive', () => {
     expect(page.getByText('Total seat').elements()).toHaveLength(0);
   });
 
+  it('renders nothing when addOns does not contain the configured add-on', async () => {
+    setupTest(
+      <AddonsCardActive
+        config={addonConfig}
+        addOns={[{ name: 'MailReplica', status: 'green', assignedSeats: 1, totalSeats: 10 }]}
+      />,
+    );
+
+    expect(page.getByText('Total seat').elements()).toHaveLength(0);
+    await expect
+      .element(page.getByText('Unexpected Application Error!'))
+      .not.toBeInTheDocument();
+  });
+
   it('renders the total seat count and active badge when the add-on is present', async () => {
     setupTest(
       <AddonsCardActive
