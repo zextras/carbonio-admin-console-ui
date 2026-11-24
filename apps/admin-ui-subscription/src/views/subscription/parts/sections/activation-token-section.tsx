@@ -5,7 +5,7 @@
  */
 
 import { useSnackbar } from '@zextras/ui-components';
-import { useActivateLicense, useLicenseInfo, useRemoveLicense } from '@zextras/ui-shared';
+import { useActivateLicense, useLicenseV1Info, useRemoveLicense } from '@zextras/ui-shared';
 import { format } from 'date-fns';
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -23,7 +23,7 @@ type ActivationTokenSectionProps = {
   onMenuOptionSelect?: (option: ActivationTokenMenuOption) => void;
 };
 
-function formatDateValue(value?: number): string {
+function formatDateValue(value?: string): string {
   if (!value) {
     return '-';
   }
@@ -46,7 +46,7 @@ function maskToken(token?: string): string {
 
 export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSectionProps) => {
   const { t } = useTranslation();
-  const { data: licenseData } = useLicenseInfo();
+  const { data: licenseData } = useLicenseV1Info();
   const activateLicenseMutation = useActivateLicense();
   const removeLicenseMutation = useRemoveLicense();
   const menuWrapperRef = useRef<HTMLDivElement | null>(null);
@@ -57,13 +57,13 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
   const [deactivateModalOpen, setDeactivateModalOpen] = useState(false);
   const [showActivationResult, setShowActivationResult] = useState(false);
   const createSnackbar = useSnackbar();
-  const response = licenseData?.response;
+  const license = licenseData;
   const displayedToken = () => {
-    if (!response?.authenticationToken) {
+    if (!license?.activationToken) {
       return '-';
     }
 
-    return showToken ? response.authenticationToken : maskToken(response.authenticationToken);
+    return showToken ? license.activationToken : maskToken(license.activationToken);
   };
 
   const toggleOpen = (): void => {
@@ -160,7 +160,11 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
           <div ref={menuWrapperRef} className={styles.activationMenuWrapper}>
             <button
               type="button"
-              className={styles.menuTriggerButton}
+              className={
+                menuOpen
+                  ? `${styles.menuTriggerButton} ${styles.menuTriggerButtonOpen}`
+                  : styles.menuTriggerButton
+              }
               aria-label={t('label.moreOptions', 'More options')}
               onClick={(): void => setMenuOpen((prev) => !prev)}
             >
@@ -209,7 +213,7 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
             </ds-text>
             <div className={styles.detailValueRow}>
               <ds-text className={styles.detailValue}>{displayedToken()}</ds-text>
-              {response?.authenticationToken && (
+              {license?.activationToken && (
                 <button
                   type="button"
                   className={styles.showTokenButton}
@@ -223,37 +227,37 @@ export const ActivationTokenSection = ({ onMenuOptionSelect }: ActivationTokenSe
             </div>
           </div>
 
-          <div className={styles.detailItem}>
+          <div className={`${styles.detailItem} ${styles.activationFullWidthRow}`}>
             <ds-text size="small" className={styles.detailLabel}>
               {t('core.subscription.startDate', 'Start date')}
             </ds-text>
             <div className={styles.detailValueRow}>
               <ds-text className={styles.detailValue}>
-                {formatDateValue(response?.dateStart)}
+                {formatDateValue(license?.startDate)}
               </ds-text>
             </div>
           </div>
 
-          {response?.type !== 'ISP' && (
+          {license && (license.licenseType === 'metered' || license.licenseType === 'isp') && (
             <>
               <div className={styles.detailItem}>
                 <ds-text size="small" className={styles.detailLabel}>
-                  {t('core.subscription.lastValidationCheck', 'Last validation check')}
+                  {t('label.last_sync', 'Last sync')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
                   <ds-text className={styles.detailValue}>
-                    {formatDateValue(response?.lastValidationCheck)}
+                    {formatDateValue(license.lastValidationCheck)}
                   </ds-text>
                 </div>
               </div>
 
               <div className={styles.detailItem}>
                 <ds-text size="small" className={styles.detailLabel}>
-                  {t('core.subscription.nextValidationCheck', 'Next validation check')}
+                  {t('label.next_sync', 'Next sync')}
                 </ds-text>
                 <div className={styles.detailValueRow}>
                   <ds-text className={styles.detailValue}>
-                    {formatDateValue(response?.nextValidationDeadline)}
+                    {formatDateValue(license.nextValidationDeadline)}
                   </ds-text>
                 </div>
               </div>

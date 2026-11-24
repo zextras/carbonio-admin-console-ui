@@ -9,7 +9,7 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
   return { ...actual, replaceHistory: vi.fn() };
 });
 
-import { replaceHistory } from '@zextras/ui-shared';
+import { licenseV1CapabilityQueryKeys, replaceHistory } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
@@ -25,7 +25,6 @@ import { page, userEvent } from 'vitest/browser';
 import {
   ADVANCED,
   ADVANCED_LBL,
-  BACKUP_BASIC,
   BACKUP_ROUTE_ID,
   CONFIGURATION_BACKUP,
   SERVER_CONFIG,
@@ -46,16 +45,8 @@ const SERVERS = [
   },
 ];
 
-function buildLicenseData(features: Array<{ name: string; quantity: string; enabled: boolean }>) {
-  return {
-    ok: true,
-    response: {
-      type: 'REGULAR',
-      subType: 'PERPETUAL',
-      maintenanceStatus: 'active',
-      features,
-    },
-  };
+function seedLicense(queryClient: ReturnType<typeof getQueryClient>): void {
+  queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), true);
 }
 
 function grantServerRights(queryClient: ReturnType<typeof getQueryClient>) {
@@ -77,13 +68,6 @@ function grantServerRights(queryClient: ReturnType<typeof getQueryClient>) {
 function setupInterceptors(): void {
   createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
   createBrowserSoapAPIInterceptor('GetAllServers', { server: SERVERS });
-}
-
-function seedLicense(queryClient: ReturnType<typeof getQueryClient>): void {
-  queryClient.setQueryData(
-    ['subscription', 'license'],
-    buildLicenseData([{ name: BACKUP_BASIC, quantity: '1', enabled: true }]),
-  );
 }
 
 describe('BackupListPanel', () => {
@@ -323,7 +307,7 @@ describe('BackupListPanel', () => {
     });
 
     it('disables the server dropdown when backup module is not licensed', async () => {
-      queryClient.setQueryData(['subscription', 'license'], buildLicenseData([]));
+      queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), false);
 
       await setupBrowserTest(<BackupListPanel />, {
         initialRouterEntry: `${BACKUP_BASE}/${SERVERS_LIST}`,

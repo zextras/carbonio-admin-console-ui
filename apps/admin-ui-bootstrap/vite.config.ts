@@ -63,10 +63,7 @@ function withLocationRewrite(config: {
         }
         const location = proxyRes.headers['location'];
         if (location) {
-          proxyRes.headers['location'] = location.replace(
-            /https:\/\/[^/]+/,
-            localOrigin,
-          );
+          proxyRes.headers['location'] = location.replace(/https:\/\/[^/]+/, localOrigin);
         }
 
         const contentType = (proxyRes.headers['content-type'] as string) ?? '';

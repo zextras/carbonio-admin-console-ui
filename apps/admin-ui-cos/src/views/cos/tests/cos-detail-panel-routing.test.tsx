@@ -36,7 +36,7 @@ vi.mock('../create-new-cos-legacy', () => ({
   CreateCosLegacy: vi.fn(),
 }));
 
-import { useIsAdvanced, useLicenseInfo, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
+import { useIsAdvanced, useLicenseV1Info, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 
 import { WscCosSettings } from '../../../wsc/wsc-cos-settings';
 import { CosAdvanced } from '../advanced/cos-advanced';
@@ -59,7 +59,7 @@ const mocks = {
 
 const useIsAdvancedMock = useIsAdvanced as unknown as Mock;
 const useNewSubscriptionFeatureFlagMock = useNewSubscriptionFeatureFlag as unknown as Mock;
-const useLicenseInfoMock = useLicenseInfo as unknown as Mock;
+const useLicenseInfoMock = useLicenseV1Info as unknown as Mock;
 
 const COS_ID = 'cos-123';
 
@@ -183,7 +183,7 @@ describe('CosDetailPanel routing', () => {
     it('should not render CreateCosLegacy when featureFlag, isAdvanced, and subscription are all valid', () => {
       useNewSubscriptionFeatureFlagMock.mockReturnValue(true);
       useIsAdvancedMock.mockReturnValue(true);
-      useLicenseInfoMock.mockReturnValue({ data: { response: { type: 'Purchased' } } });
+      useLicenseInfoMock.mockReturnValue({ data: { licenseType: 'regular' } });
 
       renderCosDetailPanelAt(`/create-new-cos`);
 

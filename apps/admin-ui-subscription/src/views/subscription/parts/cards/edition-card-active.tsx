@@ -5,22 +5,19 @@
  */
 
 import { theme } from '@zextras/ui-components';
-import { isUnlimitedQuantity } from '@zextras/ui-shared';
+import { type LicenseV1SeatItem } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import { type EditionDisplayConfig } from '../sections/active-edition-section';
 import styles from './edition-card.module.css';
 
 type EditionCardProps = {
-  editions: Array<{ name: string; quantity: string }>;
+  editions: Array<LicenseV1SeatItem>;
   config: EditionDisplayConfig;
 };
 
 export const EditionCardActive = ({ editions, config }: EditionCardProps) => {
   const edition = editions.find((e) => e.name === config.name)!;
-  const isUnlimited = isUnlimitedQuantity(edition.quantity);
-  const total = Number.parseInt(edition.quantity, 10);
-  const safeTotal = Number.isNaN(total) ? 0 : total;
   const { t } = useTranslation();
   const activeLabel = t('label.active', 'Active').toUpperCase();
   const editionLabel = t(config.labelKey, config.labelDefault);
@@ -41,7 +38,7 @@ export const EditionCardActive = ({ editions, config }: EditionCardProps) => {
         <div className={styles.statItem}>
           <ds-text size="small">{t('label.total_seat', 'Total seat')}</ds-text>
           <ds-text weight="bold" color="gray0" style={{ fontSize: '1.25rem' }}>
-            {isUnlimited ? t('label.unlimited', 'Unlimited') : safeTotal}
+            {edition.totalSeats}
           </ds-text>
         </div>
       </div>

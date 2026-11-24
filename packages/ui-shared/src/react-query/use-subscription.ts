@@ -5,12 +5,12 @@
  */
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ZIMBRA_ADMIN_URN } from '../constants';
 import { useSnackbar } from '../hooks/useSnackbar';
 import { fetchSoap } from '../services/subscription-service';
+import { licenseV1QueryKeys } from './use-license-v1-info';
 export type LicenseType = 'ISP' | 'Purchased' | 'None';
 
 export type LicenseSubType = 'PERPETUAL' | 'REGULAR' | 'TRIAL';
@@ -110,29 +110,6 @@ const removeLicense = async (): Promise<LicenseResponse> => {
   return JSON.parse(res.response.content);
 };
 
-const fetchLicenseInfo = async (): Promise<LicenseResponse> => {
-  const res = await fetchSoap('zextras', {
-    _jsns: ZIMBRA_ADMIN_URN,
-    module: 'ZxCore',
-    action: 'getLicenseInfo',
-  });
-  return JSON.parse(res.response.content);
-};
-
-export const useLicenseInfo = () => {
-  return useQuery({
-    queryKey: queryKeys.license(),
-    queryFn: fetchLicenseInfo,
-    retry: 3,
-    select: (data) => {
-      if (!data.ok || !data.response || data.response.type === 'None') {
-        return null;
-      }
-      return data;
-    },
-  });
-};
-
 export const useVersion = () => {
   return useQuery({
     queryKey: queryKeys.version(),
@@ -143,7 +120,7 @@ export const useVersion = () => {
 };
 
 export function invalidateLicenseQuery(queryClient: ReturnType<typeof useQueryClient>): void {
-  queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+  void queryClient.invalidateQueries({ queryKey: licenseV1QueryKeys.all });
 }
 
 export const useActivateLicense = () => {
@@ -158,7 +135,7 @@ export const useActivateLicense = () => {
       return result;
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+      invalidateLicenseQuery(queryClient);
     },
   });
 };
@@ -183,7 +160,7 @@ export const useRemoveLicense = () => {
             ),
           replace: true,
         });
-        queryClient.invalidateQueries({ queryKey: queryKeys.license() });
+        invalidateLicenseQuery(queryClient);
       } else {
         createSnackbar({
           key: '1',
@@ -206,43 +183,4 @@ export const useRemoveLicense = () => {
   });
 };
 
-export type ModuleLicenseInfo = {
-  maintenanceEndDate?: number;
-  maintenanceStatus?: MaintenanceStatus;
-  expired?: boolean;
-  subType?: LicenseSubType;
-  features?: Array<Feature>;
-  updateTime?: number;
-  maxCarbonioVersion?: string;
-  carbonioVersion?: string;
-};
 
-export const useModuleLicenseInfo = () => {
-  const { data: licenseData } = useLicenseInfo();
-  const [isLicenseBannerOpen, setIsLicenseBannerOpen] = useState(true);
-
-  const moduleLicenseInfo: ModuleLicenseInfo | null = licenseData?.response
-    ? {
-        maintenanceEndDate: licenseData?.response.maintenanceEndDate,
-        maintenanceStatus:
-          licenseData?.response.subType === 'PERPETUAL' && licenseData?.response.expired
-            ? 'invalid'
-            : licenseData?.response.maintenanceStatus,
-        subType: licenseData?.response.subType,
-        features: licenseData?.response.features,
-        updateTime: licenseData?.response.updateTime,
-        maxCarbonioVersion: licenseData?.response.maxCarbonioVersion,
-        carbonioVersion: licenseData?.response.carbonioVersion,
-      }
-    : null;
-
-  const licenseBannerShouldBeDisplayed =
-    isLicenseBannerOpen &&
-    moduleLicenseInfo?.subType === 'PERPETUAL' &&
-    moduleLicenseInfo.maintenanceStatus !== 'active';
-  return {
-    moduleLicenseInfo,
-    licenseBannerShouldBeDisplayed,
-    setIsLicenseBannerOpen,
-  };
-};
