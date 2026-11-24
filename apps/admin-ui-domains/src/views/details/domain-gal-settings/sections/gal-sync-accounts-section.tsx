@@ -22,8 +22,9 @@ import { useParams } from 'react-router';
 import { INTERNAL_GAL, ZIMBRA } from '../../../../constants';
 import { useCreateGalSyncAccount } from '../../../../services/use-create-gal-sync-account';
 import { useDeleteGalSyncAccount } from '../../../../services/use-delete-gal-sync-account';
+import type { GalSyncTarget } from '../../../../services/use-re-sync-gal-account';
 import { useReSyncGalAccount } from '../../../../services/use-re-sync-gal-account';
-import { GalServerTableheaders } from '../../../utility/utils';
+import { formatZimbraDate, GalServerTableheaders } from '../../../utility/utils';
 import { CreateGalsyncAccountModel } from '../create-galsync-account-model';
 import { DestroyGalsyncAccountModel } from '../destroy-galsync-account-model';
 import type { ServerGalRow } from '../utils';
@@ -32,6 +33,19 @@ type GalSyncAccountsSectionProps = {
   serverList: Array<ServerGalRow>;
   domainName: string | undefined;
 };
+
+function getGalSyncTargets(serverList: Array<ServerGalRow>): Array<GalSyncTarget> {
+  return serverList.flatMap(({ galAccount }) =>
+    galAccount?.dataSourceId
+      ? [{ accountId: galAccount.id, dataSourceId: galAccount.dataSourceId }]
+      : [],
+  );
+}
+
+function getLastSyncLabel(server: ServerGalRow, neverLabel: string): string {
+  if (!server.galAccount) return '-';
+  return formatZimbraDate(server.galAccount.lastSuccessfulSync) || neverLabel;
+}
 
 export const GalSyncAccountsSection = ({
   serverList,
@@ -54,6 +68,7 @@ export const GalSyncAccountsSection = ({
   const hasGalAccount = selectedServer?.galAccount !== null && selectedServer?.galAccount !== undefined;
   const isCreateDisabled = !selectedServer || hasGalAccount;
   const isDeleteDisabled = !selectedServer || !hasGalAccount;
+  const syncTargets = getGalSyncTargets(serverList);
 
   function handleSelectionChange(selected: Array<string>): void {
     setServerSelection(selected.length > 0 ? [selected[0]] : []);
@@ -103,11 +118,8 @@ export const GalSyncAccountsSection = ({
   }
 
   function handleReSync(): void {
-    const accountIdsToSync = serverList
-      .map((server) => server.galAccount?.id)
-      .filter((id): id is string => !!id);
-    if (accountIdsToSync.length > 0) {
-      reSyncMutation.mutate(accountIdsToSync);
+    if (syncTargets.length > 0) {
+      reSyncMutation.mutate(syncTargets);
     }
   }
 
@@ -132,6 +144,12 @@ export const GalSyncAccountsSection = ({
           </ds-text>
         </Row>
       </Tooltip>,
+      <ds-text key={`last-sync-${server.id}`} as="span" color="gray0" weight="regular">
+        {getLastSyncLabel(server, t('label.never', 'Never'))}
+      </ds-text>,
+      <ds-text key={`status-${server.id}`} as="span" color="gray0" weight="regular">
+        {server.galAccount?.galStatus ?? '-'}
+      </ds-text>,
     ],
     clickable: true,
   }));
@@ -181,6 +199,7 @@ export const GalSyncAccountsSection = ({
             e.preventDefault();
             handleReSync();
           }}
+          disabled={syncTargets.length === 0 || reSyncMutation.isPending}
         />
         <Button
           type="ghost"

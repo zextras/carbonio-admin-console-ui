@@ -23,6 +23,7 @@ vi.mock('../re-sync-gal-account-service', () => ({
 
 import { useSnackbar } from '@zextras/ui-components';
 
+import { domainQueryKeys } from '../domain-query-keys';
 import { reSyncGalAccount } from '../re-sync-gal-account-service';
 import { useReSyncGalAccount } from '../use-re-sync-gal-account';
 
@@ -45,18 +46,34 @@ describe('useReSyncGalAccount', () => {
     mockCreateSnackbar.mockClear();
   });
 
-  it('should call reSyncGalAccount for each accountId', async () => {
+  it('should call reSyncGalAccount with account and data source for each target', async () => {
     vi.mocked(reSyncGalAccount).mockResolvedValue({});
 
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useReSyncGalAccount(), { wrapper });
 
-    result.current.mutate(['acc-1', 'acc-2']);
+    result.current.mutate([
+      { accountId: 'acc-1', dataSourceId: 'ds-1' },
+      { accountId: 'acc-2', dataSourceId: 'ds-2' },
+    ]);
 
     await waitFor(() => expect(result.current.isSuccess).toBe(true));
-    expect(reSyncGalAccount).toHaveBeenCalledWith('acc-1');
-    expect(reSyncGalAccount).toHaveBeenCalledWith('acc-2');
+    expect(reSyncGalAccount).toHaveBeenCalledWith('acc-1', 'ds-1');
+    expect(reSyncGalAccount).toHaveBeenCalledWith('acc-2', 'ds-2');
     expect(reSyncGalAccount).toHaveBeenCalledTimes(2);
+  });
+
+  it('should invalidate the gal cache on success', async () => {
+    vi.mocked(reSyncGalAccount).mockResolvedValue({});
+
+    const { wrapper, queryClient } = createWrapper();
+    const invalidateSpy = vi.spyOn(queryClient, 'invalidateQueries');
+    const { result } = renderHook(() => useReSyncGalAccount(), { wrapper });
+
+    result.current.mutate([{ accountId: 'acc-1', dataSourceId: 'ds-1' }]);
+
+    await waitFor(() => expect(result.current.isSuccess).toBe(true));
+    expect(invalidateSpy).toHaveBeenCalledWith({ queryKey: domainQueryKeys.gal() });
   });
 
   it('should show a success snackbar on success', async () => {
@@ -65,13 +82,13 @@ describe('useReSyncGalAccount', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useReSyncGalAccount(), { wrapper });
 
-    result.current.mutate(['acc-1']);
+    result.current.mutate([{ accountId: 'acc-1', dataSourceId: 'ds-1' }]);
 
     await waitFor(() => expect(mockCreateSnackbar).toHaveBeenCalledTimes(1));
     expect(mockCreateSnackbar).toHaveBeenCalledWith(
       expect.objectContaining({
         severity: 'success',
-        label: 'GAL successfully re-synced',
+        label: 'GAL sync requested',
       })
     );
   });
@@ -82,7 +99,7 @@ describe('useReSyncGalAccount', () => {
     const { wrapper } = createWrapper();
     const { result } = renderHook(() => useReSyncGalAccount(), { wrapper });
 
-    result.current.mutate(['acc-1']);
+    result.current.mutate([{ accountId: 'acc-1', dataSourceId: 'ds-1' }]);
 
     await waitFor(() => expect(mockCreateSnackbar).toHaveBeenCalledTimes(1));
     expect(mockCreateSnackbar).toHaveBeenCalledWith(
