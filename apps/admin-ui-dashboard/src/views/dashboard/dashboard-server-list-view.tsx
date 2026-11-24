@@ -109,9 +109,7 @@ export const DashboardServerList = ({
               key={`description-${item?.id}`}
               onClick={stopClickPropagation}
             >
-              {item && item?.a
-                ? item?.a.find((attribute) => attribute?.n === 'description')?._content
-                : ''}
+              {item?.a ? item.a.find((attribute) => attribute?.n === 'description')?._content : ''}
             </ds-text>,
           ],
         }))

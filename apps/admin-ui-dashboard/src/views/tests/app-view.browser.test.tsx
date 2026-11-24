@@ -182,7 +182,7 @@ describe('AppView', () => {
       // Wait for advanced mode to take effect (Notifications section is advanced-only),
       // so the Community Edition text has had time to unmount.
       await expect.element(page.getByText(/Your Notifications/i)).toBeVisible();
-      expect(page.getByText('Community Edition!').elements().length).toBe(0);
+      expect(page.getByText('Community Edition!').elements()).toHaveLength(0);
     });
 
     it('renders Notifications section with all elements', async () => {

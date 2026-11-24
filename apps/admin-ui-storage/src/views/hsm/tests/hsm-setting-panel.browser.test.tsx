@@ -289,9 +289,7 @@ describe('HSMsettingPanel (browser)', () => {
       await page.getByText('Enable Scheduler', { exact: true }).click();
       await page.getByRole('button', { name: /^cancel$/i }).click();
       await vi.waitFor(() => {
-        expect(
-          page.getByRole('button', { name: /^save$/i }).elements().length,
-        ).toBe(0);
+        expect(page.getByRole('button', { name: /^save$/i }).elements()).toHaveLength(0);
       });
     });
 

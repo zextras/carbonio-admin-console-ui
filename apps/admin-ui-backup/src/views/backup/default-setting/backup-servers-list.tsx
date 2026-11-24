@@ -288,7 +288,7 @@ export const ServersList = () => {
             const zxBackItem = (
               backupServerItem as Record<string, Record<string, GetServerResponse>>
             )[id];
-            if (zxBackItem && zxBackItem?.ZxBackup) {
+            if (zxBackItem?.ZxBackup) {
               const backupValues = getBackupServerValue(zxBackItem?.ZxBackup);
               return { id, name, description, ...backupValues };
             }

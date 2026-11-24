@@ -376,7 +376,7 @@ describe('generateRandomString', () => {
     generateRandomString(15);
     const passedArray = spy.mock.calls[0][0] as Uint8Array;
     expect(passedArray).toBeInstanceOf(Uint8Array);
-    expect(passedArray.length).toBe(8);
+    expect(passedArray).toHaveLength(8);
     spy.mockRestore();
   });
 

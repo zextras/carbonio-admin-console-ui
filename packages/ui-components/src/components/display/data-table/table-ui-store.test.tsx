@@ -36,8 +36,8 @@ describe('table ui store', () => {
     const peekBefore = peekSpy.mock.calls.length;
 
     utils.rerender(<TableUiProvider>{content}</TableUiProvider>);
-    expect(densitySpy.mock.calls.length).toBe(densityBefore);
-    expect(peekSpy.mock.calls.length).toBe(peekBefore);
+    expect(densitySpy.mock.calls).toHaveLength(densityBefore);
+    expect(peekSpy.mock.calls).toHaveLength(peekBefore);
   });
 
   it('accepts an initial density seed', () => {

@@ -142,7 +142,7 @@ describe('HorizontalWizardLayoutV2', () => {
 				currentStepIndex: 2,
 			});
 			const chevrons = container.querySelectorAll('ds-icon[icon="ChevronRight"]');
-			expect(chevrons.length).toBe(2);
+			expect(chevrons).toHaveLength(2);
 		});
 
 		it('shows chevron on non-last steps', () => {
@@ -151,7 +151,7 @@ describe('HorizontalWizardLayoutV2', () => {
 				currentStepIndex: 0,
 			});
 			const chevrons = container.querySelectorAll('ds-icon[icon="ChevronRight"]');
-			expect(chevrons.length).toBe(2);
+			expect(chevrons).toHaveLength(2);
 		});
 	});
 

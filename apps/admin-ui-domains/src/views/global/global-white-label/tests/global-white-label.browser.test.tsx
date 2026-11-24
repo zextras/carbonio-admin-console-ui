@@ -167,7 +167,7 @@ describe('GlobalWhiteLabel', () => {
       // wait for the save + refetch to converge before asserting the dirty state cleared
       await vi.waitFor(
         () => {
-          expect(page.getByRole('button', { name: /^save$/i }).elements().length).toBe(0);
+          expect(page.getByRole('button', { name: /^save$/i }).elements()).toHaveLength(0);
         },
         { timeout: 5000 },
       );

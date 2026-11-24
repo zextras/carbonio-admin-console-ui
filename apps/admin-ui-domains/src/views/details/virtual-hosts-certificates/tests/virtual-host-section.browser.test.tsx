@@ -232,7 +232,7 @@ describe('VirtualHostSection (browser)', () => {
 
 			// After deselecting, there should be no checked icons for that specific row
 			const checkedIcons = page.getByTestId('icon: CheckmarkSquareOutline').elements();
-			expect(checkedIcons.length).toBe(0);
+			expect(checkedIcons).toHaveLength(0);
 		});
 	});
 

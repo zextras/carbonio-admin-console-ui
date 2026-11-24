@@ -106,12 +106,12 @@ describe('PageHeader', () => {
 
     it('does not show duplicate "Home" when only a single segment exists', () => {
       renderPageHeader({ path: '/dashboard', translations: TRANSLATIONS });
-      expect(screen.getAllByText('Home').length).toBe(1);
+      expect(screen.getAllByText('Home')).toHaveLength(1);
     });
 
     it('does not show the additional "Home" label when multiple breadcrumbs exist', () => {
       renderPageHeader({ path: '/dashboard/domains', translations: TRANSLATIONS });
-      expect(screen.getAllByText('Home').length).toBe(1);
+      expect(screen.getAllByText('Home')).toHaveLength(1);
     });
   });
 
@@ -119,7 +119,7 @@ describe('PageHeader', () => {
     it('shows capitalized segment name when translation is unavailable', () => {
       renderPageHeader({ path: '/dashboard/unknown-segment' });
       expect(screen.getByText('Unknown-segment')).not.toBeNull();
-      expect(screen.getAllByText('Home').length).toBe(1);
+      expect(screen.getAllByText('Home')).toHaveLength(1);
     });
 
     it('prefers translated label over raw segment name', () => {
@@ -209,7 +209,7 @@ describe('PageHeader', () => {
       const separatorElements = allDsTexts.filter(
         (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
       );
-      expect(separatorElements.length).toBe(1);
+      expect(separatorElements).toHaveLength(1);
     });
 
     it('does not render separator after the last breadcrumb item', () => {
@@ -227,7 +227,7 @@ describe('PageHeader', () => {
       const separatorElements = allDsTexts.filter(
         (el) => el.textContent?.includes('/') && el.closest('[aria-hidden="true"]') != null,
       );
-      expect(separatorElements.length).toBe(2);
+      expect(separatorElements).toHaveLength(2);
     });
 
     it('applies pointer cursor to non-last breadcrumb items', () => {
