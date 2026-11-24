@@ -1,3 +1,9 @@
+## [0.37.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.36.0...v0.37.0) (2026-11-24)
+
+### Features
+
+* add metered license subscription page ([#1448](https://github.com/zextras/carbonio-admin-console-ui/issues/1448)) ([4fed0be](https://github.com/zextras/carbonio-admin-console-ui/commit/4fed0be8686e2bf80c93fac57505e5ccb5ca5843))
+
 ## [0.36.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.35.5...v0.36.0) (2026-11-24)
 
 ### Features
