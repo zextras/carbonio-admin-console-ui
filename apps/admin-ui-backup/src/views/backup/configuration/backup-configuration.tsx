@@ -12,7 +12,7 @@ import {
   setCoreAttributes,
   useAllServers,
   useCurrentUserRights,
-  useModuleLicenseInfo,
+  useLicenseV1Capability,
 } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import { useState } from 'react';
@@ -25,7 +25,7 @@ import type {
   GetServerResponse,
   SetCoreAttributesResponse,
 } from '../../../../types';
-import { BACKUP_REALTIME, SERVER } from '../../../constants';
+import { SERVER } from '../../../constants';
 import { backupQueryKeys } from '../../../services/backup-query-keys';
 import { useServerConfig } from '../../../services/use-server-config';
 import { checkAllowSetBackup } from '../../../utils/check-backup-rights';
@@ -245,16 +245,12 @@ function BackupConfigurationContent({
 export const BackupConfiguration = () => {
   const { server } = useParams();
   const { data: allServers = [] } = useAllServers();
-  const { moduleLicenseInfo } = useModuleLicenseInfo();
 
   const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
   const serverId = selectedServer?.id ?? '';
   const { data: serverConfig, isPending } = useServerConfig(serverId || undefined);
 
-  const licenseFeatures = moduleLicenseInfo?.features ?? [];
-  const isRealtimeLicensed = licenseFeatures.some(
-    (f: Record<string, string | number | boolean>) => f?.name === BACKUP_REALTIME && f?.enabled,
-  );
+  const { data: isRealtimeLicensed = false } = useLicenseV1Capability('REAL_TIME_BACKUP');
 
   if (isPending || !serverConfig) {
     return (

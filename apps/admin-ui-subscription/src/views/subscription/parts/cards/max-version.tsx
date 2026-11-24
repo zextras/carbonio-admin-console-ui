@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLicenseInfo } from '@zextras/ui-shared';
+import { useLicenseV1Info } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 
 import styles from './card.module.css';
@@ -14,9 +14,10 @@ export const MaxVersion = () => {
 
   const title = t('core.subscription.maxCarbonioVersion', 'Max Carbonio Version');
 
-  const { data: licenseData } = useLicenseInfo();
+  const { data: license } = useLicenseV1Info();
 
-  const maxVersionAvailable = licenseData?.response?.maxCarbonioVersion;
+  const maxVersionAvailable =
+    license?.licenseType === 'perpetual' ? license.maxCarbonioVersion : undefined;
 
   return (
     <div className={styles.card}>

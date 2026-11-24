@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { SUBSCRIPTIONS_ROUTE_ID, useAppStore } from '@zextras/ui-shared';
+import { licenseV1QueryKeys, SUBSCRIPTIONS_ROUTE_ID, useAppStore } from '@zextras/ui-shared';
 import { getQueryClient, LocationDisplay, setupBrowserTest } from 'admin-ui-test-utils';
 import React from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -13,27 +13,44 @@ import { page } from 'vitest/browser';
 import { LicenseBanner } from '../license-banner';
 
 describe('LicenseBanner', () => {
-	const maintenanceEndDate = 1750272000000;
+	const maintenanceEndDate = '2025-06-18T00:00:00.000Z';
 
-	function createLicenseData(maintenanceStatus: 'expiring' | 'expired' | 'invalid') {
+	function createLicenseData(
+		maintenanceStatus: 'active' | 'expiring' | 'expired' | 'invalid',
+		licenseType: 'perpetual' | 'regular' = 'perpetual',
+	) {
 		return {
-			response: {
-				type: 'REGULAR',
-				subType: 'PERPETUAL',
-				maintenanceEndDate,
-				maintenanceStatus,
-				features: [],
-			},
-			ok: true,
+			licenseType,
+			status: 'valid',
+			companyName: 'Test',
+			partner: 'Test',
+			orderId: 'ORD-1',
+			carbonioVersion: '25.1.0',
+			activationToken: 'TOKEN',
+			startDate: '2022-05-10T00:00:00.000Z',
+			endDate: '2029-06-18T00:00:00.000Z',
+			totalActiveAccountsNumber: 1,
+			lastSyncTime: '2026-06-20T00:00:00.000Z',
+			maxCarbonioVersion: '25.X.X',
+			maintenanceEndDate,
+			maintenanceStatus,
+			editions: [],
+			addOns: [],
 		};
 	}
 
 	async function setupLicenseBannerTest(
 		component: React.ReactElement,
-		maintenanceStatus: 'expiring' | 'expired' | 'invalid',
+		maintenanceStatus: 'active' | 'expiring' | 'expired' | 'invalid' | null,
+		licenseType: 'perpetual' | 'regular' = 'perpetual',
 	) {
 		const queryClient = getQueryClient();
-		queryClient.setQueryData(['subscription', 'license'], createLicenseData(maintenanceStatus));
+		if (maintenanceStatus !== null) {
+			queryClient.setQueryData(
+				licenseV1QueryKeys.all,
+				createLicenseData(maintenanceStatus, licenseType),
+			);
+		}
 
 		// Register the subscriptions route so buildPath resolves the prefixed
 		// path (/manage/subscriptions), mirroring how the shell bootstraps routes.
@@ -72,6 +89,27 @@ describe('LicenseBanner', () => {
 		await expect
 			.element(page.getByText(/Your maintenance does not support Carbonio version/i))
 			.toBeVisible();
+	});
+
+	it('renders nothing when maintenance status is active', async () => {
+		await setupLicenseBannerTest(<LicenseBanner />, 'active');
+
+		expect(page.getByText(/maintenance/i).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: /close/i }).elements()).toHaveLength(0);
+	});
+
+	it('renders nothing for a non-perpetual license with non-active maintenance', async () => {
+		await setupLicenseBannerTest(<LicenseBanner />, 'expired', 'regular');
+
+		expect(page.getByText(/maintenance/i).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: /close/i }).elements()).toHaveLength(0);
+	});
+
+	it('renders nothing when no license data is available', async () => {
+		await setupLicenseBannerTest(<LicenseBanner />, null);
+
+		expect(page.getByText(/maintenance/i).elements()).toHaveLength(0);
+		expect(page.getByRole('button', { name: /close/i }).elements()).toHaveLength(0);
 	});
 
 	it('shows redirect button when redirectButtonHasToAppear is true', async () => {

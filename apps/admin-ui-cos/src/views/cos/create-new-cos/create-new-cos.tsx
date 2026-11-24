@@ -21,13 +21,16 @@ import { StepTwoWorkspaceEdition } from './parts/step-2-workspace-edition';
 import { createCosSchema } from './schema';
 import type { CreateCosFormValues } from './types';
 
-const FEATURE_FIELDS: Array<keyof CreateCosFormValues> = [
+const MAIL_FEATURE_FIELDS: Array<keyof CreateCosFormValues> = [
   'carbonioFeatureMailsAppEnabled',
   'zimbraFeatureContactsEnabled',
   'zimbraFeatureCalendarEnabled',
+  'carbonioFeatureTasksEnabled',
+];
+
+const WORKSPACE_ONLY_FEATURE_FIELDS: Array<keyof CreateCosFormValues> = [
   'carbonioFeatureFilesEnabled',
   'carbonioFeatureFilesAppEnabled',
-  'carbonioFeatureTasksEnabled',
   'carbonioFeatureWscEnabled',
   'carbonioWscVideoCallEnabled',
 ];
@@ -79,12 +82,16 @@ export const CreateNewCos = () => {
         setCurrentStep((step) => step + 1);
         return;
       }
+      const featureFields =
+        value.edition === 'mail'
+          ? MAIL_FEATURE_FIELDS
+          : [...MAIL_FEATURE_FIELDS, ...WORKSPACE_ONLY_FEATURE_FIELDS];
       const attributes: Array<Attribute> = [
         { n: 'zimbraNotes', _content: value.zimbraNotes },
         { n: 'description', _content: value.description },
         { n: 'cn', _content: value.cn },
         { n: 'edition', _content: value.edition },
-        ...FEATURE_FIELDS.map((field) => ({ n: field, _content: value[field] })),
+        ...featureFields.map((field) => ({ n: field, _content: value[field] })),
       ];
       createCosMutation.mutate(
         { name: value.cn, attributes },

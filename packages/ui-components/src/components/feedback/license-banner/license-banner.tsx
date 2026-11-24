@@ -4,8 +4,9 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { buildPath, SUBSCRIPTIONS_ROUTE_ID, useModuleLicenseInfo } from '@zextras/ui-shared';
+import { buildPath, SUBSCRIPTIONS_ROUTE_ID, useLicenseV1Info } from '@zextras/ui-shared';
 import { format } from 'date-fns';
+import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 
@@ -50,18 +51,22 @@ function getBannerDescription(maintenanceStatus: string, descriptions: BannerDes
 }
 
 export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps) => {
-  const { moduleLicenseInfo, licenseBannerShouldBeDisplayed, setIsLicenseBannerOpen } =
-    useModuleLicenseInfo();
+  const { data: license } = useLicenseV1Info();
+  const [isOpen, setIsOpen] = useState(true);
 
-  const maintenanceStatus = moduleLicenseInfo?.maintenanceStatus ?? 'active';
-  const maintenanceEndDate = moduleLicenseInfo?.maintenanceEndDate ?? 0;
+  const perpetualLicense = license?.licenseType === 'perpetual' ? license : undefined;
+  const licenseBannerShouldBeDisplayed =
+    isOpen && perpetualLicense !== undefined && perpetualLicense.maintenanceStatus !== 'active';
+
+  const maintenanceStatus = perpetualLicense?.maintenanceStatus ?? 'active';
+  const maintenanceEndDate = perpetualLicense?.maintenanceEndDate ?? 0;
   const [t] = useTranslation();
 
   const maintenanceEndDateFormatted = format(maintenanceEndDate, 'dd MMM yyyy');
 
-  const carbonioVersion = moduleLicenseInfo?.carbonioVersion;
-  const maxCarbonioVersion = moduleLicenseInfo?.maxCarbonioVersion ?? '';
-  const updateTime = moduleLicenseInfo?.updateTime ?? 0;
+  const carbonioVersion = license?.carbonioVersion;
+  const maxCarbonioVersion = perpetualLicense?.maxCarbonioVersion ?? '';
+  const updateTime = license?.lastSyncTime ?? 0;
   const updateTimeFormatted = format(updateTime ?? 0, 'dd MMM yyyy HH:mm');
 
   const bannerExpiringDescription = t(
@@ -125,7 +130,7 @@ export const LicenseBanner = ({ redirectButtonHasToAppear }: LicenseBannerProps)
     invalid: bannerInvalidDescription,
   });
 
-  const onClose = () => setIsLicenseBannerOpen(false);
+  const onClose = () => setIsOpen(false);
   const navigate = useNavigate();
 
   if (!licenseBannerShouldBeDisplayed) return null;

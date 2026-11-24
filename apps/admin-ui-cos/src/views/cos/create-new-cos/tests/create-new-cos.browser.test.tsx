@@ -636,6 +636,22 @@ describe('CreateNewCos wizard', () => {
       expect(getAttr('carbonioFeatureTasksEnabled')).toBe('TRUE');
     });
 
+    it('omits workspace-only feature attributes from the email-edition CreateCos request', async () => {
+      const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
+      await setupEmailStep2();
+      await page.getByRole('button', { name: 'create' }).click();
+
+      const requestBody = (await createCosPromise) as {
+        a: Array<{ n: string; _content: string }>;
+      };
+      const getAttr = (name: string): string | undefined =>
+        requestBody.a.find((a) => a.n === name)?._content;
+      expect(getAttr('carbonioFeatureFilesEnabled')).toBeUndefined();
+      expect(getAttr('carbonioFeatureFilesAppEnabled')).toBeUndefined();
+      expect(getAttr('carbonioFeatureWscEnabled')).toBeUndefined();
+      expect(getAttr('carbonioWscVideoCallEnabled')).toBeUndefined();
+    });
+
     it('includes all workspace feature attributes as TRUE in the CreateCos request', async () => {
       const createCosPromise = createBrowserSoapAPIInterceptor('CreateCos', mockCreateCosResponse);
       await setupWizardTest();
