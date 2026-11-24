@@ -586,7 +586,7 @@ export function VolumesDetailPanel() {
           ok?: boolean;
           error?: unknown;
         };
-        if (typeRes && typeRes?.ok === true) {
+        if (typeRes && typeRes.ok === true) {
           let activateOutcome: 'success' | 'error' | null = null;
           if (attr?.isCurrent) {
             await postSoapFetchRequest(
@@ -628,7 +628,7 @@ export function VolumesDetailPanel() {
             setToggleWizardLocal(false);
             setToggleWizardExternal(false);
           };
-        } else if (typeRes && typeRes?.ok === false) {
+        } else if (typeRes && typeRes.ok === false) {
           const errorDetails = typeRes?.error;
           pendingOnCompleteRef.current = (): void => {
             showCreateErrorSnackbar(errorDetails);
@@ -643,8 +643,8 @@ export function VolumesDetailPanel() {
           if (res?.volume && Array.isArray(res?.volume)) {
             const vol = res?.volume[0];
 
-            if (vol && vol?.id && attr?.isCurrent === 1) {
-              await setCurrentVolumeRequest(vol?.id, vol?.type)
+            if (vol && vol.id && attr?.isCurrent === 1) {
+              await setCurrentVolumeRequest(vol.id, vol.type)
                 .then(() => {
                   activateOutcome = 'success';
                 })

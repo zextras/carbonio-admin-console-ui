@@ -45,7 +45,7 @@ function resolvePaddingObj(props: PaddingVarObj): string {
     return getPaddingCssVars(String(props.all));
   }
 
-  const side = (value: unknown): string | undefined =>
+  const side = (value: string | number | undefined): string | undefined =>
     value !== undefined && value !== '' ? parsePaddingToken(String(value)) : undefined;
   const vertical = side('vertical' in props ? props.vertical : undefined);
   const horizontal = side('horizontal' in props ? props.horizontal : undefined);

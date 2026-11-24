@@ -372,7 +372,7 @@ describe('GlobalActiveSync (browser)', () => {
       await expect
         .element(page.getByText('Changes have been saved successfully'))
         .not.toBeInTheDocument();
-      expect(capturedZextrasRequests.filter((r) => r?.action === 'set_global_config').length).toBe(
+      expect(capturedZextrasRequests.filter((r) => r?.action === 'set_global_config')).toHaveLength(
         0,
       );
     });

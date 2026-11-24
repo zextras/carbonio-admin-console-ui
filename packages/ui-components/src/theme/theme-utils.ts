@@ -86,7 +86,7 @@ export function getPaddingVar(padding: string | PaddingVarObj | 0): string | und
     return getPaddingVar(padding.all);
   }
 
-  const side = (value: unknown): string | undefined =>
+  const side = (value: string | number | undefined): string | undefined =>
     value !== undefined && value !== '' ? String(value) : undefined;
   const vertical = side('vertical' in padding ? padding.vertical : undefined);
   const horizontal = side('horizontal' in padding ? padding.horizontal : undefined);
