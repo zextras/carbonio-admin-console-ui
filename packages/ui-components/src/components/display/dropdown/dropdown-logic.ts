@@ -4,11 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { CSSProperties } from 'react';
+import { CSSProperties, type RefObject } from 'react';
 
-import { resolveThemeColor } from '../../theme/theme-utils';
-import { AnyColor } from '../../types/utils';
-import type { IconName } from '../../web-components/icon-registry';
+import type { KeyboardPresetObj } from '../../../hooks/useKeyboard';
+import { resolveThemeColor } from '../../../theme/theme-utils';
+import { AnyColor } from '../../../types/utils';
+import type { IconName } from '../../../web-components/icon-registry';
 
 export type ItemClickHandler = (event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
 
@@ -219,4 +220,91 @@ export function getPopperListStyle(
     maxWidth: width === '100%' ? '100%' : maxWidth,
     '--popper-max-height': maxHeight,
   };
+}
+
+/**
+ * Keyboard support for the trigger, enabled by default.
+ * Editable targets are skipped for Enter/Space/arrows (no toggle, no preventDefault) so typing keeps working.
+ */
+export function getTriggerKeyboardPreset(
+  toggleOpen: (event: KeyboardEvent) => void,
+  stepIntoMenu: (edge: 'first' | 'last') => void,
+  closeOpenMenu: (event: KeyboardEvent) => void,
+  spaceKeyDownOnTriggerRef: RefObject<boolean>,
+): KeyboardPresetObj[] {
+  const guardedToggle = (event: KeyboardEvent): void => {
+    if (isEditableTarget(event.target)) {
+      return;
+    }
+    toggleOpen(event);
+  };
+  const preventSpaceScroll = (event: KeyboardEvent): void => {
+    if (isEditableTarget(event.target)) {
+      return;
+    }
+    event.preventDefault();
+    spaceKeyDownOnTriggerRef.current = true;
+  };
+  const guardedSpaceToggle = (event: KeyboardEvent): void => {
+    // A Space keyup must pair with a Space keydown that landed on the trigger: activating an
+    // item with Space closes the menu, restores focus to the trigger and would re-open it here.
+    if (!spaceKeyDownOnTriggerRef.current) {
+      return;
+    }
+    spaceKeyDownOnTriggerRef.current = false;
+    guardedToggle(event);
+  };
+  const guardedStepInto =
+    (edge: 'first' | 'last') =>
+    (event: KeyboardEvent): void => {
+      if (isEditableTarget(event.target)) {
+        return;
+      }
+      event.preventDefault();
+      stepIntoMenu(edge);
+    };
+  return [
+    {
+      type: 'keydown',
+      callback: guardedToggle,
+      keys: [{ key: 'Enter', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: preventSpaceScroll,
+      keys: [{ code: 'Space', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keyup',
+      callback: guardedSpaceToggle,
+      keys: [{ code: 'Space', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: guardedStepInto('first'),
+      keys: [{ key: 'ArrowDown', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: guardedStepInto('last'),
+      keys: [{ key: 'ArrowUp', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: closeOpenMenu,
+      keys: [{ key: 'Escape', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: closeOpenMenu,
+      keys: [{ key: 'Tab' }],
+      haveToPreventDefault: false,
+    },
+  ];
 }

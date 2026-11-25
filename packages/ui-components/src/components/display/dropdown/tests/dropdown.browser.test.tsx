@@ -3,12 +3,12 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import '../../../web-components';
+import '../../../../web-components';
 
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { Dropdown, type DropdownItem } from '../dropdown';
+import { Dropdown, type DropdownItem } from '../index';
 
 function buildItems(): Array<DropdownItem> {
   return [

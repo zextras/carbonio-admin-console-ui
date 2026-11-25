@@ -4,19 +4,21 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import type { KeyboardPresetObj } from '../../../../hooks/useKeyboard';
 import {
   type DropdownItem,
   findTypeaheadIndex,
   getNextRovingIndex,
   getPopperListStyle,
   getRovingItems,
+  getTriggerKeyboardPreset,
   isEditableTarget,
   isOutsideMenu,
   resolveInitialFocusRank,
   resolveItemRole,
   resolveMenuKeyAction,
   resolveTabStopIndex,
-} from './dropdown-logic';
+} from '../dropdown-logic';
 
 const NO_MODIFIERS = { ctrlKey: false, metaKey: false, altKey: false };
 const CTRL = { ctrlKey: true, metaKey: false, altKey: false };
@@ -246,6 +248,150 @@ describe('dropdown-logic', () => {
         maxWidth: '100%',
         '--popper-max-height': '50vh',
       });
+    });
+  });
+
+  describe('getTriggerKeyboardPreset', () => {
+    const pressOn = (
+      target: Element,
+      type: 'keydown' | 'keyup',
+      init: KeyboardEventInit,
+    ): KeyboardEvent => {
+      const event = new KeyboardEvent(type, { bubbles: true, cancelable: true, ...init });
+      target.dispatchEvent(event);
+      return event;
+    };
+
+    const presetFor = (
+      presets: Array<KeyboardPresetObj>,
+      type: string,
+      key: string,
+    ): KeyboardPresetObj => {
+      const preset = presets.find(
+        (candidate) =>
+          candidate.type === type &&
+          candidate.keys.some((matcher) => (matcher.key ?? matcher.code) === key),
+      );
+      if (!preset) {
+        throw new Error(`No ${type} preset for ${key}`);
+      }
+      return preset;
+    };
+
+    const createHarness = () => {
+      const toggleOpen = vi.fn();
+      const stepIntoMenu = vi.fn();
+      const closeOpenMenu = vi.fn();
+      const spaceKeyDown = { current: false };
+      return {
+        toggleOpen,
+        stepIntoMenu,
+        closeOpenMenu,
+        spaceKeyDown,
+        presets: getTriggerKeyboardPreset(toggleOpen, stepIntoMenu, closeOpenMenu, spaceKeyDown),
+      };
+    };
+
+    it('wires each key to its event type', () => {
+      const { presets } = createHarness();
+
+      expect(
+        presets.map((preset) => [preset.type, preset.keys[0]?.key ?? preset.keys[0]?.code]),
+      ).toEqual([
+        ['keydown', 'Enter'],
+        ['keydown', 'Space'],
+        ['keyup', 'Space'],
+        ['keydown', 'ArrowDown'],
+        ['keydown', 'ArrowUp'],
+        ['keydown', 'Escape'],
+        ['keydown', 'Tab'],
+      ]);
+    });
+
+    it('toggles on Enter unless the key was typed in an editable trigger', () => {
+      const { presets, toggleOpen } = createHarness();
+      const onEnter = presetFor(presets, 'keydown', 'Enter').callback;
+
+      onEnter(pressOn(document.createElement('button'), 'keydown', { key: 'Enter' }));
+      onEnter(pressOn(document.createElement('input'), 'keydown', { key: 'Enter' }));
+
+      expect(toggleOpen).toHaveBeenCalledTimes(1);
+    });
+
+    it('stops Space from scrolling and arms its keyup on the trigger', () => {
+      const { presets, spaceKeyDown } = createHarness();
+      const onButton = pressOn(document.createElement('button'), 'keydown', {
+        key: ' ',
+        code: 'Space',
+      });
+
+      presetFor(presets, 'keydown', 'Space').callback(onButton);
+
+      expect(onButton.defaultPrevented).toBe(true);
+      expect(spaceKeyDown.current).toBe(true);
+    });
+
+    it('leaves a Space typed in an editable trigger alone', () => {
+      const { presets, spaceKeyDown, toggleOpen } = createHarness();
+      const onInput = pressOn(document.createElement('input'), 'keydown', {
+        key: ' ',
+        code: 'Space',
+      });
+
+      presetFor(presets, 'keydown', 'Space').callback(onInput);
+
+      expect(onInput.defaultPrevented).toBe(false);
+      expect(spaceKeyDown.current).toBe(false);
+      expect(toggleOpen).not.toHaveBeenCalled();
+    });
+
+    it('toggles on Space keyup only when its keydown landed on the trigger', () => {
+      const unarmed = createHarness();
+      presetFor(unarmed.presets, 'keyup', 'Space').callback(
+        pressOn(document.createElement('button'), 'keyup', { key: ' ', code: 'Space' }),
+      );
+      expect(unarmed.toggleOpen).not.toHaveBeenCalled();
+
+      const armed = createHarness();
+      presetFor(armed.presets, 'keydown', 'Space').callback(
+        pressOn(document.createElement('button'), 'keydown', { key: ' ', code: 'Space' }),
+      );
+      presetFor(armed.presets, 'keyup', 'Space').callback(
+        pressOn(document.createElement('button'), 'keyup', { key: ' ', code: 'Space' }),
+      );
+      expect(armed.toggleOpen).toHaveBeenCalledTimes(1);
+      expect(armed.spaceKeyDown.current).toBe(false);
+    });
+
+    it('steps into the menu with the arrow keys, without moving the caret of editable triggers', () => {
+      const { presets, stepIntoMenu } = createHarness();
+      const down = pressOn(document.createElement('button'), 'keydown', { key: 'ArrowDown' });
+      const up = pressOn(document.createElement('button'), 'keydown', { key: 'ArrowUp' });
+
+      presetFor(presets, 'keydown', 'ArrowDown').callback(down);
+      presetFor(presets, 'keydown', 'ArrowUp').callback(up);
+      presetFor(presets, 'keydown', 'ArrowDown').callback(
+        pressOn(document.createElement('input'), 'keydown', { key: 'ArrowDown' }),
+      );
+
+      expect(down.defaultPrevented).toBe(true);
+      expect(up.defaultPrevented).toBe(true);
+      expect(stepIntoMenu).toHaveBeenCalledTimes(2);
+      expect(stepIntoMenu).toHaveBeenNthCalledWith(1, 'first');
+      expect(stepIntoMenu).toHaveBeenNthCalledWith(2, 'last');
+    });
+
+    it('closes the open menu on Escape and Tab', () => {
+      const { presets, closeOpenMenu } = createHarness();
+
+      presetFor(presets, 'keydown', 'Escape').callback(
+        pressOn(document.createElement('button'), 'keydown', { key: 'Escape' }),
+      );
+      presetFor(presets, 'keydown', 'Tab').callback(
+        pressOn(document.createElement('button'), 'keydown', { key: 'Tab' }),
+      );
+
+      expect(closeOpenMenu).toHaveBeenCalledTimes(2);
     });
   });
 });
