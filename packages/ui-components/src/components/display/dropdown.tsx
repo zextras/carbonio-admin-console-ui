@@ -24,7 +24,6 @@ import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
-import { Padding } from '../layout/Padding';
 import { Portal } from '../utilities/Portal';
 import styles from './dropdown.module.css';
 import { Tooltip } from './Tooltip';
@@ -50,15 +49,14 @@ function ListItemContent({
     <Tooltip disabled={!disabled || !tooltipLabel} label={tooltipLabel} placement="bottom-end">
       <div className={styles.rowLayout}>
         {icon && (
-          <Padding right="small">
-            <ds-icon
-              icon={icon}
-              size="medium"
-              color={disabled ? 'secondary' : 'text'}
-              style={{ pointerEvents: 'none' }}
-              aria-hidden="true"
-            ></ds-icon>
-          </Padding>
+          <ds-icon
+            className={styles.itemIcon}
+            icon={icon}
+            size="medium"
+            color={disabled ? 'secondary' : 'text'}
+            style={{ pointerEvents: 'none' }}
+            aria-hidden="true"
+          ></ds-icon>
         )}
         <ds-text
           as="span"

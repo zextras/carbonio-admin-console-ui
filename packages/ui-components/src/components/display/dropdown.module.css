@@ -48,6 +48,10 @@
   padding: var(--padding-size-small) var(--padding-size-large);
 }
 
+.itemIcon {
+  margin-right: var(--padding-size-small);
+}
+
 .containerEl {
   user-select: none;
   outline: none;
