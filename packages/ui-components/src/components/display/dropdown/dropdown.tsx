@@ -233,7 +233,9 @@ export const Dropdown = ({
     event: React.KeyboardEvent<HTMLDivElement>,
   ): void => {
     const enabledItems = getEnabledItems();
-    const currentIndex = enabledItems.findIndex((item) => item === document.activeElement);
+    const focusedItem = document.activeElement;
+    const currentIndex =
+      focusedItem instanceof HTMLElement ? enabledItems.indexOf(focusedItem) : -1;
     const focusItem = (index: number): void => {
       enabledItems[index]?.focus({ preventScroll: true });
     };

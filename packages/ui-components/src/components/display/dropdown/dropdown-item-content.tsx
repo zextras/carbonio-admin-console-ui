@@ -10,7 +10,7 @@ import { IconName } from '../../../web-components/icon-registry';
 import { Tooltip } from '../Tooltip';
 import styles from './dropdown.module.css';
 
-export type ItemTextSize = React.ComponentPropsWithRef<'ds-text'>['size'];
+export type ItemTextSize = NonNullable<React.ComponentPropsWithRef<'ds-text'>['size']>;
 
 export type DropdownItemContentProps = {
   icon?: IconName;
