@@ -85,7 +85,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
     await expect.element(page.getByText('New Account')).toBeVisible();
-    await expect.poll(() => page.getByTestId('dropdown-item').elements().length).toBe(2);
+    await expect.poll(() => page.getByRole('menuitem').elements().length).toBe(2);
   });
 
   it('calls the action onClick handler when a dropdown item is clicked', async () => {
@@ -132,7 +132,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await page.getByRole('button', { name: 'Create' }).click();
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
-    await expect.poll(() => page.getByTestId('dropdown-item').elements().length).toBe(2);
+    await expect.poll(() => page.getByRole('menuitem').elements().length).toBe(2);
     await expect.poll(() => document.querySelectorAll('ds-divider').length).toBe(1);
   });
 
@@ -149,7 +149,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await page.getByRole('button', { name: 'Create' }).click();
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
-    await expect.poll(() => page.getByTestId('dropdown-item').elements().length).toBe(2);
+    await expect.poll(() => page.getByRole('menuitem').elements().length).toBe(2);
     await expect.poll(() => document.querySelectorAll('ds-divider').length).toBe(2);
   });
 
@@ -165,7 +165,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await page.getByRole('button', { name: 'Create' }).click();
 
     await expect.element(page.getByText('New Domain')).toBeVisible();
-    expect(page.getByTestId('dropdown-item').elements()).toHaveLength(1);
+    expect(page.getByRole('menuitem').elements()).toHaveLength(1);
     expect(document.querySelectorAll('ds-divider')).toHaveLength(1);
   });
 
@@ -179,7 +179,7 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await page.getByRole('button', { name: 'Create' }).click();
 
     await vi.waitFor(() => {
-      expect(page.getByTestId('dropdown-item').elements()).toHaveLength(0);
+      expect(page.getByRole('menuitem').elements()).toHaveLength(0);
     });
   });
 });

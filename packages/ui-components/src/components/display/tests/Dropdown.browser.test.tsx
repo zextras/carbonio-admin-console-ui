@@ -55,7 +55,9 @@ describe('Dropdown', () => {
 
     await openDropdown();
 
-    await expect.element(getItem('Banana')).toHaveFocus();
+    await expect
+      .element(page.getByRole('menuitemradio', { name: 'Banana', exact: true }))
+      .toHaveFocus();
   });
 
   it('calls the item onClick, closes and restores focus to the trigger', async () => {
@@ -221,12 +223,14 @@ describe('Dropdown', () => {
     );
 
     await openDropdown();
-    const sentinels = page.getByRole('menu').getByRole('button');
+    const sentinels = (page.getByRole('menu').element() as HTMLElement).querySelectorAll(
+      'button[aria-hidden="true"]',
+    );
 
-    (sentinels.first().element() as HTMLElement).focus();
+    (sentinels[0] as HTMLElement).focus();
     await expect.element(getItem('Cherry')).toHaveFocus();
 
-    (sentinels.last().element() as HTMLElement).focus();
+    (sentinels[1] as HTMLElement).focus();
     await expect.element(getItem('Apple')).toHaveFocus();
   });
 
@@ -259,6 +263,39 @@ describe('Dropdown', () => {
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('closes and restores focus to the trigger when Tab is pressed', async () => {
+    const onClose = vi.fn();
+    render(
+      <Dropdown items={buildItems()} onClose={onClose}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+    await userEvent.keyboard('{Tab}');
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+    expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  it('hides the focus sentinels from assistive technology', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    const menu = page.getByRole('menu').element() as HTMLElement;
+    const sentinels = menu.querySelectorAll<HTMLButtonElement>('button[aria-hidden="true"]');
+    expect(sentinels).toHaveLength(2);
+    sentinels.forEach((sentinel) => {
+      expect(sentinel.getAttribute('tabindex')).toBe('-1');
+    });
   });
 
   it('keeps the menu open after clicking a keepOpen item', async () => {
@@ -309,20 +346,277 @@ describe('Dropdown', () => {
     expect(items[0].onClick).not.toHaveBeenCalled();
   });
 
-  it('opens from the keyboard on a non-button trigger when handleTriggerEvents is set', async () => {
+  it('renders items as native buttons', async () => {
     render(
-      <Dropdown items={buildItems()} handleTriggerEvents>
-        <input aria-label="Trigger input" />
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
       </Dropdown>,
     );
 
-    await page.getByRole('textbox', { name: 'Trigger input' }).click();
+    await openDropdown();
+
+    const item = getItem('Apple').element() as HTMLButtonElement;
+    expect(item.tagName).toBe('BUTTON');
+    expect(item.type).toBe('button');
+  });
+
+  it('disables native button items with the disabled attribute', async () => {
+    const items = buildItems();
+    items[0].disabled = true;
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    const item = getItem('Apple').element() as HTMLButtonElement;
+    expect(item.tagName).toBe('BUTTON');
+    expect(item.disabled).toBe(true);
+  });
+
+  it('opens from the keyboard on a non-editable trigger when handleTriggerEvents is set', async () => {
+    render(
+      <Dropdown items={buildItems()} handleTriggerEvents>
+        <div role="button" tabIndex={0}>Open menu</div>
+      </Dropdown>,
+    );
+
+    await page.getByText('Open menu').click();
     await expect.element(page.getByRole('menu')).toBeVisible();
     await userEvent.keyboard('{Escape}');
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
 
     await userEvent.keyboard('{Enter}');
     await expect.element(page.getByRole('menu')).toBeVisible();
+  });
+
+  it('exposes the popup state on the trigger through aria attributes', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    const trigger = page.getByRole('button', { name: 'Open menu' });
+    await expect.element(trigger).toHaveAttribute('aria-haspopup', 'menu');
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'false');
+    await expect.element(trigger).not.toHaveAttribute('aria-controls');
+
+    await trigger.click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(trigger).toHaveAttribute('aria-expanded', 'true');
+    const menuId = (page.getByRole('menu').element() as HTMLElement).id;
+    expect(menuId).not.toBe('');
+    await expect.element(trigger).toHaveAttribute('aria-controls', menuId);
+  });
+
+  it('exposes selectable items as menuitemradio with aria-checked in single mode', async () => {
+    const items = buildItems();
+    items[0].selected = true;
+    items[1].selected = false;
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    await expect
+      .element(page.getByRole('menuitemradio', { name: 'Apple', exact: true }))
+      .toHaveAttribute('aria-checked', 'true');
+    await expect
+      .element(page.getByRole('menuitemradio', { name: 'Banana', exact: true }))
+      .toHaveAttribute('aria-checked', 'false');
+    expect(page.getByRole('menuitem', { name: 'Cherry', exact: true }).elements()).toHaveLength(1);
+  });
+
+  it('exposes selectable items as menuitemcheckbox in multiple mode', async () => {
+    const items = buildItems();
+    items[1].selected = true;
+    render(
+      <Dropdown items={items} multiple>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    await expect
+      .element(page.getByRole('menuitemcheckbox', { name: 'Banana', exact: true }))
+      .toHaveAttribute('aria-checked', 'true');
+  });
+
+  it('marks disabled items with aria-disabled', async () => {
+    const items = buildItems();
+    items[0].disabled = true;
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    await expect
+      .element(page.getByRole('menuitem', { name: 'Apple', exact: true }))
+      .toHaveAttribute('aria-disabled', 'true');
+  });
+
+  it('hides decorative icons from assistive technology', async () => {
+    const items: Array<DropdownItem> = [
+      { id: 'apple', label: 'Apple', icon: 'CheckmarkSquare', onClick: vi.fn() },
+      {
+        id: 'more',
+        label: 'More',
+        items: [{ id: 'sub-a', label: 'Sub A', onClick: vi.fn() }],
+      },
+    ];
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    const itemIcon = page
+      .getByRole('menuitem', { name: 'Apple', exact: true })
+      .element()
+      .querySelector('ds-icon');
+    expect(itemIcon?.getAttribute('aria-hidden')).toBe('true');
+
+    const chevronIcon = page
+      .getByRole('menuitem', { name: 'More', exact: true })
+      .element()
+      .querySelector('ds-icon');
+    expect(chevronIcon?.getAttribute('aria-hidden')).toBe('true');
+  });
+
+  it('keeps a single tabbable item and moves it with focus (roving tabindex)', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    await expect.element(getItem('Apple')).toHaveAttribute('tabindex', '0');
+    await expect.element(getItem('Banana')).toHaveAttribute('tabindex', '-1');
+    await expect.element(getItem('Cherry')).toHaveAttribute('tabindex', '-1');
+
+    await userEvent.keyboard('{ArrowDown}');
+    await expect.element(getItem('Banana')).toHaveFocus();
+    await expect.element(getItem('Banana')).toHaveAttribute('tabindex', '0');
+    await expect.element(getItem('Apple')).toHaveAttribute('tabindex', '-1');
+  });
+
+  it('skips disabled items with the arrow keys', async () => {
+    const items = buildItems();
+    items[1].disabled = true;
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+    await expect.element(getItem('Apple')).toHaveFocus();
+
+    await userEvent.keyboard('{ArrowDown}');
+    await expect.element(getItem('Cherry')).toHaveFocus();
+
+    await userEvent.keyboard('{ArrowUp}');
+    await expect.element(getItem('Apple')).toHaveFocus();
+  });
+
+  it('activates the focused item with Space and closes the menu', async () => {
+    const items = buildItems();
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+    await userEvent.keyboard('{ArrowDown}');
+    await userEvent.keyboard('{Space}');
+
+    expect(items[1].onClick).toHaveBeenCalledTimes(1);
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it('opens from the keyboard on a non-button trigger by default', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <div role="button" tabIndex={0}>Open menu</div>
+      </Dropdown>,
+    );
+
+    const trigger = page.getByText('Open menu');
+    await trigger.click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await userEvent.keyboard('{Escape}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+
+    await userEvent.keyboard('{Enter}');
+    await expect.element(page.getByRole('menu')).toBeVisible();
+  });
+
+  it('does not toggle when a space is typed inside an editable element in the trigger', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <div>
+          <input aria-label="Trigger input" />
+        </div>
+      </Dropdown>,
+    );
+
+    const input = page.getByRole('textbox', { name: 'Trigger input' });
+    await input.click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await userEvent.keyboard('{Escape}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+
+    await userEvent.keyboard('a b');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(input).toHaveValue('a b');
+  });
+
+  it('does not open from the keyboard when handleTriggerEvents is explicitly false', async () => {
+    render(
+      <Dropdown items={buildItems()} handleTriggerEvents={false}>
+        <div role="button" tabIndex={0}>Open menu</div>
+      </Dropdown>,
+    );
+
+    await page.getByText('Open menu').click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await userEvent.keyboard('{Escape}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+
+    await userEvent.keyboard('{Enter}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it('shows a visible focus indicator on keyboard-focused items', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await userEvent.keyboard('{Tab}');
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+    await userEvent.keyboard('{Enter}');
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await userEvent.keyboard('{ArrowDown}');
+
+    const item = getItem('Banana').element() as HTMLElement;
+    expect(window.getComputedStyle(item).outlineStyle).toBe('solid');
   });
 
   it('sizes the menu like the trigger when width is 100%', async () => {
@@ -391,6 +685,26 @@ describe('Dropdown', () => {
       await expect.element(getItem('Sub A')).not.toBeInTheDocument();
       await expect.element(getItem('More')).toHaveFocus();
       await expect.element(page.getByRole('menu')).toBeVisible();
+    });
+
+    it('focuses the first submenu item again when the submenu is reopened', async () => {
+      render(
+        <Dropdown items={buildNestedItems()}>
+          <button type="button">Open menu</button>
+        </Dropdown>,
+      );
+
+      await openDropdown();
+      await userEvent.keyboard('{ArrowDown}');
+      await userEvent.keyboard('{ArrowRight}');
+      await expect.element(getItem('Sub A')).toBeVisible();
+
+      await userEvent.keyboard('{ArrowLeft}');
+      await expect.element(getItem('Sub A')).not.toBeInTheDocument();
+
+      await userEvent.keyboard('{ArrowRight}');
+      await expect.element(getItem('Sub A')).toBeVisible();
+      await expect.element(getItem('Sub A')).toHaveFocus();
     });
 
     it('navigates the submenu with the keyboard without moving focus in the parent menu', async () => {
