@@ -309,7 +309,6 @@ const SelectComponent = function SelectFn<T = string>({
       maxWidth={dropdownMaxWidth}
       maxHeight={dropdownMaxHeight}
       items={multiple ? multipleMappedItems : mappedItems}
-      handleTriggerEvents
       multiple={multiple}
       disabled={disabled}
       onOpen={onOpen}

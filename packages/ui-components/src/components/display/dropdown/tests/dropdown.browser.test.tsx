@@ -279,37 +279,6 @@ describe('Dropdown', () => {
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
   });
 
-  it('follows a controlled closed state and reports open intent', async () => {
-    const onOpenChange = vi.fn();
-    render(
-      <Dropdown items={buildItems()} open={false} onOpenChange={onOpenChange}>
-        <button type="button">Open menu</button>
-      </Dropdown>,
-    );
-
-    await page.getByRole('button', { name: 'Open menu' }).click();
-
-    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-    expect(onOpenChange).toHaveBeenCalledWith(true);
-  });
-
-  it('keeps a controlled open menu mounted and reports close intent on Escape', async () => {
-    const onOpenChange = vi.fn();
-    render(
-      <Dropdown items={buildItems()} open onOpenChange={onOpenChange}>
-        <button type="button">Open menu</button>
-      </Dropdown>,
-    );
-
-    await expect.element(page.getByRole('menu')).toBeVisible();
-    await expect.element(getItem('Apple')).toHaveFocus();
-
-    await userEvent.keyboard('{Escape}');
-
-    await expect.element(page.getByRole('menu')).toBeVisible();
-    expect(onOpenChange).toHaveBeenCalledWith(false);
-  });
-
   it('closes when clicking outside the menu', async () => {
     const onClose = vi.fn();
     render(
@@ -490,24 +459,6 @@ describe('Dropdown', () => {
     const item = getItem('Apple').element() as HTMLButtonElement;
     expect(item.tagName).toBe('BUTTON');
     expect(item.disabled).toBe(true);
-  });
-
-  it('opens from the keyboard on a non-editable trigger when handleTriggerEvents is set', async () => {
-    render(
-      <Dropdown items={buildItems()} handleTriggerEvents>
-        <div role="button" tabIndex={0}>
-          Open menu
-        </div>
-      </Dropdown>,
-    );
-
-    await page.getByText('Open menu').click();
-    await expect.element(page.getByRole('menu')).toBeVisible();
-    await userEvent.keyboard('{Escape}');
-    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-
-    await userEvent.keyboard('{Enter}');
-    await expect.element(page.getByRole('menu')).toBeVisible();
   });
 
   it('exposes the popup state on the trigger through aria attributes', async () => {
@@ -693,24 +644,6 @@ describe('Dropdown', () => {
     await userEvent.keyboard('a b');
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     await expect.element(input).toHaveValue('a b');
-  });
-
-  it('does not open from the keyboard when handleTriggerEvents is explicitly false', async () => {
-    render(
-      <Dropdown items={buildItems()} handleTriggerEvents={false}>
-        <div role="button" tabIndex={0}>
-          Open menu
-        </div>
-      </Dropdown>,
-    );
-
-    await page.getByText('Open menu').click();
-    await expect.element(page.getByRole('menu')).toBeVisible();
-    await page.getByText('Open menu').click();
-    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-
-    await userEvent.keyboard('{Enter}');
-    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
   });
 
   it('closes and restores focus to the trigger when Tab is pressed after a mouse open', async () => {

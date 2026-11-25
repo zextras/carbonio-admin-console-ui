@@ -8,7 +8,6 @@ import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
 import React, { HTMLAttributes, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
-import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { clickNodeWithFocus, useKeyboard } from '../../../hooks/useKeyboard';
 import { setupFloating } from '../../../utils/floating-ui';
 import { FOCUSABLE_SELECTOR } from '../../constants';
@@ -46,20 +45,12 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
   width?: string;
   maxWidth?: string;
   maxHeight?: string;
-  handleTriggerEvents?: boolean;
   disableRestoreFocus?: boolean;
   disableAutoFocus?: boolean;
   multiple?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
-  /** Controlled open state. When set, the menu follows it and reports intent via onOpenChange. */
-  open?: boolean;
-  /** Uncontrolled initial state. */
-  defaultOpen?: boolean;
-  /** Fired whenever the menu wants to open or close. */
-  onOpenChange?: (open: boolean) => void;
   children: React.ReactElement<DropdownTriggerProps>;
-  triggerRef?: React.Ref<HTMLElement> | null;
   placement?: Placement;
   disablePortal?: boolean;
   forceOpen?: boolean;
@@ -78,23 +69,18 @@ export const Dropdown = ({
   width = 'auto',
   maxWidth = '18.75rem',
   maxHeight = '50vh',
-  handleTriggerEvents = true,
   disableRestoreFocus = false,
   disableAutoFocus = false,
   multiple = false,
   onOpen,
   onClose,
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
   children,
-  triggerRef = null,
   disablePortal = false,
   itemTextSize = 'medium',
   ...rest
 }: DropdownProps) => {
-  const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen || forceOpen);
-  const open = openProp ?? (forceOpen || internalOpen);
+  const [internalOpen, setInternalOpen] = useState<boolean>(forceOpen);
+  const open = forceOpen || internalOpen;
   // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const listId = useId();
@@ -103,8 +89,8 @@ export const Dropdown = ({
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
-  const dropdownRef = useCombinedRefs<HTMLDivElement>();
-  const innerTriggerRef = useCombinedRefs(triggerRef);
+  const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const innerTriggerRef = useRef<HTMLElement | null>(null);
 
   const getEnabledItems = (): Array<HTMLElement> => getRovingItems(popperItemsRef.current);
 
@@ -119,11 +105,8 @@ export const Dropdown = ({
 
   const closePopper = (event?: React.SyntheticEvent | KeyboardEvent): void => {
     event?.preventDefault();
-    if (openProp === undefined) {
-      setInternalOpen(false);
-    }
+    setInternalOpen(false);
     setActiveItemIndex(null);
-    onOpenChange?.(false);
     if (!disableRestoreFocus) {
       restoreTriggerFocus();
     }
@@ -132,13 +115,8 @@ export const Dropdown = ({
 
   const openPopper = (focusMode: FocusOnOpen): void => {
     focusOnOpenRef.current = focusMode;
-    if (openProp !== undefined) {
-      onOpenChange?.(true);
-      return;
-    }
     setInternalOpen(true);
     onOpen?.();
-    onOpenChange?.(true);
   };
 
   // Every open moves focus into the menu, so the arrow keys work right away in any browser:
@@ -182,14 +160,12 @@ export const Dropdown = ({
     toggleOpen(event, isEditableTarget(event.target) ? 'none' : 'first');
   };
 
-  const triggerEvents = handleTriggerEvents
-    ? getTriggerKeyboardPreset(
-        (event) => toggleOpen(event, 'first'),
-        stepIntoMenu,
-        closeOpenMenuFromTrigger,
-        spaceKeyDownOnTriggerRef,
-      )
-    : [];
+  const triggerEvents = getTriggerKeyboardPreset(
+    (event) => toggleOpen(event, 'first'),
+    stepIntoMenu,
+    closeOpenMenuFromTrigger,
+    spaceKeyDownOnTriggerRef,
+  );
   useKeyboard(innerTriggerRef, triggerEvents);
 
   useLayoutEffect(() => {
