@@ -64,7 +64,6 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
   disablePortal?: boolean;
   forceOpen?: boolean;
   itemTextSize?: ItemTextSize;
-  dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
 
 /** How the list moves focus into its items when it opens. */
@@ -92,7 +91,6 @@ export const Dropdown = ({
   triggerRef = null,
   disablePortal = false,
   itemTextSize = 'medium',
-  dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
   const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen || forceOpen);
@@ -100,12 +98,12 @@ export const Dropdown = ({
   // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const listId = useId();
-  // 'first' keeps nested submenus (opened through forceOpen) focusing their first item.
+  // Menus opened through `forceOpen` instead of the trigger fall back to this default.
   const focusOnOpenRef = useRef<FocusOnOpen>('first');
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
-  const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
+  const dropdownRef = useCombinedRefs<HTMLDivElement>();
   const innerTriggerRef = useCombinedRefs(triggerRef);
 
   const getEnabledItems = (): Array<HTMLElement> => getRovingItems(popperItemsRef.current);

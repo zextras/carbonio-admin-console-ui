@@ -21,7 +21,6 @@ export type DropdownItem = {
   onClick?: ItemClickHandler;
   selected?: boolean;
   disabled?: boolean;
-  items?: Array<DropdownItem>;
   tooltipLabel?: string;
 };
 
