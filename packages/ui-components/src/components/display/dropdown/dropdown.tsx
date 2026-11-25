@@ -50,10 +50,15 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
   multiple?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
+  /** Controlled open state. When set, the menu follows it and reports intent via onOpenChange. */
+  open?: boolean;
+  /** Uncontrolled initial state. */
+  defaultOpen?: boolean;
+  /** Fired whenever the menu wants to open or close. */
+  onOpenChange?: (open: boolean) => void;
   children: React.ReactElement<DropdownTriggerProps>;
   placement?: Placement;
   disablePortal?: boolean;
-  forceOpen?: boolean;
   itemTextSize?: ItemTextSize;
 };
 
@@ -61,7 +66,6 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
 type FocusOnOpen = 'none' | 'first' | 'last';
 
 export const Dropdown = ({
-  forceOpen = false,
   disabled = false,
   items,
   placement = 'bottom-start',
@@ -74,17 +78,22 @@ export const Dropdown = ({
   multiple = false,
   onOpen,
   onClose,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
   children,
   disablePortal = false,
   itemTextSize = 'medium',
   ...rest
 }: DropdownProps) => {
-  const [internalOpen, setInternalOpen] = useState<boolean>(forceOpen);
-  const open = forceOpen || internalOpen;
+  // With `open` set the parent owns the state and the menu only reports intent.
+  const isControlled = openProp !== undefined;
+  const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen);
+  const open = isControlled ? openProp : internalOpen;
   // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const listId = useId();
-  // Menus opened through `forceOpen` instead of the trigger fall back to this default.
+  // Menus mounted open without a trigger interaction (controlled or defaultOpen) use this default.
   const focusOnOpenRef = useRef<FocusOnOpen>('first');
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
@@ -105,8 +114,11 @@ export const Dropdown = ({
 
   const closePopper = (event?: React.SyntheticEvent | KeyboardEvent): void => {
     event?.preventDefault();
-    setInternalOpen(false);
+    if (!isControlled) {
+      setInternalOpen(false);
+    }
     setActiveItemIndex(null);
+    onOpenChange?.(false);
     if (!disableRestoreFocus) {
       restoreTriggerFocus();
     }
@@ -115,8 +127,11 @@ export const Dropdown = ({
 
   const openPopper = (focusMode: FocusOnOpen): void => {
     focusOnOpenRef.current = focusMode;
-    setInternalOpen(true);
+    if (!isControlled) {
+      setInternalOpen(true);
+    }
     onOpen?.();
+    onOpenChange?.(true);
   };
 
   // Every open moves focus into the menu, so the arrow keys work right away in any browser:

@@ -5,6 +5,7 @@
  */
 import '../../../../web-components';
 
+import { useState } from 'react';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
@@ -28,6 +29,19 @@ function buildDividerFirstItems(): Array<DropdownItem> {
     { id: 'domain', label: 'Domain', onClick: vi.fn() },
   ];
 }
+
+/** A parent that owns the open state and can drop it from outside the dropdown. */
+const StatefulDropdown = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Dropdown items={buildItems()} open={open} onOpenChange={setOpen}>
+        <button type="button">Open menu</button>
+      </Dropdown>
+      <input aria-label="Close by typing" onChange={() => setOpen(false)} />
+    </>
+  );
+};
 
 function getItem(name: string) {
   return page.getByRole('menuitem', { name, exact: true });
@@ -295,6 +309,94 @@ describe('Dropdown', () => {
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     expect(onClose).toHaveBeenCalledTimes(1);
+  });
+
+  describe('controlled open state', () => {
+    it('follows a closed open prop and only reports open intent', async () => {
+      const onOpenChange = vi.fn();
+      render(
+        <Dropdown items={buildItems()} open={false} onOpenChange={onOpenChange}>
+          <button type="button">Open menu</button>
+        </Dropdown>,
+      );
+
+      await page.getByRole('button', { name: 'Open menu' }).click();
+
+      await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+      expect(onOpenChange).toHaveBeenCalledWith(true);
+    });
+
+    it('keeps an open menu mounted and only reports close intent on Escape', async () => {
+      const onOpenChange = vi.fn();
+      render(
+        <Dropdown items={buildItems()} open onOpenChange={onOpenChange}>
+          <button type="button">Open menu</button>
+        </Dropdown>,
+      );
+
+      await expect.element(page.getByRole('menu')).toBeVisible();
+      await expect.element(getItem('Apple')).toHaveFocus();
+
+      await userEvent.keyboard('{Escape}');
+
+      await expect.element(page.getByRole('menu')).toBeVisible();
+      expect(onOpenChange).toHaveBeenCalledWith(false);
+    });
+
+    it('lets the parent close the menu by changing the open prop', async () => {
+      render(<StatefulDropdown />);
+
+      await page.getByRole('button', { name: 'Open menu' }).click();
+      await expect.element(page.getByRole('menu')).toBeVisible();
+
+      // Focus without a click, so the outside-click handler is not what closes the menu.
+      const closer = page.getByRole('textbox', { name: 'Close by typing' });
+      await expect.element(closer).toBeVisible();
+      (closer.element() as HTMLInputElement).focus();
+      await userEvent.keyboard('x');
+
+      await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    });
+
+    it('still notifies onOpen in controlled mode', async () => {
+      const onOpen = vi.fn();
+      render(
+        <Dropdown items={buildItems()} open={false} onOpen={onOpen} onOpenChange={vi.fn()}>
+          <button type="button">Open menu</button>
+        </Dropdown>,
+      );
+
+      await page.getByRole('button', { name: 'Open menu' }).click();
+
+      expect(onOpen).toHaveBeenCalledTimes(1);
+    });
+
+    it('still notifies onClose in controlled mode', async () => {
+      const onClose = vi.fn();
+      render(
+        <Dropdown items={buildItems()} open onClose={onClose} onOpenChange={vi.fn()}>
+          <button type="button">Open menu</button>
+        </Dropdown>,
+      );
+
+      await userEvent.keyboard('{Escape}');
+
+      expect(onClose).toHaveBeenCalledTimes(1);
+    });
+  });
+
+  it('opens initially when defaultOpen is set and still closes itself', async () => {
+    render(
+      <Dropdown items={buildItems()} defaultOpen>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+
+    await userEvent.keyboard('{Escape}');
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
   });
 
   it('moves focus with the arrow keys and wraps around', async () => {

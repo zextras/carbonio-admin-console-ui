@@ -145,7 +145,6 @@ function createSavePastedValue<TValue>(deps: {
 function createDropdownDisplayHandlers(deps: {
   onOptionsDisplayChange: ChipInputProps['onOptionsDisplayChange'];
   options: Array<DropdownItem & { value?: unknown }>;
-  setForceShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
 }): { showDropdown: (isVisible: boolean) => void; onOpen: () => void; onClose: () => void } {
   const showDropdown = (isVisible: boolean): void => {
     if (deps.onOptionsDisplayChange && !isEmpty(deps.options)) {
@@ -155,10 +154,7 @@ function createDropdownDisplayHandlers(deps: {
   return {
     showDropdown,
     onOpen: (): void => showDropdown(true),
-    onClose: (): void => {
-      deps.setForceShowDropdown(false);
-      showDropdown(false);
-    },
+    onClose: (): void => showDropdown(false),
   };
 }
 
@@ -437,11 +433,12 @@ const ChipInputComponent = <TValue = unknown,>({
   const isInputDisabled = !!maxChips && items.length >= maxChips;
   const isDropdownDisabled = disableOptions || isInputDisabled;
   const suggestionOpen = isDropdownDisabled && !isEmpty(options);
-  const [forceShowDropdown, setForceShowDropdown] = useState(suggestionOpen);
+  // The dropdown is controlled: its list is visible exactly while this is true.
+  const [isOpen, setIsOpen] = useState(suggestionOpen);
   const [prevSuggestionOpen, setPrevSuggestionOpen] = useState(suggestionOpen);
   if (suggestionOpen !== prevSuggestionOpen) {
     setPrevSuggestionOpen(suggestionOpen);
-    setForceShowDropdown(suggestionOpen);
+    setIsOpen(suggestionOpen);
   }
 
   const uncontrolledMode = value === undefined;
@@ -559,7 +556,6 @@ const ChipInputComponent = <TValue = unknown,>({
   const { onOpen, onClose } = createDropdownDisplayHandlers({
     onOptionsDisplayChange,
     options,
-    setForceShowDropdown,
   });
 
   const initialSuggestionOpenRef = useRef(suggestionOpen);
@@ -646,7 +642,8 @@ const ChipInputComponent = <TValue = unknown,>({
         width={dropdownWidth}
         disableAutoFocus
         disableRestoreFocus
-        forceOpen={forceShowDropdown}
+        open={isOpen}
+        onOpenChange={setIsOpen}
         onOpen={onOpen}
         onClose={onClose}
         disabled={isDropdownDisabled}
