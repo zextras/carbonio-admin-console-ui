@@ -112,6 +112,25 @@ function focusRovingItem(items: Array<HTMLElement>, current: Element | null, off
   items[nextIndex]?.focus({ preventScroll: true });
 }
 
+/** Typeahead: focus the next item whose label starts with the pressed character, wrapping. */
+function focusTypeaheadItem(
+  items: Array<HTMLElement>,
+  current: Element | null,
+  char: string,
+): void {
+  if (items.length === 0) {
+    return;
+  }
+  const startIndex = current instanceof HTMLElement ? items.indexOf(current) : -1;
+  for (let step = 1; step <= items.length; step += 1) {
+    const candidate = items[(startIndex + step + items.length) % items.length];
+    if ((candidate.textContent ?? '').trim().toLowerCase().startsWith(char.toLowerCase())) {
+      candidate.focus({ preventScroll: true });
+      return;
+    }
+  }
+}
+
 /** Keys typed into editable trigger content (e.g. an embedded input) must never toggle the menu. */
 function isEditableEventTarget(event: Event): boolean {
   const target = event.target;
@@ -123,12 +142,17 @@ function isEditableEventTarget(event: Event): boolean {
   );
 }
 
+/** How the list should move focus into its items when it opens. */
+type FocusOnOpen = 'none' | 'default' | 'last';
+
 /**
- * Enter/Space toggle for the trigger, enabled by default.
- * Editable targets are skipped (no toggle, no preventDefault) so typing keeps working.
+ * Keyboard support for the trigger, enabled by default.
+ * Editable targets are skipped for Enter/Space/arrows (no toggle, no preventDefault) so typing keeps working.
  */
 function getTriggerKeyboardPreset(
   toggleOpen: (event: KeyboardEvent) => void,
+  stepIntoMenu: (edge: 'first' | 'last') => void,
+  closeOpenMenu: (event: KeyboardEvent) => void,
   spaceKeyDownOnTriggerRef: React.MutableRefObject<boolean>,
 ): KeyboardPresetObj[] {
   const guardedToggle = (event: KeyboardEvent): void => {
@@ -152,6 +176,13 @@ function getTriggerKeyboardPreset(
     spaceKeyDownOnTriggerRef.current = false;
     guardedToggle(event);
   };
+  const guardedStepInto = (edge: 'first' | 'last') => (event: KeyboardEvent): void => {
+    if (isEditableEventTarget(event)) {
+      return;
+    }
+    event.preventDefault();
+    stepIntoMenu(edge);
+  };
   return [
     {
       type: 'keydown',
@@ -171,6 +202,30 @@ function getTriggerKeyboardPreset(
       keys: [{ code: 'Space', ctrlKey: false }],
       haveToPreventDefault: false,
     },
+    {
+      type: 'keydown',
+      callback: guardedStepInto('first'),
+      keys: [{ key: 'ArrowDown', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: guardedStepInto('last'),
+      keys: [{ key: 'ArrowUp', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: closeOpenMenu,
+      keys: [{ key: 'Escape', ctrlKey: false }],
+      haveToPreventDefault: false,
+    },
+    {
+      type: 'keydown',
+      callback: closeOpenMenu,
+      keys: [{ key: 'Tab' }],
+      haveToPreventDefault: false,
+    },
   ];
 }
 
@@ -178,7 +233,6 @@ type PopperListItemProps = ListItemContentProps &
   React.ComponentPropsWithRef<'button'> & {
     onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
     selectedBackgroundColor?: AnyColor;
-    keepOpen?: boolean;
   };
 
 function PopperListItem({
@@ -189,7 +243,6 @@ function PopperListItem({
   disabled = false,
   selectedBackgroundColor,
   itemTextSize,
-  keepOpen,
   tooltipLabel,
   ...rest
 }: Readonly<PopperListItemProps>): React.JSX.Element {
@@ -197,7 +250,6 @@ function PopperListItem({
   return (
     <button
       type="button"
-      data-keep-open={keepOpen}
       className={clsx(
         styles.containerEl,
         styles.itemButton,
@@ -225,7 +277,6 @@ type NestListItemProps = ListItemContentProps &
   React.ComponentPropsWithRef<'div'> & {
     onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
     selectedBackgroundColor?: AnyColor;
-    keepOpen?: boolean;
     items: Array<DropdownItem>;
     onOpen?: () => void;
     onClose?: () => void;
@@ -240,7 +291,6 @@ function NestListItem({
   items,
   selectedBackgroundColor,
   itemTextSize,
-  keepOpen,
   tooltipLabel,
   onOpen,
   onClose,
@@ -342,7 +392,6 @@ function NestListItem({
 
   return (
     <div
-      data-keep-open={keepOpen}
       ref={itemRef}
       role="menuitem"
       className={clsx(
@@ -392,7 +441,6 @@ interface DropdownItem {
   selected?: boolean;
   disabled?: boolean;
   items?: Array<DropdownItem>;
-  keepOpen?: boolean;
   tooltipLabel?: string;
 }
 
@@ -409,12 +457,17 @@ type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
   multiple?: boolean;
   onOpen?: () => void;
   onClose?: () => void;
+  /** Controlled open state. When set, the menu follows it and reports intent via onOpenChange. */
+  open?: boolean;
+  /** Uncontrolled initial state. */
+  defaultOpen?: boolean;
+  /** Fired whenever the menu wants to open or close. */
+  onOpenChange?: (open: boolean) => void;
   children: React.ReactElement;
   triggerRef?: React.Ref<HTMLElement> | null;
   placement?: Placement;
   disablePortal?: boolean;
   forceOpen?: boolean;
-  preventDefault?: boolean;
   itemTextSize?: React.ComponentPropsWithRef<'ds-text'>['size'];
   dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
@@ -434,6 +487,9 @@ const Dropdown = ({
   multiple = false,
   onOpen,
   onClose,
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
   children,
   triggerRef = null,
   disablePortal = false,
@@ -441,32 +497,37 @@ const Dropdown = ({
   dropdownListRef = null,
   ...rest
 }: DropdownProps) => {
-  const [internalOpen, setInternalOpen] = useState<boolean>(forceOpen);
-  const open = forceOpen || internalOpen;
-  const openRef = useRef<boolean>(open);
+  const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen || forceOpen);
+  const open = openProp !== undefined ? openProp : forceOpen || internalOpen;
   const listId = React.useId();
+  // 'default' keeps nested submenus (opened through forceOpen) focusing their first item.
+  const focusOnOpenRef = useRef<FocusOnOpen>('default');
   const [activeItemIndex, setActiveItemIndex] = useState<number>(0);
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
 
-  useLayoutEffect(() => {
-    openRef.current = open;
-  }, [open]);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
   const innerTriggerRef = useCombinedRefs(triggerRef);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
-  const openPopper = () => {
+  const openPopper = (focusMode: FocusOnOpen): void => {
+    focusOnOpenRef.current = focusMode;
+    if (openProp !== undefined) {
+      onOpenChange?.(true);
+      return;
+    }
     setInternalOpen(true);
-    openRef.current = true;
     onOpen?.();
+    onOpenChange?.(true);
   };
 
   const closePopper = (e?: React.SyntheticEvent | KeyboardEvent) => {
     e?.preventDefault();
-    setInternalOpen(false);
-    openRef.current = open;
+    if (openProp === undefined) {
+      setInternalOpen(false);
+    }
+    onOpenChange?.(false);
     if (!disableRestoreFocus) {
       const triggerElement = innerTriggerRef.current;
       if (triggerElement) {
@@ -480,13 +541,37 @@ const Dropdown = ({
     onClose?.();
   };
 
-  const toggleOpen = (e: React.SyntheticEvent | KeyboardEvent): void => {
-    if (openRef.current) {
+  // A pointer click must not move focus into the menu; only keyboard opens enter it.
+  const toggleOpen = (
+    e: React.SyntheticEvent | KeyboardEvent,
+    focusMode: FocusOnOpen = 'none',
+  ): void => {
+    if (open) {
       e.preventDefault();
       closePopper();
     } else if (!disabled) {
       e.preventDefault();
-      openPopper();
+      openPopper(focusMode);
+    }
+  };
+
+  /** Arrow keys on the trigger: open the menu (first/last item) or step into an open one. */
+  const stepIntoMenu = (edge: 'first' | 'last'): void => {
+    if (disabled) {
+      return;
+    }
+    if (!open) {
+      openPopper(edge === 'last' ? 'last' : 'default');
+      return;
+    }
+    const enabledItems = rovingItems();
+    const target = edge === 'last' ? enabledItems[enabledItems.length - 1] : enabledItems[0];
+    target?.focus({ preventScroll: true });
+  };
+
+  const closeOpenMenuFromTrigger = (event: KeyboardEvent): void => {
+    if (open) {
+      closePopper(event);
     }
   };
 
@@ -508,117 +593,22 @@ const Dropdown = ({
     const clickedOnNestedItem = nestedDropdownsRef.current?.some((nestedItemRef) =>
       nestedItemRef.current?.contains(e.target as Node | null),
     );
-    if (
-      !clickedOnDropdown &&
-      !clickedOnTrigger &&
-      !clickedOnNestedItem &&
-      !e
-        .composedPath?.()
-        ?.some((el) => el instanceof Element && el.hasAttribute?.('data-keep-open'))
-    ) {
+    if (!clickedOnDropdown && !clickedOnTrigger && !clickedOnNestedItem) {
       closePopper();
     }
   };
 
   const triggerEvents = handleTriggerEvents
-    ? getTriggerKeyboardPreset(toggleOpen, spaceKeyDownOnTriggerRef)
+    ? getTriggerKeyboardPreset(
+        (event) => toggleOpen(event, 'default'),
+        stepIntoMenu,
+        closeOpenMenuFromTrigger,
+        spaceKeyDownOnTriggerRef,
+      )
     : [];
   useKeyboard(innerTriggerRef, triggerEvents);
 
   const rovingItems = (): Array<HTMLElement> => getRovingItems(popperItemsRef.current);
-
-  const listEvents: KeyboardPresetObj[] = [
-    {
-      type: 'keydown',
-      callback: (event): void => {
-        if (event.defaultPrevented) {
-          return;
-        }
-        focusRovingItem(rovingItems(), document.activeElement, -1);
-        event.preventDefault();
-      },
-      keys: [{ key: 'ArrowUp', ctrlKey: false }],
-      haveToPreventDefault: false,
-    },
-    {
-      type: 'keydown',
-      callback: (event): void => {
-        if (event.defaultPrevented) {
-          return;
-        }
-        focusRovingItem(rovingItems(), document.activeElement, 1);
-        event.preventDefault();
-      },
-      keys: [{ key: 'ArrowDown', ctrlKey: false }],
-      haveToPreventDefault: false,
-    },
-    {
-      type: 'keydown',
-      callback: (event): void => {
-        if (event.defaultPrevented) {
-          return;
-        }
-        rovingItems()[0]?.focus({ preventScroll: true });
-        event.preventDefault();
-      },
-      keys: [{ key: 'ArrowUp', ctrlKey: true }],
-      haveToPreventDefault: false,
-    },
-    {
-      type: 'keydown',
-      callback: (event): void => {
-        if (event.defaultPrevented) {
-          return;
-        }
-        const enabledItems = rovingItems();
-        enabledItems[enabledItems.length - 1]?.focus({ preventScroll: true });
-        event.preventDefault();
-      },
-      keys: [{ key: 'ArrowDown', ctrlKey: true }],
-      haveToPreventDefault: false,
-    },
-    {
-      type: 'keydown',
-      callback: (event): void => {
-        if (event.defaultPrevented) {
-          return;
-        }
-        clickNodeWithFocus(popperItemsRef);
-        event.preventDefault();
-      },
-      keys: [{ key: 'Enter', ctrlKey: false }],
-      haveToPreventDefault: false,
-    },
-    {
-      type: 'keydown',
-      callback: (event): void => {
-        if (event.defaultPrevented) {
-          return;
-        }
-        clickNodeWithFocus(popperItemsRef);
-        event.preventDefault();
-      },
-      keys: [{ key: ' ', ctrlKey: false }],
-      haveToPreventDefault: false,
-    },
-  ];
-
-  useKeyboard(popperItemsRef, listEvents, open);
-
-  const closeMenuEvents: KeyboardPresetObj[] = [
-    {
-      type: 'keydown',
-      callback: closePopper,
-      keys: [{ key: 'Escape', ctrlKey: false }],
-    },
-    {
-      type: 'keydown',
-      callback: closePopper,
-      keys: [{ key: 'Tab' }],
-    },
-  ];
-
-  useKeyboard(dropdownRef, closeMenuEvents, open);
 
   useLayoutEffect(() => {
     let cleanup: ReturnType<typeof setupFloating>;
@@ -641,9 +631,14 @@ const Dropdown = ({
     popperItemsRef.current = node;
     // Focus only on a freshly mounted list: re-attach of the same node happens on every render
     // (ref identity churn) and must not steal focus back from the item the user navigated to.
-    if (node && open && !disableAutoFocus && autoFocusedNodeRef.current !== node) {
+    const focusMode = focusOnOpenRef.current;
+    if (node && open && !disableAutoFocus && focusMode !== 'none' && autoFocusedNodeRef.current !== node) {
       autoFocusedNodeRef.current = node;
-      const itemToFocus = node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild;
+      const enabledItems = getRovingItems(node);
+      const itemToFocus =
+        focusMode === 'last'
+          ? enabledItems[enabledItems.length - 1]
+          : (node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild);
       if (itemToFocus instanceof HTMLElement) {
         itemToFocus.focus();
       }
@@ -664,13 +659,12 @@ const Dropdown = ({
   const listItemClickHandler =
     (
       onClick: PopperListItemProps['onClick'],
-      keepOpen?: boolean,
     ): ((event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void) =>
     (event): void => {
       if (!event.defaultPrevented) {
         onClick?.(event);
       }
-      if (!multiple && !keepOpen) {
+      if (!multiple) {
         closePopper();
       } else {
         event.stopPropagation();
@@ -690,7 +684,6 @@ const Dropdown = ({
             items: subItems,
             disabled: itemDisabled,
             type,
-            keepOpen,
             ...itemProps
           },
           index,
@@ -711,8 +704,7 @@ const Dropdown = ({
                 label={label ?? ''}
                 aria-haspopup="menu"
                 aria-disabled={itemDisabled ? true : undefined}
-                onClick={listItemClickHandler(onClick, keepOpen)}
-                keepOpen={keepOpen}
+                onClick={listItemClickHandler(onClick)}
                 selected={selected}
                 key={id}
                 disabled={itemDisabled}
@@ -730,8 +722,7 @@ const Dropdown = ({
                 role={itemRole}
                 aria-checked={selected}
                 aria-disabled={itemDisabled ? true : undefined}
-                onClick={listItemClickHandler(onClick, keepOpen)}
-                keepOpen={keepOpen}
+                onClick={listItemClickHandler(onClick)}
                 selected={selected}
                 key={id}
                 disabled={itemDisabled}
@@ -751,12 +742,71 @@ const Dropdown = ({
     event?.preventDefault?.();
   };
 
-  const popperListKeyDownHandler: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    event?.preventDefault?.();
+  // Focus follows the pointer, so hover and focus are one item (mouse-initiated focus shows no ring).
+  const popperListMouseMoveHandler: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    const item = (event.target as Element).closest<HTMLElement>('[data-dropdown-item]');
+    if (item && item !== document.activeElement && rovingItems().includes(item)) {
+      item.focus({ preventScroll: true });
+    }
   };
+
+  // Single keydown handler for the open menu. The submenu rows' native listeners (Escape,
+  // ArrowLeft) stop the real event before it reaches this React handler, so the parent menu
+  // stays open when only the submenu should close.
+  const popperListKeyDownHandler: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (event.defaultPrevented) {
+      return;
+    }
+    const enabledItems = rovingItems();
+    switch (event.key) {
+      case 'ArrowUp':
+        event.preventDefault();
+        if (event.ctrlKey) {
+          enabledItems[0]?.focus({ preventScroll: true });
+        } else {
+          focusRovingItem(enabledItems, document.activeElement, -1);
+        }
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        if (event.ctrlKey) {
+          enabledItems[enabledItems.length - 1]?.focus({ preventScroll: true });
+        } else {
+          focusRovingItem(enabledItems, document.activeElement, 1);
+        }
+        break;
+      case 'Enter':
+      case ' ':
+        event.preventDefault();
+        clickNodeWithFocus(popperItemsRef);
+        break;
+      case 'Escape':
+      case 'Tab':
+        closePopper(event);
+        break;
+      case 'Home':
+        event.preventDefault();
+        enabledItems[0]?.focus({ preventScroll: true });
+        break;
+      case 'End':
+        event.preventDefault();
+        enabledItems[enabledItems.length - 1]?.focus({ preventScroll: true });
+        break;
+      default:
+        event.preventDefault();
+        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+          focusTypeaheadItem(enabledItems, document.activeElement, event.key);
+        }
+        break;
+    }
+  };
+
+  const triggerElementProps = children.props as { id?: string };
+  const triggerId = triggerElementProps.id ?? `${listId}-trigger`;
 
   const triggerComponent = React.cloneElement(children, {
     ref: innerTriggerRef,
+    id: triggerId,
     onClick: triggerComponentLeftClickHandler,
     'aria-haspopup': 'menu',
     'aria-expanded': open,
@@ -777,11 +827,13 @@ const Dropdown = ({
         <div
           ref={dropdownRef}
           id={listId}
+          aria-labelledby={triggerId}
           className={clsx(styles.popperList, open && styles.open)}
           style={popperListStyle}
           role="menu"
           tabIndex={-1}
           onClick={popperListPreventDefaultHandler}
+          onMouseMove={popperListMouseMoveHandler}
           onKeyDown={popperListKeyDownHandler}
         >
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>

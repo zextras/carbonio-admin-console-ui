@@ -28,8 +28,22 @@ async function openDropdown() {
   await expect.element(page.getByRole('menu')).toBeVisible();
 }
 
+/** Focuses the trigger without a pointer click (keyboard modality). */
+async function focusTrigger(): Promise<void> {
+  const trigger = page.getByRole('button', { name: 'Open menu' });
+  await expect.element(trigger).toBeVisible();
+  (trigger.element() as HTMLElement).focus();
+}
+
+/** Opens the menu the way a keyboard user does: focus the trigger, press Enter. */
+async function openDropdownWithKeyboard() {
+  await focusTrigger();
+  await userEvent.keyboard('{Enter}');
+  await expect.element(page.getByRole('menu')).toBeVisible();
+}
+
 describe('Dropdown', () => {
-  it('opens a menu with menuitems and focuses the first item', async () => {
+  it('opens with the mouse without moving focus into the menu', async () => {
     const onOpen = vi.fn();
     render(
       <Dropdown items={buildItems()} onOpen={onOpen}>
@@ -41,7 +55,64 @@ describe('Dropdown', () => {
 
     expect(onOpen).toHaveBeenCalledTimes(1);
     expect(page.getByRole('menuitem').elements()).toHaveLength(3);
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+    await expect.element(getItem('Apple')).not.toHaveFocus();
+  });
+
+  it('focuses the first item when opened from the keyboard', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdownWithKeyboard();
+
     await expect.element(getItem('Apple')).toHaveFocus();
+  });
+
+  it('opens and focuses the first item when ArrowDown is pressed on the trigger', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await focusTrigger();
+    await userEvent.keyboard('{ArrowDown}');
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(getItem('Apple')).toHaveFocus();
+  });
+
+  it('opens and focuses the last item when ArrowUp is pressed on the trigger', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await focusTrigger();
+    await userEvent.keyboard('{ArrowUp}');
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(getItem('Cherry')).toHaveFocus();
+  });
+
+  it('moves focus to the item under the pointer without a focus ring', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+    await getItem('Banana').hover();
+
+    await expect.element(getItem('Banana')).toHaveFocus();
+    await expect.element(getItem('Apple')).not.toHaveFocus();
+    const item = getItem('Banana').element() as HTMLElement;
+    expect(window.getComputedStyle(item).outlineStyle).toBe('none');
   });
 
   it('focuses the selected item when the menu opens', async () => {
@@ -53,7 +124,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
 
     await expect
       .element(page.getByRole('menuitemradio', { name: 'Banana', exact: true }))
@@ -101,7 +172,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
     await userEvent.keyboard('{Escape}');
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
@@ -137,6 +208,37 @@ describe('Dropdown', () => {
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
   });
 
+  it('follows a controlled closed state and reports open intent', async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Dropdown items={buildItems()} open={false} onOpenChange={onOpenChange}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await page.getByRole('button', { name: 'Open menu' }).click();
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    expect(onOpenChange).toHaveBeenCalledWith(true);
+  });
+
+  it('keeps a controlled open menu mounted and reports close intent on Escape', async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <Dropdown items={buildItems()} open onOpenChange={onOpenChange}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(getItem('Apple')).toHaveFocus();
+
+    await userEvent.keyboard('{Escape}');
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    expect(onOpenChange).toHaveBeenCalledWith(false);
+  });
+
   it('closes when clicking outside the menu', async () => {
     const onClose = vi.fn();
     render(
@@ -155,24 +257,6 @@ describe('Dropdown', () => {
     expect(onClose).toHaveBeenCalledTimes(1);
   });
 
-  it('stays open when clicking an element marked with data-keep-open', async () => {
-    render(
-      <>
-        <button type="button" data-keep-open>
-          Keep open
-        </button>
-        <Dropdown items={buildItems()}>
-          <button type="button">Open menu</button>
-        </Dropdown>
-      </>,
-    );
-
-    await openDropdown();
-    await page.getByRole('button', { name: 'Keep open' }).click();
-
-    await expect.element(page.getByRole('menu')).toBeVisible();
-  });
-
   it('moves focus with the arrow keys and wraps around', async () => {
     render(
       <Dropdown items={buildItems()}>
@@ -180,7 +264,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
     await expect.element(getItem('Apple')).toHaveFocus();
 
     await userEvent.keyboard('{ArrowDown}');
@@ -206,7 +290,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
 
     await userEvent.keyboard('{Control>}{ArrowDown}{/Control}');
     await expect.element(getItem('Cherry')).toHaveFocus();
@@ -223,7 +307,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
     await userEvent.keyboard('{ArrowDown}');
     await userEvent.keyboard('{Enter}');
 
@@ -267,28 +351,12 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
     await userEvent.keyboard('{Tab}');
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
     expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('keeps the menu open after clicking a keepOpen item', async () => {
-    const items = buildItems();
-    items[0].keepOpen = true;
-    render(
-      <Dropdown items={items}>
-        <button type="button">Open menu</button>
-      </Dropdown>,
-    );
-
-    await openDropdown();
-    await getItem('Apple').click();
-
-    expect(items[0].onClick).toHaveBeenCalledTimes(1);
-    await expect.element(page.getByRole('menu')).toBeVisible();
   });
 
   it('keeps the menu open after clicking an item in multiple mode', async () => {
@@ -481,7 +549,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
 
     await expect.element(getItem('Apple')).toHaveAttribute('tabindex', '0');
     await expect.element(getItem('Banana')).toHaveAttribute('tabindex', '-1');
@@ -502,7 +570,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
     await expect.element(getItem('Apple')).toHaveFocus();
 
     await userEvent.keyboard('{ArrowDown}');
@@ -520,7 +588,7 @@ describe('Dropdown', () => {
       </Dropdown>,
     );
 
-    await openDropdown();
+    await openDropdownWithKeyboard();
     await userEvent.keyboard('{ArrowDown}');
     await userEvent.keyboard('{Space}');
 
@@ -578,11 +646,27 @@ describe('Dropdown', () => {
 
     await page.getByText('Open menu').click();
     await expect.element(page.getByRole('menu')).toBeVisible();
-    await userEvent.keyboard('{Escape}');
+    await page.getByText('Open menu').click();
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
 
     await userEvent.keyboard('{Enter}');
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it('closes when Tab is pressed on the trigger after a mouse open', async () => {
+    const onClose = vi.fn();
+    render(
+      <Dropdown items={buildItems()} onClose={onClose}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+    await userEvent.keyboard('{Tab}');
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+    expect(onClose).toHaveBeenCalledTimes(1);
   });
 
   it('shows a visible focus indicator on keyboard-focused items', async () => {
@@ -600,6 +684,55 @@ describe('Dropdown', () => {
 
     const item = getItem('Banana').element() as HTMLElement;
     expect(window.getComputedStyle(item).outlineStyle).toBe('solid');
+  });
+
+  it('focuses the next matching item with typeahead', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdownWithKeyboard();
+    await expect.element(getItem('Apple')).toHaveFocus();
+
+    await userEvent.keyboard('{C}');
+
+    await expect.element(getItem('Cherry')).toHaveFocus();
+  });
+
+  it('jumps to the first and last item with Home and End', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdownWithKeyboard();
+    await expect.element(getItem('Apple')).toHaveFocus();
+
+    await userEvent.keyboard('{End}');
+    await expect.element(getItem('Cherry')).toHaveFocus();
+
+    await userEvent.keyboard('{Home}');
+    await expect.element(getItem('Apple')).toHaveFocus();
+  });
+
+  it('labels the menu with its trigger', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button" id="my-trigger">
+          Open menu
+        </button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    const menu = page.getByRole('menu').element() as HTMLElement;
+    expect(menu.getAttribute('aria-labelledby')).toBe('my-trigger');
+    const trigger = page.getByRole('button', { name: 'Open menu' }).element() as HTMLElement;
+    expect(trigger.id).toBe('my-trigger');
   });
 
   it('sizes the menu like the trigger when width is 100%', async () => {
@@ -656,7 +789,7 @@ describe('Dropdown', () => {
         </Dropdown>,
       );
 
-      await openDropdown();
+      await openDropdownWithKeyboard();
       await userEvent.keyboard('{ArrowDown}');
       await expect.element(getItem('More')).toHaveFocus();
 
@@ -677,7 +810,7 @@ describe('Dropdown', () => {
         </Dropdown>,
       );
 
-      await openDropdown();
+      await openDropdownWithKeyboard();
       await userEvent.keyboard('{ArrowDown}');
       await userEvent.keyboard('{ArrowRight}');
       await expect.element(getItem('Sub A')).toBeVisible();
@@ -698,7 +831,7 @@ describe('Dropdown', () => {
         </Dropdown>,
       );
 
-      await openDropdown();
+      await openDropdownWithKeyboard();
       await userEvent.keyboard('{ArrowDown}');
       await userEvent.keyboard('{ArrowRight}');
       await expect.element(getItem('Sub A')).toHaveFocus();
@@ -727,7 +860,7 @@ describe('Dropdown', () => {
         </Dropdown>,
       );
 
-      await openDropdown();
+      await openDropdownWithKeyboard();
       await userEvent.keyboard('{ArrowDown}');
       await userEvent.keyboard('{ArrowRight}');
       await expect.element(getItem('Sub A')).toBeVisible();
