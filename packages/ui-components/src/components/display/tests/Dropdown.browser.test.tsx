@@ -8,7 +8,7 @@ import '../../../web-components';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
-import { Dropdown, type DropdownItem } from '../Dropdown';
+import { Dropdown, type DropdownItem } from '../dropdown';
 
 function buildItems(): Array<DropdownItem> {
   return [
@@ -379,7 +379,9 @@ describe('Dropdown', () => {
   it('opens from the keyboard on a non-editable trigger when handleTriggerEvents is set', async () => {
     render(
       <Dropdown items={buildItems()} handleTriggerEvents>
-        <div role="button" tabIndex={0}>Open menu</div>
+        <div role="button" tabIndex={0}>
+          Open menu
+        </div>
       </Dropdown>,
     );
 
@@ -552,7 +554,9 @@ describe('Dropdown', () => {
   it('opens from the keyboard on a non-button trigger by default', async () => {
     render(
       <Dropdown items={buildItems()}>
-        <div role="button" tabIndex={0}>Open menu</div>
+        <div role="button" tabIndex={0}>
+          Open menu
+        </div>
       </Dropdown>,
     );
 
@@ -589,7 +593,9 @@ describe('Dropdown', () => {
   it('does not open from the keyboard when handleTriggerEvents is explicitly false', async () => {
     render(
       <Dropdown items={buildItems()} handleTriggerEvents={false}>
-        <div role="button" tabIndex={0}>Open menu</div>
+        <div role="button" tabIndex={0}>
+          Open menu
+        </div>
       </Dropdown>,
     );
 

@@ -8,21 +8,14 @@ import '../../../web-components/ds-divider';
 
 import clsx from 'clsx';
 import { debounce, filter, isEmpty, slice, trim } from 'lodash-es';
-import React, {
-  InputHTMLAttributes,
-  useEffect,
-  useId,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import React, { InputHTMLAttributes, useEffect, useId, useReducer, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { KeyboardPresetKey, KeyboardPresetObj, useKeyboard } from '../../../hooks/useKeyboard';
 import { AnyColor } from '../../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
-import { Dropdown, DropdownItem } from '../../display/Dropdown';
+import { Dropdown, DropdownItem } from '../../display/dropdown';
 import { Container, ContainerProps } from '../../layout/Container';
 import { InputContainer } from '../commons/InputContainer';
 import { InputDescription } from '../commons/InputDescription';
@@ -74,14 +67,12 @@ function getChipCursorState(
 
 function splitPastedChips(pastedText: string, pasteSeparators: Array<string>): Array<string> {
   const separatorsRegex = new RegExp(pasteSeparators.join('|'), 'gi');
-  return pastedText
-    .split(separatorsRegex)
-    .reduce<Array<string>>((values, textItem) => {
-      if (textItem.trim() !== '') {
-        values.push(textItem.trim());
-      }
-      return values;
-    }, []);
+  return pastedText.split(separatorsRegex).reduce<Array<string>>((values, textItem) => {
+    if (textItem.trim() !== '') {
+      values.push(textItem.trim());
+    }
+    return values;
+  }, []);
 }
 
 function createOnPaste(deps: {
@@ -501,7 +492,9 @@ const ChipInputComponent = <TValue = unknown,>({
   };
 
   const saveCurrentEvent: KeyboardPresetObj[] =
-    separators.length > 0 ? [{ type: 'keydown', callback: saveCurrentValue, keys: separators }] : [];
+    separators.length > 0
+      ? [{ type: 'keydown', callback: saveCurrentValue, keys: separators }]
+      : [];
 
   useKeyboard(inputElRef, saveCurrentEvent);
 

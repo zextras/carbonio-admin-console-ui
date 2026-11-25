@@ -18,11 +18,7 @@ import React, {
 } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
-import {
-  clickNodeWithFocus,
-  KeyboardPresetObj,
-  useKeyboard,
-} from '../../hooks/useKeyboard';
+import { clickNodeWithFocus, KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
@@ -31,7 +27,7 @@ import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Portal } from '../utilities/Portal';
-import styles from './Dropdown.module.css';
+import styles from './dropdown.module.css';
 import { Tooltip } from './Tooltip';
 
 type ListItemContentProps = {
@@ -97,9 +93,7 @@ function getRovingItems(container: HTMLElement | null): Array<HTMLElement> {
   if (!container) {
     return [];
   }
-  return Array.from(
-    container.querySelectorAll<HTMLElement>('[data-dropdown-item]'),
-  ).filter(
+  return Array.from(container.querySelectorAll<HTMLElement>('[data-dropdown-item]')).filter(
     (item) =>
       !(item instanceof HTMLButtonElement && item.disabled) &&
       item.getAttribute('aria-disabled') !== 'true',
@@ -107,11 +101,7 @@ function getRovingItems(container: HTMLElement | null): Array<HTMLElement> {
 }
 
 /** Move focus between items, wrapping; falls back to an end when nothing is focused. */
-function focusRovingItem(
-  items: Array<HTMLElement>,
-  current: Element | null,
-  offset: number,
-): void {
+function focusRovingItem(items: Array<HTMLElement>, current: Element | null, offset: number): void {
   if (items.length === 0) {
     return;
   }
@@ -213,7 +203,12 @@ function PopperListItem({
     <button
       type="button"
       data-keep-open={keepOpen}
-      className={clsx(styles.containerEl, styles.itemButton, disabled && styles.disabled, selected && 'zapp-selected')}
+      className={clsx(
+        styles.containerEl,
+        styles.itemButton,
+        disabled && styles.disabled,
+        selected && 'zapp-selected',
+      )}
       style={containerStyle}
       onClick={(!disabled && onClick) || undefined}
       disabled={disabled}
@@ -708,10 +703,11 @@ const Dropdown = ({
     disableAutoFocus,
   ]);
 
-  const listItemClickHandler = (
-    onClick: PopperListItemProps['onClick'],
-    keepOpen?: boolean,
-  ): ((event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void) =>
+  const listItemClickHandler =
+    (
+      onClick: PopperListItemProps['onClick'],
+      keepOpen?: boolean,
+    ): ((event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void) =>
     (event): void => {
       if (!event.defaultPrevented) {
         onClick?.(event);
@@ -745,11 +741,7 @@ const Dropdown = ({
           const nestedRef = React.createRef<HTMLDivElement>();
           nestedDropdownsRef.current.push(nestedRef);
           const itemRole =
-            selected === undefined
-              ? 'menuitem'
-              : multiple
-                ? 'menuitemcheckbox'
-                : 'menuitemradio';
+            selected === undefined ? 'menuitem' : multiple ? 'menuitemcheckbox' : 'menuitemradio';
           const itemRovingTabIndex = index === activeItemIndex ? 0 : -1;
           const itemFocusHandler = (): void => {
             setActiveItemIndex(index);
@@ -809,16 +801,13 @@ const Dropdown = ({
     event?.preventDefault?.();
   };
 
-  const triggerComponent = React.cloneElement(
-    children,
-    {
-      ref: innerTriggerRef,
-      onClick: triggerComponentLeftClickHandler,
-      'aria-haspopup': 'menu',
-      'aria-expanded': open,
-      ...(open ? { 'aria-controls': listId } : {}),
-    } as unknown as Partial<React.HTMLAttributes<HTMLElement>>,
-  );
+  const triggerComponent = React.cloneElement(children, {
+    ref: innerTriggerRef,
+    onClick: triggerComponentLeftClickHandler,
+    'aria-haspopup': 'menu',
+    'aria-expanded': open,
+    ...(open ? { 'aria-controls': listId } : {}),
+  } as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
 
   const triggerWidth = innerTriggerRef.current?.clientWidth;
   const popperListStyle = {
@@ -841,9 +830,21 @@ const Dropdown = ({
           onClick={popperListPreventDefaultHandler}
           onKeyDown={popperListKeyDownHandler}
         >
-          <button type="button" ref={startSentinelRef} className={styles.focusSentinel} aria-hidden="true" tabIndex={-1} />
+          <button
+            type="button"
+            ref={startSentinelRef}
+            className={styles.focusSentinel}
+            aria-hidden="true"
+            tabIndex={-1}
+          />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
-          <button type="button" ref={endSentinelRef} className={styles.focusSentinel} aria-hidden="true" tabIndex={-1} />
+          <button
+            type="button"
+            ref={endSentinelRef}
+            className={styles.focusSentinel}
+            aria-hidden="true"
+            tabIndex={-1}
+          />
         </div>
       </Portal>
     </div>

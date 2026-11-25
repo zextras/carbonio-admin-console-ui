@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
-import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
+import { Dropdown, DropdownItem, DropdownProps } from '../display/dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
