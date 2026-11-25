@@ -4,6 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
+import { Attribute } from '../attribute';
+
 export type MtaInboundSecurity = {
 	zimbraMtaBlockedExtension: Array<string>;
 	zimbraMtaBlockedExtensionWarnAdmin: boolean;
@@ -154,4 +156,10 @@ export type MtaServerGeneral = {
 	zimbraAmavisSALogLevel: string;
 	zimbraMtaSmtpdTlsLoglevel: string;
 	zimbraMtaLmtpTlsLoglevel: string;
+};
+
+export type MtaServer = {
+	id?: string;
+	name?: string;
+	a?: Array<Attribute>;
 };
