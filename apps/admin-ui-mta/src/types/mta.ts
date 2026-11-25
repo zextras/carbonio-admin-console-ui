@@ -18,7 +18,6 @@ export type MtaServer = {
 export type DropdownItem = {
   id: string;
   label: string;
-  customComponent?: React.ReactNode;
 };
 
 export type MailTransferAgentOption = {

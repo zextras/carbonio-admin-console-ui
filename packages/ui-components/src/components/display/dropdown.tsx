@@ -180,7 +180,6 @@ function getTriggerKeyboardPreset(
 type PopperListItemProps = ListItemContentProps &
   React.ComponentPropsWithRef<'button'> & {
     onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
-    customComponent?: React.ReactNode;
     selectedBackgroundColor?: AnyColor;
     keepOpen?: boolean;
   };
@@ -190,7 +189,6 @@ function PopperListItem({
   label,
   onClick,
   selected,
-  customComponent,
   disabled = false,
   selectedBackgroundColor,
   itemTextSize,
@@ -214,16 +212,14 @@ function PopperListItem({
       disabled={disabled}
       {...rest}
     >
-      {customComponent || (
-        <ListItemContent
-          icon={icon}
-          label={label}
-          selected={selected}
-          disabled={disabled}
-          itemTextSize={itemTextSize}
-          tooltipLabel={tooltipLabel}
-        />
-      )}
+      <ListItemContent
+        icon={icon}
+        label={label}
+        selected={selected}
+        disabled={disabled}
+        itemTextSize={itemTextSize}
+        tooltipLabel={tooltipLabel}
+      />
     </button>
   );
 }
@@ -231,7 +227,6 @@ function PopperListItem({
 type NestListItemProps = ListItemContentProps &
   React.ComponentPropsWithRef<'div'> & {
     onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
-    customComponent?: React.ReactNode;
     selectedBackgroundColor?: AnyColor;
     keepOpen?: boolean;
     items: Array<DropdownItem>;
@@ -244,7 +239,6 @@ function NestListItem({
   label,
   onClick,
   selected,
-  customComponent,
   disabled = false,
   items,
   selectedBackgroundColor,
@@ -376,16 +370,14 @@ function NestListItem({
           mainAlignment="space-between"
           padding={{ vertical: 'small', horizontal: 'large' }}
         >
-          {customComponent || (
-            <ListItemContent
-              icon={icon}
-              label={label}
-              selected={selected}
-              disabled={disabled}
-              itemTextSize={itemTextSize}
-              tooltipLabel={tooltipLabel}
-            />
-          )}
+          <ListItemContent
+            icon={icon}
+            label={label}
+            selected={selected}
+            disabled={disabled}
+            itemTextSize={itemTextSize}
+            tooltipLabel={tooltipLabel}
+          />
           <ds-icon size="medium" icon="ChevronRight" aria-hidden="true"></ds-icon>
         </Container>
       </Dropdown>
@@ -400,7 +392,6 @@ interface DropdownItem {
   icon?: IconName;
   onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
   selected?: boolean;
-  customComponent?: React.ReactNode;
   disabled?: boolean;
   items?: Array<DropdownItem>;
   keepOpen?: boolean;
@@ -729,7 +720,6 @@ const Dropdown = ({
             label,
             onClick,
             selected,
-            customComponent,
             items: subItems,
             disabled: itemDisabled,
             type,
@@ -759,7 +749,6 @@ const Dropdown = ({
                 keepOpen={keepOpen}
                 selected={selected}
                 key={id}
-                customComponent={customComponent}
                 disabled={itemDisabled}
                 items={subItems}
                 itemTextSize={itemTextSize}
@@ -779,7 +768,6 @@ const Dropdown = ({
                 keepOpen={keepOpen}
                 selected={selected}
                 key={id}
-                customComponent={customComponent}
                 disabled={itemDisabled}
                 itemTextSize={itemTextSize}
                 data-dropdown-item=""

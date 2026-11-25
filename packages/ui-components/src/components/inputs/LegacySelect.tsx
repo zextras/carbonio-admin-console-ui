@@ -252,7 +252,6 @@ const SelectComponent = function SelectFn<T = string>({
       onClick: clickItemHandler(item, isSelected),
       selected: isSelected,
       disabled: item.disabled,
-      customComponent: item.customComponent,
     };
   });
 
