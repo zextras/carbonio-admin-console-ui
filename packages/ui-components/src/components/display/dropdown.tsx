@@ -457,8 +457,6 @@ const Dropdown = ({
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
   const innerTriggerRef = useCombinedRefs(triggerRef);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
-  const startSentinelRef = useRef<HTMLButtonElement | null>(null);
-  const endSentinelRef = useRef<HTMLButtonElement | null>(null);
   const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
 
   const openPopper = () => {
@@ -522,15 +520,6 @@ const Dropdown = ({
     ) {
       closePopper();
     }
-  };
-
-  const onStartSentinelFocus = () => {
-    const lastChild = popperItemsRef.current?.querySelector<HTMLElement>('[tabindex]:last-child');
-    lastChild?.focus();
-  };
-  const onEndSentinelFocus = () => {
-    const lastChild = popperItemsRef.current?.querySelector<HTMLElement>('[tabindex]:first-child');
-    lastChild?.focus();
   };
 
   const triggerEvents = handleTriggerEvents
@@ -674,26 +663,6 @@ const Dropdown = ({
     };
   }, [open, closePopper, clickOutsidePopper]);
 
-  useEffect(() => {
-    const startSentinelRefElement = startSentinelRef.current;
-    const endSentinelRefElement = endSentinelRef.current;
-    if (open && !disableAutoFocus) {
-      startSentinelRefElement?.addEventListener('focus', onStartSentinelFocus);
-      endSentinelRefElement?.addEventListener('focus', onEndSentinelFocus);
-    }
-    return (): void => {
-      startSentinelRefElement?.removeEventListener('focus', onStartSentinelFocus);
-      endSentinelRefElement?.removeEventListener('focus', onEndSentinelFocus);
-    };
-  }, [
-    open,
-    startSentinelRef,
-    endSentinelRef,
-    onStartSentinelFocus,
-    onEndSentinelFocus,
-    disableAutoFocus,
-  ]);
-
   const listItemClickHandler =
     (
       onClick: PopperListItemProps['onClick'],
@@ -817,21 +786,7 @@ const Dropdown = ({
           onClick={popperListPreventDefaultHandler}
           onKeyDown={popperListKeyDownHandler}
         >
-          <button
-            type="button"
-            ref={startSentinelRef}
-            className={styles.focusSentinel}
-            aria-hidden="true"
-            tabIndex={-1}
-          />
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
-          <button
-            type="button"
-            ref={endSentinelRef}
-            className={styles.focusSentinel}
-            aria-hidden="true"
-            tabIndex={-1}
-          />
         </div>
       </Portal>
     </div>

@@ -215,25 +215,6 @@ describe('Dropdown', () => {
     await expect.element(getItem('Apple')).toHaveFocus();
   });
 
-  it('wraps focus to the opposite end when a focus sentinel receives focus', async () => {
-    render(
-      <Dropdown items={buildItems()}>
-        <button type="button">Open menu</button>
-      </Dropdown>,
-    );
-
-    await openDropdown();
-    const sentinels = (page.getByRole('menu').element() as HTMLElement).querySelectorAll(
-      'button[aria-hidden="true"]',
-    );
-
-    (sentinels[0] as HTMLElement).focus();
-    await expect.element(getItem('Cherry')).toHaveFocus();
-
-    (sentinels[1] as HTMLElement).focus();
-    await expect.element(getItem('Apple')).toHaveFocus();
-  });
-
   it('activates the focused item with Enter and closes the menu', async () => {
     const items = buildItems();
     render(
@@ -248,6 +229,19 @@ describe('Dropdown', () => {
 
     expect(items[1].onClick).toHaveBeenCalledTimes(1);
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+  });
+
+  it('does not hide any scrollable overflow in the menu', async () => {
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    const menu = page.getByRole('menu').element() as HTMLElement;
+    expect(menu.scrollHeight).toBe(menu.clientHeight);
   });
 
   it('closes on Escape', async () => {
@@ -279,23 +273,6 @@ describe('Dropdown', () => {
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
     expect(onClose).toHaveBeenCalledTimes(1);
-  });
-
-  it('hides the focus sentinels from assistive technology', async () => {
-    render(
-      <Dropdown items={buildItems()}>
-        <button type="button">Open menu</button>
-      </Dropdown>,
-    );
-
-    await openDropdown();
-
-    const menu = page.getByRole('menu').element() as HTMLElement;
-    const sentinels = menu.querySelectorAll<HTMLButtonElement>('button[aria-hidden="true"]');
-    expect(sentinels).toHaveLength(2);
-    sentinels.forEach((sentinel) => {
-      expect(sentinel.getAttribute('tabindex')).toBe('-1');
-    });
   });
 
   it('keeps the menu open after clicking a keepOpen item', async () => {

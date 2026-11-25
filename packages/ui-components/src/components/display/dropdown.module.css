@@ -105,33 +105,7 @@
   pointer-events: auto;
 }
 
-.popperList::-webkit-scrollbar {
-  width: 0.5rem;
-}
-
-.popperList::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-.popperList::-webkit-scrollbar-thumb {
-  background-color: var(--color-gray3-regular);
-  border-radius: 0.25rem;
-}
-
 .popperList,
 .popperList > [tabindex='-1']:focus {
   outline: none;
-}
-
-.focusSentinel {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  overflow: hidden;
-  clip: rect(0 0 0 0);
-  clip-path: inset(50%);
-  background: transparent;
 }
