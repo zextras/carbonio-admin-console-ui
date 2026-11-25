@@ -90,6 +90,24 @@ export const domainQueryKeys = {
         params.sortAscending ?? '',
       ] as const,
   },
+  domainListDirectory: {
+    base: () => [...domainQueryKeys.all, 'domain-list-directory'] as const,
+    search: (params: {
+      query: string;
+      offset: number;
+      limit: number;
+      sortBy?: string;
+      sortAscending?: string;
+    }) =>
+      [
+        ...domainQueryKeys.domainListDirectory.base(),
+        params.query,
+        params.offset,
+        params.limit,
+        params.sortBy ?? '',
+        params.sortAscending ?? '',
+      ] as const,
+  },
   accountCount: {
     base: () => [...domainQueryKeys.all, 'account-count'] as const,
     detail: (domainName: string) =>

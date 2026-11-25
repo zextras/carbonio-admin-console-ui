@@ -4,79 +4,39 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { cleanup, render, screen } from '@testing-library/react';
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
-import { buildDomainRow } from '../domain-list-row';
+import { flattenDomainAttributes } from '../domain-list-row';
 
-const t = (_key: string, defaultValue: string): string => defaultValue;
-const onSelect = vi.fn();
+describe('flattenDomainAttributes', () => {
+	it('flattens parsed attributes onto the domain row', () => {
+		const row = flattenDomainAttributes({
+			name: 'example.com',
+			id: 'domain-1',
+			a: [
+				{ n: 'zimbraDomainStatus', _content: 'active' },
+				{ n: 'zimbraDomainType', _content: 'local' },
+				{ n: 'description', _content: 'Primary domain' },
+				{ n: 'zimbraCreateTimestamp', _content: '20240101120000Z' },
+			],
+		});
 
-afterEach(() => {
-  cleanup();
-  onSelect.mockClear();
-});
+		expect(row).toMatchObject({
+			id: 'domain-1',
+			name: 'example.com',
+			zimbraDomainStatus: 'active',
+			zimbraDomainType: 'local',
+			description: 'Primary domain',
+			zimbraCreateTimestamp: '20240101120000Z',
+		});
+	});
 
-describe('buildDomainRow', () => {
-  it('builds a row keyed by the domain id with parsed attributes', () => {
-    const row = buildDomainRow(
-      {
-        name: 'example.com',
-        id: 'domain-1',
-        a: [
-          { n: 'zimbraDomainStatus', _content: 'active' },
-          { n: 'zimbraDomainType', _content: 'local' },
-        ],
-      },
-      t,
-      onSelect,
-    );
+	it('defaults status to active and empty optional fields when attrs are missing', () => {
+		const row = flattenDomainAttributes({ name: 'fallback.com', id: 'domain-fb', a: [] });
 
-    expect(row.id).toBe('domain-1');
-    expect(row.clickable).toBe(true);
-    expect(row.item).toMatchObject({
-      name: 'example.com',
-      id: 'domain-1',
-      zimbraDomainStatus: 'active',
-      zimbraDomainType: 'local',
-    });
-  });
-
-  it('renders the domain name and translated status label in its columns', () => {
-    const row = buildDomainRow(
-      { name: 'example.com', id: 'domain-1', a: [{ n: 'zimbraDomainStatus', _content: 'locked' }] },
-      t,
-      onSelect,
-    );
-
-    render(<>{row.columns}</>);
-
-    expect(screen.getByText('example.com')).toBeTruthy();
-    expect(screen.getByText('Locked')).toBeTruthy();
-  });
-
-  it('invokes onSelect with the parsed domain item on click', () => {
-    const row = buildDomainRow({ name: 'example.com', id: 'domain-1', a: [] }, t, onSelect);
-
-    row.onClick();
-
-    expect(onSelect).toHaveBeenCalledTimes(1);
-    expect(onSelect).toHaveBeenCalledWith(row.item);
-  });
-
-  it('falls back to the raw status string for an unknown status', () => {
-    const row = buildDomainRow(
-      {
-        name: 'weird.com',
-        id: 'domain-x',
-        a: [{ n: 'zimbraDomainStatus', _content: 'totally-unknown-status' }],
-      },
-      t,
-      onSelect,
-    );
-
-    render(<>{row.columns}</>);
-
-    expect(screen.getByText('totally-unknown-status')).toBeTruthy();
-  });
+		expect(row.zimbraDomainStatus).toBe('active');
+		expect(row.description).toBe('');
+		expect(row.zimbraCreateTimestamp).toBe('');
+		expect(row.zimbraDomainName).toBe('fallback.com');
+	});
 });

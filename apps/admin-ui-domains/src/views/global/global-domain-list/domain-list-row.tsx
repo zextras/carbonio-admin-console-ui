@@ -3,70 +3,41 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import type { SoapEntity } from '@zextras/ui-shared';
-import type { ReactElement } from 'react';
 
 import type { Attribute } from '../../../../types';
-import { parseDomainAttributes } from '../../../utils/attributes';
-import { getStatusDisplay } from '../../../utils/status';
-
-type TFunc = (key: string, defaultValue: string) => string;
+import { attributesToObject } from '../../../utils/attributes';
 
 export type ZimbraDomain = {
-  name: string;
-  id: string;
-  a: Attribute[];
+	name: string;
+	id: string;
+	a: Array<Attribute>;
 };
 
-export type ZimbraDomainEntry = {
-  name: string;
-  id: string;
-  a: Attribute[];
-  zimbraDomainType: string;
-  zimbraDomainStatus: string;
-  zimbraDomainName: string;
-  zimbraId: string;
+export type DomainRowItem = {
+	id: string;
+	name: string;
+	zimbraDomainType: string;
+	zimbraDomainStatus: string;
+	zimbraDomainName: string;
+	zimbraId: string;
+	description: string;
+	zimbraCreateTimestamp: string;
 };
 
-export type DomainRow = {
-  id: string;
-  columns: Array<ReactElement>;
-  item: SoapEntity;
-  clickable: boolean;
-  onClick: () => void;
-};
-
-export function buildDomainRow(
-  item: SoapEntity,
-  t: TFunc,
-  onSelect: (domain: SoapEntity) => void,
-): DomainRow {
-  const parsed = parseDomainAttributes(item.a ?? []);
-  const domainItem = {
-    name: item.name,
-    id: item.id,
-    a: item.a,
-    ...parsed,
-  };
-  const { color: statusColor, label: statusLabel } = getStatusDisplay(
-    domainItem.zimbraDomainStatus,
-    t,
-  );
-  return {
-    id: item.id,
-    columns: [
-      <ds-text as="span" size="small" key={`${item.id}-name`} color="gray0" weight="regular">
-        {item.name || ' '}
-      </ds-text>,
-
-      <ds-text as="span" size="small" weight="light" key={`${item.id}-status`} color={statusColor}>
-        {statusLabel}
-      </ds-text>,
-    ],
-    item: domainItem,
-    clickable: true,
-    onClick: (): void => {
-      onSelect(domainItem);
-    },
-  };
+export function flattenDomainAttributes(entry: {
+	id: string;
+	name: string;
+	a?: Array<Attribute>;
+}): DomainRowItem {
+	const map = attributesToObject(entry.a ?? []);
+	return {
+		id: entry.id,
+		name: entry.name,
+		zimbraDomainType: map.zimbraDomainType ?? '',
+		zimbraDomainStatus: map.zimbraDomainStatus ?? 'active',
+		zimbraDomainName: map.zimbraDomainName ?? entry.name,
+		zimbraId: map.zimbraId ?? entry.id,
+		description: map.description ?? '',
+		zimbraCreateTimestamp: map.zimbraCreateTimestamp ?? '',
+	};
 }
