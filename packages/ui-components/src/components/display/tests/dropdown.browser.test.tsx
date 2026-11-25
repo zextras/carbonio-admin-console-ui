@@ -777,6 +777,30 @@ describe('Dropdown', () => {
       await expect.element(getItem('Sub A')).not.toBeInTheDocument();
     });
 
+    it('keeps the migrated flex layout on the submenu row and its trigger', async () => {
+      render(
+        <Dropdown items={buildNestedItems()}>
+          <button type="button">Open menu</button>
+        </Dropdown>,
+      );
+
+      await openDropdown();
+
+      const row = getItem('More').element() as HTMLElement;
+      const rowStyle = window.getComputedStyle(row);
+      expect(rowStyle.display).toBe('flex');
+      expect(rowStyle.flexDirection).toBe('row');
+      expect(rowStyle.alignItems).toBe('center');
+      expect(rowStyle.justifyContent).toBe('flex-start');
+
+      const trigger = row.querySelector('[aria-expanded]') as HTMLElement | null;
+      expect(trigger).not.toBeNull();
+      const triggerStyle = window.getComputedStyle(trigger as HTMLElement);
+      expect(triggerStyle.display).toBe('flex');
+      expect(triggerStyle.justifyContent).toBe('space-between');
+      expect(triggerStyle.paddingTop).not.toBe('0px');
+    });
+
     it('keeps the submenu open when the mouse comes back before the close delay', async () => {
       render(
         <Dropdown items={buildNestedItems()}>

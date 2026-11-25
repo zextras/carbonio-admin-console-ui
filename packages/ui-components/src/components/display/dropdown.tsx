@@ -24,7 +24,6 @@ import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
-import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Portal } from '../utilities/Portal';
 import styles from './dropdown.module.css';
@@ -49,7 +48,7 @@ function ListItemContent({
 }: Readonly<ListItemContentProps>): React.JSX.Element {
   return (
     <Tooltip disabled={!disabled || !tooltipLabel} label={tooltipLabel} placement="bottom-end">
-      <Container orientation="horizontal" mainAlignment="flex-start">
+      <div className={styles.rowLayout}>
         {icon && (
           <Padding right="small">
             <ds-icon
@@ -70,7 +69,7 @@ function ListItemContent({
         >
           {label}
         </ds-text>
-      </Container>
+      </div>
     </Tooltip>
   );
 }
@@ -291,16 +290,16 @@ function NestListItem({
     }
   };
 
-  const itemKeyEvents: KeyboardPresetObj[] = [
-    {
-      type: 'keydown',
-      callback: openNestedDropdown,
-      keys: [{ key: 'ArrowRight', ctrlKey: false }],
-    },
-  ];
+  const itemKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    if (event.key === 'ArrowRight' && !event.ctrlKey) {
+      event.preventDefault();
+      openNestedDropdown();
+    }
+  };
 
-  useKeyboard(itemRef, itemKeyEvents);
-
+  // Escape/ArrowLeft must stay a native listener on the row: it has to stop the real event
+  // propagation before it reaches the parent menu's close handler, which React's synthetic
+  // delegation (at the root) cannot do in time.
   const dropdownKeyEvents: KeyboardPresetObj[] = [
     {
       type: 'keydown',
@@ -344,15 +343,20 @@ function NestListItem({
   }, [closeOnMouseLeave, open]);
 
   return (
-    <Container
+    <div
       data-keep-open={keepOpen}
       ref={itemRef}
-      className={clsx(styles.containerEl, disabled && styles.disabled, selected && 'zapp-selected')}
+      role="menuitem"
+      className={clsx(
+        styles.containerEl,
+        styles.rowLayout,
+        disabled && styles.disabled,
+        selected && 'zapp-selected',
+      )}
       style={containerStyle}
-      orientation="horizontal"
-      mainAlignment="flex-start"
       onClick={disabled ? undefined : onClick}
-      tabIndex={disabled ? undefined : 0}
+      onKeyDown={itemKeyDownHandler}
+      tabIndex={disabled ? -1 : 0}
       onMouseEnter={openNestedDropdown}
       {...rest}
     >
@@ -365,11 +369,7 @@ function NestListItem({
         dropdownListRef={setDropdownListRef}
         disablePortal
       >
-        <Container
-          orientation="horizontal"
-          mainAlignment="space-between"
-          padding={{ vertical: 'small', horizontal: 'large' }}
-        >
+        <div className={styles.nestTrigger}>
           <ListItemContent
             icon={icon}
             label={label}
@@ -379,9 +379,9 @@ function NestListItem({
             tooltipLabel={tooltipLabel}
           />
           <ds-icon size="medium" icon="ChevronRight" aria-hidden="true"></ds-icon>
-        </Container>
+        </div>
       </Dropdown>
-    </Container>
+    </div>
   );
 }
 
@@ -742,7 +742,6 @@ const Dropdown = ({
               <NestListItem
                 icon={icon}
                 label={label ?? ''}
-                role="menuitem"
                 aria-haspopup="menu"
                 aria-disabled={itemDisabled ? true : undefined}
                 onClick={listItemClickHandler(onClick, keepOpen)}

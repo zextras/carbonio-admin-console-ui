@@ -4,102 +4,123 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/* Native <button> dropdown item reset — replicates the compiled Container layout */
 .itemButton {
-	appearance: none;
-	border: 0;
-	margin: 0;
-	padding: var(--padding-size-small) var(--padding-size-large);
-	font: inherit;
-	color: inherit;
-	text-align: left;
-	display: flex;
-	flex-direction: row;
-	align-items: center;
-	justify-content: flex-start;
-	flex-wrap: nowrap;
-	width: 100%;
-	height: 100%;
-	border-radius: var(--border-radius);
-	box-sizing: border-box;
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: var(--padding-size-small) var(--padding-size-large);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
 }
 
-/* ContainerEl - dropdown item container */
+.rowLayout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.nestTrigger {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+  padding: var(--padding-size-small) var(--padding-size-large);
+}
+
 .containerEl {
-	user-select: none;
-	outline: none;
-	background: var(--dropdown-item-bg);
-	transition: background 0.2s ease-out;
+  user-select: none;
+  outline: none;
+  background: var(--dropdown-item-bg);
+  transition: background 0.2s ease-out;
 }
 
 .containerEl:focus {
-	outline: none;
-	background: var(--dropdown-item-bg-focus);
+  outline: none;
+  background: var(--dropdown-item-bg-focus);
 }
 
 .containerEl:focus-visible {
-	outline: 0.125rem solid var(--color-primary-regular);
-	outline-offset: -0.125rem;
+  outline: 0.125rem solid var(--color-primary-regular);
+  outline-offset: -0.125rem;
 }
 
 .containerEl:hover:not(.disabled) {
-	background: var(--dropdown-item-bg-hover);
+  background: var(--dropdown-item-bg-hover);
 }
 
 .containerEl:active:not(.disabled) {
-	background: var(--dropdown-item-bg-active);
+  background: var(--dropdown-item-bg-active);
 }
 
-/* PopperDropdownWrapper */
 .popperDropdownWrapper {
-	position: relative;
+  position: relative;
 }
 
 .popperDropdownWrapper[data-display='block'] {
-	display: block;
-	width: 100%;
+  display: block;
+  width: 100%;
 }
 
 .popperDropdownWrapper[data-display='inline-block'] {
-	display: inline-block;
-	width: auto;
+  display: inline-block;
+  width: auto;
 }
 
-/* PopperList */
 .popperList {
-	position: fixed;
-	display: none;
-	visibility: hidden;
-	pointer-events: none;
-	background-color: var(--color-gray5-regular);
-	box-shadow: var(--shadow-regular);
-	z-index: 999;
-	max-height: var(--popper-max-height);
-	overflow-y: auto;
+  position: fixed;
+  display: none;
+  visibility: hidden;
+  pointer-events: none;
+  background-color: var(--color-gray5-regular);
+  box-shadow: var(--shadow-regular);
+  z-index: 999;
+  max-height: var(--popper-max-height);
+  overflow-y: auto;
 }
 
 .popperList.open {
-	display: block;
-	visibility: visible;
-	pointer-events: auto;
+  display: block;
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .popperList::-webkit-scrollbar {
-	width: 0.5rem;
+  width: 0.5rem;
 }
 
 .popperList::-webkit-scrollbar-track {
-	background-color: transparent;
+  background-color: transparent;
 }
 
 .popperList::-webkit-scrollbar-thumb {
-	background-color: var(--color-gray3-regular);
-	border-radius: 0.25rem;
+  background-color: var(--color-gray3-regular);
+  border-radius: 0.25rem;
 }
 
 .popperList,
 .popperList > [tabindex='-1']:focus {
-	outline: none;
+  outline: none;
 }
 
 .focusSentinel {
