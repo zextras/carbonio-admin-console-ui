@@ -62,14 +62,8 @@ export const CreationButton = ({ activeRoute }: CreationButtonProps) => {
   const [open, setOpen] = useState(false);
   const secondaryActions = useSecondaryActions(actions, activeRoute);
 
-  const onClose = () => {
-    setOpen(false);
-  };
-  const onOpen = () => {
-    setOpen(true);
-  };
   return (
-    <Dropdown items={secondaryActions} onClose={onClose} onOpen={onOpen}>
+    <Dropdown items={secondaryActions} onOpenChange={setOpen}>
       <Button
         style={{ height: '2.625rem', padding: '0.5rem 0.75rem 0.5rem 0.75rem ' }}
         label={t('create', 'Create')}

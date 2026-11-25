@@ -87,7 +87,8 @@
   background-color: var(--color-gray5-regular);
   box-shadow: var(--shadow-regular);
   z-index: 999;
-  max-height: var(--popper-max-height);
+  max-width: 18.75rem;
+  max-height: 50vh;
   overflow-y: auto;
 }
 

@@ -30,7 +30,7 @@ describe('LegacySelect', () => {
   describe('single selection', () => {
     it('selects an item and shows it in the label when uncontrolled', async () => {
       const onChange = vi.fn();
-      render(<LegacySelect label="Color" items={items} onChange={onChange} disablePortal />);
+      render(<LegacySelect label="Color" items={items} onChange={onChange} />);
 
       await openSelect('Color');
       await clickItem('Green');
@@ -47,7 +47,6 @@ describe('LegacySelect', () => {
           items={items}
           onChange={onChange}
           defaultSelection={items[0]}
-          disablePortal
         />,
       );
 
@@ -65,7 +64,6 @@ describe('LegacySelect', () => {
           items={items}
           onChange={onChange}
           selection={items[0]}
-          disablePortal
         />,
       );
 
@@ -81,7 +79,7 @@ describe('LegacySelect', () => {
     it('selects and deselects items when uncontrolled', async () => {
       const onChange = vi.fn();
       render(
-        <LegacySelect label="Colors" items={items} onChange={onChange} multiple disablePortal />,
+        <LegacySelect label="Colors" items={items} onChange={onChange} multiple />,
       );
 
       await openSelect('Colors');
@@ -104,7 +102,6 @@ describe('LegacySelect', () => {
           onChange={onChange}
           multiple
           i18nAllLabel="Everything"
-          disablePortal
         />,
       );
 
@@ -126,7 +123,6 @@ describe('LegacySelect', () => {
           multiple
           selection={[items[0], items[1]]}
           i18nAllLabel="Everything"
-          disablePortal
         />,
       );
 

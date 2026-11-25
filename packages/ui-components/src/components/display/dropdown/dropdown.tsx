@@ -43,22 +43,15 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
   items: Array<DropdownItem>;
   display?: 'block' | 'inline-block';
   width?: string;
-  maxWidth?: string;
-  maxHeight?: string;
   disableRestoreFocus?: boolean;
   disableAutoFocus?: boolean;
   multiple?: boolean;
-  onOpen?: () => void;
-  onClose?: () => void;
-  /** Controlled open state. When set, the menu follows it and reports intent via onOpenChange. */
-  open?: boolean;
-  /** Uncontrolled initial state. */
-  defaultOpen?: boolean;
-  /** Fired whenever the menu wants to open or close. */
+  /** Fired whenever the menu opens or closes, in both modes. */
   onOpenChange?: (open: boolean) => void;
+  /** Controlled open state. When set, the menu follows it and only reports intent. */
+  open?: boolean;
   children: React.ReactElement<DropdownTriggerProps>;
   placement?: Placement;
-  disablePortal?: boolean;
   itemTextSize?: ItemTextSize;
 };
 
@@ -71,29 +64,23 @@ export const Dropdown = ({
   placement = 'bottom-start',
   display = 'inline-block',
   width = 'auto',
-  maxWidth = '18.75rem',
-  maxHeight = '50vh',
   disableRestoreFocus = false,
   disableAutoFocus = false,
   multiple = false,
-  onOpen,
-  onClose,
-  open: openProp,
-  defaultOpen = false,
   onOpenChange,
+  open: openProp,
   children,
-  disablePortal = false,
   itemTextSize = 'medium',
   ...rest
 }: DropdownProps) => {
   // With `open` set the parent owns the state and the menu only reports intent.
   const isControlled = openProp !== undefined;
-  const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen);
+  const [internalOpen, setInternalOpen] = useState<boolean>(false);
   const open = isControlled ? openProp : internalOpen;
   // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const listId = useId();
-  // Menus mounted open without a trigger interaction (controlled or defaultOpen) use this default.
+  // Menus opened without a trigger interaction use this default.
   const focusOnOpenRef = useRef<FocusOnOpen>('first');
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
@@ -122,7 +109,6 @@ export const Dropdown = ({
     if (!disableRestoreFocus) {
       restoreTriggerFocus();
     }
-    onClose?.();
   };
 
   const openPopper = (focusMode: FocusOnOpen): void => {
@@ -130,7 +116,6 @@ export const Dropdown = ({
     if (!isControlled) {
       setInternalOpen(true);
     }
-    onOpen?.();
     onOpenChange?.(true);
   };
 
@@ -318,17 +303,12 @@ export const Dropdown = ({
     ...(open ? { 'aria-controls': listId } : {}),
   });
 
-  const popperListStyle = getPopperListStyle(
-    width,
-    maxWidth,
-    maxHeight,
-    innerTriggerRef.current?.clientWidth,
-  );
+  const popperListStyle = getPopperListStyle(width, innerTriggerRef.current?.clientWidth);
 
   return (
     <div className={styles.popperDropdownWrapper} data-display={display} {...rest}>
       {triggerComponent}
-      <Portal show={open} disablePortal={disablePortal}>
+      <Portal show={open}>
         <div
           ref={dropdownRef}
           id={listId}

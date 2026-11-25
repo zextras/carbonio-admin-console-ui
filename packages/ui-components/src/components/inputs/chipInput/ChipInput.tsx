@@ -145,16 +145,13 @@ function createSavePastedValue<TValue>(deps: {
 function createDropdownDisplayHandlers(deps: {
   onOptionsDisplayChange: ChipInputProps['onOptionsDisplayChange'];
   options: Array<DropdownItem & { value?: unknown }>;
-}): { showDropdown: (isVisible: boolean) => void; onOpen: () => void; onClose: () => void } {
-  const showDropdown = (isVisible: boolean): void => {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}): (isVisible: boolean) => void {
+  return (isVisible: boolean): void => {
+    deps.setIsOpen(isVisible);
     if (deps.onOptionsDisplayChange && !isEmpty(deps.options)) {
       deps.onOptionsDisplayChange(isVisible);
     }
-  };
-  return {
-    showDropdown,
-    onOpen: (): void => showDropdown(true),
-    onClose: (): void => showDropdown(false),
   };
 }
 
@@ -352,12 +349,8 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
   requireUniqueChips?: boolean;
   /** Input divider color */
   bottomBorderColor?: AnyColor;
-  /** Dropdown max height */
-  dropdownMaxHeight?: string;
   /** Dropdown width */
   dropdownWidth?: string;
-  /** Dropdown max width */
-  dropdownMaxWidth?: string;
   /** Description for the input */
   description?: string;
   /** Custom Chip component */
@@ -410,9 +403,7 @@ const ChipInputComponent = <TValue = unknown,>({
   disableOptions = true,
   singleSelection = false,
   bottomBorderColor = INPUT_DIVIDER_COLOR,
-  dropdownMaxHeight,
   dropdownWidth = '100%',
-  dropdownMaxWidth,
   description,
   ChipComponent,
   wrap = 'wrap',
@@ -553,9 +544,10 @@ const ChipInputComponent = <TValue = unknown,>({
     setFocus();
   };
 
-  const { onOpen, onClose } = createDropdownDisplayHandlers({
+  const handleOpenChange = createDropdownDisplayHandlers({
     onOptionsDisplayChange,
     options,
+    setIsOpen,
   });
 
   const initialSuggestionOpenRef = useRef(suggestionOpen);
@@ -643,12 +635,8 @@ const ChipInputComponent = <TValue = unknown,>({
         disableAutoFocus
         disableRestoreFocus
         open={isOpen}
-        onOpenChange={setIsOpen}
-        onOpen={onOpen}
-        onClose={onClose}
+        onOpenChange={handleOpenChange}
         disabled={isDropdownDisabled}
-        maxHeight={dropdownMaxHeight}
-        maxWidth={dropdownMaxWidth}
       >
         <InputContainer
           ref={ref}

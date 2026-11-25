@@ -32,9 +32,6 @@ export type DropdownItemStyleVars = CSSProperties & {
   '--dropdown-item-bg-active': string;
 };
 
-/** Popper sizing custom property consumed by dropdown.module.css. */
-export type PopperListStyleVars = CSSProperties & { '--popper-max-height': string };
-
 export type MenuItemRole = 'menuitem' | 'menuitemradio' | 'menuitemcheckbox';
 
 /** What the open menu should do for a pressed key. */
@@ -207,18 +204,14 @@ export function getItemStyleVars(
   };
 }
 
-/** Popper sizing: a `100%` width tracks the trigger's measured width. */
-export function getPopperListStyle(
-  width: string,
-  maxWidth: string,
-  maxHeight: string,
-  triggerWidth: number | undefined,
-): PopperListStyleVars {
-  return {
-    width: width === '100%' && triggerWidth ? `${triggerWidth}px` : width,
-    maxWidth: width === '100%' ? '100%' : maxWidth,
-    '--popper-max-height': maxHeight,
-  };
+/** The menu's inline size: a `100%` width tracks the trigger's measured width. */
+export function getPopperListStyle(width: string, triggerWidth: number | undefined): CSSProperties {
+  if (width !== '100%') {
+    return { width };
+  }
+  return triggerWidth
+    ? { width: `${triggerWidth}px`, maxWidth: '100%' }
+    : { width: '100%', maxWidth: '100%' };
 }
 
 /**

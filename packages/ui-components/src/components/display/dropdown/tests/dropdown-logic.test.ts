@@ -230,24 +230,12 @@ describe('dropdown-logic', () => {
 
   describe('getPopperListStyle', () => {
     it('sizes the menu like the trigger when width is 100%', () => {
-      expect(getPopperListStyle('100%', '18.75rem', '50vh', 300)).toEqual({
-        width: '300px',
-        maxWidth: '100%',
-        '--popper-max-height': '50vh',
-      });
+      expect(getPopperListStyle('100%', 300)).toEqual({ width: '300px', maxWidth: '100%' });
     });
 
     it('keeps the configured width otherwise', () => {
-      expect(getPopperListStyle('auto', '18.75rem', '50vh', 300)).toEqual({
-        width: 'auto',
-        maxWidth: '18.75rem',
-        '--popper-max-height': '50vh',
-      });
-      expect(getPopperListStyle('100%', '18.75rem', '50vh', undefined)).toEqual({
-        width: '100%',
-        maxWidth: '100%',
-        '--popper-max-height': '50vh',
-      });
+      expect(getPopperListStyle('auto', 300)).toEqual({ width: 'auto' });
+      expect(getPopperListStyle('100%', undefined)).toEqual({ width: '100%', maxWidth: '100%' });
     });
   });
 

@@ -68,16 +68,17 @@ async function openDropdownWithKeyboard() {
 
 describe('Dropdown', () => {
   it('moves focus to the first item on a mouse open without painting it as focused', async () => {
-    const onOpen = vi.fn();
+    const onOpenChange = vi.fn();
     render(
-      <Dropdown items={buildItems()} onOpen={onOpen}>
+      <Dropdown items={buildItems()} onOpenChange={onOpenChange}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
 
     await openDropdown();
 
-    expect(onOpen).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenCalledWith(true);
     expect(page.getByRole('menuitem').elements()).toHaveLength(3);
     await expect.element(getItem('Apple')).toHaveFocus();
     const focusedStyle = window.getComputedStyle(getItem('Apple').element() as HTMLElement);
@@ -218,9 +219,9 @@ describe('Dropdown', () => {
 
   it('calls the item onClick, closes and restores focus to the trigger', async () => {
     const items = buildItems();
-    const onClose = vi.fn();
+    const onOpenChange = vi.fn();
     render(
-      <Dropdown items={items} onClose={onClose}>
+      <Dropdown items={items} onOpenChange={onOpenChange}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
@@ -229,7 +230,7 @@ describe('Dropdown', () => {
     await getItem('Banana').click();
 
     expect(items[1].onClick).toHaveBeenCalledTimes(1);
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
   });
@@ -250,17 +251,33 @@ describe('Dropdown', () => {
     await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
   });
 
-  it('does not restore focus to the trigger when disableRestoreFocus is set', async () => {
+  it('does not move focus when the menu is closed by clicking outside', async () => {
     render(
-      <Dropdown items={buildItems()} disableRestoreFocus>
+      <>
+        <button type="button">Outside</button>
+        <Dropdown items={buildItems()}>
+          <button type="button">Open menu</button>
+        </Dropdown>
+      </>,
+    );
+
+    await page.getByRole('button', { name: 'Open menu' }).click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await page.getByRole('button', { name: 'Outside' }).click();
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Outside' })).toHaveFocus();
+  });
+
+  it('does not move focus into a menu its parent opened', async () => {
+    render(
+      <Dropdown items={buildItems()} open onOpenChange={vi.fn()}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
 
-    await openDropdownWithKeyboard();
-    await userEvent.keyboard('{Escape}');
-
-    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(getItem('Apple')).not.toHaveFocus();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).not.toHaveFocus();
   });
 
@@ -294,11 +311,11 @@ describe('Dropdown', () => {
   });
 
   it('closes when clicking outside the menu', async () => {
-    const onClose = vi.fn();
+    const onOpenChange = vi.fn();
     render(
       <>
         <button type="button">Outside</button>
-        <Dropdown items={buildItems()} onClose={onClose}>
+        <Dropdown items={buildItems()} onOpenChange={onOpenChange}>
           <button type="button">Open menu</button>
         </Dropdown>
       </>,
@@ -308,7 +325,7 @@ describe('Dropdown', () => {
     await page.getByRole('button', { name: 'Outside' }).click();
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
   describe('controlled open state', () => {
@@ -357,48 +374,7 @@ describe('Dropdown', () => {
 
       await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     });
-
-    it('still notifies onOpen in controlled mode', async () => {
-      const onOpen = vi.fn();
-      render(
-        <Dropdown items={buildItems()} open={false} onOpen={onOpen} onOpenChange={vi.fn()}>
-          <button type="button">Open menu</button>
-        </Dropdown>,
-      );
-
-      await page.getByRole('button', { name: 'Open menu' }).click();
-
-      expect(onOpen).toHaveBeenCalledTimes(1);
-    });
-
-    it('still notifies onClose in controlled mode', async () => {
-      const onClose = vi.fn();
-      render(
-        <Dropdown items={buildItems()} open onClose={onClose} onOpenChange={vi.fn()}>
-          <button type="button">Open menu</button>
-        </Dropdown>,
-      );
-
-      await userEvent.keyboard('{Escape}');
-
-      expect(onClose).toHaveBeenCalledTimes(1);
-    });
   });
-
-  it('opens initially when defaultOpen is set and still closes itself', async () => {
-    render(
-      <Dropdown items={buildItems()} defaultOpen>
-        <button type="button">Open menu</button>
-      </Dropdown>,
-    );
-
-    await expect.element(page.getByRole('menu')).toBeVisible();
-
-    await userEvent.keyboard('{Escape}');
-
-    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-  });
-
   it('moves focus with the arrow keys and wraps around', async () => {
     render(
       <Dropdown items={buildItems()}>
@@ -471,9 +447,9 @@ describe('Dropdown', () => {
   });
 
   it('closes on Escape', async () => {
-    const onClose = vi.fn();
+    const onOpenChange = vi.fn();
     render(
-      <Dropdown items={buildItems()} onClose={onClose}>
+      <Dropdown items={buildItems()} onOpenChange={onOpenChange}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
@@ -482,13 +458,13 @@ describe('Dropdown', () => {
     await userEvent.keyboard('{Escape}');
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
   it('closes and restores focus to the trigger when Tab is pressed', async () => {
-    const onClose = vi.fn();
+    const onOpenChange = vi.fn();
     render(
-      <Dropdown items={buildItems()} onClose={onClose}>
+      <Dropdown items={buildItems()} onOpenChange={onOpenChange}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
@@ -498,7 +474,7 @@ describe('Dropdown', () => {
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
   it('keeps the menu open after clicking an item in multiple mode', async () => {
@@ -749,9 +725,9 @@ describe('Dropdown', () => {
   });
 
   it('closes and restores focus to the trigger when Tab is pressed after a mouse open', async () => {
-    const onClose = vi.fn();
+    const onOpenChange = vi.fn();
     render(
-      <Dropdown items={buildItems()} onClose={onClose}>
+      <Dropdown items={buildItems()} onOpenChange={onOpenChange}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
@@ -761,7 +737,7 @@ describe('Dropdown', () => {
 
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
-    expect(onClose).toHaveBeenCalledTimes(1);
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
   });
 
   it('shows a visible focus indicator on keyboard-focused items', async () => {
