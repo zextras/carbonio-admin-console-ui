@@ -72,17 +72,25 @@ function ListItemContent({
   );
 }
 
+/** Item background custom properties consumed by dropdown.module.css. */
+type DropdownItemStyleVars = CSSProperties & {
+  '--dropdown-item-bg': string;
+  '--dropdown-item-bg-hover': string;
+  '--dropdown-item-bg-focus': string;
+  '--dropdown-item-bg-active': string;
+};
+
 function useContainerElStyle(
   selected: boolean | undefined,
   selectedBackgroundColor?: AnyColor,
-): CSSProperties {
+): DropdownItemStyleVars {
   const bgColor = selected && selectedBackgroundColor ? selectedBackgroundColor : 'gray5';
   return {
     '--dropdown-item-bg': resolveThemeColor(String(bgColor), 'regular'),
     '--dropdown-item-bg-hover': resolveThemeColor(String(bgColor), 'hover'),
     '--dropdown-item-bg-focus': resolveThemeColor(String(bgColor), 'focus'),
     '--dropdown-item-bg-active': resolveThemeColor(String(bgColor), 'active'),
-  } as CSSProperties;
+  };
 }
 
 /** Focusable, enabled items of a dropdown list, in DOM order (dividers excluded). */
@@ -176,13 +184,15 @@ function getTriggerKeyboardPreset(
     spaceKeyDownOnTriggerRef.current = false;
     guardedToggle(event);
   };
-  const guardedStepInto = (edge: 'first' | 'last') => (event: KeyboardEvent): void => {
-    if (isEditableEventTarget(event)) {
-      return;
-    }
-    event.preventDefault();
-    stepIntoMenu(edge);
-  };
+  const guardedStepInto =
+    (edge: 'first' | 'last') =>
+    (event: KeyboardEvent): void => {
+      if (isEditableEventTarget(event)) {
+        return;
+      }
+      event.preventDefault();
+      stepIntoMenu(edge);
+    };
   return [
     {
       type: 'keydown',
@@ -304,7 +314,9 @@ function NestListItem({
   const setDropdownListRef: React.RefCallback<HTMLDivElement> = (node) => {
     setInnerDropdownListElement(node);
   };
-  const closeNestedDropdownTimeoutRef = useRef<number>(undefined);
+  const closeNestedDropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
+    undefined,
+  );
   const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
 
   useEffect(
@@ -372,7 +384,7 @@ function NestListItem({
         if (closeNestedDropdownTimeoutRef.current === undefined) {
           closeNestedDropdownTimeoutRef.current = setTimeout(() => {
             closeNestedDropdown();
-          }, TIMERS.DROPDOWN.CLOSE_NESTED) as unknown as number;
+          }, TIMERS.DROPDOWN.CLOSE_NESTED);
         }
       } else if (closeNestedDropdownTimeoutRef.current !== undefined) {
         clearTimeout(closeNestedDropdownTimeoutRef.current);
@@ -476,7 +488,7 @@ const Dropdown = ({
   forceOpen = false,
   disabled = false,
   items,
-  placement = 'bottom-start' as const,
+  placement = 'bottom-start',
   display = 'inline-block',
   width = 'auto',
   maxWidth = '18.75rem',
@@ -632,13 +644,19 @@ const Dropdown = ({
     // Focus only on a freshly mounted list: re-attach of the same node happens on every render
     // (ref identity churn) and must not steal focus back from the item the user navigated to.
     const focusMode = focusOnOpenRef.current;
-    if (node && open && !disableAutoFocus && focusMode !== 'none' && autoFocusedNodeRef.current !== node) {
+    if (
+      node &&
+      open &&
+      !disableAutoFocus &&
+      focusMode !== 'none' &&
+      autoFocusedNodeRef.current !== node
+    ) {
       autoFocusedNodeRef.current = node;
       const enabledItems = getRovingItems(node);
       const itemToFocus =
         focusMode === 'last'
           ? enabledItems[enabledItems.length - 1]
-          : (node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild);
+          : node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild;
       if (itemToFocus instanceof HTMLElement) {
         itemToFocus.focus();
       }
