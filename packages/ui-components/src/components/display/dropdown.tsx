@@ -19,6 +19,7 @@ import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Portal } from '../utilities/Portal';
 import styles from './dropdown.module.css';
 import {
+  type DropdownItem,
   findTypeaheadIndex,
   getItemStyleVars,
   getNextRovingIndex,
@@ -26,27 +27,18 @@ import {
   getRovingItems,
   isEditableTarget,
   isOutsideMenu,
+  type ItemClickHandler,
   type MenuKeyAction,
+  resolveInitialFocusRank,
   resolveItemRole,
   resolveMenuKeyAction,
+  resolveTabStopIndex,
 } from './dropdown-logic';
 import { Tooltip } from './Tooltip';
 
+export type { DropdownItem };
+
 type ItemTextSize = React.ComponentPropsWithRef<'ds-text'>['size'];
-
-type ItemClickHandler = (event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
-
-export type DropdownItem = {
-  type?: 'divider';
-  id: string;
-  label?: string;
-  icon?: IconName;
-  onClick?: ItemClickHandler;
-  selected?: boolean;
-  disabled?: boolean;
-  items?: Array<DropdownItem>;
-  tooltipLabel?: string;
-};
 
 type ListItemContentProps = {
   icon?: IconName;
@@ -108,10 +100,10 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
 };
 
 /** How the list moves focus into its items when it opens. */
-type FocusOnOpen = 'none' | 'default' | 'last';
+type FocusOnOpen = 'none' | 'first' | 'last';
 
 type ItemRenderContext = {
-  activeItemIndex: number;
+  tabStopIndex: number;
   multiple: boolean;
   itemTextSize: ItemTextSize;
   createClickHandler: (onClick: DropdownItem['onClick']) => ItemClickHandler;
@@ -214,7 +206,7 @@ function buildItemElement(
   if (type === 'divider') {
     return <ds-divider key={id}></ds-divider>;
   }
-  const rovingTabIndex = index === context.activeItemIndex ? 0 : -1;
+  const rovingTabIndex = index === context.tabStopIndex ? 0 : -1;
   const handleFocus = (): void => context.onItemFocus(index);
   if (subItems) {
     return (
@@ -486,10 +478,11 @@ export const Dropdown = ({
 }: DropdownProps) => {
   const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen || forceOpen);
   const open = openProp ?? (forceOpen || internalOpen);
-  const [activeItemIndex, setActiveItemIndex] = useState<number>(0);
+  // Null until an item is focused: the tab stop then belongs to the first item that can take it.
+  const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const listId = useId();
-  // 'default' keeps nested submenus (opened through forceOpen) focusing their first item.
-  const focusOnOpenRef = useRef<FocusOnOpen>('default');
+  // 'first' keeps nested submenus (opened through forceOpen) focusing their first item.
+  const focusOnOpenRef = useRef<FocusOnOpen>('first');
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
@@ -512,6 +505,7 @@ export const Dropdown = ({
     if (openProp === undefined) {
       setInternalOpen(false);
     }
+    setActiveItemIndex(null);
     onOpenChange?.(false);
     if (!disableRestoreFocus) {
       restoreTriggerFocus();
@@ -530,10 +524,11 @@ export const Dropdown = ({
     onOpenChange?.(true);
   };
 
-  // A pointer click must not move focus into the menu; only keyboard opens enter it.
+  // Every open moves focus into the menu, so the arrow keys work right away in any browser:
+  // not all of them focus a button on click. The caller opts out for editable triggers.
   const toggleOpen = (
     event: React.SyntheticEvent | KeyboardEvent,
-    focusMode: FocusOnOpen = 'none',
+    focusMode: FocusOnOpen = 'first',
   ): void => {
     if (open) {
       event.preventDefault();
@@ -550,7 +545,7 @@ export const Dropdown = ({
       return;
     }
     if (!open) {
-      openPopper(edge === 'last' ? 'last' : 'default');
+      openPopper(edge);
       return;
     }
     const enabledItems = getEnabledItems();
@@ -564,14 +559,15 @@ export const Dropdown = ({
     }
   };
 
+  // A click inside an editable trigger (a combobox-style input) keeps focus there so typing goes on.
   const handleTriggerClick: React.MouseEventHandler<HTMLElement> = (event) => {
     children.props.onClick?.(event);
-    toggleOpen(event);
+    toggleOpen(event, isEditableTarget(event.target) ? 'none' : 'first');
   };
 
   const triggerEvents = handleTriggerEvents
     ? getTriggerKeyboardPreset(
-        (event) => toggleOpen(event, 'default'),
+        (event) => toggleOpen(event, 'first'),
         stepIntoMenu,
         closeOpenMenuFromTrigger,
         spaceKeyDownOnTriggerRef,
@@ -607,14 +603,9 @@ export const Dropdown = ({
       return;
     }
     autoFocusedNodeRef.current = node;
-    const enabledItems = getRovingItems(node);
-    const itemToFocus =
-      focusMode === 'last'
-        ? enabledItems[enabledItems.length - 1]
-        : (node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild);
-    if (itemToFocus instanceof HTMLElement) {
-      itemToFocus.focus();
-    }
+    // Dividers and disabled items cannot take focus: pick by rank among the focusable items.
+    const edge = focusMode === 'last' ? 'last' : 'first';
+    getRovingItems(node)[resolveInitialFocusRank(items, edge)]?.focus();
   };
 
   useEffect(() => {
@@ -704,17 +695,16 @@ export const Dropdown = ({
     }
   };
 
-  const popperListItems =
-    items?.map(
-      (item, index) =>
-        buildItemElement(item, index, {
-          activeItemIndex,
-          multiple,
-          itemTextSize,
-          createClickHandler: createItemClickHandler,
-          onItemFocus: setActiveItemIndex,
-        }),
-      ) ?? null;
+  const tabStopIndex = resolveTabStopIndex(items, activeItemIndex);
+  const popperListItems = items.map((item, index) =>
+    buildItemElement(item, index, {
+      tabStopIndex,
+      multiple,
+      itemTextSize,
+      createClickHandler: createItemClickHandler,
+      onItemFocus: setActiveItemIndex,
+    }),
+  );
 
   const triggerId = children.props.id ?? `${listId}-trigger`;
   const triggerComponent = React.cloneElement(children, {

@@ -5,20 +5,79 @@
  */
 
 import {
+  type DropdownItem,
   findTypeaheadIndex,
   getNextRovingIndex,
   getPopperListStyle,
   getRovingItems,
   isEditableTarget,
   isOutsideMenu,
+  resolveInitialFocusRank,
   resolveItemRole,
   resolveMenuKeyAction,
+  resolveTabStopIndex,
 } from './dropdown-logic';
 
 const NO_MODIFIERS = { ctrlKey: false, metaKey: false, altKey: false };
 const CTRL = { ctrlKey: true, metaKey: false, altKey: false };
 
+const item = (id: string, extra: Partial<DropdownItem> = {}): DropdownItem => ({
+  id,
+  label: id,
+  ...extra,
+});
+const divider = (id: string): DropdownItem => ({ id, type: 'divider' });
+
 describe('dropdown-logic', () => {
+  describe('resolveTabStopIndex', () => {
+    it('gives the tab stop to the active item', () => {
+      const items = [item('a'), item('b'), item('c')];
+      expect(resolveTabStopIndex(items, 2)).toBe(2);
+    });
+
+    it('falls back to the first enabled item when nothing is active', () => {
+      const items = [divider('d'), item('a'), item('b')];
+      expect(resolveTabStopIndex(items, null)).toBe(1);
+    });
+
+    it('never leaves the tab stop on a divider or a disabled item', () => {
+      const items = [divider('d'), item('a', { disabled: true }), item('b'), item('c')];
+      expect(resolveTabStopIndex(items, 0)).toBe(2);
+      expect(resolveTabStopIndex(items, 1)).toBe(2);
+    });
+
+    it('returns -1 when no item can take focus', () => {
+      expect(resolveTabStopIndex([divider('d')], 0)).toBe(-1);
+      expect(resolveTabStopIndex([], null)).toBe(-1);
+    });
+  });
+
+  describe('resolveInitialFocusRank', () => {
+    const items = [divider('d1'), item('a'), item('b', { selected: true }), divider('d2'), item('c')];
+
+    it('focuses the selected item when opening from the top', () => {
+      expect(resolveInitialFocusRank(items, 'first')).toBe(1);
+    });
+
+    it('focuses the first enabled item when nothing is selected', () => {
+      expect(resolveInitialFocusRank([divider('d'), item('a'), item('b')], 'first')).toBe(0);
+    });
+
+    it('skips a selected item that cannot take focus', () => {
+      const list = [item('a', { selected: true, disabled: true }), item('b')];
+      expect(resolveInitialFocusRank(list, 'first')).toBe(0);
+    });
+
+    it('focuses the last enabled item when opening from the bottom', () => {
+      expect(resolveInitialFocusRank(items, 'last')).toBe(2);
+    });
+
+    it('returns -1 when no item can take focus', () => {
+      expect(resolveInitialFocusRank([divider('d')], 'first')).toBe(-1);
+      expect(resolveInitialFocusRank([], 'last')).toBe(-1);
+    });
+  });
+
   describe('getNextRovingIndex', () => {
     it('steps forward and backward', () => {
       expect(getNextRovingIndex(3, 0, 1)).toBe(1);

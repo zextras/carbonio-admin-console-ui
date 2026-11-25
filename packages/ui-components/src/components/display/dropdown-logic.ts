@@ -8,6 +8,21 @@ import { CSSProperties } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
+import type { IconName } from '../../web-components/icon-registry';
+
+export type ItemClickHandler = (event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
+
+export type DropdownItem = {
+  type?: 'divider';
+  id: string;
+  label?: string;
+  icon?: IconName;
+  onClick?: ItemClickHandler;
+  selected?: boolean;
+  disabled?: boolean;
+  items?: Array<DropdownItem>;
+  tooltipLabel?: string;
+};
 
 /** Item background custom properties consumed by dropdown.module.css. */
 export type DropdownItemStyleVars = CSSProperties & {
@@ -112,6 +127,41 @@ export function resolveItemRole(selected: boolean | undefined, multiple: boolean
     return 'menuitem';
   }
   return multiple ? 'menuitemcheckbox' : 'menuitemradio';
+}
+
+/** Whether a dropdown item can receive focus (dividers and disabled items cannot). */
+function isEnabledItem(item: DropdownItem): boolean {
+  return item.type !== 'divider' && !item.disabled;
+}
+
+/** Index in `items` of the entry owning the menu's tab stop: the active item, else the first one that can take focus. */
+export function resolveTabStopIndex(
+  items: Array<DropdownItem>,
+  activeIndex: number | null,
+): number {
+  if (activeIndex !== null) {
+    const activeItem = items[activeIndex];
+    if (activeItem !== undefined && isEnabledItem(activeItem)) {
+      return activeIndex;
+    }
+  }
+  return items.findIndex(isEnabledItem);
+}
+
+/** Position among the focusable items of the item to focus when the menu opens; -1 when none can. */
+export function resolveInitialFocusRank(
+  items: Array<DropdownItem>,
+  edge: 'first' | 'last',
+): number {
+  const enabledItems = items.filter(isEnabledItem);
+  if (enabledItems.length === 0) {
+    return -1;
+  }
+  if (edge === 'last') {
+    return enabledItems.length - 1;
+  }
+  const selectedRank = enabledItems.findIndex((item) => item.selected === true);
+  return selectedRank === -1 ? 0 : selectedRank;
 }
 
 /** Maps a pressed key to the action the open menu should perform. */

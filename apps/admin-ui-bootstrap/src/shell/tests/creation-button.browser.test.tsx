@@ -7,7 +7,7 @@
 import { useAppStore, useIntegrationsStore } from '@zextras/ui-shared';
 import { setupBrowserTest } from 'admin-ui-test-utils';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { page } from 'vitest/browser';
+import { page, userEvent } from 'vitest/browser';
 
 import { CreationButton } from '../creation-button';
 
@@ -167,6 +167,96 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await expect.element(page.getByText('New Domain')).toBeVisible();
     expect(page.getByRole('menuitem').elements()).toHaveLength(1);
     expect(document.querySelectorAll('ds-divider')).toHaveLength(1);
+  });
+
+  it('moves focus into the menu and supports the arrow keys after a keyboard open', async () => {
+    setApps({
+      'app-domains': { name: 'app-domains', priority: 1 },
+    });
+    registerAction('new-domain', 'app-domains', 'New Domain');
+    registerAction('new-account', 'app-domains', 'New Account');
+
+    const activeRoute = {
+      id: 'domains',
+      route: 'domains',
+      path: '/manage/domains',
+      app: 'app-domains',
+    };
+
+    await setupBrowserTest(<CreationButton activeRoute={activeRoute} />);
+
+    const trigger = page.getByRole('button', { name: 'Create' });
+    await expect.element(trigger).toBeVisible();
+    (trigger.element() as HTMLElement).focus();
+    await userEvent.keyboard('{Enter}');
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(page.getByRole('menuitem', { name: 'New Domain' })).toHaveFocus();
+
+    await userEvent.keyboard('{ArrowDown}');
+    await expect.element(page.getByRole('menuitem', { name: 'New Account' })).toHaveFocus();
+
+    await userEvent.keyboard('{ArrowUp}');
+    await expect.element(page.getByRole('menuitem', { name: 'New Domain' })).toHaveFocus();
+
+    await userEvent.keyboard('{Escape}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(trigger).toHaveFocus();
+  });
+
+  it('supports the arrow keys and Escape after a keyboard open when the menu starts with a divider', async () => {
+    setApps({
+      'app-domains': { name: 'app-domains', priority: 1 },
+      'app-mail': { name: 'app-mail', priority: 2 },
+    });
+    registerAction('new-domain', 'app-domains', 'New Domain');
+    registerAction('new-mailbox', 'app-mail', 'New Mailbox');
+
+    await setupBrowserTest(<CreationButton />);
+
+    const trigger = page.getByRole('button', { name: 'Create' });
+    await expect.element(trigger).toBeVisible();
+    (trigger.element() as HTMLElement).focus();
+    await userEvent.keyboard('{Enter}');
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(page.getByRole('menuitem', { name: 'New Domain' })).toHaveFocus();
+
+    await userEvent.keyboard('{ArrowDown}');
+    await expect.element(page.getByRole('menuitem', { name: 'New Mailbox' })).toHaveFocus();
+
+    await userEvent.keyboard('{Escape}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(trigger).toHaveFocus();
+  });
+
+  it('moves focus into the menu on a mouse open so the arrow keys work right away', async () => {
+    setApps({
+      'app-domains': { name: 'app-domains', priority: 1 },
+    });
+    registerAction('new-domain', 'app-domains', 'New Domain');
+    registerAction('new-account', 'app-domains', 'New Account');
+
+    const activeRoute = {
+      id: 'domains',
+      route: 'domains',
+      path: '/manage/domains',
+      app: 'app-domains',
+    };
+
+    await setupBrowserTest(<CreationButton activeRoute={activeRoute} />);
+
+    const trigger = page.getByRole('button', { name: 'Create' });
+    await trigger.click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(page.getByRole('menuitem', { name: 'New Domain' })).toHaveFocus();
+
+    await userEvent.keyboard('{ArrowDown}');
+    await expect.element(page.getByRole('menuitem', { name: 'New Account' })).toHaveFocus();
+
+    await userEvent.keyboard('{Escape}');
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(trigger).toHaveFocus();
   });
 
   it('renders no dropdown items when there are no actions', async () => {
