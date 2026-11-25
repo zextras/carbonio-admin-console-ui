@@ -116,7 +116,7 @@ describe('Dropdown', () => {
 
   it('keeps exactly one tab stop when the menu starts with a divider', async () => {
     render(
-      <Dropdown items={buildDividerFirstItems()} disableAutoFocus>
+      <Dropdown items={buildDividerFirstItems()}>
         <button type="button">Open menu</button>
       </Dropdown>,
     );
@@ -352,6 +352,8 @@ describe('Dropdown', () => {
       );
 
       await expect.element(page.getByRole('menu')).toBeVisible();
+      await focusTrigger();
+      await userEvent.keyboard('{ArrowDown}');
       await expect.element(getItem('Apple')).toHaveFocus();
 
       await userEvent.keyboard('{Escape}');
@@ -808,7 +810,7 @@ describe('Dropdown', () => {
 
   it('sizes the menu like the trigger when width is 100%', async () => {
     render(
-      <Dropdown items={buildItems()} width="100%" disableAutoFocus>
+      <Dropdown items={buildItems()} width="100%">
         <button type="button" style={{ width: '300px' }}>
           Open menu
         </button>
@@ -818,6 +820,5 @@ describe('Dropdown', () => {
     await openDropdown();
 
     await expect.element(page.getByRole('menu')).toHaveStyle({ maxWidth: '100%' });
-    await expect.element(getItem('Apple')).not.toHaveFocus();
   });
 });

@@ -632,8 +632,6 @@ const ChipInputComponent = <TValue = unknown,>({
         items={dropdownItems}
         display="block"
         width={dropdownWidth}
-        disableAutoFocus
-        disableRestoreFocus
         open={isOpen}
         onOpenChange={handleOpenChange}
         disabled={isDropdownDisabled}

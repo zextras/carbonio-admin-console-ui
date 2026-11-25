@@ -43,8 +43,6 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
   items: Array<DropdownItem>;
   display?: 'block' | 'inline-block';
   width?: string;
-  disableRestoreFocus?: boolean;
-  disableAutoFocus?: boolean;
   multiple?: boolean;
   /** Fired whenever the menu opens or closes, in both modes. */
   onOpenChange?: (open: boolean) => void;
@@ -64,8 +62,6 @@ export const Dropdown = ({
   placement = 'bottom-start',
   display = 'inline-block',
   width = 'auto',
-  disableRestoreFocus = false,
-  disableAutoFocus = false,
   multiple = false,
   onOpenChange,
   open: openProp,
@@ -80,9 +76,9 @@ export const Dropdown = ({
   // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const listId = useId();
-  // Menus opened without a trigger interaction use this default.
-  const focusOnOpenRef = useRef<FocusOnOpen>('first');
-  const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
+  // One-shot: only a trigger interaction arms a focus move into the menu. A parent opening
+  // the menu through `open` leaves focus where it is.
+  const pendingFocusRef = useRef<FocusOnOpen>('none');
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
@@ -99,20 +95,23 @@ export const Dropdown = ({
     triggerElement?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
   };
 
-  const closePopper = (event?: React.SyntheticEvent | KeyboardEvent): void => {
+  const closePopper = (
+    event?: React.SyntheticEvent | KeyboardEvent,
+    { restoreFocus = true }: { restoreFocus?: boolean } = {},
+  ): void => {
     event?.preventDefault();
     if (!isControlled) {
       setInternalOpen(false);
     }
     setActiveItemIndex(null);
     onOpenChange?.(false);
-    if (!disableRestoreFocus) {
+    if (restoreFocus) {
       restoreTriggerFocus();
     }
   };
 
   const openPopper = (focusMode: FocusOnOpen): void => {
-    focusOnOpenRef.current = focusMode;
+    pendingFocusRef.current = focusMode;
     if (!isControlled) {
       setInternalOpen(true);
     }
@@ -183,19 +182,13 @@ export const Dropdown = ({
 
   const setPopperItemsRefAndFocus: React.RefCallback<HTMLDivElement | null> = (node) => {
     popperItemsRef.current = node;
-    // Focus only on a freshly mounted list: re-attach of the same node happens on every render
-    // (ref identity churn) and must not steal focus back from the item the user navigated to.
-    const focusMode = focusOnOpenRef.current;
-    if (
-      !node ||
-      !open ||
-      disableAutoFocus ||
-      focusMode === 'none' ||
-      autoFocusedNodeRef.current === node
-    ) {
+    const focusMode = pendingFocusRef.current;
+    if (!node || focusMode === 'none') {
       return;
     }
-    autoFocusedNodeRef.current = node;
+    // Consume it once: ref identity churn re-attaches the same node on every render, which
+    // must not steal focus back from the item the user navigated to.
+    pendingFocusRef.current = 'none';
     // Dividers and disabled items cannot take focus: pick by rank among the focusable items.
     const edge = focusMode === 'last' ? 'last' : 'first';
     getRovingItems(node)[resolveInitialFocusRank(items, edge)]?.focus();
@@ -203,6 +196,7 @@ export const Dropdown = ({
 
   useEffect(() => {
     if (!open) {
+      pendingFocusRef.current = 'none';
       return undefined;
     }
     const closeOnOutsideClick = (event: Event): void => {
@@ -211,7 +205,8 @@ export const Dropdown = ({
         target instanceof Node &&
         isOutsideMenu(target, dropdownRef.current, innerTriggerRef.current)
       ) {
-        closePopper();
+        // The click already put focus where the user wanted it; don't yank it back.
+        closePopper(undefined, { restoreFocus: false });
       }
     };
     window.document.addEventListener('click', closeOnOutsideClick, true);
