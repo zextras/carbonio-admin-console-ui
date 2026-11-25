@@ -8,150 +8,115 @@ import '../../web-components/ds-divider';
 
 import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
-import React, {
-  CSSProperties,
-  HTMLAttributes,
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { HTMLAttributes, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../hooks/useCombinedRefs';
 import { clickNodeWithFocus, KeyboardPresetObj, useKeyboard } from '../../hooks/useKeyboard';
-import { resolveThemeColor } from '../../theme/theme-utils';
 import { AnyColor } from '../../types/utils';
 import { setupFloating } from '../../utils/floating-ui';
 import { IconName } from '../../web-components/icon-registry';
 import { FOCUSABLE_SELECTOR, TIMERS } from '../constants';
 import { Portal } from '../utilities/Portal';
 import styles from './dropdown.module.css';
+import {
+  findTypeaheadIndex,
+  getItemStyleVars,
+  getNextRovingIndex,
+  getPopperListStyle,
+  getRovingItems,
+  isEditableTarget,
+  isOutsideMenu,
+  type MenuKeyAction,
+  resolveItemRole,
+  resolveMenuKeyAction,
+} from './dropdown-logic';
 import { Tooltip } from './Tooltip';
+
+type ItemTextSize = React.ComponentPropsWithRef<'ds-text'>['size'];
+
+type ItemClickHandler = (event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
+
+export type DropdownItem = {
+  type?: 'divider';
+  id: string;
+  label?: string;
+  icon?: IconName;
+  onClick?: ItemClickHandler;
+  selected?: boolean;
+  disabled?: boolean;
+  items?: Array<DropdownItem>;
+  tooltipLabel?: string;
+};
 
 type ListItemContentProps = {
   icon?: IconName;
   label: string;
   selected?: boolean;
   disabled?: boolean;
-  itemTextSize: React.ComponentProps<'ds-text'>['size'];
+  itemTextSize: ItemTextSize;
   tooltipLabel?: string;
 };
 
-function ListItemContent({
-  icon,
-  label,
-  selected,
-  disabled,
-  itemTextSize,
-  tooltipLabel,
-}: Readonly<ListItemContentProps>): React.JSX.Element {
-  return (
-    <Tooltip disabled={!disabled || !tooltipLabel} label={tooltipLabel} placement="bottom-end">
-      <div className={styles.rowLayout}>
-        {icon && (
-          <ds-icon
-            className={styles.itemIcon}
-            icon={icon}
-            size="medium"
-            color={disabled ? 'secondary' : 'text'}
-            style={{ pointerEvents: 'none' }}
-            aria-hidden="true"
-          ></ds-icon>
-        )}
-        <ds-text
-          as="span"
-          size={itemTextSize}
-          weight={selected ? 'bold' : 'regular'}
-          color={disabled ? 'secondary' : 'text'}
-          disabled={disabled}
-        >
-          {label}
-        </ds-text>
-      </div>
-    </Tooltip>
-  );
-}
+type PopperListItemProps = ListItemContentProps &
+  React.ComponentPropsWithRef<'button'> & {
+    onClick?: ItemClickHandler;
+    selectedBackgroundColor?: AnyColor;
+  };
 
-/** Item background custom properties consumed by dropdown.module.css. */
-type DropdownItemStyleVars = CSSProperties & {
-  '--dropdown-item-bg': string;
-  '--dropdown-item-bg-hover': string;
-  '--dropdown-item-bg-focus': string;
-  '--dropdown-item-bg-active': string;
+type NestListItemProps = ListItemContentProps &
+  React.ComponentPropsWithRef<'div'> & {
+    onClick?: ItemClickHandler;
+    selectedBackgroundColor?: AnyColor;
+    items: Array<DropdownItem>;
+    onOpen?: () => void;
+    onClose?: () => void;
+  };
+
+/** Props the dropdown reads from, and injects into, its trigger element. */
+type DropdownTriggerProps = React.AriaAttributes & {
+  id?: string;
+  onClick?: React.MouseEventHandler<HTMLElement>;
+  ref?: React.Ref<HTMLElement>;
 };
 
-function useContainerElStyle(
-  selected: boolean | undefined,
-  selectedBackgroundColor?: AnyColor,
-): DropdownItemStyleVars {
-  const bgColor = selected && selectedBackgroundColor ? selectedBackgroundColor : 'gray5';
-  return {
-    '--dropdown-item-bg': resolveThemeColor(String(bgColor), 'regular'),
-    '--dropdown-item-bg-hover': resolveThemeColor(String(bgColor), 'hover'),
-    '--dropdown-item-bg-focus': resolveThemeColor(String(bgColor), 'focus'),
-    '--dropdown-item-bg-active': resolveThemeColor(String(bgColor), 'active'),
-  };
-}
+export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
+  disabled?: boolean;
+  items: Array<DropdownItem>;
+  display?: 'block' | 'inline-block';
+  width?: string;
+  maxWidth?: string;
+  maxHeight?: string;
+  handleTriggerEvents?: boolean;
+  disableRestoreFocus?: boolean;
+  disableAutoFocus?: boolean;
+  multiple?: boolean;
+  onOpen?: () => void;
+  onClose?: () => void;
+  /** Controlled open state. When set, the menu follows it and reports intent via onOpenChange. */
+  open?: boolean;
+  /** Uncontrolled initial state. */
+  defaultOpen?: boolean;
+  /** Fired whenever the menu wants to open or close. */
+  onOpenChange?: (open: boolean) => void;
+  children: React.ReactElement<DropdownTriggerProps>;
+  triggerRef?: React.Ref<HTMLElement> | null;
+  placement?: Placement;
+  disablePortal?: boolean;
+  forceOpen?: boolean;
+  itemTextSize?: ItemTextSize;
+  dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
+};
 
-/** Focusable, enabled items of a dropdown list, in DOM order (dividers excluded). */
-function getRovingItems(container: HTMLElement | null): Array<HTMLElement> {
-  if (!container) {
-    return [];
-  }
-  return Array.from(container.querySelectorAll<HTMLElement>('[data-dropdown-item]')).filter(
-    (item) =>
-      !(item instanceof HTMLButtonElement && item.disabled) &&
-      item.getAttribute('aria-disabled') !== 'true',
-  );
-}
-
-/** Move focus between items, wrapping; falls back to an end when nothing is focused. */
-function focusRovingItem(items: Array<HTMLElement>, current: Element | null, offset: number): void {
-  if (items.length === 0) {
-    return;
-  }
-  const currentIndex = current instanceof HTMLElement ? items.indexOf(current) : -1;
-  const nextIndex =
-    currentIndex === -1
-      ? offset > 0
-        ? 0
-        : items.length - 1
-      : (currentIndex + offset + items.length) % items.length;
-  items[nextIndex]?.focus({ preventScroll: true });
-}
-
-/** Typeahead: focus the next item whose label starts with the pressed character, wrapping. */
-function focusTypeaheadItem(
-  items: Array<HTMLElement>,
-  current: Element | null,
-  char: string,
-): void {
-  if (items.length === 0) {
-    return;
-  }
-  const startIndex = current instanceof HTMLElement ? items.indexOf(current) : -1;
-  for (let step = 1; step <= items.length; step += 1) {
-    const candidate = items[(startIndex + step + items.length) % items.length];
-    if ((candidate.textContent ?? '').trim().toLowerCase().startsWith(char.toLowerCase())) {
-      candidate.focus({ preventScroll: true });
-      return;
-    }
-  }
-}
-
-/** Keys typed into editable trigger content (e.g. an embedded input) must never toggle the menu. */
-function isEditableEventTarget(event: Event): boolean {
-  const target = event.target;
-  return (
-    target instanceof HTMLInputElement ||
-    target instanceof HTMLTextAreaElement ||
-    target instanceof HTMLSelectElement ||
-    (target instanceof HTMLElement && target.isContentEditable)
-  );
-}
-
-/** How the list should move focus into its items when it opens. */
+/** How the list moves focus into its items when it opens. */
 type FocusOnOpen = 'none' | 'default' | 'last';
+
+type ItemRenderContext = {
+  activeItemIndex: number;
+  multiple: boolean;
+  itemTextSize: ItemTextSize;
+  createClickHandler: (onClick: DropdownItem['onClick']) => ItemClickHandler;
+  onItemFocus: (index: number) => void;
+};
 
 /**
  * Keyboard support for the trigger, enabled by default.
@@ -161,19 +126,20 @@ function getTriggerKeyboardPreset(
   toggleOpen: (event: KeyboardEvent) => void,
   stepIntoMenu: (edge: 'first' | 'last') => void,
   closeOpenMenu: (event: KeyboardEvent) => void,
-  spaceKeyDownOnTriggerRef: React.MutableRefObject<boolean>,
+  spaceKeyDownOnTriggerRef: React.RefObject<boolean>,
 ): KeyboardPresetObj[] {
   const guardedToggle = (event: KeyboardEvent): void => {
-    if (isEditableEventTarget(event)) {
+    if (isEditableTarget(event.target)) {
       return;
     }
     toggleOpen(event);
   };
   const preventSpaceScroll = (event: KeyboardEvent): void => {
-    if (!isEditableEventTarget(event)) {
-      event.preventDefault();
-      spaceKeyDownOnTriggerRef.current = true;
+    if (isEditableTarget(event.target)) {
+      return;
     }
+    event.preventDefault();
+    spaceKeyDownOnTriggerRef.current = true;
   };
   const guardedSpaceToggle = (event: KeyboardEvent): void => {
     // A Space keyup must pair with a Space keydown that landed on the trigger: activating an
@@ -184,15 +150,13 @@ function getTriggerKeyboardPreset(
     spaceKeyDownOnTriggerRef.current = false;
     guardedToggle(event);
   };
-  const guardedStepInto =
-    (edge: 'first' | 'last') =>
-    (event: KeyboardEvent): void => {
-      if (isEditableEventTarget(event)) {
-        return;
-      }
-      event.preventDefault();
-      stepIntoMenu(edge);
-    };
+  const guardedStepInto = (edge: 'first' | 'last') => (event: KeyboardEvent): void => {
+    if (isEditableTarget(event.target)) {
+      return;
+    }
+    event.preventDefault();
+    stepIntoMenu(edge);
+  };
   return [
     {
       type: 'keydown',
@@ -239,13 +203,93 @@ function getTriggerKeyboardPreset(
   ];
 }
 
-type PopperListItemProps = ListItemContentProps &
-  React.ComponentPropsWithRef<'button'> & {
-    onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
-    selectedBackgroundColor?: AnyColor;
-  };
+/** Builds the element for one dropdown item: a divider, a submenu row or a leaf item. */
+function buildItemElement(
+  item: DropdownItem,
+  index: number,
+  context: ItemRenderContext,
+): React.ReactNode {
+  const { id, icon, label, onClick, selected, items: subItems, disabled, type, ...itemProps } =
+    item;
+  if (type === 'divider') {
+    return <ds-divider key={id}></ds-divider>;
+  }
+  const rovingTabIndex = index === context.activeItemIndex ? 0 : -1;
+  const handleFocus = (): void => context.onItemFocus(index);
+  if (subItems) {
+    return (
+      <NestListItem
+        icon={icon}
+        label={label ?? ''}
+        aria-haspopup="menu"
+        aria-disabled={disabled ? true : undefined}
+        onClick={context.createClickHandler(onClick)}
+        selected={selected}
+        key={id}
+        disabled={disabled}
+        items={subItems}
+        itemTextSize={context.itemTextSize}
+        data-dropdown-item=""
+        tabIndex={rovingTabIndex}
+        onFocus={handleFocus}
+        {...itemProps}
+      />
+    );
+  }
+  return (
+    <PopperListItem
+      icon={icon}
+      label={label ?? ''}
+      role={resolveItemRole(selected, context.multiple)}
+      aria-checked={selected}
+      aria-disabled={disabled ? true : undefined}
+      onClick={context.createClickHandler(onClick)}
+      selected={selected}
+      key={id}
+      disabled={disabled}
+      itemTextSize={context.itemTextSize}
+      data-dropdown-item=""
+      tabIndex={rovingTabIndex}
+      onFocus={handleFocus}
+      {...itemProps}
+    />
+  );
+}
 
-function PopperListItem({
+const ListItemContent = ({
+  icon,
+  label,
+  selected,
+  disabled,
+  itemTextSize,
+  tooltipLabel,
+}: Readonly<ListItemContentProps>) => (
+  <Tooltip disabled={!disabled || !tooltipLabel} label={tooltipLabel} placement="bottom-end">
+    <div className={styles.rowLayout}>
+      {icon && (
+        <ds-icon
+          className={styles.itemIcon}
+          icon={icon}
+          size="medium"
+          color={disabled ? 'secondary' : 'text'}
+          style={{ pointerEvents: 'none' }}
+          aria-hidden="true"
+        ></ds-icon>
+      )}
+      <ds-text
+        as="span"
+        size={itemTextSize}
+        weight={selected ? 'bold' : 'regular'}
+        color={disabled ? 'secondary' : 'text'}
+        disabled={disabled}
+      >
+        {label}
+      </ds-text>
+    </div>
+  </Tooltip>
+);
+
+const PopperListItem = ({
   icon,
   label,
   onClick,
@@ -255,44 +299,32 @@ function PopperListItem({
   itemTextSize,
   tooltipLabel,
   ...rest
-}: Readonly<PopperListItemProps>): React.JSX.Element {
-  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
-  return (
-    <button
-      type="button"
-      className={clsx(
-        styles.containerEl,
-        styles.itemButton,
-        disabled && styles.disabled,
-        selected && 'zapp-selected',
-      )}
-      style={containerStyle}
-      onClick={(!disabled && onClick) || undefined}
+}: Readonly<PopperListItemProps>) => (
+  <button
+    type="button"
+    className={clsx(
+      styles.containerEl,
+      styles.itemButton,
+      disabled && styles.disabled,
+      selected && 'zapp-selected',
+    )}
+    style={getItemStyleVars(selected, selectedBackgroundColor)}
+    onClick={disabled ? undefined : onClick}
+    disabled={disabled}
+    {...rest}
+  >
+    <ListItemContent
+      icon={icon}
+      label={label}
+      selected={selected}
       disabled={disabled}
-      {...rest}
-    >
-      <ListItemContent
-        icon={icon}
-        label={label}
-        selected={selected}
-        disabled={disabled}
-        itemTextSize={itemTextSize}
-        tooltipLabel={tooltipLabel}
-      />
-    </button>
-  );
-}
+      itemTextSize={itemTextSize}
+      tooltipLabel={tooltipLabel}
+    />
+  </button>
+);
 
-type NestListItemProps = ListItemContentProps &
-  React.ComponentPropsWithRef<'div'> & {
-    onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
-    selectedBackgroundColor?: AnyColor;
-    items: Array<DropdownItem>;
-    onOpen?: () => void;
-    onClose?: () => void;
-  };
-
-function NestListItem({
+const NestListItem = ({
   icon,
   label,
   onClick,
@@ -305,43 +337,27 @@ function NestListItem({
   onOpen,
   onClose,
   ...rest
-}: Readonly<NestListItemProps>): React.JSX.Element {
+}: Readonly<NestListItemProps>) => {
   const [open, setOpen] = useState(false);
+  const [submenuListElement, setSubmenuListElement] = useState<HTMLDivElement | null>(null);
   const itemRef = useRef<HTMLDivElement | null>(null);
-  const [innerDropdownListElement, setInnerDropdownListElement] = useState<HTMLDivElement | null>(
-    null,
-  );
-  const setDropdownListRef: React.RefCallback<HTMLDivElement> = (node) => {
-    setInnerDropdownListElement(node);
-  };
-  const closeNestedDropdownTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(
-    undefined,
-  );
-  const containerStyle = useContainerElStyle(selected, selectedBackgroundColor);
+  const closeTimeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
 
-  useEffect(
-    () => () => {
-      if (closeNestedDropdownTimeoutRef.current !== undefined) {
-        clearTimeout(closeNestedDropdownTimeoutRef.current);
-      }
-    },
-    [],
-  );
-
-  const openNestedDropdown = () => {
-    if (closeNestedDropdownTimeoutRef.current !== undefined) {
-      clearTimeout(closeNestedDropdownTimeoutRef.current);
-      closeNestedDropdownTimeoutRef.current = undefined;
+  const cancelPendingClose = (): void => {
+    if (closeTimeoutRef.current !== undefined) {
+      clearTimeout(closeTimeoutRef.current);
+      closeTimeoutRef.current = undefined;
     }
+  };
+
+  const openSubmenu = (): void => {
+    cancelPendingClose();
     setOpen(true);
     onOpen?.();
   };
 
-  const closeNestedDropdown = () => {
-    if (closeNestedDropdownTimeoutRef.current !== undefined) {
-      clearTimeout(closeNestedDropdownTimeoutRef.current);
-      closeNestedDropdownTimeoutRef.current = undefined;
-    }
+  const closeSubmenu = (): void => {
+    cancelPendingClose();
     const focusIsOnChild = itemRef.current?.contains(document.activeElement);
     setOpen(false);
     onClose?.();
@@ -350,21 +366,21 @@ function NestListItem({
     }
   };
 
-  const itemKeyDownHandler = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+  const handleRowKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
     if (event.key === 'ArrowRight' && !event.ctrlKey) {
       event.preventDefault();
-      openNestedDropdown();
+      openSubmenu();
     }
   };
 
   // Escape/ArrowLeft must stay a native listener on the row: it has to stop the real event
   // propagation before it reaches the parent menu's close handler, which React's synthetic
   // delegation (at the root) cannot do in time.
-  const dropdownKeyEvents: KeyboardPresetObj[] = [
+  const submenuCloseKeyEvents: KeyboardPresetObj[] = [
     {
       type: 'keydown',
       callback: (event): void => {
-        closeNestedDropdown();
+        closeSubmenu();
         event.stopPropagation();
       },
       keys: [
@@ -374,33 +390,32 @@ function NestListItem({
     },
   ];
 
-  useKeyboard(itemRef, dropdownKeyEvents, open);
-
-  const closeOnMouseLeave = (event: Event) => {
-    if (event.target instanceof Node) {
-      const eventIsOnTrigger = itemRef.current?.contains(event.target);
-      const eventIsOnDropdown = innerDropdownListElement?.contains(event.target);
-      if (!eventIsOnDropdown && !eventIsOnTrigger) {
-        if (closeNestedDropdownTimeoutRef.current === undefined) {
-          closeNestedDropdownTimeoutRef.current = setTimeout(() => {
-            closeNestedDropdown();
-          }, TIMERS.DROPDOWN.CLOSE_NESTED);
-        }
-      } else if (closeNestedDropdownTimeoutRef.current !== undefined) {
-        clearTimeout(closeNestedDropdownTimeoutRef.current);
-        closeNestedDropdownTimeoutRef.current = undefined;
-      }
+  const scheduleCloseWhenPointerLeaves = (event: Event): void => {
+    if (!(event.target instanceof Node)) {
+      return;
     }
+    const pointerIsOnRow = itemRef.current?.contains(event.target);
+    const pointerIsOnSubmenu = submenuListElement?.contains(event.target);
+    if (pointerIsOnRow || pointerIsOnSubmenu) {
+      cancelPendingClose();
+      return;
+    }
+    closeTimeoutRef.current ??= setTimeout(closeSubmenu, TIMERS.DROPDOWN.CLOSE_NESTED);
   };
 
+  useEffect(() => cancelPendingClose, []);
+
   useEffect(() => {
-    if (open) {
-      window.addEventListener('mouseover', closeOnMouseLeave);
+    if (!open) {
+      return undefined;
     }
+    window.addEventListener('mouseover', scheduleCloseWhenPointerLeaves);
     return (): void => {
-      window.removeEventListener('mouseover', closeOnMouseLeave);
+      window.removeEventListener('mouseover', scheduleCloseWhenPointerLeaves);
     };
-  }, [closeOnMouseLeave, open]);
+  }, [scheduleCloseWhenPointerLeaves, open]);
+
+  useKeyboard(itemRef, submenuCloseKeyEvents, open);
 
   return (
     <div
@@ -412,11 +427,11 @@ function NestListItem({
         disabled && styles.disabled,
         selected && 'zapp-selected',
       )}
-      style={containerStyle}
+      style={getItemStyleVars(selected, selectedBackgroundColor)}
       onClick={disabled ? undefined : onClick}
-      onKeyDown={itemKeyDownHandler}
+      onKeyDown={handleRowKeyDown}
       tabIndex={disabled ? -1 : 0}
-      onMouseEnter={openNestedDropdown}
+      onMouseEnter={openSubmenu}
       {...rest}
     >
       <Dropdown
@@ -425,7 +440,7 @@ function NestListItem({
         forceOpen={open}
         placement="right-start"
         itemTextSize={itemTextSize}
-        dropdownListRef={setDropdownListRef}
+        dropdownListRef={setSubmenuListElement}
         disablePortal
       >
         <div className={styles.nestTrigger}>
@@ -442,49 +457,9 @@ function NestListItem({
       </Dropdown>
     </div>
   );
-}
-
-interface DropdownItem {
-  type?: 'divider';
-  id: string;
-  label?: string;
-  icon?: IconName;
-  onClick?: (e: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void;
-  selected?: boolean;
-  disabled?: boolean;
-  items?: Array<DropdownItem>;
-  tooltipLabel?: string;
-}
-
-type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> & {
-  disabled?: boolean;
-  items: Array<DropdownItem>;
-  display?: 'block' | 'inline-block';
-  width?: string;
-  maxWidth?: string;
-  maxHeight?: string;
-  handleTriggerEvents?: boolean;
-  disableRestoreFocus?: boolean;
-  disableAutoFocus?: boolean;
-  multiple?: boolean;
-  onOpen?: () => void;
-  onClose?: () => void;
-  /** Controlled open state. When set, the menu follows it and reports intent via onOpenChange. */
-  open?: boolean;
-  /** Uncontrolled initial state. */
-  defaultOpen?: boolean;
-  /** Fired whenever the menu wants to open or close. */
-  onOpenChange?: (open: boolean) => void;
-  children: React.ReactElement;
-  triggerRef?: React.Ref<HTMLElement> | null;
-  placement?: Placement;
-  disablePortal?: boolean;
-  forceOpen?: boolean;
-  itemTextSize?: React.ComponentPropsWithRef<'ds-text'>['size'];
-  dropdownListRef?: React.ForwardedRef<HTMLDivElement> | null;
 };
 
-const Dropdown = ({
+export const Dropdown = ({
   forceOpen = false,
   disabled = false,
   items,
@@ -510,18 +485,39 @@ const Dropdown = ({
   ...rest
 }: DropdownProps) => {
   const [internalOpen, setInternalOpen] = useState<boolean>(defaultOpen || forceOpen);
-  const open = openProp !== undefined ? openProp : forceOpen || internalOpen;
-  const listId = React.useId();
+  const open = openProp ?? (forceOpen || internalOpen);
+  const [activeItemIndex, setActiveItemIndex] = useState<number>(0);
+  const listId = useId();
   // 'default' keeps nested submenus (opened through forceOpen) focusing their first item.
   const focusOnOpenRef = useRef<FocusOnOpen>('default');
-  const [activeItemIndex, setActiveItemIndex] = useState<number>(0);
   const autoFocusedNodeRef = useRef<HTMLElement | null>(null);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
-
+  const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useCombinedRefs<HTMLDivElement>(dropdownListRef);
   const innerTriggerRef = useCombinedRefs(triggerRef);
-  const popperItemsRef = useRef<HTMLDivElement | null>(null);
-  const nestedDropdownsRef = useRef<Array<React.RefObject<HTMLDivElement | null>>>([]);
+
+  const getEnabledItems = (): Array<HTMLElement> => getRovingItems(popperItemsRef.current);
+
+  const restoreTriggerFocus = (): void => {
+    const triggerElement = innerTriggerRef.current;
+    if (triggerElement?.matches(FOCUSABLE_SELECTOR)) {
+      triggerElement.focus();
+      return;
+    }
+    triggerElement?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
+  };
+
+  const closePopper = (event?: React.SyntheticEvent | KeyboardEvent): void => {
+    event?.preventDefault();
+    if (openProp === undefined) {
+      setInternalOpen(false);
+    }
+    onOpenChange?.(false);
+    if (!disableRestoreFocus) {
+      restoreTriggerFocus();
+    }
+    onClose?.();
+  };
 
   const openPopper = (focusMode: FocusOnOpen): void => {
     focusOnOpenRef.current = focusMode;
@@ -534,35 +530,16 @@ const Dropdown = ({
     onOpenChange?.(true);
   };
 
-  const closePopper = (e?: React.SyntheticEvent | KeyboardEvent) => {
-    e?.preventDefault();
-    if (openProp === undefined) {
-      setInternalOpen(false);
-    }
-    onOpenChange?.(false);
-    if (!disableRestoreFocus) {
-      const triggerElement = innerTriggerRef.current;
-      if (triggerElement) {
-        if (triggerElement.matches(FOCUSABLE_SELECTOR)) {
-          triggerElement.focus();
-        } else {
-          triggerElement.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
-        }
-      }
-    }
-    onClose?.();
-  };
-
   // A pointer click must not move focus into the menu; only keyboard opens enter it.
   const toggleOpen = (
-    e: React.SyntheticEvent | KeyboardEvent,
+    event: React.SyntheticEvent | KeyboardEvent,
     focusMode: FocusOnOpen = 'none',
   ): void => {
     if (open) {
-      e.preventDefault();
+      event.preventDefault();
       closePopper();
     } else if (!disabled) {
-      e.preventDefault();
+      event.preventDefault();
       openPopper(focusMode);
     }
   };
@@ -576,9 +553,9 @@ const Dropdown = ({
       openPopper(edge === 'last' ? 'last' : 'default');
       return;
     }
-    const enabledItems = rovingItems();
-    const target = edge === 'last' ? enabledItems[enabledItems.length - 1] : enabledItems[0];
-    target?.focus({ preventScroll: true });
+    const enabledItems = getEnabledItems();
+    const targetIndex = edge === 'last' ? enabledItems.length - 1 : 0;
+    enabledItems[targetIndex]?.focus({ preventScroll: true });
   };
 
   const closeOpenMenuFromTrigger = (event: KeyboardEvent): void => {
@@ -587,27 +564,9 @@ const Dropdown = ({
     }
   };
 
-  const triggerComponentLeftClickHandler: React.ReactEventHandler = (e) => {
-    if (React.isValidElement(children)) {
-      (children.props as { onClick?: (e: React.SyntheticEvent) => void }).onClick?.(e);
-    }
-    toggleOpen(e);
-  };
-
-  const clickOutsidePopper = (e: Event) => {
-    const clickedOnDropdown =
-      dropdownRef.current &&
-      (e.target === dropdownRef.current || dropdownRef.current.contains(e.target as Node | null));
-    const clickedOnTrigger =
-      innerTriggerRef.current &&
-      (e.target === innerTriggerRef.current ||
-        innerTriggerRef.current?.contains(e.target as Node | null));
-    const clickedOnNestedItem = nestedDropdownsRef.current?.some((nestedItemRef) =>
-      nestedItemRef.current?.contains(e.target as Node | null),
-    );
-    if (!clickedOnDropdown && !clickedOnTrigger && !clickedOnNestedItem) {
-      closePopper();
-    }
+  const handleTriggerClick: React.MouseEventHandler<HTMLElement> = (event) => {
+    children.props.onClick?.(event);
+    toggleOpen(event);
   };
 
   const triggerEvents = handleTriggerEvents
@@ -620,23 +579,17 @@ const Dropdown = ({
     : [];
   useKeyboard(innerTriggerRef, triggerEvents);
 
-  const rovingItems = (): Array<HTMLElement> => getRovingItems(popperItemsRef.current);
-
   useLayoutEffect(() => {
-    let cleanup: ReturnType<typeof setupFloating>;
-    if (open) {
-      const popperReference = innerTriggerRef.current;
-      if (popperReference && dropdownRef.current) {
-        cleanup = setupFloating(popperReference, dropdownRef.current, {
-          placement,
-          middleware: [flip(), shift({ limiter: limitShift() })],
-          strategy: 'fixed',
-        });
-      }
+    const reference = innerTriggerRef.current;
+    const floatingElement = dropdownRef.current;
+    if (!open || !reference || !floatingElement) {
+      return undefined;
     }
-    return (): void => {
-      cleanup?.();
-    };
+    return setupFloating(reference, floatingElement, {
+      placement,
+      middleware: [flip(), shift({ limiter: limitShift() })],
+      strategy: 'fixed',
+    });
   }, [open, placement, dropdownRef, innerTriggerRef]);
 
   const setPopperItemsRefAndFocus: React.RefCallback<HTMLDivElement | null> = (node) => {
@@ -645,198 +598,140 @@ const Dropdown = ({
     // (ref identity churn) and must not steal focus back from the item the user navigated to.
     const focusMode = focusOnOpenRef.current;
     if (
-      node &&
-      open &&
-      !disableAutoFocus &&
-      focusMode !== 'none' &&
-      autoFocusedNodeRef.current !== node
+      !node ||
+      !open ||
+      disableAutoFocus ||
+      focusMode === 'none' ||
+      autoFocusedNodeRef.current === node
     ) {
-      autoFocusedNodeRef.current = node;
-      const enabledItems = getRovingItems(node);
-      const itemToFocus =
-        focusMode === 'last'
-          ? enabledItems[enabledItems.length - 1]
-          : node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild;
-      if (itemToFocus instanceof HTMLElement) {
-        itemToFocus.focus();
-      }
+      return;
+    }
+    autoFocusedNodeRef.current = node;
+    const enabledItems = getRovingItems(node);
+    const itemToFocus =
+      focusMode === 'last'
+        ? enabledItems[enabledItems.length - 1]
+        : (node.querySelector<HTMLElement>('.zapp-selected') ?? node.firstChild);
+    if (itemToFocus instanceof HTMLElement) {
+      itemToFocus.focus();
     }
   };
 
   useEffect(() => {
-    if (open) {
-      window.document.addEventListener('click', clickOutsidePopper, true);
+    if (!open) {
+      return undefined;
     }
-
-    return (): void => {
-      window.document.removeEventListener('click', clickOutsidePopper, true);
-      window.document.removeEventListener('contextmenu', clickOutsidePopper, true);
+    const closeOnOutsideClick = (event: Event): void => {
+      const target = event.target;
+      if (target instanceof Node && isOutsideMenu(target, dropdownRef.current, innerTriggerRef.current)) {
+        closePopper();
+      }
     };
-  }, [open, closePopper, clickOutsidePopper]);
+    window.document.addEventListener('click', closeOnOutsideClick, true);
+    return (): void => {
+      window.document.removeEventListener('click', closeOnOutsideClick, true);
+    };
+  }, [open, closePopper, dropdownRef, innerTriggerRef]);
 
-  const listItemClickHandler =
-    (
-      onClick: PopperListItemProps['onClick'],
-    ): ((event: React.SyntheticEvent<HTMLElement> | KeyboardEvent) => void) =>
+  const createItemClickHandler =
+    (onClick: DropdownItem['onClick']): ItemClickHandler =>
     (event): void => {
       if (!event.defaultPrevented) {
         onClick?.(event);
       }
-      if (!multiple) {
-        closePopper();
-      } else {
+      if (multiple) {
         event.stopPropagation();
+        return;
       }
+      closePopper();
     };
 
-  nestedDropdownsRef.current = [];
-  const popperListItems = items
-    ? items.map(
-        (
-          {
-            id,
-            icon,
-            label,
-            onClick,
-            selected,
-            items: subItems,
-            disabled: itemDisabled,
-            type,
-            ...itemProps
-          },
-          index,
-        ) => {
-          const nestedRef = React.createRef<HTMLDivElement>();
-          nestedDropdownsRef.current.push(nestedRef);
-          const itemRole =
-            selected === undefined ? 'menuitem' : multiple ? 'menuitemcheckbox' : 'menuitemradio';
-          const itemRovingTabIndex = index === activeItemIndex ? 0 : -1;
-          const itemFocusHandler = (): void => {
-            setActiveItemIndex(index);
-          };
-          return (
-            (type === 'divider' && <ds-divider key={id}></ds-divider>) ||
-            (subItems && (
-              <NestListItem
-                icon={icon}
-                label={label ?? ''}
-                aria-haspopup="menu"
-                aria-disabled={itemDisabled ? true : undefined}
-                onClick={listItemClickHandler(onClick)}
-                selected={selected}
-                key={id}
-                disabled={itemDisabled}
-                items={subItems}
-                itemTextSize={itemTextSize}
-                data-dropdown-item=""
-                tabIndex={itemRovingTabIndex}
-                onFocus={itemFocusHandler}
-                {...itemProps}
-              />
-            )) || (
-              <PopperListItem
-                icon={icon}
-                label={label ?? ''}
-                role={itemRole}
-                aria-checked={selected}
-                aria-disabled={itemDisabled ? true : undefined}
-                onClick={listItemClickHandler(onClick)}
-                selected={selected}
-                key={id}
-                disabled={itemDisabled}
-                itemTextSize={itemTextSize}
-                data-dropdown-item=""
-                tabIndex={itemRovingTabIndex}
-                onFocus={itemFocusHandler}
-                {...itemProps}
-              />
-            )
-          );
-        },
-      )
-    : null;
+  const runMenuKeyAction = (
+    action: MenuKeyAction,
+    event: React.KeyboardEvent<HTMLDivElement>,
+  ): void => {
+    const enabledItems = getEnabledItems();
+    const currentIndex = enabledItems.findIndex((item) => item === document.activeElement);
+    const focusItem = (index: number): void => {
+      enabledItems[index]?.focus({ preventScroll: true });
+    };
+    switch (action) {
+      case 'previous':
+        focusItem(getNextRovingIndex(enabledItems.length, currentIndex, -1));
+        break;
+      case 'next':
+        focusItem(getNextRovingIndex(enabledItems.length, currentIndex, 1));
+        break;
+      case 'first':
+        focusItem(0);
+        break;
+      case 'last':
+        focusItem(enabledItems.length - 1);
+        break;
+      case 'activate':
+        clickNodeWithFocus(popperItemsRef);
+        break;
+      case 'close':
+        closePopper(event);
+        break;
+      case 'typeahead': {
+        const labels = enabledItems.map((item) => item.textContent ?? '');
+        focusItem(findTypeaheadIndex(labels, currentIndex, event.key));
+        break;
+      }
+      default:
+        break;
+    }
+  };
 
-  const popperListPreventDefaultHandler: React.MouseEventHandler = (event) => {
-    event?.preventDefault?.();
+  const handleListKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+    if (event.defaultPrevented) {
+      return;
+    }
+    event.preventDefault();
+    runMenuKeyAction(resolveMenuKeyAction(event.key, event), event);
   };
 
   // Focus follows the pointer, so hover and focus are one item (mouse-initiated focus shows no ring).
-  const popperListMouseMoveHandler: React.MouseEventHandler<HTMLDivElement> = (event) => {
-    const item = (event.target as Element).closest<HTMLElement>('[data-dropdown-item]');
-    if (item && item !== document.activeElement && rovingItems().includes(item)) {
+  const focusItemUnderPointer: React.MouseEventHandler<HTMLDivElement> = (event) => {
+    const target = event.target;
+    if (!(target instanceof Element)) {
+      return;
+    }
+    const item = target.closest<HTMLElement>('[data-dropdown-item]');
+    if (item && item !== document.activeElement && getEnabledItems().includes(item)) {
       item.focus({ preventScroll: true });
     }
   };
 
-  // Single keydown handler for the open menu. The submenu rows' native listeners (Escape,
-  // ArrowLeft) stop the real event before it reaches this React handler, so the parent menu
-  // stays open when only the submenu should close.
-  const popperListKeyDownHandler: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
-    if (event.defaultPrevented) {
-      return;
-    }
-    const enabledItems = rovingItems();
-    switch (event.key) {
-      case 'ArrowUp':
-        event.preventDefault();
-        if (event.ctrlKey) {
-          enabledItems[0]?.focus({ preventScroll: true });
-        } else {
-          focusRovingItem(enabledItems, document.activeElement, -1);
-        }
-        break;
-      case 'ArrowDown':
-        event.preventDefault();
-        if (event.ctrlKey) {
-          enabledItems[enabledItems.length - 1]?.focus({ preventScroll: true });
-        } else {
-          focusRovingItem(enabledItems, document.activeElement, 1);
-        }
-        break;
-      case 'Enter':
-      case ' ':
-        event.preventDefault();
-        clickNodeWithFocus(popperItemsRef);
-        break;
-      case 'Escape':
-      case 'Tab':
-        closePopper(event);
-        break;
-      case 'Home':
-        event.preventDefault();
-        enabledItems[0]?.focus({ preventScroll: true });
-        break;
-      case 'End':
-        event.preventDefault();
-        enabledItems[enabledItems.length - 1]?.focus({ preventScroll: true });
-        break;
-      default:
-        event.preventDefault();
-        if (event.key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
-          focusTypeaheadItem(enabledItems, document.activeElement, event.key);
-        }
-        break;
-    }
-  };
+  const popperListItems =
+    items?.map(
+      (item, index) =>
+        buildItemElement(item, index, {
+          activeItemIndex,
+          multiple,
+          itemTextSize,
+          createClickHandler: createItemClickHandler,
+          onItemFocus: setActiveItemIndex,
+        }),
+      ) ?? null;
 
-  const triggerElementProps = children.props as { id?: string };
-  const triggerId = triggerElementProps.id ?? `${listId}-trigger`;
-
+  const triggerId = children.props.id ?? `${listId}-trigger`;
   const triggerComponent = React.cloneElement(children, {
     ref: innerTriggerRef,
     id: triggerId,
-    onClick: triggerComponentLeftClickHandler,
+    onClick: handleTriggerClick,
     'aria-haspopup': 'menu',
     'aria-expanded': open,
     ...(open ? { 'aria-controls': listId } : {}),
-  } as unknown as Partial<React.HTMLAttributes<HTMLElement>>);
+  });
 
-  const triggerWidth = innerTriggerRef.current?.clientWidth;
-  const popperListStyle = {
-    width: width === '100%' && triggerWidth ? `${triggerWidth}px` : width,
-    maxWidth: width === '100%' ? '100%' : maxWidth,
-    '--popper-max-height': maxHeight,
-  } as CSSProperties;
+  const popperListStyle = getPopperListStyle(
+    width,
+    maxWidth,
+    maxHeight,
+    innerTriggerRef.current?.clientWidth,
+  );
 
   return (
     <div className={styles.popperDropdownWrapper} data-display={display} {...rest}>
@@ -850,9 +745,9 @@ const Dropdown = ({
           style={popperListStyle}
           role="menu"
           tabIndex={-1}
-          onClick={popperListPreventDefaultHandler}
-          onMouseMove={popperListMouseMoveHandler}
-          onKeyDown={popperListKeyDownHandler}
+          onClick={(event) => event.preventDefault()}
+          onMouseMove={focusItemUnderPointer}
+          onKeyDown={handleListKeyDown}
         >
           <div ref={setPopperItemsRefAndFocus}>{popperListItems}</div>
         </div>
@@ -860,5 +755,3 @@ const Dropdown = ({
     </div>
   );
 };
-
-export { Dropdown, type DropdownItem, type DropdownProps };

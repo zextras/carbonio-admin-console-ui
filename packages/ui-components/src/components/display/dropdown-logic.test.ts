@@ -1,0 +1,192 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import {
+  findTypeaheadIndex,
+  getNextRovingIndex,
+  getPopperListStyle,
+  getRovingItems,
+  isEditableTarget,
+  isOutsideMenu,
+  resolveItemRole,
+  resolveMenuKeyAction,
+} from './dropdown-logic';
+
+const NO_MODIFIERS = { ctrlKey: false, metaKey: false, altKey: false };
+const CTRL = { ctrlKey: true, metaKey: false, altKey: false };
+
+describe('dropdown-logic', () => {
+  describe('getNextRovingIndex', () => {
+    it('steps forward and backward', () => {
+      expect(getNextRovingIndex(3, 0, 1)).toBe(1);
+      expect(getNextRovingIndex(3, 2, -1)).toBe(1);
+    });
+
+    it('wraps around at both ends', () => {
+      expect(getNextRovingIndex(3, 2, 1)).toBe(0);
+      expect(getNextRovingIndex(3, 0, -1)).toBe(2);
+    });
+
+    it('falls back to an end when nothing is focused', () => {
+      expect(getNextRovingIndex(3, -1, 1)).toBe(0);
+      expect(getNextRovingIndex(3, -1, -1)).toBe(2);
+    });
+
+    it('returns -1 when there are no items', () => {
+      expect(getNextRovingIndex(0, -1, 1)).toBe(-1);
+    });
+  });
+
+  describe('findTypeaheadIndex', () => {
+    const labels = ['Apple', 'Banana', 'Cherry'];
+
+    it('finds the next matching label after the current one', () => {
+      expect(findTypeaheadIndex(labels, 0, 'c')).toBe(2);
+    });
+
+    it('ignores case and surrounding whitespace', () => {
+      expect(findTypeaheadIndex([' Apple ', 'Banana'], 1, 'a')).toBe(0);
+    });
+
+    it('wraps around to the start', () => {
+      expect(findTypeaheadIndex(labels, 2, 'a')).toBe(0);
+    });
+
+    it('starts from the first item when nothing is focused', () => {
+      expect(findTypeaheadIndex(labels, -1, 'b')).toBe(1);
+    });
+
+    it('stays on the current item when it is the only match', () => {
+      expect(findTypeaheadIndex(labels, 2, 'c')).toBe(2);
+    });
+
+    it('returns -1 when nothing matches or the list is empty', () => {
+      expect(findTypeaheadIndex(labels, 0, 'z')).toBe(-1);
+      expect(findTypeaheadIndex([], -1, 'a')).toBe(-1);
+    });
+  });
+
+  describe('resolveItemRole', () => {
+    it('keeps plain menuitems for items without a selection state', () => {
+      expect(resolveItemRole(undefined, false)).toBe('menuitem');
+    });
+
+    it('uses menuitemradio for single selection', () => {
+      expect(resolveItemRole(true, false)).toBe('menuitemradio');
+    });
+
+    it('uses menuitemcheckbox for multiple selection', () => {
+      expect(resolveItemRole(false, true)).toBe('menuitemcheckbox');
+    });
+  });
+
+  describe('resolveMenuKeyAction', () => {
+    it.each([
+      ['ArrowUp', NO_MODIFIERS, 'previous'],
+      ['ArrowUp', CTRL, 'first'],
+      ['ArrowDown', NO_MODIFIERS, 'next'],
+      ['ArrowDown', CTRL, 'last'],
+      ['Home', NO_MODIFIERS, 'first'],
+      ['End', NO_MODIFIERS, 'last'],
+      ['Enter', NO_MODIFIERS, 'activate'],
+      [' ', NO_MODIFIERS, 'activate'],
+      ['Escape', NO_MODIFIERS, 'close'],
+      ['Tab', NO_MODIFIERS, 'close'],
+      ['c', NO_MODIFIERS, 'typeahead'],
+      ['F5', NO_MODIFIERS, 'none'],
+      ['c', CTRL, 'none'],
+    ] as const)('maps %s (%j) to %s', (key, modifiers, expected) => {
+      expect(resolveMenuKeyAction(key, modifiers)).toBe(expected);
+    });
+  });
+
+  describe('isEditableTarget', () => {
+    it('is true for text inputs, textareas and selects', () => {
+      expect(isEditableTarget(document.createElement('input'))).toBe(true);
+      expect(isEditableTarget(document.createElement('textarea'))).toBe(true);
+      expect(isEditableTarget(document.createElement('select'))).toBe(true);
+    });
+
+    it('is false for buttons, plain elements and missing targets', () => {
+      expect(isEditableTarget(document.createElement('button'))).toBe(false);
+      expect(isEditableTarget(document.createElement('div'))).toBe(false);
+      expect(isEditableTarget(null)).toBe(false);
+    });
+  });
+
+  describe('isOutsideMenu', () => {
+    it('is false for a target inside the menu', () => {
+      const menu = document.createElement('div');
+      const item = document.createElement('button');
+      menu.append(item);
+      const trigger = document.createElement('button');
+
+      expect(isOutsideMenu(item, menu, trigger)).toBe(false);
+    });
+
+    it('is false for a target inside the trigger', () => {
+      const trigger = document.createElement('div');
+      const button = document.createElement('button');
+      trigger.append(button);
+
+      expect(isOutsideMenu(button, document.createElement('div'), trigger)).toBe(false);
+    });
+
+    it('is true for a target elsewhere in the document', () => {
+      const elsewhere = document.createElement('button');
+
+      expect(isOutsideMenu(elsewhere, document.createElement('div'), document.createElement('div'))).toBe(
+        true,
+      );
+    });
+
+    it('is true when the menu is not mounted', () => {
+      expect(isOutsideMenu(document.createElement('div'), null, null)).toBe(true);
+    });
+  });
+
+  describe('getRovingItems', () => {
+    it('returns only the enabled dropdown items, in DOM order', () => {
+      const container = document.createElement('div');
+      container.innerHTML = [
+        '<button data-dropdown-item>a</button>',
+        '<button data-dropdown-item disabled>b</button>',
+        '<div data-dropdown-item aria-disabled="true"></div>',
+        '<div data-dropdown-item>c</div>',
+        '<span>not an item</span>',
+      ].join('');
+
+      expect(getRovingItems(container).map((item) => item.textContent)).toEqual(['a', 'c']);
+    });
+
+    it('returns an empty list without a container', () => {
+      expect(getRovingItems(null)).toEqual([]);
+    });
+  });
+
+  describe('getPopperListStyle', () => {
+    it('sizes the menu like the trigger when width is 100%', () => {
+      expect(getPopperListStyle('100%', '18.75rem', '50vh', 300)).toEqual({
+        width: '300px',
+        maxWidth: '100%',
+        '--popper-max-height': '50vh',
+      });
+    });
+
+    it('keeps the configured width otherwise', () => {
+      expect(getPopperListStyle('auto', '18.75rem', '50vh', 300)).toEqual({
+        width: 'auto',
+        maxWidth: '18.75rem',
+        '--popper-max-height': '50vh',
+      });
+      expect(getPopperListStyle('100%', '18.75rem', '50vh', undefined)).toEqual({
+        width: '100%',
+        maxWidth: '100%',
+        '--popper-max-height': '50vh',
+      });
+    });
+  });
+});
