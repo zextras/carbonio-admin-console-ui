@@ -8,6 +8,7 @@ import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
 import React, { HTMLAttributes, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
 
+import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { clickNodeWithFocus, useKeyboard } from '../../../hooks/useKeyboard';
 import { setupFloating } from '../../../utils/floating-ui';
 import { FOCUSABLE_SELECTOR } from '../../constants';
@@ -52,6 +53,18 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
   children: React.ReactElement<DropdownTriggerProps>;
   placement?: Placement;
   itemTextSize?: ItemTextSize;
+  /**
+   * Keep focus where it is when the menu opens. For combobox-style triggers, where the user
+   * keeps typing in an input while the options are shown.
+   */
+  disableAutoFocus?: boolean;
+  /** Leave focus alone when the menu closes, instead of moving it back to the trigger. */
+  disableRestoreFocus?: boolean;
+  /**
+   * Don't add `aria-haspopup`, `aria-expanded`, `aria-controls` and `id` to the trigger.
+   * For triggers whose focusable element is nested: the consumer puts the semantics there.
+   */
+  disableTriggerAria?: boolean;
 };
 
 /** How the list moves focus into its items when it opens. */
@@ -68,6 +81,9 @@ export const Dropdown = ({
   open: openProp,
   children,
   itemTextSize = 'medium',
+  disableAutoFocus = false,
+  disableRestoreFocus = false,
+  disableTriggerAria = false,
   ...rest
 }: DropdownProps) => {
   // With `open` set the parent owns the state and the menu only reports intent.
@@ -80,26 +96,38 @@ export const Dropdown = ({
   // One-shot: only a trigger interaction arms a focus move into the menu. A parent opening
   // the menu through `open` leaves focus where it is.
   const pendingFocusRef = useRef<FocusOnOpen>('none');
+  // The committed open state, read after a controlled open request to see if it was honoured.
+  const openRef = useRef<boolean>(open);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  const innerTriggerRef = useRef<HTMLElement | null>(null);
+  // The trigger's own ref (e.g. one a consumer forwards) stays attached alongside ours.
+  const innerTriggerRef = useCombinedRefs<HTMLElement>(children.props.ref);
 
-  const getEnabledItems = (): Array<HTMLElement> => getRovingItems(popperItemsRef.current);
+  useLayoutEffect(() => {
+    openRef.current = open;
+  });
 
-  const restoreTriggerFocus = (): void => {
+  function getEnabledItems(): Array<HTMLElement> {
+    return getRovingItems(popperItemsRef.current);
+  }
+
+  function restoreTriggerFocus(): void {
+    if (disableRestoreFocus) {
+      return;
+    }
     const triggerElement = innerTriggerRef.current;
     if (triggerElement?.matches(FOCUSABLE_SELECTOR)) {
       triggerElement.focus();
       return;
     }
     triggerElement?.querySelector<HTMLElement>(FOCUSABLE_SELECTOR)?.focus();
-  };
+  }
 
-  const closePopper = (
+  function closePopper(
     event?: React.SyntheticEvent | KeyboardEvent,
     { restoreFocus = true }: { restoreFocus?: boolean } = {},
-  ): void => {
+  ): void {
     event?.preventDefault();
     if (!isControlled) {
       setInternalOpen(false);
@@ -109,22 +137,31 @@ export const Dropdown = ({
     if (restoreFocus) {
       restoreTriggerFocus();
     }
-  };
+  }
 
-  const openPopper = (focusMode: FocusOnOpen): void => {
-    pendingFocusRef.current = focusMode;
+  function openPopper(focusMode: FocusOnOpen): void {
+    pendingFocusRef.current = disableAutoFocus ? 'none' : focusMode;
     if (!isControlled) {
       setInternalOpen(true);
     }
     onOpenChange?.(true);
-  };
+    if (isControlled) {
+      // The parent may ignore the request. Its state update, if any, is flushed before this
+      // microtask: a request that didn't open the menu must not move focus on a later open.
+      queueMicrotask(() => {
+        if (!openRef.current) {
+          pendingFocusRef.current = 'none';
+        }
+      });
+    }
+  }
 
   // Every open moves focus into the menu, so the arrow keys work right away in any browser:
   // not all of them focus a button on click. The caller opts out for editable triggers.
-  const toggleOpen = (
+  function toggleOpen(
     event: React.SyntheticEvent | KeyboardEvent,
     focusMode: FocusOnOpen = 'first',
-  ): void => {
+  ): void {
     if (open) {
       event.preventDefault();
       closePopper();
@@ -132,10 +169,10 @@ export const Dropdown = ({
       event.preventDefault();
       openPopper(focusMode);
     }
-  };
+  }
 
   /** Arrow keys on the trigger: open the menu (first/last item) or step into an open one. */
-  const stepIntoMenu = (edge: 'first' | 'last'): void => {
+  function stepIntoMenu(edge: 'first' | 'last'): void {
     if (disabled) {
       return;
     }
@@ -146,26 +183,35 @@ export const Dropdown = ({
     const enabledItems = getEnabledItems();
     const targetIndex = edge === 'last' ? enabledItems.length - 1 : 0;
     enabledItems[targetIndex]?.focus({ preventScroll: true });
-  };
+  }
 
-  const closeOpenMenuFromTrigger = (event: KeyboardEvent): void => {
+  function closeOnEscape(event: KeyboardEvent): void {
     if (open) {
       closePopper(event);
     }
-  };
+  }
+
+  // Tab from the trigger moves on in the page: close without cancelling it or pulling focus back.
+  function closeOnTab(): void {
+    if (open) {
+      closePopper(undefined, { restoreFocus: false });
+    }
+  }
 
   // A click inside an editable trigger (a combobox-style input) keeps focus there so typing goes on.
-  const handleTriggerClick: React.MouseEventHandler<HTMLElement> = (event) => {
+  function handleTriggerClick(event: React.MouseEvent<HTMLElement>): void {
     children.props.onClick?.(event);
     toggleOpen(event, isEditableTarget(event.target) ? 'none' : 'first');
-  };
+  }
 
-  const triggerEvents = getTriggerKeyboardPreset(
-    (event) => toggleOpen(event, 'first'),
+  const triggerEvents = getTriggerKeyboardPreset({
+    triggerRef: innerTriggerRef,
+    toggleOpen,
     stepIntoMenu,
-    closeOpenMenuFromTrigger,
+    closeOnEscape,
+    closeOnTab,
     spaceKeyDownOnTriggerRef,
-  );
+  });
   useKeyboard(innerTriggerRef, triggerEvents);
 
   useLayoutEffect(() => {
@@ -181,7 +227,7 @@ export const Dropdown = ({
     });
   }, [open, placement, dropdownRef, innerTriggerRef]);
 
-  const setPopperItemsRefAndFocus: React.RefCallback<HTMLDivElement | null> = (node) => {
+  function setPopperItemsRefAndFocus(node: HTMLDivElement | null): void {
     popperItemsRef.current = node;
     const focusMode = pendingFocusRef.current;
     if (!node || focusMode === 'none') {
@@ -193,14 +239,14 @@ export const Dropdown = ({
     // Dividers and disabled items cannot take focus: pick by rank among the focusable items.
     const edge = focusMode === 'last' ? 'last' : 'first';
     getRovingItems(node)[resolveInitialFocusRank(items, edge)]?.focus();
-  };
+  }
 
   useEffect(() => {
     if (!open) {
       pendingFocusRef.current = 'none';
       return undefined;
     }
-    const closeOnOutsideClick = (event: Event): void => {
+    function closeOnOutsideClick(event: Event): void {
       const target = event.target;
       if (
         target instanceof Node &&
@@ -209,16 +255,15 @@ export const Dropdown = ({
         // The click already put focus where the user wanted it; don't yank it back.
         closePopper(undefined, { restoreFocus: false });
       }
-    };
-    window.document.addEventListener('click', closeOnOutsideClick, true);
+    }
+    globalThis.document.addEventListener('click', closeOnOutsideClick, true);
     return (): void => {
-      window.document.removeEventListener('click', closeOnOutsideClick, true);
+      globalThis.document.removeEventListener('click', closeOnOutsideClick, true);
     };
   }, [open, closePopper, dropdownRef, innerTriggerRef]);
 
-  const createItemClickHandler =
-    (onClick: DropdownItem['onClick']): ItemClickHandler =>
-    (event): void => {
+  function createItemClickHandler(onClick: DropdownItem['onClick']): ItemClickHandler {
+    return function handleItemClick(event): void {
       if (!event.defaultPrevented) {
         onClick?.(event);
       }
@@ -229,18 +274,19 @@ export const Dropdown = ({
       // A mouse user doesn't need focus back on the trigger; keyboard users do (WAI-ARIA).
       closePopper(undefined, { restoreFocus: !isPointerActivation(event) });
     };
+  }
 
-  const runMenuKeyAction = (
+  function runMenuKeyAction(
     action: MenuKeyAction,
     event: React.KeyboardEvent<HTMLDivElement>,
-  ): void => {
+  ): void {
     const enabledItems = getEnabledItems();
     const focusedItem = document.activeElement;
     const currentIndex =
       focusedItem instanceof HTMLElement ? enabledItems.indexOf(focusedItem) : -1;
-    const focusItem = (index: number): void => {
+    function focusItem(index: number): void {
       enabledItems[index]?.focus({ preventScroll: true });
-    };
+    }
     switch (action) {
       case 'previous':
         focusItem(getNextRovingIndex(enabledItems.length, currentIndex, -1));
@@ -268,18 +314,18 @@ export const Dropdown = ({
       default:
         break;
     }
-  };
+  }
 
-  const handleListKeyDown: React.KeyboardEventHandler<HTMLDivElement> = (event) => {
+  function handleListKeyDown(event: React.KeyboardEvent<HTMLDivElement>): void {
     if (event.defaultPrevented) {
       return;
     }
     event.preventDefault();
     runMenuKeyAction(resolveMenuKeyAction(event.key, event), event);
-  };
+  }
 
   // Focus follows the pointer, so hover and focus are one item (mouse-initiated focus shows no ring).
-  const focusItemUnderPointer: React.MouseEventHandler<HTMLDivElement> = (event) => {
+  function focusItemUnderPointer(event: React.MouseEvent<HTMLDivElement>): void {
     const target = event.target;
     if (!(target instanceof Element)) {
       return;
@@ -288,18 +334,25 @@ export const Dropdown = ({
     if (item && item !== document.activeElement && getEnabledItems().includes(item)) {
       item.focus({ preventScroll: true });
     }
-  };
+  }
 
   const tabStopIndex = resolveTabStopIndex(items, activeItemIndex);
 
-  const triggerId = children.props.id ?? `${listId}-trigger`;
+  const triggerId = disableTriggerAria
+    ? children.props.id
+    : (children.props.id ?? `${listId}-trigger`);
+  const triggerAria: DropdownTriggerProps = disableTriggerAria
+    ? {}
+    : {
+        id: triggerId,
+        'aria-haspopup': 'menu',
+        'aria-expanded': open,
+        ...(open ? { 'aria-controls': listId } : {}),
+      };
   const triggerComponent = React.cloneElement(children, {
     ref: innerTriggerRef,
-    id: triggerId,
     onClick: handleTriggerClick,
-    'aria-haspopup': 'menu',
-    'aria-expanded': open,
-    ...(open ? { 'aria-controls': listId } : {}),
+    ...triggerAria,
   });
 
   const popperListStyle = getPopperListStyle(width, innerTriggerRef.current?.clientWidth);

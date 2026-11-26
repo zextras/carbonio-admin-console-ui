@@ -267,17 +267,27 @@ describe('dropdown-logic', () => {
       return preset;
     };
 
-    const createHarness = () => {
+    const createHarness = (trigger: HTMLElement = document.createElement('button')) => {
       const toggleOpen = vi.fn();
       const stepIntoMenu = vi.fn();
-      const closeOpenMenu = vi.fn();
+      const closeOnEscape = vi.fn();
+      const closeOnTab = vi.fn();
       const spaceKeyDown = { current: false };
       return {
+        trigger,
         toggleOpen,
         stepIntoMenu,
-        closeOpenMenu,
+        closeOnEscape,
+        closeOnTab,
         spaceKeyDown,
-        presets: getTriggerKeyboardPreset(toggleOpen, stepIntoMenu, closeOpenMenu, spaceKeyDown),
+        presets: getTriggerKeyboardPreset({
+          triggerRef: { current: trigger },
+          toggleOpen,
+          stepIntoMenu,
+          closeOnEscape,
+          closeOnTab,
+          spaceKeyDownOnTriggerRef: spaceKeyDown,
+        }),
       };
     };
 
@@ -297,22 +307,51 @@ describe('dropdown-logic', () => {
       ]);
     });
 
-    it('toggles on Enter unless the key was typed in an editable trigger', () => {
-      const { presets, toggleOpen } = createHarness();
-      const onEnter = presetFor(presets, 'keydown', 'Enter').callback;
+    it('toggles on Enter pressed on the trigger', () => {
+      const { presets, toggleOpen, trigger } = createHarness();
 
-      onEnter(pressOn(document.createElement('button'), 'keydown', { key: 'Enter' }));
-      onEnter(pressOn(document.createElement('input'), 'keydown', { key: 'Enter' }));
+      presetFor(presets, 'keydown', 'Enter').callback(
+        pressOn(trigger, 'keydown', { key: 'Enter' }),
+      );
 
       expect(toggleOpen).toHaveBeenCalledTimes(1);
     });
 
+    it('does not toggle on Enter typed in an editable trigger', () => {
+      const { presets, toggleOpen, trigger } = createHarness(document.createElement('input'));
+
+      presetFor(presets, 'keydown', 'Enter').callback(
+        pressOn(trigger, 'keydown', { key: 'Enter' }),
+      );
+
+      expect(toggleOpen).not.toHaveBeenCalled();
+    });
+
+    it('leaves keys on a control nested in the trigger to that control', () => {
+      const { presets, toggleOpen, stepIntoMenu, spaceKeyDown, trigger } = createHarness(
+        document.createElement('div'),
+      );
+      const nestedButton = document.createElement('button');
+      trigger.appendChild(nestedButton);
+
+      const enter = pressOn(nestedButton, 'keydown', { key: 'Enter' });
+      const space = pressOn(nestedButton, 'keydown', { key: ' ', code: 'Space' });
+      const down = pressOn(nestedButton, 'keydown', { key: 'ArrowDown' });
+      presetFor(presets, 'keydown', 'Enter').callback(enter);
+      presetFor(presets, 'keydown', 'Space').callback(space);
+      presetFor(presets, 'keydown', 'ArrowDown').callback(down);
+
+      expect(toggleOpen).not.toHaveBeenCalled();
+      expect(stepIntoMenu).not.toHaveBeenCalled();
+      expect(spaceKeyDown.current).toBe(false);
+      expect(enter.defaultPrevented).toBe(false);
+      expect(space.defaultPrevented).toBe(false);
+      expect(down.defaultPrevented).toBe(false);
+    });
+
     it('stops Space from scrolling and arms its keyup on the trigger', () => {
-      const { presets, spaceKeyDown } = createHarness();
-      const onButton = pressOn(document.createElement('button'), 'keydown', {
-        key: ' ',
-        code: 'Space',
-      });
+      const { presets, spaceKeyDown, trigger } = createHarness();
+      const onButton = pressOn(trigger, 'keydown', { key: ' ', code: 'Space' });
 
       presetFor(presets, 'keydown', 'Space').callback(onButton);
 
@@ -321,11 +360,10 @@ describe('dropdown-logic', () => {
     });
 
     it('leaves a Space typed in an editable trigger alone', () => {
-      const { presets, spaceKeyDown, toggleOpen } = createHarness();
-      const onInput = pressOn(document.createElement('input'), 'keydown', {
-        key: ' ',
-        code: 'Space',
-      });
+      const { presets, spaceKeyDown, toggleOpen, trigger } = createHarness(
+        document.createElement('input'),
+      );
+      const onInput = pressOn(trigger, 'keydown', { key: ' ', code: 'Space' });
 
       presetFor(presets, 'keydown', 'Space').callback(onInput);
 
@@ -337,31 +375,28 @@ describe('dropdown-logic', () => {
     it('toggles on Space keyup only when its keydown landed on the trigger', () => {
       const unarmed = createHarness();
       presetFor(unarmed.presets, 'keyup', 'Space').callback(
-        pressOn(document.createElement('button'), 'keyup', { key: ' ', code: 'Space' }),
+        pressOn(unarmed.trigger, 'keyup', { key: ' ', code: 'Space' }),
       );
       expect(unarmed.toggleOpen).not.toHaveBeenCalled();
 
       const armed = createHarness();
       presetFor(armed.presets, 'keydown', 'Space').callback(
-        pressOn(document.createElement('button'), 'keydown', { key: ' ', code: 'Space' }),
+        pressOn(armed.trigger, 'keydown', { key: ' ', code: 'Space' }),
       );
       presetFor(armed.presets, 'keyup', 'Space').callback(
-        pressOn(document.createElement('button'), 'keyup', { key: ' ', code: 'Space' }),
+        pressOn(armed.trigger, 'keyup', { key: ' ', code: 'Space' }),
       );
       expect(armed.toggleOpen).toHaveBeenCalledTimes(1);
       expect(armed.spaceKeyDown.current).toBe(false);
     });
 
-    it('steps into the menu with the arrow keys, without moving the caret of editable triggers', () => {
-      const { presets, stepIntoMenu } = createHarness();
-      const down = pressOn(document.createElement('button'), 'keydown', { key: 'ArrowDown' });
-      const up = pressOn(document.createElement('button'), 'keydown', { key: 'ArrowUp' });
+    it('steps into the menu with the arrow keys pressed on the trigger', () => {
+      const { presets, stepIntoMenu, trigger } = createHarness();
+      const down = pressOn(trigger, 'keydown', { key: 'ArrowDown' });
+      const up = pressOn(trigger, 'keydown', { key: 'ArrowUp' });
 
       presetFor(presets, 'keydown', 'ArrowDown').callback(down);
       presetFor(presets, 'keydown', 'ArrowUp').callback(up);
-      presetFor(presets, 'keydown', 'ArrowDown').callback(
-        pressOn(document.createElement('input'), 'keydown', { key: 'ArrowDown' }),
-      );
 
       expect(down.defaultPrevented).toBe(true);
       expect(up.defaultPrevented).toBe(true);
@@ -370,17 +405,32 @@ describe('dropdown-logic', () => {
       expect(stepIntoMenu).toHaveBeenNthCalledWith(2, 'last');
     });
 
-    it('closes the open menu on Escape and Tab', () => {
-      const { presets, closeOpenMenu } = createHarness();
+    it('does not move the caret of an editable trigger with the arrow keys', () => {
+      const { presets, stepIntoMenu, trigger } = createHarness(document.createElement('input'));
+      const down = pressOn(trigger, 'keydown', { key: 'ArrowDown' });
+
+      presetFor(presets, 'keydown', 'ArrowDown').callback(down);
+
+      expect(down.defaultPrevented).toBe(false);
+      expect(stepIntoMenu).not.toHaveBeenCalled();
+    });
+
+    it('routes Escape and Tab to their own close handlers, from anywhere in the trigger', () => {
+      const { presets, closeOnEscape, closeOnTab, trigger } = createHarness(
+        document.createElement('div'),
+      );
+      const nestedInput = document.createElement('input');
+      trigger.appendChild(nestedInput);
 
       presetFor(presets, 'keydown', 'Escape').callback(
-        pressOn(document.createElement('button'), 'keydown', { key: 'Escape' }),
+        pressOn(nestedInput, 'keydown', { key: 'Escape' }),
       );
       presetFor(presets, 'keydown', 'Tab').callback(
-        pressOn(document.createElement('button'), 'keydown', { key: 'Tab' }),
+        pressOn(nestedInput, 'keydown', { key: 'Tab' }),
       );
 
-      expect(closeOpenMenu).toHaveBeenCalledTimes(2);
+      expect(closeOnEscape).toHaveBeenCalledTimes(1);
+      expect(closeOnTab).toHaveBeenCalledTimes(1);
     });
   });
 

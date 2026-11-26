@@ -5,7 +5,7 @@
  */
 import '../../../../web-components';
 
-import { useState } from 'react';
+import { createRef, useState } from 'react';
 import { page, userEvent } from 'vitest/browser';
 import { render } from 'vitest-browser-react';
 
@@ -39,6 +39,21 @@ const StatefulDropdown = () => {
         <button type="button">Open menu</button>
       </Dropdown>
       <input aria-label="Close by typing" onChange={() => setOpen(false)} />
+    </>
+  );
+};
+
+/** A parent that owns the open state, ignores the dropdown's requests and opens it on its own. */
+const IgnoringParentDropdown = () => {
+  const [open, setOpen] = useState(false);
+  return (
+    <>
+      <Dropdown items={buildItems()} open={open} onOpenChange={() => undefined}>
+        <button type="button">Open menu</button>
+      </Dropdown>
+      <button type="button" onClick={() => setOpen(true)}>
+        Parent open
+      </button>
     </>
   );
 };
@@ -279,6 +294,119 @@ describe('Dropdown', () => {
     await expect.element(page.getByRole('menu')).toBeVisible();
     await expect.element(getItem('Apple')).not.toHaveFocus();
     await expect.element(page.getByRole('button', { name: 'Open menu' })).not.toHaveFocus();
+  });
+
+  it('does not move focus on a later open after the parent ignored an open request', async () => {
+    render(<IgnoringParentDropdown />);
+
+    await page.getByRole('button', { name: 'Open menu' }).click();
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await page.getByRole('button', { name: 'Parent open' }).click();
+
+    await expect.element(page.getByRole('menu')).toBeVisible();
+    await expect.element(getItem('Apple')).not.toHaveFocus();
+    await expect.element(page.getByRole('button', { name: 'Parent open' })).toHaveFocus();
+  });
+
+  it('keeps focus on the trigger when opening with disableAutoFocus', async () => {
+    render(
+      <Dropdown items={buildItems()} disableAutoFocus>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdownWithKeyboard();
+
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+    await expect.element(getItem('Apple')).not.toHaveFocus();
+  });
+
+  it('leaves focus in the menu context when closing with disableRestoreFocus', async () => {
+    render(
+      <Dropdown items={buildItems()} disableRestoreFocus>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdownWithKeyboard();
+    await userEvent.keyboard('{Escape}');
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).not.toHaveFocus();
+  });
+
+  it('closes on Tab from the trigger and lets focus move on', async () => {
+    const onOpenChange = vi.fn();
+    render(
+      <>
+        <Dropdown items={buildItems()} onOpenChange={onOpenChange} disableAutoFocus>
+          <button type="button">Open menu</button>
+        </Dropdown>
+        <button type="button">After</button>
+      </>,
+    );
+
+    await openDropdownWithKeyboard();
+    await userEvent.keyboard('{Tab}');
+
+    await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'After' })).toHaveFocus();
+    expect(onOpenChange).toHaveBeenLastCalledWith(false);
+  });
+
+  it('does not cancel Enter or Space on a button nested in the trigger', async () => {
+    const onRemove = vi.fn();
+    render(
+      <Dropdown items={buildItems()}>
+        <div>
+          <span>Field</span>
+          <button type="button" onClick={onRemove}>
+            Remove
+          </button>
+        </div>
+      </Dropdown>,
+    );
+
+    const removeButton = page.getByRole('button', { name: 'Remove' });
+    await expect.element(removeButton).toBeVisible();
+    (removeButton.element() as HTMLElement).focus();
+    await userEvent.keyboard('{Enter}');
+    await expect.poll(() => onRemove.mock.calls.length).toBe(1);
+
+    (removeButton.element() as HTMLElement).focus();
+    await userEvent.keyboard(' ');
+    await expect.poll(() => onRemove.mock.calls.length).toBe(2);
+  });
+
+  it('puts no popup semantics on the trigger with disableTriggerAria', async () => {
+    render(
+      <Dropdown items={buildItems()} disableTriggerAria>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    const trigger = page.getByRole('button', { name: 'Open menu' });
+    await trigger.click();
+    await expect.element(page.getByRole('menu')).toBeVisible();
+
+    await expect.element(trigger).not.toHaveAttribute('aria-haspopup');
+    await expect.element(trigger).not.toHaveAttribute('aria-expanded');
+    await expect.element(trigger).not.toHaveAttribute('aria-controls');
+    await expect.element(trigger).not.toHaveAttribute('id');
+  });
+
+  it('attaches the ref the trigger already carries', async () => {
+    const triggerRef = createRef<HTMLButtonElement>();
+    render(
+      <Dropdown items={buildItems()}>
+        <button type="button" ref={triggerRef}>
+          Open menu
+        </button>
+      </Dropdown>,
+    );
+
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toBeVisible();
+    expect(triggerRef.current).toBe(page.getByRole('button', { name: 'Open menu' }).element());
   });
 
   it('closes when the trigger is clicked again', async () => {
@@ -526,7 +654,7 @@ describe('Dropdown', () => {
     expect(item.type).toBe('button');
   });
 
-  it('disables native button items with the disabled attribute', async () => {
+  it('disables items with aria-disabled, not the native attribute', async () => {
     const items = buildItems();
     items[0].disabled = true;
     render(
@@ -539,7 +667,26 @@ describe('Dropdown', () => {
 
     const item = getItem('Apple').element() as HTMLButtonElement;
     expect(item.tagName).toBe('BUTTON');
-    expect(item.disabled).toBe(true);
+    expect(item.disabled).toBe(false);
+    expect(item.getAttribute('aria-disabled')).toBe('true');
+  });
+
+  it('shows the tooltip of a disabled item on hover', async () => {
+    const items = buildItems();
+    items[0].disabled = true;
+    items[0].tooltipLabel = 'Not available here';
+    render(
+      <Dropdown items={items}>
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+    await page.getByText('Apple', { exact: true }).hover();
+
+    await expect
+      .element(page.getByText('Not available here'), { timeout: 2000 })
+      .toBeVisible();
   });
 
   it('exposes the popup state on the trigger through aria attributes', async () => {

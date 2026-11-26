@@ -38,8 +38,10 @@ export const DropdownItemButton = ({
       selected && 'zapp-selected',
     )}
     style={getItemStyleVars(selected, selectedBackgroundColor)}
+    // No native `disabled`: some browsers then drop mouse events on the item's children, and
+    // the tooltip explaining why it is unavailable never shows. `aria-disabled` (set by the
+    // list) exposes the state, and a disabled item gets no click handler.
     onClick={disabled ? undefined : onClick}
-    disabled={disabled}
     {...rest}
   >
     <DropdownItemContent

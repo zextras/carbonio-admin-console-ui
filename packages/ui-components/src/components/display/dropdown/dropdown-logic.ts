@@ -226,30 +226,47 @@ export function getPopperListStyle(width: string, triggerWidth: number | undefin
     : { width: '100%', maxWidth: '100%' };
 }
 
+/** What the trigger's keyboard support calls into. */
+export type TriggerKeyHandlers = {
+  /** The trigger element: only keys pressed on it (not on its descendants) toggle the menu. */
+  triggerRef: RefObject<HTMLElement | null>;
+  toggleOpen: (event: KeyboardEvent) => void;
+  stepIntoMenu: (edge: 'first' | 'last') => void;
+  closeOnEscape: (event: KeyboardEvent) => void;
+  closeOnTab: (event: KeyboardEvent) => void;
+  spaceKeyDownOnTriggerRef: RefObject<boolean>;
+};
+
 /**
  * Keyboard support for the trigger, enabled by default.
- * Editable targets are skipped for Enter/Space/arrows (no toggle, no preventDefault) so typing keeps working.
+ * Enter/Space/arrows act only on the trigger element itself and never on an editable one: keys
+ * on a nested control (a chip's close button, an input) keep their own default behavior.
+ * Escape and Tab close the menu from anywhere inside the trigger.
  */
-export function getTriggerKeyboardPreset(
-  toggleOpen: (event: KeyboardEvent) => void,
-  stepIntoMenu: (edge: 'first' | 'last') => void,
-  closeOpenMenu: (event: KeyboardEvent) => void,
-  spaceKeyDownOnTriggerRef: RefObject<boolean>,
-): KeyboardPresetObj[] {
-  const guardedToggle = (event: KeyboardEvent): void => {
-    if (isEditableTarget(event.target)) {
-      return;
+export function getTriggerKeyboardPreset({
+  triggerRef,
+  toggleOpen,
+  stepIntoMenu,
+  closeOnEscape,
+  closeOnTab,
+  spaceKeyDownOnTriggerRef,
+}: TriggerKeyHandlers): Array<KeyboardPresetObj> {
+  function isOwnKey(event: KeyboardEvent): boolean {
+    return event.target === triggerRef.current && !isEditableTarget(event.target);
+  }
+  function guardedToggle(event: KeyboardEvent): void {
+    if (isOwnKey(event)) {
+      toggleOpen(event);
     }
-    toggleOpen(event);
-  };
-  const preventSpaceScroll = (event: KeyboardEvent): void => {
-    if (isEditableTarget(event.target)) {
+  }
+  function preventSpaceScroll(event: KeyboardEvent): void {
+    if (!isOwnKey(event)) {
       return;
     }
     event.preventDefault();
     spaceKeyDownOnTriggerRef.current = true;
-  };
-  const guardedSpaceToggle = (event: KeyboardEvent): void => {
+  }
+  function guardedSpaceToggle(event: KeyboardEvent): void {
     // A Space keyup must pair with a Space keydown that landed on the trigger: activating an
     // item with Space closes the menu, restores focus to the trigger and would re-open it here.
     if (!spaceKeyDownOnTriggerRef.current) {
@@ -257,16 +274,16 @@ export function getTriggerKeyboardPreset(
     }
     spaceKeyDownOnTriggerRef.current = false;
     guardedToggle(event);
-  };
-  const guardedStepInto =
-    (edge: 'first' | 'last') =>
-    (event: KeyboardEvent): void => {
-      if (isEditableTarget(event.target)) {
+  }
+  function guardedStepInto(edge: 'first' | 'last'): (event: KeyboardEvent) => void {
+    return function stepIntoMenuFromTrigger(event: KeyboardEvent): void {
+      if (!isOwnKey(event)) {
         return;
       }
       event.preventDefault();
       stepIntoMenu(edge);
     };
+  }
   return [
     {
       type: 'keydown',
@@ -300,13 +317,13 @@ export function getTriggerKeyboardPreset(
     },
     {
       type: 'keydown',
-      callback: closeOpenMenu,
+      callback: closeOnEscape,
       keys: [{ key: 'Escape', ctrlKey: false }],
       haveToPreventDefault: false,
     },
     {
       type: 'keydown',
-      callback: closeOpenMenu,
+      callback: closeOnTab,
       keys: [{ key: 'Tab' }],
       haveToPreventDefault: false,
     },

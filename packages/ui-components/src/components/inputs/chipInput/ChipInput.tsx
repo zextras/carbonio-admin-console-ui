@@ -169,6 +169,25 @@ function getDescriptionStyle(
   } as React.CSSProperties;
 }
 
+/** Combobox semantics for the input, present only when it has options to suggest. */
+function getComboboxAria(
+  hasOptions: boolean,
+  isOpen: boolean,
+): Pick<
+  InputHTMLAttributes<HTMLInputElement>,
+  'role' | 'aria-expanded' | 'aria-haspopup' | 'aria-autocomplete'
+> {
+  if (!hasOptions) {
+    return {};
+  }
+  return {
+    role: 'combobox',
+    'aria-expanded': isOpen,
+    'aria-haspopup': 'menu',
+    'aria-autocomplete': 'list',
+  };
+}
+
 /**
  * Adapt input width on typing
  *
@@ -479,7 +498,7 @@ const ChipInputComponent = <TValue = unknown,>({
     }
   };
 
-  const saveCurrentEvent: KeyboardPresetObj[] =
+  const saveCurrentEvent: Array<KeyboardPresetObj> =
     separators.length > 0
       ? [{ type: 'keydown', callback: saveCurrentValue, keys: separators }]
       : [];
@@ -493,7 +512,7 @@ const ChipInputComponent = <TValue = unknown,>({
     items,
   });
 
-  const backspaceEvent: KeyboardPresetObj[] = [
+  const backspaceEvent: Array<KeyboardPresetObj> = [
     {
       type: 'keydown',
       callback: onBackspace,
@@ -626,6 +645,9 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const descriptionStyle = getDescriptionStyle(errorBackgroundColor, description);
 
+  // With options to suggest, the input is a combobox; without, it stays a plain textbox.
+  const comboboxAria = getComboboxAria(!isEmpty(options), isOpen);
+
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
       <Dropdown
@@ -635,6 +657,11 @@ const ChipInputComponent = <TValue = unknown,>({
         open={isOpen}
         onOpenChange={handleOpenChange}
         disabled={isDropdownDisabled}
+        // The user keeps typing in the input while options are shown: focus stays there, and
+        // the input, not the layout wrapper, carries the combobox semantics.
+        disableAutoFocus
+        disableRestoreFocus
+        disableTriggerAria
       >
         <InputContainer
           ref={ref}
@@ -698,6 +725,7 @@ const ChipInputComponent = <TValue = unknown,>({
                 isRequired={isRequired}
                 color="text"
                 autoComplete="off"
+                {...comboboxAria}
                 ref={inputElRef}
                 onFocus={onInputFocus}
                 onBlur={onInputBlur}
