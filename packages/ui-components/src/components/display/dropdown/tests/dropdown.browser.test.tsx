@@ -217,7 +217,7 @@ describe('Dropdown', () => {
       .toHaveFocus();
   });
 
-  it('calls the item onClick, closes and restores focus to the trigger', async () => {
+  it('calls the item onClick, closes and does not refocus the trigger after a mouse selection', async () => {
     const items = buildItems();
     const onOpenChange = vi.fn();
     render(
@@ -232,7 +232,7 @@ describe('Dropdown', () => {
     expect(items[1].onClick).toHaveBeenCalledTimes(1);
     expect(onOpenChange).toHaveBeenLastCalledWith(false);
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
-    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).not.toHaveFocus();
   });
 
   it('restores focus to the first focusable descendant when the trigger is not focusable', async () => {
@@ -433,6 +433,7 @@ describe('Dropdown', () => {
 
     expect(items[1].onClick).toHaveBeenCalledTimes(1);
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
   });
 
   it('does not hide any scrollable overflow in the menu', async () => {
@@ -685,6 +686,7 @@ describe('Dropdown', () => {
 
     expect(items[1].onClick).toHaveBeenCalledTimes(1);
     await expect.element(page.getByRole('menu')).not.toBeInTheDocument();
+    await expect.element(page.getByRole('button', { name: 'Open menu' })).toHaveFocus();
   });
 
   it('opens from the keyboard on a non-button trigger by default', async () => {

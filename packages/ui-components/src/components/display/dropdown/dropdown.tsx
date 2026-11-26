@@ -24,6 +24,7 @@ import {
   getTriggerKeyboardPreset,
   isEditableTarget,
   isOutsideMenu,
+  isPointerActivation,
   type ItemClickHandler,
   type MenuKeyAction,
   resolveInitialFocusRank,
@@ -225,7 +226,8 @@ export const Dropdown = ({
         event.stopPropagation();
         return;
       }
-      closePopper();
+      // A mouse user doesn't need focus back on the trigger; keyboard users do (WAI-ARIA).
+      closePopper(undefined, { restoreFocus: !isPointerActivation(event) });
     };
 
   const runMenuKeyAction = (

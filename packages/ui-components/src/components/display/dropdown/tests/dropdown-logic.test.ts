@@ -14,6 +14,7 @@ import {
   getTriggerKeyboardPreset,
   isEditableTarget,
   isOutsideMenu,
+  isPointerActivation,
   resolveInitialFocusRank,
   resolveItemRole,
   resolveMenuKeyAction,
@@ -380,6 +381,24 @@ describe('dropdown-logic', () => {
       );
 
       expect(closeOpenMenu).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe('isPointerActivation', () => {
+    function syntheticClick(detail: number): React.SyntheticEvent {
+      return { nativeEvent: new MouseEvent('click', { detail }) } as unknown as React.SyntheticEvent;
+    }
+
+    it('is false for a keyboard event', () => {
+      expect(isPointerActivation(new KeyboardEvent('keydown', { key: 'Enter' }))).toBe(false);
+    });
+
+    it('is false for a programmatic click (keyboard activation)', () => {
+      expect(isPointerActivation(syntheticClick(0))).toBe(false);
+    });
+
+    it('is true for a real mouse click', () => {
+      expect(isPointerActivation(syntheticClick(1))).toBe(true);
     });
   });
 });

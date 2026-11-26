@@ -93,6 +93,18 @@ export function getRovingItems(container: HTMLElement | null): Array<HTMLElement
   );
 }
 
+/**
+ * Whether a real pointer click activated an item. Keyboard activation clicks the item
+ * programmatically, and those clicks carry `detail === 0`.
+ */
+export function isPointerActivation(event: React.SyntheticEvent | KeyboardEvent): boolean {
+  if (event instanceof KeyboardEvent) {
+    return false;
+  }
+  const nativeEvent = event.nativeEvent;
+  return nativeEvent instanceof MouseEvent && nativeEvent.detail > 0;
+}
+
 /** Whether the event target is an editable control: typing in it must never toggle the menu. */
 export function isEditableTarget(target: EventTarget | null): boolean {
   if (target instanceof HTMLInputElement) {
