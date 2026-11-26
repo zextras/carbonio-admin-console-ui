@@ -6,7 +6,15 @@
 
 import { flip, limitShift, Placement, shift } from '@floating-ui/dom';
 import clsx from 'clsx';
-import React, { HTMLAttributes, useEffect, useId, useLayoutEffect, useRef, useState } from 'react';
+import React, {
+  HTMLAttributes,
+  useEffect,
+  useEffectEvent,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { clickNodeWithFocus, useKeyboard } from '../../../hooks/useKeyboard';
@@ -65,6 +73,11 @@ export type DropdownProps = Omit<HTMLAttributes<HTMLDivElement>, 'contextMenu'> 
    * For triggers whose focusable element is nested: the consumer puts the semantics there.
    */
   disableTriggerAria?: boolean;
+  /**
+   * Id of the menu element, generated when omitted. Set it to reference the menu from
+   * elsewhere, e.g. `aria-controls` on a nested input when `disableTriggerAria` is set.
+   */
+  menuId?: string;
 };
 
 /** How the list moves focus into its items when it opens. */
@@ -84,6 +97,7 @@ export const Dropdown = ({
   disableAutoFocus = false,
   disableRestoreFocus = false,
   disableTriggerAria = false,
+  menuId,
   ...rest
 }: DropdownProps) => {
   // With `open` set the parent owns the state and the menu only reports intent.
@@ -92,7 +106,8 @@ export const Dropdown = ({
   const open = isControlled ? openProp : internalOpen;
   // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
-  const listId = useId();
+  const generatedListId = useId();
+  const listId = menuId ?? generatedListId;
   // One-shot: only a trigger interaction arms a focus move into the menu. A parent opening
   // the menu through `open` leaves focus where it is.
   const pendingFocusRef = useRef<FocusOnOpen>('none');
@@ -241,26 +256,31 @@ export const Dropdown = ({
     getRovingItems(node)[resolveInitialFocusRank(items, edge)]?.focus();
   }
 
+  // An effect event reads the latest closePopper without re-subscribing on every render.
+  const closeOnOutsideClick = useEffectEvent((event: Event): void => {
+    const target = event.target;
+    if (
+      target instanceof Node &&
+      isOutsideMenu(target, dropdownRef.current, innerTriggerRef.current)
+    ) {
+      // The click already put focus where the user wanted it; don't yank it back.
+      closePopper(undefined, { restoreFocus: false });
+    }
+  });
+
   useEffect(() => {
     if (!open) {
       pendingFocusRef.current = 'none';
       return undefined;
     }
-    function closeOnOutsideClick(event: Event): void {
-      const target = event.target;
-      if (
-        target instanceof Node &&
-        isOutsideMenu(target, dropdownRef.current, innerTriggerRef.current)
-      ) {
-        // The click already put focus where the user wanted it; don't yank it back.
-        closePopper(undefined, { restoreFocus: false });
-      }
+    function handleDocumentClick(event: Event): void {
+      closeOnOutsideClick(event);
     }
-    globalThis.document.addEventListener('click', closeOnOutsideClick, true);
+    globalThis.document.addEventListener('click', handleDocumentClick, true);
     return (): void => {
-      globalThis.document.removeEventListener('click', closeOnOutsideClick, true);
+      globalThis.document.removeEventListener('click', handleDocumentClick, true);
     };
-  }, [open, closePopper, dropdownRef, innerTriggerRef]);
+  }, [open]);
 
   function createItemClickHandler(onClick: DropdownItem['onClick']): ItemClickHandler {
     return function handleItemClick(event): void {
@@ -340,7 +360,7 @@ export const Dropdown = ({
 
   const triggerId = disableTriggerAria
     ? children.props.id
-    : (children.props.id ?? `${listId}-trigger`);
+    : children.props.id ?? `${listId}-trigger`;
   const triggerAria: DropdownTriggerProps = disableTriggerAria
     ? {}
     : {

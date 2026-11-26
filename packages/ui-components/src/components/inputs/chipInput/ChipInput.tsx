@@ -173,9 +173,10 @@ function getDescriptionStyle(
 function getComboboxAria(
   hasOptions: boolean,
   isOpen: boolean,
+  menuId: string,
 ): Pick<
   InputHTMLAttributes<HTMLInputElement>,
-  'role' | 'aria-expanded' | 'aria-haspopup' | 'aria-autocomplete'
+  'role' | 'aria-expanded' | 'aria-haspopup' | 'aria-autocomplete' | 'aria-controls'
 > {
   if (!hasOptions) {
     return {};
@@ -185,6 +186,8 @@ function getComboboxAria(
     'aria-expanded': isOpen,
     'aria-haspopup': 'menu',
     'aria-autocomplete': 'list',
+    // The menu is only in the DOM while open: point at it only then.
+    ...(isOpen ? { 'aria-controls': menuId } : {}),
   };
 }
 
@@ -439,6 +442,7 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const generatedId = useId();
   const id = `chipInput-${generatedId}`;
+  const menuId = `${id}-options`;
 
   const isInputDisabled = !!maxChips && items.length >= maxChips;
   const isDropdownDisabled = disableOptions || isInputDisabled;
@@ -646,7 +650,7 @@ const ChipInputComponent = <TValue = unknown,>({
   const descriptionStyle = getDescriptionStyle(errorBackgroundColor, description);
 
   // With options to suggest, the input is a combobox; without, it stays a plain textbox.
-  const comboboxAria = getComboboxAria(!isEmpty(options), isOpen);
+  const comboboxAria = getComboboxAria(!isEmpty(options), isOpen, menuId);
 
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
@@ -662,6 +666,7 @@ const ChipInputComponent = <TValue = unknown,>({
         disableAutoFocus
         disableRestoreFocus
         disableTriggerAria
+        menuId={menuId}
       >
         <InputContainer
           ref={ref}
@@ -718,7 +723,12 @@ const ChipInputComponent = <TValue = unknown,>({
                   key={`${index}-${item.value}`}
                   maxWidth={(wrap === 'wrap' && '100%') || undefined}
                   {...item}
-                  onClose={(): void => onChipClose(index)}
+                  onClose={(event): void => {
+                    // Removing a chip is its own action: the click must not reach the
+                    // dropdown trigger around the field and toggle the options.
+                    event?.stopPropagation();
+                    onChipClose(index);
+                  }}
                 />
               ))}
               <AdjustWidthInput

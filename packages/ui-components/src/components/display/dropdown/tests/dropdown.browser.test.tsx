@@ -395,6 +395,21 @@ describe('Dropdown', () => {
     await expect.element(trigger).not.toHaveAttribute('id');
   });
 
+  it('uses the given menuId as the menu id', async () => {
+    render(
+      <Dropdown items={buildItems()} menuId="fruit-menu">
+        <button type="button">Open menu</button>
+      </Dropdown>,
+    );
+
+    await openDropdown();
+
+    await expect.element(page.getByRole('menu')).toHaveAttribute('id', 'fruit-menu');
+    await expect
+      .element(page.getByRole('button', { name: 'Open menu' }))
+      .toHaveAttribute('aria-controls', 'fruit-menu');
+  });
+
   it('attaches the ref the trigger already carries', async () => {
     const triggerRef = createRef<HTMLButtonElement>();
     render(
@@ -684,9 +699,7 @@ describe('Dropdown', () => {
     await openDropdown();
     await page.getByText('Apple', { exact: true }).hover();
 
-    await expect
-      .element(page.getByText('Not available here'), { timeout: 2000 })
-      .toBeVisible();
+    await expect.element(page.getByText('Not available here'), { timeout: 2000 }).toBeVisible();
   });
 
   it('exposes the popup state on the trigger through aria attributes', async () => {
