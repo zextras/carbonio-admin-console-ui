@@ -259,6 +259,22 @@ describe('CreationButton', { timeout: 20_000 }, () => {
     await expect.element(trigger).toHaveFocus();
   });
 
+  it('orders apps with the same priority by name, whatever the load order', async () => {
+    setApps({
+      'app-zeta': { name: 'app-zeta', priority: 3 },
+      'app-alpha': { name: 'app-alpha', priority: 3 },
+    });
+    registerAction('new-zeta', 'app-zeta', 'New Zeta');
+    registerAction('new-alpha', 'app-alpha', 'New Alpha');
+
+    await setupBrowserTest(<CreationButton />);
+    await page.getByRole('button', { name: 'Create' }).click();
+
+    await expect.poll(() => page.getByRole('menuitem').elements().length).toBe(2);
+    const labels = page.getByRole('menuitem').elements().map((item) => item.textContent);
+    expect(labels).toEqual(['New Alpha', 'New Zeta']);
+  });
+
   it('renders no dropdown items when there are no actions', async () => {
     setApps({
       'app-domains': { name: 'app-domains', priority: 1 },

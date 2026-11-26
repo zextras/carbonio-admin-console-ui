@@ -12,7 +12,7 @@ import {
   useActions,
   useAppList,
 } from '@zextras/ui-shared';
-import { groupBy, noop, reduce } from 'lodash-es';
+import { groupBy, noop, reduce, sortBy } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -32,7 +32,8 @@ const useSecondaryActions = (
   actions: Array<Action>,
   activeRoute?: AppRoute,
 ): Array<DropdownItem> => {
-  const apps = useAppList();
+  // Modules share a priority and load in parallel: break ties by name so the order is stable.
+  const apps = sortBy(useAppList(), ['priority', 'name']);
 
   const byApp = groupBy(actions, 'group');
   return [
