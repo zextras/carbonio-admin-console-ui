@@ -6,7 +6,7 @@
 
 import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { useSnackbar } from '@zextras/ui-components';
-import { buildSearchFilterQuery, searchDirectory } from '@zextras/ui-shared';
+import { searchDirectory } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -14,6 +14,7 @@ import { ASC, DESC, RECORD_DISPLAY_LIMIT } from '../../../constants';
 import { domainQueryKeys } from '../../../services/domain-query-keys';
 import { generateSnackbarFromError } from '../../../utils/generate-snackbar-error';
 import { useDebouncedValue } from './edit-mailing-detail/hooks/use-debounced-value';
+import { buildSearchFilterQuery } from './mailing-list-query';
 
 /**
  * Owns the distribution list search: free-text (debounced) + status filter,
