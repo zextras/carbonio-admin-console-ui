@@ -8,7 +8,16 @@ import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, FormPageLayout, useSnackbar } from '@zextras/ui-components';
-import { type GetCoreAttributesResponse, setCoreAttributes, useCosQuota } from '@zextras/ui-shared';
+import {
+  type GetCoreAttributesResponse,
+  type QuotaNotificationSaveResult,
+  setCoreAttributes,
+  useCosQuota,
+  useQuotaNotificationConfig,
+  useQuotaNotificationState,
+} from '@zextras/ui-shared';
+import type { TFunction } from 'i18next';
+import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -24,6 +33,10 @@ import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { ModifyCosBody } from '../../../services/modify-cos-service';
 import { useModifyCos } from '../../../services/use-modify-cos';
 import { useCosQuotaState } from './hooks/use-cos-quota-state';
+import {
+  CosQuotaNotification,
+  type QuotaNotificationHandle,
+} from './quota-notification/cos-quota-notification';
 import { cosAdvancedSchema } from './schema';
 import { COSEmailRetentionPolicy } from './sections/email-retention-policy';
 import { COSFailedLoginPolicy } from './sections/failed-login-policy';
@@ -89,6 +102,25 @@ function saveBackupAttributes(
   return setCoreAttributes(backupAttributes);
 }
 
+function getNotificationSaveErrorLabel(t: TFunction, result: QuotaNotificationSaveResult): string {
+  if (result.content === 'failed' && result.interval === 'failed') {
+    return t(
+      'cos.quota_notification.save_error_both',
+      'The quota notification message and frequency could not be saved. Please try again.',
+    );
+  }
+  if (result.content === 'failed') {
+    return t(
+      'cos.quota_notification.save_error_content',
+      'The quota notification message could not be saved. Please try again.',
+    );
+  }
+  return t(
+    'cos.quota_notification.save_error_interval',
+    'The quota notification frequency could not be saved. Please try again.',
+  );
+}
+
 type CosAdvancedFormProps = {
   cosData: AccountType;
   cosName: string | undefined;
@@ -112,6 +144,18 @@ export const CosAdvancedForm = ({
 
   const { data: cosQuotaData } = useCosQuota(cosData?.zimbraId, isAdvanced);
   const quotaState = useCosQuotaState({ cosQuotaData });
+
+  const { data: notificationConfig } = useQuotaNotificationConfig(
+    'cos',
+    cosData?.zimbraId,
+    isAdvanced,
+  );
+  const notificationState = useQuotaNotificationState({
+    target: 'cos',
+    id: cosData?.zimbraId,
+    config: notificationConfig,
+  });
+  const notificationRef = useRef<QuotaNotificationHandle>(null);
 
   const timeItems: TimeItems = [
     { label: t('label.seconds', 'Seconds'), value: 's' },
@@ -143,6 +187,13 @@ export const CosAdvancedForm = ({
     onSubmit: async ({ value }) => {
       const { zimbraId = '' } = cosData;
 
+      // Nothing is saved, not even the other sections, while the message is invalid.
+      const invalidNotificationField = notificationState.validate();
+      if (invalidNotificationField) {
+        notificationRef.current?.focusField(invalidNotificationField);
+        return;
+      }
+
       try {
         await saveBackupAttributes(value, cosName);
         if (isAdvanced && cosName) {
@@ -169,6 +220,24 @@ export const CosAdvancedForm = ({
       }
       await quotaState.save(zimbraId);
 
+      // Content and frequency are separate calls: when one fails the failed part stays dirty
+      // and the rest of the form is not reported as saved.
+      const notificationResult = await notificationState.save();
+      if (notificationResult.content === 'failed' || notificationResult.interval === 'failed') {
+        if (notificationResult.focusField) {
+          notificationRef.current?.focusField(notificationResult.focusField);
+        }
+        createSnackbar({
+          key: 'error',
+          severity: 'error',
+          label: getNotificationSaveErrorLabel(t, notificationResult),
+          autoHideTimeout: 3000,
+          hideButton: true,
+          replace: true,
+        });
+        return;
+      }
+
       const attributes = Object.keys(value)
         .filter(
           (key) => ADVANCED_FIELD_KEYS.has(key as keyof AccountType) && !BACKUP_FIELD_KEYS.has(key),
@@ -194,7 +263,7 @@ export const CosAdvancedForm = ({
   });
 
   const isFormDirty = useSelector(form.store, (state) => !state.isDefaultValue);
-  const isDirty = isFormDirty || quotaState.isDirty;
+  const isDirty = isFormDirty || quotaState.isDirty || notificationState.isDirty;
 
   return (
     <FormPageLayout
@@ -203,6 +272,7 @@ export const CosAdvancedForm = ({
       onCancel={() => {
         form.reset();
         quotaState.reset();
+        notificationState.reset();
       }}
       unsavedChanges={isDirty}
     >
@@ -211,6 +281,14 @@ export const CosAdvancedForm = ({
         <COSForwarding form={form} readonlyCOS={readonlyCOS} />
         {isAdvanced && cosQuotaData && (
           <COSQuotas form={form} quotaState={quotaState} readonlyCOS={readonlyCOS} />
+        )}
+        {isAdvanced && notificationConfig && (
+          <CosQuotaNotification
+            state={notificationState}
+            config={notificationConfig}
+            readonlyCOS={readonlyCOS}
+            ref={notificationRef}
+          />
         )}
         <COSPassword form={form} readonlyCOS={readonlyCOS} />
         <COSFailedLoginPolicy form={form} readonlyCOS={readonlyCOS} timeItems={timeItems} />

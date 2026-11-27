@@ -4,7 +4,8 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
-import { type ReactElement,useState } from 'react';
+import { useQuotaNotificationState } from '@zextras/ui-shared';
+import { type ReactElement, useRef, useState } from 'react';
 
 import { AccountFormContext, type AccountFormContextValue } from '../account-form-context';
 
@@ -29,6 +30,12 @@ export const AccountFormTestProvider = ({
   });
   const [folderList, setFolderList] = useState<Array<any>>([]);
   const [deligateDetail, setDeligateDetail] = useState<Record<string, any>>({});
+  const quotaNotificationState = useQuotaNotificationState({
+    target: 'accounts',
+    id: values?.zimbraId,
+    config: undefined,
+  });
+  const quotaNotificationRef = useRef(null);
   const contextValue: AccountFormContextValue = {
     form,
     account: { id: values?.zimbraId ?? 'mock-zimbra-id', name: values?.name ?? '' },
@@ -52,6 +59,11 @@ export const AccountFormTestProvider = ({
     sessions: [],
     refetchGrants: () => {},
     allowedDeletePassword: false,
+    quotaNotification: {
+      state: quotaNotificationState,
+      config: undefined,
+      ref: quotaNotificationRef,
+    },
   };
   return (
     <AccountFormContext.Provider value={{ ...contextValue, ...contextOverrides }}>

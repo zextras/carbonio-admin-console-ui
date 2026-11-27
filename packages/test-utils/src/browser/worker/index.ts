@@ -66,6 +66,10 @@ const defaultHandlers = [
 	soapFallbackHandler('GetCos'),
 	soapFallbackHandler('SearchDirectory'),
 	http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
+	// Quota notification settings: tests that do not care get "not available", which hides the section.
+	http.all(/\/service\/extension\/zextras_admin\/quota\/notification\/configs\//, () =>
+		new HttpResponse(null, { status: 404 }),
+	),
 	http.get(
 		'/service/extension/zextras_admin/core/getAllServers',
 		() => HttpResponse.json({ items: [] }),

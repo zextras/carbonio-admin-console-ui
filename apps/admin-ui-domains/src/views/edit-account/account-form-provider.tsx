@@ -9,12 +9,14 @@ import {
   flushCache,
   setCoreAttributes,
   useIsAdvanced,
+  useQuotaNotificationConfig,
+  useQuotaNotificationState,
   useSnackbar,
   useUserAccount,
   useUserSettings,
 } from '@zextras/ui-shared';
 import { isEqual, reduce, remove } from 'lodash-es';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -59,6 +61,7 @@ import { useSetPassword } from '../../services/use-set-password';
 import { useSignatures } from '../../services/use-signatures';
 import { useUserSessions } from '../../services/use-user-sessions';
 import { type AccountFormContextValue, type AccountFormValues } from './account-form-context';
+import type { QuotaNotificationHandle } from './general-section/quota-notification/account-quota-notification';
 import { invalidateAccountFormQueries } from './invalidate-account-form-queries';
 import { saveAliases } from './save/save-aliases';
 import {
@@ -68,6 +71,7 @@ import {
 } from './save/save-general';
 import { savePassword } from './save/save-password';
 import { saveQuota } from './save/save-quota';
+import { saveQuotaNotification } from './save/save-quota-notification';
 import { saveRename } from './save/save-rename';
 import type { SaveContext, SaveDeps } from './save/types';
 
@@ -219,6 +223,17 @@ export function useAccountFormProvider({
   const { data: accountCoreAttributes } = useAccountCoreAttributes(
     isAdvanced ? account.id : undefined,
   );
+  const { data: quotaNotificationConfig } = useQuotaNotificationConfig(
+    'accounts',
+    account.id,
+    isAdvanced,
+  );
+  const quotaNotification = useQuotaNotificationState({
+    target: 'accounts',
+    id: account.id,
+    config: quotaNotificationConfig,
+  });
+  const quotaNotificationRef = useRef<QuotaNotificationHandle>(null);
   const membership = splitMembership(membershipDl);
 
   const [baseline, setBaseline] = useState<SavedValuesBaseline | null>(null);
@@ -262,6 +277,7 @@ export function useAccountFormProvider({
     modifyAccountAttributes: useModifyAccountAttributes(),
     removeDistributionListMember: useRemoveDistributionListMember(account.id),
     setCoreAttributes,
+    quotaNotification,
   };
 
   const form = useForm({
@@ -270,6 +286,13 @@ export function useAccountFormProvider({
       ...(accountCoreAttributes ? buildCoreAttrValues(accountCoreAttributes) : {}),
     },
     onSubmit: async ({ value }) => {
+      // Nothing is saved, not even the other fields, while the message is invalid.
+      const invalidQuotaNotificationField = quotaNotification.validate();
+      if (invalidQuotaNotificationField) {
+        quotaNotificationRef.current?.focusField(invalidQuotaNotificationField);
+        return;
+      }
+
       const values = { ...value } as Record<string, any>;
       const saved = (baseline?.values ?? {}) as Record<string, any>;
       const saveCtx: SaveContext = {
@@ -286,6 +309,9 @@ export function useAccountFormProvider({
         onSaved,
         onDomainRenamed,
         isAdvanced,
+        focusQuotaNotificationField: (field): void => {
+          quotaNotificationRef.current?.focusField(field);
+        },
       };
 
       const finalize = (): void => {
@@ -330,6 +356,7 @@ export function useAccountFormProvider({
           await saveCoreAttributes(values, modifiedKeys, saveDeps, saveCtx);
           saveAliases(values, saved, modifiedKeys, saveDeps, saveCtx);
           await saveQuota(values, modifiedKeys, saveDeps, saveCtx);
+          await saveQuotaNotification(saveDeps, saveCtx);
           const remainingResult = await saveRemainingAttributes(
             values,
             saved,
@@ -400,6 +427,7 @@ export function useAccountFormProvider({
 
   const resetToSaved = (): void => {
     form.reset(baseline?.values ?? {}, { keepDefaultValues: true });
+    quotaNotification.reset();
   };
 
   const contextValue: AccountFormContextValue = {
@@ -425,6 +453,11 @@ export function useAccountFormProvider({
       void refetchGrants();
     },
     allowedDeletePassword,
+    quotaNotification: {
+      state: quotaNotification,
+      config: quotaNotificationConfig,
+      ref: quotaNotificationRef,
+    },
   };
 
   return contextValue;

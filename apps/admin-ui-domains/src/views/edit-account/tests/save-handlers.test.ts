@@ -10,6 +10,7 @@ import { saveAliases } from '../save/save-aliases';
 import { saveAdministrationRights, saveCoreAttributes, saveRemainingAttributes } from '../save/save-general';
 import { savePassword } from '../save/save-password';
 import { saveQuota } from '../save/save-quota';
+import { saveQuotaNotification } from '../save/save-quota-notification';
 import { saveRename } from '../save/save-rename';
 import type { SaveContext, SaveDeps } from '../save/types';
 
@@ -23,6 +24,10 @@ function createDeps(): SaveDeps {
     modifyAccountAttributes: { mutateAsync: vi.fn().mockResolvedValue({ ok: true }) },
     removeDistributionListMember: { mutateAsync: vi.fn().mockResolvedValue({ ok: true }) },
     setCoreAttributes: vi.fn().mockResolvedValue({}),
+    quotaNotification: {
+      isDirty: false,
+      save: vi.fn().mockResolvedValue({ content: 'unchanged', interval: 'unchanged' }),
+    },
   } as unknown as SaveDeps;
 }
 
@@ -37,6 +42,7 @@ function createContext(overrides: Partial<SaveContext> = {}): SaveContext {
     onSaved: vi.fn(),
     onDomainRenamed: vi.fn(),
     isAdvanced: true,
+    focusQuotaNotificationField: vi.fn(),
     ...overrides,
   };
 }
@@ -464,5 +470,67 @@ describe('saveRemainingAttributes', () => {
     expect(result).toBe('failed');
     expect(ctx.notifySaveError).toHaveBeenCalled();
     expect(finalize).not.toHaveBeenCalled();
+  });
+});
+
+describe('saveQuotaNotification', () => {
+  let deps: SaveDeps;
+  let ctx: SaveContext;
+
+  function mockSave(result: Awaited<ReturnType<SaveDeps['quotaNotification']['save']>>): void {
+    vi.mocked(deps.quotaNotification.save).mockResolvedValue(result);
+  }
+
+  beforeEach(() => {
+    deps = createDeps();
+    ctx = createContext();
+  });
+
+  it('does not call anything when the notification settings are not dirty', async () => {
+    await saveQuotaNotification(deps, ctx);
+
+    expect(deps.quotaNotification.save).not.toHaveBeenCalled();
+    expect(ctx.errorSnackbar).not.toHaveBeenCalled();
+  });
+
+  it('saves the notification settings when dirty', async () => {
+    Object.assign(deps.quotaNotification, { isDirty: true });
+    mockSave({ content: 'saved', interval: 'unchanged' });
+
+    await expect(saveQuotaNotification(deps, ctx)).resolves.toBeUndefined();
+
+    expect(deps.quotaNotification.save).toHaveBeenCalledTimes(1);
+    expect(ctx.errorSnackbar).not.toHaveBeenCalled();
+  });
+
+  it.each([
+    [
+      { content: 'failed', interval: 'saved' },
+      'The quota notification message could not be saved. Please try again.',
+    ],
+    [
+      { content: 'saved', interval: 'failed' },
+      'The quota notification frequency could not be saved. Please try again.',
+    ],
+    [
+      { content: 'failed', interval: 'failed' },
+      'The quota notification message and frequency could not be saved. Please try again.',
+    ],
+  ] as const)('reports %j and stops the save', async (result, label) => {
+    Object.assign(deps.quotaNotification, { isDirty: true });
+    mockSave(result);
+
+    await expect(saveQuotaNotification(deps, ctx)).rejects.toThrow();
+
+    expect(ctx.errorSnackbar).toHaveBeenCalledWith(label);
+  });
+
+  it('asks to focus the field rejected by the backend', async () => {
+    Object.assign(deps.quotaNotification, { isDirty: true });
+    mockSave({ content: 'failed', interval: 'unchanged', focusField: 'body' });
+
+    await expect(saveQuotaNotification(deps, ctx)).rejects.toThrow();
+
+    expect(ctx.focusQuotaNotificationField).toHaveBeenCalledWith('body');
   });
 });

@@ -64,7 +64,8 @@ export const EditAccount = ({
   const accountForm = useAccountFormProvider({ account, onSaved, onDomainRenamed: onClose });
   const { t } = useTranslation();
   const { form, isSaving, resetToSaved } = accountForm;
-  const isDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const isFormDirty = useSelector(form.store, (s) => !s.isDefaultValue);
+  const isDirty = isFormDirty || accountForm.quotaNotification.state.isDirty;
   const isAdvanced = useIsAdvanced();
   const userSetting = useUserSettings();
 

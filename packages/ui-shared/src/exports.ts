@@ -423,3 +423,5 @@ export type {
   ModuleLicenseInfo,
 };
 export type { Notification };
+
+export * from './quota-notification';

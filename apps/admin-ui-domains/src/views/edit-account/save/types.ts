@@ -3,6 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
+import type { QuotaNotificationField, QuotaNotificationState } from '@zextras/ui-shared';
 import type { TFunction } from 'i18next';
 
 import type { useAddAccountAlias } from '../../../services/use-add-account-alias';
@@ -22,6 +23,7 @@ export type SaveDeps = {
   modifyAccountAttributes: ReturnType<typeof useModifyAccountAttributes>;
   removeDistributionListMember: ReturnType<typeof useRemoveDistributionListMember>;
   setCoreAttributes: (body: Record<string, unknown>) => Promise<unknown>;
+  quotaNotification: QuotaNotificationState;
 };
 
 export type SaveContext = {
@@ -34,4 +36,5 @@ export type SaveContext = {
   onSaved: () => void;
   onDomainRenamed: () => void;
   isAdvanced: boolean;
+  focusQuotaNotificationField: (field: QuotaNotificationField) => void;
 };

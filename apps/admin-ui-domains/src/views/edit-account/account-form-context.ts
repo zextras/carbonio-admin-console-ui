@@ -4,10 +4,12 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import type { AnyFormApi } from '@tanstack/react-form';
+import type { QuotaNotificationConfig, QuotaNotificationState } from '@zextras/ui-shared';
 import { isEqual } from 'lodash-es';
 import { createContext, useContext } from 'react';
 
 import type { ComputedLimit } from '../../services/account-quota';
+import type { QuotaNotificationHandle } from './general-section/quota-notification/account-quota-notification';
 
 export type AccountFormValues = {
   [key: string]: any;
@@ -18,6 +20,13 @@ export type AccountFormValues = {
   repeatPassword?: string;
   deleteAdministrationRights?: Array<any>;
   totalComputedQuotaLimit?: ComputedLimit;
+};
+
+export type AccountQuotaNotificationContext = {
+  state: QuotaNotificationState;
+  /** Undefined until loaded, and when the backend does not expose it (e.g. no rights, CE). */
+  config: QuotaNotificationConfig | undefined;
+  ref: React.RefObject<QuotaNotificationHandle | null>;
 };
 
 export type AccountFormContextValue = {
@@ -41,6 +50,7 @@ export type AccountFormContextValue = {
   sessions: Array<any>;
   refetchGrants: () => void;
   allowedDeletePassword: boolean;
+  quotaNotification: AccountQuotaNotificationContext;
 };
 
 export const AccountFormContext = createContext<AccountFormContextValue | null>(null);

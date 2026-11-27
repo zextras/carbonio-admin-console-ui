@@ -1,0 +1,145 @@
+/*
+ * SPDX-FileCopyrightText: 2026 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-large);
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--padding-size-large) 0 0 var(--padding-size-large);
+}
+
+.frequency {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-extrasmall);
+  width: 50%;
+  min-width: 0;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-medium);
+}
+
+.option {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-small);
+  min-width: 0;
+}
+
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-large);
+  min-width: 0;
+  padding: var(--padding-size-medium) var(--padding-size-large);
+  border-radius: 0.5rem;
+}
+
+.cardReference {
+  background: var(--color-gray5-regular);
+}
+
+.cardEdit {
+  background: var(--color-gray6-regular);
+  border: 1px solid var(--color-gray2-regular);
+}
+
+.cardHead {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--padding-size-large);
+}
+
+.cardTitle {
+  margin: 0;
+  font-weight: 700;
+}
+
+.cardBody {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-large);
+}
+
+.cardBody[hidden] {
+  display: none;
+}
+
+.disclose {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--color-primary-regular);
+  font: inherit;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.values {
+  display: grid;
+  grid-template-columns: 4rem 1fr;
+  gap: var(--padding-size-medium);
+  margin: 0;
+}
+
+.values dt {
+  color: var(--color-gray1-regular);
+  font-size: var(--font-size-small);
+}
+
+.values dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.emptyValue {
+  color: var(--color-gray1-regular);
+}
+
+.helper {
+  margin: 0;
+  color: var(--color-gray1-regular);
+  font-size: var(--font-size-small);
+}
+
+.chipsField {
+  display: flex;
+  flex-direction: column;
+  gap: var(--padding-size-extrasmall);
+}
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--padding-size-small);
+}
+
+.chip {
+  padding: 1px 6px;
+  border: 1px solid var(--color-primary-regular);
+  border-radius: 2px;
+  background: var(--color-gray6-regular);
+  color: var(--color-primary-regular);
+  font: inherit;
+  cursor: pointer;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--color-highlight-regular);
+}
+
+.chip:disabled {
+  opacity: 0.5;
+  cursor: default;
+}

@@ -11,10 +11,11 @@ import { useTranslation } from 'react-i18next';
 import { ABQStatus, backupEnabledStatus } from '../../utility/utils';
 import { useAccountForm, useSetAccountValues } from '../account-form-context';
 import { EditAccountQuotaInputs } from '../parts/edit-account-quota-inputs';
+import { AccountQuotaNotification } from './quota-notification/account-quota-notification';
 import { formatZimbraDateOr } from './utils';
 
 export const QuotaDisplay = () => {
-  const { form, cosDetail, savedValues } = useAccountForm();
+  const { form, cosDetail, savedValues, quotaNotification } = useAccountForm();
   const values = useSelector(form.store, (s) => s.values as Record<string, any>);
   const setAccountValues = useSetAccountValues();
   const [t] = useTranslation();
@@ -69,6 +70,18 @@ export const QuotaDisplay = () => {
         initialAccountDetail={savedValues}
         setAccountDetail={setAccountValues}
       />
+      {isAdvanced && quotaNotification.config && (
+        <>
+          <AccountQuotaNotification
+            state={quotaNotification.state}
+            config={quotaNotification.config}
+            ref={quotaNotification.ref}
+          />
+          <div className="w-full pt-md">
+            <ds-divider></ds-divider>
+          </div>
+        </>
+      )}
       <Row width="100%" padding={{ top: 'large', left: 'large' }} mainAlignment="space-between">
         <Row width="49%" mainAlignment="flex-start">
           <LabeledValue
