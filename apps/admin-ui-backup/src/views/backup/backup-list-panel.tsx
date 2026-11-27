@@ -14,7 +14,6 @@ import {
   getRights,
   replaceHistory,
   useCurrentUserRights,
-  useLicenseV1Capability,
   useMailstoreServers,
   useRelativePathname,
 } from '@zextras/ui-shared';
@@ -57,7 +56,6 @@ export const BackupListPanel = () => {
     setPrevSelectedServer(selectedServer);
     setSearchServer(selectedServer);
   }
-  const { data: isBackupModuleLicensed } = useLicenseV1Capability('BACKUP');
   const { data: rights } = useCurrentUserRights();
   const serverRights = rights && rights.length > 0 ? getRights(rights, SERVER) : [];
   const hasListServerRights = serverRights.some(
@@ -79,7 +77,7 @@ export const BackupListPanel = () => {
   ).map(({ id, labelKey, labelDefault }) => ({
     id,
     name: t(labelKey, labelDefault),
-    isSelected: !!isBackupModuleLicensed,
+    isSelected: true,
   }));
 
   const defaultOptions = hasListServerRights
@@ -90,7 +88,7 @@ export const BackupListPanel = () => {
     ({ id, labelKey, labelDefault }) => ({
       id,
       name: t(labelKey, labelDefault),
-      isSelected: isBackupModuleLicensed ? isServerSelect : false,
+      isSelected: isServerSelect,
     }),
   );
 
@@ -146,7 +144,7 @@ export const BackupListPanel = () => {
       <div className="box-border w-full max-w-[18.75rem] px-lg pt-lg">
         <ComboboxInput
           label={t('label.select_a_server', 'Select a Server')}
-          items={isBackupModuleLicensed ? serverItems : []}
+          items={serverItems}
           value={searchServer}
           onChange={(e: React.ChangeEvent<HTMLInputElement>): void => {
             setSearchServer(e.target.value);
@@ -160,7 +158,6 @@ export const BackupListPanel = () => {
             replaceHistory(`/${SERVER_CONFIG}`);
           }}
           hasError={isShowError}
-          disabled={!isBackupModuleLicensed}
           description={
             isShowError
               ? t(
