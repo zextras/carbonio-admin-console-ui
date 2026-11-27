@@ -266,7 +266,11 @@ describe('BackupConfiguration', () => {
   });
 
   describe('Switches', () => {
-    it('should render the "Backup is enabled at startup" switch', async () => {
+    it.each([
+      'Backup is enabled at startup',
+      'Run the Smartscan at startup',
+      'Enable RealTime Scanner',
+    ])('should render the "%s" switch', async (label) => {
       mockGetAllServers();
       mockGetServerConfig();
       mockZextrasListBuckets();
@@ -276,33 +280,7 @@ describe('BackupConfiguration', () => {
         initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
       });
 
-      await expect.element(page.getByText('Backup is enabled at startup')).toBeVisible();
-    });
-
-    it('should render the "Run the Smartscan at startup" switch', async () => {
-      mockGetAllServers();
-      mockGetServerConfig();
-      mockZextrasListBuckets();
-
-      await setupBrowserTest(<BackupConfigurationWithRoute />, {
-        queryClient,
-        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
-      });
-
-      await expect.element(page.getByText('Run the Smartscan at startup')).toBeVisible();
-    });
-
-    it('should render "Enable RealTime Scanner"', async () => {
-      mockGetAllServers();
-      mockGetServerConfig();
-      mockZextrasListBuckets();
-
-      await setupBrowserTest(<BackupConfigurationWithRoute />, {
-        queryClient,
-        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
-      });
-
-      await expect.element(page.getByText('Enable RealTime Scanner')).toBeVisible();
+      await expect.element(page.getByText(label)).toBeVisible();
     });
   });
 

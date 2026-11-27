@@ -53,28 +53,15 @@ describe('BackupServerConfig', () => {
   });
 
   describe('Rendering', () => {
-    it('should render the "Server Config" title', async () => {
+    it.each([
+      'Server Config',
+      'Enable Realtime Scanner',
+      'Backup is enabled at the startup',
+      'Run the Smartscan at the startup',
+    ])('should render "%s"', async (text) => {
       await setupBrowserTest(<BackupServerConfig />, { queryClient });
 
-      await expect.element(page.getByText('Server Config')).toBeVisible();
-    });
-
-    it('should render "Enable Realtime Scanner" switch', async () => {
-      await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-      await expect.element(page.getByText('Enable Realtime Scanner')).toBeVisible();
-    });
-
-    it('should render "Backup is enabled at the startup" switch', async () => {
-      await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-      await expect.element(page.getByText('Backup is enabled at the startup')).toBeVisible();
-    });
-
-    it('should render "Run the Smartscan at the startup" switch', async () => {
-      await setupBrowserTest(<BackupServerConfig />, { queryClient });
-
-      await expect.element(page.getByText('Run the Smartscan at the startup')).toBeVisible();
+      await expect.element(page.getByText(text)).toBeVisible();
     });
   });
 
