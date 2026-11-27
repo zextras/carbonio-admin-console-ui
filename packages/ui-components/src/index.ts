@@ -116,7 +116,7 @@ export {
   type DataTableRowAction,
   type DataTableStatus,
 } from './components/display/data-table';
-export * from './components/display/Dropdown';
+export * from './components/display/dropdown';
 export * from './components/display/List/List';
 export * from './components/display/ListItem';
 export * from './components/display/Popper';

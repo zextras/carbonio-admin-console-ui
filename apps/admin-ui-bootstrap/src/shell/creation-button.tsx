@@ -12,7 +12,7 @@ import {
   useActions,
   useAppList,
 } from '@zextras/ui-shared';
-import { groupBy, noop, reduce } from 'lodash-es';
+import { groupBy, noop, reduce, sortBy } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
@@ -32,7 +32,7 @@ const useSecondaryActions = (
   actions: Array<Action>,
   activeRoute?: AppRoute,
 ): Array<DropdownItem> => {
-  const apps = useAppList();
+  const apps = sortBy(useAppList(), ['priority', 'name']);
 
   const byApp = groupBy(actions, 'group');
   return [
@@ -62,14 +62,8 @@ export const CreationButton = ({ activeRoute }: CreationButtonProps) => {
   const [open, setOpen] = useState(false);
   const secondaryActions = useSecondaryActions(actions, activeRoute);
 
-  const onClose = () => {
-    setOpen(false);
-  };
-  const onOpen = () => {
-    setOpen(true);
-  };
   return (
-    <Dropdown items={secondaryActions} onClose={onClose} onOpen={onOpen}>
+    <Dropdown items={secondaryActions} onOpenChange={setOpen}>
       <Button
         style={{ height: '2.625rem', padding: '0.5rem 0.75rem 0.5rem 0.75rem ' }}
         label={t('create', 'Create')}

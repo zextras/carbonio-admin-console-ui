@@ -443,8 +443,9 @@ describe('ChipInput', () => {
         />,
       );
 
-      await user.click(getInput());
-      await user.type(getInput(), 'no-confirm');
+      const input = screen.getByRole('combobox');
+      await user.click(input);
+      await user.type(input, 'no-confirm');
       await user.tab();
 
       await new Promise((r) => setTimeout(r, 100));
@@ -873,6 +874,104 @@ describe('ChipInput', () => {
 
       rerender(<ChipInput options={[]} />);
       expect(screen.queryByText('Opt')).not.toBeTruthy();
+    });
+
+    it('exposes the input as a combobox only when it has options', () => {
+      const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
+      const { rerender } = render(<ChipInput options={options} />);
+
+      const combobox = screen.getByRole('combobox');
+      expect(combobox.tagName).toBe('INPUT');
+      expect(combobox.getAttribute('aria-expanded')).toBe('true');
+      expect(combobox.getAttribute('aria-haspopup')).toBe('menu');
+      expect(document.querySelector('[aria-haspopup]')).toBe(combobox);
+
+      rerender(<ChipInput options={[]} />);
+      expect(screen.queryByRole('combobox')).toBeNull();
+      expect(screen.getByRole('textbox')).toBeTruthy();
+    });
+
+    it('points aria-controls at the options menu only while it is open', async () => {
+      const user = setupUser();
+      const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
+      render(<ChipInput options={options} />);
+
+      const input = screen.getByRole('combobox');
+      const menu = screen.getByRole('menu');
+      expect(menu.id).not.toBe('');
+      expect(input.getAttribute('aria-controls')).toBe(menu.id);
+
+      act(() => input.focus());
+      await user.keyboard('{Escape}');
+
+      await waitFor(() => {
+        expect(screen.queryByRole('menu')).toBeNull();
+      });
+      expect(input.hasAttribute('aria-controls')).toBe(false);
+    });
+
+    it('does not open the options when a chip is removed by click', async () => {
+      const user = setupUser();
+      const onChange = vi.fn();
+      const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
+      render(
+        <ChipInput
+          value={[{ label: 'removable' }]}
+          options={options}
+          disableOptions={false}
+          onChange={onChange}
+        />,
+      );
+
+      const closeBtn = findCloseButton('removable');
+      expect(closeBtn).toBeTruthy();
+      if (closeBtn) {
+        await user.click(closeBtn);
+      }
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalledWith([]);
+      });
+      expect(screen.queryByText('Opt')).toBeNull();
+    });
+
+    it('keeps focus in the input, not on a chip, when Escape closes the suggestions', async () => {
+      const user = setupUser();
+      const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
+      render(<ChipInput value={[{ label: 'a' }, { label: 'b' }]} options={options} />);
+
+      const input = screen.getByRole('combobox');
+      act(() => input.focus());
+      await user.keyboard('{Escape}');
+
+      await waitFor(() => {
+        expect(screen.queryByText('Opt')).toBeNull();
+      });
+      expect(input.getAttribute('aria-expanded')).toBe('false');
+      expect(document.activeElement).toBe(input);
+    });
+
+    it('removes a chip with Enter on its close button while options are enabled', async () => {
+      const user = setupUser();
+      const onChange = vi.fn();
+      const options = makeOptions({ id: 'opt', label: 'Opt', value: 'opt' });
+      render(
+        <ChipInput
+          value={[{ label: 'removable' }]}
+          options={options}
+          disableOptions={false}
+          onChange={onChange}
+        />,
+      );
+
+      const closeBtn = findCloseButton('removable');
+      expect(closeBtn).toBeTruthy();
+      act(() => closeBtn?.focus());
+      await user.keyboard('{Enter}');
+
+      await waitFor(() => {
+        expect(onChange).toHaveBeenCalledWith([]);
+      });
     });
   });
 

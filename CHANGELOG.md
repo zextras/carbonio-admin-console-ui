@@ -1,3 +1,9 @@
+## [0.37.1](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.37.0...v0.37.1) (2026-11-27)
+
+### Other changes
+
+* **dropdown:** improve dropdown accessibility ([#1450](https://github.com/zextras/carbonio-admin-console-ui/issues/1450)) ([afa8567](https://github.com/zextras/carbonio-admin-console-ui/commit/afa85679e5b74d560e9a6600ddb417f874bd19a1))
+
 ## [0.37.0](https://github.com/zextras/carbonio-admin-console-ui/compare/v0.36.0...v0.37.0) (2026-11-24)
 
 ### Features
