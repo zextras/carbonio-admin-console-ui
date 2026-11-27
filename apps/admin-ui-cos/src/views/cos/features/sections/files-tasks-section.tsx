@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, Row } from '@zextras/ui-components';
-import { useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
+import { useLicenseV1Feature, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
@@ -22,6 +22,7 @@ export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps)
   const { cosId } = useParams();
   const featureFlag = useNewSubscriptionFeatureFlag();
   const isWorkspaceEdition = useIsWorkspaceEdition(cosId);
+  const { data: isFilesLicensed = false } = useLicenseV1Feature('Files');
 
   return (
     <Row
@@ -30,7 +31,7 @@ export const FilesTasksSection = ({ form, readonlyCOS }: FilesTasksSectionProps)
       padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
       width="100%"
     >
-      {(!featureFlag || isWorkspaceEdition) && (
+      {(!featureFlag || (isWorkspaceEdition && isFilesLicensed)) && (
         <Container
           mainAlignment="flex-start"
           crossAlignment="flex-start"
