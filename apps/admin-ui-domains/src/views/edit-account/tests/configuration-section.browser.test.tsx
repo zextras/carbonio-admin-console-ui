@@ -22,7 +22,6 @@ function setupTest(
 ) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
-  // WscSettings reads the License v1 info; pre-seed it so no request is needed.
   queryClient.setQueryData(licenseV1QueryKeys.all, null);
 
   createBrowserSoapAPIInterceptor('SearchDirectory', {
