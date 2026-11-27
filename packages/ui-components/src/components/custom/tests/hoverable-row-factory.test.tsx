@@ -42,23 +42,23 @@ describe('HoverableRowFactory', () => {
     renderRow();
 
     expect(screen.getByText('3')).toBeTruthy();
-    expect(screen.queryByTestId('checkbox')).toBeNull();
 
     fireEvent.mouseEnter(getRow());
-    expect(screen.getByTestId('checkbox')).toBeTruthy();
+    expect(screen.queryByText('3')).toBeNull();
+    expect(screen.getByRole('checkbox')).toBeTruthy();
 
     fireEvent.mouseLeave(getRow());
-    expect(screen.queryByTestId('checkbox')).toBeNull();
+    expect(screen.getByText('3')).toBeTruthy();
   });
 
   it('shows the checkbox when the row receives focus', () => {
     renderRow();
 
     fireEvent.focus(getRow());
-    expect(screen.getByTestId('checkbox')).toBeTruthy();
+    expect(screen.queryByText('3')).toBeNull();
 
     fireEvent.blur(getRow());
-    expect(screen.queryByTestId('checkbox')).toBeNull();
+    expect(screen.getByText('3')).toBeTruthy();
   });
 
   it('waits for the hover delay before showing the checkbox', () => {
@@ -66,12 +66,12 @@ describe('HoverableRowFactory', () => {
     renderRow({ hoverDelay: 200 });
 
     fireEvent.mouseEnter(getRow());
-    expect(screen.queryByTestId('checkbox')).toBeNull();
+    expect(screen.getByText('3')).toBeTruthy();
 
     act(() => {
       vi.advanceTimersByTime(200);
     });
-    expect(screen.getByTestId('checkbox')).toBeTruthy();
+    expect(screen.queryByText('3')).toBeNull();
   });
 
   it('cancels the pending hover when the pointer leaves before the delay', () => {
@@ -84,7 +84,7 @@ describe('HoverableRowFactory', () => {
       vi.advanceTimersByTime(200);
     });
 
-    expect(screen.queryByTestId('checkbox')).toBeNull();
+    expect(screen.getByText('3')).toBeTruthy();
   });
 
   it('calls the row onClick when clicking outside the checkbox', () => {
@@ -106,7 +106,7 @@ describe('HoverableRowFactory', () => {
     const onChange = vi.fn();
     renderRow({ showCheckboxOnHover: false, onChange });
 
-    fireEvent.click(screen.getByTestId('checkbox'));
+    fireEvent.click(screen.getByRole('checkbox'));
 
     expect(onChange).toHaveBeenCalledWith('row-1');
   });

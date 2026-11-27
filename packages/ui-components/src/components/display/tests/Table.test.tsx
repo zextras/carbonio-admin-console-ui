@@ -118,7 +118,7 @@ describe('Table', () => {
       const onSelectionChange = vi.fn();
       render(<Table rows={rows} onSelectionChange={onSelectionChange} />);
 
-      const [, firstRowCheckbox] = screen.getAllByTestId('checkbox');
+      const [, firstRowCheckbox] = screen.getAllByRole('checkbox');
       fireEvent.click(firstRowCheckbox);
 
       expect(onSelectionChange).toHaveBeenLastCalledWith(['r1']);
@@ -142,11 +142,11 @@ describe('Table', () => {
       const onSelectionChange = vi.fn();
       render(<Table rows={rows} headers={headers} onSelectionChange={onSelectionChange} />);
 
-      const [headerCheckbox] = screen.getAllByTestId('checkbox');
+      const [headerCheckbox] = screen.getAllByRole('checkbox');
       fireEvent.click(headerCheckbox);
       expect(onSelectionChange).toHaveBeenLastCalledWith(['r1', 'r2']);
 
-      fireEvent.click(screen.getAllByTestId('checkbox')[0]);
+      fireEvent.click(screen.getAllByRole('checkbox')[0]);
       expect(onSelectionChange).toHaveBeenLastCalledWith([]);
     });
   });
@@ -195,13 +195,13 @@ describe('Table', () => {
         <Table rows={rows} selectedRows={[]} onSelectionChange={onSelectionChange} />,
       );
 
-      fireEvent.click(screen.getAllByTestId('checkbox')[0]);
+      fireEvent.click(screen.getAllByRole('checkbox')[0]);
       expect(onSelectionChange).toHaveBeenLastCalledWith(['r1', 'r2']);
 
       rerender(
         <Table rows={rows} selectedRows={['r1', 'r2']} onSelectionChange={onSelectionChange} />,
       );
-      fireEvent.click(screen.getAllByTestId('checkbox')[0]);
+      fireEvent.click(screen.getAllByRole('checkbox')[0]);
       expect(onSelectionChange).toHaveBeenLastCalledWith([]);
     });
 

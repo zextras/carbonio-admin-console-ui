@@ -7,6 +7,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 
+import tableStyles from '../../display/Table.module.css';
 import { CustomHeaderFactory } from '../custom-table-header-factory';
 
 type HeaderFactoryProps = {
@@ -17,6 +18,13 @@ type HeaderFactoryProps = {
   multiSelect?: boolean;
   showCheckbox?: boolean;
 };
+
+function isSelectAllShown(): boolean {
+  const root = screen
+    .getByRole('checkbox', { name: 'Select all rows' })
+    .closest(`.${tableStyles.checkbox}`);
+  return root?.classList.contains(tableStyles.show) ?? false;
+}
 
 function renderHeader(props: HeaderFactoryProps): ReturnType<typeof render> {
   return render(
@@ -100,23 +108,24 @@ describe('CustomHeaderFactory', () => {
     const onChange = vi.fn();
     renderHeader({ headers: [{ id: 'name', label: 'Name' }], onChange });
 
-    expect(screen.queryByTestId('checkbox')).toBeNull();
+    expect(isSelectAllShown()).toBe(false);
 
     act(() => {
       screen.getByRole('row').dispatchEvent(new MouseEvent('mouseenter'));
     });
-    fireEvent.click(screen.getByTestId('checkbox'));
+    expect(isSelectAllShown()).toBe(true);
+    fireEvent.click(screen.getByRole('checkbox', { name: 'Select all rows' }));
     expect(onChange).toHaveBeenCalledTimes(1);
 
     act(() => {
       screen.getByRole('row').dispatchEvent(new MouseEvent('mouseleave'));
     });
-    expect(screen.queryByTestId('checkbox')).toBeNull();
+    expect(isSelectAllShown()).toBe(false);
   });
 
   it('always shows the checkbox in selection mode', () => {
     renderHeader({ headers: [{ id: 'name', label: 'Name' }], selectionMode: true });
 
-    expect(screen.getByTestId('checkbox')).toBeTruthy();
+    expect(isSelectAllShown()).toBe(true);
   });
 });

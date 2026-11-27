@@ -77,6 +77,10 @@ function getTableCellClassName(
   return defaultClassName;
 }
 
+function isFocusLeaving(event: React.FocusEvent<HTMLElement>): boolean {
+  return !event.currentTarget.contains(event.relatedTarget);
+}
+
 export const ClickableRowFactory = ({
   index,
   row,
@@ -144,20 +148,22 @@ export const ClickableRowFactory = ({
   const CheckboxComponentToRender = CheckboxComponent || Checkbox;
   const displayBlockCheckbox = !showCheckboxOnHover || selected || (multiSelect && selectionMode);
 
-  const hoverHandlers =
-    showCheckboxOnHover && showCheckbox
-      ? {
-          onMouseEnter: displayCheckbox,
-          onMouseLeave: hideCheckbox,
-          onFocus: displayCheckbox,
-          onBlur: hideCheckbox,
-        }
-      : {};
+  const revealOnHover = showCheckboxOnHover && showCheckbox;
+  const isCheckboxVisible = showCkb || displayBlockCheckbox;
+
+  const hideOnBlur = (event: React.FocusEvent<HTMLTableRowElement>): void => {
+    if (isFocusLeaving(event)) {
+      hideCheckbox();
+    }
+  };
 
   return (
     <tr
       onClick={onClick}
-      {...hoverHandlers}
+      onMouseEnter={revealOnHover ? displayCheckbox : undefined}
+      onMouseLeave={revealOnHover ? hideCheckbox : undefined}
+      onFocus={revealOnHover ? () => setShowCkb(true) : undefined}
+      onBlur={revealOnHover ? hideOnBlur : undefined}
       className={getTableRowClassNames(
         selected,
         row.highlight,
@@ -167,16 +173,17 @@ export const ClickableRowFactory = ({
       )}
     >
       <td width="1.875rem" height="1.875rem" align="center">
-        {showCheckbox && (showCkb || displayBlockCheckbox) ? (
-          <CheckboxComponentToRender
-            ref={ckbRef}
-            size={'small'}
-            value={selected}
-            onClick={_onChange}
-            iconColor={(multiSelect && selectionMode) || selected ? 'primary' : 'text'}
-            aria-label={`Select row ${index}`}
-          />
-        ) : (
+        {showCheckbox && (
+          <span className={isCheckboxVisible ? undefined : styles.revealOnFocus}>
+            <CheckboxComponentToRender
+              ref={ckbRef}
+              value={selected}
+              onClick={_onChange}
+              aria-label={`Select row ${index}`}
+            />
+          </span>
+        )}
+        {!(showCheckbox && isCheckboxVisible) && (
           <span>
             {typeof renderIndex === 'function' ? (
               renderIndex(index)

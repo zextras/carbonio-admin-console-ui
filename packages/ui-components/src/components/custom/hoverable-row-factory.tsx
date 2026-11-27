@@ -138,6 +138,12 @@ const HoverableRowFactory = ({
 
   const hoverHandlersEnabled = showCheckboxOnHover && showCheckbox;
 
+  const hideOnBlur = (event: React.FocusEvent<HTMLTableRowElement>): void => {
+    if (!event.currentTarget.contains(event.relatedTarget)) {
+      hideCheckbox();
+    }
+  };
+
   const rowData = row.columns.map((column, i) => (
     <td className={getTableCellClassName(styles.tableRowCell, cellClassName, i)} key={i}>
       {typeof column === 'string' ? <ds-text as="span">{column}</ds-text> : column}
@@ -153,8 +159,8 @@ const HoverableRowFactory = ({
       onClick={onClick}
       onMouseEnter={hoverHandlersEnabled ? displayCheckbox : undefined}
       onMouseLeave={hoverHandlersEnabled ? hideCheckbox : undefined}
-      onFocus={hoverHandlersEnabled ? displayCheckbox : undefined}
-      onBlur={hoverHandlersEnabled ? hideCheckbox : undefined}
+      onFocus={hoverHandlersEnabled ? () => setHovered(true) : undefined}
+      onBlur={hoverHandlersEnabled ? hideOnBlur : undefined}
       className={getTableRowClassNames(
         selected,
         row.highlight,
@@ -164,16 +170,17 @@ const HoverableRowFactory = ({
       )}
     >
       <td width="1.875rem" height="1.875rem" align="center">
-        {showCheckbox && (showCkb || displayBlockCheckbox) ? (
-          <CheckboxComponentToRender
-            ref={ckbRef}
-            size={'small'}
-            value={selected}
-            onClick={_onChange}
-            iconColor={(multiSelect && selectionMode) || selected ? 'primary' : 'text'}
-            aria-label={`Select row ${index}`}
-          />
-        ) : (
+        {showCheckbox && (
+          <span className={showCkb || displayBlockCheckbox ? undefined : styles.revealOnFocus}>
+            <CheckboxComponentToRender
+              ref={ckbRef}
+              value={selected}
+              onClick={_onChange}
+              aria-label={`Select row ${index}`}
+            />
+          </span>
+        )}
+        {!(showCheckbox && (showCkb || displayBlockCheckbox)) && (
           <span>
             {typeof renderIndex === 'function' ? (
               renderIndex(index)

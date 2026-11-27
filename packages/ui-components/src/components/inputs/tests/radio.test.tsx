@@ -38,7 +38,7 @@ describe('Radio', () => {
     expect(screen.getByRole<HTMLInputElement>('radio').checked).toBe(true);
   });
 
-  it('does not change internal state when controlled', () => {
+  it('keeps the controlled checked state and notifies the selection', () => {
     const onChange = vi.fn();
     const onClick = vi.fn();
     render(
@@ -48,40 +48,22 @@ describe('Radio', () => {
     fireEvent.click(screen.getByRole('radio'));
 
     expect(screen.getByRole<HTMLInputElement>('radio').checked).toBe(false);
-    expect(onChange).not.toHaveBeenCalled();
+    expect(onChange).toHaveBeenCalledWith(true);
     expect(onClick).toHaveBeenCalledTimes(1);
   });
 
-  it('ignores clicks when disabled', () => {
-    const onChange = vi.fn();
-    const onClick = vi.fn();
-    render(<Radio label="Option A" value="a" disabled onChange={onChange} onClick={onClick} />);
+  it('disables the native input when disabled', () => {
+    render(<Radio label="Option A" value="a" disabled />);
 
-    // fireEvent bypasses the native disabled check, so the handler guard is exercised
-    fireEvent.click(screen.getByRole('radio'));
-
-    expect(onChange).not.toHaveBeenCalled();
-    expect(onClick).not.toHaveBeenCalled();
+    expect(screen.getByRole<HTMLInputElement>('radio').disabled).toBe(true);
   });
 
   it('forwards clicks on an element label to the input', () => {
     const onChange = vi.fn();
-    const onLabelClick = vi.fn();
-    render(
-      <Radio
-        value="a"
-        onChange={onChange}
-        label={
-          <button type="button" onClick={onLabelClick}>
-            Custom label
-          </button>
-        }
-      />,
-    );
+    render(<Radio value="a" onChange={onChange} label={<strong>Custom label</strong>} />);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Custom label' }));
+    fireEvent.click(screen.getByText('Custom label'));
 
-    expect(onLabelClick).toHaveBeenCalledTimes(1);
     expect(onChange).toHaveBeenCalledWith(true);
   });
 

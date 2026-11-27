@@ -165,6 +165,7 @@ const InlineExposeForm = ({
         {t('label.add_address_books', 'Add address books')}
       </ds-text>
       <RadioGroup
+        aria-label={t('label.add_address_books', 'Add address books')}
         value={folderMode}
         onChange={(value: string | undefined): void => {
           if (value === 'all' || value === 'specific') {
@@ -175,15 +176,10 @@ const InlineExposeForm = ({
           }
         }}
       >
-        <Radio
-          value="all"
-          label={t('label.all_address_books', 'All address books')}
-          iconColor="primary"
-        />
+        <Radio value="all" label={t('label.all_address_books', 'All address books')} />
         <Radio
           value="specific"
           label={t('label.a_specific_address_book', 'A specific address book')}
-          iconColor="primary"
         />
       </RadioGroup>
       {folderMode === 'specific' && (
