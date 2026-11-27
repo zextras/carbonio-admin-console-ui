@@ -27,8 +27,11 @@ import {
 	useSnackbar,
 } from '@zextras/ui-components';
 import {
+	buildSearchFilterQuery,
 	enumFilterValues,
+	joinLdapFragments,
 	resolveTableStatus,
+	statusFilterToLdap,
 	useDebouncedValue,
 } from '@zextras/ui-shared';
 import { noop } from 'lodash-es';
@@ -106,45 +109,11 @@ function selectAccountListWithTotal(res: { searchTotal?: number }): AccountListD
 	};
 }
 
-function joinLdapFragments(fragments: Array<string>): string {
-	if (fragments.length === 0) {
-		return '';
-	}
-	const joined = fragments.join('');
-	return fragments.length > 1 ? `(|${joined})` : joined;
-}
-
 function typeFilterToLdap(typeIds: Array<string>): string {
 	const fragments = typeIds
 		.map((id) => ACCOUNT_TYPE_LDAP[id])
 		.filter((fragment): fragment is string => Boolean(fragment));
 	return joinLdapFragments(fragments);
-}
-
-function statusFilterToLdap(statusIds: Array<string>): string {
-	const fragments = statusIds.map((status) => `(&(zimbraAccountStatus=${status}))`);
-	return joinLdapFragments(fragments);
-}
-
-function buildSearchFilterQuery(
-	searchStr: string,
-	statusFilter: string,
-	typeFilter: string,
-): string {
-	let filterQuery = '';
-	if (typeFilter) {
-		filterQuery += typeFilter;
-	}
-	if (statusFilter) {
-		filterQuery += statusFilter;
-	}
-	if (searchStr) {
-		filterQuery += `(|(mail=*${searchStr}*)(cn=*${searchStr}*)(sn=*${searchStr}*)(gn=*${searchStr}*)(displayName=*${searchStr}*)(zimbraMailDeliveryAddress=*${searchStr}*))`;
-	}
-	if ((typeFilter && statusFilter) || (statusFilter && searchStr) || (typeFilter && searchStr)) {
-		return `(&${filterQuery})`;
-	}
-	return filterQuery;
 }
 
 function sortingToAccountParams(sorting: AccountSortState): {
@@ -256,7 +225,10 @@ export const ManageAccounts = () => {
 	});
 
 	const typeFilter = typeFilterToLdap(enumFilterValues(filters, 'type'));
-	const statusFilter = statusFilterToLdap(enumFilterValues(filters, 'status'));
+	const statusFilter = statusFilterToLdap(
+		enumFilterValues(filters, 'status'),
+		'zimbraAccountStatus',
+	);
 
 	const debouncedSearch = useDebouncedValue(searchString, 700);
 	const searchQuery = buildSearchFilterQuery(debouncedSearch, statusFilter, typeFilter);

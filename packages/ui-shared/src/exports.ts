@@ -225,6 +225,13 @@ import { useIntegrationsStore } from './store/integrations/store';
 import { useLoginConfigStore } from './store/login/store';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
+import {
+	buildSearchFilterQuery,
+	DOMAIN_SEARCH_ATTRIBUTES,
+	joinLdapFragments,
+	MAILBOX_SEARCH_ATTRIBUTES,
+	statusFilterToLdap,
+} from './utils/ldap-search-filter';
 import { isSameOriginUrlOutsideProxyAllowlist, PROXY_EMBEDDED_RESOURCE_ALLOWLIST_PREFIXES } from './utils/proxy-asset-allowlist';
 import { isUnlimitedQuantity } from './utils/quantity';
 import { enumFilterValues, resolveTableStatus } from './utils/table-status';
@@ -285,6 +292,7 @@ export {
   BASENAME,
   batchService,
   buildPath,
+  buildSearchFilterQuery,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   CARBONIO_HELP_ADMIN_URL,
@@ -294,6 +302,7 @@ export {
   CONTENT,
   cosQuotaQueryKey,
   DEFAULT_ADVANCED_DOCUMENTATION_URL,
+  DOMAIN_SEARCH_ATTRIBUTES,
   domainByIdKey,
   doRestoreOnNewAccount,
   enumFilterValues,
@@ -325,6 +334,7 @@ export {
   isSameOriginUrlOutsideProxyAllowlist,
   isUnlimitedQuantity,
   isValidDecimalInput,
+  joinLdapFragments,
   licenseV1CapabilityQueryKeys,
   LicenseV1QueryError,
   licenseV1QueryKeys,
@@ -332,6 +342,7 @@ export {
   LOGIN_V3_CONFIG_PATH,
   loginConfig,
   logout,
+  MAILBOX_SEARCH_ATTRIBUTES,
   modifyConfigAttributes,
   normalizeRoute,
   notificationsQueryKeys,
@@ -356,6 +367,7 @@ export {
   SHELL_APP_ID,
   SnackbarManagerContext,
   soapFetch,
+  statusFilterToLdap,
   TRUE,
   useActions,
   useActivateLicense,
