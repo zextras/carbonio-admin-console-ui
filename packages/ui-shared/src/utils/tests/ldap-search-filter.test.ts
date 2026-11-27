@@ -56,9 +56,8 @@ describe('buildSearchFilterQuery', () => {
 	});
 
 	test('wraps free-text search with default mailbox attributes', () => {
-		expect(buildSearchFilterQuery('team', '')).toBe(
-			`(|${MAILBOX_SEARCH_ATTRIBUTES.map((attr) => `(${attr}=*team*)`).join('')})`,
-		);
+		const attrClauses = MAILBOX_SEARCH_ATTRIBUTES.map((attr) => `(${attr}=*team*)`).join('');
+		expect(buildSearchFilterQuery('team', '')).toBe(`(|${attrClauses})`);
 	});
 
 	test('uses the status filter alone when there is no search text', () => {
@@ -68,16 +67,18 @@ describe('buildSearchFilterQuery', () => {
 	});
 
 	test('combines status filter and search text with an and clause', () => {
+		const attrClauses = MAILBOX_SEARCH_ATTRIBUTES.map((attr) => `(${attr}=*team*)`).join('');
 		expect(buildSearchFilterQuery('team', '(&(zimbraMailStatus=enabled))')).toBe(
-			`(&(&(zimbraMailStatus=enabled))(|${MAILBOX_SEARCH_ATTRIBUTES.map((attr) => `(${attr}=*team*)`).join('')}))`,
+			`(&(&(zimbraMailStatus=enabled))(|${attrClauses}))`,
 		);
 	});
 
 	test('combines type, status, and search for accounts', () => {
 		const typeFilter = '(&(zimbraIsAdminAccount=TRUE))';
 		const statusFilter = '(&(zimbraAccountStatus=active))';
+		const attrClauses = MAILBOX_SEARCH_ATTRIBUTES.map((attr) => `(${attr}=*alice*)`).join('');
 		expect(buildSearchFilterQuery('alice', statusFilter, typeFilter)).toBe(
-			`(&${typeFilter}${statusFilter}(|${MAILBOX_SEARCH_ATTRIBUTES.map((attr) => `(${attr}=*alice*)`).join('')}))`,
+			`(&${typeFilter}${statusFilter}(|${attrClauses}))`,
 		);
 	});
 
