@@ -226,6 +226,13 @@ import { useLoginConfigStore } from './store/login/store';
 import { useStickyBarStore } from './store/shared/sticky-bar';
 import { useUtilityBarStore } from './utility-bar/store';
 import { isSameOriginUrlOutsideProxyAllowlist, PROXY_EMBEDDED_RESOURCE_ALLOWLIST_PREFIXES } from './utils/proxy-asset-allowlist';
+import {
+	buildSearchFilterQuery,
+	DOMAIN_SEARCH_ATTRIBUTES,
+	joinLdapFragments,
+	MAILBOX_SEARCH_ATTRIBUTES,
+	statusFilterToLdap,
+} from './utils/ldap-search-filter';
 import { isUnlimitedQuantity } from './utils/quantity';
 import { enumFilterValues, resolveTableStatus } from './utils/table-status';
 import { isValidDecimalInput } from './utils/validators';
@@ -285,6 +292,7 @@ export {
   BASENAME,
   batchService,
   buildPath,
+  buildSearchFilterQuery,
   CARBONIO_ADMIN_DOCUMENTATION_URL_ATTRIBUTE,
   CARBONIO_CE_ADMIN_DOCUMENTATION_URL,
   CARBONIO_HELP_ADMIN_URL,
@@ -296,6 +304,7 @@ export {
   DEFAULT_ADVANCED_DOCUMENTATION_URL,
   domainByIdKey,
   doRestoreOnNewAccount,
+  DOMAIN_SEARCH_ATTRIBUTES,
   enumFilterValues,
   fetchAccount,
   fetchAccountSettings,
@@ -325,6 +334,8 @@ export {
   isSameOriginUrlOutsideProxyAllowlist,
   isUnlimitedQuantity,
   isValidDecimalInput,
+  joinLdapFragments,
+  MAILBOX_SEARCH_ATTRIBUTES,
   licenseV1CapabilityQueryKeys,
   LicenseV1QueryError,
   licenseV1QueryKeys,
@@ -348,6 +359,7 @@ export {
   removeRoute,
   replaceHistory,
   resolveTableStatus,
+  statusFilterToLdap,
   SCALING_LIMIT,
   SCALING_OPTIONS,
   searchDirectory,

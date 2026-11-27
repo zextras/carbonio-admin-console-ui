@@ -23,9 +23,12 @@ import {
 	StatusBadge,
 } from '@zextras/ui-components';
 import {
+	buildSearchFilterQuery,
+	DOMAIN_SEARCH_ATTRIBUTES,
 	enumFilterValues,
 	replaceHistory,
 	resolveTableStatus,
+	statusFilterToLdap,
 	useDebouncedValue,
 } from '@zextras/ui-shared';
 import { format } from 'date-fns';
@@ -43,17 +46,32 @@ import {
 } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
 import { useServerTableState } from '../../../hooks/use-server-table-state';
-import { useDomainListDirectory } from '../../../services/use-domain-list-directory';
+import { useAccountListDirectory } from '../../../services/use-account-list-directory';
 import { getAccountStatusBadgeTone, getStatusDisplay } from '../../../utils/status';
 import { getDateFromStr } from '../../utility/utils';
 import { DomainRowItem, flattenDomainAttributes } from './domain-list-row';
 import styles from './domains.module.css';
+
+const DOMAIN_LIST_ATTRS =
+	'description,zimbraDomainName,zimbraDomainStatus,zimbraId,zimbraDomainType,zimbraCreateTimestamp';
 
 const DOMAIN_SORTABLE_IDS = new Set(['name', 'created']);
 
 const NAME_SORT: Array<{ id: string; desc: boolean }> = [{ id: 'name', desc: false }];
 
 type DomainSortState = Array<{ id: string; desc: boolean }>;
+
+type DomainListEntry = {
+	id: string;
+	name: string;
+	a?: Array<{ n: string; _content: string }>;
+	[key: string]: unknown;
+};
+
+type DomainListData = {
+	domains: Array<DomainListEntry>;
+	total: number;
+};
 
 const DOMAIN_STATUS_IDS = [
 	'active',
@@ -65,31 +83,17 @@ const DOMAIN_STATUS_IDS = [
 	'suspended',
 ] as const;
 
-function joinLdapFragments(fragments: Array<string>): string {
-	if (fragments.length === 0) {
-		return '';
-	}
-	const joined = fragments.join('');
-	return fragments.length > 1 ? `(|${joined})` : joined;
+function parseDomainListDirectory(res: unknown): Array<DomainListEntry> {
+	const response = res as { domain?: Array<DomainListEntry> } | undefined;
+	return response?.domain ?? [];
 }
 
-function statusFilterToLdap(statusIds: Array<string>): string {
-	const fragments = statusIds.map((status) => `(&(zimbraDomainStatus=${status}))`);
-	return joinLdapFragments(fragments);
-}
-
-function buildSearchFilterQuery(searchStr: string, statusFilter: string): string {
-	let filterQuery = '';
-	if (statusFilter) {
-		filterQuery += statusFilter;
-	}
-	if (searchStr) {
-		filterQuery += `(|(zimbraDomainName=*${searchStr}*))`;
-	}
-	if (statusFilter && searchStr) {
-		return `(&${filterQuery})`;
-	}
-	return filterQuery;
+function selectDomainListWithTotal(res: unknown): DomainListData {
+	const response = res as { searchTotal?: number } | undefined;
+	return {
+		domains: parseDomainListDirectory(res),
+		total: response?.searchTotal ?? 0,
+	};
 }
 
 function sortingToDomainParams(sorting: DomainSortState): {
@@ -170,25 +174,39 @@ export const GlobalDomainList = () => {
 		totalRowCount,
 	});
 
-	const statusFilter = statusFilterToLdap(enumFilterValues(filters, 'status'));
+	const statusFilter = statusFilterToLdap(
+		enumFilterValues(filters, 'status'),
+		'zimbraDomainStatus',
+	);
 	const debouncedSearch = useDebouncedValue(searchString, 700);
-	const searchQuery = buildSearchFilterQuery(debouncedSearch, statusFilter);
+	const searchQuery = buildSearchFilterQuery(
+		debouncedSearch,
+		statusFilter,
+		'',
+		DOMAIN_SEARCH_ATTRIBUTES,
+	);
 	const { sortBy, sortAscending } = sortingToDomainParams(sorting);
 
-	const { data, isPending, isError, error, refetch } = useDomainListDirectory({
+	const { data, isPending, isError, error, refetch } = useAccountListDirectory({
+		attr: DOMAIN_LIST_ATTRS,
+		type: 'domains',
 		query: searchQuery,
 		offset: pagination.pageIndex * pagination.pageSize,
 		limit: pagination.pageSize,
 		sortBy,
 		sortAscending,
+		select: selectDomainListWithTotal,
 	});
 
-	const { data: allDomainsData } = useDomainListDirectory({
+	const { data: allDomainsData } = useAccountListDirectory({
+		attr: DOMAIN_LIST_ATTRS,
+		type: 'domains',
 		query: '',
 		offset: 0,
 		limit: 1,
 		sortBy: 'zimbraDomainName',
 		sortAscending: ASC,
+		select: selectDomainListWithTotal,
 	});
 
 	if (data?.total !== totalRowCount) {
