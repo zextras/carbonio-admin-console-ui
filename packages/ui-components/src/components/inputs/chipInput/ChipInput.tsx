@@ -8,21 +8,14 @@ import '../../../web-components/ds-divider';
 
 import clsx from 'clsx';
 import { debounce, filter, isEmpty, slice, trim } from 'lodash-es';
-import React, {
-  InputHTMLAttributes,
-  useEffect,
-  useId,
-  useReducer,
-  useRef,
-  useState,
-} from 'react';
+import React, { InputHTMLAttributes, useEffect, useId, useReducer, useRef, useState } from 'react';
 
 import { useCombinedRefs } from '../../../hooks/useCombinedRefs';
 import { KeyboardPresetKey, KeyboardPresetObj, useKeyboard } from '../../../hooks/useKeyboard';
 import { AnyColor } from '../../../types/utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../../constants';
 import { Chip, ChipProps } from '../../display/Chip';
-import { Dropdown, DropdownItem } from '../../display/Dropdown';
+import { Dropdown, DropdownItem } from '../../display/dropdown';
 import { Container, ContainerProps } from '../../layout/Container';
 import { InputContainer } from '../commons/InputContainer';
 import { InputDescription } from '../commons/InputDescription';
@@ -74,14 +67,12 @@ function getChipCursorState(
 
 function splitPastedChips(pastedText: string, pasteSeparators: Array<string>): Array<string> {
   const separatorsRegex = new RegExp(pasteSeparators.join('|'), 'gi');
-  return pastedText
-    .split(separatorsRegex)
-    .reduce<Array<string>>((values, textItem) => {
-      if (textItem.trim() !== '') {
-        values.push(textItem.trim());
-      }
-      return values;
-    }, []);
+  return pastedText.split(separatorsRegex).reduce<Array<string>>((values, textItem) => {
+    if (textItem.trim() !== '') {
+      values.push(textItem.trim());
+    }
+    return values;
+  }, []);
 }
 
 function createOnPaste(deps: {
@@ -154,20 +145,13 @@ function createSavePastedValue<TValue>(deps: {
 function createDropdownDisplayHandlers(deps: {
   onOptionsDisplayChange: ChipInputProps['onOptionsDisplayChange'];
   options: Array<DropdownItem & { value?: unknown }>;
-  setForceShowDropdown: React.Dispatch<React.SetStateAction<boolean>>;
-}): { showDropdown: (isVisible: boolean) => void; onOpen: () => void; onClose: () => void } {
-  const showDropdown = (isVisible: boolean): void => {
+  setIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}): (isVisible: boolean) => void {
+  return (isVisible: boolean): void => {
+    deps.setIsOpen(isVisible);
     if (deps.onOptionsDisplayChange && !isEmpty(deps.options)) {
       deps.onOptionsDisplayChange(isVisible);
     }
-  };
-  return {
-    showDropdown,
-    onOpen: (): void => showDropdown(true),
-    onClose: (): void => {
-      deps.setForceShowDropdown(false);
-      showDropdown(false);
-    },
   };
 }
 
@@ -183,6 +167,27 @@ function getDescriptionStyle(
     minHeight: description ? '1.125rem' : undefined,
     lineHeight: description ? '1.5' : undefined,
   } as React.CSSProperties;
+}
+
+/** Combobox semantics for the input, present only when it has options to suggest. */
+function getComboboxAria(
+  hasOptions: boolean,
+  isOpen: boolean,
+  menuId: string,
+): Pick<
+  InputHTMLAttributes<HTMLInputElement>,
+  'role' | 'aria-expanded' | 'aria-haspopup' | 'aria-autocomplete' | 'aria-controls'
+> {
+  if (!hasOptions) {
+    return {};
+  }
+  return {
+    role: 'combobox',
+    'aria-expanded': isOpen,
+    'aria-haspopup': 'menu',
+    'aria-autocomplete': 'list',
+    ...(isOpen ? { 'aria-controls': menuId } : {}),
+  };
 }
 
 /**
@@ -365,12 +370,8 @@ type ChipInputProps<TValue = unknown> = Omit<ContainerProps, 'defaultValue' | 'o
   requireUniqueChips?: boolean;
   /** Input divider color */
   bottomBorderColor?: AnyColor;
-  /** Dropdown max height */
-  dropdownMaxHeight?: string;
   /** Dropdown width */
   dropdownWidth?: string;
-  /** Dropdown max width */
-  dropdownMaxWidth?: string;
   /** Description for the input */
   description?: string;
   /** Custom Chip component */
@@ -423,9 +424,7 @@ const ChipInputComponent = <TValue = unknown,>({
   disableOptions = true,
   singleSelection = false,
   bottomBorderColor = INPUT_DIVIDER_COLOR,
-  dropdownMaxHeight,
   dropdownWidth = '100%',
-  dropdownMaxWidth,
   description,
   ChipComponent,
   wrap = 'wrap',
@@ -442,15 +441,16 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const generatedId = useId();
   const id = `chipInput-${generatedId}`;
+  const menuId = `${id}-options`;
 
   const isInputDisabled = !!maxChips && items.length >= maxChips;
   const isDropdownDisabled = disableOptions || isInputDisabled;
   const suggestionOpen = isDropdownDisabled && !isEmpty(options);
-  const [forceShowDropdown, setForceShowDropdown] = useState(suggestionOpen);
+  const [isOpen, setIsOpen] = useState(suggestionOpen);
   const [prevSuggestionOpen, setPrevSuggestionOpen] = useState(suggestionOpen);
   if (suggestionOpen !== prevSuggestionOpen) {
     setPrevSuggestionOpen(suggestionOpen);
-    setForceShowDropdown(suggestionOpen);
+    setIsOpen(suggestionOpen);
   }
 
   const uncontrolledMode = value === undefined;
@@ -500,8 +500,10 @@ const ChipInputComponent = <TValue = unknown,>({
     }
   };
 
-  const saveCurrentEvent: KeyboardPresetObj[] =
-    separators.length > 0 ? [{ type: 'keydown', callback: saveCurrentValue, keys: separators }] : [];
+  const saveCurrentEvent: Array<KeyboardPresetObj> =
+    separators.length > 0
+      ? [{ type: 'keydown', callback: saveCurrentValue, keys: separators }]
+      : [];
 
   useKeyboard(inputElRef, saveCurrentEvent);
 
@@ -512,7 +514,7 @@ const ChipInputComponent = <TValue = unknown,>({
     items,
   });
 
-  const backspaceEvent: KeyboardPresetObj[] = [
+  const backspaceEvent: Array<KeyboardPresetObj> = [
     {
       type: 'keydown',
       callback: onBackspace,
@@ -563,10 +565,10 @@ const ChipInputComponent = <TValue = unknown,>({
     setFocus();
   };
 
-  const { onOpen, onClose } = createDropdownDisplayHandlers({
+  const handleOpenChange = createDropdownDisplayHandlers({
     onOptionsDisplayChange,
     options,
-    setForceShowDropdown,
+    setIsOpen,
   });
 
   const initialSuggestionOpenRef = useRef(suggestionOpen);
@@ -645,20 +647,21 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const descriptionStyle = getDescriptionStyle(errorBackgroundColor, description);
 
+  const comboboxAria = getComboboxAria(!isEmpty(options), isOpen, menuId);
+
   return (
     <Container height="fit" width="fill" crossAlignment="flex-start">
       <Dropdown
         items={dropdownItems}
         display="block"
         width={dropdownWidth}
+        open={isOpen}
+        onOpenChange={handleOpenChange}
+        disabled={isDropdownDisabled}
         disableAutoFocus
         disableRestoreFocus
-        forceOpen={forceShowDropdown}
-        onOpen={onOpen}
-        onClose={onClose}
-        disabled={isDropdownDisabled}
-        maxHeight={dropdownMaxHeight}
-        maxWidth={dropdownMaxWidth}
+        disableTriggerAria
+        menuId={menuId}
       >
         <InputContainer
           ref={ref}
@@ -715,13 +718,17 @@ const ChipInputComponent = <TValue = unknown,>({
                   key={`${index}-${item.value}`}
                   maxWidth={(wrap === 'wrap' && '100%') || undefined}
                   {...item}
-                  onClose={(): void => onChipClose(index)}
+                  onClose={(event): void => {
+                    event?.stopPropagation();
+                    onChipClose(index);
+                  }}
                 />
               ))}
               <AdjustWidthInput
                 isRequired={isRequired}
                 color="text"
                 autoComplete="off"
+                {...comboboxAria}
                 ref={inputElRef}
                 onFocus={onInputFocus}
                 onBlur={onInputBlur}

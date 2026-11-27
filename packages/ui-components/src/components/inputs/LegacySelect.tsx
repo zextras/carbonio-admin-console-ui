@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 
 import { resolveThemeColor } from '../../theme/theme-utils';
 import { INPUT_BACKGROUND_COLOR, INPUT_DIVIDER_COLOR } from '../constants';
-import { Dropdown, DropdownItem, DropdownProps } from '../display/Dropdown';
+import { Dropdown, DropdownItem, DropdownProps } from '../display/dropdown';
 import { Container } from '../layout/Container';
 import { Padding } from '../layout/Padding';
 import { Row } from '../layout/Row';
@@ -80,14 +80,8 @@ type SelectComponentProps<T> = {
   display?: 'block' | 'inline-block';
   /** Css width property of dropdown */
   dropdownWidth?: string;
-  /** Css max-width property of dropdown */
-  dropdownMaxWidth?: string;
-  /** Css max-height property of dropdown */
-  dropdownMaxHeight?: string;
   LabelFactory?: React.ComponentType<LabelFactoryProps<T>>;
   i18nAllLabel?: string;
-  /** Flag to disable the Portal implementation of dropdown */
-  disablePortal?: boolean;
   /** Whether to show checkboxes */
   showCheckbox?: boolean;
 } & (
@@ -191,11 +185,8 @@ const SelectComponent = function SelectFn<T = string>({
   i18nAllLabel = 'All',
   display = 'block',
   dropdownWidth = '100%',
-  dropdownMaxWidth,
-  dropdownMaxHeight,
   LabelFactory = DefaultLabelFactory,
   selection,
-  disablePortal = false,
   showCheckbox = true,
   ...rest
 }: LegacySelectProps<T>): React.JSX.Element {
@@ -252,12 +243,9 @@ const SelectComponent = function SelectFn<T = string>({
       onClick: clickItemHandler(item, isSelected),
       selected: isSelected,
       disabled: item.disabled,
-      customComponent: item.customComponent,
     };
   });
 
-  const onOpen = () => setOpen(true);
-  const onClose = () => setOpen(false);
   const onFocus = () => setFocus(true);
   const onBlur = () => setFocus(false);
 
@@ -307,16 +295,11 @@ const SelectComponent = function SelectFn<T = string>({
     <Dropdown
       display={display}
       width={dropdownWidth}
-      maxWidth={dropdownMaxWidth}
-      maxHeight={dropdownMaxHeight}
       items={multiple ? multipleMappedItems : mappedItems}
-      handleTriggerEvents
       multiple={multiple}
       disabled={disabled}
-      onOpen={onOpen}
-      onClose={onClose}
+      onOpenChange={setOpen}
       placement="bottom-end"
-      disablePortal={disablePortal}
       {...rest}
     >
       <button

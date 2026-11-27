@@ -75,11 +75,7 @@ export const GalGeneralSection = ({ form }: GalGeneralSectionProps) => {
       <ListRow>
         <Container orientation="horizontal">
           <Container width="15rem" minWidth="11rem" mainAlignment="flex-start">
-            <Dropdown
-              items={changeGalModeBtnItems}
-              onOpen={(): void => setDropdownOpen(true)}
-              onClose={(): void => setDropdownOpen(false)}
-            >
+            <Dropdown items={changeGalModeBtnItems} onOpenChange={setDropdownOpen}>
               <Button
                 type="outlined"
                 size="extralarge"
