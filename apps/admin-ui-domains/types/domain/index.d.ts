@@ -131,7 +131,6 @@ type SelectItem<T = string> = {
 	label: string;
 	value: T;
 	disabled?: boolean;
-	customComponent?: React.ReactElement;
 };
 
 export interface DomainsByFeature {

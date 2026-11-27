@@ -1,0 +1,103 @@
+/*
+ * SPDX-FileCopyrightText: 2021 Zextras <https://www.zextras.com>
+ *
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+.itemButton {
+  appearance: none;
+  border: 0;
+  margin: 0;
+  padding: var(--padding-size-small) var(--padding-size-large);
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.rowLayout {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: nowrap;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--border-radius);
+  box-sizing: border-box;
+}
+
+.itemIcon {
+  margin-right: var(--padding-size-small);
+}
+
+.containerEl {
+  user-select: none;
+  outline: none;
+  background: var(--dropdown-item-bg);
+  transition: background 0.2s ease-out;
+}
+
+.containerEl:focus {
+  outline: none;
+}
+
+.containerEl:focus-visible {
+  outline: 0.125rem solid var(--color-primary-regular);
+  outline-offset: -0.125rem;
+  background: var(--dropdown-item-bg-focus);
+}
+
+.containerEl:hover:not(.disabled) {
+  background: var(--dropdown-item-bg-hover);
+}
+
+.containerEl:active:not(.disabled) {
+  background: var(--dropdown-item-bg-active);
+}
+
+.popperDropdownWrapper {
+  position: relative;
+}
+
+.popperDropdownWrapper[data-display='block'] {
+  display: block;
+  width: 100%;
+}
+
+.popperDropdownWrapper[data-display='inline-block'] {
+  display: inline-block;
+  width: auto;
+}
+
+.popperList {
+  position: fixed;
+  display: none;
+  visibility: hidden;
+  pointer-events: none;
+  background-color: var(--color-gray5-regular);
+  box-shadow: var(--shadow-regular);
+  z-index: 999;
+  max-width: 18.75rem;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+
+.popperList.open {
+  display: block;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.popperList,
+.popperList > [tabindex='-1']:focus {
+  outline: none;
+}

@@ -9,12 +9,12 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { matchPath } from 'react-router';
 
+import type { MtaServer } from '../../../types';
 import {
   INBOUND_FLOW_SECURITY,
   IS_SERVER_SPECIFICS_EXPANDED,
   MTA_SERVER_GENERAL,
 } from '../../constants';
-import type { MtaServer } from '../../types/mta';
 import { ListPanelItem } from '../list/list-panel-item';
 import { SECTION_ROUTES } from './mta-section-routes';
 
