@@ -511,7 +511,6 @@ describe('Dropdown', () => {
       await page.getByRole('button', { name: 'Open menu' }).click();
       await expect.element(page.getByRole('menu')).toBeVisible();
 
-      // Focus without a click, so the outside-click handler is not what closes the menu.
       const closer = page.getByRole('textbox', { name: 'Close by typing' });
       await expect.element(closer).toBeVisible();
       (closer.element() as HTMLInputElement).focus();

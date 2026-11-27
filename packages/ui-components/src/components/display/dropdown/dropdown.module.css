@@ -50,7 +50,6 @@
   outline: none;
 }
 
-/* Keyboard focus only: a mouse open also focuses the first item, which must not look highlighted. */
 .containerEl:focus-visible {
   outline: 0.125rem solid var(--color-primary-regular);
   outline-offset: -0.125rem;

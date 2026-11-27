@@ -32,7 +32,6 @@ const useSecondaryActions = (
   actions: Array<Action>,
   activeRoute?: AppRoute,
 ): Array<DropdownItem> => {
-  // Modules share a priority and load in parallel: break ties by name so the order is stable.
   const apps = sortBy(useAppList(), ['priority', 'name']);
 
   const byApp = groupBy(actions, 'group');

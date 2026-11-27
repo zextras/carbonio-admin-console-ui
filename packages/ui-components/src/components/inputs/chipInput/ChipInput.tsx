@@ -186,7 +186,6 @@ function getComboboxAria(
     'aria-expanded': isOpen,
     'aria-haspopup': 'menu',
     'aria-autocomplete': 'list',
-    // The menu is only in the DOM while open: point at it only then.
     ...(isOpen ? { 'aria-controls': menuId } : {}),
   };
 }
@@ -447,7 +446,6 @@ const ChipInputComponent = <TValue = unknown,>({
   const isInputDisabled = !!maxChips && items.length >= maxChips;
   const isDropdownDisabled = disableOptions || isInputDisabled;
   const suggestionOpen = isDropdownDisabled && !isEmpty(options);
-  // The dropdown is controlled: its list is visible exactly while this is true.
   const [isOpen, setIsOpen] = useState(suggestionOpen);
   const [prevSuggestionOpen, setPrevSuggestionOpen] = useState(suggestionOpen);
   if (suggestionOpen !== prevSuggestionOpen) {
@@ -649,7 +647,6 @@ const ChipInputComponent = <TValue = unknown,>({
 
   const descriptionStyle = getDescriptionStyle(errorBackgroundColor, description);
 
-  // With options to suggest, the input is a combobox; without, it stays a plain textbox.
   const comboboxAria = getComboboxAria(!isEmpty(options), isOpen, menuId);
 
   return (
@@ -661,8 +658,6 @@ const ChipInputComponent = <TValue = unknown,>({
         open={isOpen}
         onOpenChange={handleOpenChange}
         disabled={isDropdownDisabled}
-        // The user keeps typing in the input while options are shown: focus stays there, and
-        // the input, not the layout wrapper, carries the combobox semantics.
         disableAutoFocus
         disableRestoreFocus
         disableTriggerAria
@@ -724,8 +719,6 @@ const ChipInputComponent = <TValue = unknown,>({
                   maxWidth={(wrap === 'wrap' && '100%') || undefined}
                   {...item}
                   onClose={(event): void => {
-                    // Removing a chip is its own action: the click must not reach the
-                    // dropdown trigger around the field and toggle the options.
                     event?.stopPropagation();
                     onChipClose(index);
                   }}

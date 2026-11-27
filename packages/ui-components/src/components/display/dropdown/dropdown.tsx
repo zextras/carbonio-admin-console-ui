@@ -100,23 +100,17 @@ export const Dropdown = ({
   menuId,
   ...rest
 }: DropdownProps) => {
-  // With `open` set the parent owns the state and the menu only reports intent.
   const isControlled = openProp !== undefined;
   const [internalOpen, setInternalOpen] = useState<boolean>(false);
   const open = isControlled ? openProp : internalOpen;
-  // Null until an item is focused: the tab stop then belongs to the first item that can take it.
   const [activeItemIndex, setActiveItemIndex] = useState<number | null>(null);
   const generatedListId = useId();
   const listId = menuId ?? generatedListId;
-  // One-shot: only a trigger interaction arms a focus move into the menu. A parent opening
-  // the menu through `open` leaves focus where it is.
   const pendingFocusRef = useRef<FocusOnOpen>('none');
-  // The committed open state, read after a controlled open request to see if it was honoured.
   const openRef = useRef<boolean>(open);
   const spaceKeyDownOnTriggerRef = useRef<boolean>(false);
   const popperItemsRef = useRef<HTMLDivElement | null>(null);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
-  // The trigger's own ref (e.g. one a consumer forwards) stays attached alongside ours.
   const innerTriggerRef = useCombinedRefs<HTMLElement>(children.props.ref);
 
   useLayoutEffect(() => {
@@ -161,8 +155,6 @@ export const Dropdown = ({
     }
     onOpenChange?.(true);
     if (isControlled) {
-      // The parent may ignore the request. Its state update, if any, is flushed before this
-      // microtask: a request that didn't open the menu must not move focus on a later open.
       queueMicrotask(() => {
         if (!openRef.current) {
           pendingFocusRef.current = 'none';
@@ -171,8 +163,6 @@ export const Dropdown = ({
     }
   }
 
-  // Every open moves focus into the menu, so the arrow keys work right away in any browser:
-  // not all of them focus a button on click. The caller opts out for editable triggers.
   function toggleOpen(
     event: React.SyntheticEvent | KeyboardEvent,
     focusMode: FocusOnOpen = 'first',
@@ -206,14 +196,12 @@ export const Dropdown = ({
     }
   }
 
-  // Tab from the trigger moves on in the page: close without cancelling it or pulling focus back.
   function closeOnTab(): void {
     if (open) {
       closePopper(undefined, { restoreFocus: false });
     }
   }
 
-  // A click inside an editable trigger (a combobox-style input) keeps focus there so typing goes on.
   function handleTriggerClick(event: React.MouseEvent<HTMLElement>): void {
     children.props.onClick?.(event);
     toggleOpen(event, isEditableTarget(event.target) ? 'none' : 'first');
@@ -248,22 +236,17 @@ export const Dropdown = ({
     if (!node || focusMode === 'none') {
       return;
     }
-    // Consume it once: ref identity churn re-attaches the same node on every render, which
-    // must not steal focus back from the item the user navigated to.
     pendingFocusRef.current = 'none';
-    // Dividers and disabled items cannot take focus: pick by rank among the focusable items.
     const edge = focusMode === 'last' ? 'last' : 'first';
     getRovingItems(node)[resolveInitialFocusRank(items, edge)]?.focus();
   }
 
-  // An effect event reads the latest closePopper without re-subscribing on every render.
   const closeOnOutsideClick = useEffectEvent((event: Event): void => {
     const target = event.target;
     if (
       target instanceof Node &&
       isOutsideMenu(target, dropdownRef.current, innerTriggerRef.current)
     ) {
-      // The click already put focus where the user wanted it; don't yank it back.
       closePopper(undefined, { restoreFocus: false });
     }
   });
@@ -291,7 +274,6 @@ export const Dropdown = ({
         event.stopPropagation();
         return;
       }
-      // A mouse user doesn't need focus back on the trigger; keyboard users do (WAI-ARIA).
       closePopper(undefined, { restoreFocus: !isPointerActivation(event) });
     };
   }
@@ -344,7 +326,6 @@ export const Dropdown = ({
     runMenuKeyAction(resolveMenuKeyAction(event.key, event), event);
   }
 
-  // Focus follows the pointer, so hover and focus are one item (mouse-initiated focus shows no ring).
   function focusItemUnderPointer(event: React.MouseEvent<HTMLDivElement>): void {
     const target = event.target;
     if (!(target instanceof Element)) {

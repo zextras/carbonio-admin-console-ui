@@ -267,8 +267,6 @@ export function getTriggerKeyboardPreset({
     spaceKeyDownOnTriggerRef.current = true;
   }
   function guardedSpaceToggle(event: KeyboardEvent): void {
-    // A Space keyup must pair with a Space keydown that landed on the trigger: activating an
-    // item with Space closes the menu, restores focus to the trigger and would re-open it here.
     if (!spaceKeyDownOnTriggerRef.current) {
       return;
     }
