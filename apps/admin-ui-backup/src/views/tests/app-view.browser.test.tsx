@@ -18,18 +18,6 @@ import { page } from 'vitest/browser';
 import { backupQueryKeys } from '../../services/backup-query-keys';
 import { AppView } from '../app-view';
 
-function buildLicenseData(features: Array<{ name: string; quantity: string; enabled: boolean }>) {
-  return {
-    ok: true,
-    response: {
-      type: 'REGULAR',
-      subType: 'PERPETUAL',
-      maintenanceStatus: 'active',
-      features,
-    },
-  };
-}
-
 function mockDumpGlobalConfigWithData() {
   return createBrowserAPIInterceptor('post', '/service/admin/soap/zextras', () =>
     HttpResponse.json({
@@ -84,10 +72,6 @@ describe('AppView', () => {
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
     queryClient.setQueryData(['all-config'], [{ n: 'carbonioSendAnalytics', _content: 'FALSE' }]);
-    queryClient.setQueryData(
-      ['subscription', 'license'],
-      buildLicenseData([{ name: 'backup_basic', quantity: '1', enabled: true }]),
-    );
     queryClient.removeQueries({ queryKey: backupQueryKeys.all });
   });
 
@@ -173,10 +157,9 @@ describe('AppView', () => {
   });
 
   describe('License gating', () => {
-    it('should disable list options when backup module is not licensed', async () => {
+    it('should enable list options without checking a backup license', async () => {
       createBrowserSoapAPIInterceptor('GetAllServers', { server: [] });
       mockDumpGlobalConfigEmpty();
-      queryClient.setQueryData(['subscription', 'license'], buildLicenseData([]));
 
       await setupBrowserTest(<AppView />, {
         queryClient,
@@ -187,11 +170,11 @@ describe('AppView', () => {
 
       const serverConfigText = page.getByText('Server Config');
       await expect.element(serverConfigText).toBeVisible();
-      await expect.element(serverConfigText).toHaveStyle({ opacity: '0.5' });
+      await expect.element(serverConfigText).not.toHaveStyle({ opacity: '0.5' });
 
       const advancedText = page.getByText('Advanced', { exact: true });
       await expect.element(advancedText).toBeVisible();
-      await expect.element(advancedText).toHaveStyle({ opacity: '0.5' });
+      await expect.element(advancedText).not.toHaveStyle({ opacity: '0.5' });
     });
   });
 

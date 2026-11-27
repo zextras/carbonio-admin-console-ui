@@ -14,7 +14,7 @@ import {
   Switch,
   TextInput,
 } from '@zextras/ui-components';
-import { useCurrentUserRights, useGlobalSettings, useLicenseV1Capability } from '@zextras/ui-shared';
+import { useCurrentUserRights, useGlobalSettings } from '@zextras/ui-shared';
 import type { ChangeEvent } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -31,9 +31,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
   const { data: rights } = useCurrentUserRights();
   const allowSetBackup = checkAllowSetBackup(rights);
 
-  const { data: isBackupModuleLicensed } = useLicenseV1Capability('BACKUP');
-  const { data: isBackupRealTimeFeatureLicensed } = useLicenseV1Capability('REAL_TIME_BACKUP');
-
   const form = useForm({
     defaultValues: mapGlobalConfigToFormValues(globalConfig),
     validators: { onChange: defaultSettingsSchema, onSubmit: defaultSettingsSchema },
@@ -48,10 +45,6 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
   });
 
   const isDirty = useSelector(form.store, (state) => !state.isDefaultValue);
-
-  if (!isBackupModuleLicensed) {
-    return <RouteLeavingGuard when={false} onSave={() => {}} />;
-  }
 
   return (
     <>
@@ -73,20 +66,18 @@ function BackupServerConfigForm({ globalConfig }: { readonly globalConfig: Globa
         >
           <Row mainAlignment="flex-start" width="100%" padding={{ top: 'large' }} />
           <div className="flex w-full flex-col gap-lg">
-            {isBackupRealTimeFeatureLicensed && (
-              <ListRow>
-                <form.Field name="enableRealtimeScanner">
-                  {(field) => (
-                    <Switch
-                      label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
-                      value={field.state.value}
-                      onClick={() => field.handleChange(!field.state.value)}
-                      disabled={!allowSetBackup}
-                    />
-                  )}
-                </form.Field>
-              </ListRow>
-            )}
+            <ListRow>
+              <form.Field name="enableRealtimeScanner">
+                {(field) => (
+                  <Switch
+                    label={t('backup.enable_realtime_scanner', 'Enable Realtime Scanner')}
+                    value={field.state.value}
+                    onClick={() => field.handleChange(!field.state.value)}
+                    disabled={!allowSetBackup}
+                  />
+                )}
+              </form.Field>
+            </ListRow>
             <ListRow>
               <form.Field name="moduleEnabledAtStartup">
                 {(field) => (

@@ -13,7 +13,12 @@ import {
   SettingLayout,
   TextInput,
 } from '@zextras/ui-components';
-import { useIsAdvanced, useLicenseV1Capability, useUserSettings } from '@zextras/ui-shared';
+import {
+  useIsAdvanced,
+  useLicenseV1Feature,
+  useNewSubscriptionFeatureFlag,
+  useUserSettings,
+} from '@zextras/ui-shared';
 import { ChangeEvent, Dispatch, FC, SetStateAction } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -93,10 +98,11 @@ export const WscSettings: FC<{
 
   const isGlobalAdmin = userSetting?.attrs?.zimbraIsAdminAccount === TRUE;
 
-  const { data: chatsAllowed, isPending, isFetching, error } = useLicenseV1Capability('CHATS');
+  const { data: chatsAllowed, isPending, isFetching, error } = useLicenseV1Feature('Chats');
 
   const isLicensed = chatsAllowed === true;
-  const requiresLicenseCheck = isAdvanced;
+  const featureFlag = useNewSubscriptionFeatureFlag();
+  const requiresLicenseCheck = isAdvanced && featureFlag;
 
   const wscLicenseDisabledWarningLabel = t(
     'wsc.section.license.warning',

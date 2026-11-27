@@ -4,7 +4,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
@@ -141,7 +140,6 @@ describe('BackupConfiguration', () => {
   beforeEach(async () => {
     queryClient = getQueryClient();
     await grantUserConfigRights(queryClient);
-    queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), true);
     queryClient.setQueryData(['all-servers'], [{ name: SERVER_NAME, id: SERVER_ID }]);
     currentConfigResponse = buildServerConfigResponse();
   });
@@ -268,7 +266,11 @@ describe('BackupConfiguration', () => {
   });
 
   describe('Switches', () => {
-    it('should render the "Backup is enabled at startup" switch', async () => {
+    it.each([
+      'Backup is enabled at startup',
+      'Run the Smartscan at startup',
+      'Enable RealTime Scanner',
+    ])('should render the "%s" switch', async (label) => {
       mockGetAllServers();
       mockGetServerConfig();
       mockZextrasListBuckets();
@@ -278,51 +280,7 @@ describe('BackupConfiguration', () => {
         initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
       });
 
-      await expect.element(page.getByText('Backup is enabled at startup')).toBeVisible();
-    });
-
-    it('should render the "Run the Smartscan at startup" switch', async () => {
-      mockGetAllServers();
-      mockGetServerConfig();
-      mockZextrasListBuckets();
-
-      await setupBrowserTest(<BackupConfigurationWithRoute />, {
-        queryClient,
-        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
-      });
-
-      await expect.element(page.getByText('Run the Smartscan at startup')).toBeVisible();
-    });
-
-    it('should render "Enable RealTime Scanner" when realtime feature is licensed', async () => {
-      mockGetAllServers();
-      mockGetServerConfig();
-      mockZextrasListBuckets();
-
-      queryClient.setQueryData(
-        licenseV1CapabilityQueryKeys.capability('REAL_TIME_BACKUP'),
-        true,
-      );
-
-      await setupBrowserTest(<BackupConfigurationWithRoute />, {
-        queryClient,
-        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
-      });
-
-      await expect.element(page.getByText('Enable RealTime Scanner')).toBeVisible();
-    });
-
-    it('should not render "Enable RealTime Scanner" when realtime feature is not licensed', async () => {
-      mockGetAllServers();
-      mockGetServerConfig();
-      mockZextrasListBuckets();
-
-      await setupBrowserTest(<BackupConfigurationWithRoute />, {
-        queryClient,
-        initialRouterEntry: `/${SERVER_NAME}/configuration_lbl`,
-      });
-
-      expect(page.getByText('Enable RealTime Scanner').elements()).toHaveLength(0);
+      await expect.element(page.getByText(label)).toBeVisible();
     });
   });
 

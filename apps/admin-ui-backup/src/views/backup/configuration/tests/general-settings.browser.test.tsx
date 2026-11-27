@@ -33,14 +33,12 @@ const defaultFormValues: BackupConfigFormValues = {
 type GeneralSettingsWrapperProps = {
   allowSetBackup?: boolean;
   isBackupInitialized?: boolean;
-  isRealtimeLicensed?: boolean;
   serverName?: string;
 };
 
 const GeneralSettingsWrapper = ({
   allowSetBackup = true,
   isBackupInitialized = false,
-  isRealtimeLicensed = false,
   serverName = SERVER_NAME,
 }: GeneralSettingsWrapperProps) => {
   const form = useForm({ defaultValues: defaultFormValues });
@@ -48,7 +46,6 @@ const GeneralSettingsWrapper = ({
     <GeneralSettings
       form={form as never}
       allowSetBackup={allowSetBackup}
-      isRealtimeLicensed={isRealtimeLicensed}
       isBackupInitialized={isBackupInitialized}
       serverName={serverName}
     />

@@ -8,12 +8,7 @@ import { useForm } from '@tanstack/react-form';
 import { useQueryClient } from '@tanstack/react-query';
 import { useSelector } from '@tanstack/react-store';
 import { Container, RouteLeavingGuard, Row, useSnackbar } from '@zextras/ui-components';
-import {
-  setCoreAttributes,
-  useAllServers,
-  useCurrentUserRights,
-  useLicenseV1Capability,
-} from '@zextras/ui-shared';
+import { setCoreAttributes, useAllServers, useCurrentUserRights } from '@zextras/ui-shared';
 import { isEmpty } from 'lodash-es';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -58,9 +53,8 @@ function mapServerConfigToFormValues(data: GetServerResponse | undefined): Backu
 function mapFormValuesToCoreAttributes(
   values: BackupConfigFormValues,
   server: string,
-  includeRealtime: boolean,
 ): CoreAttributeBody {
-  const body: CoreAttributeBody = {
+  return {
     ZxBackup_ModuleEnabledAtStartup: {
       value: values.moduleEnableStartup,
       objectName: server,
@@ -103,27 +97,22 @@ function mapFormValuesToCoreAttributes(
       objectName: server,
       configType: SERVER,
     },
-  };
-  if (includeRealtime) {
-    body.ZxBackup_RealTimeScanner = {
+    ZxBackup_RealTimeScanner: {
       value: values.enableRealtimeScanner,
       objectName: server,
       configType: SERVER,
-    };
-  }
-  return body;
+    },
+  };
 }
 
 function BackupConfigurationContent({
   serverConfig,
   serverName,
   serverId,
-  isRealtimeLicensed,
 }: {
   readonly serverConfig: GetServerResponse;
   readonly serverName: string;
   readonly serverId: string;
-  readonly isRealtimeLicensed: boolean;
 }) {
   const [t] = useTranslation();
   const createSnackbar = useSnackbar();
@@ -139,13 +128,11 @@ function BackupConfigurationContent({
     serverConfig?.attributes?.backupArchivingStore?.value ?? {};
   const isBackArchivingStoreEmpty = isEmpty(backupArchivingStore);
 
-  const isRealtimeLicensedValue = isRealtimeLicensed;
-
   const form = useForm({
     defaultValues: mapServerConfigToFormValues(serverConfig),
     validators: { onChange: backupConfigSchema, onSubmit: backupConfigSchema },
     onSubmit: async ({ value }) => {
-      const body = mapFormValuesToCoreAttributes(value, serverName, isRealtimeLicensedValue);
+      const body = mapFormValuesToCoreAttributes(value, serverName);
       const data = await setCoreAttributes<SetCoreAttributesResponse>(body);
       if ((data?.errors && Array.isArray(data?.errors)) || data?.error) {
         const errorMessage =
@@ -211,7 +198,6 @@ function BackupConfigurationContent({
           <GeneralSettings
             form={form as never}
             allowSetBackup={allowSetBackup}
-            isRealtimeLicensed={isRealtimeLicensed}
             isBackupInitialized={isBackupInitialized}
             serverName={serverName}
           />
@@ -249,8 +235,6 @@ export const BackupConfiguration = () => {
   const selectedServer = allServers.find((serverItem) => serverItem?.name === server);
   const serverId = selectedServer?.id ?? '';
   const { data: serverConfig, isPending } = useServerConfig(serverId || undefined);
-
-  const { data: isRealtimeLicensed = false } = useLicenseV1Capability('REAL_TIME_BACKUP');
 
   if (isPending || !serverConfig) {
     return (
@@ -291,7 +275,6 @@ export const BackupConfiguration = () => {
       serverConfig={serverConfig}
       serverName={server ?? ''}
       serverId={serverId}
-      isRealtimeLicensed={isRealtimeLicensed}
     />
   );
 };

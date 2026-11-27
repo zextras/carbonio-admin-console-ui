@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { useLoginConfigStore } from '@zextras/ui-shared';
+import { licenseV1QueryKeys, useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getQueryClient,
@@ -22,12 +22,7 @@ function setupTest(
 ) {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['advanced-supported'], { supported: true });
-  // WscSettings reads the license; the query retries 3x with backoff when the
-  // catch-all response makes fetchLicenseInfo throw, so pre-seed it instead.
-  queryClient.setQueryData(['subscription', 'license'], {
-    ok: true,
-    response: { type: 'REGULAR' },
-  });
+  queryClient.setQueryData(licenseV1QueryKeys.all, null);
 
   createBrowserSoapAPIInterceptor('SearchDirectory', {
     searchTotal: 1,

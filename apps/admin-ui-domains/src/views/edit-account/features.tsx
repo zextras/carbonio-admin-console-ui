@@ -4,7 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { Container, InheritedSwitch, Row } from '@zextras/ui-components';
-import { useIsAdvanced, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
+import {
+	useIsAdvanced,
+	useLicenseV1Feature,
+	useNewSubscriptionFeatureFlag
+} from '@zextras/ui-shared';
 import { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -29,6 +33,7 @@ export const Features: FC<{
 	const isAdvanced = useIsAdvanced();
 	const featureFlag = useNewSubscriptionFeatureFlag();
 	const isWorkspaceEdition = cosDetail?.edition === 'workspace';
+	const { data: isFilesLicensed = false } = useLicenseV1Feature('Files');
 
 	const changeSwitchOption = (key: string): void => {
 		setFeaturesDetail((prev: Record<string, string>) => ({
@@ -262,7 +267,7 @@ export const Features: FC<{
 				padding={{ top: 'large', right: 'large', bottom: 'large', left: 'large' }}
 				width="100%"
 			>
-				{(!featureFlag || isWorkspaceEdition) && (
+				{(!featureFlag || (isWorkspaceEdition && isFilesLicensed)) && (
 					<Container
 						mainAlignment="flex-start"
 						crossAlignment="flex-start"

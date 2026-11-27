@@ -13,7 +13,6 @@ import type { BackupConfigFormApi } from '../types';
 type GeneralSettingsProps = {
   form: BackupConfigFormApi;
   allowSetBackup: boolean;
-  isRealtimeLicensed: boolean;
   isBackupInitialized: boolean;
   serverName: string;
 };
@@ -21,7 +20,6 @@ type GeneralSettingsProps = {
 export const GeneralSettings = ({
   form,
   allowSetBackup,
-  isRealtimeLicensed,
   isBackupInitialized,
   serverName,
 }: GeneralSettingsProps) => {
@@ -76,20 +74,18 @@ export const GeneralSettings = ({
             )}
           </form.Field>
         </Container>
-        {isRealtimeLicensed && (
-          <Container padding={{ top: 'large' }}>
-            <form.Field name="enableRealtimeScanner">
-              {(field) => (
-                <Switch
-                  label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
-                  value={field.state.value}
-                  onClick={() => field.handleChange(!field.state.value)}
-                  disabled={!allowSetBackup}
-                />
-              )}
-            </form.Field>
-          </Container>
-        )}
+        <Container padding={{ top: 'large' }}>
+          <form.Field name="enableRealtimeScanner">
+            {(field) => (
+              <Switch
+                label={t('backup.enable_realtime_scanner', 'Enable RealTime Scanner')}
+                value={field.state.value}
+                onClick={() => field.handleChange(!field.state.value)}
+                disabled={!allowSetBackup}
+              />
+            )}
+          </form.Field>
+        </Container>
         <Container padding={{ top: 'large' }}>
           <form.Field name="runSmartScanStartup">
             {(field) => (

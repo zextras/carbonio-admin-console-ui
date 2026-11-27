@@ -4,10 +4,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { useLoginConfigStore } from '@zextras/ui-shared';
+import { type LicenseV1Info, licenseV1QueryKeys, useLoginConfigStore } from '@zextras/ui-shared';
 import {
   createBrowserAPIInterceptor,
   createBrowserSoapAPIInterceptor,
+  getQueryClient,
   resetMockWorker,
   setupBrowserTest,
 } from 'admin-ui-test-utils';
@@ -17,6 +18,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { page, userEvent } from 'vitest/browser';
 
 import { type Attribute } from '../../../../types/attribute';
+import { cosQueryKeys } from '../../../services/cos-query-keys';
 import { FeaturesForm } from './features-form';
 
 const COS_ID = 'e00428a1-0c00-11d9-836a-000d93afea2a';
@@ -54,6 +56,68 @@ const MOCK_COS_DETAIL = {
     },
   ],
 };
+
+const FILES_LICENSE: LicenseV1Info = {
+  licenseType: 'regular',
+  status: 'valid',
+  companyName: 'Acme Corp',
+  partner: 'Zextras Partner',
+  orderId: 'ORD-123',
+  carbonioVersion: '25.1.2',
+  activationToken: 'activation-token',
+  startDate: '2026-01-01T00:00:00.000Z',
+  endDate: '2027-01-01T00:00:00.000Z',
+  totalActiveAccountsNumber: 42,
+  lastSyncTime: null,
+  editions: [
+    { name: 'Workspace', status: 'green', assignedSeats: 0, totalSeats: 100 },
+    { name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 100 },
+  ],
+  addOns: [],
+};
+
+const NO_FILES_LICENSE: LicenseV1Info = {
+  ...FILES_LICENSE,
+  editions: [{ name: 'Email', status: 'green', assignedSeats: 5, totalSeats: 100 }],
+};
+
+const MAIL_EDITION_COS_DETAIL = {
+  ...MOCK_COS_DETAIL,
+  cos: [{ ...MOCK_COS_DETAIL.cos[0], _attrs: { edition: 'mail' } }],
+};
+
+function mockLicense(license: LicenseV1Info): void {
+  createBrowserAPIInterceptor('get', '/services/license/v1/info', () =>
+    HttpResponse.json(license),
+  );
+}
+
+/**
+ * Seeds the COS edition and the license before the first render, so an absent Files switch is
+ * the result of the gating and not of data that has not arrived yet.
+ */
+async function setupSeededTest(cosDetail: typeof MOCK_COS_DETAIL, license: LicenseV1Info) {
+  const queryClient = getQueryClient();
+  queryClient.setQueryData(cosQueryKeys.detail(COS_ID), cosDetail);
+  queryClient.setQueryData(licenseV1QueryKeys.all, license);
+  mockLicense(license);
+  createBrowserSoapAPIInterceptor('GetCos', cosDetail);
+  createBrowserSoapAPIInterceptor('ModifyCos', {});
+  createBrowserSoapAPIInterceptor('FlushCache', {});
+  createBrowserAPIInterceptor('post', '/service/extension/zextras_admin/core/attributes/get', () =>
+    HttpResponse.json(MOCK_MOBILE_ATTRIBUTES),
+  );
+
+  await setupBrowserTest(
+    <Routes>
+      <Route path="/:cosId/:operation" element={<TestWrapper />} />
+    </Routes>,
+    { initialRouterEntry: `/${COS_ID}/features`, queryClient },
+  );
+  await expect
+    .element(page.getByRole('switch', { name: 'Allow access to Tasks' }))
+    .toBeVisible();
+}
 
 const TestWrapper = ({
   cosInformation = MOCK_COS_INFORMATION,
@@ -101,6 +165,7 @@ describe('FeaturesForm (browser)', () => {
 
   afterEach(() => {
     resetMockWorker();
+    useLoginConfigStore.setState({ featureFlags: null });
   });
 
   it('should render Contacts switch and be clickable', async () => {
@@ -129,15 +194,42 @@ describe('FeaturesForm (browser)', () => {
 
   it('should render the Files switch when the new-subscriptions flag is disabled and the COS edition is mail', async () => {
     useLoginConfigStore.setState({ featureFlags: null });
-    const mailEditionCosDetail = {
-      ...MOCK_COS_DETAIL,
-      cos: [{ ...MOCK_COS_DETAIL.cos[0], _attrs: { edition: 'mail' } }],
-    };
-    await setupTest(<TestWrapper />, mailEditionCosDetail);
+    mockLicense(NO_FILES_LICENSE);
+    await setupTest(<TestWrapper />, MAIL_EDITION_COS_DETAIL);
 
     await expect
       .element(page.getByRole('switch', { name: 'Allow access to Files' }))
       .toBeVisible();
+  });
+
+  describe('Files switch with the new-subscriptions flag enabled', () => {
+    beforeEach(() => {
+      useLoginConfigStore.setState({ featureFlags: { enforceSubscriptionRequirements: true } });
+    });
+
+    it('should render the Files switch when the COS edition is workspace and the license allows Files', async () => {
+      await setupSeededTest(MOCK_COS_DETAIL, FILES_LICENSE);
+
+      await expect
+        .element(page.getByRole('switch', { name: 'Allow access to Files' }))
+        .toBeVisible();
+    });
+
+    it('should not render the Files switch when the license does not allow Files, even on a workspace COS', async () => {
+      await setupSeededTest(MOCK_COS_DETAIL, NO_FILES_LICENSE);
+
+      expect(page.getByRole('switch', { name: 'Allow access to Files' }).elements()).toHaveLength(
+        0,
+      );
+    });
+
+    it('should not render the Files switch when the COS edition is mail, even if the license allows Files', async () => {
+      await setupSeededTest(MAIL_EDITION_COS_DETAIL, FILES_LICENSE);
+
+      expect(page.getByRole('switch', { name: 'Allow access to Files' }).elements()).toHaveLength(
+        0,
+      );
+    });
   });
 
   it('should render Tasks switch and be clickable', async () => {

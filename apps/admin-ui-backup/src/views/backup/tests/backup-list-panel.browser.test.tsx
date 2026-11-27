@@ -9,7 +9,7 @@ vi.mock('@zextras/ui-shared', async (importOriginal) => {
   return { ...actual, replaceHistory: vi.fn() };
 });
 
-import { licenseV1CapabilityQueryKeys, replaceHistory } from '@zextras/ui-shared';
+import { replaceHistory } from '@zextras/ui-shared';
 import {
   createBrowserSoapAPIInterceptor,
   getGetInfoResponseMock,
@@ -44,10 +44,6 @@ const SERVERS = [
     a: [{ n: 'zimbraServiceHostname', _content: SERVER_NAME }],
   },
 ];
-
-function seedLicense(queryClient: ReturnType<typeof getQueryClient>): void {
-  queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), true);
-}
 
 function grantServerRights(queryClient: ReturnType<typeof getQueryClient>) {
   queryClient.setQueryData(
@@ -88,7 +84,6 @@ describe('BackupListPanel', () => {
       queryClient = getQueryClient();
       await grantUserConfigRights(queryClient);
       grantServerRights(queryClient);
-      seedLicense(queryClient);
       setupInterceptors();
     });
 
@@ -132,7 +127,6 @@ describe('BackupListPanel', () => {
       queryClient = getQueryClient();
       await grantUserConfigRights(queryClient);
       grantServerRights(queryClient);
-      seedLicense(queryClient);
       setupInterceptors();
     });
 
@@ -165,7 +159,6 @@ describe('BackupListPanel', () => {
       queryClient = getQueryClient();
       await grantUserConfigRights(queryClient);
       grantServerRights(queryClient);
-      seedLicense(queryClient);
       setupInterceptors();
     });
 
@@ -235,7 +228,6 @@ describe('BackupListPanel', () => {
       queryClient = getQueryClient();
       await grantUserConfigRights(queryClient);
       grantServerRights(queryClient);
-      seedLicense(queryClient);
       setupInterceptors();
     });
 
@@ -294,28 +286,6 @@ describe('BackupListPanel', () => {
       await page.getByText('Server Specifics', { exact: true }).click();
 
       await expect.element(page.getByText('Configuration', { exact: true })).toBeVisible();
-    });
-  });
-
-  describe('License gating', () => {
-    beforeEach(async () => {
-      localStorage.clear();
-      queryClient = getQueryClient();
-      await grantUserConfigRights(queryClient);
-      grantServerRights(queryClient);
-      setupInterceptors();
-    });
-
-    it('disables the server dropdown when backup module is not licensed', async () => {
-      queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('BACKUP'), false);
-
-      await setupBrowserTest(<BackupListPanel />, {
-        initialRouterEntry: `${BACKUP_BASE}/${SERVERS_LIST}`,
-        queryClient,
-      });
-
-      const input = page.getByRole('combobox', { name: 'Select a Server' });
-      await expect.element(input).toBeDisabled();
     });
   });
 });
