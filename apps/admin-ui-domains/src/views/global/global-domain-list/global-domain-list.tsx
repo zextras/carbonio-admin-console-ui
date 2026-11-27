@@ -38,6 +38,7 @@ import {
 	ASC,
 	CREATE_NEW_DOMAIN_ROUTE_ID,
 	DESC,
+	GENERAL_SETTINGS,
 	RECORD_DISPLAY_LIMIT,
 } from '../../../constants';
 import { useQueryErrorSnackbar } from '../../../hooks/use-query-error-snackbar';
@@ -182,6 +183,14 @@ export const GlobalDomainList = () => {
 		sortAscending,
 	});
 
+	const { data: allDomainsData } = useDomainListDirectory({
+		query: '',
+		offset: 0,
+		limit: 1,
+		sortBy: 'zimbraDomainName',
+		sortAscending: ASC,
+	});
+
 	if (data?.total !== totalRowCount) {
 		setTotalRowCount(data?.total);
 	}
@@ -190,10 +199,15 @@ export const GlobalDomainList = () => {
 
 	const domains: Array<DomainRowItem> = (data?.domains ?? []).map(flattenDomainAttributes);
 	const totalDomain = data?.total ?? 0;
+	const totalDomainsCatalog = allDomainsData?.total ?? 0;
 	const tableStatus = resolveTableStatus(isPending, isError, domains.length);
 
-	function openDomain(domain: DomainRowItem): void {
+	function openDomainAccounts(domain: DomainRowItem): void {
 		replaceHistory(`/${domain.id}/${ACCOUNTS}`);
+	}
+
+	function openDomainSettings(domain: DomainRowItem): void {
+		replaceHistory(`/${domain.id}/${GENERAL_SETTINGS}`);
 	}
 
 	function handleSortingChange(
@@ -221,7 +235,8 @@ export const GlobalDomainList = () => {
 	];
 
 	const rowActions: Array<DataTableRowAction> = [
-		{ id: 'open', label: t('label.open_domain', 'Open domain') },
+		{ id: 'accounts', label: t('label.accounts', 'Accounts') },
+		{ id: 'settings', label: t('label.settings', 'Settings') },
 	];
 
 	const columns: Array<DataTableColumnDef<DomainRowItem>> = [
@@ -274,7 +289,7 @@ export const GlobalDomainList = () => {
 								</ds-text>
 								<ds-text as="p" size="small" weight="light" color="gray1">
 									{t('domain.domains.count', '{{count}} domains', {
-										count: totalDomain,
+										count: totalDomainsCatalog,
 									})}
 								</ds-text>
 							</div>
@@ -316,10 +331,13 @@ export const GlobalDomainList = () => {
 								onSortingChange={handleSortingChange}
 								onPaginationChange={setPagination}
 								rowActions={rowActions}
-								rowActionsMode="direct"
 								onRowAction={({ action, row }) => {
-									if (action.id === 'open') {
-										openDomain(row);
+									if (action.id === 'accounts') {
+										openDomainAccounts(row);
+										return;
+									}
+									if (action.id === 'settings') {
+										openDomainSettings(row);
 									}
 								}}
 							>
@@ -362,7 +380,7 @@ export const GlobalDomainList = () => {
 									onRetry={() => {
 										void refetch();
 									}}
-									onRowClick={openDomain}
+									onRowClick={openDomainAccounts}
 									emptyTitle={t('label.this_list_is_empty', 'This list is empty.')}
 									emptyDescription={
 										<Trans

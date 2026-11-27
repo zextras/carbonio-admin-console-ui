@@ -56,6 +56,8 @@ type SearchDirectoryParams = {
 	query?: string | { _content?: string };
 	offset?: number;
 	limit?: number;
+	sortBy?: string;
+	sortAscending?: number | string;
 };
 
 function queryContent(params: SearchDirectoryParams): string {
@@ -66,23 +68,31 @@ function queryContent(params: SearchDirectoryParams): string {
 	return query?._content ?? '';
 }
 
+/** Catalog-total probe uses limit 1; the table list uses RECORD_DISPLAY_LIMIT (10). */
+function isListDirectoryRequest(params: SearchDirectoryParams): boolean {
+	return (params.limit ?? 0) > 1;
+}
+
 function interceptDynamicDomains(
 	handler: (params: SearchDirectoryParams) => {
 		domain: Array<DomainItem>;
 		searchTotal: number;
 		more: boolean;
 	},
-): void {
+): Array<SearchDirectoryParams> {
+	const calls: Array<SearchDirectoryParams> = [];
 	worker.use(
 		http.post('/service/admin/soap/SearchDirectoryRequest', async ({ request }) => {
 			const body = await request.clone().json();
 			const params = (body as { Body?: { SearchDirectoryRequest?: SearchDirectoryParams } }).Body
 				?.SearchDirectoryRequest ?? {};
+			calls.push(params);
 			return HttpResponse.json({
 				Body: { SearchDirectoryResponse: handler(params) },
 			});
 		}),
 	);
+	return calls;
 }
 
 const SAMPLE_DOMAINS: Array<DomainItem> = [
@@ -240,6 +250,33 @@ describe('GlobalDomainList (browser)', () => {
 				.toHaveLength(0);
 		}, 15_000);
 
+		it('keeps the header domain count unfiltered while search narrows the table', async () => {
+			interceptDynamicDomains((params) => {
+				const content = queryContent(params);
+				if (content.includes('exam')) {
+					return {
+						domain: [buildDomain('example.com', 'domain-1', 'active')],
+						searchTotal: 1,
+						more: false,
+					};
+				}
+				return { domain: SAMPLE_DOMAINS, searchTotal: 2, more: false };
+			});
+			await setup(<GlobalDomainList />);
+
+			await expect.element(page.getByText('2 domains')).toBeVisible();
+
+			const searchInput = page.getByLabelText(`I'm looking for this domain…`);
+			await searchInput.fill('exam');
+
+			await expect
+				.poll(() => page.getByText('test.org').elements(), { timeout: 5000 })
+				.toHaveLength(0);
+			await expect.element(page.getByText('example.com')).toBeVisible();
+			await expect.element(page.getByText('2 domains')).toBeVisible();
+			await expect.element(page.getByText('1 result')).toBeVisible();
+		}, 15_000);
+
 		it('shows empty state when search returns no matches', async () => {
 			interceptDynamicDomains((params) => {
 				const content = queryContent(params);
@@ -271,14 +308,26 @@ describe('GlobalDomainList (browser)', () => {
 			expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/accounts');
 		});
 
-		it('navigates to domain details from the open arrow', async () => {
+		it('navigates to accounts from the row actions menu', async () => {
 			interceptDomains(SAMPLE_DOMAINS, 2);
 			await setup(<GlobalDomainList />);
 
 			await expect.element(page.getByText('example.com')).toBeVisible();
-			await page.getByRole('button', { name: /Open domain for example.com/ }).click();
+			await page.getByRole('button', { name: /Actions for example.com/ }).click();
+			await page.getByRole('menuitem', { name: 'Accounts' }).click();
 
 			expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/accounts');
+		});
+
+		it('navigates to general settings from the row actions menu', async () => {
+			interceptDomains(SAMPLE_DOMAINS, 2);
+			await setup(<GlobalDomainList />);
+
+			await expect.element(page.getByText('example.com')).toBeVisible();
+			await page.getByRole('button', { name: /Actions for example.com/ }).click();
+			await page.getByRole('menuitem', { name: 'Settings' }).click();
+
+			expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/general_settings');
 		});
 	});
 
@@ -313,6 +362,112 @@ describe('GlobalDomainList (browser)', () => {
 			await page.getByRole('button', { name: 'Next page' }).click();
 
 			await expect.element(page.getByText('beta-11.com')).toBeVisible();
+		}, 15_000);
+	});
+
+	describe('Sorting', () => {
+		const aaa = buildDomain('aaa.com', 'domain-aaa', 'active', [
+			{ n: 'zimbraCreateTimestamp', _content: '20240101120000Z' },
+		]);
+		const middle = buildDomain('middle.com', 'domain-middle', 'active', [
+			{ n: 'zimbraCreateTimestamp', _content: '20240601120000Z' },
+		]);
+		const zzz = buildDomain('zzz.com', 'domain-zzz', 'active', [
+			{ n: 'zimbraCreateTimestamp', _content: '20231201120000Z' },
+		]);
+
+		/** Alphabetical ASC — what a local name sort would produce. */
+		const nameAscOrder = [aaa, middle, zzz];
+		/**
+		 * Deliberately not alphabetical DESC. If the table sorted locally by
+		 * name, the UI would show zzz → middle → aaa instead of this order.
+		 */
+		const nameDescApiOrder = [middle, aaa, zzz];
+		/**
+		 * Deliberately not chronological ASC/DESC of create timestamps.
+		 * Local sort by created would show zzz → aaa → middle (ASC) or the reverse.
+		 */
+		const createdApiOrder = [middle, zzz, aaa];
+
+		function domainNamesInTable(): Array<string> {
+			return page
+				.getByRole('row')
+				.elements()
+				.slice(1)
+				.map((row) => row.textContent ?? '')
+				.map((text) => {
+					const match = text.match(/(aaa\.com|middle\.com|zzz\.com)/);
+					return match?.[1] ?? '';
+				})
+				.filter(Boolean);
+		}
+
+		function listCalls(calls: Array<SearchDirectoryParams>): Array<SearchDirectoryParams> {
+			return calls.filter(isListDirectoryRequest);
+		}
+
+		it('sends sortBy/sortAscending on Domain header click and renders API order', async () => {
+			const calls = interceptDynamicDomains((params) => {
+				if (!isListDirectoryRequest(params)) {
+					return { domain: nameAscOrder.slice(0, 1), searchTotal: 3, more: false };
+				}
+				const ascending = params.sortAscending === 1 || params.sortAscending === '1';
+				return {
+					domain: ascending ? nameAscOrder : nameDescApiOrder,
+					searchTotal: 3,
+					more: false,
+				};
+			});
+			await setup(<GlobalDomainList />);
+
+			await expect.element(page.getByText('aaa.com')).toBeVisible();
+			await expect
+				.poll(() => listCalls(calls).some((call) => call.sortBy === 'zimbraDomainName'))
+				.toBe(true);
+
+			const initialList = listCalls(calls).at(-1);
+			expect(initialList?.sortBy).toBe('zimbraDomainName');
+			expect(Number(initialList?.sortAscending)).toBe(1);
+			await expect.poll(() => domainNamesInTable()).toEqual(['aaa.com', 'middle.com', 'zzz.com']);
+
+			const listCallCountBeforeToggle = listCalls(calls).length;
+			await page.getByRole('button', { name: /^Domain/ }).click();
+
+			await expect
+				.poll(() => listCalls(calls).length)
+				.toBeGreaterThan(listCallCountBeforeToggle);
+			const afterDesc = listCalls(calls).at(-1);
+			expect(afterDesc?.sortBy).toBe('zimbraDomainName');
+			expect(Number(afterDesc?.sortAscending)).toBe(0);
+			await expect
+				.poll(() => domainNamesInTable())
+				.toEqual(['middle.com', 'aaa.com', 'zzz.com']);
+		}, 15_000);
+
+		it('sends sortBy zimbraCreateTimestamp on Created header click and renders API order', async () => {
+			const calls = interceptDynamicDomains((params) => {
+				if (!isListDirectoryRequest(params)) {
+					return { domain: nameAscOrder.slice(0, 1), searchTotal: 3, more: false };
+				}
+				if (params.sortBy === 'zimbraCreateTimestamp') {
+					return { domain: createdApiOrder, searchTotal: 3, more: false };
+				}
+				return { domain: nameAscOrder, searchTotal: 3, more: false };
+			});
+			await setup(<GlobalDomainList />);
+
+			await expect.element(page.getByText('aaa.com')).toBeVisible();
+
+			const listCallCountBefore = listCalls(calls).length;
+			await page.getByRole('button', { name: /^Created/ }).click();
+
+			await expect.poll(() => listCalls(calls).length).toBeGreaterThan(listCallCountBefore);
+			const afterCreated = listCalls(calls).at(-1);
+			expect(afterCreated?.sortBy).toBe('zimbraCreateTimestamp');
+			expect(Number(afterCreated?.sortAscending)).toBe(1);
+			await expect
+				.poll(() => domainNamesInTable())
+				.toEqual(['middle.com', 'zzz.com', 'aaa.com']);
 		}, 15_000);
 	});
 });
