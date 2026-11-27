@@ -61,7 +61,6 @@ export type {
 	QuotaSource,
 	UnlimitedComputedLimit,
 } from './services/get-cos-quota';
-export type { LicenseV1CapabilityResult } from './services/license-capability-service';
 export type {
 	LicenseV1AssignedSeatItem,
 	LicenseV1BundleItem,
@@ -79,6 +78,7 @@ export type {
 	LicenseV1TrialInfo,
 	LicenseV1Type,
 } from './services/license-info-service';
+export type { LicenseV1Feature } from './utils/license-v1-features';
 import type { AppRouteDescriptor, CarbonioModule } from '../types';
 import { getAppContext, registerApp } from './apps/loader';
 
@@ -140,10 +140,7 @@ import { useDomainSearch } from './react-query/use-domain-search';
 import { useGlobalCarbonioSendAnalytics, useGlobalSettings } from './react-query/use-global-settings';
 import { queryFnIsAdvancedSupported, useIsAdvanced } from './react-query/use-is-advanced-supported';
 import { useLastLoginTimestamp } from './react-query/use-last-login';
-import {
-	licenseV1CapabilityQueryKeys,
-	useLicenseV1Capability,
-} from './react-query/use-license-v1-capability';
+import { useLicenseV1Feature } from './react-query/use-license-v1-feature';
 import {
 	LicenseV1QueryError,
 	licenseV1QueryKeys,
@@ -201,7 +198,6 @@ import {
 } from './services/get-core-attributes';
 import { getCosQuota } from './services/get-cos-quota';
 import { getDomainInformation } from './services/get-domain-information';
-import { fetchLicenseV1Capability } from './services/license-capability-service';
 import { fetchLicenseV1Info } from './services/license-info-service';
 import { getAllNotifications, readUnreadNotification } from './services/notification-service';
 import { getCosList } from './services/search-cos-service';
@@ -300,7 +296,6 @@ export {
   fetchAccount,
   fetchAccountSettings,
   fetchExternalSoap,
-  fetchLicenseV1Capability,
   fetchLicenseV1Info,
   flushCache,
   FORUM_URL,
@@ -325,7 +320,6 @@ export {
   isSameOriginUrlOutsideProxyAllowlist,
   isUnlimitedQuantity,
   isValidDecimalInput,
-  licenseV1CapabilityQueryKeys,
   LicenseV1QueryError,
   licenseV1QueryKeys,
   LOCAL_STORAGE_LAST_PRIMARY_KEY,
@@ -386,7 +380,7 @@ export {
   useIntegrationsStore,
   useIsAdvanced,
   useLastLoginTimestamp,
-  useLicenseV1Capability,
+  useLicenseV1Feature,
   useLicenseV1Info,
   useLocalStorage,
   useLoginConfigStore,

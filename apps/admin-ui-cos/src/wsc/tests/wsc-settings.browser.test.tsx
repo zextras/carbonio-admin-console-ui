@@ -4,7 +4,7 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 import { useForm } from '@tanstack/react-form';
-import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
+import { type LicenseV1Info, licenseV1QueryKeys, useLoginConfigStore } from '@zextras/ui-shared';
 import {
 	createBrowserAPIInterceptor,
 	createBrowserSoapAPIInterceptor,
@@ -37,9 +37,27 @@ const ALL_ENABLED_VALUES: WscCosFormValues = {
 	carbonioWscMaxAttachmentSize: '25',
 };
 
-const LICENSE_MOCK = true;
+const LICENSE_MOCK: LicenseV1Info = {
+	licenseType: 'metered',
+	status: 'valid',
+	companyName: 'Acme Corp',
+	partner: 'Zextras Partner',
+	orderId: 'ORD-123',
+	carbonioVersion: '25.1.2',
+	activationToken: 'activation-token',
+	startDate: '2026-01-01T00:00:00.000Z',
+	endDate: '2027-01-01T00:00:00.000Z',
+	totalActiveAccountsNumber: 42,
+	lastSyncTime: null,
+	lastValidationCheck: '2026-11-16T10:30:00.000Z',
+	nextValidationDeadline: '2026-12-16T10:30:00.000Z',
+	renewTimeLeft: 30,
+	maxTotalSeats: 100,
+	addOns: [],
+	bundles: [{ name: 'Chats', assignedSeats: 12 }],
+};
 
-const UNLICENSED_MOCK = false;
+const UNLICENSED_MOCK: LicenseV1Info = { ...LICENSE_MOCK, bundles: [] };
 
 type WscSettingsWrapperProps = {
 	defaultValues?: WscCosFormValues;
@@ -78,10 +96,7 @@ function seedQueryCache(
 		attrs: { zimbraIsAdminAccount: 'TRUE' },
 		props: [],
 	});
-	queryClient.setQueryData(
-		licenseV1CapabilityQueryKeys.capability('CHATS'),
-		licensed ? LICENSE_MOCK : UNLICENSED_MOCK,
-	);
+	queryClient.setQueryData(licenseV1QueryKeys.all, licensed ? LICENSE_MOCK : UNLICENSED_MOCK);
 }
 
 function setupApiFallbacks(licenseMock = LICENSE_MOCK): void {
@@ -89,10 +104,8 @@ function setupApiFallbacks(licenseMock = LICENSE_MOCK): void {
 		HttpResponse.json({ items: [] }),
 	);
 	createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-	createBrowserAPIInterceptor(
-		'get',
-		'/services/license/v1/capabilities/allowed?capability=CHATS',
-		() => HttpResponse.json({ allowed: licenseMock }),
+	createBrowserAPIInterceptor('get', '/services/license/v1/info', () =>
+		HttpResponse.json(licenseMock),
 	);
 }
 
@@ -116,9 +129,15 @@ async function setupWscSettingsAdvancedTest(
 	await expect.element(page.getByText('General Settings')).toBeVisible();
 }
 
+function setSubscriptionFlag(enabled: boolean): void {
+	useLoginConfigStore.setState({ featureFlags: { enforceSubscriptionRequirements: enabled } });
+}
+
 async function setupWscSettingsUnlicensedTest(
 	options?: WscSettingsWrapperProps,
+	{ subscriptionFlag = true }: { subscriptionFlag?: boolean } = {},
 ): Promise<void> {
+	setSubscriptionFlag(subscriptionFlag);
 	const queryClient = getQueryClient();
 	seedQueryCache(queryClient, { advanced: true, licensed: false });
 	setupApiFallbacks(UNLICENSED_MOCK);
@@ -132,6 +151,7 @@ describe('WscSettings', () => {
 
 	afterEach(() => {
 		resetMockWorker();
+		useLoginConfigStore.setState({ featureFlags: null });
 	});
 
 	describe('Rendering (non-advanced mode)', () => {
@@ -513,7 +533,23 @@ describe('WscSettings', () => {
 		}, 20_000);
 	});
 
-	describe('License gating (advanced + unlicensed)', () => {
+	describe('License gating (advanced + unlicensed + new-subscriptions flag disabled)', () => {
+		it('ignores the license and keeps settings enabled without the warning banner', async () => {
+			await setupWscSettingsUnlicensedTest(undefined, { subscriptionFlag: false });
+
+			await expect.element(page.getByText('General Settings')).toBeVisible();
+			await expect.element(
+				page.getByRole('switch', { name: 'Enable Chat' }),
+			).not.toBeDisabled();
+			expect(
+				page
+					.getByText("These settings can't be changed because your Chats license is not valid.")
+					.elements(),
+			).toHaveLength(0);
+		}, 20_000);
+	});
+
+	describe('License gating (advanced + unlicensed + new-subscriptions flag enabled)', () => {
 		it('shows warning banner when unlicensed', async () => {
 			await setupWscSettingsUnlicensedTest();
 

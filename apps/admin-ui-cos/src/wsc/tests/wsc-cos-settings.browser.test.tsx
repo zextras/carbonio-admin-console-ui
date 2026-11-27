@@ -3,7 +3,7 @@
  *
  * SPDX-License-Identifier: AGPL-3.0-only
  */
-import { licenseV1CapabilityQueryKeys } from '@zextras/ui-shared';
+import { type LicenseV1Info, licenseV1QueryKeys } from '@zextras/ui-shared';
 import {
   advancedSupportedApiForBrowser,
   createBrowserAPIInterceptor,
@@ -65,6 +65,26 @@ const mockCosDataWscDisabled = {
   ],
 };
 
+const CHATS_LICENSE: LicenseV1Info = {
+  licenseType: 'metered',
+  status: 'valid',
+  companyName: 'Acme Corp',
+  partner: 'Zextras Partner',
+  orderId: 'ORD-123',
+  carbonioVersion: '25.1.2',
+  activationToken: 'activation-token',
+  startDate: '2026-01-01T00:00:00.000Z',
+  endDate: '2027-01-01T00:00:00.000Z',
+  totalActiveAccountsNumber: 42,
+  lastSyncTime: null,
+  lastValidationCheck: '2026-11-16T10:30:00.000Z',
+  nextValidationDeadline: '2026-12-16T10:30:00.000Z',
+  renewTimeLeft: 30,
+  maxTotalSeats: 100,
+  addOns: [],
+  bundles: [{ name: 'Chats', assignedSeats: 12 }],
+};
+
 function seedLicenseAndAdminSettings(): void {
   const queryClient = getQueryClient();
   queryClient.setQueryData(['account', 'settings'], {
@@ -72,7 +92,7 @@ function seedLicenseAndAdminSettings(): void {
     attrs: { zimbraIsAdminAccount: 'TRUE' },
     props: [],
   });
-  queryClient.setQueryData(licenseV1CapabilityQueryKeys.capability('CHATS'), true);
+  queryClient.setQueryData(licenseV1QueryKeys.all, CHATS_LICENSE);
 }
 
 function mockCatalogServices(): void {
@@ -81,13 +101,11 @@ function mockCatalogServices(): void {
   );
 }
 
-const CHATS_CAPABILITY_URL = '/services/license/v1/capabilities/allowed?capability=CHATS';
-
 function setupUnhandledApiInterceptors(): void {
   mockCatalogServices();
   createBrowserSoapAPIInterceptor('GetInfo', getGetInfoResponseMock());
-  createBrowserAPIInterceptor('get', CHATS_CAPABILITY_URL, () =>
-    HttpResponse.json({ allowed: true }),
+  createBrowserAPIInterceptor('get', '/services/license/v1/info', () =>
+    HttpResponse.json(CHATS_LICENSE),
   );
 }
 

@@ -64,9 +64,6 @@ const defaultHandlers = [
 	soapFallbackHandler('SearchDirectory'),
 	http.get('/services/catalog/services', () => HttpResponse.json({ items: [] })),
 	http.get('/services/license/v1/info', () => HttpResponse.json({}, { status: 404 })),
-	http.get(/^\/services\/license\/v1\/capabilities\/allowed/, () =>
-		HttpResponse.json({ allowed: false }),
-	),
 	http.get(
 		'/service/extension/zextras_admin/core/getAllServers',
 		() => HttpResponse.json({ items: [] }),

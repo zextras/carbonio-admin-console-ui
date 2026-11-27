@@ -5,7 +5,7 @@
  */
 
 import { fireEvent, render, screen } from '@testing-library/react';
-import { useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
+import { useLicenseV1Feature, useNewSubscriptionFeatureFlag } from '@zextras/ui-shared';
 import { useState } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -148,59 +148,79 @@ describe('Features - Mail section', () => {
   });
 });
 
+function mockFilesLicensed(isLicensed: boolean): void {
+  vi.mocked(useLicenseV1Feature).mockReturnValue({ data: isLicensed } as ReturnType<
+    typeof useLicenseV1Feature
+  >);
+}
+
 describe('Features - Files section visibility (new-subscriptions flag enabled)', () => {
   beforeEach(() => {
     vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(true);
   });
 
-  it('hides the Files heading and the Allow access to Files switch when the COS edition is mail', () => {
-    renderFeatures({ cosDetail: { edition: 'mail' } });
+  it('asks the license whether Files is allowed', () => {
+    mockFilesLicensed(true);
+    renderFeatures({ cosDetail: { edition: 'workspace' } });
 
-    expect(screen.queryByText('Files', { exact: true })).toBeNull();
-    expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+    expect(useLicenseV1Feature).toHaveBeenCalledWith('Files');
   });
 
-  it('keeps the Allow access to Tasks switch visible when the COS edition is mail', () => {
-    renderFeatures({ cosDetail: { edition: 'mail' } });
-
-    expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Tasks' })).toBeTruthy();
-  });
-
-  it('shows the Files heading and switch when the COS edition is workspace', () => {
+  it('shows the Files heading and switch when the COS edition is workspace and the license allows Files', () => {
+    mockFilesLicensed(true);
     renderFeatures({ cosDetail: { edition: 'workspace' } });
 
     expect(screen.getByText('Files', { exact: true })).toBeTruthy();
     expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' })).toBeTruthy();
   });
 
+  it('hides the Files heading and switch when the license does not allow Files, even on a workspace COS', () => {
+    mockFilesLicensed(false);
+    renderFeatures({ cosDetail: { edition: 'workspace' } });
+
+    expect(screen.queryByText('Files', { exact: true })).toBeNull();
+    expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+  });
+
+  it('hides the Files heading and switch when the COS edition is mail, even if the license allows Files', () => {
+    mockFilesLicensed(true);
+    renderFeatures({ cosDetail: { edition: 'mail' } });
+
+    expect(screen.queryByText('Files', { exact: true })).toBeNull();
+    expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
+  });
+
+  it('keeps the Allow access to Tasks switch visible when Files is hidden', () => {
+    mockFilesLicensed(false);
+    renderFeatures({ cosDetail: { edition: 'mail' } });
+
+    expect(screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Tasks' })).toBeTruthy();
+  });
+
   it('hides the Allow access to Files switch when the COS has no edition attribute', () => {
+    mockFilesLicensed(true);
     renderFeatures({ cosDetail: { zimbraFeatureContactsEnabled: 'TRUE' } });
 
     expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
   });
 
-  it('hides the Allow access to Files switch when the COS edition is empty', () => {
-    renderFeatures({ cosDetail: { edition: '' } });
+  it('hides the Allow access to Files switch while the license is still loading', () => {
+    vi.mocked(useLicenseV1Feature).mockReturnValue({ data: undefined } as ReturnType<
+      typeof useLicenseV1Feature
+    >);
+    renderFeatures({ cosDetail: { edition: 'workspace' } });
 
     expect(screen.queryByRole('switch', { name: 'Allow access to Files' })).toBeNull();
   });
 });
 
 describe('Features - Files section vs new-subscriptions feature flag', () => {
-  it('shows the Files heading and the Allow access to Files switch when the flag is disabled and the COS edition is mail', () => {
+  it('shows the Files heading and the Allow access to Files switch when the flag is disabled and the license does not allow Files', () => {
     vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(false);
+    mockFilesLicensed(false);
     renderFeatures({ cosDetail: { edition: 'mail' } });
 
     expect(screen.getByText('Files', { exact: true })).toBeTruthy();
-    expect(
-      screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' }),
-    ).toBeTruthy();
-  });
-
-  it('shows the Allow access to Files switch when the flag is disabled and the COS has no edition attribute', () => {
-    vi.mocked(useNewSubscriptionFeatureFlag).mockReturnValue(false);
-    renderFeatures({ cosDetail: {} });
-
     expect(
       screen.getByRole<HTMLInputElement>('switch', { name: 'Allow access to Files' }),
     ).toBeTruthy();
