@@ -7,12 +7,6 @@
 import type { Attribute } from '../../../../types';
 import { attributesToObject } from '../../../utils/attributes';
 
-export type ZimbraDomain = {
-	name: string;
-	id: string;
-	a: Array<Attribute>;
-};
-
 export type DomainRowItem = {
 	id: string;
 	name: string;

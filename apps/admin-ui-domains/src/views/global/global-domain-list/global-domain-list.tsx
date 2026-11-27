@@ -254,7 +254,7 @@ export const GlobalDomainList = () => {
 
 	const rowActions: Array<DataTableRowAction> = [
 		{ id: 'accounts', label: t('label.accounts', 'Accounts') },
-		{ id: 'settings', label: t('label.settings', 'Settings') },
+		{ id: 'settings', label: t('label.general_settings', 'General Settings') },
 	];
 
 	const columns: Array<DataTableColumnDef<DomainRowItem>> = [

@@ -325,7 +325,7 @@ describe('GlobalDomainList (browser)', () => {
 
 			await expect.element(page.getByText('example.com')).toBeVisible();
 			await page.getByRole('button', { name: /Actions for example.com/ }).click();
-			await page.getByRole('menuitem', { name: 'Settings' }).click();
+			await page.getByRole('menuitem', { name: 'General Settings' }).click();
 
 			expect(mockedReplaceHistory).toHaveBeenCalledWith('/domain-1/general_settings');
 		});
